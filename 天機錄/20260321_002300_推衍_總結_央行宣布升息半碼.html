@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推衍報告 — 央行宣布升息半碼</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background: #1a1625;
+            color: #e0dce8;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { text-align: center; color: #a08bc4; font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .subtitle { text-align: center; color: #8a7fa8; font-size: 0.9rem; margin-bottom: 2rem; }
+        .event-card {
+            background: rgba(160,139,196,0.1); border: 1px solid rgba(160,139,196,0.3);
+            border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;
+        }
+        .event-card h2 { color: #a08bc4; font-size: 1.3rem; margin-bottom: 0.8rem; }
+        .event-card p { color: #c4bdd6; line-height: 1.6; }
+        .event-meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.85rem; color: #8a7fa8; }
+        .method-card {
+            background: rgba(30,25,45,0.8); border: 1px solid rgba(160,139,196,0.2);
+            border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .method-card h3 {
+            color: #a08bc4; font-size: 1.2rem;
+            border-bottom: 1px solid rgba(160,139,196,0.3);
+            padding-bottom: 0.5rem; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.8rem;
+        }
+        .confidence-badge {
+            font-size: 0.75rem; padding: 0.2rem 0.7rem;
+            border-radius: 20px; font-weight: normal;
+        }
+        .analysis-summary {
+            color: #c4bdd6; font-size: 0.95rem; line-height: 1.6;
+            padding: 0.8rem 1rem; margin-bottom: 1rem;
+            background: rgba(160,139,196,0.06); border-radius: 8px;
+            border-left: 3px solid rgba(160,139,196,0.4);
+        }
+        .confidence-note { color: #8a7fa8; font-size: 0.85rem; margin-top: 1rem; font-style: italic; }
+        .sub-card {
+            background: rgba(160,139,196,0.05); border-radius: 8px;
+            padding: 1rem; margin-bottom: 1rem;
+        }
+        .sub-card h4 { color: #b8a5d6; margin-bottom: 0.8rem; font-size: 1rem; }
+        h5 { color: #a08bc4; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        ul { list-style: none; padding-left: 0; }
+        ul li {
+            padding: 0.3rem 0 0.3rem 1.2rem; position: relative;
+            color: #c4bdd6; font-size: 0.9rem;
+        }
+        ul li::before {
+            content: ''; position: absolute; left: 0; top: 50%;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #a08bc4; transform: translateY(-50%);
+        }
+        li.opp::before { background: #6ecf9a; }
+        li.risk::before { background: #e07474; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+        .highlight-box { border-radius: 8px; padding: 1rem; }
+        .opp-box { background: rgba(110,207,154,0.08); border: 1px solid rgba(110,207,154,0.2); }
+        .risk-box { background: rgba(224,116,116,0.08); border: 1px solid rgba(224,116,116,0.2); }
+        .opp-box h5 { color: #6ecf9a; }
+        .risk-box h5 { color: #e07474; }
+        .tags { margin-top: 0.5rem; }
+        .tag {
+            display: inline-block; background: rgba(160,139,196,0.15);
+            color: #b8a5d6; border-radius: 20px;
+            padding: 0.2rem 0.8rem; font-size: 0.8rem; margin: 0.2rem;
+        }
+        .actions {
+            background: rgba(160,139,196,0.05); border-radius: 8px;
+            padding: 1rem; margin-top: 1rem;
+        }
+        .scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+        .scenario-card { border-radius: 8px; padding: 1rem; }
+        .scenario-card h4 { margin-bottom: 0.5rem; }
+        .scenario-card .probability { font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; }
+        .scenario-card .assumption { font-size: 0.85rem; color: #8a7fa8; margin-bottom: 0.3rem; font-style: italic; }
+        .scenario-card .timeline { font-size: 0.8rem; color: #a08bc4; margin-bottom: 0.6rem; }
+        .scenario-card .impact { font-size: 0.85rem; margin-top: 0.8rem; font-weight: bold; }
+        .optimistic { background: rgba(110,207,154,0.08); border: 1px solid rgba(110,207,154,0.2); }
+        .optimistic h4, .optimistic .probability, .optimistic .impact { color: #6ecf9a; }
+        .neutral { background: rgba(160,139,196,0.08); border: 1px solid rgba(160,139,196,0.2); }
+        .neutral h4, .neutral .probability, .neutral .impact { color: #a08bc4; }
+        .pessimistic { background: rgba(224,116,116,0.08); border: 1px solid rgba(224,116,116,0.2); }
+        .pessimistic h4, .pessimistic .probability, .pessimistic .impact { color: #e07474; }
+        .indicators {
+            background: rgba(160,139,196,0.05); border-radius: 8px; padding: 1rem;
+        }
+        .indicators p { font-size: 0.85rem; color: #8a7fa8; margin-top: 0.5rem; }
+        .owner-summary {
+            display: flex; gap: 1.5rem; margin-bottom: 1rem;
+        }
+        .owner-summary span {
+            background: rgba(160,139,196,0.12); padding: 0.4rem 1rem;
+            border-radius: 20px; font-size: 0.85rem; color: #b8a5d6;
+        }
+        .risk-level {
+            text-align: center; padding: 0.6rem 1rem;
+            border: 1px solid; border-radius: 8px;
+            font-weight: bold; margin: 1rem 0;
+        }
+        .holdings-table {
+            width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem;
+        }
+        .holdings-table th {
+            background: rgba(160,139,196,0.15); color: #b8a5d6;
+            padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid rgba(160,139,196,0.3);
+        }
+        .holdings-table td {
+            padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(160,139,196,0.1);
+            color: #c4bdd6; vertical-align: top;
+        }
+        .holdings-table tr:hover { background: rgba(160,139,196,0.05); }
+        .action-alert {
+            text-align: center; padding: 0.6rem;
+            background: rgba(224,116,116,0.15); border: 1px solid rgba(224,116,116,0.3);
+            border-radius: 8px; color: #e07474; font-weight: bold; margin-top: 1rem;
+        }
+        .review-card { border-color: rgba(240,200,100,0.3) !important; }
+        .footer {
+            text-align: center; color: #5a5270; font-size: 0.8rem;
+            margin-top: 3rem; padding-top: 1rem;
+            border-top: 1px solid rgba(160,139,196,0.15);
+        }
+        @media (max-width: 768px) {
+            .two-col, .scenario-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+            .holdings-table { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>天機閣 — 推衍報告</h1>
+        <p class="subtitle">報告編號：20260321_002300 ｜ 產出時間：2026-03-21 00:25 ｜ AI 實質推理</p>
+
+        <div class="event-card">
+            <h2>央行宣布升息半碼</h2>
+            <p>中央銀行宣布升息半碼，重貼現率調升至2.25%，為連續第六次升息，影響房貸利率與股市資金面</p>
+            <div class="event-meta">
+                <span>來源：</span>
+                <span>使用方法：影響鏈分析</span>
+            </div>
+        </div>
+
+        
+        <div class="method-card" style="border-color: rgba(100, 180, 255, 0.3);">
+            <h3 style="color: #64b4ff;">網路搜尋結果</h3>
+            <p style="color: #8a9fc4; font-size: 0.9rem; margin-bottom: 1rem;">
+                搜尋到 10 筆相關資料，其中 5 筆為新資料已歸檔至藏經閣
+            </p>
+            <ul><li>央行利率連八凍！「房市微鬆綁」同意購屋族第二戶貸款成數變六成 <span style="color:#8a7fa8;">(已存在)</span></li><li>央行鬆綁房市管制 自然人第二戶房貸成數放寬「5改6」 <span style="color:#8a7fa8;">(已存在)</span></li><li>央行鬆綁了！第二戶房貸成數由五成放寬至六成 <span style="color:#8a7fa8;">(已存在)</span></li><li>央行鬆綁房市管制 自然人第二戶貸款成數從5成放寬至6成 <span class="tag">金融戰情室</span></li><li>央行意外鬆手！3/20起第2戶房貸成數放寬至6成 <span class="tag">金融戰情室</span></li><li>2026房貸鬆綁是假象？央行回歸「銀行內控」背後的真相 <span style="color:#8a7fa8;">(已存在)</span></li><li>第二屋鬆綁！央行限貸令與選擇性信用管制影響分析 <span class="tag">金融戰情室</span></li><li>台灣央行今年雙率政策定調：匯率升、利率低 <span class="tag">金融戰情室</span></li><li>中央銀行理監事聯席會議決議新聞稿 <span style="color:#8a7fa8;">(已存在)</span></li><li>最新房貸利率比較：2026年房貸利率與試算 <span class="tag">金融戰情室</span></li></ul>
+        </div>
+        
+        
+            <div class="method-card">
+                <h3>影響鏈分析 <span class="confidence-badge" style="background:#8a7fa820;color:#8a7fa8;border:1px solid #8a7fa840;">信心：中高</span></h3>
+                <p class="analysis-summary">央行連六升息至2.25%，直接推升房貸與企業融資成本，銀行與壽險業受惠於利差擴大，營建、消費、房仲業承壓。建議增持金融股、減碼高槓桿標的、保留現金等待修正機會，並密切關注下次理監事會議訊號。</p>
+                
+                <div class="sub-card">
+                    <h4>觸發因素：央行升息半碼，重貼現率至2.25%，銀行資金成本上升，帶動各類放款利率調升</h4>
+                    <div class="two-col">
+                        <div><h5>直接影響（1-3 個月）</h5><ul><li>房貸利率上升約0.125個百分點：以1000萬元30年期房貸計算，月付額增加約650-700元，年增約8000元利息支出，直接壓縮購屋族現金流</li><li>企業融資成本上升：中小企業貸款利率連動調升，短期周轉金成本增加，壓縮營運利潤，尤其衝擊高槓桿經營的企業</li><li>新台幣短期走強壓力：升息擴大台美利差收斂幅度，外資短期可能回流台幣資產，新台幣有升值動能，但須觀察聯準會動向</li></ul></div>
+                        <div><h5>間接影響（3-12 個月）</h5><ul><li>房市交易量萎縮（傳導路徑：升息→房貸負擔加重→觀望情緒升溫→成交量下降）：連續六次升息累計升幅達0.75個百分點，房貸族總利息負擔顯著增加，預期3-6個月內六都交易量可能年減10-15%</li><li>消費動能減弱（傳導路徑：升息→房貸與信貸月付增加→可支配所得下降→非必要消費縮減）：家庭部門債務負擔加重，零售、餐飲、旅遊等消費性產業可能受到抑制</li><li>建商推案延後（傳導路徑：升息→建築融資成本上升+買氣觀望→去化速度放慢→建商延後新案推出）：土建融利率走高加上市場觀望，預期6-12個月營建業開工量下滑</li></ul></div>
+                    </div>
+                    <div class="tags">受影響產業：<span class="tag">銀行金融業（短期正面）：存放利差擴大，銀行淨利息收入增加，但須留意房貸逾放比是否上升</span><span class="tag">營建與不動產業（負面）：購屋需求被壓抑、建築融資成本上升、去化壓力加大</span><span class="tag">壽險業（正面）：新錢投資收益率改善，利差損問題緩解，保單準備金提存壓力減輕</span><span class="tag">高股息ETF與債券型基金（短期負面）：利率上升導致固定收益資產價格下跌，高股息標的相對吸引力下降</span><span class="tag">零售消費業（負面）：百貨、餐飲、非必要消費品，因家庭可支配所得被壓縮而需求下降</span><span class="tag">出口電子業（中性偏負面）：若新台幣升值，出口競爭力受損，但若升值幅度有限則影響可控</span></div>
+                </div>
+                <div class="sub-card">
+                    <h4>觸發因素：連續第六次升息釋出央行抑制通膨與房市過熱的強烈訊號</h4>
+                    <div class="two-col">
+                        <div><h5>直接影響（1-3 個月）</h5><ul><li>市場預期管理效果：投資人開始定價未來可能還有升息空間，長天期債券殖利率上行，折現率上升壓抑成長股估值</li><li>選擇性信用管制效果強化：配合先前的房市管控措施（如第七波信用管制），多管齊下加重投機客資金壓力</li></ul></div>
+                        <div><h5>間接影響（3-12 個月）</h5><ul><li>資金從股市流向定存（傳導路徑：定存利率走高→風險資產相對報酬率下降→保守型資金轉入定存）：台幣定存利率可能突破1.8-1.9%，對保守型投資人產生磁吸效應</li><li>房市投機退場（傳導路徑：升息+信用管制→投機成本大增→短線炒作無利可圖→投機客出脫持有物件）：可能在6-12個月內看到部分區域房價回檔5-10%</li></ul></div>
+                    </div>
+                    <div class="tags">受影響產業：<span class="tag">房仲業（負面）：交易量萎縮直接衝擊仲介收入，如信義房屋、永慶等</span><span class="tag">租賃市場（正面）：購屋門檻提高，部分需求轉向租賃，租金有上漲壓力</span><span class="tag">金融科技與消費信貸（負面）：信貸利率上升，借款需求可能下降</span></div>
+                </div>
+                <div class="two-col">
+                    <div class="highlight-box opp-box"><h5>機會</h5><ul><li class="opp">銀行股存放利差擴大：關注淨利差改善幅度大的銀行，如兆豐金、第一金等官股行庫，升息直接增厚利息收入</li><li class="opp">壽險股利差損改善：如國泰金、富邦金，新錢再投資報酬率提升，長期獲利結構改善</li><li class="opp">升息尾聲布局債券：若市場判斷升息循環接近尾聲，可開始分批布局長天期公債ETF（如元大美債20年），鎖定相對高殖利率，待降息時賺取資本利得</li><li class="opp">房市回檔後的自住買盤機會：等待6-12個月房價修正後，自住需求者可趁勢進場議價，尤其關注蛋白區讓利物件</li></ul></div>
+                    <div class="highlight-box risk-box"><h5>風險</h5><ul><li class="risk">升息超預期：若通膨未能有效控制，央行可能繼續升息，累積效應恐導致經濟放緩甚至衰退風險，房貸族壓力進一步加劇</li><li class="risk">企業違約風險上升：高槓桿中小企業若無法承受融資成本上升，可能出現違約潮，銀行資產品質惡化</li><li class="risk">股市估值修正：利率上升壓縮本益比，尤其高本益比的成長股（如部分AI概念股）面臨估值下修壓力</li><li class="risk">台幣升值衝擊出口：若新台幣過度升值，半導體、電子零組件等出口產業營收換算新台幣後將縮水</li></ul></div>
+                </div>
+                <div class="actions"><h5>建議行動</h5><ul><li>檢視個人房貸負擔：計算升息後月付額變化，若房貸支出佔收入超過40%，考慮部分提前還款或轉貸至較低利率方案</li><li>資產配置向金融股傾斜：可適度增持受惠升息的銀行股與壽險股，佔投資組合10-15%</li><li>減碼高槓桿與利率敏感標的：降低營建股、高負債比企業、長天期債券部位，等待利率方向更明確</li><li>保留現金部位：升息環境下現金價值提升，保留20-30%現金部位，等待市場因升息修正後逢低布局</li><li>關注央行下次理監事會議（約3個月後）：觀察是否有暫停升息訊號，作為調整配置的關鍵時點</li></ul></div>
+                <p class="confidence-note">信心說明：升息對房貸、資金成本、金融業利差的影響是確定性高的傳導機制，歷史經驗明確；但對股市、匯率的影響受國際變數（聯準會政策、地緣政治）干擾較大，且台灣央行後續政策路徑仍有不確定性。連續第六次升息的累積效應在歷史上較少出現可比情境，部分間接影響的幅度難以精確估算。</p>
+            </div>
+        
+
+        <div class="footer">
+            天機閣 — 推衍部門 v3（OSINT 偵察 + AI 實質推理）｜ 自動產出報告 ｜ 僅供參考，不構成投資建議
+        </div>
+    </div>
+</body>
+</html>
