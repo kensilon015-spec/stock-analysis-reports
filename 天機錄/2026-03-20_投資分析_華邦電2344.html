@@ -72,6 +72,25 @@ details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 .toc a:hover{color:var(--accent);text-decoration:underline}
 .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.75em;font-weight:700;color:#fff}
 .badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+/* === 評審團專用 === */
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+.iker-item{display:flex;gap:8px;align-items:baseline;padding:2px 0;font-size:.82em;border-bottom:1px dashed var(--border)}
+.iker-item:last-child{border-bottom:none}
+.iker-id{flex-shrink:0;font-weight:700;color:var(--base);min-width:28px}
+.iker-name{flex-shrink:0;min-width:100px;font-weight:600;color:var(--txt)}
+.iker-assess{flex:1;color:var(--txt2)}
+.iker-data{flex-shrink:0;font-size:.75em;padding:1px 6px;border-radius:4px}
+.iker-data.ok{background:rgba(46,125,50,.1);color:#2e7d32}
+.iker-data.judge{background:rgba(184,150,12,.1);color:#b8960c}
+.iker-data.manual{background:rgba(198,40,40,.1);color:#c62828}
 @media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
 </style>
 </head>
@@ -105,6 +124,12 @@ details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
     <a href="#sec8">八、推衍預測 — 接下來可能怎麼走？</a>
     <a href="#sec9">九、股價合理性分析 — 124.5 元貴不貴？</a>
     <a href="#sec10">十、投資結論（僅供參考）</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
 </div>
 
 <!-- ============================================================ -->
@@ -634,6 +659,112 @@ details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
     壓力測試後下調 7%，主因：2 個紅旗假設（EPS 預估可靠度、借券解讀）+ 1 個高風險情境（DDR4 反轉）+ 7 個資料盲點。38% 的信心代表「中度偏低」，不是「高度確信」。
 </div>
 </details>
+
+</div>
+</div>
+
+<!-- 第六步：評審團詳細意見（Iker 四層 23 項框架） -->
+<div class="card">
+<h3>第六步：評審團逐層審議（Iker 四層 23 項框架）</h3>
+<div class="card-body">
+
+<div class="tip info"><b>評審機制說明</b>五位評審各自負責 Iker 框架的對應層，逐項審查後發表觀點。每項觀點標註 FIAS 可信度等級與資料來源狀態。最終由策略長整合結論、風控官品質把關。</div>
+
+<!-- 產業分析師 -->
+<div class="reviewer">
+    <span class="r-name">產業分析師</span><span class="r-layer">第一層：產業面篩選（7 項）</span>
+    <div class="r-verdict pass">判定：通過 — 產業面強勁，DDR4 供需失衡明確</div>
+</div>
+<div style="margin:4px 0 10px">
+<div class="iker-item"><span class="iker-id">1.1</span><span class="iker-name">供需是否失衡</span><span class="iker-assess">確認失衡。三大廠（三星/SK海力士/美光）DDR4 產能轉向 HBM/DDR5，DDR4 供給缺口已形成，合約價 Q1 季漲 105-110%。 <span class="fias-f">事實</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">1.2</span><span class="iker-name">失衡原因</span><span class="iker-assess">產能轉移驅動。三大廠將 DDR4 產線轉為利潤更高的 HBM，非需求暴增而是供給端收縮。華邦電作為「留守者」直接受惠。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">1.3</span><span class="iker-name">能持續多久</span><span class="iker-assess">市場預期缺口至 2026 年底補不完，但記憶體循環平均 18-24 個月，本輪自 2025Q3 起算已 12-15 個月，進入後半段。 <span class="fias-a">假設</span></span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">1.4</span><span class="iker-name">定價權在誰</span><span class="iker-assess">賣方市場。產能全數售罄、客戶搶貨，華邦電已有議價能力，但若三大廠回頭投產 DDR4，定價權將迅速反轉。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">1.5</span><span class="iker-name">合約報價趨勢</span><span class="iker-assess">Q1 合約價季漲 105-110%（TrendForce），為近年最大漲幅。但須持續追蹤月報價，反轉即為出場訊號。 <span class="fias-f">事實</span></span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">1.6</span><span class="iker-name">是否主流題材</span><span class="iker-assess">記憶體為 2025-2026 年盤面主流題材，資金持續流入半導體、AI、記憶體族群。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">1.7</span><span class="iker-name">法說會確認</span><span class="iker-assess">管理層確認需求強勁，NOR Flash 產能售罄、DRAM 訂單能見度高，但法說會偏差率歷史紀錄 30-50%。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+</div>
+
+<!-- 個股研究員 -->
+<div class="reviewer">
+    <span class="r-name">個股研究員</span><span class="r-layer">第二層：個股受惠程度（6 項）</span>
+    <div class="r-verdict cond">判定：附條件通過 — 受惠確認但排名偏後，2 項資料缺口</div>
+</div>
+<div style="margin:4px 0 10px">
+<div class="iker-item"><span class="iker-id">2.1</span><span class="iker-name">上下游受惠</span><span class="iker-assess">華邦電屬中游 IC 設計/製造，DDR4 漲價直接受惠。但在記憶體族群中，南亞科、威剛等營收彈性更大，華邦電受惠排名偏後（DDR4 僅佔營收約 24%）。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">2.2</span><span class="iker-name">稼動率</span><span class="iker-assess">推估仍不到 60%（公司未正式揭露）。稼動率低意味營收尚未完全反映漲價，後續有提升空間，但也代表目前產能利用率偏低。 <span class="fias-s">推測</span></span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">2.3</span><span class="iker-name">低價庫存</span><span class="iker-assess"><strong>資料缺口</strong>。無法確認華邦電是否持有低價庫存。若有，報價上漲時毛利率將額外爆發；若無，毛利率改善幅度有限。 <span class="fias-s">推測</span></span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">2.4</span><span class="iker-name">月營收趨勢</span><span class="iker-assess">2025年12月-2026年1月營收 YoY +88-94%，連創歷史新高。但 YoY 從 94% 降至 88%，初現放緩跡象 — 若持續減速加上股價在高點，是出場預警。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">2.5</span><span class="iker-name">上游龍頭動態</span><span class="iker-assess">環球晶、南亞科等上游/同業已啟動，確認產業翻多。南亞科法人買超積極，嘉晶、中美晶同步走強。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">2.6</span><span class="iker-name">CB 狀態</span><span class="iker-assess"><strong>資料缺口</strong>。未查到華邦電近期可轉債發行或轉換紀錄。需確認是否有 CB 動態可作為主力拉抬動機的參考。 <span class="fias-s">推測</span></span><span class="iker-data manual">需手動找</span></div>
+</div>
+
+<!-- 籌碼分析師 -->
+<div class="reviewer">
+    <span class="r-name">籌碼分析師</span><span class="r-layer">第三層：籌碼面驗證（5 項）</span>
+    <div class="r-verdict cond">判定：附條件通過 — 基本面健康但借券異常為黃旗</div>
+</div>
+<div style="margin:4px 0 10px">
+<div class="iker-item"><span class="iker-id">3.1</span><span class="iker-name">法人在追嗎</span><span class="iker-assess">3 月初外資買超約 19 萬張，顯示法人積極追買。但 2 月曾轉為賣超，態度並非一面倒。2022 年法人曾在 6 個月內集體翻空，需留意轉向風險。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">3.2</span><span class="iker-name">主力分點進場</span><span class="iker-assess">有特定券商分點連續買入跡象，但未達「凱基松山連買 9 億」等級的明確主力訊號。整體偏向分散買盤而非集中式主力進場。 <span class="fias-i">推論</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">3.3</span><span class="iker-name">分點換手</span><span class="iker-assess">觀察到不同分點輪流買入的換手現象，類似航運循環中漲勢延續的籌碼特徵。但規模與力道不如當年航運。 <span class="fias-i">推論</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">3.4</span><span class="iker-name">融資比例</span><span class="iker-assess">融資使用率 11.61%，遠低於 50-60% 警戒線，籌碼面健康。散戶尚未瘋狂進場，仍有散戶跟風空間。 <span class="fias-f">事實</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">3.5</span><span class="iker-name">0050 入選</span><span class="iker-assess">目前市值排名接近門檻但不確定。若入選將帶來被動式資金買盤，但入選時程與規則不可控。 <span class="fias-s">推測</span></span><span class="iker-data judge">需研判</span></div>
+</div>
+<div class="tip warn"><b>籌碼面黃旗</b>借券餘額 24.2 萬張（融券的 20 倍），這是異常訊號。可能代表：(1) 有人佈局空單 (2) 避險需求 (3) 套利操作。無論原因，都暗示有人「不看好」或「在對沖」。</div>
+
+<!-- 策略長 -->
+<div class="reviewer">
+    <span class="r-name">策略長</span><span class="r-layer">第四層：空間估算（5 項）</span>
+    <div class="r-verdict cond">判定：附條件通過 — 有空間但風險報酬比偏不利，建議等回檔</div>
+</div>
+<div style="margin:4px 0 10px">
+<div class="iker-item"><span class="iker-id">4.1</span><span class="iker-name">歷史類比法</span><span class="iker-assess">參照 2021 航運超級循環（底到頂約 10 倍），記憶體保守折半估算約 5 倍。華邦電從 2024 低點約 28 元算起，5 倍為 140 元。目前 124.5 元已接近上緣。 <span class="fias-s">推測</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">4.2</span><span class="iker-name">法人目標價</span><span class="iker-assess">券商目標價分布 120-200 元，中位數約 150 元。但法人預估 EPS 分歧達 2 倍（7.5 vs 15 元），目標價參考價值有限。 <span class="fias-i">推論</span></span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">4.3</span><span class="iker-name">估值可算嗎</span><span class="iker-assess">PE 121 倍、PB 4.44 倍已在歷史高位。Iker 說「算不出目標價時是最好時機」，但反過來看，當 PE 超過 100 倍時也代表市場已定價大量樂觀預期。目前處於模糊地帶。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">4.4</span><span class="iker-name">風險在哪</span><span class="iker-assess">致命風險：DDR4 合約價 Q2 反轉（EPS 影響 -33%~-67%）。次要風險：三大廠回頭投產 DDR4、中國廠商產能開出、客戶加速轉 DDR5。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">4.5</span><span class="iker-name">部位決策</span><span class="iker-assess">124.5 元進場風險報酬比偏不利（上檔 +16%、下檔 -44%~-60%）。建議觀望，回檔至 90-95 元區間再考慮分批進場，部位不超過 20%。 <span class="fias-i">推論</span></span><span class="iker-data judge">需研判</span></div>
+</div>
+
+<!-- 風控官 -->
+<div class="reviewer" style="border-left-color:var(--danger)">
+    <span class="r-name" style="color:var(--danger)">風控官</span><span class="r-layer">橫跨所有層：品質把關</span>
+    <div class="r-verdict fail">發出 3 項警示 + 7 個資料盲點 — 整體評級 B 級</div>
+</div>
+<div style="margin:4px 0 10px">
+
+<p style="font-size:.84em;color:var(--txt2);font-weight:700;margin:6px 0 3px">警示一：資料缺口清單（7 個盲點）</p>
+<table>
+<tr><th>#</th><th>盲點</th><th>影響</th><th>建議</th></tr>
+<tr><td>1</td><td>稼動率（2.2）</td><td>無法確認產能利用率，營收預估可能失準</td><td>追蹤下次法說會</td></tr>
+<tr><td>2</td><td>低價庫存（2.3）</td><td>無法判斷毛利率爆發空間</td><td>從財報存貨變化推估</td></tr>
+<tr><td>3</td><td>CB 狀態（2.6）</td><td>缺少主力拉抬動機判斷依據</td><td>查公開資訊觀測站</td></tr>
+<tr><td>4</td><td>合約報價即時數據（1.5）</td><td>僅有季度數據，缺月度追蹤</td><td>訂閱 TrendForce</td></tr>
+<tr><td>5</td><td>新產能時程（1.3）</td><td>無法判斷供需失衡持續時間</td><td>追蹤產業報告</td></tr>
+<tr><td>6</td><td>借券背後主體（3.5）</td><td>24.2 萬張借券的動機不明</td><td>追蹤借券變化趨勢</td></tr>
+<tr><td>7</td><td>高雄廠進度（成長面）</td><td>有延後 1 年前科，量產時程不確定</td><td>追蹤建廠進度公告</td></tr>
+</table>
+
+<p style="font-size:.84em;color:var(--txt2);font-weight:700;margin:8px 0 3px">警示二：認知偏誤檢查</p>
+<div class="tip danger"><b>確認偏誤風險</b>報告中 9 面向正反對照，但多數「支持買進」證據為事實級，而「風險」證據偏推論級。這可能造成「事實佐證多所以該買」的錯覺。然而，事實只描述過去，推論才指向未來 — 記憶體循環反轉往往發生在所有指標都還很好的時候。</div>
+<div class="tip danger"><b>近因偏誤風險</b>DDR4 連漲 12-15 個月，容易讓人假設「還會繼續漲」。但 2017-2018 超級循環僅 18 個月即崩盤，崩盤前法人一致看多、報價創新高 — 與當前情境高度相似。</div>
+
+<p style="font-size:.84em;color:var(--txt2);font-weight:700;margin:8px 0 3px">警示三：強制反面觀點</p>
+<div class="tip danger"><b>反面論證</b>如果華邦電「不該買」，最強的三個理由：<br>
+(1) EPS 預估分歧 2 倍（7.5 vs 15 元），代表連專業法人都無法確定實際獲利能力<br>
+(2) DDR4 僅佔營收 24%，市場追捧 DDR4 概念但華邦電的核心仍是 NOR Flash，存在「概念錯位」<br>
+(3) 期望值 86.9 元低於現價 124.5 元，代表以機率加權計算，現價已高估 43%</div>
+</div>
+
+<!-- 評審團整合結論 -->
+<div class="tip warn" style="margin-top:8px">
+<b>評審團整合結論：B 級（結論需附帶條件）</b><br>
+<strong>投票結果：</strong>4/5 通過（產業分析師通過、個股研究員附條件、籌碼分析師附條件、策略長附條件、風控官發出警示）<br>
+<strong>核心結論：</strong>華邦電基本面轉佳確認，DDR4 供需失衡為事實，但 124.5 元的股價已大量反映樂觀預期。風險報酬比偏不利，上檔空間有限而下檔風險大。<br>
+<strong>附帶條件：</strong>(1) 若要進場，等回檔至 90-95 元區間 (2) 持續追蹤合約報價，反轉即出場 (3) 單一部位不超過 20% (4) 每月檢視 7 個資料盲點是否更新
+</div>
+
+<p style="font-size:.75em;color:var(--txt3);margin-top:6px">分析框架：Iker 四層 23 項評估體系 ｜ 資料來源狀態：可查 9 項 / 需研判 9 項 / 需手動找 4 項 + 1 項無法取得</p>
 
 </div>
 </div>
@@ -1333,6 +1464,16 @@ details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 
 </div>
 <script>
+// 全部展開/收合
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 預設全部收合
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+// 點擊 h3 切換
 document.querySelectorAll('.card h3').forEach(function(h3){
     h3.addEventListener('click',function(){
         this.parentElement.classList.toggle('collapsed');
