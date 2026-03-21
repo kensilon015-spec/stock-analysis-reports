@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DRAM 模組產業鏈 — 主題式掃描</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--base:#3d3a36;--link:#5a7d8c;--bull:#2e7d32;--bear:#c62828;--tag-up:#4a7c59;--tag-mid:#8c7a3e;--tag-down:#7a5c3e;--highlight:#f5f0e8}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:24px 16px 16px;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.85em;color:var(--accent);font-weight:600;margin-top:4px}
+.hero .meta{font-size:.75em;color:var(--txt3);margin-top:6px}
+
+.section{margin:20px 0 0}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-top:14px;border-top:1.5px solid var(--border)}
+.section-head h2{font-size:1.1em;font-weight:800;color:var(--base)}
+.badge{background:var(--accent);color:#fff;font-size:.7em;font-weight:700;padding:2px 8px;border-radius:8px}
+
+/* 產業鏈概覽圖 */
+.chain-map{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto;margin-bottom:16px}
+.chain-map svg{display:block;margin:0 auto}
+
+/* 環節卡片 */
+.tier-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin:10px 0;overflow:hidden}
+.tier-header{display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;user-select:none}
+.tier-header:hover{background:rgba(0,0,0,.03)}
+.tier-tag{padding:3px 10px;border-radius:5px;font-size:.7em;font-weight:700;color:#fff}
+.tier-tag.upstream{background:var(--tag-up)}
+.tier-tag.midstream{background:var(--tag-mid)}
+.tier-tag.downstream{background:var(--tag-down)}
+.tier-name{font-weight:700;font-size:.95em;color:var(--base);flex:1}
+.tier-arrow{font-size:.8em;color:var(--txt3);transition:transform .2s}
+.tier-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border)}
+.tier-body.open{display:block}
+.tier-desc{font-size:.8em;color:var(--txt2);margin:10px 0 8px;line-height:1.5}
+.tier-desc b{color:var(--accent)}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;font-size:.78em;margin:8px 0}
+th{background:var(--base);color:#e6e1da;padding:6px 8px;text-align:center;font-weight:600;white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;white-space:nowrap}
+tr:hover{background:rgba(90,125,96,.06)}
+td.name{text-align:left;font-weight:600;color:var(--base)}
+.up{color:var(--bull);font-weight:600}
+.dn{color:var(--bear);font-weight:600}
+
+/* 護城河快評 */
+.moat-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.68em;font-weight:700;color:#fff}
+.moat-wide{background:var(--bull)}
+.moat-narrow{background:var(--tag-mid)}
+.moat-none{background:var(--bear)}
+
+/* 估值位階 */
+.val-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.68em;font-weight:700;color:#fff}
+.val-cheap{background:var(--bull)}
+.val-fair{background:var(--tag-mid)}
+.val-expensive{background:var(--bear)}
+
+/* 投資機會排序 */
+.opp-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:6px 0}
+.opp-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.opp-rank{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85em;flex-shrink:0}
+.opp-name{font-weight:700;color:var(--base);font-size:.9em}
+.opp-code{font-size:.75em;color:var(--accent);font-weight:600}
+.opp-detail{font-size:.78em;color:var(--txt2);line-height:1.5}
+.opp-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.opp-tag{font-size:.65em;padding:2px 6px;border-radius:3px;font-weight:600}
+.opp-tag.positive{background:var(--bull);color:#fff}
+.opp-tag.neutral{background:var(--tag-mid);color:#fff}
+.opp-tag.negative{background:var(--bear);color:#fff}
+
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.72em;border-top:1.5px solid var(--border);margin-top:20px;line-height:1.7}
+
+/* 收合功能 */
+details{margin:6px 0}
+summary{cursor:pointer;font-weight:600;font-size:.85em;color:var(--base);padding:6px 0}
+summary:hover{color:var(--accent)}
+
+/* 宇瞻標記 */
+.highlight-row{background:rgba(90,125,96,.1) !important}
+.star{color:var(--accent);font-weight:900}
+</style>
+<script>
+function toggleTier(el){
+  const body=el.nextElementSibling;
+  const arrow=el.querySelector('.tier-arrow');
+  body.classList.toggle('open');
+  arrow.textContent=body.classList.contains('open')?'▲':'▼';
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>DRAM 模組產業鏈 — 主題式掃描</h1>
+  <div class="sub">以宇瞻科技（8271）為中心的完整產業鏈掃描</div>
+  <div class="meta">天機閣 推衍系統 / 產業鏈分析 模式 C ｜ 2026-03-21 ｜ finlab 數據日期 2026-03-10</div>
+</div>
+
+<!-- 產業鏈概覽 -->
+<div class="section">
+<div class="section-head">
+  <h2>產業鏈概覽圖</h2>
+  <span class="badge">7 環節 × 17+ 家台股公司</span>
+</div>
+<div class="chain-map">
+<svg viewBox="0 0 860 420" width="860" height="420" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter','Noto Sans TC',sans-serif">
+  <!-- 背景區塊 -->
+  <rect x="10" y="10" width="840" height="120" rx="8" fill="#e8e3db" stroke="#b8b0a5" stroke-width="1"/>
+  <text x="30" y="35" font-size="13" font-weight="800" fill="#4a7c59">▍上游（原材料＋零組件＋封測）</text>
+
+  <!-- 上游公司 -->
+  <rect x="30" y="48" width="120" height="34" rx="5" fill="#5a7d60" stroke="none"/>
+  <text x="90" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">DRAM IC</text>
+  <text x="30" y="100" font-size="9" fill="#4a453e">南亞科 2408</text>
+  <text x="30" y="112" font-size="9" fill="#4a453e">華邦電 2344</text>
+
+  <rect x="170" y="48" width="120" height="34" rx="5" fill="#5a7d60" stroke="none"/>
+  <text x="230" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Flash / NOR</text>
+  <text x="170" y="100" font-size="9" fill="#4a453e">旺宏 2337</text>
+  <text x="170" y="112" font-size="9" fill="#4a453e">群聯 8299（控制IC）</text>
+
+  <rect x="310" y="48" width="120" height="34" rx="5" fill="#5a7d60" stroke="none"/>
+  <text x="370" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">封測</text>
+  <text x="310" y="100" font-size="9" fill="#4a453e">力成 6239</text>
+  <text x="310" y="112" font-size="9" fill="#4a453e">南茂 8150</text>
+
+  <rect x="450" y="48" width="120" height="34" rx="5" fill="#5a7d60" stroke="none"/>
+  <text x="510" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">PCB / 載板</text>
+  <text x="450" y="100" font-size="9" fill="#4a453e">欣興 3037</text>
+
+  <rect x="590" y="48" width="120" height="34" rx="5" fill="#5a7d60" stroke="none"/>
+  <text x="650" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">被動元件</text>
+  <text x="590" y="100" font-size="9" fill="#4a453e">國巨 2327</text>
+
+  <!-- 箭頭：上游 → 中游 -->
+  <line x1="420" y1="135" x2="420" y2="155" stroke="#5a7d60" stroke-width="2" marker-end="url(#arrowG)"/>
+  <defs>
+    <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5a7d60"/></marker>
+    <marker id="arrowB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8c7a3e"/></marker>
+    <marker id="arrowD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7a5c3e"/></marker>
+  </defs>
+
+  <!-- 中游區塊 -->
+  <rect x="10" y="158" width="840" height="110" rx="8" fill="#f0ead8" stroke="#b8b0a5" stroke-width="1"/>
+  <text x="30" y="183" font-size="13" font-weight="800" fill="#8c7a3e">▍中游（模組組裝）— DRAM 模組六大廠</text>
+
+  <rect x="30" y="196" width="110" height="34" rx="5" fill="#c4a84e" stroke="none"/>
+  <text x="85" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">威剛 3260</text>
+  <text x="30" y="245" font-size="9" fill="#4a453e">台灣第一、全球第二</text>
+  <text x="30" y="257" font-size="8" fill="#7a7268">消費＋電競為主</text>
+
+  <rect x="155" y="196" width="110" height="34" rx="5" fill="#c4a84e" stroke="none"/>
+  <text x="210" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">十銓 4967</text>
+  <text x="155" y="245" font-size="9" fill="#4a453e">全球第四</text>
+  <text x="155" y="257" font-size="8" fill="#7a7268">電競＋企業伺服器</text>
+
+  <rect x="280" y="196" width="110" height="34" rx="5" fill="#c4a84e" stroke="none"/>
+  <text x="335" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">創見 2451</text>
+  <text x="280" y="245" font-size="9" fill="#4a453e">消費＋工控雙軌</text>
+  <text x="280" y="257" font-size="8" fill="#7a7268">與宇瞻定位最近</text>
+
+  <!-- 宇瞻（醒目標記） -->
+  <rect x="405" y="192" width="110" height="42" rx="5" fill="#5a7d60" stroke="#3d5a42" stroke-width="2"/>
+  <text x="460" y="210" text-anchor="middle" font-size="10" font-weight="900" fill="#fff">★ 宇瞻 8271</text>
+  <text x="460" y="226" text-anchor="middle" font-size="8" font-weight="600" fill="#d4e8d6">工控為主 · 全球第七</text>
+  <text x="405" y="250" font-size="9" fill="#5a7d60" font-weight="700">本次分析目標</text>
+
+  <rect x="530" y="196" width="110" height="34" rx="5" fill="#c4a84e" stroke="none"/>
+  <text x="585" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">宜鼎 5289</text>
+  <text x="530" y="245" font-size="9" fill="#4a453e">純工控定位</text>
+  <text x="530" y="257" font-size="8" fill="#7a7268">工控SSD全球第一</text>
+
+  <rect x="655" y="196" width="110" height="34" rx="5" fill="#c4a84e" stroke="none"/>
+  <text x="710" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">廣穎 4973</text>
+  <text x="655" y="245" font-size="9" fill="#4a453e">消費品牌</text>
+  <text x="655" y="257" font-size="8" fill="#7a7268">規模最小</text>
+
+  <!-- 箭頭：中游 → 下游 -->
+  <line x1="420" y1="273" x2="420" y2="293" stroke="#8c7a3e" stroke-width="2" marker-end="url(#arrowB)"/>
+
+  <!-- 下游區塊 -->
+  <rect x="10" y="296" width="840" height="110" rx="8" fill="#e8ddd0" stroke="#b8b0a5" stroke-width="1"/>
+  <text x="30" y="321" font-size="13" font-weight="800" fill="#7a5c3e">▍下游（通路＋應用端）</text>
+
+  <rect x="30" y="334" width="130" height="34" rx="5" fill="#9c7d50" stroke="none"/>
+  <text x="95" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">大聯大 3702（通路）</text>
+  <text x="30" y="382" font-size="9" fill="#4a453e">亞太最大半導體通路商</text>
+
+  <rect x="180" y="334" width="130" height="34" rx="5" fill="#9c7d50" stroke="none"/>
+  <text x="245" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">研華 2395（工控）</text>
+  <text x="180" y="382" font-size="9" fill="#4a453e">全球最大工業電腦廠</text>
+
+  <rect x="330" y="334" width="130" height="34" rx="5" fill="#9c7d50" stroke="none"/>
+  <text x="395" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">凌華 6166（邊緣AI）</text>
+  <text x="330" y="382" font-size="9" fill="#4a453e">邊緣運算/IPC</text>
+
+  <rect x="480" y="334" width="130" height="34" rx="5" fill="#9c7d50" stroke="none"/>
+  <text x="545" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">宏碁 2353（品牌PC）</text>
+  <text x="480" y="382" font-size="9" fill="#4a453e">宇瞻母集團通路夥伴</text>
+
+  <rect x="630" y="334" width="130" height="34" rx="5" fill="#9c7d50" stroke="none"/>
+  <text x="695" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">伺服器/AI/車用</text>
+  <text x="630" y="382" font-size="9" fill="#4a453e">終端需求驅動</text>
+</svg>
+</div>
+</div>
+
+<!-- ═══════ 上游環節 ═══════ -->
+<div class="section">
+<div class="section-head">
+  <h2>各環節分析</h2>
+  <span class="badge">上游 → 中游 → 下游</span>
+</div>
+
+<!-- 環節 1：記憶體 IC -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag upstream">上游</span>
+    <span class="tier-name">記憶體 IC 製造（DRAM / Flash / NOR）</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body open">
+    <div class="tier-desc">
+      DRAM 模組的核心原物料，佔模組產品成本 <b>80-90%</b>。全球由三星、SK Hynix、美光三大原廠寡佔（合計市佔 >90%）。台灣僅南亞科具備 DRAM 製造能力，華邦電專攻利基型 DRAM/NOR Flash，旺宏為 NOR Flash 全球前三。<br>
+      <b>進入門檻：</b>極高（資本密集，單座晶圓廠投資數百億美元）<br>
+      <b>成長驅動力：</b>AI 伺服器 HBM 需求爆發、DDR5 滲透率提升、車用/工控長壽命需求
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">南亞科</td><td>2408</td><td>234.0</td><td>109.86</td><td>4.26</td>
+        <td class="up">49.05</td><td class="up">39.15</td><td>2.13</td><td class="up">+586.7%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+      <tr>
+        <td class="name">華邦電</td><td>2344</td><td>110.0</td><td>125.0</td><td>4.59</td>
+        <td>41.86</td><td>15.37</td><td>0.71</td><td class="up">+88.5%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+      <tr>
+        <td class="name">旺宏</td><td>2337</td><td>160.0</td><td>18.85</td><td>6.74</td>
+        <td>24.17</td><td class="dn">-5.08</td><td class="dn">-1.77</td><td class="up">+60.0%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b>南亞科、華邦電受惠 DRAM 漲價循環但目前估值偏高（PE >100），需關注記憶體價格拐點。旺宏 NOR Flash 營收已轉正成長但尚未獲利，PE 18.85 反映市場對轉虧為盈的預期。<br>
+      <b>與宇瞻的關聯：</b>南亞科/華邦電為潛在 DRAM 顆粒供應商，DRAM 漲價直接影響宇瞻的採購成本（佔成本 80-90%）。
+    </div>
+  </div>
+</div>
+
+<!-- 環節 2：Flash 控制 IC -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag upstream">上游</span>
+    <span class="tier-name">Flash 控制 IC</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body">
+    <div class="tier-desc">
+      SSD 和 Flash 儲存產品的「大腦」，負責錯誤校正、資料管理、效能優化。群聯為全球最大獨立 Flash 控制 IC 廠，同時也是<b>宇瞻最大供應商（採購佔比 22.15%）</b>。慧榮（SIMO）已在美國上市，非台股標的。<br>
+      <b>進入門檻：</b>高（IC 設計能力 + 與 NAND 原廠深度合作）<br>
+      <b>成長驅動力：</b>企業級 SSD 需求爆發、PCIe Gen5 規格升級、AI 訓練資料儲存
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">群聯</td><td>8299</td><td>1,915</td><td>45.62</td><td>6.95</td>
+        <td class="up">41.88</td><td>14.63</td><td class="up">41.06</td><td class="up">+169.4%</td>
+        <td><span class="moat-tag moat-wide">寬</span></td>
+        <td><span class="val-tag val-fair">合理偏高</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b>群聯享有技術護城河（Flash 控制 IC 全球龍頭之一），營收年增 169%，但估值已反映高成長（PE 45.6）。企業級 SSD 訂單能見度高，但需注意 NAND 價格波動影響。<br>
+      <b>與宇瞻的關聯：</b>群聯是宇瞻最大單一供應商（22.15%），同時也是策略夥伴。群聯業績好代表 Flash 需求旺盛，間接利好宇瞻 Flash 產品線（佔營收 61%）。
+    </div>
+  </div>
+</div>
+
+<!-- 環節 3：記憶體封測 -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag upstream">上游</span>
+    <span class="tier-name">記憶體封裝測試</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body">
+    <div class="tier-desc">
+      DRAM/Flash 晶粒完成製造後需經封裝測試才能出貨。2026年記憶體封測掀漲價潮（漲幅 10-30%），產能利用率逼近滿載，受惠 DDR5 及 AI HBM 封裝需求。<br>
+      <b>進入門檻：</b>中高（設備投資 + 良率管理 + 客戶認證）<br>
+      <b>成長驅動力：</b>HBM 先進封裝需求、DDR5 切換、記憶體封測漲價
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">力成</td><td>6239</td><td>201.5</td><td>26.90</td><td>2.64</td>
+        <td>18.64</td><td>12.60</td><td>9.51</td><td class="up">+34.6%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+      <tr>
+        <td class="name">南茂</td><td>8150</td><td>62.5</td><td>88.03</td><td>1.82</td>
+        <td>14.35</td><td>9.75</td><td>0.70</td><td class="up">+22.1%</td>
+        <td><span class="moat-tag moat-none">無</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b>力成為記憶體封測龍頭，PE 26.9 相對合理，受惠漲價+HBM 題材。南茂切入 DDR5 封測但估值偏高（PE 88）。<br>
+      <b>與宇瞻的關聯：</b>封測為宇瞻上游間接供應商（DRAM 顆粒經封測後供貨），封測漲價可能推高顆粒成本。
+    </div>
+  </div>
+</div>
+
+<!-- 環節 4：PCB/載板 -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag upstream">上游</span>
+    <span class="tier-name">PCB / IC 載板</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body">
+    <div class="tier-desc">
+      記憶體模組使用 PCB 作為基板，承載 DRAM 顆粒。ABF 載板用於高階 CPU/GPU，BT 載板用於記憶體、網通等消費產品。記憶體模組用 PCB 佔模組廠成本約 10-20%。<br>
+      <b>進入門檻：</b>中（標準 PCB）/ 極高（ABF 先進載板）<br>
+      <b>成長驅動力：</b>AI 伺服器高層數 PCB、DDR5 規格升級帶動更高 PCB 層數需求
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">欣興</td><td>3037</td><td>554.0</td><td>128.24</td><td>8.50</td>
+        <td>15.77</td><td>6.82</td><td>4.68</td><td class="up">+16.2%</td>
+        <td><span class="moat-tag moat-wide">寬</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b>欣興為全球最大 IC 載板廠，享有寬護城河，但目前估值極高（PE 128）。記憶體模組 PCB 需求穩定但成長性不如 ABF 載板。<br>
+      <b>與宇瞻的關聯：</b>PCB 為宇瞻的輔助原物料（佔成本 10-20%），宇瞻年報未具名個別 PCB 供應商。
+    </div>
+  </div>
+</div>
+
+<!-- 環節 5：被動元件 -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag upstream">上游</span>
+    <span class="tier-name">被動元件（電容 / 電阻 / 連接器）</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body">
+    <div class="tier-desc">
+      記憶體模組上的電容、電阻等被動元件，佔成本比例低但不可或缺。2026年被動元件庫存去化結束，產業復甦，AI 伺服器 MLCC 需求大增。<br>
+      <b>進入門檻：</b>中（規模經濟 + 產品認證）<br>
+      <b>成長驅動力：</b>AI 伺服器帶動高階 MLCC 需求倍增、車用電子規格升級
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">國巨</td><td>2327</td><td>271.0</td><td>23.59</td><td>3.26</td>
+        <td class="up">37.30</td><td class="up">24.28</td><td class="up">45.87</td><td class="up">+18.0%</td>
+        <td><span class="moat-tag moat-wide">寬</span></td>
+        <td><span class="val-tag val-cheap">便宜</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b>國巨為台灣被動元件龍頭，PE 23.59 在科技股中偏低，EPS TTM 高達 45.87 元，毛利率 37.3% 穩健。估值相對產業具吸引力。<br>
+      <b>與宇瞻的關聯：</b>被動元件佔宇瞻成本比例低，但漲價仍會影響毛利。
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ 中游環節 ═══════ -->
+<!-- 環節 6：模組組裝 -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag midstream">中游</span>
+    <span class="tier-name">★ DRAM 模組組裝（宇瞻所在環節）</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body open">
+    <div class="tier-desc">
+      從上游購入 DRAM/Flash 顆粒，組裝成記憶體模組（DIMM）、SSD、記憶卡等成品出貨。台灣六大模組廠合計 2024 年營收約 913.5 億元。全球由金士頓（Kingston）壟斷（市佔約 66%），台灣廠商競爭激烈。<br>
+      <b>進入門檻：</b>低（組裝技術門檻不高）→ 差異化靠<b>品牌、通路、客製化能力、認證（車用 IATF 16949）</b><br>
+      <b>成長驅動力：</b>AI 伺服器帶動高容量模組需求、DDR5 換代、工控/車用/邊緣 AI 需求、DRAM 漲價帶動存貨利得
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">威剛</td><td>3260</td><td>457.5</td><td>19.74</td><td>6.27</td>
+        <td class="up">48.37</td><td class="up">35.36</td><td class="up">23.42</td><td class="up">+114.3%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-cheap">便宜</span></td>
+      </tr>
+      <tr>
+        <td class="name">十銓</td><td>4967</td><td>261.5</td><td>20.02</td><td>4.58</td>
+        <td>22.48</td><td>16.35</td><td>13.06</td><td class="dn">-22.2%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-cheap">便宜</span></td>
+      </tr>
+      <tr>
+        <td class="name">創見</td><td>2451</td><td>302.0</td><td>23.36</td><td>5.65</td>
+        <td class="up">61.62</td><td class="up">55.59</td><td>12.93</td><td class="up">+246.3%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+      <tr class="highlight-row">
+        <td class="name"><span class="star">★</span> 宇瞻</td><td>8271</td><td>—</td><td>—</td><td>—</td>
+        <td class="up">30.56</td><td class="up">16.95</td><td>6.70</td><td class="up">+48.8%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+      <tr>
+        <td class="name">宜鼎</td><td>5289</td><td>1,205</td><td>55.48</td><td>12.94</td>
+        <td>33.23</td><td>19.78</td><td>21.31</td><td class="up">+403.2%</td>
+        <td><span class="moat-tag moat-wide">寬</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+      <tr>
+        <td class="name">廣穎</td><td>4973</td><td>88.4</td><td>41.90</td><td>2.77</td>
+        <td>32.31</td><td>13.28</td><td>2.05</td><td class="up">+42.5%</td>
+        <td><span class="moat-tag moat-none">無</span></td>
+        <td><span class="val-tag val-expensive">昂貴</span></td>
+      </tr>
+    </table>
+
+    <details>
+      <summary>護城河快評依據</summary>
+      <div class="tier-desc">
+        <b>威剛（窄）：</b>品牌知名度高（電競品牌 XPG 全球知名）、規模優勢（台灣六大之首），但消費端產品差異化低、轉換成本低。<br>
+        <b>十銓（窄）：</b>電競品牌 T-Force 建立品牌忠誠度，但與威剛正面競爭，價格敏感度高。<br>
+        <b>創見（窄）：</b>消費+工控雙軌，品牌通路完整，但工控比重不如宜鼎/宇瞻，差異化有限。<br>
+        <b>宇瞻（窄）：</b>工控佔比 >50% 帶來較高客戶黏著度（design-in 模式）、IATF 車用認證形成進入障礙，但規模偏小（台灣第五、全球第七），定價能力有限。<br>
+        <b>宜鼎（寬）：</b>純工控定位，全球工控 SSD 市佔第一，高度客製化帶來強轉換成本，客戶黏著度極高，毛利率穩定。<br>
+        <b>廣穎（無）：</b>純消費品牌，規模最小，無明顯差異化或轉換成本。
+      </div>
+    </details>
+
+    <div class="tier-desc">
+      <b>環節投資小結：</b><br>
+      ① <b>威剛</b>：PE 19.74 最低且 EPS TTM 23.42 最強，營收 YoY +114%，估值具吸引力，但高度仰賴消費端，毛利率波動大。<br>
+      ② <b>十銓</b>：PE 20.02 同樣低估，但營收 YoY 轉負（-22.2%），需觀察是否為短期調整。<br>
+      ③ <b>宜鼎</b>：純工控龍頭，營收 YoY +403% 驚人但估值極高（PE 55.5、PB 12.9），適合長線但短線追高風險大。<br>
+      ④ <b>宇瞻</b>：工控佔比穩步提升、毛利率 Q4 跳升至 30.56%，EPS 6.70 元，估值合理。在六大模組廠中屬於「成長轉型中的價值股」。<br>
+      ⑤ <b>創見</b>：毛利率異常高（61.62%），需確認是否含業外收益。營收 YoY +246% 亮眼。
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ 下游環節 ═══════ -->
+<!-- 環節 7：通路 + 應用端 -->
+<div class="tier-card">
+  <div class="tier-header" onclick="toggleTier(this)">
+    <span class="tier-tag downstream">下游</span>
+    <span class="tier-name">通路 / 工控應用 / 品牌 PC</span>
+    <span class="tier-arrow">▼</span>
+  </div>
+  <div class="tier-body">
+    <div class="tier-desc">
+      模組廠的產品透過通路商（大聯大等）或直接出貨給 OEM/ODM、工控廠、品牌商。AI 伺服器、邊緣運算、車用電子為三大高成長應用領域。<br>
+      <b>成長驅動力：</b>AI 伺服器需求、邊緣 AI 運算普及、車用電子智慧化、工業 4.0 升級
+    </div>
+    <table>
+      <tr><th>公司</th><th>代號</th><th>股價</th><th>PE</th><th>PB</th><th>毛利率%</th><th>營益率%</th><th>EPS(TTM)</th><th>營收YoY%</th><th>護城河</th><th>估值位階</th></tr>
+      <tr>
+        <td class="name">大聯大</td><td>3702</td><td>91.4</td><td>15.18</td><td>1.85</td>
+        <td>4.26</td><td>2.13</td><td>6.28</td><td class="up">+9.4%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-cheap">便宜</span></td>
+      </tr>
+      <tr>
+        <td class="name">研華</td><td>2395</td><td>344.0</td><td>28.13</td><td>5.42</td>
+        <td class="up">39.78</td><td>15.69</td><td>12.14</td><td class="up">+6.3%</td>
+        <td><span class="moat-tag moat-wide">寬</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+      <tr>
+        <td class="name">凌華</td><td>6166</td><td>61.0</td><td>25.96</td><td>2.37</td>
+        <td class="up">36.68</td><td>6.53</td><td>2.29</td><td class="up">+16.2%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+      <tr>
+        <td class="name">宏碁</td><td>2353</td><td>27.8</td><td>22.06</td><td>1.11</td>
+        <td>11.56</td><td>2.51</td><td>1.89</td><td class="up">+25.7%</td>
+        <td><span class="moat-tag moat-narrow">窄</span></td>
+        <td><span class="val-tag val-fair">合理</span></td>
+      </tr>
+    </table>
+    <div class="tier-desc">
+      <b>環節投資小結：</b><br>
+      ① <b>大聯大</b>：亞太最大半導體通路商，PE 15.18 為產業鏈中最低，PB 1.85 接近淨值，屬典型價值股。營收成長穩定但毛利率僅 4.26%（通路特性）。<br>
+      ② <b>研華</b>：全球工控霸主，護城河寬（平台化+生態系），PE 28 合理。是宇瞻的 design-in 策略夥伴，工控需求回溫直接利好宇瞻。<br>
+      ③ <b>凌華</b>：邊緣 AI 運算佈局積極，PB 2.37 偏低，但營益率僅 6.53%，獲利能力仍需提升。<br>
+      <b>與宇瞻的關聯：</b>宏碁為宇瞻母集團通路夥伴，研華為工控 design-in 策略夥伴。下游需求直接決定宇瞻訂單量。
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ 投資機會排序 ═══════ -->
+<div class="section">
+<div class="section-head">
+  <h2>產業鏈投資機會排序</h2>
+  <span class="badge">綜合加權評估</span>
+</div>
+<p style="font-size:.78em;color:var(--txt3);margin-bottom:10px">
+  依據基本面（25%）、成長性（25%）、估值吸引力（25%）、護城河（15%）、產業鏈位置優勢（10%）綜合評分排序。
+  <br>※ 以下評分為 AI 快速評估結果，僅供參考，不構成投資建議。
+</p>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">1</div>
+    <div><span class="opp-name">威剛</span> <span class="opp-code">3260</span></div>
+  </div>
+  <div class="opp-detail">
+    PE 19.74 為六大模組廠最低，EPS TTM 23.42 元最高，營收 YoY +114%。毛利率 48.37% 處於歷史高位（含存貨利得），DRAM 漲價週期中的最大受益者。但需注意消費端比重高，記憶體價格反轉時毛利率將大幅下滑。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">低估值</span>
+    <span class="opp-tag positive">高成長</span>
+    <span class="opp-tag neutral">週期性強</span>
+    <span class="opp-tag negative">消費端佔比高</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">2</div>
+    <div><span class="opp-name">國巨</span> <span class="opp-code">2327</span></div>
+  </div>
+  <div class="opp-detail">
+    被動元件龍頭，PE 23.59 偏低、EPS TTM 45.87 元（全產業鏈最高），毛利率 37.3%、營益率 24.28% 均穩健。護城河寬（規模+品項齊全），受惠 AI 伺服器 MLCC 需求倍增趨勢，屬於產業鏈中的「穩健成長價值股」。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">寬護城河</span>
+    <span class="opp-tag positive">估值合理偏低</span>
+    <span class="opp-tag positive">AI 受惠</span>
+    <span class="opp-tag neutral">成長性中等</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">3</div>
+    <div><span class="opp-name">大聯大</span> <span class="opp-code">3702</span></div>
+  </div>
+  <div class="opp-detail">
+    亞太最大半導體通路商，PE 15.18 為全產業鏈最低、PB 1.85。營收穩定成長 +9.4%，EPS TTM 6.28 元。典型高股息價值股，但毛利率僅 4.26%（通路業特性），成長性有限。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">最低估值</span>
+    <span class="opp-tag positive">高股息</span>
+    <span class="opp-tag neutral">低毛利</span>
+    <span class="opp-tag neutral">成長性低</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">4</div>
+    <div><span class="opp-name">十銓</span> <span class="opp-code">4967</span></div>
+  </div>
+  <div class="opp-detail">
+    PE 20.02 偏低，EPS TTM 13.06 元，但近期營收 YoY 轉負（-22.2%），顯示 2025Q4 後成長放緩。電競品牌 T-Force 有一定市場地位，若營收回穩可望有估值修復空間。需觀察 1-2 季營收趨勢。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">低估值</span>
+    <span class="opp-tag negative">營收衰退</span>
+    <span class="opp-tag neutral">觀望期</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">5</div>
+    <div><span class="opp-name">宇瞻</span> <span class="opp-code">8271</span></div>
+  </div>
+  <div class="opp-detail">
+    本次分析目標。工控佔比 >50% 帶來較高毛利率穩定性，2025Q4 毛利率跳升至 30.56%（QoQ +12.2ppt），營益率 16.95%。營收 YoY +48.8%、EPS 6.70 元。估值合理，正處於「工控轉型升級」與「DRAM 漲價」雙重紅利期。已有完整投資分析報告，建議對照閱讀。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">工控轉型</span>
+    <span class="opp-tag positive">毛利率回升</span>
+    <span class="opp-tag positive">估值合理</span>
+    <span class="opp-tag neutral">規模偏小</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">6</div>
+    <div><span class="opp-name">力成</span> <span class="opp-code">6239</span></div>
+  </div>
+  <div class="opp-detail">
+    記憶體封測龍頭，PE 26.9 合理、EPS TTM 9.51 元。受惠 HBM 先進封裝題材+封測漲價 10-30%，營收 YoY +34.6% 穩健。但封測業毛利率偏低（18.64%），屬於「穩健受惠股」。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">HBM 題材</span>
+    <span class="opp-tag positive">漲價受惠</span>
+    <span class="opp-tag neutral">毛利率偏低</span>
+  </div>
+</div>
+
+<div class="opp-card">
+  <div class="opp-header">
+    <div class="opp-rank">7</div>
+    <div><span class="opp-name">研華</span> <span class="opp-code">2395</span></div>
+  </div>
+  <div class="opp-detail">
+    全球工控龍頭，寬護城河（平台化 AIoT 生態系），PE 28.13 合理。毛利率 39.78% 穩健，但營收成長僅 +6.3%（復甦中）。屬於「長線穩健持有」型標的，非短線爆發力股。
+  </div>
+  <div class="opp-tags">
+    <span class="opp-tag positive">寬護城河</span>
+    <span class="opp-tag positive">AIoT 佈局</span>
+    <span class="opp-tag neutral">成長溫和</span>
+  </div>
+</div>
+
+<details style="margin-top:12px">
+  <summary style="font-size:.85em;font-weight:700;color:var(--base)">其他公司簡評（點擊展開）</summary>
+  <div style="font-size:.78em;color:var(--txt2);padding:8px 0;line-height:1.7">
+    <b>群聯（8299）：</b>Flash 控制 IC 龍頭，技術護城河寬，但 PE 45.62 偏高。營收 YoY +169.4% 反映 AI SSD 需求爆發。適合在回檔時布局。<br>
+    <b>創見（2451）：</b>毛利率 61.62% 異常高（可能含業外/存貨利得），營收 YoY +246.3%。PE 23.36 合理但需確認獲利結構。<br>
+    <b>宜鼎（5289）：</b>工控 SSD 全球第一，護城河最寬，但 PE 55.48、PB 12.94 皆為產業鏈最高，估值已充分反映成長。<br>
+    <b>南亞科（2408）：</b>台灣唯一 DRAM 廠，營收 YoY +586.7%（DRAM 漲價+新產能），但 PE 109.86 極高，週期風險大。<br>
+    <b>華邦電（2344）：</b>利基型記憶體廠，PE 125 極高，但營收 YoY +88.5%。已有天機閣完整投資分析報告。<br>
+    <b>旺宏（2337）：</b>NOR Flash 廠，目前虧損（EPS TTM -1.77），PE 18.85 反映轉虧預期。已有天機閣完整投資分析報告。<br>
+    <b>凌華（6166）：</b>邊緣 AI 佈局積極，PB 2.37 偏低，但營益率僅 6.53%，獲利能力需提升。<br>
+    <b>廣穎（4973）：</b>純消費品牌，PE 41.9 偏高，規模最小，無明顯護城河。<br>
+    <b>欣興（3037）：</b>IC 載板全球龍頭，護城河寬，但 PE 128 極高。<br>
+    <b>南茂（8150）：</b>DDR5 封測切入，PE 88.03 偏高，PB 1.82 偏低。
+  </div>
+</details>
+</div>
+
+<!-- ═══════ 建議深入分析清單 ═══════ -->
+<div class="section">
+<div class="section-head">
+  <h2>建議啟動完整投資分析</h2>
+  <span class="badge">亮點標的</span>
+</div>
+<p style="font-size:.78em;color:var(--txt2);margin-bottom:8px;line-height:1.5">
+  以下為簡化版掃描中發現的亮點標的（低估值 + 護城河窄以上 + 成長動能），建議啟動天機閣完整投資分析（8 步驟深度版）。
+</p>
+<table>
+  <tr><th>優先序</th><th>公司</th><th>代號</th><th>亮點理由</th><th>天機閣狀態</th></tr>
+  <tr>
+    <td>1</td><td class="name">威剛</td><td>3260</td>
+    <td style="text-align:left;font-size:.75em">PE最低+EPS最強+營收翻倍，消費端龍頭</td>
+    <td><span class="val-tag val-fair" style="font-size:.7em">未分析</span></td>
+  </tr>
+  <tr>
+    <td>2</td><td class="name">國巨</td><td>2327</td>
+    <td style="text-align:left;font-size:.75em">寬護城河+低估值+AI受惠，產業鏈中最穩</td>
+    <td><span class="val-tag val-fair" style="font-size:.7em">未分析</span></td>
+  </tr>
+  <tr>
+    <td>3</td><td class="name">力成</td><td>6239</td>
+    <td style="text-align:left;font-size:.75em">封測龍頭+HBM題材+漲價，PE合理</td>
+    <td><span class="val-tag val-fair" style="font-size:.7em">未分析</span></td>
+  </tr>
+  <tr>
+    <td>4</td><td class="name">宜鼎</td><td>5289</td>
+    <td style="text-align:left;font-size:.75em">工控SSD全球第一+寬護城河，宇瞻直接對手</td>
+    <td><span class="val-tag val-fair" style="font-size:.7em">未分析</span></td>
+  </tr>
+  <tr>
+    <td>—</td><td class="name">宇瞻</td><td>8271</td>
+    <td style="text-align:left;font-size:.75em">本次分析目標</td>
+    <td><span class="moat-tag moat-wide" style="font-size:.7em">已完成</span></td>
+  </tr>
+  <tr>
+    <td>—</td><td class="name">華邦電</td><td>2344</td>
+    <td style="text-align:left;font-size:.75em">—</td>
+    <td><span class="moat-tag moat-wide" style="font-size:.7em">已完成</span></td>
+  </tr>
+  <tr>
+    <td>—</td><td class="name">旺宏</td><td>2337</td>
+    <td style="text-align:left;font-size:.75em">—</td>
+    <td><span class="moat-tag moat-wide" style="font-size:.7em">已完成</span></td>
+  </tr>
+</table>
+</div>
+
+<!-- ═══════ 產業趨勢與驅動力 ═══════ -->
+<div class="section">
+<div class="section-head">
+  <h2>2026 產業趨勢與關鍵驅動力</h2>
+</div>
+<details>
+  <summary>DRAM 漲價週期</summary>
+  <div class="tier-desc">
+    2025H2-2026H1 DRAM 合約價持續上漲，DDR5 滲透率快速提升。TrendForce 預估 2026 年 DRAM 產業營收年增 20-25%。模組廠在漲價週期中可享受「存貨利得」（低價庫存高價售出），但需注意價格反轉時的存貨跌價風險。<br>
+    <b>受惠公司：</b>南亞科（製造端）、威剛/十銓/宇瞻（模組端存貨利得）
+  </div>
+</details>
+<details>
+  <summary>AI 伺服器帶動高容量模組需求</summary>
+  <div class="tier-desc">
+    每台 AI 伺服器所需 DRAM 容量是傳統伺服器的 3-8 倍（如 NVIDIA GB200 單機需 1.5TB DDR5）。HBM（高頻寬記憶體）需求爆發，推動封測漲價。企業級 SSD 需求同步大增。<br>
+    <b>受惠公司：</b>群聯（企業級 SSD 控制IC）、力成（HBM 封裝）、宜鼎/宇瞻（伺服器級模組）
+  </div>
+</details>
+<details>
+  <summary>工控/車用/邊緣 AI 長期趨勢</summary>
+  <div class="tier-desc">
+    工業 4.0、智慧工廠、車用電子（ADAS、座艙電腦）對耐寬溫/長壽命記憶體需求持續成長。邊緣 AI 運算興起（全球 CAGR 26%），帶動 AI-ready 工控記憶體模組需求。<br>
+    <b>受惠公司：</b>宇瞻（IATF 車用認證+邊緣 AI）、宜鼎（工控 SSD 龍頭）、研華（工控平台）、凌華（邊緣 AI）
+  </div>
+</details>
+<details>
+  <summary>DDR5 世代交替</summary>
+  <div class="tier-desc">
+    DDR5 滲透率從 2024 年約 30% 提升至 2026 年預估 >60%。DDR5 模組 ASP 高於 DDR4 約 30-50%，有利於提升模組廠營收規模。但 DDR4 需求萎縮可能導致利基型 DRAM 供應吃緊。<br>
+    <b>受惠公司：</b>所有模組廠（ASP 提升）、南茂（DDR5 封測）
+  </div>
+</details>
+<details>
+  <summary>記憶體封測漲價潮</summary>
+  <div class="tier-desc">
+    2026 年記憶體封測報價漲幅 10-30%，力成、華東、南茂產能利用率逼近滿載。漲價可望延續至 2026H2。封測漲價間接推高模組廠成本。<br>
+    <b>受惠公司：</b>力成、南茂（直接受惠）<br>
+    <b>受影響公司：</b>所有模組廠（成本壓力）
+  </div>
+</details>
+</div>
+
+<!-- ═══════ 資料來源 ═══════ -->
+<div class="section">
+<div class="section-head">
+  <h2>資料來源</h2>
+</div>
+<div style="font-size:.72em;color:var(--txt3);line-height:1.7">
+  <b>量化數據：</b>finlab API（收盤價、PE、PB、毛利率、營益率、EPS、月營收）— 數據截至 2026-03-10<br>
+  <b>產業鏈資訊：</b>宇瞻科技 2024 年報、TrendForce DRAM 模組廠排名、經濟日報/工商時報報導、豐雲學堂法說會摘要<br>
+  <b>供應鏈數據：</b>天機閣藏經閣 — 8271_宇瞻_供應鏈.json、2344_華邦電_供應鏈.json、2337_旺宏_供應鏈.json<br>
+  <b>護城河快評：</b>AI 綜合判斷（基於公開資訊與產業分析），FIAS 標記均為 I（推論）<br>
+  <b>估值位階判斷：</b>PE 與 PB 相對同業水準快速評估，未使用 5 年歷史百分位完整方法<br>
+  <br>
+  <b>FIAS 標記說明：</b>F=事實（Fact）、I=推論（Inference）、A=假設（Assumption）、S=臆測（Speculation）<br>
+  本報告中護城河快評、估值位階判斷均為 I（推論），非最終投資結論。
+</div>
+</div>
+
+<div class="footer">
+  <p>天機閣 — 推衍系統 / 產業鏈分析 模式 C：主題式掃描</p>
+  <p>掃描主題：DRAM 模組產業鏈 ｜ 中心標的：宇瞻科技 8271</p>
+  <p>產出時間：2026-03-21</p>
+  <p style="margin-top:6px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，入市需謹慎。</p>
+</div>
+</div>
+</body>
+</html>
