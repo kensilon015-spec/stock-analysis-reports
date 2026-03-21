@@ -289,10 +289,14 @@ cat >> "$TARGET_DIR/index.html" << 'HTMLEOF'
     <button class="sort-btn active" onclick="sortRows('time')" id="sort-time">時間</button>
     <button class="sort-btn" onclick="sortRows('folder')" id="sort-folder">資料夾</button>
 </div>
+<div id="report-list">
 HTMLEOF
 
 # 插入報告列表
 echo "${REPORT_CARDS}" >> "$TARGET_DIR/index.html"
+
+# 關閉 report-list 容器
+echo "</div>" >> "$TARGET_DIR/index.html"
 
 # --- 插入覆蓋率儀表板 ---
 cat >> "$TARGET_DIR/index.html" << HTMLEOF
@@ -323,10 +327,9 @@ function sortRows(mode){
   var btns=document.querySelectorAll('.sort-btn');
   btns.forEach(function(b){b.classList.remove('active')});
   document.getElementById('sort-'+mode).classList.add('active');
-  var container=document.querySelector('.sort-bar').parentNode;
-  var rows=Array.from(container.querySelectorAll('a.row'));
+  var rl=document.getElementById('report-list');
+  var rows=Array.from(rl.querySelectorAll('a.row'));
   if(!rows.length)return;
-  var parent=rows[0].parentNode;
   if(mode==='folder'){
     rows.sort(function(a,b){
       var fa=a.getAttribute('data-folder')||'';
@@ -339,7 +342,7 @@ function sortRows(mode){
       return (parseInt(b.getAttribute('data-time'))||0)-(parseInt(a.getAttribute('data-time'))||0);
     });
   }
-  rows.forEach(function(r){parent.appendChild(r)});
+  rows.forEach(function(r){rl.appendChild(r)});
 }
 </script>
 </body>
