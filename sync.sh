@@ -206,8 +206,13 @@ for f in $(find "$TARGET_DIR/天機錄" -name "*.html" -type f -printf '%T@ %p\n
     fi
 
     MTIME=$(date -r "$f" "+%Y-%m-%d %H:%M")
+    MTIME_EPOCH=$(date -r "$f" "+%s" 2>/dev/null || echo "0")
 
-    REPORT_CARDS="${REPORT_CARDS}<a class=\"row\" href=\"${REL_PATH}\">${FOLDER_HINT}<span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}</span><span class=\"row-time\">${MTIME}</span></a>
+    # data-folder 用於資料夾排序，data-time 用於時間排序
+    DATA_FOLDER=""
+    [ "$SUBDIR" != "." ] && DATA_FOLDER="$SUBDIR" || DATA_FOLDER="__root__"
+
+    REPORT_CARDS="${REPORT_CARDS}<a class=\"row\" href=\"${REL_PATH}\" data-folder=\"${DATA_FOLDER}\" data-time=\"${MTIME_EPOCH}\"><span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}</span>${FOLDER_HINT}<span class=\"row-time\">${MTIME}</span></a>
 "
 done
 
@@ -256,6 +261,12 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .cov-pct{position:absolute;right:8px;top:0;line-height:18px;font-size:.7em;font-weight:700;color:var(--base)}
 .cov-extras{margin-top:4px;display:flex;gap:4px;min-height:18px}
 .bonus-tag{font-size:.65em;padding:1px 6px;border-radius:3px;background:var(--link);color:#fff;font-weight:600}
+/* 排序控制列 */
+.sort-bar{display:flex;gap:6px;margin:8px 0 4px;align-items:center}
+.sort-bar .sort-label{font-size:.75em;color:var(--txt3);font-weight:500;margin-right:2px}
+.sort-btn{padding:3px 12px;border:1px solid var(--border);border-radius:6px;background:var(--panel);font-size:.75em;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;font-family:inherit}
+.sort-btn:hover{background:var(--border)}
+.sort-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -272,6 +283,11 @@ HTMLEOF
 echo "    <span class=\"badge\">${REPORT_COUNT}</span>" >> "$TARGET_DIR/index.html"
 
 cat >> "$TARGET_DIR/index.html" << 'HTMLEOF'
+</div>
+<div class="sort-bar">
+    <span class="sort-label">排序：</span>
+    <button class="sort-btn active" onclick="sortRows('time')" id="sort-time">時間</button>
+    <button class="sort-btn" onclick="sortRows('folder')" id="sort-folder">資料夾</button>
 </div>
 HTMLEOF
 
@@ -302,6 +318,30 @@ cat >> "$TARGET_DIR/index.html" << HTMLEOF
     <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
 </div>
 </div>
+<script>
+function sortRows(mode){
+  var btns=document.querySelectorAll('.sort-btn');
+  btns.forEach(function(b){b.classList.remove('active')});
+  document.getElementById('sort-'+mode).classList.add('active');
+  var container=document.querySelector('.sort-bar').parentNode;
+  var rows=Array.from(container.querySelectorAll('a.row'));
+  if(!rows.length)return;
+  var parent=rows[0].parentNode;
+  if(mode==='folder'){
+    rows.sort(function(a,b){
+      var fa=a.getAttribute('data-folder')||'';
+      var fb=b.getAttribute('data-folder')||'';
+      if(fa!==fb)return fa.localeCompare(fb,'zh-TW');
+      return (parseInt(b.getAttribute('data-time'))||0)-(parseInt(a.getAttribute('data-time'))||0);
+    });
+  }else{
+    rows.sort(function(a,b){
+      return (parseInt(b.getAttribute('data-time'))||0)-(parseInt(a.getAttribute('data-time'))||0);
+    });
+  }
+  rows.forEach(function(r){parent.appendChild(r)});
+}
+</script>
 </body>
 </html>
 HTMLEOF
