@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOOGL Alphabet — 第八步：推衍推演</title>
+<style>
+  :root {
+    --bg-primary: #1a1410; --bg-secondary: #2a2118; --bg-card: rgba(62, 46, 34, 0.6);
+    --text-primary: #f0e6d6; --text-secondary: #c4b49a; --text-muted: #8a7a66;
+    --accent: #d4a574; --accent-light: #e8c9a0; --border: rgba(212, 165, 116, 0.2);
+    --success: #7ab648; --warning: #e8a838; --danger: #d45454; --info: #5a9fd4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; padding: 20px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .hero { background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; text-align: center; }
+  .hero h1 { font-size: 2em; color: var(--accent-light); margin-bottom: 8px; }
+  .hero .subtitle { color: var(--text-secondary); font-size: 1.1em; }
+  .hero .meta { color: var(--text-muted); font-size: 0.9em; margin-top: 12px; }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .card h2 { color: var(--accent); font-size: 1.3em; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card h3 { color: var(--accent-light); font-size: 1.05em; margin: 14px 0 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.9em; }
+  th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--accent); font-weight: 600; background: rgba(212,165,116,0.08); }
+  .num-positive { color: var(--success); } .num-negative { color: var(--danger); } .num-neutral { color: var(--warning); }
+  .highlight { color: var(--accent-light); font-weight: 600; }
+  details { margin: 8px 0; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: rgba(26,20,16,0.4); }
+  summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+  details[open] summary { margin-bottom: 10px; }
+  ul { padding-left: 20px; } li { margin: 3px 0; color: var(--text-secondary); }
+  .verdict { background: rgba(26,20,16,0.5); border-left: 4px solid; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 10px 0; }
+  .verdict.safe { border-color: var(--success); } .verdict.warn { border-color: var(--warning); }
+  .verdict .verdict-title { font-weight: 700; font-size: 1em; margin-bottom: 4px; }
+  .verdict.safe .verdict-title { color: var(--success); } .verdict.warn .verdict-title { color: var(--warning); }
+  .chain { background: rgba(26,20,16,0.5); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 10px 0; }
+  .chain .c-event { font-weight: 700; color: var(--accent-light); margin-bottom: 6px; }
+  .chain .c-arrow { color: var(--accent); font-size: 1.2em; text-align: center; margin: 4px 0; }
+  .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 14px 0; }
+  .dash-card { background: rgba(26,20,16,0.5); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+  .dash-card .label { color: var(--text-muted); font-size: 0.8em; }
+  .dash-card .value { font-size: 1.2em; font-weight: 700; margin-top: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>Alphabet Inc. (GOOGL)</h1>
+  <div class="subtitle">第八步：推衍推演 — 最新情報 + 影響鏈 + 情境模擬</div>
+  <div class="meta">推衍日期：2026-03-21 | 最新情報截至：2026-03-21</div>
+</div>
+
+<!-- ===== 最新情報蒐集 ===== -->
+<div class="card">
+  <h2>最新情報蒐集（2026-03-21 截止）</h2>
+
+  <h3>近期重大事件</h3>
+  <table>
+    <tr><th>日期</th><th>事件</th><th>影響方向</th></tr>
+    <tr>
+      <td>2026/03/18</td>
+      <td>CEO Pichai 賣出 32,500 股（$307.89/股，$1,000 萬），為 10b5-1 計畫</td>
+      <td class="num-neutral">中性（例行性）</td>
+    </tr>
+    <tr>
+      <td>2026/03/10</td>
+      <td>CEO 薪酬方案公布：$6.92 億，與 Waymo/Wing 成功掛鉤</td>
+      <td class="num-positive">正面（管理層激勵對齊股東利益）</td>
+    </tr>
+    <tr>
+      <td>2026/02</td>
+      <td>Gemini 3 新版本發布，性能大幅提升</td>
+      <td class="num-positive">正面（AI 競爭力維持）</td>
+    </tr>
+    <tr>
+      <td>2026/02/04</td>
+      <td>Q4 2025 財報：EPS $2.82 > 預期 $2.57，營收 $1,138 億 > 預期 $1,112 億</td>
+      <td class="num-positive">正面（連續超預期）</td>
+    </tr>
+    <tr>
+      <td>2026/03</td>
+      <td>Alphabet 與 CVS Health 建立 AI 醫療合作</td>
+      <td class="num-positive">正面（AI 垂直領域擴展）</td>
+    </tr>
+    <tr>
+      <td>持續</td>
+      <td>DOJ 反壟斷上訴程序進行中</td>
+      <td class="num-neutral">中性（不確定）</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 影響鏈分析 ===== -->
+<div class="card">
+  <h2>影響鏈分析</h2>
+
+  <h3>影響鏈 #1：CapEx 翻倍 → AI 基礎設施擴張</h3>
+  <div class="chain">
+    <div class="c-event">觸發事件：2026 CapEx 指引 $1,750-1,850 億</div>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第一層效應</strong>：資料中心大規模擴建 → 折舊費用增加 $150-250 億/年 → 短期利潤率承壓
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第二層效應</strong>：AI 計算容量暴增 → Cloud + Gemini 服務能力擴大 →
+      企業客戶採用加速 → Cloud 營收可望在 2027 年達 $1,200-1,500 億
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第三層效應</strong>：如果回報超預期 → 市場重新將 CapEx 定義為「投資」而非「成本」→
+      PE 重估至 28-30x → 股價 $380-420。
+      如果回報不足 → 類似 Meta 2022 Metaverse 情境 → PE 壓縮至 18x → 股價 $240-280
+    </p>
+  </div>
+
+  <h3>影響鏈 #2：AI 搜尋競爭加劇</h3>
+  <div class="chain">
+    <div class="c-event">觸發事件：ChatGPT 搜尋市佔持續成長 + Gemini 3 反擊</div>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第一層</strong>：Google 搜尋查詢量微降 2-3%（已反映在 -2.07ppt 市佔下滑）
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第二層</strong>：Google 以 AI Overviews 反擊 → 搜尋體驗升級 →
+      部分用戶回流 + 新型 AI 廣告格式變現開始 → CPC 可能進一步上升
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第三層</strong>：如果 AI Overviews 成功 → 搜尋護城河從「慣性壟斷」升級為「AI 壟斷」→ 護城河擴大。
+      如果失敗 → 用戶加速遷移至 ChatGPT/Perplexity → 搜尋市佔進一步下滑至 80% 以下（2-3 年時間框架）
+    </p>
+  </div>
+
+  <h3>影響鏈 #3：Gemini 3 + CVS 合作 → AI 垂直領域變現</h3>
+  <div class="chain">
+    <div class="c-event">觸發事件：Gemini 3 發布 + CVS Health AI 醫療合作</div>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第一層</strong>：AI 模型能力提升 → 企業級 AI 應用場景擴展（醫療、金融、製造）
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第二層</strong>：Google Cloud 不再只是「基礎設施」，而是「AI 解決方案平台」→
+      提升 Cloud 的 ARPU 和毛利率
+    </p>
+    <div class="c-arrow">↓</div>
+    <p style="color:var(--text-secondary);">
+      <strong>第三層</strong>：如果垂直領域成功 → Google Cloud 從「第三名雲廠商」升級為「AI 垂直解決方案龍頭」→
+      重新定義競爭格局，估值可獨立計算（類似 Snowflake 的 SaaS 倍數）
+    </p>
+  </div>
+</div>
+
+<!-- ===== 情境模擬 ===== -->
+<div class="card">
+  <h2>12 個月情境模擬（截至 2027-03）</h2>
+
+  <details open>
+    <summary>樂觀情境（機率 30%）— AI 整合成功</summary>
+    <table>
+      <tr><th>指標</th><th>預測</th></tr>
+      <tr><td>搜尋市佔</td><td class="num-positive">回穩至 89%+（AI Overviews 提升體驗）</td></tr>
+      <tr><td>Cloud 成長率</td><td class="num-positive">維持 45%+</td></tr>
+      <tr><td>FY2026 營收</td><td>$4,700 億（+17%）</td></tr>
+      <tr><td>FY2026 EPS</td><td>$13.5-14.5</td></tr>
+      <tr><td>目標 PE</td><td>28-30x</td></tr>
+      <tr><td>目標價</td><td class="num-positive">$380-440</td></tr>
+    </table>
+    <p style="color:var(--text-secondary); font-size:0.9em;">
+      觸發條件：AI Overviews 廣告變現啟動 + Cloud 維持高速成長 + 搜尋市佔止跌回穩
+    </p>
+  </details>
+
+  <details open>
+    <summary>基準情境（機率 50%）— 穩健但估值壓縮</summary>
+    <table>
+      <tr><th>指標</th><th>預測</th></tr>
+      <tr><td>搜尋市佔</td><td>87-89%（緩慢下滑但可控）</td></tr>
+      <tr><td>Cloud 成長率</td><td>30-35%</td></tr>
+      <tr><td>FY2026 營收</td><td>$4,500 億（+12%）</td></tr>
+      <tr><td>FY2026 EPS</td><td>$12.0-13.0</td></tr>
+      <tr><td>目標 PE</td><td>22-25x</td></tr>
+      <tr><td>目標價</td><td class="num-neutral">$290-340</td></tr>
+    </table>
+    <p style="color:var(--text-secondary); font-size:0.9em;">
+      最可能的情境。CapEx 翻倍短期壓縮 FCF，但基本面仍健康。市場給予時間消化投資週期。
+    </p>
+  </details>
+
+  <details>
+    <summary>悲觀情境（機率 20%）— CapEx 失敗 + 搜尋加速流失</summary>
+    <table>
+      <tr><th>指標</th><th>預測</th></tr>
+      <tr><td>搜尋市佔</td><td class="num-negative">降至 83-85%</td></tr>
+      <tr><td>Cloud 成長率</td><td class="num-negative">放緩至 20%</td></tr>
+      <tr><td>FY2026 營收</td><td>$4,200 億（+4%）</td></tr>
+      <tr><td>FY2026 EPS</td><td>$10.0-11.0</td></tr>
+      <tr><td>目標 PE</td><td>18-20x</td></tr>
+      <tr><td>目標價</td><td class="num-negative">$200-240</td></tr>
+    </table>
+    <p style="color:var(--text-secondary); font-size:0.9em;">
+      需要多個負面因素同時出現才會觸發。即使在此情境，Google 仍不會虧損（淨利率 > 25%）。
+    </p>
+  </details>
+
+  <h3>機率加權預期回報</h3>
+  <div class="dashboard">
+    <div class="dash-card"><div class="label">樂觀（30%）</div><div class="value num-positive">$410</div></div>
+    <div class="dash-card"><div class="label">基準（50%）</div><div class="value num-neutral">$315</div></div>
+    <div class="dash-card"><div class="label">悲觀（20%）</div><div class="value num-negative">$220</div></div>
+    <div class="dash-card"><div class="label">加權期望值</div><div class="value" style="color:var(--accent-light);">$324</div></div>
+  </div>
+  <p style="color:var(--text-secondary); font-size:0.9em; text-align:center;">
+    機率加權期望值 $324 vs 現價 $301 → <span class="num-positive">期望報酬 +7.6%</span>
+    （以 12 個月期計算，年化報酬合理但不算豐厚）
+  </p>
+</div>
+
+<!-- ===== 推衍結論 ===== -->
+<div class="card">
+  <h2>推衍結論</h2>
+  <div class="verdict safe">
+    <div class="verdict-title">推衍判定：維持買入 — 但上行需要催化劑</div>
+    <ul>
+      <li><strong>短期（0-6 個月）</strong>：股價可能在 $280-320 區間整理，等待 Q1 2026 財報確認 CapEx 實際數字</li>
+      <li><strong>中期（6-12 個月）</strong>：AI Overviews 變現進展 + Cloud 成長持續性是關鍵催化劑</li>
+      <li><strong>長期（12-24 個月）</strong>：如果 AI 投資回報率開始顯現，估值重估空間大（$380-440）</li>
+      <li><strong>最大看點</strong>：2026 年 4 月 Q1 財報 — CapEx $750 億是否如期執行？Cloud 成長率維持幾%？</li>
+      <li><strong>最大風險</strong>：如果市場情緒轉變（如 AI 泡沫論），高 CapEx 將成為最大拖累</li>
+    </ul>
+  </div>
+
+  <h3>vs 完整版報告（第七步）差異</h3>
+  <table>
+    <tr><th>項目</th><th>完整版結論</th><th>推衍版調整</th></tr>
+    <tr>
+      <td>投資建議</td>
+      <td>買入（分批建倉）</td>
+      <td class="num-positive">維持 — 無變更</td>
+    </tr>
+    <tr>
+      <td>12 個月目標價</td>
+      <td>$340-380</td>
+      <td class="num-neutral">微調至 $315-360（考慮短期整理期）</td>
+    </tr>
+    <tr>
+      <td>風險評估</td>
+      <td>CapEx 為最大風險</td>
+      <td>維持 — Gemini 3 和 CVS 合作略增正面信號</td>
+    </tr>
+    <tr>
+      <td>首次建倉時機</td>
+      <td>現價 $301</td>
+      <td class="num-positive">維持 — $301 在安全邊際內（PEG 0.90）</td>
+    </tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>
