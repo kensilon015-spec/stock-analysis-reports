@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FCX 投資分析報告 — Freeport-McMoRan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:left;font-weight:600;font-size:.82em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+/* === 圖表元件 CSS（從台股版整合） === */
+.timeline{position:relative;padding:16px 0;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--border);transform:translateX(-50%)}
+.tl-item{position:relative;display:flex;align-items:flex-start;margin:0 0 20px;width:100%}
+.tl-item:last-child{margin-bottom:0}
+.tl-item:nth-child(odd){flex-direction:row-reverse}
+.tl-item:nth-child(odd) .tl-content{text-align:right;padding-right:30px;padding-left:0}
+.tl-item:nth-child(even) .tl-content{text-align:left;padding-left:30px;padding-right:0}
+.tl-content{width:50%}
+.tl-dot{position:absolute;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;border:3px solid var(--panel);z-index:2;top:4px}
+.tl-dot.green{background:var(--bull)}.tl-dot.red{background:var(--bear)}.tl-dot.yellow{background:var(--warn)}.tl-dot.blue{background:var(--link)}
+.tl-date{font-weight:800;font-size:.85em;color:var(--base);margin-bottom:2px}
+.tl-event{font-size:.82em;color:var(--txt2);font-weight:600}
+.tl-detail{font-size:.75em;color:var(--txt3);margin-top:2px;line-height:1.4}
+.tl-impact{display:inline-block;font-size:.7em;font-weight:700;padding:1px 8px;border-radius:4px;margin-top:3px}
+.tl-impact.bull{background:rgba(46,125,50,.15);color:var(--bull)}
+.tl-impact.bear{background:rgba(198,40,40,.12);color:var(--bear)}
+.tl-impact.mixed{background:rgba(212,160,23,.15);color:var(--warn)}
+.tl-impact.critical{background:rgba(198,40,40,.2);color:var(--bear);border:1px solid var(--bear)}
+.chart-svg{width:100%;overflow-x:auto}
+.chart-svg svg{display:block;margin:0 auto}
+.chart-svg text{font-family:'Inter','Noto Sans TC',sans-serif}
+.gauge{display:flex;align-items:center;gap:8px;margin:4px 0}
+.gauge .gauge-label{min-width:80px;font-size:.8em;font-weight:600;color:var(--base);text-align:right}
+.gauge .gauge-track{flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden;position:relative}
+.gauge .gauge-fill{height:100%;border-radius:7px;transition:width .4s}
+.gauge .gauge-val{min-width:40px;font-size:.78em;font-weight:700;text-align:left}
+.metric-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.metric-card{flex:1;min-width:100px;text-align:center;padding:10px 8px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.metric-card .mc-num{font-size:1.4em;font-weight:900;margin:2px 0}
+.metric-card .mc-label{font-size:.72em;color:var(--txt3);font-weight:500}
+.metric-card .mc-sub{font-size:.68em;color:var(--txt3);margin-top:2px}
+.metric-card.bull-border{border-left:4px solid var(--bull)}
+.metric-card.bear-border{border-left:4px solid var(--bear)}
+.metric-card.neutral-border{border-left:4px solid var(--link)}
+.metric-card.warn-border{border-left:4px solid var(--warn)}
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:10px 0}
+.compare-cols .col-left,.compare-cols .col-right{padding:12px;border:1px solid var(--border)}
+.compare-cols .col-left{border-radius:8px 0 0 8px;background:rgba(198,40,40,.04);border-right:none}
+.compare-cols .col-right{border-radius:0 8px 8px 0;background:rgba(46,125,50,.04)}
+.compare-cols h4{font-size:.82em;font-weight:700;text-align:center;margin-bottom:6px}
+.compare-cols .col-left h4{color:var(--bear)}
+.compare-cols .col-right h4{color:var(--bull)}
+@media(max-width:600px){.compare-cols{grid-template-columns:1fr}.timeline::before{left:20px}.tl-item,.tl-item:nth-child(odd){flex-direction:row}.tl-content,.tl-item:nth-child(odd) .tl-content{width:calc(100% - 40px);text-align:left!important;padding-left:30px!important;padding-right:0!important}.tl-dot{left:20px}}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>投資分析報告 — Freeport-McMoRan (FCX)</h1>
+    <div class="sub">天機閣深度調查系統 v1.7｜完整版決策輸出</div>
+    <div class="desc">本報告以質化分析為核心 — 這家公司有什麼優勢？有沒有值得買進的理由？目前股價有什麼風險？所有證據攤開，最終決策由閣主自行判斷。</div>
+    <div class="tags">
+        <span class="tag">NYSE: FCX</span>
+        <span class="tag">銅礦 / Basic Materials</span>
+        <span class="tag">2026-03-21</span>
+        <span class="tag">收盤 $52.09</span>
+        <span class="tag">信心度 45%</span>
+        <span class="tag">評級：審慎偏多</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構（11 章）</strong>
+    <a href="#ch1">一、公司概覽 — 你在看的是什麼公司？</a>
+    <a href="#ch2">二、近期催化劑 / 利多因素 / 可能的強力題材</a>
+    <a href="#ch3">三、為什麼在漲？市場為什麼買單？</a>
+    <a href="#ch4">四、沒被市場發現的問題</a>
+    <a href="#ch5">五、沒被發覺的優勢</a>
+    <a href="#ch6">六、六步分析關鍵決策因素彙整</a>
+    <a href="#ch7">七、風險清單與壓力測試</a>
+    <a href="#ch8">八、監控儀表板</a>
+    <a href="#ch9">九、推衍預測 — 接下來可能怎麼走？</a>
+    <a href="#ch10">十、股價合理性分析 — 目前股價貴不貴？</a>
+    <a href="#ch11">十一、投資結論（僅供參考）</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!--  一、公司概覽                                                -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch1">一、公司概覽 — 你在看的是什麼公司？</div>
+<div class="section-sub">Freeport-McMoRan Inc. — 全球最大上市銅礦生產商</div>
+
+<div class="card">
+<h3>基本資料</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:25%">項目</th><th>內容</th></tr>
+<tr><td>股票代號</td><td>FCX（NYSE）</td></tr>
+<tr><td>公司全名</td><td>Freeport-McMoRan Inc.</td></tr>
+<tr><td>成立年份</td><td>1912 年（Freeport Minerals）/ 1981 年合併 McMoRan</td></tr>
+<tr><td>總部</td><td>美國亞利桑那州鳳凰城（Phoenix, AZ）</td></tr>
+<tr><td>CEO</td><td>Richard C. Adkerson（任期超過 20 年）</td></tr>
+<tr><td>全職員工</td><td>29,000 人</td></tr>
+<tr><td>GICS 產業分類</td><td>Sector: Basic Materials / Industry: Copper</td></tr>
+<tr><td>市值</td><td>$748.6 億美元</td></tr>
+<tr><td>企業價值 (EV)</td><td>$934.0 億美元</td></tr>
+<tr><td>流通在外股數</td><td>14.37 億股</td></tr>
+<tr><td>可交易股數 (Float)</td><td>14.29 億股</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">資料來源：yfinance (2026-03-21) + SEC 10-K 2025 <span class="fias-f">F-事實</span></p>
+</div>
+</div>
+
+<div class="card">
+<h3>營收結構與業務組成（2025 全年）</h3>
+<div class="card-body">
+<p><b>營收按產品（2025 年估計，合計約 $259 億美元）：</b></p>
+<table>
+<tr><th>產品類別</th><th>營收</th><th>佔比</th><th>備註</th></tr>
+<tr><td>銅陰極</td><td>$81 億</td><td>33%</td><td>北美+南美精煉產品</td></tr>
+<tr><td>銅精礦</td><td>$63 億</td><td>26%</td><td>主要來自 Grasberg + 南美</td></tr>
+<tr><td>精煉銅產品</td><td>$44 億</td><td>18%</td><td>加工後銅製品</td></tr>
+<tr><td>黃金</td><td>$39 億</td><td>16%</td><td>Grasberg 副產品（全球最大金礦）</td></tr>
+<tr><td>鉬</td><td>$20 億</td><td>8%</td><td>全球最大鉬生產商</td></tr>
+</table>
+
+<p style="margin-top:8px"><b>營運區域（三大礦區）：</b></p>
+<table>
+<tr><th>礦區</th><th>國家</th><th>產品</th><th>2025 狀態</th></tr>
+<tr><td>Grasberg Block Cave</td><td>印尼</td><td>銅+金</td><td>2025/9 泥漿事件停工，預計 2026 Q2 重啟</td></tr>
+<tr><td>北美礦場群</td><td>美國（亞利桑那/新墨西哥）</td><td>銅+鉬</td><td>正常運轉，Morenci 為旗艦</td></tr>
+<tr><td>南美礦場群</td><td>智利/秘魯</td><td>銅</td><td>El Abra 擴建中，Cerro Verde 穩定產出</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">資料來源：10-K 2025, 法說會 <span class="fias-f">F-事實</span></p>
+</div>
+</div>
+
+<div class="card">
+<h3>財務體質卡片</h3>
+<div class="card-body">
+<!-- 指標卡片速覽 -->
+<div class="metric-row">
+    <div class="metric-card bull-border"><div class="mc-label">Forward P/E</div><div class="mc-num" style="color:var(--bull)">14.1x</div><div class="mc-sub">復產後估值合理</div></div>
+    <div class="metric-card warn-border"><div class="mc-label">Trailing P/E</div><div class="mc-num" style="color:var(--warn)">34.3x</div><div class="mc-sub">受 Grasberg 停工拖累</div></div>
+    <div class="metric-card bull-border"><div class="mc-label">D/E Ratio</div><div class="mc-num" style="color:var(--bull)">34.1%</div><div class="mc-sub">五年前 57.1% 持續改善</div></div>
+    <div class="metric-card bull-border"><div class="mc-label">利息覆蓋</div><div class="mc-num" style="color:var(--bull)">21x</div><div class="mc-sub">極安全</div></div>
+</div>
+
+<div class="grid2">
+<div class="mini-card"><div class="title">現金流（2025 全年）</div>
+<table style="font-size:.78em;margin:4px 0">
+<tr><td>營運現金流</td><td style="text-align:right;font-weight:700">$56.1 億</td></tr>
+<tr><td>自由現金流</td><td style="text-align:right;font-weight:700">$15.6 億</td></tr>
+<tr><td>FCF Yield</td><td style="text-align:right;font-weight:700">2.1%</td></tr>
+<tr><td>資本支出</td><td style="text-align:right">$40.5 億（佔營收 15.6%）</td></tr>
+</table>
+</div>
+<div class="mini-card"><div class="title">資產負債（截至 2025 Q3）</div>
+<table style="font-size:.78em;margin:4px 0">
+<tr><td>Debt-to-Equity</td><td style="text-align:right;font-weight:700">34.1%</td></tr>
+<tr><td>Current Ratio</td><td style="text-align:right;font-weight:700">2.29</td></tr>
+<tr><td>Quick Ratio</td><td style="text-align:right">0.91</td></tr>
+<tr><td>現金</td><td style="text-align:right">$43 億</td></tr>
+<tr><td>淨負債</td><td style="text-align:right">$50 億</td></tr>
+</table>
+</div>
+</div>
+
+<div class="grid2">
+<div class="mini-card"><div class="title">估值快照</div>
+<table style="font-size:.78em;margin:4px 0">
+<tr><td>Trailing P/E</td><td style="text-align:right">34.3x</td></tr>
+<tr><td>Forward P/E</td><td style="text-align:right;font-weight:700">14.1x</td></tr>
+<tr><td>P/B</td><td style="text-align:right">4.0x</td></tr>
+<tr><td>EV/EBITDA</td><td style="text-align:right;font-weight:700">10.3x</td></tr>
+</table>
+</div>
+<div class="mini-card"><div class="title">籌碼結構</div>
+<table style="font-size:.78em;margin:4px 0">
+<tr><td>機構持股</td><td style="text-align:right;font-weight:700">88.7%</td></tr>
+<tr><td>內部人持股</td><td style="text-align:right">0.68%</td></tr>
+<tr><td>Short % of Float</td><td style="text-align:right">1.95%（持續下降）</td></tr>
+<tr><td>Beta</td><td style="text-align:right">1.44</td></tr>
+</table>
+</div>
+</div>
+
+<details>
+<summary>季度營收與 EPS 趨勢（2024 Q4 ~ 2025 Q4）</summary>
+<table>
+<tr><th>季度</th><th>營收</th><th>營業利益</th><th>EBITDA</th><th>稀釋 EPS</th></tr>
+<tr><td>2024 Q4</td><td>$57.2 億</td><td>$12.4 億</td><td>$18.5 億</td><td>$0.19</td></tr>
+<tr><td>2025 Q1</td><td>$57.3 億</td><td>$13.0 億</td><td>$18.3 億</td><td>$0.24</td></tr>
+<tr><td>2025 Q2</td><td>$75.8 億</td><td>$24.3 億</td><td>$31.4 億</td><td>$0.53</td></tr>
+<tr><td>2025 Q3</td><td>$69.7 億</td><td>$19.6 億</td><td>$26.4 億</td><td>$0.46</td></tr>
+<tr><td style="font-weight:700">2025 Q4</td><td style="font-weight:700">$56.3 億</td><td style="font-weight:700">$8.1 億</td><td style="font-weight:700">$13.6 億</td><td style="font-weight:700">$0.28</td></tr>
+</table>
+<div class="tip warn"><b>Q4 營運利潤率腰斬</b>
+Q2 營業利益率 32.1% → Q4 僅 14.4%，主因 Grasberg 2025/9 泥漿事件停工。Q4 銅產量降至 6.4 億磅（vs Q2 的正常水準），金產量降至 6.5 萬盎司。<span class="fias-f">F-事實</span></div>
+</details>
+
+<details>
+<summary>核心競爭力定位</summary>
+<div class="grid3">
+    <div class="mini-card neutral-card"><div class="title">競爭力地圖</div><div class="num">7.4/10</div><div class="desc">產業龍頭</div></div>
+    <div class="mini-card neutral-card"><div class="title">護城河</div><div class="num" style="font-size:1em">寬（Wide）</div><div class="desc">資源稀缺+規模經濟</div></div>
+    <div class="mini-card neutral-card"><div class="title">Porter 五力</div><div class="num">17/25</div><div class="desc">高吸引力</div></div>
+</div>
+<table>
+<tr><th>護城河類型</th><th>強度</th><th>說明</th></tr>
+<tr><td>資源稀缺性</td><td><span class="badge wide">寬</span></td><td>Grasberg 礦藏全球獨一無二，銅金共伴生降低平均成本</td></tr>
+<tr><td>規模經濟</td><td><span class="badge wide">寬</span></td><td>年產銅 34 億磅，北美最大單一銅礦商</td></tr>
+<tr><td>成本優勢</td><td><span class="badge narrow">中</span></td><td>副產品（金/鉬）貢獻顯著，但南美成本偏高</td></tr>
+<tr><td>轉換成本</td><td><span class="badge none">窄</span></td><td>銅為大宗商品，下游轉換成本低</td></tr>
+</table>
+</details>
+
+<div class="tip good"><b>財務體質判斷</b>
+資產負債表強健。槓桿從五年前 57.1% 降至 30.6%，利息覆蓋 21 倍，淨負債/EBITDA 僅 0.5 倍。即使 Grasberg 停工也未衝擊償債能力。2025 年回饋股東 $57 億，遠超淨利 $22 億，顯示管理層對未來現金流極度自信。</div>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">資料來源：yfinance + SEC 10-K/8-K <span class="fias-f">F-事實</span></p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  二、近期催化劑 / 利多因素 / 可能的強力題材 (NEW)            -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch2">二、近期催化劑 / 利多因素 / 可能的強力題材</div>
+<div class="section-sub">未來 1-6 個月可能觸發股價顯著波動的事件與趨勢</div>
+
+<div class="card bull-card">
+<h3>催化劑 1（最強）：Grasberg Block Cave Q2 重啟</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Grasberg Block Cave 預計 2026 年 Q2 上半年啟動分階段重啟</div><div class="ev-d">2025/9 泥漿事件導致 80 萬公噸物質湧入地下礦，7 人死亡，礦場暫停。管理層在 2026/1/22 法說會明確表示「Block Cave 生產區塊預計於 2026 年 Q2 上半年啟動」。復產將使 H2 銅產量翻倍、金產量從 6.5 萬盎司回升至 50+ 萬盎司，直接推動 EPS 從 $1.52 跳升至 Forward $3.68。</div><div class="ev-s">來源：SEC 8-K (2026-01-22) + 法說會｜影響程度：最高</div></div>
+<div class="tip good"><b>白話：一旦重啟確認，等於「利潤翻倍」的開關被打開。</b>
+分析師共識 Forward EPS $3.68 完全建立在此假設上。若如期重啟，Forward P/E 14.1x 不貴；若延遲，所有利多邏輯都需要重新計算。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>催化劑 2：Q1 2026 財報（4 月中旬）</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Q1 2026 財報預計 4 月中旬發布</div><div class="ev-d">Q4 2025 EPS $0.47 已大幅超預期（+56.7%），若 Q1 再次超預期或給出正面 Grasberg 更新，將是強力催化劑。連續四季超預期+重啟進度確認 = 股價重新定價的觸發點。</div><div class="ev-s">來源：公司 IR 行事曆｜影響程度：高</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>催化劑 3：美國商務部銅關稅決策（6 月 30 日）</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 美國商務部預計 6/30 決定是否對精煉銅加徵 15-30% 關稅</div><div class="ev-d">2025/8 已對半成品銅課徵 50% Section 232 關稅，銅價宣布日暴漲 13% 至 $5.70/磅。若進一步對精煉銅課稅，FCX 作為美國最大銅生產商（40% 營收來自美國）將直接受惠於國內銅價溢價。</div><div class="ev-s">來源：美國商務部公告 + 財經媒體｜影響程度：高</div></div>
+<div class="tip warn"><b>雙面刃</b>
+關稅推高美國銅價對 FCX 有利，但可能壓抑下游需求（建設、製造業）。若關稅超預期（30%），短期利多；若不課稅或稅率偏低，市場可能失望。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>催化劑 4：AI / EV / 電網 — 銅需求結構性爆發</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> AI 資料中心 + EV + 電網升級推動銅需求長期成長</div><div class="ev-d">S&P Global 預測 2025-2040 年 AI 資料中心將增加 200 萬公噸銅需求。每輛 EV 用銅 80-100 公斤（傳統車的 3-4 倍）。2026 年資料中心銅需求可達 47.5 萬公噸（YoY +30%）。這是結構性需求，非週期性波動。</div><div class="ev-s">來源：S&P Global / ICSG / JPMorgan Research｜影響程度：中高（長期）</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>催化劑 5：銅價可能突破 $5.70 歷史高位</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 銅價目前 $5.37/磅，距歷史高點 $5.70 僅 6%</div><div class="ev-d">JPMorgan 預測 2026 Q2 銅價達 $12,500/公噸（≈ $5.67/磅）。ICSG 預測 2026 年精煉銅短缺 15 萬公噸。若銅價突破 $5.70，FCX 每 $0.10 銅價變動 ≈ 年 EPS 變動 $0.15-0.20。銅價走升是 FCX 股價最直接的驅動力。</div><div class="ev-s">來源：COMEX 銅期貨 + JPMorgan + ICSG｜影響程度：高</div></div>
+</div>
+</div>
+
+<div class="card neutral-card">
+<h3>催化劑 6：El Abra 擴建進展</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> FCX 正推進智利 El Abra 礦場擴建，每年 $16-17 億自由裁量資本支出</div><div class="ev-d">El Abra 擴建將在 Grasberg 之外創造新的產能成長引擎，降低對單一礦場的依賴。若擴建進度超預期或公布具體產能數字，可能成為中長期重新定價的催化劑。</div><div class="ev-s">來源：10-K 2025 + 法說會｜影響程度：中（中長期）</div></div>
+</div>
+</div>
+
+<div class="card">
+<h3>催化劑時間軸</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/04 中旬</div>
+            <div class="tl-event">Q1 2026 財報發布</div>
+            <div class="tl-detail">EPS ≥ $0.40 + Grasberg 重啟進度更新 = 利多確認</div>
+            <span class="tl-impact bull">盈餘驗證</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/Q2 上半年</div>
+            <div class="tl-event">Grasberg Block Cave 預計重啟</div>
+            <div class="tl-detail">管理層承諾的重啟時間窗口。成功 → EPS 翻倍；延遲 → 利空</div>
+            <span class="tl-impact critical">超級催化劑</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/05/15</div>
+            <div class="tl-event">Q1 2026 13F 申報截止</div>
+            <div class="tl-detail">揭示機構持股變動，觀察大型基金是否加碼</div>
+            <span class="tl-impact mixed">籌碼觀察</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/06/30</div>
+            <div class="tl-event">美國商務部銅市場更新</div>
+            <div class="tl-detail">決定是否對精煉銅加徵 15-30% 關稅。FCX 美國營收佔 40%</div>
+            <span class="tl-impact mixed">政策轉折</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/07 中旬</div>
+            <div class="tl-event">Q2 2026 財報發布</div>
+            <div class="tl-detail">Grasberg 復產效果首次反映在營收。EPS ≥ $0.70 = 復產確認</div>
+            <span class="tl-impact bull">復產驗證</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot blue"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/Q3-Q4</div>
+            <div class="tl-event">Grasberg 預期恢復 85% 產能</div>
+            <div class="tl-detail">產能爬坡期。若達標，年化 EPS 將接近 $4.00</div>
+            <span class="tl-impact bull">產能爬坡</span>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  三、為什麼在漲？市場為什麼買單？                             -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch3">三、為什麼在漲？市場為什麼買單？</div>
+<div class="section-sub">FCX 過去 12 個月曾飆漲 92%（$27.66 → $69.75），目前從高點回落 25%</div>
+
+<div class="card bull-card">
+<h3>驅動力 1：銅價飆漲至歷史高位</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> COMEX 銅期貨 $5.37/磅（歷史高位區間），YoY +40%</div><div class="ev-d">AI 資料中心 2025-2040 年增加 200 萬公噸銅需求（S&P Global）。每輛 EV 用銅量是傳統車 3-4 倍。ICSG 預測 2026 年精煉銅短缺 15 萬公噸。Section 232 關稅 50% 推高美國銅價。「需求暴漲+供給受限」的教科書組合。</div><div class="ev-s">來源：COMEX / S&P Global / ICSG（n=3 交叉確認）</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>驅動力 2：Grasberg 復產預期</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Grasberg Block Cave 預計 2026 Q2 分階段重啟</div><div class="ev-d">2026 年 PTFI 銅產量預估約 10 億磅（較事故前低 35%），完全恢復預期 2027 年。已與印尼政府簽署 MOU 取得資源壽命延期。Q4 EPS $0.28 是受 Grasberg 拖累的「谷底」，重啟後 H2 產量將翻倍。</div><div class="ev-s">來源：SEC 8-K + 法說會 (2026-01-22)</div></div>
+<div class="tip info"><b>復產 = 最大催化劑</b>
+Forward EPS $3.68 的分析師預估即是建立在此假設上。但若重啟延遲至 Q3 以後，EPS 將顯著低於預期。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>驅動力 3：分析師一致看好 + 盈餘連續超預期</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 20 位分析師共識買進，目標價 $67.47（+29.5%）</div><div class="ev-d">Q4 EPS 實際 $0.47 vs 預期 $0.30（+56.7%），連續三季超越共識預期。Freedom Capital 持有→強力買進、Argus 持有→買進。即便在 Grasberg 停工期間仍大幅超預期，顯示北美+南美礦場獨立獲利能力被低估。</div><div class="ev-s">來源：MarketBeat / Yahoo Finance / SEC Filing</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>驅動力 4：Section 232 關稅推高美國銅溢價</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 美國 50% Section 232 進口銅關稅，FCX 國內生產直接受惠</div><div class="ev-d">美國冶煉產能僅 58.5 萬公噸（僅為開採量一半），需進口大量精煉銅。關稅推高國內銅價，FCX 約 40% 營收來自美國，享有溢價定價。但也可能壓抑下游需求。2026/6 將決定是否進一步對精煉銅課徵 15-30% 關稅。</div><div class="ev-s">來源：美國商務部 / 財經媒體</div></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  四、沒被市場發現的問題                                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch4">四、沒被市場發現的問題</div>
+<div class="section-sub">不是猜測，每個問題都有資料佐證</div>
+
+<div class="card bear-card">
+<h3>問題 1：會計品質亮紅燈 — M-Score 觸發警示</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Beneish M-Score = -2.090（WARNING 門檻 -2.22）</div><div class="ev-d">DSRI（應收帳款天數指標）= 1.430（正常 &lt; 1.1），AQI = 1.130（偏高）。Altman Z-Score = 2.457（灰色地帶，安全門檻 2.99）。紅旗：US03 應收帳款異常、US04 存貨異常、US01 內部人賣出。合理解釋是 Grasberg 泥漿事件導致出貨延遲、保險理賠應收款增加。</div><div class="ev-s">來源：會計品質掃描模組 (2026-03-21)</div></div>
+<div class="tip danger"><b>M-Score 解讀</b>
+DSRI 1.43 是最大異常源。屬「營運異常」的可能性較大，但在 10-K Notes 確認之前，不能排除其他可能。這是壓力測試中唯一「不支持」的假設。<span class="fias-a">A-假設</span></div>
+</div>
+</div>
+
+<div class="card bear-card">
+<h3>問題 2：內部人持續淨賣出 — 高階全員賣、零買入</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 高階主管淨賣出超過 $1,200 萬，無任何買入紀錄</div><div class="ev-d">CFO Maree Robertson 賣出 48,500 股（$299 萬）、EVP Douglas Currault 賣出 75,000 股（$484 萬）、EVP Stephen Higgins 賣出 58,077 股（$323 萬）、CAO Ellie Mikes 賣出 20,572 股（$114 萬）。CEO Richard Adkerson 2026/2/9 有 Form 4 申報。內部人持股僅 0.68%。</div><div class="ev-s">來源：SEC Form 4 / OpenInsider（A 級可靠度）</div></div>
+<div class="tip danger"><b>風控官警示</b>
+可能是 10b5-1 預設計畫（常態性），但也可能反映管理層對短期股價不樂觀。在無法確認是否為 10b5-1 計畫之前，列為 <span class="fias-a">A-假設</span> 等級。</div>
+</div>
+</div>
+
+<div class="card bear-card">
+<h3>問題 3：高盛看空 — 預測 2026 年銅過剩</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Goldman Sachs 預測 2026 年銅過剩 16 萬公噸（vs ICSG 短缺 15 萬、JPM 短缺 33 萬）</div><div class="ev-d">高盛的看空根基是「中國經濟復甦不如預期」。若中國需求疲軟，其他機構的短缺預測將翻轉為過剩，銅價可能回落至 $4.00-4.50/磅。這是 ACH 分析中 H3（延遲+修正）假說的核心支柱。</div><div class="ev-s">來源：Goldman Sachs / JPMorgan / ICSG</div></div>
+</div>
+</div>
+
+<div class="card bear-card">
+<h3>問題 4：證券集體訴訟 + Trailing P/E 34x</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 投資人提起證券集體訴訟，指控公司低估 Grasberg 安全風險</div><div class="ev-d">和解金額對 $748 億市值衝擊有限，但可能觸發額外 SEC 調查。另外 Trailing P/E 34.3x 遠高於同業（SCCO ~25x, BHP ~18x, RIO ~10x），若復產不如預期，34.3x 才是真實估值。</div><div class="ev-s">來源：SEC Filing / 財經媒體</div></div>
+<div class="tip info"><b>Forward vs Trailing 的巨大落差</b>
+Forward P/E 14.1x 假設 Grasberg 復產；Trailing P/E 34.3x 反映 Grasberg 停工實況。<b>估值完全取決於 Grasberg 重啟時程。</b><span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  五、沒被發覺的優勢                                           -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch5">五、沒被發覺的優勢</div>
+<div class="section-sub">市場聚焦短期題材時可能被低估的長期優勢</div>
+
+<div class="card bull-card">
+<h3>優勢 1：北美+南美礦場獨立獲利能力被低估</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 即使 Grasberg 完全停工，FCX 仍有年化 EPS $1.00-1.20</div><div class="ev-d">Q4 2025 即使 Grasberg 完全停工，FCX 仍錄得 EPS $0.28（年化 $1.12），營業利益 $8.1 億。市場過度聚焦 Grasberg 復產題材，忽略了北美 Morenci 旗艦礦+南美 Cerro Verde/El Abra 的穩定產出。</div><div class="ev-s">來源：SEC 10-K + 法說會</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>優勢 2：鉬業務 — 隱藏的定價權</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> FCX = 全球最大鉬生產商（2025 年產 9,200 萬磅），營收 $20 億</div><div class="ev-d">鉬價較少受銅週期影響，國防/航太需求持續成長。Climax Molybdenum 自 1916 年運營至今。為 FCX 提供不受銅價波動影響的穩定收入底線。分析師報告中很少被獨立估值。</div><div class="ev-s">來源：10-K 2025 / 公司官網</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>優勢 3：Grasberg 營運權壽命延期 MOU</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 已與印尼政府簽署 MOU 取得資源壽命營運權延期</div><div class="ev-d">原本 IUPK 營運許可 2041 年到期，市場一直列為長期風險折價。MOU 等於延長 FCX 最大資產壽命，理論上應提升長期估值，但市場目前似乎尚未充分反映。</div><div class="ev-s">來源：公司新聞稿 (2025-2026)</div></div>
+</div>
+</div>
+
+<div class="card bull-card">
+<h3>優勢 4：空頭回補潮 — 做空者正在退場</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> Short % of Float 1.95%，持續下降中</div><div class="ev-d">空頭部位從 2025/12 高峰 2,803 萬股回落至 2,793 萬股（-3.3%）。Days to Cover 僅 1.33 天。做空力量微弱且持續下降，顯示機構投資人對 FCX 前景趨向樂觀。</div><div class="ev-s">來源：MarketBeat / Fintel</div></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  六、六步分析關鍵決策因素彙整                                 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch6">六、六步分析關鍵決策因素彙整</div>
+<div class="section-sub">整合六步分析的核心發現，讓正反論點對決</div>
+
+<div class="card">
+<h3>買進因素 vs 風險因素正反對照</h3>
+<div class="card-body">
+<div class="grid2">
+<div>
+<p style="font-weight:700;color:var(--bull);margin-bottom:4px">Bull Case（看多因素）</p>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> 銅供需結構性短缺（ICSG 缺 15 萬公噸）</div><div class="ev-s">第一層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> Grasberg Q2 重啟 → EPS 翻倍至 $3.68</div><div class="ev-s">第二層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> Section 232 關稅 50% 推高國內銅價</div><div class="ev-s">第一層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> 分析師共識買進 + 盈餘連續超預期</div><div class="ev-s">第三層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> Forward P/E 14.1x 合理</div><div class="ev-s">估值面</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-i">I</span> AI/EV 結構性銅需求爆發</div><div class="ev-s">第一層</div></div>
+</div>
+<div>
+<p style="font-weight:700;color:var(--bear);margin-bottom:4px">Bear Case（風險因素）</p>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> 高盛預測 2026 年銅過剩 16 萬公噸</div><div class="ev-s">第一層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-a">A</span> Grasberg 重啟可能再度延遲</div><div class="ev-s">第二層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> M-Score 觸發警示 + AR/存貨紅旗</div><div class="ev-s">風控</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-f">F</span> 內部人全面淨賣出 $1,200 萬+</div><div class="ev-s">第三層</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-i">I</span> Trailing P/E 34.3x 偏高</div><div class="ev-s">估值面</div></div>
+<div class="ev"><div class="ev-t"><span class="fias-i">I</span> 中國需求疲軟風險</div><div class="ev-s">第一層</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>ACH 競爭假說信心分配</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>內容</th><th>信心度</th><th>加權預期報酬</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">H1 主假說</td><td>Grasberg 復產帶動盈餘回升</td><td>65%</td><td>+30% × 65% = +19.5%</td></tr>
+<tr><td style="color:var(--bull)">H2</td><td>銅超級週期</td><td>20%</td><td>+50% × 20% = +10.0%</td></tr>
+<tr><td style="color:var(--bear)">H3</td><td>延遲+修正（Grasberg 延遲、銅價回落）</td><td>10%</td><td>-30% × 10% = -3.0%</td></tr>
+<tr><td style="color:var(--bear)">H5</td><td>黑天鵝（礦災/禁運/政變）</td><td>5%</td><td>-65% × 5% = -3.3%</td></tr>
+<tr><td style="font-weight:700" colspan="2">加權預期報酬</td><td colspan="2" style="font-weight:700;color:var(--bull)">+23.1%（目標價約 $64.1）</td></tr>
+</table>
+<div class="tip info"><b>致命因子</b>
+ACH 分析識別出兩個「翻轉即致命」的證據：<b>E4 銅價走勢</b>和 <b>E1 Grasberg 重啟時程</b>。任一翻轉都會使 H1 失去支撐，H3 成為主假說。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>評審團共識與分歧</h3>
+<div class="card-body">
+<p style="font-weight:700;margin-bottom:4px">共識區（五角色一致同意）：</p>
+<div class="reviewer">
+<div class="r-name">五角色共識</div>
+<div class="r-verdict cond">審慎偏多 — 條件式看好</div>
+</div>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:18px;margin:6px 0">
+<li>銅產業長期趨勢明確向好（供需結構性短缺 + 電氣化需求）</li>
+<li>FCX 產業龍頭地位無爭議，護城河來自資源稀缺性和規模經濟</li>
+<li>財務體質健全，足以度過 Grasberg 停工期</li>
+<li>但所有利多都建立在「Grasberg 順利重啟」這個未驗證的假設上</li>
+</ul>
+
+<p style="margin-top:8px"><b>分歧區：</b></p>
+<table>
+<tr><th>議題</th><th>買方論點</th><th>等待方論點</th></tr>
+<tr>
+<td>現在是否該進場？</td>
+<td style="color:var(--bull)">Forward P/E 14x 合理，等重啟確認後可能追高</td>
+<td style="color:var(--bear)">Trailing P/E 34x 偏高，等 Q2 重啟確認後更安全</td>
+</tr>
+<tr>
+<td>內部人賣出的含義？</td>
+<td style="color:var(--bull)">可能是 10b5-1 預設計畫，常態性減持</td>
+<td style="color:var(--bear)">CFO+CAO+GC 同時賣出太巧合，可能知道不利消息</td>
+</tr>
+<tr>
+<td>銅價能否維持 $5+？</td>
+<td style="color:var(--bull)">結構性短缺+關稅支撐，$5+ 是新常態</td>
+<td style="color:var(--warn)">高盛預測過剩，中國需求是最大變數</td>
+</tr>
+</table>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  七、風險清單與壓力測試                                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch7">七、風險清單與壓力測試</div>
+<div class="section-sub">來自第五步壓力測試的關鍵結論</div>
+
+<div class="card">
+<h3>致命因子排序（EPS 影響 + 可控性）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>致命因子</th><th>EPS 影響</th><th>可控性</th><th>監控方式</th></tr>
+<tr><td style="color:var(--bear);font-weight:700">1</td><td>銅價崩跌至 $4.00/磅</td><td style="color:var(--bear)">EPS → $2.10（-43%）</td><td>不可控</td><td>每日 COMEX 銅價</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">2</td><td>Grasberg 重啟延遲至 Q4</td><td style="color:var(--bear)">EPS → $2.50（-32%）</td><td>不可控</td><td>PTFI 月報 / 8-K</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">3</td><td>銅價崩跌 + Grasberg 延遲</td><td style="color:var(--bear)">EPS → $1.20（-67%）</td><td>不可控</td><td>兩者同時追蹤</td></tr>
+<tr><td>4</td><td>中國需求放緩</td><td style="color:var(--warn)">銅價 -10~15%</td><td>不可控</td><td>中國 PMI / 銅進口量</td></tr>
+<tr><td>5</td><td>印尼政治風險</td><td style="color:var(--warn)">Grasberg 停工風險</td><td>不可控</td><td>印尼政策新聞</td></tr>
+</table>
+<div class="tip danger"><b>事前驗屍法結論</b>
+只有 Grasberg 延遲（風險分數 15/25）達到「高度警戒」門檻。核心風險集中在單一事件：Grasberg Block Cave 地下礦的重啟進度。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>EPS 敏感度矩陣（銅價 × Grasberg 時程）</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>銅 $5.00+</th><th>銅 $4.50</th><th>銅 $4.00</th></tr>
+<tr><td style="font-weight:700">Grasberg Q2 重啟</td><td style="color:var(--bull);font-weight:700">$3.68（基準）</td><td>$3.00</td><td>$2.50</td></tr>
+<tr><td style="font-weight:700">Grasberg Q4 重啟</td><td>$2.80</td><td style="color:var(--warn)">$2.30</td><td>$1.80</td></tr>
+<tr><td style="font-weight:700">Grasberg 2027 才重啟</td><td>$2.00</td><td>$1.60</td><td style="color:var(--bear);font-weight:700">$1.20</td></tr>
+</table>
+<div class="tip warn"><b>安全邊際分析</b>
+基準 EPS $3.68 → Forward P/E 14.1x。EPS $2.50 → P/E 20.8x（仍可接受）。EPS $1.20 → P/E 43.4x（需回落至 $30 以下才合理）。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card">
+<h3>資料盲點清單</h3>
+<div class="card-body">
+<table>
+<tr><th>盲點</th><th>信心影響</th><th>狀態</th></tr>
+<tr><td>Grasberg 地下工程詳細進度報告</td><td>-10%</td><td><span class="light red"></span> 未取得</td></tr>
+<tr><td>Q4 法說會逐字稿（重啟信心措辭）</td><td>-5%</td><td><span class="light red"></span> 未取得</td></tr>
+<tr><td>內部人 10b5-1 計畫確認</td><td>-3%</td><td><span class="light red"></span> 未取得</td></tr>
+<tr><td>中國微觀銅消費數據</td><td>-5%</td><td><span class="light red"></span> 未取得</td></tr>
+<tr><td>10-K Notes 表外項目詳細內容</td><td>-2%</td><td><span class="light red"></span> 未取得</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">合計信心度修正：-25%（ACH 65% → 修正後 40-50%，評審團定案 45%）</p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  八、監控儀表板                                               -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch8">八、監控儀表板</div>
+<div class="section-sub">燈號系統 + 量表 + 關鍵時間節點</div>
+
+<div class="card">
+<h3>燈號系統</h3>
+<div class="card-body">
+<table>
+<tr><th>監控指標</th><th>目前狀態</th><th>燈號</th><th>翻紅條件</th></tr>
+<tr><td>銅價 (COMEX)</td><td>$5.37/磅</td><td><span class="light green"></span> 綠燈</td><td>跌破 $4.50 → 黃燈；跌破 $4.00 → 紅燈</td></tr>
+<tr><td>Grasberg 重啟進度</td><td>預計 Q2 2026</td><td><span class="light yellow"></span> 黃燈</td><td>官方確認延遲至 Q3+ → 紅燈</td></tr>
+<tr><td>月營收 / 季度 EPS</td><td>Q4 EPS $0.28（谷底）</td><td><span class="light yellow"></span> 黃燈</td><td>Q1 EPS &lt; $0.30 → 紅燈</td></tr>
+<tr><td>內部人交易</td><td>持續淨賣出</td><td><span class="light yellow"></span> 黃燈</td><td>更多高階大額賣出 → 紅燈</td></tr>
+<tr><td>分析師共識</td><td>買進（1.67/5）</td><td><span class="light green"></span> 綠燈</td><td>多家連續降評 → 黃燈</td></tr>
+<tr><td>空頭部位</td><td>1.95%（下降中）</td><td><span class="light green"></span> 綠燈</td><td>回升至 3%+ → 黃燈</td></tr>
+<tr><td>中國銅需求</td><td>待觀察</td><td><span class="light yellow"></span> 黃燈</td><td>PMI 連續 &lt; 50 → 紅燈</td></tr>
+<tr><td>集體訴訟進展</td><td>進行中</td><td><span class="light yellow"></span> 黃燈</td><td>SEC 介入調查 → 紅燈</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><strong>燈號摘要：</strong>綠燈 3 / 黃燈 5 / 紅燈 0 — 審慎觀察中，無立即危險</p>
+
+<!-- 量表 -->
+<div style="margin-top:10px">
+<div class="gauge">
+    <span class="gauge-label">銅價位置</span>
+    <div class="gauge-track"><div class="gauge-fill" style="width:78%;background:var(--bull)"></div></div>
+    <span class="gauge-val" style="color:var(--bull)">$5.37</span>
+</div>
+<div class="gauge">
+    <span class="gauge-label">Short %</span>
+    <div class="gauge-track"><div class="gauge-fill" style="width:19.5%;background:var(--bull)"></div></div>
+    <span class="gauge-val" style="color:var(--bull)">1.95%</span>
+</div>
+<div class="gauge">
+    <span class="gauge-label">內部人信心</span>
+    <div class="gauge-track"><div class="gauge-fill" style="width:15%;background:var(--bear)"></div></div>
+    <span class="gauge-val" style="color:var(--bear)">低</span>
+</div>
+<div class="gauge">
+    <span class="gauge-label">分析師信心</span>
+    <div class="gauge-track"><div class="gauge-fill" style="width:83%;background:var(--bull)"></div></div>
+    <span class="gauge-val" style="color:var(--bull)">買進</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  九、推衍預測                                                 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch9">九、推衍預測 — 接下來可能怎麼走？</div>
+<div class="section-sub">基於現有情報的多路徑推演</div>
+
+<div class="card">
+<h3>短期推衍（1-3 個月）</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 短期震盪等待催化劑，Q1 財報為方向確認</div><div class="ev-d">目前股價 $52.09 已合理定價分析師共識，短期缺乏明確催化劑。Q1 財報（4 月中旬）+ Grasberg 重啟進度是下一個方向確認點。短期最可能在 $48-58 區間震盪。</div></div>
+<table>
+<tr><th>路徑</th><th>觸發條件</th><th>股價方向</th><th>機率</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">路徑 A：利多催化</td><td>Q1 EPS ≥ $0.40 + Grasberg 重啟確認</td><td style="color:var(--bull)">$55-62（+6~19%）</td><td>45%</td></tr>
+<tr><td>路徑 B：區間震盪</td><td>Grasberg 無明確進展，銅價 $5.00-5.50</td><td>$48-55（-8~+6%）</td><td>35%</td></tr>
+<tr><td style="color:var(--bear)">路徑 C：利空衝擊</td><td>Grasberg 延遲消息 或 銅價跌破 $4.80</td><td style="color:var(--bear)">$40-48（-23~-8%）</td><td>20%</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>中期推衍（3-6 個月）— 多路徑決策樹</h3>
+<div class="card-body">
+<!-- SVG 決策樹 -->
+<div class="chart-svg">
+<svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;width:100%">
+    <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#7a7268"/></marker>
+        <marker id="arr-g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e7d32"/></marker>
+        <marker id="arr-n" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5a7d8c"/></marker>
+        <marker id="arr-r" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#c62828"/></marker>
+    </defs>
+    <!-- 根節點 -->
+    <rect x="310" y="10" width="180" height="50" rx="10" fill="#3d3a36" stroke="#b8b0a5"/>
+    <text x="400" y="32" text-anchor="middle" fill="#e6e1da" font-size="13" font-weight="700">FCX (Freeport-McMoRan)</text>
+    <text x="400" y="48" text-anchor="middle" fill="#b8b0a5" font-size="11">現價 $52.09｜2026-03-21</text>
+    <!-- 分叉節點 -->
+    <rect x="260" y="90" width="280" height="36" rx="8" fill="#e6e1da" stroke="#b8b0a5"/>
+    <text x="400" y="113" text-anchor="middle" fill="#3d3a36" font-size="11" font-weight="700">Grasberg 重啟 + 銅價走向？</text>
+    <line x1="400" y1="60" x2="400" y2="90" stroke="#7a7268" stroke-width="2" marker-end="url(#arr)"/>
+    <!-- 路徑 A：左 -->
+    <line x1="330" y1="126" x2="130" y2="185" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#arr-g)"/>
+    <text x="210" y="150" text-anchor="middle" fill="#2e7d32" font-size="10" font-weight="700">50%</text>
+    <rect x="20" y="190" width="220" height="80" rx="10" fill="#2e7d32"/>
+    <text x="130" y="212" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">路徑 A：復產成功</text>
+    <text x="130" y="230" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">Q2 產量回升 + 銅≥$5.00</text>
+    <text x="130" y="248" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">Q2 EPS ≥ $0.70 → 年化 $3.5+</text>
+    <text x="130" y="264" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">目標 $62～72</text>
+    <!-- 路徑 B：中 -->
+    <line x1="400" y1="126" x2="400" y2="185" stroke="#5a7d8c" stroke-width="2.5" marker-end="url(#arr-n)"/>
+    <text x="420" y="160" fill="#5a7d8c" font-size="10" font-weight="700">30%</text>
+    <rect x="290" y="190" width="220" height="80" rx="10" fill="#5a7d8c"/>
+    <text x="400" y="212" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">路徑 B：部分復產</text>
+    <text x="400" y="230" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">Grasberg 重啟但進度落後</text>
+    <text x="400" y="248" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">銅價穩定 → 等待確認</text>
+    <text x="400" y="264" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">區間 $50～60</text>
+    <!-- 路徑 C：右 -->
+    <line x1="470" y1="126" x2="670" y2="185" stroke="#c62828" stroke-width="2.5" marker-end="url(#arr-r)"/>
+    <text x="590" y="150" text-anchor="middle" fill="#c62828" font-size="10" font-weight="700">20%</text>
+    <rect x="560" y="190" width="220" height="80" rx="10" fill="#c62828"/>
+    <text x="670" y="212" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">路徑 C：雙重打擊</text>
+    <text x="670" y="230" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">重啟延遲 + 銅價回落</text>
+    <text x="670" y="248" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="10">中國需求疲軟 → 銅過剩</text>
+    <text x="670" y="264" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">回落 $35～45</text>
+    <!-- 底部加權期望值 -->
+    <rect x="230" y="320" width="340" height="45" rx="10" fill="#3d3a36" stroke="#5a7d60" stroke-width="2"/>
+    <text x="400" y="340" text-anchor="middle" fill="#e6e1da" font-size="11">中期加權期望值</text>
+    <text x="400" y="357" text-anchor="middle" fill="#5a7d60" font-size="14" font-weight="900">$56.5（vs 現價 $52.09 → +8.5%）</text>
+    <!-- 連接線 -->
+    <line x1="130" y1="270" x2="330" y2="320" stroke="#2e7d32" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="400" y1="270" x2="400" y2="320" stroke="#5a7d8c" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="670" y1="270" x2="470" y2="320" stroke="#c62828" stroke-width="1" stroke-dasharray="4"/>
+    <!-- 圖例 -->
+    <text x="400" y="395" text-anchor="middle" fill="#7a7268" font-size="9">決定性事件：Grasberg 重啟確認（Q2）→ 路徑 A 強化 / 延遲 → 路徑 C 強化</text>
+    <text x="400" y="410" text-anchor="middle" fill="#b8b0a5" font-size="8">資料來源：第四步 ACH 假說 + 第五步壓力測試 + 第六步評審團整合</text>
+</svg>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>長期推衍（6-12 個月）</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-s">推測</span> 長期取決於「超級週期」是否成立</div><div class="ev-d">若 AI/EV 驅動的銅需求確認為結構性而非週期性，FCX 可突破歷史估值上限。若只是普通週期，目前銅價和 FCX 股價可能已接近頂部。Grasberg 2027 年完全恢復是另一個長期催化劑。</div></div>
+<table>
+<tr><th>情境</th><th>假設</th><th>目標價</th><th>機率</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">樂觀：銅超級週期</td><td>Grasberg 完全恢復+銅 $5.50++AI/EV 爆發</td><td style="color:var(--bull)">$72-85</td><td>20%</td></tr>
+<tr><td style="font-weight:700">基準：正常復產</td><td>Grasberg 2027 完全恢復，銅 $4.80-5.30</td><td>$60-68</td><td>50%</td></tr>
+<tr><td style="color:var(--bear)">悲觀：延遲+修正</td><td>復產延遲，銅價回落 $4.00-4.50</td><td style="color:var(--bear)">$35-45</td><td>25%</td></tr>
+<tr><td style="color:var(--bear)">黑天鵝</td><td>再次礦災/印尼禁運/全球衰退</td><td style="color:var(--bear)">$20-30</td><td>5%</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)">長期加權預期：$57.8（+11%）<span class="fias-s">S-推測</span></p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  十、股價合理性分析                                           -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch10">十、股價合理性分析 — 目前股價貴不貴？</div>
+<div class="section-sub">六種方法交叉比對（現價 $52.09）</div>
+
+<!-- 估值速覽卡片 -->
+<div class="metric-row">
+    <div class="metric-card neutral-border"><div class="mc-label">Forward PE</div><div class="mc-num">$51.52</div><div class="mc-sub">≈ 現價</div></div>
+    <div class="metric-card bear-border"><div class="mc-label">DCF</div><div class="mc-num" style="color:var(--bear)">$38-42</div><div class="mc-sub">低於現價</div></div>
+    <div class="metric-card neutral-border"><div class="mc-label">EV/EBITDA</div><div class="mc-num">$52.19</div><div class="mc-sub">≈ 現價</div></div>
+    <div class="metric-card warn-border"><div class="mc-label">隱含機率</div><div class="mc-num" style="color:var(--warn)">32%</div><div class="mc-sub">偏低</div></div>
+</div>
+
+<div class="card">
+<h3>方法一：前瞻本益比法（Forward P/E）</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>EPS 假設</th><th>合理 P/E</th><th>目標價</th></tr>
+<tr><td style="color:var(--bull)">Bull</td><td>$4.00</td><td>16x</td><td style="color:var(--bull);font-weight:700">$64.00</td></tr>
+<tr><td>Base</td><td>$3.68</td><td>14x</td><td style="font-weight:700">$51.52</td></tr>
+<tr><td style="color:var(--bear)">Bear</td><td>$2.50</td><td>12x</td><td style="color:var(--bear);font-weight:700">$30.00</td></tr>
+</table>
+<div class="tip info"><b>判讀</b>Base Case $51.52 ≈ 現價 $52.09。市場正好在定價分析師共識的 Forward EPS $3.68。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card">
+<h3>方法二：DCF 現金流折現法</h3>
+<div class="card-body">
+<table>
+<tr><th>參數</th><th>Base</th><th>Bull</th><th>Bear</th></tr>
+<tr><td>WACC</td><td>11%</td><td>10%</td><td>12%</td></tr>
+<tr><td>5 年 FCF 成長</td><td>$1.6B→$4.5B</td><td>$2.0B→$6.0B</td><td>$1.2B→$3.0B</td></tr>
+<tr><td>Terminal Growth</td><td>2.0%</td><td>2.5%</td><td>1.5%</td></tr>
+<tr><td>每股價值</td><td style="font-weight:700">$38-42</td><td style="color:var(--bull);font-weight:700">$52-58</td><td style="color:var(--bear);font-weight:700">$22-28</td></tr>
+</table>
+<div class="tip warn"><b>注意</b>Base Case DCF $38-42 低於現價，暗示市場定價已包含 Grasberg 復產+銅價高位的樂觀假設。終值佔比約 67-72%。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card">
+<h3>方法三：EV/EBITDA 法</h3>
+<div class="card-body">
+<table>
+<tr><th>假設 EV/EBITDA</th><th>正常化 EBITDA</th><th>每股價值</th></tr>
+<tr><td>8x（保守）</td><td>$10.0B</td><td style="font-weight:700">$52.19</td></tr>
+<tr><td>10x（中性）</td><td>$10.0B</td><td style="color:var(--bull);font-weight:700">$66.11</td></tr>
+<tr><td>6x（悲觀）</td><td>$9.0B</td><td style="color:var(--bear);font-weight:700">$34.10</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>方法四：隱含預期反推法</h3>
+<div class="card-body">
+<p>市場隱含預期 Forward EPS = $3.68。達成需要 Grasberg Q2 重啟（60-70%）+ 銅 $5.00+（65-75%）+ 正常營運（85-90%）+ 稅率穩定（80-85%）</p>
+<p style="font-weight:700;margin-top:4px">聯合機率：0.65 × 0.70 × 0.87 × 0.82 = <span style="color:var(--warn)">~32%</span></p>
+<div class="tip warn"><b>市場已計入大量樂觀預期</b>聯合機率僅 32%，意味著「多數利多都需要同時發生」市場定價才合理。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<div class="card" style="border:2px solid var(--warn)">
+<h3>六種方法綜合判斷</h3>
+<div class="card-body">
+<table>
+<tr><th>方法</th><th>Bear Case</th><th>Base Case</th><th>Bull Case</th></tr>
+<tr><td>Forward P/E</td><td>$30.00</td><td style="font-weight:700">$51.52</td><td>$64.00</td></tr>
+<tr><td>DCF</td><td>$22-28</td><td style="font-weight:700">$38-42</td><td>$52-58</td></tr>
+<tr><td>EV/EBITDA</td><td>$34.10</td><td style="font-weight:700">$52.19</td><td>$66.11</td></tr>
+<tr><td>隱含預期</td><td colspan="3">聯合機率 32%，已計入過多樂觀</td></tr>
+<tr><td>歷史循環</td><td colspan="3">接近上輪週期高峰，超級週期才能突破</td></tr>
+<tr><td style="font-weight:700">綜合中位數</td><td style="color:var(--bear);font-weight:700">$30-35</td><td style="font-weight:700">$47-52</td><td style="color:var(--bull);font-weight:700">$58-66</td></tr>
+</table>
+
+<div class="tip info"><b>安全邊際評估</b>
+Base Case 合理價 $47-52 與現價 $52.09 重疊。<b>安全邊際：接近零。</b>上檔 Bull +27% vs 下檔 Bear -42% = 不對稱偏空。但考量機率加權，仍偏中性偏多。<span class="fias-i">I-推論</span></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!--  十一、投資結論                                               -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch11">十一、投資結論（僅供參考）</div>
+<div class="section-sub">所有結論基於 2026-03-21 數據，最終決策由閣主自行判斷</div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">一句話總結</h3>
+<div class="card-body">
+<p style="font-size:1.1em;font-weight:900;text-align:center;padding:10px;color:var(--base)">
+「FCX 是銅產業龍頭，長期趨勢明確向好，但目前股價已合理定價 Grasberg 復產預期。<br>不是不能買，而是要<b>等確認訊號</b>或<b>等回檔再進場</b>。」
+</p>
+</div>
+</div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">綜合評估表</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">項目</th><th>評估</th></tr>
+<tr><td style="text-align:left;font-weight:700">評級</td><td style="font-weight:900;color:var(--warn)">審慎偏多（Watchful Bullish）— 條件式看好</td></tr>
+<tr><td style="text-align:left">信心度</td><td style="font-weight:700">45%（中等偏低）</td></tr>
+<tr><td style="text-align:left">核心優勢</td><td>全球最大銅礦商、資源稀缺護城河、財務體質強健、AI/EV 長期需求</td></tr>
+<tr><td style="text-align:left">核心風險</td><td>Grasberg 重啟不確定性、內部人賣出、M-Score 警示、中國需求變數</td></tr>
+<tr><td style="text-align:left;color:var(--bull)">值得買進理由</td><td>Forward P/E 14x 合理、長期銅需求不可逆、復產後 EPS 倍增</td></tr>
+<tr><td style="text-align:left;color:var(--bear)">應該迴避理由</td><td>安全邊際近零、DCF 不支撐現價、隱含聯合機率僅 32%</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">三情境估值</h3>
+<div class="card-body">
+<div class="grid3">
+<div class="mini-card bull-card">
+<div class="title">樂觀版（機率 20%）</div>
+<div class="num" style="color:var(--bull)">$65-72</div>
+<div class="desc">Grasberg 超預期復產 + 銅超級週期<br>Forward EPS $4.00+ × 16-18x</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">期望值版（機率 50%）</div>
+<div class="num" style="color:var(--neutral)">$50-58</div>
+<div class="desc">Grasberg 如期復產 + 銅價維持高位<br>Forward EPS $3.50-3.68 × 14-16x</div>
+</div>
+<div class="mini-card bear-card">
+<div class="title">悲觀版（機率 30%）</div>
+<div class="num" style="color:var(--bear)">$30-40</div>
+<div class="desc">Grasberg 延遲 + 銅價回落 $4.00-4.50<br>EPS $1.50-2.50 × 12-16x</div>
+</div>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><b>加權期望值：</b>$65×0.20 + $54×0.50 + $35×0.30 = <b>$50.5</b>（略低於現價 $52.09）</p>
+
+<!-- 雙欄對比 -->
+<div class="compare-cols">
+    <div class="col-left">
+        <h4>偏高的理由（Bear）</h4>
+        <p style="font-size:.8em">安全邊際接近零</p>
+        <p style="font-size:.8em">DCF Base Case $38-42 低於現價</p>
+        <p style="font-size:.8em">隱含聯合機率僅 32%</p>
+        <p style="font-size:.8em">內部人全面淨賣出</p>
+        <p style="font-size:.8em">M-Score 觸發警示</p>
+    </div>
+    <div class="col-right">
+        <h4>合理化的路徑（Bull）</h4>
+        <p style="font-size:.8em">Grasberg Q2 如期重啟</p>
+        <p style="font-size:.8em">銅價維持 $5.00+ 或突破 $5.70</p>
+        <p style="font-size:.8em">Forward P/E 14x 於銅礦股合理</p>
+        <p style="font-size:.8em">分析師共識目標 $67.47（+29%）</p>
+        <p style="font-size:.8em">AI/EV 長期需求確認</p>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>評審團建議操作策略（僅供參考）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>建倉方式</td><td>分 3 批進場（40% / 30% / 30%）</td></tr>
+<tr><td>第一批觸發</td><td>Q1 財報確認 EPS ≥ $0.40 + Grasberg 重啟消息</td></tr>
+<tr><td>第二批觸發</td><td>Grasberg 實際恢復產量 + Q2 營收回升</td></tr>
+<tr><td>第三批觸發</td><td>銅價突破 $5.50 或 FCX 突破 $60</td></tr>
+<tr><td>部位大小</td><td>投資組合 3-5%（信心度 45% 對應中等部位）</td></tr>
+<tr><td>停損點</td><td>$40（-23%），對應悲觀情境上緣</td></tr>
+<tr><td>第一目標</td><td>$65（+25%）</td></tr>
+<tr><td>第二目標</td><td>$72（+38%）</td></tr>
+</table>
+<div class="tip warn"><b>等待 vs 現在進場</b>
+目前位置「不上不下」。最佳策略可能是<b>等待 Q1 財報（4 月中）或 Grasberg 重啟確認後再行動</b>，犧牲一些低位成本換取確定性。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>下次更新觸發條件</h3>
+<div class="card-body">
+<ul style="font-size:.84em;color:var(--txt2);padding-left:18px">
+<li>Grasberg 官方宣布重啟日期確認或延遲</li>
+<li>Q1 2026 財報發布</li>
+<li>銅價跌破 $4.50/磅或突破 $5.70/磅</li>
+<li>FCX 股價跌破 $40 或突破 $60</li>
+<li>美國商務部 2026 年 6 月關稅決策</li>
+<li>證券集體訴訟有重大進展</li>
+<li>任何新的 Grasberg 營運事故</li>
+</ul>
+</div>
+</div>
+
+<div style="padding:12px;margin:12px 0;text-align:center;font-size:.82em;color:var(--txt3);border:1px dashed var(--border);border-radius:8px">
+<b>免責聲明</b><br>
+本報告所有分析僅供個人研究參考，不構成任何投資建議。<br>
+投資有風險，閣主應自行評估風險承受能力後做出決策。<br>
+所有 FIAS 標記反映資料可靠度，「推測」(S) 與「假設」(A) 級別的觀點不應作為決策唯一依據。
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 投資分析引擎 v1.7</p>
+    <p>報告日期：2026-03-21｜第七步：決策輸出（質化分析報告 v2）</p>
+    <p>評級：審慎偏多｜信心度 45%</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){document.querySelectorAll('.card').forEach(function(c){if(collapse)c.classList.add('collapsed');else c.classList.remove('collapsed');});}
+document.querySelectorAll('.card').forEach(function(c){c.classList.add('collapsed');});
+document.querySelectorAll('.card h3').forEach(function(h3){h3.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed');});});
+</script>
+</body>
+</html>
