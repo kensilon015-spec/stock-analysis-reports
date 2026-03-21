@@ -29,7 +29,7 @@ for f in "$RECORD_SRC"/*.html; do
     [ -f "$f" ] || continue
     BNAME="$(basename "$f")"
     [ "$BNAME" = "天機錄索引.html" ] && continue
-    cp "$f" "$TARGET_DIR/天機錄/$BNAME"
+    cp -p "$f" "$TARGET_DIR/天機錄/$BNAME"
 done
 
 LOCAL_COUNT=$(ls "$TARGET_DIR/天機錄/"*.html 2>/dev/null | wc -l)
