@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>記憶體產業 — 同業比較矩陣（6家公司）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c;
+  --code-bg:#2c2a26;--warn:#b8860b
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 24px}
+
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+.section-title{font-size:1.3em;font-weight:800;color:var(--base);margin-top:28px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.card h3{font-size:1.05em;font-weight:700;color:var(--base);cursor:pointer;padding:16px 20px;margin:0;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:background .2s}
+.card h3:hover{background:var(--hover)}
+.card h3::after{content:'▼';font-size:.7em;color:var(--txt3);transition:transform .3s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card-body{padding:4px 20px 18px}
+.card.collapsed .card-body{display:none}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.84em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 12px;text-align:center;font-weight:600;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+tr:hover td{background:var(--hover)}
+td.name-cell{text-align:left;font-weight:700;white-space:nowrap}
+.rank-1{color:var(--bull);font-weight:700}
+.rank-2{color:#4a8a4e}
+.rank-5{color:#c27c6e}
+.rank-6{color:var(--bear);font-weight:700}
+.val-pos{color:var(--bull)}
+.val-neg{color:var(--bear)}
+.val-na{color:var(--txt3);font-style:italic}
+
+.tip{padding:12px 16px;border-radius:8px;margin:10px 0;border-left:3px solid;font-size:.88em}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(184,134,11,.08);color:var(--txt)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08);color:var(--txt)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+.score-bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.score-bar .label-text{font-size:.82em;min-width:70px;font-weight:600;color:var(--txt2)}
+.bar{flex:1;height:20px;background:rgba(0,0,0,.08);border-radius:10px;overflow:hidden}
+.fill{height:100%;border-radius:10px;transition:width .6s ease}
+.val{font-size:.85em;font-weight:700;min-width:50px;text-align:right}
+
+.toggle-bar{display:flex;gap:8px;margin:12px 0;justify-content:flex-end}
+.toggle-bar button{padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--txt2);cursor:pointer;font-size:.82em;font-weight:600;transition:all .2s}
+.toggle-bar button:hover{background:var(--hover);color:var(--base)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:10px 0}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+
+.moat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.moat-card h4{font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px}
+.moat-card .moat-score{font-size:1.6em;font-weight:900}
+.moat-card .moat-level{font-size:.82em;margin-top:4px;font-weight:600}
+.moat-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:.88em}
+
+.rank-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-weight:700;font-size:.82em;color:#fff}
+.rank-badge.gold{background:#b8860b}
+.rank-badge.silver{background:#8a8a8a}
+.rank-badge.bronze{background:#a0522d}
+
+.disclaimer{background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:24px;font-size:.78em;color:var(--txt3);line-height:1.7}
+
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+
+/* 漲跌色特別標示 */
+.up{color:var(--bull);font-weight:600}
+.down{color:var(--bear);font-weight:600}
+
+/* 排名表格高亮 */
+.highlight-best{background:rgba(46,125,50,.1) !important}
+.highlight-worst{background:rgba(198,40,40,.06) !important}
+
+/* 綜合排名大表 */
+.final-rank-table td:first-child{font-weight:800;font-size:1.1em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== Hero ===== -->
+<div class="hero">
+    <h1>記憶體產業 — 同業比較矩陣</h1>
+    <div class="sub">NOR Flash / NAND / DRAM / 封測 / IC 設計 / 模組品牌 六家公司橫向比較</div>
+    <div class="desc">finlab 即時數據 + AI 護城河快評 + 六維度加權評分 ｜ 資料日期 2026-03-21</div>
+    <div class="tags">
+        <span class="tag">2337 旺宏</span>
+        <span class="tag">2344 華邦電</span>
+        <span class="tag">2408 南亞科</span>
+        <span class="tag">8150 南茂</span>
+        <span class="tag">3006 晶豪科</span>
+        <span class="tag">4967 十銓</span>
+    </div>
+</div>
+
+<div class="toggle-bar">
+    <button onclick="toggleAll(false)">全部展開</button>
+    <button onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 1. 比較總覽表 ===== -->
+<div class="section-title">一、比較總覽表</div>
+<div style="overflow-x:auto">
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>2337<br>旺宏</th>
+<th>2344<br>華邦電</th>
+<th>2408<br>南亞科</th>
+<th>8150<br>南茂</th>
+<th>3006<br>晶豪科</th>
+<th>4967<br>十銓</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="name-cell">類型</td>
+<td>IDM<br>NOR+NAND</td>
+<td>IDM<br>DRAM+NOR+NAND</td>
+<td>IDM<br>純DRAM</td>
+<td>OSAT<br>記憶體封測</td>
+<td>Fabless<br>NOR IC設計</td>
+<td>模組品牌<br>記憶體通路</td>
+</tr>
+<tr>
+<td class="name-cell">收盤價（元）</td>
+<td>160.0</td>
+<td>110.0</td>
+<td>234.0</td>
+<td>62.5</td>
+<td>195.5</td>
+<td>261.5</td>
+</tr>
+<tr>
+<td class="name-cell">本益比（倍）</td>
+<td class="down">18.85</td>
+<td>125.0</td>
+<td>109.86</td>
+<td>88.03</td>
+<td class="down">217.22</td>
+<td class="up">20.02</td>
+</tr>
+<tr>
+<td class="name-cell">股價淨值比</td>
+<td class="down">6.74</td>
+<td>4.59</td>
+<td>4.26</td>
+<td class="up">1.82</td>
+<td>5.17</td>
+<td>4.58</td>
+</tr>
+<tr>
+<td class="name-cell">殖利率（%）</td>
+<td class="down">0.00</td>
+<td>0.45</td>
+<td>0.64</td>
+<td>1.97</td>
+<td>0.51</td>
+<td class="up">3.82</td>
+</tr>
+<tr>
+<td class="name-cell">毛利率（%）</td>
+<td>24.17</td>
+<td class="up">41.86</td>
+<td class="up">49.05</td>
+<td class="down">14.35</td>
+<td>32.33</td>
+<td>22.48</td>
+</tr>
+<tr>
+<td class="name-cell">營業利益率（%）</td>
+<td class="down">-5.08</td>
+<td>15.37</td>
+<td class="up">39.15</td>
+<td>9.75</td>
+<td>20.25</td>
+<td>16.35</td>
+</tr>
+<tr>
+<td class="name-cell">ROE（%）</td>
+<td class="down">-0.67</td>
+<td>2.87</td>
+<td>6.77</td>
+<td>2.11</td>
+<td>10.71</td>
+<td class="up">18.34</td>
+</tr>
+<tr>
+<td class="name-cell">EPS 近四季</td>
+<td class="down">-1.78</td>
+<td>0.88</td>
+<td>2.13</td>
+<td>0.70</td>
+<td>0.87</td>
+<td class="up">13.07</td>
+</tr>
+<tr>
+<td class="name-cell">營收年增率（%）</td>
+<td>59.97</td>
+<td>88.45</td>
+<td class="up">586.71</td>
+<td>22.11</td>
+<td>128.39</td>
+<td class="down">-22.18</td>
+</tr>
+<tr>
+<td class="name-cell">近3月趨勢</td>
+<td class="up">連續成長</td>
+<td class="up">連續成長</td>
+<td class="up">連續成長</td>
+<td>無明確趨勢</td>
+<td class="down">連續衰退</td>
+<td class="down">連續衰退</td>
+</tr>
+<tr>
+<td class="name-cell">外資20日買超（張）</td>
+<td class="up">11,929</td>
+<td class="down">-80,984</td>
+<td class="down">-52,544</td>
+<td class="up">15,441</td>
+<td class="up">13,642</td>
+<td>-1,354</td>
+</tr>
+<tr>
+<td class="name-cell">投信20日買超（張）</td>
+<td class="up">3,018</td>
+<td class="up">85,169</td>
+<td class="down">-22,211</td>
+<td>-524</td>
+<td>451</td>
+<td>-213</td>
+</tr>
+<tr>
+<td class="name-cell">融資使用率（%）</td>
+<td>34.82</td>
+<td class="up">11.88</td>
+<td>14.15</td>
+<td class="up">7.35</td>
+<td>31.50</td>
+<td class="down">46.19</td>
+</tr>
+<tr>
+<td class="name-cell">外資持股比率（%）</td>
+<td>27.04</td>
+<td>17.68</td>
+<td>10.28</td>
+<td class="up">42.84</td>
+<td>30.80</td>
+<td>18.48</td>
+</tr>
+<tr>
+<td class="name-cell">PE 歷史百分位</td>
+<td>93.0%</td>
+<td>91.0%</td>
+<td class="down">99.2%</td>
+<td>89.1%</td>
+<td class="down">99.8%</td>
+<td class="up">35.9%</td>
+</tr>
+<tr>
+<td class="name-cell">PB 歷史百分位</td>
+<td class="down">99.9%</td>
+<td>96.8%</td>
+<td>96.6%</td>
+<td>97.6%</td>
+<td>98.2%</td>
+<td>98.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tip info"><b>數據說明</b>所有數據來自 finlab 資料庫即時取數（2026-03-21）。本益比為負值代表虧損，以正值顯示的本益比為已轉盈公司。營收單位為千元。外資/投信買超單位已轉換為張（股數÷1000）。PE/PB 百分位為近 5 年歷史分位，數值越高代表估值越貴。</div>
+
+
+<!-- ===== 2. 各維度細項分析 ===== -->
+<div class="section-title">二、各維度細項分析</div>
+
+<!-- 2a. 基本面 -->
+<div class="card collapsed">
+<h3>2a. 基本面分析（權重 25%）</h3>
+<div class="card-body">
+<p style="font-size:.88em;color:var(--txt3);margin-bottom:10px">評估毛利率、營業利益率、ROE、EPS 四項指標，反映公司的獲利能力與經營效率。</p>
+<table>
+<tr><th>公司</th><th>毛利率(%)</th><th>營業利益率(%)</th><th>ROE(%)</th><th>EPS(近4季)</th><th>基本面分數</th></tr>
+<tr><td class="name-cell">旺宏 2337</td><td>24.17</td><td class="down">-5.08</td><td class="down">-0.67</td><td class="down">-1.78</td><td><strong>7.1</strong></td></tr>
+<tr><td class="name-cell">華邦電 2344</td><td>41.86</td><td>15.37</td><td>2.87</td><td>0.88</td><td><strong>40.5</strong></td></tr>
+<tr><td class="name-cell">南亞科 2408</td><td class="up">49.05</td><td class="up">39.15</td><td>6.77</td><td>2.13</td><td><strong>66.4</strong></td></tr>
+<tr><td class="name-cell">南茂 8150</td><td>14.35</td><td>9.75</td><td>2.11</td><td>0.70</td><td><strong>16.2</strong></td></tr>
+<tr><td class="name-cell">晶豪科 3006</td><td>32.33</td><td>20.25</td><td>10.71</td><td>0.87</td><td><strong>46.7</strong></td></tr>
+<tr><td class="name-cell">十銓 4967</td><td>22.48</td><td>16.35</td><td class="up">18.34</td><td class="up">13.07</td><td><strong>68.0</strong></td></tr>
+</table>
+<div class="tip warn"><b>基本面評分方法</b>
+四項指標各佔 25%。每項指標在 6 家公司中正規化為 0-100 分（最高值 100 分、最低值 0 分，線性內插）。
+<br><br>
+<strong>關鍵發現：</strong>
+<ul style="margin:6px 0 0 16px;font-size:.88em">
+<li>十銓（4967）以 ROE 18.34% 及 EPS 13.07 元大幅領先同業，基本面最強（68.0 分）。</li>
+<li>南亞科（2408）毛利率 49.05%、營益率 39.15% 均為最高，反映 DRAM 產業景氣好轉帶來的高槓桿效益（66.4 分）。</li>
+<li>旺宏（2337）因連虧（營益率 -5.08%、ROE -0.67%、EPS -1.78 元），基本面墊底（7.1 分）。但已出現營收連續成長的轉折跡象。</li>
+<li>南茂（8150）毛利率僅 14.35%，為封測業常態（資本密集低毛利），基本面偏弱（16.2 分）。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- 2b. 成長性 -->
+<div class="card collapsed">
+<h3>2b. 成長性分析（權重 20%）</h3>
+<div class="card-body">
+<p style="font-size:.88em;color:var(--txt3);margin-bottom:10px">評估營收年增率與近 3 月營收趨勢，反映公司的成長動能。</p>
+<table>
+<tr><th>公司</th><th>營收年增率(%)</th><th>近3月趨勢</th><th>近3月營收（千元）</th><th>成長性分數</th></tr>
+<tr><td class="name-cell">旺宏 2337</td><td class="up">+59.97</td><td class="up">連續成長</td><td>263→302→303 萬</td><td><strong>39.4</strong></td></tr>
+<tr><td class="name-cell">華邦電 2344</td><td class="up">+88.45</td><td class="up">連續成長</td><td>977→1,178→1,197 萬</td><td><strong>42.7</strong></td></tr>
+<tr><td class="name-cell">南亞科 2408</td><td class="up">+586.71</td><td class="up">連續成長</td><td>1,202→1,531→1,561 萬</td><td><strong>100.0</strong></td></tr>
+<tr><td class="name-cell">南茂 8150</td><td class="up">+22.11</td><td>無明確趨勢</td><td>220→229→214 萬</td><td><strong>20.1</strong></td></tr>
+<tr><td class="name-cell">晶豪科 3006</td><td class="up">+128.39</td><td class="down">連續衰退</td><td>217→215→209 萬</td><td><strong>17.3</strong></td></tr>
+<tr><td class="name-cell">十銓 4967</td><td class="down">-22.18</td><td class="down">連續衰退</td><td>363→349→115 萬</td><td><strong>0.0</strong></td></tr>
+</table>
+<div class="tip warn"><b>成長性評分方法</b>
+營收年增率佔 70%（正規化為 0-100），近 3 月趨勢佔 30%（連續成長 100、無明確趨勢 50、連續衰退 0）。
+<br><br>
+<strong>關鍵發現：</strong>
+<ul style="margin:6px 0 0 16px;font-size:.88em">
+<li>南亞科（2408）營收年增率高達 +586.71%，為 DRAM 景氣復甦的典型反轉股，成長性滿分（100.0 分）。</li>
+<li>十銓（4967）最新月營收僅 1.15 億，年減 22.18% 且連續衰退，成長性最差（0.0 分）。其 3 月營收較前兩月大幅萎縮，需特別留意。</li>
+<li>旺宏（2337）年增 59.97% 搭配連續成長，反映 eMMC 出貨放量帶動的營收轉折（39.4 分）。</li>
+<li>晶豪科（3006）雖年增 128.39%，但近 3 月營收連續衰退，高成長是否已見頂需觀察（17.3 分）。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- 2c. 估值 -->
+<div class="card collapsed">
+<h3>2c. 估值分析（權重 20%）</h3>
+<div class="card-body">
+<p style="font-size:.88em;color:var(--txt3);margin-bottom:10px">PE/PB 歷史百分位越低越便宜，殖利率越高越具吸引力。百分位反映近 5 年估值位階。</p>
+<table>
+<tr><th>公司</th><th>本益比</th><th>PE百分位</th><th>股價淨值比</th><th>PB百分位</th><th>殖利率(%)</th><th>估值分數</th></tr>
+<tr><td class="name-cell">旺宏 2337</td><td>18.85</td><td>93.0%</td><td>6.74</td><td class="down">99.9%</td><td>0.00</td><td><strong>1.1</strong></td></tr>
+<tr><td class="name-cell">華邦電 2344</td><td>125.0</td><td>91.0%</td><td>4.59</td><td>96.8%</td><td>0.45</td><td><strong>8.2</strong></td></tr>
+<tr><td class="name-cell">南亞科 2408</td><td>109.86</td><td class="down">99.2%</td><td>4.26</td><td>96.6%</td><td>0.64</td><td><strong>7.2</strong></td></tr>
+<tr><td class="name-cell">南茂 8150</td><td>88.03</td><td>89.1%</td><td class="up">1.82</td><td>97.6%</td><td>1.97</td><td><strong>22.6</strong></td></tr>
+<tr><td class="name-cell">晶豪科 3006</td><td>217.22</td><td class="down">99.8%</td><td>5.17</td><td>98.2%</td><td>0.51</td><td><strong>5.3</strong></td></tr>
+<tr><td class="name-cell">十銓 4967</td><td class="up">20.02</td><td class="up">35.9%</td><td>4.58</td><td>98.9%</td><td class="up">3.82</td><td><strong>57.8</strong></td></tr>
+</table>
+<div class="tip warn"><b>估值評分方法</b>
+PE 百分位佔 35%、PB 百分位佔 30%、殖利率佔 35%。百分位越低分數越高（用 100 - 百分位），殖利率正規化為 0-100。虧損公司 PE 不具參考性，PE 百分位權重降至 15%，其餘權重轉給 PB。
+<br><br>
+<strong>關鍵發現：</strong>
+<ul style="margin:6px 0 0 16px;font-size:.88em">
+<li>十銓（4967）PE 百分位僅 35.9%（近 5 年偏低位階），殖利率 3.82% 為最高，是 6 家中估值最便宜的（57.8 分）。</li>
+<li>晶豪科（3006）PE 百分位 99.8%、本益比 217 倍，估值極度昂貴（5.3 分）。</li>
+<li>旺宏（2337）PB 百分位 99.9% 為歷史最高區域，反映市場對 eMMC 題材已大幅反映。但因虧損中，PE 參考性有限。</li>
+<li>全部 6 家公司的 PB 百分位皆在 96% 以上，顯示整個記憶體產業估值都處於歷史高位區。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- 2d. 籌碼面 -->
+<div class="card collapsed">
+<h3>2d. 籌碼面分析（權重 15%）</h3>
+<div class="card-body">
+<p style="font-size:.88em;color:var(--txt3);margin-bottom:10px">綜合外資/投信近 20 日買賣超、外資持股比率、融資使用率等，評估籌碼面健康度。</p>
+<table>
+<tr><th>公司</th><th>外資20日<br>買超(張)</th><th>投信20日<br>買超(張)</th><th>外資<br>持股(%)</th><th>融資<br>使用率(%)</th><th>籌碼分數</th></tr>
+<tr><td class="name-cell">旺宏 2337</td><td class="up">+11,929</td><td class="up">+3,018</td><td>27.04</td><td>34.82</td><td><strong>50.4</strong></td></tr>
+<tr><td class="name-cell">華邦電 2344</td><td class="down">-80,984</td><td class="up">+85,169</td><td>17.68</td><td class="up">11.88</td><td><strong>52.2</strong></td></tr>
+<tr><td class="name-cell">南亞科 2408</td><td class="down">-52,544</td><td class="down">-22,211</td><td>10.28</td><td>14.15</td><td><strong>32.1</strong></td></tr>
+<tr><td class="name-cell">南茂 8150</td><td class="up">+15,441</td><td>-524</td><td class="up">42.84</td><td class="up">7.35</td><td><strong>84.0</strong></td></tr>
+<tr><td class="name-cell">晶豪科 3006</td><td class="up">+13,642</td><td class="up">+451</td><td>30.80</td><td>31.50</td><td><strong>55.9</strong></td></tr>
+<tr><td class="name-cell">十銓 4967</td><td>-1,354</td><td>-213</td><td>18.48</td><td class="down">46.19</td><td><strong>31.0</strong></td></tr>
+</table>
+<div class="tip warn"><b>籌碼面評分方法</b>
+外資買超方向佔 25%、投信買超方向佔 20%、外資持股比率佔 25%、融資使用率（越低越好）佔 30%。各指標正規化後加權合計。
+<br><br>
+<strong>關鍵發現：</strong>
+<ul style="margin:6px 0 0 16px;font-size:.88em">
+<li>南茂（8150）籌碼面最佳（84.0 分）：外資持股 42.84% 為最高，融資使用率 7.35% 為最低，外資近 20 日買超 15,441 張。</li>
+<li>南亞科（2408）雖然成長性最強，但外資與投信同步賣超，籌碼面疲弱（32.1 分），需留意法人是否「利多出貨」。</li>
+<li>華邦電（2344）呈現外資賣、投信買的分歧態勢，投信 20 日大買 85,169 張為最多。</li>
+<li>十銓（4967）融資使用率 46.19% 偏高，散戶追價意味濃厚，下檔風險較大。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- 2e. 護城河 -->
+<div class="card collapsed">
+<h3>2e. 護城河快評（權重 10%）</h3>
+<div class="card-body">
+<p style="font-size:.88em;color:var(--txt3);margin-bottom:10px">評估三大護城河維度：定價權、轉換成本、規模優勢。各項 1-3 分，滿分 9 分。旺宏與華邦電引用既有深度分析結果。</p>
+
+<div class="grid3">
+<!-- 旺宏 -->
+<div class="moat-card">
+<h4>2337 旺宏</h4>
+<div class="moat-score" style="color:var(--accent)">7.0</div>
+<div class="moat-level" style="color:var(--accent)">窄護城河（接近寬）</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">3/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">2.5/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">2/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+eMMC MLC NAND 全球唯一供應商，定價權滿分。車規 AEC-Q100 認證+嵌入式驗證週期 6-12 個月，轉換成本高。IDM 自有 12 吋晶圓廠，但非全球最大規模。
+<br><em>（引用自第三步競爭力分析）</em>
+</div>
+</div>
+
+<!-- 華邦電 -->
+<div class="moat-card">
+<h4>2344 華邦電</h4>
+<div class="moat-score" style="color:var(--accent)">6.0</div>
+<div class="moat-level" style="color:var(--accent)">窄護城河</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">2/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">2/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">2.5/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+DRAM+NOR+SLC NAND 三線並進的 IDM 廠，產品線寬度為同業最廣。高雄新 12 吋廠投產，規模持續擴大。NOR Flash 全球前三（僅次旺宏與兆易），具一定定價權但非獨佔。DRAM 規模遠小於三星/SK/美光，定價權有限。
+</div>
+</div>
+
+<!-- 南亞科 -->
+<div class="moat-card">
+<h4>2408 南亞科</h4>
+<div class="moat-score" style="color:var(--warn)">5.0</div>
+<div class="moat-level" style="color:var(--warn)">窄護城河（弱）</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">1/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">1.5/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">2/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+純 DRAM 廠，全球市佔僅約 3%，定價能力極弱，完全被三星/SK 海力士/美光三巨頭主導。製程已推進至 1A nm 但與領導者仍有差距。台塑集團支持提供一定資本壁壘，但產品同質性高、差異化不足。轉換成本來自客戶驗證週期，但 DRAM 規格較標準化。
+</div>
+</div>
+
+<!-- 南茂 -->
+<div class="moat-card">
+<h4>8150 南茂</h4>
+<div class="moat-score" style="color:var(--warn)">4.5</div>
+<div class="moat-level" style="color:var(--warn)">窄護城河（弱）</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">1/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">2/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">1.5/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+台灣第二大記憶體封測廠（僅次力成），客戶含旺宏、華邦電等。封測業毛利率結構性偏低（14.35%），定價權受限於上游 IDM 廠。轉換成本中等（產線認證需時，但非不可替代）。規模雖在台灣市場有一定地位，但全球封測市場競爭者眾多。
+</div>
+</div>
+
+<!-- 晶豪科 -->
+<div class="moat-card">
+<h4>3006 晶豪科</h4>
+<div class="moat-score" style="color:var(--accent)">6.5</div>
+<div class="moat-level" style="color:var(--accent)">窄護城河</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">2.5/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">2/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">1.5/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+NOR Flash IC 設計公司（Fabless），專注利基型 NOR 產品（SPI NOR、Parallel NOR 等）。Fabless 模式無固定資產負擔，毛利率 32.33% 優於多數同業。在工控/車用 NOR Flash 有一定客戶基礎，產品設計進入客戶系統後轉換成本中等。但規模較旺宏、兆易為小，在大客戶談判中議價力有限。
+</div>
+</div>
+
+<!-- 十銓 -->
+<div class="moat-card">
+<h4>4967 十銓</h4>
+<div class="moat-score" style="color:var(--danger)">3.5</div>
+<div class="moat-level" style="color:var(--danger)">幾無護城河</div>
+<div style="margin-top:10px;text-align:left">
+<div class="moat-item"><span>定價權</span><span style="font-weight:700">1/3</span></div>
+<div class="moat-item"><span>轉換成本</span><span style="font-weight:700">1/3</span></div>
+<div class="moat-item"><span>規模優勢</span><span style="font-weight:700">1.5/3</span></div>
+</div>
+<div style="font-size:.78em;color:var(--txt3);margin-top:8px;text-align:left">
+記憶體模組品牌商，主要向上游顆粒廠採購後組裝貼牌。產品同質性極高（DRAM 模組、SSD 等），無技術壁壘。定價權極弱，完全受上游顆粒報價與終端通路競爭牽制。消費者轉換成本幾乎為零。品牌在電競/超頻領域有一定知名度（T-FORCE），但整體規模不足以構成有效護城河。
+</div>
+</div>
+</div>
+
+<div class="tip info"><b>護城河評分轉換</b>
+護城河原始分（滿分 9 分）轉換為 0-100 百分制：旺宏 7.0→77.8、華邦電 6.0→66.7、南亞科 5.0→55.6、南茂 4.5→50.0、晶豪科 6.5→72.2、十銓 3.5→38.9。轉換公式：(原始分 / 9) × 100。
+</div>
+</div>
+</div>
+
+
+<!-- ===== 3. 綜合排名 ===== -->
+<div class="section-title">三、六維度加權綜合排名</div>
+
+<div class="card">
+<h3>評分權重與計算公式</h3>
+<div class="card-body">
+<table>
+<tr><th>維度</th><th>權重</th><th>評分依據</th></tr>
+<tr><td>基本面</td><td>25%</td><td>毛利率、營業利益率、ROE、EPS 正規化後等權平均</td></tr>
+<tr><td>成長性</td><td>20%</td><td>營收年增率（70%）+ 近3月趨勢（30%）</td></tr>
+<tr><td>估值</td><td>20%</td><td>PE百分位（35%）+ PB百分位（30%）+ 殖利率（35%），百分位反轉計分</td></tr>
+<tr><td>籌碼面</td><td>15%</td><td>外資買超方向（25%）+投信買超方向（20%）+外資持股（25%）+融資使用率反轉（30%）</td></tr>
+<tr><td>護城河</td><td>10%</td><td>定價權+轉換成本+規模優勢 三項合計轉換為百分制</td></tr>
+<tr><td>整體調整</td><td>10%</td><td>產業地位、結構性優勢/劣勢、特殊風險之綜合調整</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 最終排名表 -->
+<div style="overflow-x:auto;margin-top:16px">
+<table class="final-rank-table">
+<thead>
+<tr>
+<th>排名</th>
+<th>公司</th>
+<th>基本面<br>(25%)</th>
+<th>成長性<br>(20%)</th>
+<th>估值<br>(20%)</th>
+<th>籌碼面<br>(15%)</th>
+<th>護城河<br>(10%)</th>
+<th>整體調整<br>(10%)</th>
+<th>加權<br>總分</th>
+<th>投資價值</th>
+</tr>
+</thead>
+<tbody>
+<!-- 排名1: 南亞科 -->
+<tr class="highlight-best">
+<td><span class="rank-badge gold">1</span></td>
+<td class="name-cell">2408 南亞科</td>
+<td>66.4</td>
+<td>100.0</td>
+<td>7.2</td>
+<td>32.1</td>
+<td>55.6</td>
+<td>50</td>
+<td style="font-weight:900;font-size:1.15em;color:var(--bull)">53.4</td>
+<td><span style="color:var(--bear);font-weight:700">高估</span></td>
+</tr>
+<!-- 排名2: 十銓 -->
+<tr class="highlight-best">
+<td><span class="rank-badge silver">2</span></td>
+<td class="name-cell">4967 十銓</td>
+<td>68.0</td>
+<td>0.0</td>
+<td>57.8</td>
+<td>31.0</td>
+<td>38.9</td>
+<td>45</td>
+<td style="font-weight:900;font-size:1.15em;color:var(--bull)">41.6</td>
+<td><span style="color:var(--warn);font-weight:700">合理偏低估</span></td>
+</tr>
+<!-- 排名3: 華邦電 -->
+<tr>
+<td><span class="rank-badge bronze">3</span></td>
+<td class="name-cell">2344 華邦電</td>
+<td>40.5</td>
+<td>42.7</td>
+<td>8.2</td>
+<td>52.2</td>
+<td>66.7</td>
+<td>55</td>
+<td style="font-weight:900;font-size:1.15em">40.3</td>
+<td><span style="color:var(--bear);font-weight:700">高估</span></td>
+</tr>
+<!-- 排名4: 晶豪科 -->
+<tr>
+<td>4</td>
+<td class="name-cell">3006 晶豪科</td>
+<td>46.7</td>
+<td>17.3</td>
+<td>5.3</td>
+<td>55.9</td>
+<td>72.2</td>
+<td>50</td>
+<td style="font-weight:900;font-size:1.15em">36.8</td>
+<td><span style="color:var(--bear);font-weight:700">嚴重高估</span></td>
+</tr>
+<!-- 排名5: 南茂 -->
+<tr class="highlight-worst">
+<td>5</td>
+<td class="name-cell">8150 南茂</td>
+<td>16.2</td>
+<td>20.1</td>
+<td>22.6</td>
+<td>84.0</td>
+<td>50.0</td>
+<td>40</td>
+<td style="font-weight:900;font-size:1.15em">34.2</td>
+<td><span style="color:var(--warn);font-weight:700">合理偏高估</span></td>
+</tr>
+<!-- 排名6: 旺宏 -->
+<tr class="highlight-worst">
+<td>6</td>
+<td class="name-cell">2337 旺宏</td>
+<td>7.1</td>
+<td>39.4</td>
+<td>1.1</td>
+<td>50.4</td>
+<td>77.8</td>
+<td>70</td>
+<td style="font-weight:900;font-size:1.15em">32.2</td>
+<td><span style="color:var(--bear);font-weight:700">高估</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="tip info"><b>排名說明</b>
+加權總分 = 基本面×0.25 + 成長性×0.20 + 估值×0.20 + 籌碼面×0.15 + 護城河×0.10 + 整體調整×0.10。
+<br><br>
+各項計算明細（以旺宏為例）：7.1×0.25 + 39.4×0.20 + 1.1×0.20 + 50.4×0.15 + 77.8×0.10 + 70×0.10 = 1.78 + 7.88 + 0.22 + 7.56 + 7.78 + 7.00 = <strong>32.2</strong>。
+<br><br>
+<strong>整體調整分依據：</strong>
+<ul style="margin:6px 0 0 16px;font-size:.88em">
+<li><strong>旺宏 70 分：</strong>eMMC 全球獨佔 + 產業結構性轉折 + 擴產 220 億投資，給予最高調整分。</li>
+<li><strong>華邦電 55 分：</strong>三線 IDM 佈局穩健 + 高雄新廠投產，中上調整。</li>
+<li><strong>南亞科 50 分：</strong>純 DRAM 景氣循環股，獲利高度依賴產業週期，中性。</li>
+<li><strong>晶豪科 50 分：</strong>Fabless 模式輕資產，但規模偏小，中性。</li>
+<li><strong>十銓 45 分：</strong>基本面與殖利率優秀，但無技術壁壘且營收衰退中，略低。</li>
+<li><strong>南茂 40 分：</strong>封測業結構性低毛利 + 成長性有限，給予最低調整分。</li>
+</ul>
+</div>
+
+<div class="tip good"><b>投資價值判定標準</b>
+基於 PE/PB 百分位交叉判斷：
+<ul style="margin:4px 0 0 16px;font-size:.88em">
+<li><strong>低估</strong>：PE 百分位 < 30% 且 PB 百分位 < 50%</li>
+<li><strong>合理偏低估</strong>：PE 百分位 < 50% 或殖利率 > 3%</li>
+<li><strong>合理</strong>：PE 百分位 50-70%</li>
+<li><strong>合理偏高估</strong>：PE 百分位 70-90%</li>
+<li><strong>高估</strong>：PE 百分位 > 90%</li>
+<li><strong>嚴重高估</strong>：PE 百分位 > 95% 且 PB 百分位 > 95%</li>
+</ul>
+</div>
+
+
+<!-- ===== 4. 關鍵差異摘要 ===== -->
+<div class="section-title">四、關鍵差異摘要</div>
+
+<div class="card">
+<h3>5 大關鍵發現</h3>
+<div class="card-body">
+
+<div class="tip danger"><b>1. 整體產業估值已達歷史高位</b>
+6 家公司的 PB 百分位全部在 96.6%-99.9% 之間，代表整個記憶體族群的估值已處於近 5 年最貴區間。這是產業循環股在景氣反轉初期的典型現象：盈餘還在低基期反彈，但股價已提前反映未來 1-2 年的獲利預期。投資人在此位階進場需特別注意「買在景氣高點」的風險。</div>
+
+<div class="tip good"><b>2. 旺宏的「營收轉折 + 結構性獨佔」組合最具想像空間</b>
+旺宏雖然基本面墊底（仍虧損中），但具備三個獨特優勢：(1) eMMC MLC NAND 全球唯一供應商，(2) 營收連續 3 個月成長、年增 59.97%，(3) 護城河評分最高（7.0/9）。這是典型的「從谷底反轉」型投資標的，潛在報酬高但風險亦高（PB 百分位已達 99.9%）。</div>
+
+<div class="tip warn"><b>3. 十銓是唯一估值偏低的標的，但護城河最弱</b>
+十銓 PE 百分位僅 35.9%，殖利率 3.82% 為最高，EPS 13.07 元遠超同業。然而其護城河評分僅 3.5/9（最低），且最新月營收年減 22.18%、近 3 月連續衰退，加上融資使用率 46.19% 偏高。十銓本質是「高 Beta 景氣循環股」，在記憶體報價下行時會首當其衝。</div>
+
+<div class="tip info"><b>4. 南亞科呈現典型「景氣循環極端值」</b>
+營收年增 586.71%（基期極低所致）、毛利率 49.05%、營益率 39.15% 均為最高。但 PE 百分位 99.2%，法人同步賣超（外資 -52,544 張、投信 -22,211 張），暗示聰明錢可能認為 DRAM 景氣高點將至。純 DRAM 廠的獲利波動極大，目前的高毛利不具持續性。</div>
+
+<div class="tip warn"><b>5. 華邦電投信大買 vs 外資大賣的分歧值得關注</b>
+華邦電出現投信 20 日買超 85,169 張（最多）、外資賣超 80,984 張（最多）的極端分歧。可能原因：(1) 外資在全球記憶體曝險中減碼台灣次級廠，(2) 投信看好高雄新廠投產效益做中長期佈局。這種法人分歧通常意味股價將出現較大波動。</div>
+
+</div>
+</div>
+
+
+<!-- ===== 5. 投資建議 ===== -->
+<div class="section-title">五、投資建議</div>
+
+<div class="card">
+<h3>基於排名的策略建議</h3>
+<div class="card-body">
+
+<table>
+<tr><th>公司</th><th>策略建議</th><th>適合類型</th><th>風險等級</th></tr>
+<tr>
+<td class="name-cell">2337 旺宏</td>
+<td style="text-align:left">轉折題材股，適合看好 eMMC 結構性成長的積極投資人。已大幅反映預期，建議等回檔 10-15% 再分批布局。重點觀察：Q2 eMMC 32GB 量產進度、季度轉盈時點。</td>
+<td>積極成長型</td>
+<td style="color:var(--bear);font-weight:700">高</td>
+</tr>
+<tr>
+<td class="name-cell">2344 華邦電</td>
+<td style="text-align:left">多產品線 IDM 廠，新廠效益逐步顯現。估值偏高但成長性佳（年增 88.45%）。適合中長期持有。觀察：高雄廠良率爬坡、DRAM 與 NOR 雙引擎是否同步向上。</td>
+<td>穩健成長型</td>
+<td style="color:var(--warn);font-weight:700">中高</td>
+</tr>
+<tr>
+<td class="name-cell">2408 南亞科</td>
+<td style="text-align:left">純 DRAM 景氣循環股，目前處於獲利高峰區。法人同步賣超為警訊。短線不宜追高，若 DRAM 報價持續走強可逢低布局。觀察：DRAM 合約價走勢、1A nm 製程良率。</td>
+<td>景氣循環型</td>
+<td style="color:var(--bear);font-weight:700">高</td>
+</tr>
+<tr>
+<td class="name-cell">8150 南茂</td>
+<td style="text-align:left">籌碼面最佳但成長性有限。外資持股 42.84% 提供下檔保護。適合追求穩定股息（殖利率 1.97%）的防禦型投資人。觀察：記憶體封測訂單能見度、毛利率能否提升。</td>
+<td>防禦型</td>
+<td style="color:var(--accent);font-weight:700">中低</td>
+</tr>
+<tr>
+<td class="name-cell">3006 晶豪科</td>
+<td style="text-align:left">PE 217 倍為極度高估，即使 Fabless 模式輕資產，當前估值已充分反映甚至過度反映未來成長。營收近 3 月連續衰退為警訊。建議觀望或減碼。觀察：營收衰退是否持續、NOR 報價走勢。</td>
+<td>觀望/減碼</td>
+<td style="color:var(--bear);font-weight:700">高</td>
+</tr>
+<tr>
+<td class="name-cell">4967 十銓</td>
+<td style="text-align:left">估值最便宜（PE 百分位 35.9%），殖利率 3.82% 具吸引力。但無護城河、營收衰退中、融資使用率偏高。適合在記憶體報價確認上行趨勢後做波段操作。觀察：記憶體模組報價、營收何時止穩。</td>
+<td>價值波段型</td>
+<td style="color:var(--warn);font-weight:700">中高</td>
+</tr>
+</table>
+
+<div class="tip danger"><b>整體風險提醒</b>
+記憶體產業為高度循環性產業，目前整體估值處於歷史高位區間（6 家 PB 百分位皆 > 96%）。在產業景氣高點進場，即使基本面良好，仍可能面臨估值修正的風險。建議控制記憶體族群在投資組合中的比重，分散至不同產業。</div>
+
+</div>
+</div>
+
+
+<!-- ===== 6. 免責聲明 ===== -->
+<div class="disclaimer">
+<strong>免責聲明</strong><br>
+本報告僅供研究參考，不構成任何投資建議或要約。所有數據來自 finlab 資料庫即時取數（2026-03-21），護城河快評為 AI 基於公開資訊之判斷，六維度評分為量化模型計算結果，均可能存在偏差或遺漏。投資人應自行研判，並承擔投資風險。過去績效不代表未來報酬。
+<br><br>
+<strong>資料來源</strong>：finlab 金融資料庫（收盤價、本益比、股價淨值比、殖利率、毛利率、營業利益率、ROE、EPS、月營收、營收年增率、法人買賣超、融資使用率、外資持股比率）。護城河分析引用旺宏第三步競爭力分析報告及 AI 產業知識。
+<br><br>
+<strong>分析日期</strong>：2026 年 3 月 21 日 ｜ <strong>分析引擎</strong>：天機閣產業鏈分析系統 — 同業比較矩陣（模式 B）
+</div>
+
+<div class="footer">
+    天機閣 — 藏經閣 ｜ 記憶體產業同業比較矩陣 ｜ 2026-03-21 ｜ 模式 B
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// 展開/收合
+function toggleCard(h3){
+    h3.parentElement.classList.toggle('collapsed');
+}
+document.querySelectorAll('.card h3').forEach(h3=>{
+    h3.addEventListener('click',()=>toggleCard(h3));
+});
+
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(card=>{
+        if(collapse) card.classList.add('collapsed');
+        else card.classList.remove('collapsed');
+    });
+}
+
+// 預設收合帶 collapsed 的卡片已在 HTML 中設定
+</script>
+</body>
+</html>
