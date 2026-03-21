@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>達興材料（5234）— 天機閣推衍報告</title>
+<style>
+  :root {
+    --bg-dark: #1a1410; --bg-card: #2a2118; --bg-card-hover: #342a1f;
+    --border: #4a3828; --border-light: #5a4838;
+    --text: #e8dcc8; --text-dim: #a89878; --text-bright: #fff8e8;
+    --accent: #d4a574; --accent-light: #e8c49a; --accent-dark: #b8854a;
+    --green: #7cb87c; --green-bg: rgba(124,184,124,0.12);
+    --red: #d47c7c; --red-bg: rgba(212,124,124,0.12);
+    --blue: #7c9cd4; --blue-bg: rgba(124,156,212,0.12);
+    --gold: #d4b87c; --gold-bg: rgba(212,184,124,0.12);
+    --purple: #b47cd4; --purple-bg: rgba(180,124,212,0.12);
+    --orange: #d4944c; --orange-bg: rgba(212,148,76,0.12);
+    --fias-f: #7cb87c; --fias-i: #7c9cd4; --fias-a: #d4b87c; --fias-s: #d47c7c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: var(--bg-dark); color: var(--text);
+    line-height: 1.7; min-height: 100vh;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #2a2118 0%, #3a2a18 50%, #2a2118 100%);
+    border: 1px solid var(--accent-dark); border-radius: 16px;
+    padding: 36px 32px; margin-bottom: 28px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(212,165,116,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero h1 { font-size: 1.7em; color: var(--accent-light); margin-bottom: 6px; position: relative; }
+  .hero .subtitle { font-size: 0.95em; color: var(--text-dim); margin-bottom: 16px; position: relative; }
+  .hero .badge-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; position: relative; }
+  .badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.82em;
+    background: rgba(212,165,116,0.12); border: 1px solid var(--accent-dark); color: var(--accent-light);
+  }
+  .badge.green { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .badge.blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+  .badge.red { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .badge.purple { background: rgba(180,124,212,0.12); border-color: var(--purple); color: var(--purple); }
+
+  /* Card = details */
+  details.card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 16px; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  details.card[open] { border-color: var(--accent-dark); }
+  details.card > summary {
+    padding: 16px 20px; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 1.08em; font-weight: 700; color: var(--accent-light);
+    user-select: none; transition: background 0.15s;
+  }
+  details.card > summary:hover { background: var(--bg-card-hover); }
+  details.card > summary::-webkit-details-marker { display: none; }
+  details.card > summary::after {
+    content: '▼'; font-size: 0.7em; color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+  details.card:not([open]) > summary::after { transform: rotate(-90deg); }
+  details.card > .card-body { padding: 0 20px 20px; }
+
+  /* Sub-card (nested) */
+  details.sub-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 8px; margin: 10px 0; overflow: hidden;
+  }
+  details.sub-card > summary {
+    padding: 10px 14px; cursor: pointer; list-style: none;
+    font-size: 0.95em; font-weight: 600; color: var(--text-bright);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  details.sub-card > summary::-webkit-details-marker { display: none; }
+  details.sub-card > summary::after { content: '▼'; font-size: 0.6em; color: var(--text-dim); transition: transform 0.2s; }
+  details.sub-card:not([open]) > summary::after { transform: rotate(-90deg); }
+  details.sub-card > .sub-body { padding: 0 14px 14px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.88em; }
+  th, td { padding: 8px 10px; border: 1px solid var(--border); text-align: left; }
+  th { background: rgba(212,165,116,0.1); color: var(--accent-light); font-weight: 600; }
+  td { color: var(--text); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* Evidence card */
+  .ev { background: rgba(255,255,255,0.04); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 10px 0; font-size: 0.88em; }
+  .ev-t { font-weight: 600; color: var(--text-bright); margin-bottom: 3px; }
+  .ev-d { color: var(--text); line-height: 1.6; }
+  .ev-s { color: var(--text-dim); font-size: 0.85em; margin-top: 4px; }
+
+  /* FIAS */
+  .fias { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 700; margin: 0 2px; }
+  .fias-f { background: rgba(124,184,124,0.2); color: var(--fias-f); }
+  .fias-i { background: rgba(124,156,212,0.2); color: var(--fias-i); }
+  .fias-a { background: rgba(212,184,124,0.2); color: var(--fias-a); }
+  .fias-s { background: rgba(212,124,124,0.2); color: var(--fias-s); }
+
+  /* Influence chain node */
+  .chain-wrapper { overflow-x: auto; padding: 10px 0; }
+  .chain-wrapper svg { display: block; margin: 0 auto; }
+
+  /* Scenario box */
+  .scenario { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
+  .scenario.bullish { border-left: 4px solid var(--green); background: var(--green-bg); }
+  .scenario.base { border-left: 4px solid var(--blue); background: var(--blue-bg); }
+  .scenario.bear { border-left: 4px solid var(--red); background: var(--red-bg); }
+  .scenario.black { border-left: 4px solid var(--purple); background: rgba(180,124,212,0.08); }
+  .scenario h4 { color: var(--text-bright); margin-bottom: 6px; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 30px; margin: 16px 0; }
+  .timeline::before {
+    content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+    width: 2px; background: var(--accent-dark);
+  }
+  .tl-item { position: relative; margin-bottom: 18px; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -24px; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg-dark);
+  }
+  .tl-date { font-size: 0.82em; color: var(--accent); font-weight: 600; }
+  .tl-title { font-weight: 600; color: var(--text-bright); margin: 2px 0; }
+  .tl-desc { font-size: 0.88em; color: var(--text); }
+  .tl-impact { font-size: 0.82em; margin-top: 3px; }
+  .tl-impact.up { color: var(--green); }
+  .tl-impact.down { color: var(--red); }
+  .tl-impact.neutral { color: var(--text-dim); }
+
+  /* Action box */
+  .action-box {
+    background: linear-gradient(135deg, rgba(212,165,116,0.1) 0%, rgba(212,165,116,0.05) 100%);
+    border: 1px solid var(--accent-dark); border-radius: 12px; padding: 18px 20px; margin: 14px 0;
+  }
+  .action-box h4 { color: var(--accent-light); margin-bottom: 8px; }
+
+  /* Toggle buttons */
+  .toggle-btns { text-align: right; margin-bottom: 12px; }
+  .toggle-btns button {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 0.82em; margin-left: 6px;
+  }
+  .toggle-btns button:hover { background: var(--bg-card-hover); color: var(--accent-light); }
+
+  /* Probability meter */
+  .prob-meter { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .prob-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .prob-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .prob-label { font-size: 0.82em; color: var(--text-dim); min-width: 40px; text-align: right; }
+
+  /* Diff highlight */
+  .diff-new { background: rgba(124,184,124,0.15); padding: 1px 4px; border-radius: 3px; }
+  .diff-old { background: rgba(212,124,124,0.15); padding: 1px 4px; border-radius: 3px; text-decoration: line-through; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero { padding: 24px 16px; }
+    .hero h1 { font-size: 1.3em; }
+    details.card > summary { padding: 12px 14px; font-size: 1em; }
+    details.card > .card-body { padding: 0 14px 14px; }
+    table { font-size: 0.82em; }
+  }
+
+  /* Validity stamp */
+  .validity-stamp {
+    background: var(--orange-bg); border: 2px dashed var(--orange);
+    border-radius: 12px; padding: 16px 20px; margin-top: 20px;
+    text-align: center;
+  }
+  .validity-stamp h3 { color: var(--orange); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <h1>達興材料（5234）— 天機閣推衍報告</h1>
+  <div class="subtitle">天機閣深度調查系統 v1.7 — 第八步：推衍推演</div>
+  <div class="badge-row">
+    <span class="badge">推衍日期：2026-03-22</span>
+    <span class="badge blue">基準股價：388 元</span>
+    <span class="badge green">最可能路徑：基準偏多</span>
+    <span class="badge">推衍有效期：至 2026-04-30</span>
+    <span class="badge purple">FIAS計數：F18 / I7 / A4 / S2</span>
+  </div>
+</div>
+
+<!-- Toggle -->
+<div class="toggle-btns">
+  <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=true)">全部展開</button>
+  <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ==================== 8a. 推衍基礎確認 ==================== -->
+<details class="card" open>
+  <summary>8a. 推衍基礎確認 — 核心事實回溯</summary>
+  <div class="card-body">
+    <p style="color:var(--text-dim);margin-bottom:12px;">以下為推衍所依據的關鍵事實，每條均回溯至原始資料驗證。</p>
+    <table>
+      <thead><tr><th>#</th><th>核心事實</th><th>FIAS</th><th>原始出處</th><th>推衍意涵</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>2025 全年 EPS 7.37 元（+32.55%）</td><td><span class="fias fias-f">事實</span></td><td>2026/02/26 法說會 + finlab 財報</td><td>獲利高速成長基礎穩固，2026E EPS 8.5+ 可期</td></tr>
+        <tr><td>2</td><td>半導體材料營收 7.73 億（+107.8%），佔比 16.7%</td><td><span class="fias fias-f">事實</span></td><td>2026/02/26 法說會</td><td>轉型核心引擎加速中，佔比翻倍趨勢明確</td></tr>
+        <tr><td>3</td><td>毛利率 40.6%（首破 40%，連 8 季上升）</td><td><span class="fias fias-f">事實</span></td><td>finlab + 法說會</td><td>產品組合優化推升獲利品質，半導體高毛利稀釋顯示器低毛利</td></tr>
+        <tr><td>4</td><td>友達佔營收 48.88%</td><td><span class="fias fias-f">事實</span></td><td>2024 年報客戶集中度</td><td>最大單點風險，但利益綁定（股東關係）提供緩衝</td></tr>
+        <tr><td>5</td><td>量產 12 項、驗證中 13 項、2 項進 2 奈米、1 項供美國廠</td><td><span class="fias fias-f">事實</span></td><td>2026/02/26 法說會</td><td>產品管線豐富且涵蓋先進製程，為 2027+ 營收儲備子彈</td></tr>
+        <tr><td>6</td><td>CoWoS 月產能 2026 擴至 9.5-12.5 萬片，CAGR 80%</td><td><span class="fias fias-f">事實</span></td><td>台積電法說會 + 產業報告</td><td>先進封裝材料需求確定性極高</td></tr>
+        <tr><td>7</td><td>台積電在地採購 10%→50%（2030 目標）</td><td><span class="fias fias-f">事實</span></td><td>台積電 ESG 報告</td><td>結構性順風，國產替代不可逆</td></tr>
+        <tr><td>8</td><td>ACH 看多合計 63%（H1 35% + H3 28%）</td><td><span class="fias fias-i">推論</span></td><td>第四步 ACH 分析</td><td>分析框架支持偏多，但需持續驗證</td></tr>
+        <tr><td>9</td><td>估值 PE 51.4×，PBR 11.02×</td><td><span class="fias fias-f">事實</span></td><td>finlab（2026/03/20）</td><td>估值已高，需要持續超預期才能維持</td></tr>
+        <tr><td>10</td><td>第七步概率加權期望價 379.1 元 ≈ 現價 378.5 元</td><td><span class="fias fias-i">推論</span></td><td>第七步決策輸出</td><td>市場定價合理，安全邊際不足，向上需要新催化劑</td></tr>
+      </tbody>
+    </table>
+
+    <div class="ev">
+      <div class="ev-t">推衍基礎判斷</div>
+      <div class="ev-d">達興材料正處於「面板→半導體」轉型的加速階段。基本面動能強勁（EPS +32%、半導體 +108%、毛利率破 40%），但估值已充分反映短期利多（PE 51×）。推衍需聚焦：<strong>催化劑能否持續超出市場預期，或風險因子是否率先爆發。</strong></div>
+      <div class="ev-s">基礎確認完成 — 10 項核心事實中 8 項為 F 級（事實），分析基礎紮實</div>
+    </div>
+  </div>
+</details>
+
+<!-- ==================== 8b. 最新情報更新 ==================== -->
+<details class="card" open>
+  <summary>8b. OSINT 最新情報更新（2026-03-22 搜尋）</summary>
+  <div class="card-body">
+    <p style="color:var(--text-dim);margin-bottom:12px;">比對第七步分析日（2026-03-22 凌晨）與最新公開情報的差異。</p>
+
+    <table>
+      <thead><tr><th>項目</th><th>分析日資料</th><th>最新情報</th><th>FIAS</th><th>影響判斷</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>股價</td>
+          <td>378.5 元（3/20 收盤）</td>
+          <td><span class="diff-new">388 元（3/21）</span></td>
+          <td><span class="fias fias-f">事實</span></td>
+          <td style="color:var(--green);">上漲 2.5%，法說會後資金持續流入</td>
+        </tr>
+        <tr>
+          <td>2026年1月營收</td>
+          <td>4.12 億（YoY +20.07%）</td>
+          <td>無更新（一致）</td>
+          <td><span class="fias fias-f">事實</span></td>
+          <td>符合高雙位數成長指引</td>
+        </tr>
+        <tr>
+          <td>2月營收</td>
+          <td>未取得</td>
+          <td><span class="diff-new">待公布（3月10日前應已公布但搜尋未取得確切數字）</span></td>
+          <td><span class="fias fias-a">假設</span></td>
+          <td style="color:var(--gold);">資料缺口，需追蹤補齊</td>
+        </tr>
+        <tr>
+          <td>CoWoS 產能規劃</td>
+          <td>2026 月產能 12.5 萬片</td>
+          <td><span class="diff-new">大摩上修輝達 CoWoS-L 需求：59→70 萬片/年；台積電 2H26 擴大釋出 CoW 訂單予 OSAT</span></td>
+          <td><span class="fias fias-f">事實</span></td>
+          <td style="color:var(--green);">需求上修 = 材料用量超預期，對達興為正面催化</td>
+        </tr>
+        <tr>
+          <td>法說會情報</td>
+          <td>2026/02/26 召開</td>
+          <td>董事長林正一：「2026 年半導體成長動能非常強勁，逐季成長續創新高」</td>
+          <td><span class="fias fias-i">推論</span></td>
+          <td style="color:var(--green);">管理層信心維持高檔</td>
+        </tr>
+        <tr>
+          <td>台積電封裝進展</td>
+          <td>CoWoS 為主</td>
+          <td><span class="diff-new">新封裝平台 CoPoS 曝光（面板級封裝），2027+ 量產</span></td>
+          <td><span class="fias fias-i">推論</span></td>
+          <td style="color:var(--green);">達興面板+半導體雙重背景可能在 CoPoS 有獨特優勢</td>
+        </tr>
+        <tr>
+          <td>群益目標價</td>
+          <td>512 元</td>
+          <td>無更新（一致）</td>
+          <td><span class="fias fias-i">推論</span></td>
+          <td>法人看多維持</td>
+        </tr>
+        <tr>
+          <td>先進封裝競爭</td>
+          <td>—</td>
+          <td><span class="diff-new">非台積電體系快速崛起（英特爾承接政策型訂單）</span></td>
+          <td><span class="fias fias-f">事實</span></td>
+          <td style="color:var(--blue);">中性偏正面：市場變大但競爭也增加，達興需拓展非台積電客戶</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="ev">
+      <div class="ev-t">情報更新判斷</div>
+      <div class="ev-d">最新情報整體偏正面：CoWoS 需求上修、管理層維持強勢指引、股價延續上漲動能。唯一缺口是 2 月營收數據尚未確認。<strong>CoPoS 新封裝平台是新增變數</strong>，達興的面板+半導體跨域背景可能是切入 CoPoS 的差異化優勢，值得追蹤。</div>
+      <div class="ev-s">新增情報：3 項新事實（CoWoS 上修/CoPoS/先進封裝競爭格局變化）+ 1 項推論（管理層信心）</div>
+    </div>
+  </div>
+</details>
+
+<!-- ==================== 8c. 影響鏈分析 ==================== -->
+<details class="card">
+  <summary>8c. 影響鏈分析（天機閣推衍方法一）</summary>
+  <div class="card-body">
+    <p style="color:var(--text-dim);margin-bottom:16px;">從最新情報挑選 3 條關鍵影響鏈，分析事件的多層級因果傳導。</p>
+
+    <!-- 影響鏈 1 -->
+    <details class="sub-card" open>
+      <summary>影響鏈 A：CoWoS 需求上修 → 材料拉貨加速</summary>
+      <div class="sub-body">
+        <div class="chain-wrapper">
+          <svg viewBox="0 0 860 200" width="100%" style="max-width:860px;">
+            <!-- 節點 -->
+            <rect x="10" y="70" width="160" height="60" rx="10" fill="#2a3a1f" stroke="#7cb87c" stroke-width="1.5"/>
+            <text x="90" y="95" text-anchor="middle" fill="#7cb87c" font-size="12" font-weight="bold">觸發事件</text>
+            <text x="90" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">輝達CoWoS-L需求</text>
+            <text x="90" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">59→70萬片/年</text>
+
+            <rect x="220" y="70" width="160" height="60" rx="10" fill="#1f2a3a" stroke="#7c9cd4" stroke-width="1.5"/>
+            <text x="300" y="95" text-anchor="middle" fill="#7c9cd4" font-size="12" font-weight="bold">一階影響</text>
+            <text x="300" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">台積電加速擴產</text>
+            <text x="300" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">先進封裝材料拉貨↑</text>
+
+            <rect x="430" y="30" width="175" height="55" rx="10" fill="#2a2a1f" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="517" y="52" text-anchor="middle" fill="#d4b87c" font-size="12" font-weight="bold">二階影響（達興）</text>
+            <text x="517" y="70" text-anchor="middle" fill="#e8dcc8" font-size="10">封裝材料營收+30~50%</text>
+
+            <rect x="430" y="115" width="175" height="55" rx="10" fill="#2a2a1f" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="517" y="137" text-anchor="middle" fill="#d4b87c" font-size="12" font-weight="bold">二階影響（競爭）</text>
+            <text x="517" y="155" text-anchor="middle" fill="#e8dcc8" font-size="10">日系產能更吃緊→國產替代加速</text>
+
+            <rect x="660" y="70" width="180" height="60" rx="10" fill="#3a1f1f" stroke="#d4944c" stroke-width="1.5"/>
+            <text x="750" y="95" text-anchor="middle" fill="#d4944c" font-size="12" font-weight="bold">三階影響</text>
+            <text x="750" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">半導體佔比提前達25%</text>
+            <text x="750" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">→ 估值重定位觸發</text>
+
+            <!-- 箭頭 -->
+            <line x1="170" y1="100" x2="220" y2="100" stroke="#7cb87c" stroke-width="2" marker-end="url(#arrow-g)"/>
+            <line x1="380" y1="90" x2="430" y2="57" stroke="#7c9cd4" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+            <line x1="380" y1="110" x2="430" y2="142" stroke="#7c9cd4" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+            <line x1="605" y1="57" x2="660" y2="90" stroke="#d4b87c" stroke-width="1.5" marker-end="url(#arrow-y)"/>
+            <line x1="605" y1="142" x2="660" y2="110" stroke="#d4b87c" stroke-width="1.5" marker-end="url(#arrow-y)"/>
+
+            <defs>
+              <marker id="arrow-g" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7cb87c"/></marker>
+              <marker id="arrow-b" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c9cd4"/></marker>
+              <marker id="arrow-y" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d4b87c"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <table>
+          <tr><th>傳導層級</th><th>機率</th><th>影響程度</th><th>時間框架</th></tr>
+          <tr><td>觸發 → 一階</td><td style="color:var(--green);">90%（已確認）</td><td>高</td><td>已發生</td></tr>
+          <tr><td>一階 → 二階（達興）</td><td style="color:var(--green);">70%</td><td>中高</td><td>2026 Q2-Q3</td></tr>
+          <tr><td>一階 → 二階（競爭）</td><td style="color:var(--blue);">60%</td><td>中</td><td>2026 H2</td></tr>
+          <tr><td>二階 → 三階</td><td style="color:var(--gold);">40%</td><td>高（若發生）</td><td>2026 Q4-2027 Q1</td></tr>
+        </table>
+        <div class="ev">
+          <div class="ev-d"><span class="fias fias-f">事實</span> 輝達 CoWoS-L 需求上修 18.6% 是硬事實。傳導到達興的關鍵假設是：台積電擴產帶來的增量材料需求能被達興吃到（而非被日系大廠全部攔截）。達興目前在先進封裝的佔比約 45%（半導體營收中），若 CoWoS 擴產 20-30%，對達興的增量約 1-2 億營收。</div>
+        </div>
+      </div>
+    </details>
+
+    <!-- 影響鏈 2 -->
+    <details class="sub-card">
+      <summary>影響鏈 B：友達營收衰退 → 基本盤侵蝕</summary>
+      <div class="sub-body">
+        <div class="chain-wrapper">
+          <svg viewBox="0 0 860 200" width="100%" style="max-width:860px;">
+            <rect x="10" y="70" width="160" height="60" rx="10" fill="#3a1f1f" stroke="#d47c7c" stroke-width="1.5"/>
+            <text x="90" y="95" text-anchor="middle" fill="#d47c7c" font-size="12" font-weight="bold">觸發事件</text>
+            <text x="90" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">友達2026前2月</text>
+            <text x="90" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">營收YoY -7%</text>
+
+            <rect x="220" y="70" width="160" height="60" rx="10" fill="#3a2a1f" stroke="#d4944c" stroke-width="1.5"/>
+            <text x="300" y="95" text-anchor="middle" fill="#d4944c" font-size="12" font-weight="bold">一階影響</text>
+            <text x="300" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">達興顯示器材料</text>
+            <text x="300" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">營收持平→微縮</text>
+
+            <rect x="430" y="30" width="175" height="55" rx="10" fill="#2a2a1f" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="517" y="52" text-anchor="middle" fill="#d4b87c" font-size="12" font-weight="bold">二階影響（抵消）</text>
+            <text x="517" y="70" text-anchor="middle" fill="#e8dcc8" font-size="10">半導體增量可彌補衰退</text>
+
+            <rect x="430" y="115" width="175" height="55" rx="10" fill="#3a1f1f" stroke="#d47c7c" stroke-width="1.5"/>
+            <text x="517" y="137" text-anchor="middle" fill="#d47c7c" font-size="12" font-weight="bold">二階影響（惡化）</text>
+            <text x="517" y="155" text-anchor="middle" fill="#e8dcc8" font-size="10">友達衰退>15%則缺口過大</text>
+
+            <rect x="660" y="70" width="180" height="60" rx="10" fill="#2a2a1f" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="750" y="95" text-anchor="middle" fill="#d4b87c" font-size="12" font-weight="bold">三階影響</text>
+            <text x="750" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">EPS 8.54→7.26元</text>
+            <text x="750" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">股價潛在下修15%</text>
+
+            <line x1="170" y1="100" x2="220" y2="100" stroke="#d47c7c" stroke-width="2" marker-end="url(#arrow-r)"/>
+            <line x1="380" y1="90" x2="430" y2="57" stroke="#d4944c" stroke-width="1.5" marker-end="url(#arrow-o)"/>
+            <line x1="380" y1="110" x2="430" y2="142" stroke="#d4944c" stroke-width="1.5" marker-end="url(#arrow-o)"/>
+            <line x1="605" y1="142" x2="660" y2="110" stroke="#d47c7c" stroke-width="1.5" marker-end="url(#arrow-r)"/>
+            <line x1="605" y1="57" x2="660" y2="90" stroke="#d4b87c" stroke-width="1.5" marker-end="url(#arrow-y)"/>
+
+            <defs>
+              <marker id="arrow-r" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d47c7c"/></marker>
+              <marker id="arrow-o" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d4944c"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <table>
+          <tr><th>傳導層級</th><th>機率</th><th>影響程度</th><th>時間框架</th></tr>
+          <tr><td>觸發 → 一階</td><td style="color:var(--red);">65%（已出現跡象）</td><td>中</td><td>2026 Q1-Q2</td></tr>
+          <tr><td>一階 → 二階（抵消）</td><td style="color:var(--green);">55%</td><td>—</td><td>2026 全年</td></tr>
+          <tr><td>一階 → 二階（惡化）</td><td style="color:var(--red);">25%</td><td>高</td><td>若友達衰退>15%</td></tr>
+          <tr><td>二階 → 三階（EPS 下修）</td><td style="color:var(--red);">20%</td><td>高</td><td>2026 H2</td></tr>
+        </table>
+        <div class="ev">
+          <div class="ev-d"><span class="fias fias-f">事實</span> 友達 2026 前 2 月營收 -7% 是已發生的負面訊號。但歷史經驗顯示（2022 年面板崩跌時達興營收僅微降），達興的配向膜/液晶等材料為面板消耗品，與面板「價格」的相關性低於與面板「出貨量」的相關性。關鍵監控：友達月營收是否從 -7% 進一步惡化到 -15%。</div>
+        </div>
+      </div>
+    </details>
+
+    <!-- 影響鏈 3 -->
+    <details class="sub-card">
+      <summary>影響鏈 C：CoPoS 新封裝技術 → 達興跨域機會</summary>
+      <div class="sub-body">
+        <div class="chain-wrapper">
+          <svg viewBox="0 0 860 200" width="100%" style="max-width:860px;">
+            <rect x="10" y="70" width="160" height="60" rx="10" fill="#2a1f3a" stroke="#b47cd4" stroke-width="1.5"/>
+            <text x="90" y="95" text-anchor="middle" fill="#b47cd4" font-size="12" font-weight="bold">新增情報</text>
+            <text x="90" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">台積電CoPoS平台</text>
+            <text x="90" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">面板級封裝 2027+</text>
+
+            <rect x="220" y="70" width="175" height="60" rx="10" fill="#1f2a3a" stroke="#7c9cd4" stroke-width="1.5"/>
+            <text x="307" y="95" text-anchor="middle" fill="#7c9cd4" font-size="12" font-weight="bold">一階影響</text>
+            <text x="307" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">面板+半導體跨域材料</text>
+            <text x="307" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">需求可能出現新品類</text>
+
+            <rect x="445" y="70" width="175" height="60" rx="10" fill="#2a2a1f" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="532" y="95" text-anchor="middle" fill="#d4b87c" font-size="12" font-weight="bold">二階影響（達興）</text>
+            <text x="532" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">面板材料經驗成為</text>
+            <text x="532" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">差異化競爭優勢</text>
+
+            <rect x="670" y="70" width="175" height="60" rx="10" fill="#2a3a1f" stroke="#7cb87c" stroke-width="1.5"/>
+            <text x="757" y="95" text-anchor="middle" fill="#7cb87c" font-size="12" font-weight="bold">三階影響</text>
+            <text x="757" y="112" text-anchor="middle" fill="#e8dcc8" font-size="10">開啟全新產品線</text>
+            <text x="757" y="125" text-anchor="middle" fill="#e8dcc8" font-size="10">2028+ 營收新引擎</text>
+
+            <line x1="170" y1="100" x2="220" y2="100" stroke="#b47cd4" stroke-width="2" marker-end="url(#arrow-p)"/>
+            <line x1="395" y1="100" x2="445" y2="100" stroke="#7c9cd4" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+            <line x1="620" y1="100" x2="670" y2="100" stroke="#d4b87c" stroke-width="1.5" marker-end="url(#arrow-y)"/>
+
+            <defs>
+              <marker id="arrow-p" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b47cd4"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="ev">
+          <div class="ev-d"><span class="fias fias-s">推測</span> CoPoS（Chip on Panel Substrate）結合面板製程技術與半導體封裝，這正是達興的「跨界」背景可能發揮獨特價值之處。達興同時具備面板材料（配向膜/液晶）與半導體材料（光阻/蝕刻液/PSPI）的開發經驗，在面板級封裝材料的研發上可能比純半導體材料商更有優勢。但此影響鏈時間線較長（2027+），且技術路線不確定性高，暫列為推測級。</div>
+        </div>
+      </div>
+    </details>
+
+    <!-- 跨鏈交互 -->
+    <div class="ev" style="border-left-color:var(--purple);">
+      <div class="ev-t">跨鏈交互作用</div>
+      <div class="ev-d">
+        <strong>鏈 A × 鏈 B 互相抵消：</strong>CoWoS 需求上修帶來的半導體增量（影響鏈 A）可部分抵消友達衰退的營收減少（影響鏈 B）。根據壓力測試數據，友達衰退 7% 約減少 1.6 億營收，而 CoWoS 擴產 20% 可帶來 1-2 億增量，兩者大致抵消。<br><br>
+        <strong>鏈 A × 鏈 C 互相增強：</strong>CoWoS 持續擴產（鏈 A）驗證先進封裝需求的可持續性，增加 CoPoS 等新技術成功的可能性（鏈 C），兩條鏈方向一致，互相強化達興在先進封裝材料的定位。<br><br>
+        <strong>淨效果：</strong>正面影響鏈（A+C）的強度略大於負面（B），但安全邊際不大。
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- ==================== 8d. 情境模擬 ==================== -->
+<details class="card">
+  <summary>8d. 情境模擬（天機閣推衍方法二）— 4 條未來路徑</summary>
+  <div class="card-body">
+    <p style="color:var(--text-dim);margin-bottom:16px;">基於 ACH 假說，建立 4 條未來 12 個月的可能路徑，標註觸發條件、演進過程與最終狀態。</p>
+
+    <!-- 概率樹 SVG -->
+    <details class="sub-card" open>
+      <summary>概率決策樹</summary>
+      <div class="sub-body">
+        <div class="chain-wrapper">
+          <svg viewBox="0 0 900 320" width="100%" style="max-width:900px;">
+            <!-- 起點 -->
+            <rect x="10" y="130" width="130" height="50" rx="10" fill="#2a2118" stroke="#d4a574" stroke-width="2"/>
+            <text x="75" y="155" text-anchor="middle" fill="#d4a574" font-size="12" font-weight="bold">現在 388元</text>
+            <text x="75" y="170" text-anchor="middle" fill="#a89878" font-size="10">2026/03/22</text>
+
+            <!-- 分支點 1：Q2 決斷 -->
+            <rect x="200" y="130" width="130" height="50" rx="10" fill="#2a2118" stroke="#d4b87c" stroke-width="1.5"/>
+            <text x="265" y="150" text-anchor="middle" fill="#d4b87c" font-size="11" font-weight="bold">Q2 分歧點</text>
+            <text x="265" y="167" text-anchor="middle" fill="#a89878" font-size="9">半導體季營收>3億？</text>
+
+            <line x1="140" y1="155" x2="200" y2="155" stroke="#d4a574" stroke-width="2" marker-end="url(#arrow-y)"/>
+
+            <!-- 路徑 A：超預期 -->
+            <rect x="400" y="10" width="170" height="50" rx="8" fill="#2a3a1f" stroke="#7cb87c" stroke-width="1.5"/>
+            <text x="485" y="30" text-anchor="middle" fill="#7cb87c" font-size="11" font-weight="bold">路徑A：超預期成長</text>
+            <text x="485" y="47" text-anchor="middle" fill="#a89878" font-size="9">半導體>3億 + 毛利率>42%</text>
+
+            <rect x="640" y="10" width="140" height="50" rx="8" fill="#2a3a1f" stroke="#7cb87c" stroke-width="1.5"/>
+            <text x="710" y="30" text-anchor="middle" fill="#7cb87c" font-size="12" font-weight="bold">450-520 元</text>
+            <text x="710" y="47" text-anchor="middle" fill="#7cb87c" font-size="9">機率 25% | EPS 9-10元</text>
+
+            <!-- 路徑 B：如預期 -->
+            <rect x="400" y="85" width="170" height="50" rx="8" fill="#1f2a3a" stroke="#7c9cd4" stroke-width="1.5"/>
+            <text x="485" y="105" text-anchor="middle" fill="#7c9cd4" font-size="11" font-weight="bold">路徑B：如預期成長</text>
+            <text x="485" y="122" text-anchor="middle" fill="#a89878" font-size="9">半導體佔比25% + EPS 8.5</text>
+
+            <rect x="640" y="85" width="140" height="50" rx="8" fill="#1f2a3a" stroke="#7c9cd4" stroke-width="1.5"/>
+            <text x="710" y="105" text-anchor="middle" fill="#7c9cd4" font-size="12" font-weight="bold">360-430 元</text>
+            <text x="710" y="122" text-anchor="middle" fill="#7c9cd4" font-size="9">機率 40% | 區間震盪</text>
+
+            <!-- 路徑 C：不及預期 -->
+            <rect x="400" y="170" width="170" height="50" rx="8" fill="#3a2a1f" stroke="#d4944c" stroke-width="1.5"/>
+            <text x="485" y="190" text-anchor="middle" fill="#d4944c" font-size="11" font-weight="bold">路徑C：成長放緩</text>
+            <text x="485" y="207" text-anchor="middle" fill="#a89878" font-size="9">半導體<2.5億 或 友達-15%</text>
+
+            <rect x="640" y="170" width="140" height="50" rx="8" fill="#3a2a1f" stroke="#d4944c" stroke-width="1.5"/>
+            <text x="710" y="190" text-anchor="middle" fill="#d4944c" font-size="12" font-weight="bold">280-350 元</text>
+            <text x="710" y="207" text-anchor="middle" fill="#d4944c" font-size="9">機率 27% | 估值修正</text>
+
+            <!-- 路徑 D：黑天鵝 -->
+            <rect x="400" y="250" width="170" height="50" rx="8" fill="#3a1f1f" stroke="#d47c7c" stroke-width="1.5"/>
+            <text x="485" y="270" text-anchor="middle" fill="#d47c7c" font-size="11" font-weight="bold">路徑D：黑天鵝</text>
+            <text x="485" y="287" text-anchor="middle" fill="#a89878" font-size="9">地緣/治理/技術路線突變</text>
+
+            <rect x="640" y="250" width="140" height="50" rx="8" fill="#3a1f1f" stroke="#d47c7c" stroke-width="1.5"/>
+            <text x="710" y="270" text-anchor="middle" fill="#d47c7c" font-size="12" font-weight="bold">< 230 元</text>
+            <text x="710" y="287" text-anchor="middle" fill="#d47c7c" font-size="9">機率 8% | 極端風險</text>
+
+            <!-- 連線 + 機率標註 -->
+            <line x1="330" y1="145" x2="400" y2="35" stroke="#7cb87c" stroke-width="1.5"/>
+            <text x="355" y="80" fill="#7cb87c" font-size="10" font-weight="bold">25%</text>
+
+            <line x1="330" y1="155" x2="400" y2="110" stroke="#7c9cd4" stroke-width="1.5"/>
+            <text x="360" y="130" fill="#7c9cd4" font-size="10" font-weight="bold">40%</text>
+
+            <line x1="330" y1="165" x2="400" y2="195" stroke="#d4944c" stroke-width="1.5"/>
+            <text x="355" y="190" fill="#d4944c" font-size="10" font-weight="bold">27%</text>
+
+            <line x1="330" y1="175" x2="400" y2="275" stroke="#d47c7c" stroke-width="1.5"/>
+            <text x="350" y="245" fill="#d47c7c" font-size="10" font-weight="bold">8%</text>
+
+            <line x1="570" y1="35" x2="640" y2="35" stroke="#7cb87c" stroke-width="1.5"/>
+            <line x1="570" y1="110" x2="640" y2="110" stroke="#7c9cd4" stroke-width="1.5"/>
+            <line x1="570" y1="195" x2="640" y2="195" stroke="#d4944c" stroke-width="1.5"/>
+            <line x1="570" y1="275" x2="640" y2="275" stroke="#d47c7c" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </details>
+
+    <!-- 路徑 A 詳細 -->
+    <div class="scenario bullish">
+      <h4>路徑 A：超預期成長（機率 25%）→ 目標 450-520 元</h4>
+      <p><strong>觸發條件：</strong>Q2 半導體季營收突破 3 億 + 毛利率>42% + 新增 POR 認證 2 項以上</p>
+      <p><strong>演進過程：</strong></p>
+      <ul style="margin:6px 0 6px 20px;font-size:0.9em;">
+        <li>2026 Q2：半導體營收佔比突破 22%，法人上修盈餘預估至 EPS 9+</li>
+        <li>2026 Q3：橋頭新廠動土消息釋出，CoWoS 材料新產品量產，管理層上修全年指引</li>
+        <li>2026 Q4：半導體佔比達 28-30%，全年 EPS 確認 9-10 元，市場開始以「半導體材料股」重新定價</li>
+      </ul>
+      <p><strong>最終狀態：</strong>PE 45-55×，EPS 9-10 元 → 股價 450-520 元。估值從「轉型中的化工股」重定位為「高成長半導體材料股」。</p>
+      <p><strong>關鍵觀察指標：</strong>Q1 半導體營收是否延續 Q4 的爆發態勢（Q4 半導體約 2.2 億）。</p>
+    </div>
+
+    <!-- 路徑 B 詳細 -->
+    <div class="scenario base">
+      <h4>路徑 B：如預期成長（機率 40%）→ 區間 360-430 元</h4>
+      <p><strong>觸發條件：</strong>營收/獲利大致符合管理層指引，半導體佔比達 25%，EPS 8.3-8.8 元</p>
+      <p><strong>演進過程：</strong></p>
+      <ul style="margin:6px 0 6px 20px;font-size:0.9em;">
+        <li>2026 Q2：半導體季營收 2.5-2.8 億，成長穩健但未超預期</li>
+        <li>2026 Q3：法人維持既有目標價，股價在 360-420 區間整理</li>
+        <li>2026 Q4：全年 EPS 確認 8.5 左右，PE 因成長被消化從 51 降至 44-48</li>
+      </ul>
+      <p><strong>最終狀態：</strong>PE 44-48×，EPS 8.5 元 → 股價 374-408 元。投資報酬率 ±8%（含息利率 1.7%），勉強符合持有門檻。</p>
+      <p><strong>關鍵分歧：</strong>「如預期」意味著利多已經 Price-in，股價缺乏向上動能但也不會大跌。</p>
+    </div>
+
+    <!-- 路徑 C 詳細 -->
+    <div class="scenario bear">
+      <h4>路徑 C：成長放緩（機率 27%）→ 修正至 280-350 元</h4>
+      <p><strong>觸發條件：</strong>半導體季營收<2.5 億（成長不及預期）或友達營收衰退>15% 或毛利率跌破 38%</p>
+      <p><strong>演進過程：</strong></p>
+      <ul style="margin:6px 0 6px 20px;font-size:0.9em;">
+        <li>2026 Q2：友達持續衰退雙位數，拖累達興整體營收；或半導體新品認證延遲</li>
+        <li>2026 Q3：法人下修目標價，外資轉為賣超，PE 從 51 壓縮至 35-40</li>
+        <li>2026 Q4：全年 EPS 僅 7.2-7.8 元，成長故事打折，股價修正至 280-320</li>
+      </ul>
+      <p><strong>最終狀態：</strong>PE 35-42×，EPS 7.5 元 → 股價 280-350 元。從現價下跌 10-28%，但長期轉型邏輯未變。</p>
+      <p><strong>反轉訊號：</strong>若友達衰退觸底回穩或半導體 Q3 起補量，可能從路徑 C 回到路徑 B。</p>
+    </div>
+
+    <!-- 路徑 D 詳細 -->
+    <div class="scenario black">
+      <h4>路徑 D：黑天鵝事件（機率 8%）→ 跌破 230 元</h4>
+      <p><strong>觸發條件：</strong>台海危機升級 / 友達宣布重大變更 / 先進封裝技術路線突變 / 內部治理問題</p>
+      <p><strong>演進過程：</strong>突發事件導致市場恐慌性拋售，流動性差（日均量~1,500 張）使跌幅被放大。</p>
+      <p><strong>最終狀態：</strong>股價跌 40-60%，需等事件釐清後重新評估。此情境下的正確行動是「事前控制部位」而非事後止損。</p>
+    </div>
+
+    <!-- 敏感度分析 -->
+    <details class="sub-card">
+      <summary>敏感度分析：哪個變數影響最大？</summary>
+      <div class="sub-body">
+        <table>
+          <thead><tr><th>變數</th><th>基準假設</th><th>上行情境</th><th>下行情境</th><th>股價敏感度</th></tr></thead>
+          <tbody>
+            <tr><td><strong>半導體季營收</strong></td><td>2.8億/季</td><td>3.5億（+25%）</td><td>2.2億（-21%）</td><td style="color:var(--red);font-weight:bold;">極高（±15-20%）</td></tr>
+            <tr><td><strong>毛利率</strong></td><td>41%</td><td>43%</td><td>37%</td><td style="color:var(--red);font-weight:bold;">極高（±15-36%）</td></tr>
+            <tr><td><strong>PE 倍數</strong></td><td>44-48×</td><td>55×</td><td>35×</td><td style="color:var(--orange);font-weight:bold;">高（±20%）</td></tr>
+            <tr><td><strong>友達營收</strong></td><td>持平</td><td>+5%</td><td>-15%</td><td style="color:var(--orange);font-weight:bold;">高（±10-15%）</td></tr>
+            <tr><td>新品認證數</td><td>+3項</td><td>+5項</td><td>+1項</td><td style="color:var(--gold);">中（±5%）</td></tr>
+          </tbody>
+        </table>
+        <div class="ev">
+          <div class="ev-d"><strong>最關鍵變數：毛利率。</strong>壓力測試顯示毛利率從 40.6% 降至 37% 可導致股價下修 36%（疊加估值壓縮）。但連續 8 季上升的趨勢使大幅回落機率極低。<strong>第二關鍵：半導體季營收。</strong>這是成長故事的核心指標，若 Q2 營收低於 2.5 億將觸發路徑 C。</div>
+        </div>
+      </div>
+    </details>
+
+    <!-- 路徑交叉點 -->
+    <div class="action-box">
+      <h4>路徑交叉點：何時必須做決定？</h4>
+      <table>
+        <tr><th>時間</th><th>事件</th><th>判斷依據</th><th>行動</th></tr>
+        <tr><td><strong>2026/04/10</strong></td><td>3月營收公布</td><td>月營收 YoY>15% → 偏路徑 A/B<br>YoY<5% → 偏路徑 C</td><td>確認成長延續性</td></tr>
+        <tr><td><strong>2026/05/15</strong></td><td>Q1 季報</td><td>半導體季營收是否>2.8 億<br>毛利率是否維持>40%</td><td>決定是否加碼/減碼</td></tr>
+        <tr><td><strong>2026/08 中</strong></td><td>Q2 季報 + 法說會</td><td>半導體佔比是否達 20%+<br>全年展望是否維持/上修</td><td>核心決策點：路徑分歧</td></tr>
+        <tr><td><strong>2026/12</strong></td><td>橋頭新廠進度</td><td>是否如期動土</td><td>長期成長故事驗證</td></tr>
+      </table>
+    </div>
+
+    <!-- 概率加權 -->
+    <div class="ev" style="border-left-color:var(--accent);">
+      <div class="ev-t">概率加權推衍股價（12 個月）</div>
+      <div class="ev-d">
+        路徑 A（25%）× 485 + 路徑 B（40%）× 395 + 路徑 C（27%）× 315 + 路徑 D（8%）× 200<br>
+        = 121.3 + 158.0 + 85.1 + 16.0 = <strong>380.4 元</strong><br><br>
+        概率加權期望值 380 元 ≈ 現價 388 元。與第七步的 379 元結論一致，印證<strong>市場定價合理，無顯著低估或高估。</strong><br>
+        但分佈呈現「右偏」特徵：路徑 A 的上行空間（+34%）大於路徑 C 的下行空間（-19%），反映轉型成功的正面非對稱性。
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- ==================== 8e. 個人化推衍 ==================== -->
+<details class="card">
+  <summary>8e. 個人化推衍（天機閣推衍方法三）</summary>
+  <div class="card-body">
+    <p style="color:var(--text-dim);margin-bottom:12px;">根據三種常見閣主情境提供適配的行動建議。</p>
+
+    <!-- 情境 1 -->
+    <details class="sub-card" open>
+      <summary>情境 A：觀望中 / 尚未持有</summary>
+      <div class="sub-body">
+        <div class="action-box">
+          <h4>建議策略：分批佈局，等催化劑進場</h4>
+          <table>
+            <tr><th>行動</th><th>條件</th><th>部位</th></tr>
+            <tr><td style="color:var(--blue);">首批佈局</td><td>股價回測 360 元（-7%）或 Q1 季報確認半導體季營收>2.5 億</td><td>總目標部位的 30%</td></tr>
+            <tr><td style="color:var(--green);">二批加碼</td><td>Q2 半導體季營收>3 億 + 毛利率>41%</td><td>再加 30%（累計 60%）</td></tr>
+            <tr><td style="color:var(--green);">三批滿倉</td><td>半導體佔比確認達 25% + 橋頭動土</td><td>再加 40%（累計 100%）</td></tr>
+            <tr><td style="color:var(--red);">放棄進場</td><td>Q1 營收 YoY<10% 或友達月營收連 3 月 -10%</td><td>—</td></tr>
+          </table>
+          <p style="font-size:0.88em;color:var(--text-dim);margin-top:8px;">
+            <strong>邏輯：</strong>概率加權期望值 380 元 ≈ 現價 388 元，沒有安全邊際。不宜在無催化劑驗證前一次性重倉。分批可降低時機風險。<br>
+            <strong>目標部位：</strong>投資組合 5-8%（中度配置）。理由：轉型故事吸引但估值不便宜，需平衡機會成本。
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- 情境 2 -->
+    <details class="sub-card">
+      <summary>情境 B：已持有 / 獲利中</summary>
+      <div class="sub-body">
+        <div class="action-box">
+          <h4>建議策略：持有觀察，設定動態停利/停損</h4>
+          <table>
+            <tr><th>行動</th><th>條件</th><th>執行方式</th></tr>
+            <tr><td style="color:var(--green);">繼續持有</td><td>月營收持續 YoY>15%、毛利率>40%、無負面消息</td><td>維持現有部位</td></tr>
+            <tr><td style="color:var(--green);">獲利加碼</td><td>路徑 A 信號出現（半導體季營收>3 億）</td><td>加碼 20-30%</td></tr>
+            <tr><td style="color:var(--gold);">部分獲利了結</td><td>股價觸及 450 元（+16%）或 PE>60 倍</td><td>減碼 30-40%</td></tr>
+            <tr><td style="color:var(--red);">停損出場</td><td>股價跌破 330 元（-15%）或友達宣布重大變更</td><td>全部出清</td></tr>
+          </table>
+          <p style="font-size:0.88em;color:var(--text-dim);margin-top:8px;">
+            <strong>邏輯：</strong>目前位置屬於「公平價位」，不是好的加碼點也不是該跑的時候。關鍵在 Q2 季報——如果超預期則加碼，如果低於預期則減碼。<br>
+            <strong>配息策略：</strong>若持有至除息（預計 5 月下旬），可領 6.5 元現金股利（殖利率 1.7%），但需注意除息後的填息能力。
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- 情境 3 -->
+    <details class="sub-card">
+      <summary>情境 C：已持有 / 套牢中</summary>
+      <div class="sub-body">
+        <div class="action-box">
+          <h4>建議策略：不急於攤平，等待確認信號</h4>
+          <table>
+            <tr><th>行動</th><th>條件</th><th>執行方式</th></tr>
+            <tr><td style="color:var(--blue);">持有等待</td><td>基本面未惡化（月營收 YoY>10%、毛利率>39%）</td><td>維持現有部位，不加碼不減碼</td></tr>
+            <tr><td style="color:var(--green);">逢低攤平</td><td>股價跌至 320-340 且基本面確認無虞（Q1 季報正常）</td><td>攤平至多 30% 額外部位</td></tr>
+            <tr><td style="color:var(--red);">認賠出場</td><td>路徑 C 訊號確認（半導體季營收<2.2 億 或 友達 -15%）</td><td>出清止損，等待更好的重新進場點</td></tr>
+          </table>
+          <p style="font-size:0.88em;color:var(--text-dim);margin-top:8px;">
+            <strong>邏輯：</strong>若套牢幅度在 10% 以內（成本 420-430 元），2026 全年 EPS 若達 8.5+ 且 PE 維持 50×，股價可回到 425 元（填息後更高）。長期轉型故事未變，不需恐慌。但若套牢>20%（成本 480+），則成本對應 PE>56 倍，需半導體超預期成長才能回本，風險較高。
+          </p>
+        </div>
+      </div>
+    </details>
+  </div>
+</details>
+
+<!-- ==================== 8f. 催化劑時間表 ==================== -->
+<details class="card">
+  <summary>8f. 催化劑時間表 — 未來 6 個月關鍵事件</summary>
+  <div class="card-body">
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-date">2026/04/10 前</div>
+        <div class="tl-title">3 月營收公布</div>
+        <div class="tl-desc">觀察 Q1 營收走勢是否延續成長動能。1 月 YoY +20%，若 3 月維持類似成長率，Q1 整體營收可望達 12.5 億+。</div>
+        <div class="tl-impact up">預期影響：▲ 正面（確認高成長延續）</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/05/15 前</div>
+        <div class="tl-title">Q1 季報公布</div>
+        <div class="tl-desc">核心觀察：半導體季營收（Q4 為 ~2.2 億，Q1 目標>2.5 億）、毛利率是否維持 40%+、EPS 是否維持 1.8 元+。</div>
+        <div class="tl-impact up">預期影響：▲ 若超預期可推升 5-10%</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/05/22</div>
+        <div class="tl-title">股東常會 + 除息基準日</div>
+        <div class="tl-desc">通過現金股利 6.5 元分配案。殖利率約 1.7%（以 388 元計）。除息後觀察填息速度。</div>
+        <div class="tl-impact neutral">預期影響：◆ 中性（已反映）</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/06 中旬</div>
+        <div class="tl-title">台積電技術論壇 / 供應鏈大會</div>
+        <div class="tl-desc">觀察是否有達興產品被提及、CoPoS 技術路線進一步揭露、在地供應鏈新動態。2025 年台積電供應鏈大會曾頒獎給優秀供應商。</div>
+        <div class="tl-impact up">預期影響：▲ 若達興獲獎或被提及 → 強力催化</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/07/10 前</div>
+        <div class="tl-title">6 月營收（H1 結算）</div>
+        <div class="tl-desc">上半年累計營收對比去年同期 22.57 億。若 H1 達 25 億+（YoY>10%），全年展望可維持。半導體 H1 累計營收若>5 億，佔比可望逼近 20%。</div>
+        <div class="tl-impact up">預期影響：▲ 正面（半年度里程碑）</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/08 中旬</div>
+        <div class="tl-title">Q2 季報 + 法說會（最關鍵）</div>
+        <div class="tl-desc">⭐ <strong>核心決策點。</strong>半導體季營收是否突破 3 億？毛利率趨勢？管理層是否上修或維持全年指引？新品認證進度？PSPI 是否開始貢獻營收？這場法說會將決定路徑 A/B/C 的分歧。</div>
+        <div class="tl-impact up">預期影響：▲▲ 最大催化時點，決定下半年走勢</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/09</div>
+        <div class="tl-title">台積電 Q3 法說會</div>
+        <div class="tl-desc">觀察 CoWoS 2027 產能規劃是否進一步上修、在地採購比例更新、先進封裝技術路線（CoPoS 等）新進展。</div>
+        <div class="tl-impact neutral">預期影響：◆ 中性偏正面（間接催化）</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026/10-12</div>
+        <div class="tl-title">橋頭新廠動土</div>
+        <div class="tl-desc">管理層承諾 2026 年底前動土。若如期執行（管理層承諾兌現率 92%），將強化長期成長故事。若延遲，市場可能質疑產能擴張進度。</div>
+        <div class="tl-impact up">預期影響：▲ 正面（兌現長期承諾）</div>
+      </div>
+
+    </div>
+  </div>
+</details>
+
+<!-- ==================== 8g. 推衍結論 ==================== -->
+<details class="card" open>
+  <summary>8g. 推衍結論</summary>
+  <div class="card-body">
+
+    <!-- 最可能路徑 -->
+    <div class="action-box" style="border-color:var(--blue);">
+      <h4>最可能路徑判斷</h4>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;">
+        <div>
+          <div style="font-size:0.82em;color:var(--text-dim);">最可能路徑</div>
+          <div style="font-size:1.2em;font-weight:700;color:var(--blue);">路徑 B：如預期成長（40%）</div>
+        </div>
+        <div>
+          <div style="font-size:0.82em;color:var(--text-dim);">12 個月目標區間</div>
+          <div style="font-size:1.2em;font-weight:700;color:var(--blue);">360-430 元</div>
+        </div>
+        <div>
+          <div style="font-size:0.82em;color:var(--text-dim);">概率加權期望值</div>
+          <div style="font-size:1.2em;font-weight:700;color:var(--accent-light);">380 元（≈現價）</div>
+        </div>
+        <div>
+          <div style="font-size:0.82em;color:var(--text-dim);">信心度</div>
+          <div style="font-size:1.2em;font-weight:700;color:var(--gold);">中等（65/100）</div>
+        </div>
+      </div>
+      <p style="font-size:0.9em;">
+        <strong>核心判斷：</strong>達興的轉型方向正確且執行力強，但 PE 51× 已充分反映近期利多。最可能的結果是「基本面如預期但股價區間震盪」（路徑 B），等待下一波超預期催化劑（路徑 A）或風險觸發（路徑 C）來打破均衡。<br><br>
+        <strong>非對稱性：</strong>路徑 A 上行空間（+34%）> 路徑 C 下行空間（-19%），分佈右偏。長期看好，短期缺乏安全邊際。
+      </p>
+    </div>
+
+    <!-- 行動清單 -->
+    <div class="action-box" style="border-color:var(--green);">
+      <h4>行動建議清單</h4>
+      <table>
+        <thead><tr><th>行動</th><th>條件</th><th>優先級</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--green);font-weight:600;">進場/加碼</td><td>股價回測 350-360 元 + Q1 基本面確認無虞</td><td style="color:var(--green);">等待觸發</td></tr>
+          <tr><td style="color:var(--green);font-weight:600;">路徑 A 加碼</td><td>Q2 半導體營收>3 億 + 毛利率>42%</td><td style="color:var(--blue);">Q2 後執行</td></tr>
+          <tr><td style="color:var(--gold);font-weight:600;">觀望持有</td><td>基本面如預期，股價 370-420 元震盪</td><td style="color:var(--gold);">默認狀態</td></tr>
+          <tr><td style="color:var(--red);font-weight:600;">減碼/出場</td><td>友達月營收連 3 月 YoY<-10% 或半導體季營收<2.2 億</td><td style="color:var(--red);">立即執行</td></tr>
+          <tr><td style="color:var(--red);font-weight:600;">緊急出場</td><td>黑天鵝事件（台海/治理/技術路線）</td><td style="color:var(--red);">即時</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 觀察清單 -->
+    <div class="action-box" style="border-color:var(--gold);">
+      <h4>下次推衍前需追蹤的項目</h4>
+      <table>
+        <thead><tr><th>#</th><th>追蹤項目</th><th>資料來源</th><th>頻率</th><th>觸發閾值</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>月營收 YoY 成長率</td><td>公開資訊觀測站</td><td>每月 10 日</td><td>>15% 正常 / <5% 警戒</td></tr>
+          <tr><td>2</td><td>半導體季營收金額</td><td>季報 + 法說會</td><td>每季</td><td>>3 億 超預期 / <2.5 億 警戒</td></tr>
+          <tr><td>3</td><td>毛利率變化</td><td>季報</td><td>每季</td><td>>42% 超預期 / <38% 警戒</td></tr>
+          <tr><td>4</td><td>友達月營收</td><td>公開資訊觀測站</td><td>每月 10 日</td><td>YoY 轉正 正面 / <-10% 警戒</td></tr>
+          <tr><td>5</td><td>外資買賣超</td><td>證交所每日公布</td><td>每週</td><td>連 20 日淨買正面 / 連 10 日賣超警戒</td></tr>
+          <tr><td>6</td><td>新 POR 認證公告</td><td>公司重大訊息</td><td>即時</td><td>新增 = 正面催化</td></tr>
+          <tr><td>7</td><td>台積電 CoWoS/CoPoS 進展</td><td>台積電法說會 + 產業新聞</td><td>每季</td><td>產能上修 = 正面</td></tr>
+          <tr><td>8</td><td>2 月營收數據</td><td>公開資訊觀測站</td><td>已公布待補齊</td><td>確認 Q1 走勢</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 推衍有效期 -->
+    <div class="validity-stamp">
+      <h3>推衍有效期聲明</h3>
+      <p style="color:var(--text);margin-bottom:6px;">
+        本次推衍有效期至 <strong>2026 年 4 月 30 日</strong>（約 5 週）
+      </p>
+      <p style="font-size:0.88em;color:var(--text-dim);">
+        有效期依據：下次關鍵決策點為 Q1 季報（5 月中旬）。在此之前，4 月 10 日的 3 月營收公布可能觸發推衍更新。<br>
+        <strong>提前失效條件：</strong>若出現重大意外事件（友達重大公告 / 台積電政策轉向 / 地緣政治升級 / 股價單日跌幅>10%），本推衍立即失效，需重新推衍。
+      </p>
+    </div>
+
+  </div>
+</details>
+
+<!-- 頁尾 -->
+<div style="text-align:center;padding:30px 0 10px;color:var(--text-dim);font-size:0.78em;">
+  天機閣深度調查系統 v1.7 — 第八步：推衍推演<br>
+  分析日期：2026-03-22 ｜ 標的：達興材料（5234）<br>
+  OSINT 情報來源：富果直送法說會備忘錄、Goodinfo、鉅亨網、Yahoo 股市、TechNews、經濟日報、財訊快報<br>
+  本報告為獨立推衍，非投資建議。投資決策需自行判斷風險。
+</div>
+
+</div>
+</body>
+</html>

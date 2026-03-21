@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>5234 達興材料 — 第三步：競爭力分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>5234 達興材料 — 第三步：競爭力分析</h1>
+  <div class="sub">競爭力地圖 + 護城河框架 + 產業面分析 + 籌碼分析</div>
+  <div class="desc">基於年報全文、法說會原始資料、finlab 財務數據、市場調查五條線、網路搜尋12類管道的交叉深度分析<br>分析日期：2026-03-22｜資料截至：2026-03-20</div>
+  <div class="tags">
+    <span class="tag">競爭力 7.25/10</span>
+    <span class="tag badge narrow">窄護城河</span>
+    <span class="tag">五力 14/25</span>
+    <span class="tag">籌碼偏多</span>
+  </div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<div class="toc">
+  <strong>目錄</strong>
+  <a href="#s3a">3a. 競爭力地圖（7 維度評分 + 加權總分）</a>
+  <a href="#s3b">3b. 護城河框架（角色定位 + 定價能力 + 市佔率 + 五大來源）</a>
+  <a href="#s3c">3c. 產業面分析（生命週期 + TAM + 五力 + 定位矩陣）</a>
+  <a href="#s3d">3d. 籌碼分析（法人 + 融資券 + 技術面）</a>
+  <a href="#summary">綜合評估</a>
+</div>
+
+<!-- ============================== 3a 競爭力地圖 ============================== -->
+<div class="section-title" id="s3a">3a. 競爭力地圖（7 維度）</div>
+<div class="section-sub">加權總分：7.25 / 10（良好，競爭優勢穩固但非無可取代）</div>
+
+<div class="grid3" style="margin-bottom:4px">
+  <div class="mini-card bull-card"><div class="title">產品與服務</div><div class="num" style="color:var(--bull)">7</div><div class="desc">權重 20%</div></div>
+  <div class="mini-card neutral-card"><div class="title">競爭態勢</div><div class="num" style="color:var(--neutral)">6</div><div class="desc">權重 15%</div></div>
+  <div class="mini-card bull-card"><div class="title">需求端</div><div class="num" style="color:var(--bull)">7</div><div class="desc">權重 15%</div></div>
+</div>
+<div class="grid2" style="margin-bottom:4px">
+  <div class="mini-card bull-card"><div class="title">財務體質</div><div class="num" style="color:var(--bull)">9</div><div class="desc">權重 20%</div></div>
+  <div class="mini-card neutral-card"><div class="title">供應鏈</div><div class="num" style="color:var(--neutral)">6</div><div class="desc">權重 10%</div></div>
+</div>
+<div class="grid2">
+  <div class="mini-card bull-card"><div class="title">管理層</div><div class="num" style="color:var(--bull)">8</div><div class="desc">權重 10%</div></div>
+  <div class="mini-card bull-card"><div class="title">市場調查</div><div class="num" style="color:var(--bull)">7</div><div class="desc">權重 10%</div></div>
+</div>
+
+<!-- 維度1 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度1：產品與服務（7/10）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>事實</th><th>FIAS</th></tr>
+<tr><td>產品線結構</td><td>半導體材料16.7%（年增107.8%）、顯示器材料~81%、關鍵原材料~2.3%</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>半導體量產進度</td><td>量產產品12項、驗證中13項，2025年新增3項量產，2026年目標再導入3-5項</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>核心產品</td><td>有機離型層（全球主要供應商，市佔領先）、光阻剝離液、高選擇比蝕刻液、PSPI</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>技術差異化</td><td>自有專利CBDA PI功能單體，具備化學合成+分子設計+ppb級純化能力，少數同時具備此三能力的台灣廠商</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>先進製程佈局</td><td>2項產品應用於2奈米製程，1項供應美國亞利桑那州晶圓廠（推測台積電Arizona廠）</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>AI研發</td><td>AI逆推材料配方技術+專利分析系統，推動化學產業數位轉型</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+<p><strong>判讀：</strong>在利基領域具真實技術差異化。自主合成能力（非僅配方調配）使達興區別於多數台灣本土材料商（年報p.70明確指出此優勢）。但距離EUV光阻等核心材料仍有技術代差。</p>
+<p><strong>來源：</strong>2024年報 p.68-70、法說會 2026/2/26、web_search_data</p>
+</div></div>
+
+<!-- 維度2 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度2：競爭態勢（6/10）</h3>
+<div class="card-body">
+<table>
+<tr><th>競爭對手</th><th>領域</th><th>市佔/規模</th><th>與達興比較</th></tr>
+<tr><td>JSR（日本）</td><td>全球最大光阻劑</td><td>全球半導體光阻CR4=87%</td><td>技術領先，達興無法正面對決EUV光阻</td></tr>
+<tr><td>TOK/信越/富士（日本）</td><td>EUV+先進光阻</td><td>EUV光阻合計佔~90%</td><td>達興切入周邊材料（剝離液/蝕刻液）避開正面衝突</td></tr>
+<tr><td>永光化學(1711)</td><td>光阻劑+顯影劑</td><td>營收75.69億，2025Q3虧損</td><td>營收較大但獲利差，毛利率遠低於達興40.6%</td></tr>
+<tr><td>長興材料(1717)</td><td>ABF載板+化工</td><td>營收407億，達興母公司</td><td>體量10倍大，但產品線區隔，可能為協同關係</td></tr>
+</table>
+<div class="tip good"><b>關鍵利基</b>年報p.70明確記載：有機離型層「站穩全球主要供應商並保持市佔領先」，新客戶為「優先選用材料商」。光阻剝離液「穩定量產，出貨量及市佔率逐步提升」。高選擇比蝕刻液「為主要供應商之一」。</div>
+<div class="tip warn"><b>進入障礙</b>POR認證需1-2年 + 超高純度(ppb級)要求 + 中港二廠耗資13億元。高進入門檻保護既有地位。</div>
+<p><strong>來源：</strong>2024年報 p.70、市場調查管道C（線3_競爭對手）、web_search_data</p>
+</div></div>
+
+<!-- 維度3 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度3：需求端（7/10）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>數據</th><th>FIAS</th></tr>
+<tr><td>客戶集中度</td><td>友達佔營收48.88%（2024年報），112年度為47.60%</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>半導體成長</td><td>半導體材料營收7.73億（+107.8%），佔比9%→16.7%</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>先進封裝TAM</td><td>516.2億美元(2025)→575.7億(2026)，CAGR 11.53%</td><td><span class="fias-i">推論</span></td></tr>
+<tr><td>CoWoS產能</td><td>2026年底月產能12.5-14萬片，CAGR 80%（2022-2026）</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>國產替代</td><td>台積電在地採購：原物料從10%(2022)→50%目標(2030)</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>國際合作</td><td>4家國際大廠合作中，2026年有望新增1-2家</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+<div class="tip danger"><b>核心風險：客戶集中度</b>友達佔營收49%，友達2026年前兩月營收年減7%。若友達面板業務持續低迷，達興顯示器材料業務將承壓。但公司策略已明確轉向半導體材料（2026目標佔比25%），正在降低面板依賴。</div>
+<div class="tip good"><b>結構性利多</b>台積電在地採購從10%拉到50%，約5倍成長空間。CoWoS年複合成長80%帶動先進封裝材料等比放大。達興已供應雷射離型層等關鍵材料，直接受惠。</div>
+<p><strong>來源：</strong>2024年報 p.75、法說會 2026/2/26、市場調查管道C、GII產業報告</p>
+</div></div>
+
+<!-- 維度4 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度4：財務體質（9/10）— 最強維度</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>2023</th><th>2024</th><th>2025</th><th>趨勢</th></tr>
+<tr><td>全年營收(億)</td><td>42.64</td><td>41.18</td><td>46.30</td><td style="color:var(--bull)">+12.4%</td></tr>
+<tr><td>毛利率(%)</td><td>34.6</td><td>36.8</td><td>40.6</td><td style="color:var(--bull)">連續3年上升</td></tr>
+<tr><td>營業利益率(%)</td><td>14.2</td><td>14.7</td><td>18.4</td><td style="color:var(--bull)">+3.7pp</td></tr>
+<tr><td>EPS(元)</td><td>5.10</td><td>5.56</td><td>7.37</td><td style="color:var(--bull)">+32.6%</td></tr>
+<tr><td>自由現金流(億)</td><td>5.77</td><td>7.67</td><td>8.04</td><td style="color:var(--bull)">連續正值</td></tr>
+<tr><td>負債比率(%)</td><td>32.5</td><td>33.6</td><td>31.0</td><td style="color:var(--bull)">穩健下降</td></tr>
+<tr><td>流動比率(%)</td><td>266.8</td><td>257.5</td><td>251.6</td><td>充裕</td></tr>
+<tr><td>ROE(%年化)</td><td>18.0</td><td>18.8</td><td>23.6</td><td style="color:var(--bull)">持續提升</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)">資料來源：finlab_data.json 季度財報原始數據，經交叉比對法說會數字一致</p>
+
+<details><summary>季度毛利率演進（12季完整趨勢）</summary>
+<table>
+<tr><th>季度</th><th>毛利率</th><th>營業利益率</th><th>EPS</th><th>ROE</th></tr>
+<tr><td>2023Q1</td><td>32.3%</td><td>11.9%</td><td>0.96</td><td>3.5%</td></tr>
+<tr><td>2023Q2</td><td>34.6%</td><td>15.2%</td><td>1.46</td><td>5.4%</td></tr>
+<tr><td>2023Q3</td><td>36.3%</td><td>15.9%</td><td>1.62</td><td>5.6%</td></tr>
+<tr><td>2023Q4</td><td>35.2%</td><td>13.8%</td><td>1.06</td><td>3.5%</td></tr>
+<tr><td>2024Q1</td><td>35.2%</td><td>12.7%</td><td>1.11</td><td>3.8%</td></tr>
+<tr><td>2024Q2</td><td>37.2%</td><td>14.6%</td><td>1.40</td><td>5.0%</td></tr>
+<tr><td>2024Q3</td><td>37.1%</td><td>15.8%</td><td>1.30</td><td>4.4%</td></tr>
+<tr><td>2024Q4</td><td>37.7%</td><td>15.6%</td><td>1.75</td><td>5.6%</td></tr>
+<tr><td>2025Q1</td><td style="color:var(--bull);font-weight:700">40.9%</td><td>18.7%</td><td>1.88</td><td>6.2%</td></tr>
+<tr><td>2025Q2</td><td style="color:var(--bull);font-weight:700">40.5%</td><td>19.2%</td><td>1.55</td><td>5.2%</td></tr>
+<tr><td>2025Q3</td><td>39.7%</td><td>17.6%</td><td>1.90</td><td>6.1%</td></tr>
+<tr><td>2025Q4</td><td style="color:var(--bull);font-weight:700">41.3%</td><td>18.2%</td><td>2.04</td><td>6.1%</td></tr>
+</table>
+<p style="font-size:.82em">毛利率從32.3%(2023Q1)升至41.3%(2025Q4)，連續8季40%以上確認產品組合優化效果。</p>
+</details>
+
+<details><summary>現金流品質（12季）</summary>
+<table>
+<tr><th>季度</th><th>自由現金流(千元)</th><th>現金流量比率(%)</th></tr>
+<tr><td>2023Q1</td><td>55,193</td><td>9.0</td></tr>
+<tr><td>2023Q2</td><td style="color:var(--bear)">-126,979</td><td>-4.9</td></tr>
+<tr><td>2023Q3</td><td>375,313</td><td>35.2</td></tr>
+<tr><td>2023Q4</td><td>273,944</td><td>29.6</td></tr>
+<tr><td>2024Q1</td><td>168,013</td><td>13.2</td></tr>
+<tr><td>2024Q2</td><td>103,283</td><td>12.5</td></tr>
+<tr><td>2024Q3</td><td>212,090</td><td>21.8</td></tr>
+<tr><td>2024Q4</td><td>283,134</td><td>26.0</td></tr>
+<tr><td>2025Q1</td><td>151,015</td><td>11.2</td></tr>
+<tr><td>2025Q2</td><td>118,648</td><td>14.9</td></tr>
+<tr><td>2025Q3</td><td>205,920</td><td>21.1</td></tr>
+<tr><td>2025Q4</td><td style="color:var(--bull);font-weight:700">328,347</td><td style="color:var(--bull);font-weight:700">31.7</td></tr>
+</table>
+<p style="font-size:.82em">2025全年自由現金流=8.04億，季度持續為正，營業CF/淨利比151.6%。</p>
+</details>
+</div></div>
+
+<!-- 維度5 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度5：供應鏈（6/10）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>事實</th><th>FIAS</th></tr>
+<tr><td>最大供應商</td><td>甲公司佔進貨16.07%（2024），集中度尚可</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>供應商策略</td><td>關鍵原料均維持2家以上供應商來源（年報p.87明確記載）</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>核心差異化</td><td>自主合成PI功能單體CBDA，少數具備合成+純化能力且能穩定量產供貨的材料商</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>日本依賴</td><td>日本佔全球半導體材料市佔50%，台灣僅17%。PI等關鍵原材料高度依賴日本進口</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>地理集中</td><td>90%以上營收來自台灣市場</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+<p><strong>判讀：</strong>自製關鍵原材料（而非外購調配方）是年報明確提出的競爭利基。但日本原材料依賴和台灣市場集中是結構性風險。</p>
+<p><strong>來源：</strong>2024年報 p.70, p.75, p.87、市場調查管道C（線2_上游供應端）</p>
+</div></div>
+
+<!-- 維度6 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度6：管理層（8/10）</h3>
+<div class="card-body">
+<div class="grid3">
+  <div class="mini-card bull-card"><div class="title">承諾追蹤</div><div class="num" style="color:var(--bull)">92</div><div class="desc">/100</div></div>
+  <div class="mini-card bull-card"><div class="title">數據交叉比對</div><div class="num" style="color:var(--bull)">97</div><div class="desc">/100</div></div>
+  <div class="mini-card bull-card"><div class="title">歷史誠信度</div><div class="num" style="color:var(--bull)">85</div><div class="desc">/100</div></div>
+</div>
+<p style="margin-top:6px"><strong>綜合評分：89/100（A-級）</strong>— 管理層歷史承諾兌現率極高，法說會數據與第三方完全吻合。</p>
+<table>
+<tr><th>項目</th><th>評估</th></tr>
+<tr><td>策略清晰度</td><td>三大領域布局明確，半導體優先。2025法說會大幅上修半導體佔比目標（10%→25%），且有業績支撐</td></tr>
+<tr><td>資本配置</td><td>高配息88%(6.5元) + 成長投資(capex 3.5-4億) + 橋頭新廠規劃。平衡兼顧。</td></tr>
+<tr><td>董監結構</td><td>友達+長興雙股東背書，無質押，無內部人異常交易</td></tr>
+<tr><td>經營團隊</td><td>董事長林正一（友達出身，化學材料專業）+ 總經理郭宗鑫，分工明確</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)">資料來源：FIAS分析結果.json（第二步產出）、2024年報 p.37-47</p>
+</div></div>
+
+<!-- 維度7 -->
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">維度7：市場調查 — 五條線（7/10）</h3>
+<div class="card-body">
+<table>
+<tr><th>調查線</th><th>結果</th><th>信號</th></tr>
+<tr><td>客戶線</td><td>台積電POR認證確認，與4家國際大廠合作，被客戶列為「優先選用」</td><td><span class="light green"></span>正面</td></tr>
+<tr><td>供應商線</td><td>長期國際化工大廠合作，關係穩定，進貨無異常（年報p.87）</td><td><span class="light green"></span>正面</td></tr>
+<tr><td>員工線</td><td>PTT評價「化材的台積電」但薪資偏低（技術師45.7K/月），可能影響留才</td><td><span class="light yellow"></span>注意</td></tr>
+<tr><td>競爭者線</td><td>日系大廠全球主導（光阻CR4=87%），但國產替代政策創造保護性利基</td><td><span class="light yellow"></span>中性偏正</td></tr>
+<tr><td>專家線</td><td>群益目標價512元（看多），但法人覆蓋率偏低，尚未被充分發掘</td><td><span class="light green"></span>正面</td></tr>
+</table>
+<div class="tip info"><b>額外商機</b>PSPI（感光性聚醯亞胺）因日系大廠缺貨，達興取得商機，已向二線封裝客戶出貨。2026年預期小量貢獻營收。<br>來源：法說會2026/2/26、Yahoo股市報導</div>
+<p><strong>來源：</strong>市場調查_管道C.json 五條線完整調查結果</p>
+</div></div>
+
+<!-- ============================== 3b 護城河 ============================== -->
+<div class="section-title" id="s3b">3b. 護城河框架</div>
+<div class="section-sub">總評：<span class="badge narrow">窄護城河（Narrow Moat）</span></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">角色定位：4/5 分</h3>
+<div class="card-body">
+<table>
+<tr><th>因子</th><th>得分</th><th>判定依據</th></tr>
+<tr><td>需求轉移</td><td style="color:var(--bull);font-weight:700">1</td><td>POR認證完成後客戶幾乎不替換。產品消失將導致製程停線。</td></tr>
+<tr><td>單位價值</td><td style="color:var(--bull);font-weight:700">1</td><td>特化材料佔晶圓BOM極低比例（<1%），但直接影響良率與製程品質 — 典型「低成本高價值」。</td></tr>
+<tr><td>瓶頸地位</td><td style="color:var(--bear)">0</td><td>非真正瓶頸。日系替代品存在，但國產替代政策創造「準瓶頸」效果。</td></tr>
+<tr><td>轉換成本</td><td style="color:var(--bull);font-weight:700">1</td><td>POR重新認證需1-2年，認證期間產線風險極高。客戶極不願更換已認證供應商。</td></tr>
+<tr><td>BOM佔比</td><td style="color:var(--bull);font-weight:700">1</td><td>化學材料佔晶圓製造成本比例極低，客戶缺乏砍價動機（砍也省不了多少）。</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">定價能力：8/14 分（中等定價權）</h3>
+<div class="card-body">
+<table>
+<tr><th>因子</th><th>評級</th><th>得分</th><th>判定依據</th></tr>
+<tr><td>品牌溢價</td><td>弱</td><td>0</td><td>B2B特化材料，無品牌溢價概念</td></tr>
+<tr><td>客製化/轉換成本</td><td style="color:var(--bull)">強</td><td>2</td><td>高度客製化配方，POR認證後轉換成本極高（>年採購額50%）</td></tr>
+<tr><td>寡占程度</td><td>中</td><td>1</td><td>全球光阻CR3≈72%（日系），達興在特定利基有一定集中度</td></tr>
+<tr><td>技術獨占性</td><td>中</td><td>1</td><td>有機離型層市佔領先、CBDA專利保護，但非完全獨佔</td></tr>
+<tr><td>法規壁壘</td><td style="color:var(--bull)">強</td><td>2</td><td>POR認證耗時1-2年 + 超高純度(ppb級)認證門檻</td></tr>
+<tr><td>長約佔比</td><td>弱</td><td>0</td><td>資料不足，推測以年度合約或PO為主</td></tr>
+<tr><td>下游毛利空間</td><td style="color:var(--bull)">強</td><td>2</td><td>台積電毛利率>53%，對微量化學材料價格不敏感</td></tr>
+</table>
+<div class="score-bar"><span style="font-size:.82em">定價能力</span><div class="bar"><div class="fill" style="width:57%;background:var(--neutral)"></div></div><div class="val">8/14</div></div>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">市佔率動態</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>評估</th></tr>
+<tr><td>絕對佔比</td><td>全球半導體材料市場 → 邊緣者（<5%）<br>有機離型層細分市場 → <strong>領先者/主導者</strong>（年報稱「全球主要供應商」市佔領先）</td></tr>
+<tr><td>趨勢方向</td><td style="color:var(--bull);font-weight:700">擴張（半導體營收+107.8%，佔比 9%→16.7%→目標25%）</td></tr>
+<tr><td>取得方式</td><td>量驅動 — 新產品量產放量 + 新客戶導入（非併購或漲價）</td></tr>
+<tr><td>防禦性</td><td>中防禦 — POR認證 + 客戶關係保護，但日系大廠具先進者優勢</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">Morningstar 五大護城河來源</h3>
+<div class="card-body">
+<table>
+<tr><th>來源</th><th>評級</th><th>判定</th></tr>
+<tr><td>無形資產</td><td>中</td><td>CBDA專利 + POR認證 + 經濟部補助計畫，但專利佈局深度不如日系</td></tr>
+<tr><td style="font-weight:700;color:var(--bull)">轉換成本</td><td style="font-weight:700;color:var(--bull)">強</td><td>POR認證1-2年 + 製程驗證 + 良率風險 = 客戶極不願更換已認證供應商。此為達興最核心護城河。</td></tr>
+<tr><td>網路效應</td><td>弱</td><td>不適用於特化材料B2B產業</td></tr>
+<tr><td>成本優勢</td><td>中</td><td>自製關鍵原材料降成本 + 台灣地緣優勢（快速技術支援、配合客戶時差）</td></tr>
+<tr><td>效率規模</td><td>中</td><td>特定利基市場容量有限，合格供應商數量少（有機離型層全球僅少數家）</td></tr>
+</table>
+
+<div class="tip good"><b>護城河總評：窄（Narrow Moat）</b>
+角色定位4/5≥3 ✓ | 定價能力8/14≥6 ✓ | 市佔率趨勢：擴張 ✓ | 轉換成本「強」✓<br>
+不達「寬」原因：定價能力8分 < 10分門檻，且僅1個「強」來源（需≥2個才達寬）。護城河來源：轉換成本（POR認證鎖定）+ 成本優勢（自製原料）+ 效率規模（利基市場），但尚未達到不可替代的程度。
+</div>
+</div></div>
+
+<!-- ============================== 3c 產業面 ============================== -->
+<div class="section-title" id="s3c">3c. 產業面分析</div>
+<div class="section-sub">Porter 五力總分：14/25（中等偏高吸引力）</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">產業生命週期定位</h3>
+<div class="card-body">
+<table>
+<tr><th>業務線</th><th>產業階段</th><th>特徵</th></tr>
+<tr><td>顯示器材料（~81%營收）</td><td style="font-weight:700">成熟期</td><td>面板產業年增0-5%，寡占格局（友達/京東方/群創），競爭白熱化轉向效率</td></tr>
+<tr><td>半導體材料-先進封裝</td><td style="font-weight:700;color:var(--bull)">成長期</td><td>CoWoS CAGR 80%，先進封裝CAGR 11.5%，參與者快速增加</td></tr>
+<tr><td>半導體材料-晶圓製程</td><td style="font-weight:700;color:var(--bull)">成長期</td><td>全球半導體材料CAGR 4.2%，先進製程特化材料成長更快</td></tr>
+<tr><td>關鍵原材料</td><td>成長期</td><td>配合半導體材料自主化需求，2026年成長率挑戰三成以上</td></tr>
+</table>
+<div class="tip info"><b>轉型中</b>公司正從成熟期業務（顯示器81%→預估2026年~75%）轉向成長期業務（半導體16.7%→目標25%），這是判斷估值的關鍵：用成熟化工PE(10-15倍)還是成長半導體PE(30-50倍)取決於轉型進度。</div>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">產業規模與成長動能</h3>
+<div class="card-body">
+<table>
+<tr><th>市場</th><th>2025年規模</th><th>2026年預估</th><th>CAGR</th><th>FIAS</th></tr>
+<tr><td>全球半導體材料</td><td>720.3億美元</td><td>748.5億美元</td><td>4.2%(至2034)</td><td><span class="fias-i">推論</span></td></tr>
+<tr><td>先進封裝市場</td><td>516.2億美元</td><td>575.7億美元</td><td>11.53%(至2031)</td><td><span class="fias-i">推論</span></td></tr>
+<tr><td>2.5D/3D封裝</td><td>—</td><td>—</td><td>13.05%(至2031)</td><td><span class="fias-i">推論</span></td></tr>
+<tr><td>CoWoS月產能</td><td>~8萬片</td><td>12.5-14萬片</td><td>80%(2022-2026)</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td>台灣半導體產值</td><td>5.45兆元</td><td>持續成長</td><td>—</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)">資料來源：Fortune Business Insights、GII、SEMI、TechNews、MIC</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">Porter 五力量化分析</h3>
+<div class="card-body">
+<div class="score-bar"><span style="font-size:.82em;min-width:100px">供應商議價力</span><div class="bar"><div class="fill" style="width:60%;background:var(--warn)"></div></div><div class="val">3/5</div></div>
+<p style="font-size:.8em;color:var(--txt3);margin-bottom:6px">國際化工大廠供應，關鍵原料維持2家以上來源。日本依賴度高但非壟斷。</p>
+
+<div class="score-bar"><span style="font-size:.82em;min-width:100px">買方議價力</span><div class="bar"><div class="fill" style="width:80%;background:var(--danger)"></div></div><div class="val">4/5</div></div>
+<p style="font-size:.8em;color:var(--txt3);margin-bottom:6px">友達佔營收49%、台積電為關鍵半導體客戶。大客戶議價力強。但BOM佔比低降低砍價動機。</p>
+
+<div class="score-bar"><span style="font-size:.82em;min-width:100px">新進者威脅</span><div class="bar"><div class="fill" style="width:40%;background:var(--accent)"></div></div><div class="val">2/5</div></div>
+<p style="font-size:.8em;color:var(--txt3);margin-bottom:6px">POR認證1-2年 + ppb級純度 + 13億元廠房投資 = 高進入門檻。</p>
+
+<div class="score-bar"><span style="font-size:.82em;min-width:100px">替代品威脅</span><div class="bar"><div class="fill" style="width:40%;background:var(--accent)"></div></div><div class="val">2/5</div></div>
+<p style="font-size:.8em;color:var(--txt3);margin-bottom:6px">製程專用化學品難以替代，替換需重新驗證整個製程。</p>
+
+<div class="score-bar"><span style="font-size:.82em;min-width:100px">同業競爭強度</span><div class="bar"><div class="fill" style="width:60%;background:var(--warn)"></div></div><div class="val">3/5</div></div>
+<p style="font-size:.8em;color:var(--txt3);margin-bottom:6px">日系主導全球市場，但國產替代政策創造保護性空間。在達興的利基領域，價格戰不激烈。</p>
+
+<div style="text-align:center;margin:8px 0;font-weight:700;color:var(--base)">五力總分：14/25 → 中等偏高吸引力</div>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">產業定位矩陣（BCG）</h3>
+<div class="card-body">
+<div class="grid2">
+  <div class="mini-card neutral-card">
+    <div class="title">顯示器材料</div>
+    <div class="num" style="font-size:1.1em">金牛</div>
+    <div class="desc">高市佔 + 低成長<br>穩定現金流基本盤</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">半導體材料</div>
+    <div class="num" style="font-size:1.1em;color:var(--bull)">問號→星星</div>
+    <div class="desc">低市佔 + 高成長<br>正在快速擴張中</div>
+  </div>
+</div>
+<p style="font-size:.82em;margin-top:6px"><strong>投資邏輯：</strong>金牛（顯示器）提供穩定現金流為星星（半導體）的成長提供彈藥。關鍵在於半導體業務能否從「問號」成功轉為「星星」— 目前的107.8%成長率和25%佔比目標顯示轉型正在加速。</p>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">產業趨勢關鍵事件</h3>
+<div class="card-body">
+<table>
+<tr><th>事件</th><th>類別</th><th>影響</th><th>對達興意義</th></tr>
+<tr><td>台積電在地採購目標 10%→50%</td><td>政策法規</td><td style="color:var(--bear);font-weight:700">高</td><td>最重要的結構性利多，5倍成長空間</td></tr>
+<tr><td>CoWoS產能年增>70%</td><td>供需變化</td><td style="color:var(--bear);font-weight:700">高</td><td>先進封裝材料需求等比放大</td></tr>
+<tr><td>美中科技戰持續</td><td>地緣政治</td><td style="color:var(--bear);font-weight:700">高</td><td>推動供應鏈在地化，台灣材料廠受惠</td></tr>
+<tr><td>日本政府2000億日圓收購JSR</td><td>併購重組</td><td>中</td><td>反映半導體材料戰略重要性</td></tr>
+<tr><td>PSPI日系大廠產能不足</td><td>供需變化</td><td>中</td><td>達興取得額外商機，已向二線客戶出貨</td></tr>
+<tr><td>台積電Arizona廠投產</td><td>供需變化</td><td>中</td><td>達興已有1項產品供應美國廠</td></tr>
+</table>
+</div></div>
+
+<!-- ============================== 3d 籌碼 ============================== -->
+<div class="section-title" id="s3d">3d. 籌碼分析</div>
+<div class="section-sub">籌碼面整體偏多，外資中期持續買入，空方大幅回補</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">外資動向（近3月 finlab 原始數據）</h3>
+<div class="card-body">
+<table>
+<tr><th>時間段</th><th>外資尚可投資股數</th><th>變化</th><th>判讀</th></tr>
+<tr><td>2025-12-22</td><td>94,754,286</td><td>—</td><td>基準點</td></tr>
+<tr><td>2026-01-16</td><td>96,808,854</td><td style="color:var(--bear)">+2,054,568</td><td>1月上旬外資淨賣出約2,055張</td></tr>
+<tr><td>2026-02-11</td><td>94,958,836</td><td style="color:var(--bull)">-1,850,018</td><td>2月初轉買，農曆年前加碼</td></tr>
+<tr><td>2026-02-26（法說會）</td><td>92,997,047</td><td style="color:var(--bull)">-1,961,789</td><td>法說會前後外資大量買入</td></tr>
+<tr><td>2026-03-20</td><td>92,056,882</td><td style="color:var(--bull)">-940,165</td><td>法說會後持續加碼</td></tr>
+</table>
+<div class="tip good"><b>外資中期偏多</b>自2026年1月中旬以來，外資尚可投資股數從96,808,854降至92,056,882，減少4,751,972股（約4,752張）。外資持續買入，尤其在法說會前後加速。整體3個月淨買入約2,697張。</div>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">借券餘額與融券</h3>
+<div class="card-body">
+<table>
+<tr><th>日期</th><th>借券餘額(張)</th><th>變化</th></tr>
+<tr><td>2025-12-22</td><td>2,557</td><td>—</td></tr>
+<tr><td>2026-01-16</td><td>2,003</td><td style="color:var(--bull)">-554（-21.7%）</td></tr>
+<tr><td>2026-02-26</td><td>1,393</td><td style="color:var(--bull)">-610（-30.5%）</td></tr>
+<tr><td>2026-03-20</td><td>1,018</td><td style="color:var(--bull)">-375（-26.9%）</td></tr>
+</table>
+<p><strong>借券餘額3個月降幅：-60.2%</strong>（從2,557張降至1,018張），空方持續大量回補。</p>
+<p>融券方面：融券買進量極低（單日僅個位數），無顯著放空壓力。</p>
+<div class="tip good"><b>空方信號消退</b>借券餘額持續下降60%，空方加速回補。融券幾乎無量。籌碼面偏多。</div>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">股價與估值區間</h3>
+<div class="card-body">
+<div class="grid2">
+  <div class="mini-card bull-card"><div class="title">近1年漲幅</div><div class="num" style="color:var(--bull)">+101.3%</div><div class="desc">188→378.5元</div></div>
+  <div class="mini-card bear-card"><div class="title">高點回檔</div><div class="num" style="color:var(--bear)">-15.9%</div><div class="desc">450→378.5元</div></div>
+</div>
+<table style="margin-top:6px">
+<tr><th>估值指標</th><th>近1年低點</th><th>近1年高點</th><th>最新(3/20)</th></tr>
+<tr><td>本益比(倍)</td><td>22.7 (2025/4/9)</td><td>65.9 (2025/9/5)</td><td style="font-weight:700">51.4</td></tr>
+<tr><td>股價淨值比(倍)</td><td>3.94 (2025/4/9)</td><td>14.03 (2025/9/5)</td><td style="font-weight:700">11.02</td></tr>
+</table>
+<div class="tip warn"><b>估值偏高</b>PE 51.4倍處於近1年中位偏上區間。以2025年EPS 7.37計算PE=51倍；以群益預估2026年EPS 8.54計算Forward PE=44倍。不便宜，但反映半導體材料高成長預期。股價自450高點回檔16%後在380附近整理。</div>
+</div></div>
+
+<!-- ============================== 綜合評估 ============================== -->
+<div class="section-title" id="summary">綜合評估</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">第三步結論</h3>
+<div class="card-body">
+<div class="grid2">
+  <div class="mini-card bull-card"><div class="title">競爭力總分</div><div class="num" style="color:var(--bull)">7.25/10</div><div class="desc">良好</div></div>
+  <div class="mini-card neutral-card"><div class="title">護城河</div><div class="num badge narrow" style="font-size:1.1em">窄</div><div class="desc">Narrow Moat</div></div>
+</div>
+<div class="grid2" style="margin-top:4px">
+  <div class="mini-card neutral-card"><div class="title">五力吸引力</div><div class="num">14/25</div><div class="desc">中等偏高</div></div>
+  <div class="mini-card bull-card"><div class="title">籌碼面</div><div class="num" style="color:var(--bull)">偏多</div><div class="desc">外資買+空方補</div></div>
+</div>
+
+<div class="tip good" style="margin-top:8px"><b>核心競爭優勢（5 項）</b>
+1. 台積電國產替代政策的直接受益者（在地採購從10%→50%的5倍成長空間）<br>
+2. POR認證鎖定效應（轉換成本護城河，重新認證需1-2年）<br>
+3. 自主化學合成能力（CBDA專利 + ppb級純化 + 分子設計模擬，區別於純配方廠）<br>
+4. 友達+長興雙股東資源（面板基本盤 + 化工技術支持 + 客戶通路）<br>
+5. 毛利率40.6%遠優於同業（永光虧損、一般化工20-30%），反映真實技術門檻
+</div>
+
+<div class="tip danger"><b>核心風險（5 項）</b>
+1. 友達佔營收49%，客戶集中度極高 — 面板業務下滑直接衝擊基本盤<br>
+2. PE 51倍估值偏高 — 半導體成長一旦不如預期，估值修正風險大<br>
+3. 日系大廠先進者優勢 — JSR/TOK/信越在核心光阻領域的技術差距難以短期追趕<br>
+4. 90%+營收來自台灣 — 地理集中風險，受台灣特定政經事件影響大<br>
+5. 薪資競爭力不足 — PTT評價薪資偏低，長期可能影響高端研發人才招募與留任
+</div>
+</div></div>
+
+<div class="footer">
+  天機閣 — 深度調查系統 v1.7 ｜ 第三步：競爭力分析<br>
+  5234 達興材料 ｜ 2026-03-22<br>
+  資料來源：2024年報全文、2026/2/26法說會、finlab原始數據、市場調查五條線、網路搜尋12類管道
+</div>
+
+</div>
+<!-- 收合由 h3 inline onclick 處理，不需額外 script -->
+</body>
+</html>

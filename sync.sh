@@ -68,8 +68,8 @@ for stock_dir in "$ANALYSIS_SRC"/*/; do
 
     STOCK_COUNT=$((STOCK_COUNT + 1))
 
-    # 計算完成步驟數（掃描 第X步_*.html）
-    STEP_COUNT=$(ls "$stock_dir"第*步_*.html 2>/dev/null | wc -l)
+    # 計算完成步驟數（只計不重複步驟，忽略多版本檔案如 _v2/_v3）
+    STEP_COUNT=$(ls "$stock_dir"第*步_*.html 2>/dev/null | grep -oE '第.步' | sort -u | wc -l)
 
     # 檢查附加報告
     HAS_SUPPLY=""
@@ -140,84 +140,57 @@ else
 fi
 [ "$STALE_COUNT" -gt 0 ] && echo "  [WARN] ${STALE_COUNT} 個標的超過 90 天未更新"
 
-# --- 步驟 3：自動產生首頁 ---
-echo "[3/5] 自動產生首頁..."
+# --- 步驟 3：自動產生首頁（樹狀資料夾版）---
+echo "[3/5] 自動產生首頁（樹狀資料夾）..."
 
-REPORT_CARDS=""
 REPORT_COUNT=0
+NOW=$(date "+%Y-%m-%d %H:%M")
 
-# 遞迴掃描所有子資料夾中的 HTML 報告，依修改時間排序
+# 收集所有資料夾清單（含根目錄檔案）
+declare -A FOLDER_FILES    # folder -> 檔案列表（換行分隔）
+declare -A FOLDER_LATEST   # folder -> 最新檔案的 epoch
+
 for f in $(find "$TARGET_DIR/天機錄" -name "*.html" -type f -printf '%T@ %p\n' 2>/dev/null | sort -rn | cut -d' ' -f2-); do
     [ -f "$f" ] || continue
-    FNAME="$(basename "$f")"
     REPORT_COUNT=$((REPORT_COUNT + 1))
 
-    # 取得相對於 github-pages 目錄的路徑（含子資料夾）
     REL_PATH="${f#$TARGET_DIR/}"
-
-    # 取得所在子資料夾名稱（用於標籤顯示）
     REL_FROM_RECORD="${f#$TARGET_DIR/天機錄/}"
     SUBDIR="$(dirname "$REL_FROM_RECORD")"
-
-    # 從檔名解析資訊
-    case "$FNAME" in
-        *投資分析*完整版*)
-            TAG_TEXT="投資分析"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_-]*//')
-            ;;
-        *投資分析*推衍版*)
-            TAG_TEXT="推衍版"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_-]*//')
-            ;;
-        *供應鏈*)
-            TAG_TEXT="供應鏈"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_]*//')
-            ;;
-        *同業比較*)
-            TAG_TEXT="同業比較"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_]*//')
-            ;;
-        *主題掃描*)
-            TAG_TEXT="主題掃描"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_]*//')
-            ;;
-        *全面產業分析*)
-            TAG_TEXT="產業分析"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_]*//')
-            ;;
-        *推衍*總結*)
-            TAG_TEXT="推衍"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_]*推衍_總結_//')
-            ;;
-        *推衍命中率*)
-            TAG_TEXT="系統"
-            TITLE="推衍命中率儀表板"
-            ;;
-        *)
-            TAG_TEXT="報告"
-            TITLE=$(echo "$FNAME" | sed 's/\.html//')
-            ;;
-    esac
-
-    # 如果在子資料夾中，標題前加上資料夾名稱提示
-    FOLDER_HINT=""
-    if [ "$SUBDIR" != "." ]; then
-        FOLDER_HINT="<span class=\"folder-hint\">${SUBDIR}</span>"
-    fi
-
+    FNAME="$(basename "$f")"
     MTIME=$(date -r "$f" "+%Y-%m-%d %H:%M")
     MTIME_EPOCH=$(date -r "$f" "+%s" 2>/dev/null || echo "0")
 
-    # data-folder 用於資料夾排序，data-time 用於時間排序
-    DATA_FOLDER=""
-    [ "$SUBDIR" != "." ] && DATA_FOLDER="$SUBDIR" || DATA_FOLDER="__root__"
+    # 解析標籤
+    case "$FNAME" in
+        *投資分析*完整版*) TAG_TEXT="投資分析" ;;
+        *投資分析*推衍版*) TAG_TEXT="推衍版" ;;
+        *供應鏈*)          TAG_TEXT="供應鏈" ;;
+        *同業比較*)        TAG_TEXT="同業比較" ;;
+        *主題掃描*)        TAG_TEXT="主題掃描" ;;
+        *全面產業分析*)    TAG_TEXT="產業分析" ;;
+        *推衍*總結*)       TAG_TEXT="推衍" ;;
+        *推衍命中率*)      TAG_TEXT="系統" ;;
+        *推衍推演*)        TAG_TEXT="推衍版" ;;
+        *)                 TAG_TEXT="報告" ;;
+    esac
 
-    REPORT_CARDS="${REPORT_CARDS}<a class=\"row\" href=\"${REL_PATH}\" data-folder=\"${DATA_FOLDER}\" data-time=\"${MTIME_EPOCH}\"><span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}</span>${FOLDER_HINT}<span class=\"row-time\">${MTIME}</span></a>
+    TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_-]*//')
+    [ -z "$TITLE" ] && TITLE="$FNAME"
+
+    FOLDER_KEY="$SUBDIR"
+    [ "$SUBDIR" = "." ] && FOLDER_KEY="__root__"
+
+    ROW_HTML="<a class=\"row\" href=\"${REL_PATH}\"><span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}</span><span class=\"row-time\">${MTIME}</span></a>"
+
+    FOLDER_FILES["$FOLDER_KEY"]="${FOLDER_FILES[$FOLDER_KEY]}${ROW_HTML}
 "
+    # 記錄每個資料夾的最新時間
+    PREV_LATEST="${FOLDER_LATEST[$FOLDER_KEY]:-0}"
+    [ "$MTIME_EPOCH" -gt "$PREV_LATEST" ] && FOLDER_LATEST["$FOLDER_KEY"]="$MTIME_EPOCH"
 done
 
-NOW=$(date "+%Y-%m-%d %H:%M")
-
+# === 寫入 index.html ===
 cat > "$TARGET_DIR/index.html" << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -236,13 +209,33 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .section-head{display:flex;align-items:center;gap:8px;margin:12px 0 8px;padding-top:12px;border-top:1.5px solid var(--border)}
 .section-head h2{font-size:1.1em;font-weight:800;color:var(--base)}
 .badge{background:var(--accent);color:#fff;font-size:.7em;font-weight:700;padding:1px 7px;border-radius:8px}
-.row{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--txt);transition:transform .15s,box-shadow .15s}
-.row:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+/* 資料夾樹狀結構 */
+details.folder{margin:6px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+details.folder[open]{border-color:var(--accent)}
+details.folder>summary{padding:12px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;font-weight:700;color:var(--base);user-select:none;transition:background .12s}
+details.folder>summary:hover{background:rgba(90,125,96,.06)}
+details.folder>summary::-webkit-details-marker{display:none}
+details.folder>summary::before{content:'📁';font-size:1.1em}
+details.folder[open]>summary::before{content:'📂'}
+details.folder>summary .folder-name{flex:1;font-size:.95em}
+details.folder>summary .folder-count{font-size:.7em;color:var(--txt3);background:var(--border);padding:1px 8px;border-radius:10px}
+details.folder>summary .folder-time{font-size:.72em;color:var(--txt3)}
+details.folder>summary::after{content:'▶';font-size:.6em;color:var(--txt3);transition:transform .2s}
+details.folder[open]>summary::after{transform:rotate(90deg)}
+details.folder>.folder-body{padding:2px 10px 10px}
+/* 報告列 */
+.row{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:3px 0;background:rgba(255,255,255,.45);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--txt);transition:transform .12s,box-shadow .12s}
+.row:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.07);background:rgba(255,255,255,.7)}
 .tag{flex-shrink:0;padding:2px 8px;border-radius:4px;font-size:.7em;font-weight:700;color:#fff;background:var(--accent)}
-.row-title{flex:1;font-size:.88em;font-weight:600;color:var(--base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row-time{flex-shrink:0;font-size:.75em;color:var(--txt3)}
-.folder-hint{flex-shrink:0;padding:1px 6px;border-radius:3px;font-size:.65em;font-weight:600;color:var(--link);background:rgba(90,125,140,.12);margin-right:2px}
+.row-title{flex:1;font-size:.85em;font-weight:600;color:var(--base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-time{flex-shrink:0;font-size:.72em;color:var(--txt3)}
+/* 根目錄檔案（無資料夾） */
+.root-files{margin:6px 0}
 .footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:20px}
+/* 展開收合按鈕 */
+.toggle-btns{display:flex;gap:6px;margin:8px 0 4px}
+.toggle-btns button{padding:3px 12px;border:1px solid var(--border);border-radius:6px;background:var(--panel);font-size:.75em;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;font-family:inherit}
+.toggle-btns button:hover{background:var(--border);color:var(--base)}
 /* 覆蓋率儀表板 */
 .cov-summary{display:flex;gap:10px;margin:8px 0;flex-wrap:wrap}
 .cov-stat{flex:1;min-width:100px;text-align:center;padding:8px 10px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
@@ -261,12 +254,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .cov-pct{position:absolute;right:8px;top:0;line-height:18px;font-size:.7em;font-weight:700;color:var(--base)}
 .cov-extras{margin-top:4px;display:flex;gap:4px;min-height:18px}
 .bonus-tag{font-size:.65em;padding:1px 6px;border-radius:3px;background:var(--link);color:#fff;font-weight:600}
-/* 排序控制列 */
-.sort-bar{display:flex;gap:6px;margin:8px 0 4px;align-items:center}
-.sort-bar .sort-label{font-size:.75em;color:var(--txt3);font-weight:500;margin-right:2px}
-.sort-btn{padding:3px 12px;border:1px solid var(--border);border-radius:6px;background:var(--panel);font-size:.75em;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;font-family:inherit}
-.sort-btn:hover{background:var(--border)}
-.sort-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -279,23 +266,54 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
     <h2>天機錄</h2>
 HTMLEOF
 
-# 插入動態報告數量
 echo "    <span class=\"badge\">${REPORT_COUNT}</span>" >> "$TARGET_DIR/index.html"
 
 cat >> "$TARGET_DIR/index.html" << 'HTMLEOF'
 </div>
-<div class="sort-bar">
-    <span class="sort-label">排序：</span>
-    <button class="sort-btn active" onclick="sortRows('time')" id="sort-time">時間</button>
-    <button class="sort-btn" onclick="sortRows('folder')" id="sort-folder">資料夾</button>
+<div class="toggle-btns">
+    <button onclick="document.querySelectorAll('details.folder').forEach(d=>d.open=true)">全部展開</button>
+    <button onclick="document.querySelectorAll('details.folder').forEach(d=>d.open=false)">全部收合</button>
 </div>
-<div id="report-list">
+<div id="folder-tree">
 HTMLEOF
 
-# 插入報告列表
-echo "${REPORT_CARDS}" >> "$TARGET_DIR/index.html"
+# --- 輸出資料夾樹 ---
+# 先按最新時間排序資料夾
+SORTED_FOLDERS=""
+for FKEY in "${!FOLDER_LATEST[@]}"; do
+    SORTED_FOLDERS="${SORTED_FOLDERS}${FOLDER_LATEST[$FKEY]} ${FKEY}\n"
+done
 
-# 關閉 report-list 容器
+echo -e "$SORTED_FOLDERS" | sort -rn | while read -r EPOCH FKEY; do
+    [ -z "$FKEY" ] && continue
+    FILES_HTML="${FOLDER_FILES[$FKEY]}"
+    FILE_COUNT=$(echo "$FILES_HTML" | grep -c '<a class' || echo 0)
+    LATEST_DATE=$(date -d "@$EPOCH" "+%Y-%m-%d %H:%M" 2>/dev/null || echo "")
+
+    if [ "$FKEY" = "__root__" ]; then
+        # 根目錄檔案直接顯示（不包在資料夾裡）
+        cat >> "$TARGET_DIR/index.html" << ROOTEOF
+<details class="folder" open>
+<summary><span class="folder-name">系統報表</span><span class="folder-count">${FILE_COUNT} 份</span><span class="folder-time">${LATEST_DATE}</span></summary>
+<div class="folder-body">
+${FILES_HTML}
+</div>
+</details>
+ROOTEOF
+    else
+        # 資料夾中的檔案
+        DISPLAY_NAME="$FKEY"
+        cat >> "$TARGET_DIR/index.html" << FOLDEREOF
+<details class="folder">
+<summary><span class="folder-name">${DISPLAY_NAME}</span><span class="folder-count">${FILE_COUNT} 份</span><span class="folder-time">${LATEST_DATE}</span></summary>
+<div class="folder-body">
+${FILES_HTML}
+</div>
+</details>
+FOLDEREOF
+    fi
+done
+
 echo "</div>" >> "$TARGET_DIR/index.html"
 
 # --- 插入覆蓋率儀表板 ---

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>達興材料（5234）— 追蹤回饋設定</title>
+<style>
+  :root {
+    --bg-dark: #1a1410; --bg-card: #2a2118; --bg-card-hover: #342a1f;
+    --border: #4a3828; --border-light: #5a4838;
+    --text: #e8dcc8; --text-dim: #a89878; --text-bright: #fff8e8;
+    --accent: #d4a574; --accent-light: #e8c49a; --accent-dark: #b8854a;
+    --green: #7cb87c; --green-bg: rgba(124,184,124,0.12);
+    --red: #d47c7c; --red-bg: rgba(212,124,124,0.12);
+    --blue: #7c9cd4; --blue-bg: rgba(124,156,212,0.12);
+    --gold: #d4b87c; --gold-bg: rgba(212,184,124,0.12);
+    --orange: #d4944c; --orange-bg: rgba(212,148,76,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: var(--bg-dark); color: var(--text);
+    line-height: 1.7; min-height: 100vh;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .hero {
+    background: linear-gradient(135deg, #2a2118 0%, #3a2a18 50%, #2a2118 100%);
+    border: 1px solid var(--accent-dark); border-radius: 16px;
+    padding: 32px 28px; margin-bottom: 24px; text-align: center;
+  }
+  .hero h1 { font-size: 1.5em; color: var(--accent-light); margin-bottom: 6px; }
+  .hero .subtitle { font-size: 0.92em; color: var(--text-dim); margin-bottom: 14px; }
+  .hero .badge-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.82em;
+    background: rgba(212,165,116,0.12); border: 1px solid var(--accent-dark); color: var(--accent-light);
+  }
+  .badge.green { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .badge.gold { background: var(--gold-bg); border-color: var(--gold); color: var(--gold); }
+
+  details.card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 16px; overflow: hidden;
+  }
+  details.card[open] { border-color: var(--accent-dark); }
+  details.card > summary {
+    padding: 14px 18px; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 1.05em; font-weight: 700; color: var(--accent-light);
+    user-select: none;
+  }
+  details.card > summary:hover { background: var(--bg-card-hover); }
+  details.card > summary::-webkit-details-marker { display: none; }
+  details.card > summary::after {
+    content: '▼'; font-size: 0.7em; color: var(--text-dim); transition: transform 0.2s;
+  }
+  details.card:not([open]) > summary::after { transform: rotate(-90deg); }
+  details.card > .card-body { padding: 0 18px 18px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.86em; }
+  th, td { padding: 7px 10px; border: 1px solid var(--border); text-align: left; }
+  th { background: rgba(212,165,116,0.1); color: var(--accent-light); font-weight: 600; }
+
+  .status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 700; }
+  .status.ok { background: var(--green-bg); color: var(--green); }
+  .status.warn { background: var(--gold-bg); color: var(--gold); }
+  .status.alert { background: var(--red-bg); color: var(--red); }
+
+  .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 12px 0; }
+  .schedule-item {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; text-align: center;
+  }
+  .schedule-item .freq { font-size: 0.8em; color: var(--text-dim); margin-bottom: 4px; }
+  .schedule-item .date { font-size: 1.1em; font-weight: 700; color: var(--accent-light); }
+  .schedule-item .desc { font-size: 0.82em; color: var(--text); margin-top: 4px; }
+
+  .info-box {
+    background: rgba(212,165,116,0.06); border: 1px solid var(--accent-dark);
+    border-radius: 10px; padding: 14px 16px; margin: 10px 0; font-size: 0.9em;
+  }
+  .info-box h4 { color: var(--accent-light); margin-bottom: 6px; }
+
+  .toggle-btns { text-align: right; margin-bottom: 12px; }
+  .toggle-btns button {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 0.82em; margin-left: 6px;
+  }
+  .toggle-btns button:hover { background: var(--bg-card-hover); color: var(--accent-light); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>達興材料（5234）— 追蹤回饋設定</h1>
+  <div class="subtitle">天機閣深度調查系統 v1.7 — 第九步：追蹤回饋</div>
+  <div class="badge-row">
+    <span class="badge">建立日期：2026-03-22</span>
+    <span class="badge green">分析版本：v1.0</span>
+    <span class="badge gold">推衍有效期：至 2026-04-30</span>
+  </div>
+</div>
+
+<div class="toggle-btns">
+  <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=true)">全部展開</button>
+  <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- 追蹤機制總覽 -->
+<details class="card" open>
+  <summary>追蹤機制總覽</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>機制</th><th>頻率</th><th>做什麼</th><th>資料來源</th></tr></thead>
+      <tbody>
+        <tr><td>監控儀表板檢查</td><td>每月</td><td>檢查失效條件是否觸發 → 通知閣主</td><td>公開資訊觀測站、證交所</td></tr>
+        <tr><td>預測 vs 實際</td><td>每季</td><td>比對預測（EPS、營收、半導體佔比）vs 實際數字</td><td>季報、法說會</td></tr>
+        <tr><td>假說驗證</td><td>每半年</td><td>哪個 ACH 假說最接近真實發展，更新信心水準</td><td>所有資料綜合</td></tr>
+        <tr><td>報告版本更新</td><td>有重大事件</td><td>增量更新第七步/第八步報告，保留歷史版本</td><td>重大訊息觸發</td></tr>
+        <tr><td>命中率統計</td><td>每年</td><td>統計預測準確度 → 回饋修正天機閣方法論</td><td>追蹤.json 記錄</td></tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<!-- 下次檢查排程 -->
+<details class="card" open>
+  <summary>下次檢查排程</summary>
+  <div class="card-body">
+    <div class="schedule-grid">
+      <div class="schedule-item">
+        <div class="freq">月度檢查</div>
+        <div class="date">2026/04/10</div>
+        <div class="desc">3 月營收公布後<br>確認月營收 YoY、友達月營收</div>
+      </div>
+      <div class="schedule-item">
+        <div class="freq">推衍更新</div>
+        <div class="date">2026/04/30 前</div>
+        <div class="desc">推衍報告有效期屆滿<br>需決定是否更新推衍</div>
+      </div>
+      <div class="schedule-item">
+        <div class="freq">季度檢查</div>
+        <div class="date">2026/05/15</div>
+        <div class="desc">Q1 季報公布後<br>核心：半導體季營收、毛利率、EPS</div>
+      </div>
+      <div class="schedule-item">
+        <div class="freq">半年度檢查</div>
+        <div class="date">2026/09/15</div>
+        <div class="desc">H1 數據完整後<br>假說驗證、信心水準更新</div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- 月度監控儀表板 -->
+<details class="card" open>
+  <summary>月度監控儀表板（當前狀態）</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>監控指標</th><th>正常範圍</th><th>警戒閾值</th><th>失效閾值</th><th>最新數據</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>達興月營收 YoY</td><td>>15%</td><td><5%</td><td>連2月轉負</td>
+          <td>01月: +20.07%</td><td><span class="status ok">正常</span></td>
+        </tr>
+        <tr>
+          <td>友達月營收 YoY</td><td>> -5%</td><td><-10%（連3月）</td><td>重大公告</td>
+          <td>前2月: -7%</td><td><span class="status warn">觀察中</span></td>
+        </tr>
+        <tr>
+          <td>外資買賣超</td><td>週淨買超</td><td>連10日賣超</td><td>累計>10,000張</td>
+          <td>2月起淨買~4,752張</td><td><span class="status ok">正常</span></td>
+        </tr>
+        <tr>
+          <td>股價位置</td><td>>360元</td><td><350元</td><td><330元</td>
+          <td>388元</td><td><span class="status ok">正常</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      <h4>儀表板判讀</h4>
+      <p>4 項月度指標中 3 項正常、1 項觀察中（友達 -7%）。整體偏綠燈，但需密切追蹤友達 3 月份營收是否進一步惡化。若友達 3 月營收 YoY 降至 -10% 以下，將升級為「警戒」狀態。</p>
+    </div>
+  </div>
+</details>
+
+<!-- 季度監控指標 -->
+<details class="card">
+  <summary>季度監控指標（待 Q1 數據填入）</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>指標</th><th>超預期</th><th>正常</th><th>警戒</th><th>失效</th><th>最新</th><th>Q1 實際</th></tr></thead>
+      <tbody>
+        <tr><td>半導體季營收</td><td>>3.0億</td><td>2.5-3.0億</td><td><2.5億</td><td><2.0億</td><td>Q4:~2.2億</td><td style="color:var(--text-dim);">待填</td></tr>
+        <tr><td>毛利率</td><td>>42%</td><td>40-42%</td><td><38%</td><td><35%</td><td>Q4:41.27%</td><td style="color:var(--text-dim);">待填</td></tr>
+        <tr><td>EPS（季）</td><td>>2.3元</td><td>1.8-2.3元</td><td><1.5元</td><td><1.2元</td><td>Q4:2.04元</td><td style="color:var(--text-dim);">待填</td></tr>
+        <tr><td>半導體佔比</td><td>>25%</td><td>20-25%</td><td><18%</td><td><18%連2季</td><td>全年:16.7%</td><td style="color:var(--text-dim);">待填</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      <h4>使用說明</h4>
+      <p>每季季報公布後（Q1: 5/15、Q2: 8/15、Q3: 11/15），將實際數據填入「Q_ 實際」欄位，比對與預期的偏差。若出現「警戒」或「失效」，須立即重新評估持股策略。</p>
+    </div>
+  </div>
+</details>
+
+<!-- 預測紀錄表 -->
+<details class="card">
+  <summary>預測 vs 實際追蹤表</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>預測項目</th><th>預測值</th><th>預測日期</th><th>來源</th><th>實際值</th><th>偏差</th></tr></thead>
+      <tbody>
+        <tr><td>2026 全年 EPS</td><td>8.3-8.8 元（基準 8.54）</td><td>2026-03-22</td><td>群益+天機閣</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+        <tr><td>2026 半導體營收佔比</td><td>25-26%</td><td>2026-03-22</td><td>管理層指引</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+        <tr><td>2026 全年毛利率</td><td>41-42%</td><td>2026-03-22</td><td>趨勢+指引</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+        <tr><td>2026 半導體全年營收</td><td>12-13 億</td><td>2026-03-22</td><td>成長率推估</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+        <tr><td>12 個月股價（加權）</td><td>380 元</td><td>2026-03-22</td><td>第八步推衍</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+        <tr><td>Q1 EPS</td><td>1.8-2.1 元</td><td>2026-03-22</td><td>季節推估</td><td style="color:var(--text-dim);">待填</td><td style="color:var(--text-dim);">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<!-- ACH 假說追蹤 -->
+<details class="card">
+  <summary>ACH 假說信心追蹤</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>假說</th><th>名稱</th><th>初始信心</th><th>當前信心</th><th>趨勢</th><th>關鍵驗證事件</th></tr></thead>
+      <tbody>
+        <tr><td>H1</td><td>看多（12 個月 450-550 元）</td><td>35%</td><td>35%</td><td>—</td><td>Q2 半導體季營收>3 億</td></tr>
+        <tr><td>H3</td><td>結構轉變（2-3 年）</td><td>28%</td><td>28%</td><td>—</td><td>半導體佔比突破 30%</td></tr>
+        <tr><td>H5</td><td>中性震盪（350-450 元）</td><td>22%</td><td>22%</td><td>—</td><td>股價橫盤>3 個月</td></tr>
+        <tr><td>H4</td><td>黑天鵝</td><td>8%</td><td>8%</td><td>—</td><td>即時監控</td></tr>
+        <tr><td>H2</td><td>看空修正（280-320 元）</td><td>7%</td><td>7%</td><td>—</td><td>友達-15% 或 PE<35</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      <h4>使用說明</h4>
+      <p>每半年根據新資料更新各假說的信心水準。更新時應回溯原始資料，重新評估證據矩陣（C/I/N 分數變化），並記錄調整原因至「追蹤.json」。信心水準的加總應始終為 100%。</p>
+    </div>
+  </div>
+</details>
+
+<!-- 版本紀錄 -->
+<details class="card">
+  <summary>版本紀錄</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>版本</th><th>日期</th><th>事件</th><th>變更內容</th></tr></thead>
+      <tbody>
+        <tr><td>v1.0</td><td>2026-03-22</td><td>天機閣深度調查初版</td><td>九步驟全流程完成，建立完整追蹤機制</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      <h4>版本更新觸發條件</h4>
+      <ul style="margin:4px 0 0 18px;font-size:0.88em;">
+        <li>重大事件發生（友達重大公告、台積電政策變化、POR 認證通過等）</li>
+        <li>半年度假說檢驗後信心分配顯著變化（任一假說變動>10%）</li>
+        <li>季報數據與預測偏差>20%</li>
+        <li>閣主主動要求更新</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<!-- 九步驟產出總覽 -->
+<details class="card" open>
+  <summary>達興材料（5234）九步驟產出總覽</summary>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>步驟</th><th>產出檔案</th><th>完成日期</th><th>大小</th></tr></thead>
+      <tbody>
+        <tr><td>第一步：資料收集</td><td>六管道原始資料（JSON × 5 + PDF + 文字檔）</td><td>2026-03-21</td><td>多檔</td></tr>
+        <tr><td>第二步：FIAS 資料分級</td><td>第二步_FIAS資料分級與深度分析.html + FIAS分析結果.json</td><td>2026-03-22</td><td>42KB + 3KB</td></tr>
+        <tr><td>第三步：競爭力分析</td><td>第三步_競爭力分析.html + 競爭力分析結果.json</td><td>2026-03-22</td><td>40KB + 14KB</td></tr>
+        <tr><td>第四步：ACH 分析</td><td>第四步_ACH競爭假說分析.html + ACH分析結果.json</td><td>2026-03-22</td><td>36KB + 19KB</td></tr>
+        <tr><td>第五步：壓力測試</td><td>第五步_假設壓力測試.html + 壓力測試結果.json</td><td>2026-03-22</td><td>31KB + 27KB</td></tr>
+        <tr><td>第六步：評審團</td><td>第六步_評審團.html + 評審團結果.json</td><td>2026-03-22</td><td>36KB + 30KB</td></tr>
+        <tr><td>第七步：決策輸出</td><td>第七步_決策輸出.html → 天機錄完整版</td><td>2026-03-22</td><td>53KB</td></tr>
+        <tr><td>第八步：推衍推演</td><td>第八步_推衍推演.html → 天機錄推衍版</td><td>2026-03-22</td><td>58KB</td></tr>
+        <tr><td>第九步：追蹤回饋</td><td>第九步_追蹤回饋設定.html + 追蹤.json</td><td>2026-03-22</td><td>本檔</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      <h4>天機錄歸檔</h4>
+      <p>完整版和推衍版已歸檔至：<code>天機閣-藏經閣/天機錄/5234_達興材料/</code></p>
+      <ul style="margin:4px 0 0 18px;font-size:0.88em;">
+        <li>2026-03-22_投資分析_達興材料5234_完整版.html（53KB）</li>
+        <li>2026-03-22_投資分析_達興材料5234_推衍版.html（58KB）</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<div style="text-align:center;padding:30px 0 10px;color:var(--text-dim);font-size:0.78em;">
+  天機閣深度調查系統 v1.7 — 第九步：追蹤回饋設定<br>
+  建立日期：2026-03-22 ｜ 標的：達興材料（5234）｜ 版本：v1.0
+</div>
+
+</div>
+</body>
+</html>

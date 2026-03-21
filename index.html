@@ -15,13 +15,33 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .section-head{display:flex;align-items:center;gap:8px;margin:12px 0 8px;padding-top:12px;border-top:1.5px solid var(--border)}
 .section-head h2{font-size:1.1em;font-weight:800;color:var(--base)}
 .badge{background:var(--accent);color:#fff;font-size:.7em;font-weight:700;padding:1px 7px;border-radius:8px}
-.row{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--txt);transition:transform .15s,box-shadow .15s}
-.row:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+/* 資料夾樹狀結構 */
+details.folder{margin:6px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+details.folder[open]{border-color:var(--accent)}
+details.folder>summary{padding:12px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;font-weight:700;color:var(--base);user-select:none;transition:background .12s}
+details.folder>summary:hover{background:rgba(90,125,96,.06)}
+details.folder>summary::-webkit-details-marker{display:none}
+details.folder>summary::before{content:'📁';font-size:1.1em}
+details.folder[open]>summary::before{content:'📂'}
+details.folder>summary .folder-name{flex:1;font-size:.95em}
+details.folder>summary .folder-count{font-size:.7em;color:var(--txt3);background:var(--border);padding:1px 8px;border-radius:10px}
+details.folder>summary .folder-time{font-size:.72em;color:var(--txt3)}
+details.folder>summary::after{content:'▶';font-size:.6em;color:var(--txt3);transition:transform .2s}
+details.folder[open]>summary::after{transform:rotate(90deg)}
+details.folder>.folder-body{padding:2px 10px 10px}
+/* 報告列 */
+.row{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:3px 0;background:rgba(255,255,255,.45);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--txt);transition:transform .12s,box-shadow .12s}
+.row:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.07);background:rgba(255,255,255,.7)}
 .tag{flex-shrink:0;padding:2px 8px;border-radius:4px;font-size:.7em;font-weight:700;color:#fff;background:var(--accent)}
-.row-title{flex:1;font-size:.88em;font-weight:600;color:var(--base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row-time{flex-shrink:0;font-size:.75em;color:var(--txt3)}
-.folder-hint{flex-shrink:0;padding:1px 6px;border-radius:3px;font-size:.65em;font-weight:600;color:var(--link);background:rgba(90,125,140,.12);margin-right:2px}
+.row-title{flex:1;font-size:.85em;font-weight:600;color:var(--base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-time{flex-shrink:0;font-size:.72em;color:var(--txt3)}
+/* 根目錄檔案（無資料夾） */
+.root-files{margin:6px 0}
 .footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:20px}
+/* 展開收合按鈕 */
+.toggle-btns{display:flex;gap:6px;margin:8px 0 4px}
+.toggle-btns button{padding:3px 12px;border:1px solid var(--border);border-radius:6px;background:var(--panel);font-size:.75em;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;font-family:inherit}
+.toggle-btns button:hover{background:var(--border);color:var(--base)}
 /* 覆蓋率儀表板 */
 .cov-summary{display:flex;gap:10px;margin:8px 0;flex-wrap:wrap}
 .cov-stat{flex:1;min-width:100px;text-align:center;padding:8px 10px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
@@ -40,12 +60,6 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .cov-pct{position:absolute;right:8px;top:0;line-height:18px;font-size:.7em;font-weight:700;color:var(--base)}
 .cov-extras{margin-top:4px;display:flex;gap:4px;min-height:18px}
 .bonus-tag{font-size:.65em;padding:1px 6px;border-radius:3px;background:var(--link);color:#fff;font-weight:600}
-/* 排序控制列 */
-.sort-bar{display:flex;gap:6px;margin:8px 0 4px;align-items:center}
-.sort-bar .sort-label{font-size:.75em;color:var(--txt3);font-weight:500;margin-right:2px}
-.sort-btn{padding:3px 12px;border:1px solid var(--border);border-radius:6px;background:var(--panel);font-size:.75em;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;font-family:inherit}
-.sort-btn:hover{background:var(--border)}
-.sort-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -56,45 +70,105 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 </div>
 <div class="section-head">
     <h2>天機錄</h2>
-    <span class="badge">22</span>
+    <span class="badge">30</span>
 </div>
-<div class="sort-bar">
-    <span class="sort-label">排序：</span>
-    <button class="sort-btn active" onclick="sortRows('time')" id="sort-time">時間</button>
-    <button class="sort-btn" onclick="sortRows('folder')" id="sort-folder">資料夾</button>
+<div class="toggle-btns">
+    <button onclick="document.querySelectorAll('details.folder').forEach(d=>d.open=true)">全部展開</button>
+    <button onclick="document.querySelectorAll('details.folder').forEach(d=>d.open=false)">全部收合</button>
 </div>
-<div id="report-list">
-<a class="row" href="天機錄/GOOGL_Alphabet/2026-03-21_投資分析_Alphabet_GOOGL_完整版.html" data-folder="GOOGL_Alphabet" data-time="1774094543"><span class="tag">投資分析</span><span class="row-title">投資分析_Alphabet_GOOGL_完整版</span><span class="folder-hint">GOOGL_Alphabet</span><span class="row-time">2026-03-21 20:02</span></a>
-<a class="row" href="天機錄/GOOGL_Alphabet/2026-03-21_投資分析_Alphabet_GOOGL_推衍版.html" data-folder="GOOGL_Alphabet" data-time="1774094149"><span class="tag">推衍版</span><span class="row-title">投資分析_Alphabet_GOOGL_推衍版</span><span class="folder-hint">GOOGL_Alphabet</span><span class="row-time">2026-03-21 19:55</span></a>
-<a class="row" href="天機錄/FCX_Freeport-McMoRan/2026-03-21_投資分析_Freeport-McMoRan_FCX_推衍版.html" data-folder="FCX_Freeport-McMoRan" data-time="1774090028"><span class="tag">推衍版</span><span class="row-title">投資分析_Freeport-McMoRan_FCX_推衍版</span><span class="folder-hint">FCX_Freeport-McMoRan</span><span class="row-time">2026-03-21 18:47</span></a>
-<a class="row" href="天機錄/FCX_Freeport-McMoRan/2026-03-21_投資分析_Freeport-McMoRan_FCX_完整版.html" data-folder="FCX_Freeport-McMoRan" data-time="1774090026"><span class="tag">投資分析</span><span class="row-title">投資分析_Freeport-McMoRan_FCX_完整版</span><span class="folder-hint">FCX_Freeport-McMoRan</span><span class="row-time">2026-03-21 18:47</span></a>
-<a class="row" href="天機錄/推衍命中率儀表板.html" data-folder="__root__" data-time="1774081461"><span class="tag">系統</span><span class="row-title">推衍命中率儀表板</span><span class="row-time">2026-03-21 16:24</span></a>
-<a class="row" href="天機錄/2344_華邦電/20260321_推衍推演_華邦電2344.html" data-folder="2344_華邦電" data-time="1774077486"><span class="tag">報告</span><span class="row-title">20260321_推衍推演_華邦電2344</span><span class="folder-hint">2344_華邦電</span><span class="row-time">2026-03-21 15:18</span></a>
-<a class="row" href="天機錄/2344_華邦電/20260321_全面產業分析_華邦電2344.html" data-folder="2344_華邦電" data-time="1774077462"><span class="tag">產業分析</span><span class="row-title">全面產業分析_華邦電2344</span><span class="folder-hint">2344_華邦電</span><span class="row-time">2026-03-21 15:17</span></a>
-<a class="row" href="天機錄/2337_旺宏/20260321_全面產業分析_旺宏2337.html" data-folder="2337_旺宏" data-time="1774077392"><span class="tag">產業分析</span><span class="row-title">全面產業分析_旺宏2337</span><span class="folder-hint">2337_旺宏</span><span class="row-time">2026-03-21 15:16</span></a>
-<a class="row" href="天機錄/主題研究/20260321_主題掃描_NOR_Flash記憶體IC產業鏈.html" data-folder="主題研究" data-time="1774076760"><span class="tag">主題掃描</span><span class="row-title">主題掃描_NOR_Flash記憶體IC產業鏈</span><span class="folder-hint">主題研究</span><span class="row-time">2026-03-21 15:06</span></a>
-<a class="row" href="天機錄/8271_宇瞻/20260321_全面產業分析_宇瞻8271.html" data-folder="8271_宇瞻" data-time="1774074216"><span class="tag">產業分析</span><span class="row-title">全面產業分析_宇瞻8271</span><span class="folder-hint">8271_宇瞻</span><span class="row-time">2026-03-21 14:23</span></a>
-<a class="row" href="天機錄/主題研究/20260321_主題掃描_DRAM模組產業鏈.html" data-folder="主題研究" data-time="1774074115"><span class="tag">主題掃描</span><span class="row-title">主題掃描_DRAM模組產業鏈</span><span class="folder-hint">主題研究</span><span class="row-time">2026-03-21 14:21</span></a>
-<a class="row" href="天機錄/8271_宇瞻/20260321_供應鏈_宇瞻科技8271.html" data-folder="8271_宇瞻" data-time="1774073010"><span class="tag">供應鏈</span><span class="row-title">供應鏈_宇瞻科技8271</span><span class="folder-hint">8271_宇瞻</span><span class="row-time">2026-03-21 14:03</span></a>
-<a class="row" href="天機錄/8271_宇瞻/2026-03-21_投資分析_宇瞻8271_推衍版.html" data-folder="8271_宇瞻" data-time="1774071204"><span class="tag">推衍版</span><span class="row-title">投資分析_宇瞻8271_推衍版</span><span class="folder-hint">8271_宇瞻</span><span class="row-time">2026-03-21 13:33</span></a>
-<a class="row" href="天機錄/8271_宇瞻/2026-03-21_投資分析_宇瞻8271_完整版.html" data-folder="8271_宇瞻" data-time="1774071204"><span class="tag">投資分析</span><span class="row-title">投資分析_宇瞻8271_完整版</span><span class="folder-hint">8271_宇瞻</span><span class="row-time">2026-03-21 13:33</span></a>
-<a class="row" href="天機錄/2344_華邦電/20260321_供應鏈_華邦電子2344.html" data-folder="2344_華邦電" data-time="1774064533"><span class="tag">供應鏈</span><span class="row-title">供應鏈_華邦電子2344</span><span class="folder-hint">2344_華邦電</span><span class="row-time">2026-03-21 11:42</span></a>
-<a class="row" href="天機錄/主題研究/20260321_同業比較_記憶體產業.html" data-folder="主題研究" data-time="1774063589"><span class="tag">同業比較</span><span class="row-title">同業比較_記憶體產業</span><span class="folder-hint">主題研究</span><span class="row-time">2026-03-21 11:26</span></a>
-<a class="row" href="天機錄/2337_旺宏/20260321_供應鏈_旺宏電子2337.html" data-folder="2337_旺宏" data-time="1774063589"><span class="tag">供應鏈</span><span class="row-title">供應鏈_旺宏電子2337</span><span class="folder-hint">2337_旺宏</span><span class="row-time">2026-03-21 11:26</span></a>
-<a class="row" href="天機錄/2337_旺宏/2026-03-21_投資分析_旺宏2337_推衍版.html" data-folder="2337_旺宏" data-time="1774058720"><span class="tag">推衍版</span><span class="row-title">投資分析_旺宏2337_推衍版</span><span class="folder-hint">2337_旺宏</span><span class="row-time">2026-03-21 10:05</span></a>
-<a class="row" href="天機錄/2337_旺宏/2026-03-21_投資分析_旺宏2337_完整版.html" data-folder="2337_旺宏" data-time="1774058720"><span class="tag">投資分析</span><span class="row-title">投資分析_旺宏2337_完整版</span><span class="folder-hint">2337_旺宏</span><span class="row-time">2026-03-21 10:05</span></a>
-<a class="row" href="天機錄/2344_華邦電/2026-03-21_投資分析_華邦電2344_推衍版.html" data-folder="2344_華邦電" data-time="1774032610"><span class="tag">推衍版</span><span class="row-title">投資分析_華邦電2344_推衍版</span><span class="folder-hint">2344_華邦電</span><span class="row-time">2026-03-21 02:50</span></a>
-<a class="row" href="天機錄/2344_華邦電/2026-03-21_投資分析_華邦電2344_完整版.html" data-folder="2344_華邦電" data-time="1774031909"><span class="tag">投資分析</span><span class="row-title">投資分析_華邦電2344_完整版</span><span class="folder-hint">2344_華邦電</span><span class="row-time">2026-03-21 02:38</span></a>
-<a class="row" href="天機錄/一般推衍/20260321_004937_推衍_總結_黃金變動趨勢推算.html" data-folder="一般推衍" data-time="1774026820"><span class="tag">推衍</span><span class="row-title">黃金變動趨勢推算</span><span class="folder-hint">一般推衍</span><span class="row-time">2026-03-21 01:13</span></a>
+<div id="folder-tree">
+<details class="folder">
+<summary><span class="folder-name">5234_達興材料</span><span class="folder-count">8 份</span><span class="folder-time">2026-03-22 01:26</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/5234_達興材料/第九步_追蹤回饋設定.html"><span class="tag">報告</span><span class="row-title">第九步_追蹤回饋設定</span><span class="row-time">2026-03-22 01:26</span></a>
+<a class="row" href="天機錄/5234_達興材料/2026-03-22_投資分析_達興材料5234_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_達興材料5234_推衍版</span><span class="row-time">2026-03-22 01:23</span></a>
+<a class="row" href="天機錄/5234_達興材料/2026-03-22_投資分析_達興材料5234_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_達興材料5234_完整版</span><span class="row-time">2026-03-22 01:23</span></a>
+<a class="row" href="天機錄/5234_達興材料/第三步_競爭力分析.html"><span class="tag">報告</span><span class="row-title">第三步_競爭力分析</span><span class="row-time">2026-03-22 01:06</span></a>
+<a class="row" href="天機錄/5234_達興材料/第六步_評審團.html"><span class="tag">報告</span><span class="row-title">第六步_評審團</span><span class="row-time">2026-03-22 01:04</span></a>
+<a class="row" href="天機錄/5234_達興材料/第五步_假設壓力測試.html"><span class="tag">報告</span><span class="row-title">第五步_假設壓力測試</span><span class="row-time">2026-03-22 00:51</span></a>
+<a class="row" href="天機錄/5234_達興材料/第四步_ACH競爭假說分析.html"><span class="tag">報告</span><span class="row-title">第四步_ACH競爭假說分析</span><span class="row-time">2026-03-22 00:40</span></a>
+<a class="row" href="天機錄/5234_達興材料/第二步_FIAS資料分級與深度分析.html"><span class="tag">報告</span><span class="row-title">第二步_FIAS資料分級與深度分析</span><span class="row-time">2026-03-22 00:08</span></a>
 
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">GOOGL_Alphabet</span><span class="folder-count">2 份</span><span class="folder-time">2026-03-21 20:02</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/GOOGL_Alphabet/2026-03-21_投資分析_Alphabet_GOOGL_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_Alphabet_GOOGL_完整版</span><span class="row-time">2026-03-21 20:02</span></a>
+<a class="row" href="天機錄/GOOGL_Alphabet/2026-03-21_投資分析_Alphabet_GOOGL_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_Alphabet_GOOGL_推衍版</span><span class="row-time">2026-03-21 19:55</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">FCX_Freeport-McMoRan</span><span class="folder-count">2 份</span><span class="folder-time">2026-03-21 18:47</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/FCX_Freeport-McMoRan/2026-03-21_投資分析_Freeport-McMoRan_FCX_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_Freeport-McMoRan_FCX_推衍版</span><span class="row-time">2026-03-21 18:47</span></a>
+<a class="row" href="天機錄/FCX_Freeport-McMoRan/2026-03-21_投資分析_Freeport-McMoRan_FCX_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_Freeport-McMoRan_FCX_完整版</span><span class="row-time">2026-03-21 18:47</span></a>
+
+</div>
+</details>
+<details class="folder" open>
+<summary><span class="folder-name">系統報表</span><span class="folder-count">1 份</span><span class="folder-time">2026-03-21 16:24</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/推衍命中率儀表板.html"><span class="tag">系統</span><span class="row-title">推衍命中率儀表板</span><span class="row-time">2026-03-21 16:24</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">2344_華邦電</span><span class="folder-count">5 份</span><span class="folder-time">2026-03-21 15:18</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/2344_華邦電/20260321_推衍推演_華邦電2344.html"><span class="tag">推衍版</span><span class="row-title">推衍推演_華邦電2344</span><span class="row-time">2026-03-21 15:18</span></a>
+<a class="row" href="天機錄/2344_華邦電/20260321_全面產業分析_華邦電2344.html"><span class="tag">產業分析</span><span class="row-title">全面產業分析_華邦電2344</span><span class="row-time">2026-03-21 15:17</span></a>
+<a class="row" href="天機錄/2344_華邦電/20260321_供應鏈_華邦電子2344.html"><span class="tag">供應鏈</span><span class="row-title">供應鏈_華邦電子2344</span><span class="row-time">2026-03-21 11:42</span></a>
+<a class="row" href="天機錄/2344_華邦電/2026-03-21_投資分析_華邦電2344_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_華邦電2344_推衍版</span><span class="row-time">2026-03-21 02:50</span></a>
+<a class="row" href="天機錄/2344_華邦電/2026-03-21_投資分析_華邦電2344_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_華邦電2344_完整版</span><span class="row-time">2026-03-21 02:38</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">2337_旺宏</span><span class="folder-count">4 份</span><span class="folder-time">2026-03-21 15:16</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/2337_旺宏/20260321_全面產業分析_旺宏2337.html"><span class="tag">產業分析</span><span class="row-title">全面產業分析_旺宏2337</span><span class="row-time">2026-03-21 15:16</span></a>
+<a class="row" href="天機錄/2337_旺宏/20260321_供應鏈_旺宏電子2337.html"><span class="tag">供應鏈</span><span class="row-title">供應鏈_旺宏電子2337</span><span class="row-time">2026-03-21 11:26</span></a>
+<a class="row" href="天機錄/2337_旺宏/2026-03-21_投資分析_旺宏2337_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_旺宏2337_推衍版</span><span class="row-time">2026-03-21 10:05</span></a>
+<a class="row" href="天機錄/2337_旺宏/2026-03-21_投資分析_旺宏2337_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_旺宏2337_完整版</span><span class="row-time">2026-03-21 10:05</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">主題研究</span><span class="folder-count">3 份</span><span class="folder-time">2026-03-21 15:06</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/主題研究/20260321_主題掃描_NOR_Flash記憶體IC產業鏈.html"><span class="tag">主題掃描</span><span class="row-title">主題掃描_NOR_Flash記憶體IC產業鏈</span><span class="row-time">2026-03-21 15:06</span></a>
+<a class="row" href="天機錄/主題研究/20260321_主題掃描_DRAM模組產業鏈.html"><span class="tag">主題掃描</span><span class="row-title">主題掃描_DRAM模組產業鏈</span><span class="row-time">2026-03-21 14:21</span></a>
+<a class="row" href="天機錄/主題研究/20260321_同業比較_記憶體產業.html"><span class="tag">同業比較</span><span class="row-title">同業比較_記憶體產業</span><span class="row-time">2026-03-21 11:26</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">8271_宇瞻</span><span class="folder-count">4 份</span><span class="folder-time">2026-03-21 14:23</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/8271_宇瞻/20260321_全面產業分析_宇瞻8271.html"><span class="tag">產業分析</span><span class="row-title">全面產業分析_宇瞻8271</span><span class="row-time">2026-03-21 14:23</span></a>
+<a class="row" href="天機錄/8271_宇瞻/20260321_供應鏈_宇瞻科技8271.html"><span class="tag">供應鏈</span><span class="row-title">供應鏈_宇瞻科技8271</span><span class="row-time">2026-03-21 14:03</span></a>
+<a class="row" href="天機錄/8271_宇瞻/2026-03-21_投資分析_宇瞻8271_推衍版.html"><span class="tag">推衍版</span><span class="row-title">投資分析_宇瞻8271_推衍版</span><span class="row-time">2026-03-21 13:33</span></a>
+<a class="row" href="天機錄/8271_宇瞻/2026-03-21_投資分析_宇瞻8271_完整版.html"><span class="tag">投資分析</span><span class="row-title">投資分析_宇瞻8271_完整版</span><span class="row-time">2026-03-21 13:33</span></a>
+
+</div>
+</details>
+<details class="folder">
+<summary><span class="folder-name">一般推衍</span><span class="folder-count">1 份</span><span class="folder-time">2026-03-21 01:13</span></summary>
+<div class="folder-body">
+<a class="row" href="天機錄/一般推衍/20260321_004937_推衍_總結_黃金變動趨勢推算.html"><span class="tag">推衍</span><span class="row-title">推衍_總結_黃金變動趨勢推算</span><span class="row-time">2026-03-21 01:13</span></a>
+
+</div>
+</details>
 </div>
 <div class="section-head">
     <h2>分析覆蓋率</h2>
-    <span class="badge">5 標的</span>
+    <span class="badge">7 標的</span>
 </div>
 <div class="cov-summary">
-    <div class="cov-stat"><div class="num">5</div><div class="label">追蹤標的</div></div>
-    <div class="cov-stat"><div class="num">95%</div><div class="label">平均完成度</div></div>
+    <div class="cov-stat"><div class="num">7</div><div class="label">追蹤標的</div></div>
+    <div class="cov-stat"><div class="num">87%</div><div class="label">平均完成度</div></div>
     <div class="cov-stat"><div class="num">0</div><div class="label">過期待更新</div></div>
 </div>
 <div class="cov-card">
@@ -123,6 +197,18 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 </div>
 <div class="cov-card">
   <div class="cov-header">
+    <span class="cov-code">5234</span>
+    <span class="cov-name">達興材料</span>
+    <span class="cov-fresh fresh">2026-03-22</span>
+  </div>
+  <div class="cov-bar-wrap">
+    <div class="cov-bar" style="width:88%"></div>
+    <span class="cov-pct">8/9</span>
+  </div>
+  <div class="cov-extras"></div>
+</div>
+<div class="cov-card">
+  <div class="cov-header">
     <span class="cov-code">8271</span>
     <span class="cov-name">宇瞻</span>
     <span class="cov-fresh fresh">2026-03-21</span>
@@ -140,8 +226,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
     <span class="cov-fresh fresh">2026-03-21</span>
   </div>
   <div class="cov-bar-wrap">
-    <div class="cov-bar" style="width:111%"></div>
-    <span class="cov-pct">10/9</span>
+    <div class="cov-bar" style="width:77%"></div>
+    <span class="cov-pct">7/9</span>
   </div>
   <div class="cov-extras"></div>
 </div>
@@ -157,10 +243,22 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
   </div>
   <div class="cov-extras"></div>
 </div>
+<div class="cov-card">
+  <div class="cov-header">
+    <span class="cov-code">SNDK</span>
+    <span class="cov-name">SanDisk</span>
+    <span class="cov-fresh fresh">2026-03-22</span>
+  </div>
+  <div class="cov-bar-wrap">
+    <div class="cov-bar" style="width:77%"></div>
+    <span class="cov-pct">7/9</span>
+  </div>
+  <div class="cov-extras"></div>
+</div>
 
 <div class="footer">
     <p>天機閣 — 推衍系統 / 情報中心</p>
-    <p>最後同步：2026-03-21 20:32</p>
+    <p>最後同步：2026-03-22 01:36</p>
     <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
 </div>
 </div>
