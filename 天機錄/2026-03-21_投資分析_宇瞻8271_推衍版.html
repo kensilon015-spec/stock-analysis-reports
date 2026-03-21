@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>8271 宇瞻科技 — 天機閣推衍報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:left;font-weight:600;font-size:.82em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+/* 推衍版專用：影響鏈（保留向下相容） */
+.chain{margin:8px 0;font-size:.82em}
+.chain-node{display:inline-block;padding:4px 10px;border-radius:6px;font-weight:600;margin:2px 0}
+.chain-arrow{display:inline-block;color:var(--txt3);font-weight:900;margin:0 4px;font-size:1.1em}
+.chain-l1{background:rgba(46,125,50,.15);color:var(--bull);border:1px solid rgba(46,125,50,.3)}
+.chain-l2{background:rgba(21,101,192,.12);color:#1565c0;border:1px solid rgba(21,101,192,.3)}
+.chain-l3{background:rgba(184,150,12,.12);color:var(--gold);border:1px solid rgba(184,150,12,.3)}
+.chain-l4{background:rgba(198,40,40,.12);color:var(--bear);border:1px solid rgba(198,40,40,.3)}
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:6px 0}
+.path-card .path-title{font-weight:900;font-size:.95em;margin-bottom:4px}
+.path-card .path-prob{font-weight:700;font-size:.82em;margin-bottom:6px}
+/* === 圖表元件 CSS === */
+.timeline{position:relative;padding:16px 0;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--border);transform:translateX(-50%)}
+.tl-item{position:relative;display:flex;align-items:flex-start;margin:0 0 20px;width:100%}
+.tl-item:last-child{margin-bottom:0}
+.tl-item:nth-child(odd){flex-direction:row-reverse}
+.tl-item:nth-child(odd) .tl-content{text-align:right;padding-right:30px;padding-left:0}
+.tl-item:nth-child(even) .tl-content{text-align:left;padding-left:30px;padding-right:0}
+.tl-content{width:50%}
+.tl-dot{position:absolute;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;border:3px solid var(--panel);z-index:2;top:4px}
+.tl-dot.green{background:var(--bull)}.tl-dot.red{background:var(--bear)}.tl-dot.yellow{background:var(--warn)}.tl-dot.blue{background:var(--link)}
+.tl-date{font-weight:800;font-size:.85em;color:var(--base);margin-bottom:2px}
+.tl-event{font-size:.82em;color:var(--txt2);font-weight:600}
+.tl-detail{font-size:.75em;color:var(--txt3);margin-top:2px;line-height:1.4}
+.tl-impact{display:inline-block;font-size:.7em;font-weight:700;padding:1px 8px;border-radius:4px;margin-top:3px}
+.tl-impact.bull{background:rgba(46,125,50,.15);color:var(--bull)}
+.tl-impact.bear{background:rgba(198,40,40,.12);color:var(--bear)}
+.tl-impact.mixed{background:rgba(212,160,23,.15);color:var(--warn)}
+.tl-impact.critical{background:rgba(198,40,40,.2);color:var(--bear);border:1px solid var(--bear)}
+.chart-svg{width:100%;overflow-x:auto}
+.chart-svg svg{display:block;margin:0 auto}
+.chart-svg text{font-family:'Inter','Noto Sans TC',sans-serif}
+.gauge{display:flex;align-items:center;gap:8px;margin:4px 0}
+.gauge .gauge-label{min-width:80px;font-size:.8em;font-weight:600;color:var(--base);text-align:right}
+.gauge .gauge-track{flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden;position:relative}
+.gauge .gauge-fill{height:100%;border-radius:7px;transition:width .4s}
+.gauge .gauge-val{min-width:40px;font-size:.78em;font-weight:700;text-align:left}
+.metric-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.metric-card{flex:1;min-width:100px;text-align:center;padding:10px 8px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.metric-card .mc-num{font-size:1.4em;font-weight:900;margin:2px 0}
+.metric-card .mc-label{font-size:.72em;color:var(--txt3);font-weight:500}
+.metric-card .mc-sub{font-size:.68em;color:var(--txt3);margin-top:2px}
+.metric-card.bull-border{border-left:4px solid var(--bull)}
+.metric-card.bear-border{border-left:4px solid var(--bear)}
+.metric-card.neutral-border{border-left:4px solid var(--link)}
+.metric-card.warn-border{border-left:4px solid var(--warn)}
+@media(max-width:600px){.timeline::before{left:20px}.tl-item,.tl-item:nth-child(odd){flex-direction:row}.tl-content,.tl-item:nth-child(odd) .tl-content{width:calc(100% - 40px);text-align:left!important;padding-left:30px!important;padding-right:0!important}.tl-dot{left:20px}}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>宇瞻科技 (8271) — 天機閣推衍報告</h1>
+    <div class="sub">天機閣深度調查系統 v1.7｜第八步：推衍推演</div>
+    <div class="desc">本報告專注於「未來會怎麼走」— 以第七步分析結論為基礎，結合最新情報更新、影響鏈分析、情境模擬，產出可追蹤的行動建議。推衍有時效性，需定期更新。</div>
+    <div class="tags">
+        <span class="tag">8271 宇瞻</span>
+        <span class="tag">推衍日期 2026-03-21</span>
+        <span class="tag">基準股價 188 元</span>
+        <span class="tag">推衍有效期：至 2026-04-18</span>
+        <span class="tag">FIAS F:68 I:18 A:6 S:2</span>
+        <span class="tag">完整版評審 B 級</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">推衍報告結構（7 章）</strong>
+    <a href="#s1">一、推衍基礎摘要（從完整版萃取）</a>
+    <a href="#s2">二、OSINT 最新情報更新</a>
+    <a href="#s3">三、影響鏈分析</a>
+    <a href="#s4">四、情境模擬（概率樹）</a>
+    <a href="#s5">五、個人化推衍</a>
+    <a href="#s6">六、催化劑時間表</a>
+    <a href="#s7">七、推衍結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ================================================================ -->
+<!-- 一、推衍基礎摘要                                                    -->
+<!-- ================================================================ -->
+<div class="section-title" id="s1">一、推衍基礎摘要</div>
+<div class="section-sub">從第七步完整版報告萃取的關鍵事實（不重新分析，僅作為推衍起點）</div>
+
+<div class="card">
+<h3>核心結論（第七步基準線）</h3>
+<div class="card-body">
+<div class="grid3">
+    <div class="mini-card neutral-card"><div class="title">評審等級</div><div class="num">B 級</div><div class="desc">3-4 關通過</div></div>
+    <div class="mini-card neutral-card"><div class="title">一句話</div><div class="num" style="font-size:.85em">好公司好景氣<br>但不是好價格</div><div class="desc"></div></div>
+    <div class="mini-card bear-card"><div class="title">加權期望值</div><div class="num" style="color:var(--bear)">135.5 元</div><div class="desc">vs 現價 188 (-28%)</div></div>
+</div>
+</div></div>
+
+<div class="card">
+<h3>ACH 五假說信心分配</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>信心</th><th>核心邏輯</th></tr>
+<tr><td style="color:var(--neutral);font-weight:700">H3 中性震盪</td><td style="font-weight:900">35%</td><td>零反證的折衷假說，多空拉鋸現狀</td></tr>
+<tr><td style="color:var(--bull);font-weight:700">H1 看多</td><td style="font-weight:900">25%</td><td>基本面極強但 6 條反證</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">H2 看空</td><td style="font-weight:900">20%</td><td>估值+籌碼面支撐但基本面反駁</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">H4 結構轉變</td><td style="font-weight:900">10%</td><td>DDR5 替代的中長期風險</td></tr>
+<tr><td style="color:#9c27b0;font-weight:700">H5 黑天鵝</td><td style="font-weight:900">10%</td><td>群聯斷供/地緣/會計風險</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>致命因子排序 + 監控燈號</h3>
+<div class="card-body">
+<div class="grid2">
+<div>
+<p style="font-weight:700;margin-bottom:4px">致命因子（前三名高度相關）</p>
+<table>
+<tr><td style="font-weight:700;color:var(--bear)">#1 DDR4 價格反轉</td><td>EPS -50~60%</td></tr>
+<tr><td style="font-weight:700;color:var(--bear)">#2 存貨跌價損失</td><td>EPS -3~4 元/股</td></tr>
+<tr><td style="font-weight:700;color:var(--warn)">#3 PE 壓縮至 12 倍</td><td>股價 -47%</td></tr>
+</table>
+</div>
+<div>
+<p style="font-weight:700;margin-bottom:4px">燈號摘要（基準日）</p>
+<table>
+<tr><td><span class="light green"></span> DDR4 漲價</td><td>持續中</td></tr>
+<tr><td><span class="light green"></span> 月營收 YoY</td><td>+233%</td></tr>
+<tr><td><span class="light green"></span> 毛利率</td><td>30.56%</td></tr>
+<tr><td><span class="light red"></span> 投信</td><td>零參與</td></tr>
+<tr><td><span class="light red"></span> 處置股</td><td>處置中</td></tr>
+<tr><td><span class="light red"></span> 速動比率</td><td>58%</td></tr>
+</table>
+</div>
+</div>
+</div></div>
+
+<div class="card">
+<h3>估值基準線（五法交叉）</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">方法</th><th>合理區間</th><th>vs 188 元</th></tr>
+<tr><td style="text-align:left">前瞻 PE（基準情境）</td><td>150 元</td><td style="color:var(--bear)">偏高 25%</td></tr>
+<tr><td style="text-align:left">PB 法</td><td>80～140 元</td><td style="color:var(--bear)">偏高 34~135%</td></tr>
+<tr><td style="text-align:left">分部估值</td><td>86～93 元</td><td style="color:var(--bear)">偏高 102~119%</td></tr>
+<tr><td style="text-align:left">隱含預期反推</td><td>聯合機率 12~18%</td><td style="color:var(--bear)">計入過多預期</td></tr>
+<tr><td style="text-align:left">歷史循環比較</td><td>接近 2018 極端</td><td style="color:var(--warn)">接近歷史高點</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">安全邊際進場價：100～130 元。加權期望值 135.5 元。</p>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 二、OSINT 最新情報更新                                               -->
+<!-- ================================================================ -->
+<div class="section-title" id="s2">二、OSINT 最新情報更新</div>
+<div class="section-sub">搜尋日 2026-03-21｜與第七步基準進行差異比對</div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">情報差異表（第七步基準 vs OSINT 更新）</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">項目</th><th>第七步基準值</th><th>OSINT 最新</th><th>差異方向</th></tr>
+<tr><td style="text-align:left;font-weight:700">DDR4 現貨漲幅</td><td>140～153%</td><td style="color:var(--bull);font-weight:700">369%（累計）</td><td style="color:var(--bull)">大幅超越</td></tr>
+<tr><td style="text-align:left;font-weight:700">DDR4 合約價 Q1</td><td>未具體引用</td><td style="color:var(--bull);font-weight:700">季增 90～95%</td><td style="color:var(--bull)">新增 F 級證據</td></tr>
+<tr><td style="text-align:left;font-weight:700">缺貨持續時間</td><td>預估至 2027Q4（I 級）</td><td style="color:var(--bull);font-weight:700">華邦電法說：缺到 2027（F 級）</td><td style="color:var(--bull)">推論→事實</td></tr>
+<tr><td style="text-align:left;font-weight:700">DDR5 價格</td><td>未追蹤</td><td style="color:var(--warn);font-weight:700">3 月首跌 7.2%</td><td style="color:var(--warn)">新監控訊號</td></tr>
+<tr><td style="text-align:left;font-weight:700">華邦電高雄廠</td><td>未納入</td><td style="color:var(--bear);font-weight:700">2027 年量產 DDR4</td><td style="color:var(--bear)">新風險因子</td></tr>
+<tr><td style="text-align:left">處置股起始</td><td>3/20</td><td>實為 3/17</td><td>日期修正</td></tr>
+<tr><td style="text-align:left">處置期間</td><td>2～4 週</td><td>3/17～3/30（10 營業日）</td><td>確認</td></tr>
+<tr><td style="text-align:left">投信動態</td><td>零參與</td><td>確認零交易</td><td>無變化</td></tr>
+<tr><td style="text-align:left">月營收</td><td>02月 20.92 億</td><td>01月 20.92 億 / 02月 18.80 億</td><td>月份確認修正</td></tr>
+</table>
+</div></div>
+
+<div class="card bull-card">
+<h3>新情報 1：DDR4 現貨價暴漲遠超預期</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> DDR4 現貨累漲 369%（8Gb DDR4 約 15～17 美元）</div><div class="ev-d">第七步基準引用的漲幅為 140～153%（2025 年底數據）。至 2026 Q1，DDR4 現貨累計漲幅已達 369%。合約價同樣暴漲，TrendForce 2/2 正式新聞稿指出 Q1 所有 DRAM 產品合約價季增幅度創歷史新高，PC DRAM 季增超過 100%，伺服器 DRAM 約 +90%。DDR4 漲幅甚至超越 DDR5。</div><div class="ev-s">來源：TrendForce 新聞稿 20260202-12911 / AIBase 引用數據｜可信度 A</div></div>
+<div class="tip good"><b>含義</b>DDR4 漲幅遠超報告基準意味著：(1) 2026 Q1 毛利率可能遠高於 2025 Q4 的 30.56%；(2) EPS 可能大幅超出「基準情境 10 元」的假設；(3) 第七步報告的「路徑 A 景氣加速」正在兌現。</div>
+</div></div>
+
+<div class="card bull-card">
+<h3>新情報 2：缺貨持續時間從推論升級為事實</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 華邦電法說會：DRAM 缺貨將延續至 2027 年</div><div class="ev-d">華邦電管理層在法說會公開表態：「本次上升週期會比過去 6～9 個月就結束的情況來得更長」。同時確認高雄新廠首批設備 2026/05～06 進場安裝，主力產品為 8Gb/16Gb DDR4，預計 2027 年量產。缺口「大到不曉得怎麼補起來」。</div><div class="ev-s">來源：經濟日報引用華邦電法說會｜可信度 A（管理層公開發言）</div></div>
+<div class="tip info"><b>雙面解讀</b>短中期利多：缺貨確認延續，宇瞻景氣紅利持續。長期隱憂：華邦電高雄廠 2027 年量產代表 DDR4 供給將增加，結構性缺貨的「不可逆」論述在 2027 下半年後可能鬆動。</div>
+</div></div>
+
+<div class="card neutral-card">
+<h3>新情報 3：DDR5 價格首度下跌 — 替代效應新訊號</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> DDR5 現貨 3 月均價下跌 7.2%（連漲 6 個月後首次下跌）</div><div class="ev-d">DDR5 降價可能有兩個效應：(1) 拉近 DDR4 與 DDR5 的價差，促使部分客戶考慮提前遷移；(2) 若 DDR5 持續降價，DDR4 的「不可替代性」將逐步減弱。但工控端替代速度遠慢於消費端（認證週期 6～12 個月）。</div><div class="ev-s">來源：Technetbook 3 月記憶體市場報告｜可信度 B</div></div>
+<div class="tip warn"><b>監控重點</b>若 DDR5 連跌 3 個月以上，應將 H4（結構轉變）假說的信心從 10% 上調。目前僅一個月數據，暫不調整。</div>
+</div></div>
+
+<div class="card">
+<h3>新情報 4：營收數據確認與修正</h3>
+<div class="card-body">
+<div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 2026/01 營收 20.92 億（YoY +233%）/ 02 月 18.80 億（YoY +194%）</div><div class="ev-d">前 2 月累計 39.72 億，年化約 238 億（為 2025 全年 111.24 億的 2.14 倍）。2 月 MoM 下滑 10% 主因春節工作天數減少，YoY 仍接近兩倍。營收動能維持強勁。</div><div class="ev-s">來源：公開資訊觀測站 / finlab API｜可信度 A</div></div>
+</div></div>
+
+<div class="card">
+<h3>情報完整性聲明</h3>
+<div class="card-body">
+<div class="tip warn">
+<b>未取得的資料</b>
+<p>1. 3/17～3/21 逐日收盤價明細 — 需至交易所即時查詢</p>
+<p>2. 外資/自營商 3 月逐日買賣超 — 搜尋未返回具體數據</p>
+<p>3. 2026/03 月營收 — 尚未公布（4/10 前揭露）</p>
+<p>4. 券商研究報告目標價 — 未搜尋到公開的機構報告</p>
+<p style="font-size:.8em;color:var(--txt3);margin-top:4px">以上資料缺失不影響推衍主邏輯，但建議閣主自行補充查詢以提高推衍精度。</p>
+</div>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 三、影響鏈分析                                                      -->
+<!-- ================================================================ -->
+<div class="section-title" id="s3">三、影響鏈分析</div>
+<div class="section-sub">從最新情報挑選 3 個關鍵事件，建構影響鏈（事件 → 一階 → 二階 → 三階）</div>
+
+<div class="card bull-card">
+<h3>影響鏈 A：DDR4 合約價 Q1 季增 90~95%</h3>
+<div class="card-body">
+<!-- SVG 影響鏈流程圖 A -->
+<div class="chart-svg">
+<svg viewBox="0 0 780 120" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;width:100%">
+    <defs><marker id="fa-a" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#2e7d32"/></marker></defs>
+    <!-- 觸發事件 -->
+    <rect x="5" y="20" width="170" height="70" rx="10" fill="#2e7d32"/>
+    <text x="90" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">觸發事件</text>
+    <text x="90" y="56" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">DDR4合約價Q1</text>
+    <text x="90" y="69" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">季增 90～95%</text>
+    <text x="90" y="82" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8">FIAS: F｜已確認</text>
+    <!-- 箭頭 1 -->
+    <line x1="175" y1="55" x2="205" y2="55" stroke="#2e7d32" stroke-width="3" marker-end="url(#fa-a)"/>
+    <text x="190" y="47" text-anchor="middle" fill="#2e7d32" font-size="8" font-weight="700">95%</text>
+    <!-- 一階影響 -->
+    <rect x="210" y="20" width="170" height="70" rx="10" fill="rgba(46,125,50,.15)" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="295" y="38" text-anchor="middle" fill="#2e7d32" font-size="10" font-weight="700">一階（直接）</text>
+    <text x="295" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">Q1 毛利率飆升</text>
+    <text x="295" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">至 35～42%</text>
+    <text x="295" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: I｜70-80%</text>
+    <!-- 箭頭 2 -->
+    <line x1="380" y1="55" x2="410" y2="55" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#fa-a)"/>
+    <text x="395" y="47" text-anchor="middle" fill="#2e7d32" font-size="8" font-weight="700">70%</text>
+    <!-- 二階影響 -->
+    <rect x="415" y="20" width="170" height="70" rx="10" fill="rgba(46,125,50,.10)" stroke="#2e7d32" stroke-width="1"/>
+    <text x="500" y="38" text-anchor="middle" fill="#2e7d32" font-size="10" font-weight="700">二階（間接）</text>
+    <text x="500" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">Q1 EPS 可能達</text>
+    <text x="500" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">3.5～5.0 元</text>
+    <text x="500" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: I｜60-70%</text>
+    <!-- 箭頭 3 -->
+    <line x1="585" y1="55" x2="615" y2="55" stroke="#2e7d32" stroke-width="2" marker-end="url(#fa-a)"/>
+    <text x="600" y="47" text-anchor="middle" fill="#2e7d32" font-size="8" font-weight="700">60%</text>
+    <!-- 三階影響 -->
+    <rect x="620" y="20" width="155" height="70" rx="10" fill="rgba(46,125,50,.08)" stroke="#b8960c" stroke-width="1"/>
+    <text x="697" y="38" text-anchor="middle" fill="#b8960c" font-size="10" font-weight="700">三階（推衍）</text>
+    <text x="697" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">年化EPS 14~20元</text>
+    <text x="697" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">PE降至 9～13倍</text>
+    <text x="697" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: A｜55-65%</text>
+    <!-- 底部機率遞減 -->
+    <text x="390" y="112" text-anchor="middle" fill="#7a7268" font-size="8">機率遞減：95% → 70% → 60% → 55%｜資料來源：TrendForce + finlab 推算</text>
+</svg>
+</div>
+<!-- 機率遞減量表 -->
+<div class="gauge"><span class="gauge-label">觸發→一階</span><div class="gauge-track"><div class="gauge-fill" style="width:95%;background:#2e7d32"></div></div><span class="gauge-val" style="color:#2e7d32">95%</span></div>
+<div class="gauge"><span class="gauge-label">一階→二階</span><div class="gauge-track"><div class="gauge-fill" style="width:70%;background:#2e7d32"></div></div><span class="gauge-val" style="color:#2e7d32">70%</span></div>
+<div class="gauge"><span class="gauge-label">二階→三階</span><div class="gauge-track"><div class="gauge-fill" style="width:60%;background:#b8960c"></div></div><span class="gauge-val" style="color:#b8960c">60%</span></div>
+
+<details>
+<summary>節點明細表</summary>
+<table>
+<tr><th>節點</th><th>機率</th><th>FIAS</th><th>邏輯</th></tr>
+<tr><td>合約價 Q1 +90~95%</td><td style="color:var(--bull);font-weight:700">95%</td><td><span class="fias-f">F</span></td><td>TrendForce 已確認，Q1 已過大半</td></tr>
+<tr><td>毛利率 35~42%</td><td style="color:var(--bull);font-weight:700">70~80%</td><td><span class="fias-i">I</span></td><td>低價庫存在暴漲環境下出售，毛利率加速膨脹。但取決於庫存成本結構</td></tr>
+<tr><td>Q1 EPS 3.5~5.0 元</td><td style="font-weight:700">60~70%</td><td><span class="fias-i">I</span></td><td>營收年化 240 億 × 毛利率 35%+ × 費用率穩定。需考慮營運費用增加</td></tr>
+<tr><td>PE 被動修正至 9~13 倍</td><td style="font-weight:700">55~65%</td><td><span class="fias-a">A</span></td><td>假設股價維持 188 元不變。實際上若 EPS 超預期，股價可能先行反應上漲</td></tr>
+</table>
+</details>
+<div class="tip good"><b>影響鏈 A 結論</b>如果 Q1 財報（5 月公布）驗證 EPS 3.5+ 元，<strong>第七步報告最大的 Bear 論點「PE 28 倍過高」將自行瓦解</strong>。這是推翻報告空方邏輯最有力的路徑。同時，超預期的 EPS 可能吸引投信首次進場，消除另一個紅燈。</div>
+</div></div>
+
+<div class="card bear-card">
+<h3>影響鏈 B：華邦電高雄廠 2027 年量產 DDR4</h3>
+<div class="card-body">
+<!-- SVG 影響鏈流程圖 B -->
+<div class="chart-svg">
+<svg viewBox="0 0 780 120" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;width:100%">
+    <defs><marker id="fa-b" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#c62828"/></marker></defs>
+    <!-- 觸發事件 -->
+    <rect x="5" y="20" width="170" height="70" rx="10" fill="#c62828"/>
+    <text x="90" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">觸發事件</text>
+    <text x="90" y="56" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">華邦電高雄廠</text>
+    <text x="90" y="69" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">2027 年量產DDR4</text>
+    <text x="90" y="82" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8">FIAS: F｜85%</text>
+    <!-- 箭頭 1 -->
+    <line x1="175" y1="55" x2="205" y2="55" stroke="#c62828" stroke-width="3" marker-end="url(#fa-b)"/>
+    <text x="190" y="47" text-anchor="middle" fill="#c62828" font-size="8" font-weight="700">85%</text>
+    <!-- 一階影響 -->
+    <rect x="210" y="20" width="170" height="70" rx="10" fill="rgba(198,40,40,.15)" stroke="#c62828" stroke-width="1.5"/>
+    <text x="295" y="38" text-anchor="middle" fill="#c62828" font-size="10" font-weight="700">一階（直接）</text>
+    <text x="295" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">DDR4供給</text>
+    <text x="295" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">2027H2增加</text>
+    <text x="295" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: I｜75%</text>
+    <!-- 箭頭 2 -->
+    <line x1="380" y1="55" x2="410" y2="55" stroke="#c62828" stroke-width="2.5" marker-end="url(#fa-b)"/>
+    <text x="395" y="47" text-anchor="middle" fill="#c62828" font-size="8" font-weight="700">75%</text>
+    <!-- 二階影響 -->
+    <rect x="415" y="20" width="170" height="70" rx="10" fill="rgba(198,40,40,.10)" stroke="#c62828" stroke-width="1"/>
+    <text x="500" y="38" text-anchor="middle" fill="#c62828" font-size="10" font-weight="700">二階（間接）</text>
+    <text x="500" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">DDR4價格</text>
+    <text x="500" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">2027年見頂回落</text>
+    <text x="500" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: I｜65-75%</text>
+    <!-- 箭頭 3 -->
+    <line x1="585" y1="55" x2="615" y2="55" stroke="#c62828" stroke-width="2" marker-end="url(#fa-b)"/>
+    <text x="600" y="47" text-anchor="middle" fill="#c62828" font-size="8" font-weight="700">70%</text>
+    <!-- 三階影響 -->
+    <rect x="620" y="20" width="155" height="70" rx="10" fill="rgba(198,40,40,.08)" stroke="#b8960c" stroke-width="1"/>
+    <text x="697" y="38" text-anchor="middle" fill="#b8960c" font-size="10" font-weight="700">三階（推衍）</text>
+    <text x="697" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">毛利率回歸常態</text>
+    <text x="697" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">存貨跌價風險</text>
+    <text x="697" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: A｜70%</text>
+</svg>
+</div>
+<!-- 機率遞減量表 -->
+<div class="gauge"><span class="gauge-label">觸發→一階</span><div class="gauge-track"><div class="gauge-fill" style="width:85%;background:#c62828"></div></div><span class="gauge-val" style="color:#c62828">85%</span></div>
+<div class="gauge"><span class="gauge-label">一階→二階</span><div class="gauge-track"><div class="gauge-fill" style="width:75%;background:#c62828"></div></div><span class="gauge-val" style="color:#c62828">75%</span></div>
+<div class="gauge"><span class="gauge-label">二階→三階</span><div class="gauge-track"><div class="gauge-fill" style="width:70%;background:#b8960c"></div></div><span class="gauge-val" style="color:#b8960c">70%</span></div>
+
+<details>
+<summary>節點明細表</summary>
+<table>
+<tr><th>節點</th><th>機率</th><th>FIAS</th><th>邏輯</th></tr>
+<tr><td>高雄廠 2027 量產</td><td style="font-weight:700">85%</td><td><span class="fias-f">F</span></td><td>設備 2026/05~06 進場，建廠進度明確</td></tr>
+<tr><td>DDR4 供給增加</td><td style="font-weight:700">75%</td><td><span class="fias-i">I</span></td><td>新產能初期有限（ramp-up），但信號效應會壓制漲價預期</td></tr>
+<tr><td>DDR4 價格見頂回落</td><td style="font-weight:700">65~75%</td><td><span class="fias-i">I</span></td><td>需考慮需求增長能否吸收新產能。工控需求穩定但不爆發</td></tr>
+<tr><td>宇瞻毛利率回歸</td><td style="font-weight:700">70%</td><td><span class="fias-a">A</span></td><td>價格回落程度和速度決定。若緩慢回落，宇瞻可調整庫存策略</td></tr>
+</table>
+</details>
+<div class="tip danger"><b>影響鏈 B 結論</b>華邦電高雄廠是第七步報告未納入的新風險因子。它為 DDR4 缺貨設定了一個「時間天花板」：即使三大原廠不回頭做 DDR4，華邦電的新產能也將在 2027 年改變供需結構。<strong>這強化了「景氣紅利有終點」的判斷，將缺貨終結時間從「不確定」收窄至「2027 年中±6 個月」。</strong></div>
+</div></div>
+
+<div class="card neutral-card">
+<h3>影響鏈 C：處置股解除 + DDR5 降價交互作用</h3>
+<div class="card-body">
+<!-- SVG 影響鏈流程圖 C -->
+<div class="chart-svg">
+<svg viewBox="0 0 780 120" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;width:100%">
+    <defs><marker id="fa-c" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#5a7d8c"/></marker></defs>
+    <!-- 觸發事件 -->
+    <rect x="5" y="20" width="170" height="70" rx="10" fill="#5a7d8c"/>
+    <text x="90" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">觸發事件</text>
+    <text x="90" y="56" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">處置股 3/30 解除</text>
+    <text x="90" y="69" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="9">&nbsp;</text>
+    <text x="90" y="82" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8">FIAS: F｜95%</text>
+    <!-- 箭頭 1 -->
+    <line x1="175" y1="55" x2="205" y2="55" stroke="#5a7d8c" stroke-width="3" marker-end="url(#fa-c)"/>
+    <text x="190" y="47" text-anchor="middle" fill="#5a7d8c" font-size="8" font-weight="700">95%</text>
+    <!-- 一階影響 -->
+    <rect x="210" y="20" width="170" height="70" rx="10" fill="rgba(90,125,140,.15)" stroke="#5a7d8c" stroke-width="1.5"/>
+    <text x="295" y="38" text-anchor="middle" fill="#5a7d8c" font-size="10" font-weight="700">一階（直接）</text>
+    <text x="295" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">流動性恢復</text>
+    <text x="295" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">+短期賣壓釋放</text>
+    <text x="295" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: I｜60%</text>
+    <!-- 箭頭 2 -->
+    <line x1="380" y1="55" x2="410" y2="55" stroke="#d4a017" stroke-width="2.5" marker-end="url(#fa-c)"/>
+    <text x="395" y="47" text-anchor="middle" fill="#d4a017" font-size="8" font-weight="700">30%</text>
+    <!-- 二階影響 -->
+    <rect x="415" y="20" width="170" height="70" rx="10" fill="rgba(212,160,23,.10)" stroke="#d4a017" stroke-width="1"/>
+    <text x="500" y="38" text-anchor="middle" fill="#d4a017" font-size="10" font-weight="700">二階（條件式）</text>
+    <text x="500" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">DDR5降價引發</text>
+    <text x="500" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">替代擔憂</text>
+    <text x="500" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: A｜25-30%</text>
+    <!-- 箭頭 3 -->
+    <line x1="585" y1="55" x2="615" y2="55" stroke="#d4a017" stroke-width="2" marker-end="url(#fa-c)"/>
+    <text x="600" y="47" text-anchor="middle" fill="#d4a017" font-size="8" font-weight="700">25%</text>
+    <!-- 三階影響 -->
+    <rect x="620" y="20" width="155" height="70" rx="10" fill="rgba(212,160,23,.08)" stroke="#c62828" stroke-width="1"/>
+    <text x="697" y="38" text-anchor="middle" fill="#c62828" font-size="10" font-weight="700">三階（推衍）</text>
+    <text x="697" y="52" text-anchor="middle" fill="#3d3a36" font-size="9">市場重新定價</text>
+    <text x="697" y="65" text-anchor="middle" fill="#3d3a36" font-size="9">DDR4紅利持續性</text>
+    <text x="697" y="80" text-anchor="middle" fill="#7a7268" font-size="8">FIAS: S｜20-25%</text>
+</svg>
+</div>
+
+<details>
+<summary>節點明細表</summary>
+<table>
+<tr><th>節點</th><th>機率</th><th>FIAS</th><th>邏輯</th></tr>
+<tr><td>處置 3/30 解除</td><td style="color:var(--bull);font-weight:700">95%</td><td><span class="fias-f">F</span></td><td>處置期間已公告為 3/17～3/30</td></tr>
+<tr><td>短期賣壓釋放</td><td style="font-weight:700">60%</td><td><span class="fias-i">I</span></td><td>處置期間無法賣出的賣單會在解除後集中釋放。但若基本面持續強勁，可能被買盤吸收</td></tr>
+<tr><td>DDR5 替代擔憂浮現</td><td style="font-weight:700">25~30%</td><td><span class="fias-a">A</span></td><td>僅一個月下跌數據，需連續 3 月才構成趨勢。工控端替代更慢</td></tr>
+<tr><td>市場重新定價</td><td style="font-weight:700">20~25%</td><td><span class="fias-s">S</span></td><td>短期內市場聚焦營收和 EPS，替代效應是中長期議題</td></tr>
+</table>
+</details>
+<div class="tip info"><b>跨鏈交互作用</b>影響鏈 A 和影響鏈 C 存在交互：如果 Q1 EPS 超預期（鏈 A），處置解除後的賣壓會被多頭吸收（鏈 C 的賣壓被抵消）。反之，如果 DDR5 連續降價（鏈 C 後段），會削弱鏈 A 的長期效力。<strong>短期看鏈 A 主導；中長期看鏈 B+C 的合力。</strong></div>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 四、情境模擬                                                        -->
+<!-- ================================================================ -->
+<div class="section-title" id="s4">四、情境模擬（概率樹）</div>
+<div class="section-sub">基於 ACH 假說 + OSINT 更新，建立 5 條未來路徑（已根據最新情報調整機率）</div>
+
+<!-- SVG 概率決策樹：五條路徑 -->
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">概率決策樹（OSINT 更新後）</h3>
+<div class="card-body">
+<div class="chart-svg">
+<svg viewBox="0 0 800 540" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;width:100%">
+    <defs>
+        <marker id="dt-arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#7a7268"/></marker>
+        <marker id="dt-g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e7d32"/></marker>
+        <marker id="dt-n" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5a7d8c"/></marker>
+        <marker id="dt-r" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#c62828"/></marker>
+        <marker id="dt-w" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#b8960c"/></marker>
+        <marker id="dt-p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#9c27b0"/></marker>
+    </defs>
+    <!-- 根節點 -->
+    <rect x="310" y="10" width="180" height="50" rx="10" fill="#3d3a36" stroke="#b8b0a5"/>
+    <text x="400" y="30" text-anchor="middle" fill="#e6e1da" font-size="13" font-weight="700">宇瞻 (8271)</text>
+    <text x="400" y="46" text-anchor="middle" fill="#b8b0a5" font-size="11">基準 188 元｜2026-03-21</text>
+    <!-- 分叉節點 -->
+    <rect x="270" y="85" width="260" height="36" rx="8" fill="#e6e1da" stroke="#b8b0a5"/>
+    <text x="400" y="108" text-anchor="middle" fill="#3d3a36" font-size="11" font-weight="700">Q1 財報 + DDR4 趨勢 + OSINT 更新後？</text>
+    <line x1="400" y1="60" x2="400" y2="85" stroke="#7a7268" stroke-width="2" marker-end="url(#dt-arr)"/>
+    <!-- 路徑 A：景氣加速 32% -->
+    <line x1="310" y1="121" x2="80" y2="175" stroke="#2e7d32" stroke-width="2.5" marker-end="url(#dt-g)"/>
+    <text x="175" y="143" text-anchor="middle" fill="#2e7d32" font-size="10" font-weight="700">32%</text>
+    <rect x="5" y="180" width="150" height="75" rx="10" fill="#2e7d32"/>
+    <text x="80" y="198" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">A 景氣加速</text>
+    <text x="80" y="214" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">EPS>3.5 + DDR4續漲</text>
+    <text x="80" y="228" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">+ 投信進場</text>
+    <text x="80" y="248" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">275 元</text>
+    <!-- 路徑 B：高位震盪 30% -->
+    <line x1="350" y1="121" x2="240" y2="175" stroke="#5a7d8c" stroke-width="2.5" marker-end="url(#dt-n)"/>
+    <text x="280" y="148" text-anchor="middle" fill="#5a7d8c" font-size="10" font-weight="700">30%</text>
+    <rect x="165" y="180" width="150" height="75" rx="10" fill="#5a7d8c"/>
+    <text x="240" y="198" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">B 高位震盪</text>
+    <text x="240" y="214" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">EPS 2.5~3.5</text>
+    <text x="240" y="228" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">DDR4持平 投信觀望</text>
+    <text x="240" y="248" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">180 元</text>
+    <!-- 路徑 C：景氣見頂 17% -->
+    <line x1="440" y1="121" x2="480" y2="175" stroke="#c62828" stroke-width="2" marker-end="url(#dt-r)"/>
+    <text x="475" y="143" text-anchor="middle" fill="#c62828" font-size="10" font-weight="700">17%</text>
+    <rect x="405" y="180" width="150" height="75" rx="10" fill="#c62828"/>
+    <text x="480" y="198" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">C 景氣見頂</text>
+    <text x="480" y="214" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">DDR4回跌</text>
+    <text x="480" y="228" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">營收YoY<50%</text>
+    <text x="480" y="248" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">125 元</text>
+    <!-- 路徑 D：DDR5 替代 12% -->
+    <line x1="470" y1="121" x2="620" y2="175" stroke="#b8960c" stroke-width="2" marker-end="url(#dt-w)"/>
+    <text x="560" y="143" text-anchor="middle" fill="#b8960c" font-size="10" font-weight="700">12%</text>
+    <rect x="565" y="180" width="150" height="75" rx="10" fill="#b8960c"/>
+    <text x="640" y="198" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">D DDR5替代</text>
+    <text x="640" y="214" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">DDR5連跌3月</text>
+    <text x="640" y="228" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">價差收窄至30%</text>
+    <text x="640" y="248" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">110 元</text>
+    <!-- 路徑 E：黑天鵝 9% -->
+    <line x1="490" y1="121" x2="740" y2="175" stroke="#9c27b0" stroke-width="1.5" marker-end="url(#dt-p)"/>
+    <text x="635" y="148" text-anchor="middle" fill="#9c27b0" font-size="10" font-weight="700">9%</text>
+    <rect x="670" y="180" width="125" height="75" rx="10" fill="#9c27b0"/>
+    <text x="732" y="198" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">E 黑天鵝</text>
+    <text x="732" y="214" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">群聯斷供/地緣</text>
+    <text x="732" y="228" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9">重大突發事件</text>
+    <text x="732" y="248" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">80 元</text>
+    <!-- 加權計算區 -->
+    <line x1="80" y1="255" x2="80" y2="310" stroke="#2e7d32" stroke-width="1" stroke-dasharray="4"/>
+    <text x="80" y="305" text-anchor="middle" fill="#2e7d32" font-size="9" font-weight="700">275×32%=88.0</text>
+    <line x1="240" y1="255" x2="240" y2="310" stroke="#5a7d8c" stroke-width="1" stroke-dasharray="4"/>
+    <text x="240" y="305" text-anchor="middle" fill="#5a7d8c" font-size="9" font-weight="700">180×30%=54.0</text>
+    <line x1="480" y1="255" x2="480" y2="310" stroke="#c62828" stroke-width="1" stroke-dasharray="4"/>
+    <text x="480" y="305" text-anchor="middle" fill="#c62828" font-size="9" font-weight="700">125×17%=21.3</text>
+    <line x1="640" y1="255" x2="640" y2="310" stroke="#b8960c" stroke-width="1" stroke-dasharray="4"/>
+    <text x="640" y="305" text-anchor="middle" fill="#b8960c" font-size="9" font-weight="700">110×12%=13.2</text>
+    <line x1="732" y1="255" x2="732" y2="310" stroke="#9c27b0" stroke-width="1" stroke-dasharray="4"/>
+    <text x="732" y="305" text-anchor="middle" fill="#9c27b0" font-size="9" font-weight="700">80×9%=7.2</text>
+    <!-- 底部加權期望值 -->
+    <rect x="230" y="330" width="340" height="50" rx="10" fill="#3d3a36" stroke="#5a7d60" stroke-width="2"/>
+    <text x="400" y="350" text-anchor="middle" fill="#e6e1da" font-size="11">OSINT 更新後加權期望值</text>
+    <text x="400" y="370" text-anchor="middle" fill="#5a7d60" font-size="15" font-weight="900">183.7 元（≈ 現價 188，幾乎持平）</text>
+    <!-- 對比框 -->
+    <rect x="270" y="400" width="260" height="35" rx="8" fill="none" stroke="#b8b0a5" stroke-dasharray="4"/>
+    <text x="400" y="415" text-anchor="middle" fill="#7a7268" font-size="10">第七步基準 135.5 元 → 上修 +36%</text>
+    <text x="400" y="428" text-anchor="middle" fill="#7a7268" font-size="9">主因：路徑A機率↑7% + DDR4漲幅遠超預期</text>
+    <!-- 圖例 -->
+    <text x="400" y="465" text-anchor="middle" fill="#b8b0a5" font-size="8">決定性事件：2026 Q1 財報（5月）→ EPS>3.5 路徑A↑至40%+ / EPS&lt;2 路徑C↑至30%+</text>
+    <text x="400" y="480" text-anchor="middle" fill="#b8b0a5" font-size="8">資料來源：ACH第四步假說 + OSINT 2026-03-21 更新 + 第七步估值交叉比對</text>
+</svg>
+</div>
+<div class="tip info"><b>概率樹解讀</b>OSINT 更新後，路徑 A（32%）和路徑 B（30%）幾乎並駕齊驅，顯示市場正處於「即將分歧」的臨界狀態。加權期望值 183.7 元與現價 188 元幾乎持平 — 不再像第七步那樣明確偏空，但上行和下行空間幾乎對等。<strong>Q1 財報是打破平衡的超級變數。</strong></div>
+</div></div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">ACH 假說信心更新（OSINT 後）</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>第七步信心</th><th>OSINT 後調整</th><th>調整原因</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">H1 看多</td><td>25%</td><td style="color:var(--bull);font-weight:900">32%（↑7）</td><td>DDR4 漲幅 369% 遠超預期 + 缺貨確認至 2027</td></tr>
+<tr><td style="color:var(--neutral);font-weight:700">H3 中性震盪</td><td>35%</td><td style="font-weight:900">30%（↓5）</td><td>更強的基本面使中性假說的可能性降低</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">H2 看空</td><td>20%</td><td style="font-weight:900">17%（↓3）</td><td>漲價趨勢明確偏離看空條件；但估值面仍支撐</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">H4 結構轉變</td><td>10%</td><td style="font-weight:900">12%（↑2）</td><td>DDR5 首跌 + 華邦電高雄廠是新的供給信號</td></tr>
+<tr><td style="color:#9c27b0;font-weight:700">H5 黑天鵝</td><td>10%</td><td style="font-weight:900">9%（↓1）</td><td>無新的黑天鵝跡象</td></tr>
+</table>
+<div class="tip info"><b>調整邏輯</b>OSINT 更新使天秤略偏利多（H1 上調至 32%），但 H1+H3 仍佔 62%（原 60%），整體判斷格局未根本改變。H4 因華邦電高雄廠消息微幅上調。<strong>最大的變化是 H1 和 H2 的差距從 5% 拉大到 15%，看多方的證據明顯增強。</strong></div>
+</div></div>
+
+<div class="card bull-card">
+<h3>路徑 A：景氣超預期加速（機率 32%）</h3>
+<div class="card-body">
+<div class="path-card" style="border-left:4px solid var(--bull)">
+<div class="path-title" style="color:var(--bull)">觸發條件</div>
+<p style="font-size:.82em">Q1 EPS > 3.5 元 + DDR4 價格持續走高 + 投信開始進場 + 處置解除後量能恢復</p>
+<div class="path-title" style="margin-top:8px">演進過程</div>
+<p style="font-size:.82em">2026 Q1 財報驗證超預期 → PE 被動修正至 12~15 倍 → 投信研究團隊重新評估估值合理性 → 首次買超帶動市場信心 → 股價突破 200 元挑戰 250~300 元</p>
+<div class="path-title" style="margin-top:8px">最終狀態（6 個月後）</div>
+<p style="font-size:.82em">股價 250~300 元。2026 全年 EPS 15~20 元。PE 15~17 倍（合理區間）。風險：估值再次膨脹至不合理，形成下一輪泡沫。</p>
+</div>
+<div class="tip good"><b>路徑 A 勝率關鍵</b>DDR4 合約價 Q1 +90~95% 是 F 級事實，Q1 毛利率飆升幾乎確定。剩餘不確定性在於：(1) 營業費用是否顯著增加；(2) 是否有存貨跌價風險。目前 finlab 數據顯示 2025Q4 存貨週轉率已降至 0.61（歷史最低），需密切關注。</div>
+</div></div>
+
+<div class="card neutral-card">
+<h3>路徑 B：高位震盪等待方向（機率 30%）</h3>
+<div class="card-body">
+<div class="path-card" style="border-left:4px solid var(--neutral)">
+<div class="path-title" style="color:var(--neutral)">觸發條件</div>
+<p style="font-size:.82em">Q1 EPS 符合預期（2.5~3.5 元）+ DDR4 價格持平不再創高 + 投信仍觀望 + 處置解除後無明確方向</p>
+<div class="path-title" style="margin-top:8px">演進過程</div>
+<p style="font-size:.82em">營收維持高位但 YoY 成長率因基期墊高而放緩 → 市場分歧加大（多方看 EPS 修正 PE，空方看景氣天花板） → 股價在 150~220 元區間來回震盪 → 等待 2026 H2 DDR4 價格方向確認</p>
+<div class="path-title" style="margin-top:8px">最終狀態（6 個月後）</div>
+<p style="font-size:.82em">股價 160~200 元。市場仍在爭論。真正的方向確認要等 TrendForce 2026 Q3 報告。</p>
+</div>
+</div></div>
+
+<div class="card bear-card">
+<h3>路徑 C：景氣見頂回落（機率 17%）</h3>
+<div class="card-body">
+<div class="path-card" style="border-left:4px solid var(--bear)">
+<div class="path-title" style="color:var(--bear)">觸發條件</div>
+<p style="font-size:.82em">DDR4 現貨價格開始回跌 + 月營收 YoY 降至 50% 以下 + 存貨跌價損失出現</p>
+<div class="path-title" style="margin-top:8px">演進過程</div>
+<p style="font-size:.82em">2026 Q2 後 DDR4 漲價趨緩 → 客戶開始減少備貨 → 宇瞻庫存去化壓力浮現 → 市場預期反轉 → PE 壓縮至 15~18 倍 → 股價回落至 100~150 元</p>
+<div class="path-title" style="margin-top:8px">最終狀態（6 個月後）</div>
+<p style="font-size:.82em">股價 100~150 元。EPS 仍在高位但趨勢見頂。市場開始定價下行風險。</p>
+</div>
+<div class="tip warn"><b>與第七步差異</b>路徑 C 機率從 30% 下調至 17%，主因 OSINT 確認漲價趨勢強於預期，短期內見頂的可能性降低。但此路徑一旦觸發，下行空間依然很大。</div>
+</div></div>
+
+<div class="card" style="border-left:4px solid var(--warn)">
+<h3>路徑 D：DDR5 替代加速（機率 12%）</h3>
+<div class="card-body">
+<div class="path-card" style="border-left:4px solid var(--warn)">
+<div class="path-title" style="color:var(--warn)">觸發條件</div>
+<p style="font-size:.82em">DDR5 連續降價 3 個月以上 + DDR4/DDR5 價差收窄至 30% 以內 + 工控客戶開始認證 DDR5 替代方案</p>
+<div class="path-title" style="margin-top:8px">演進過程</div>
+<p style="font-size:.82em">DDR5 降價使替代成本降低 → 新設計案優先選用 DDR5 → DDR4 需求在 2027 年開始結構性下降 → 宇瞻需加速轉型（DDR5 模組 + Smart Application）→ 轉型期營收和毛利率承壓</p>
+<div class="path-title" style="margin-top:8px">最終狀態（12 個月後）</div>
+<p style="font-size:.82em">DDR4 營收佔比下滑。宇瞻若成功轉型 DDR5，影響可控；若轉型落後，將面臨護城河進一步縮窄。</p>
+</div>
+</div></div>
+
+<div class="card" style="border-left:4px solid #9c27b0">
+<h3>路徑 E：黑天鵝事件（機率 9%）</h3>
+<div class="card-body">
+<div class="path-card" style="border-left:4px solid #9c27b0">
+<div class="path-title" style="color:#9c27b0">可能的觸發事件</div>
+<p style="font-size:.82em">1. 群聯電子供貨異常（大股東+關鍵供應商雙重角色）</p>
+<p style="font-size:.82em">2. 中美地緣風險波及亞洲供應鏈（中國+香港佔營收 24%）</p>
+<p style="font-size:.82em">3. 會計問題（目前無跡象，但 Z-Score 11.72 已排除此風險）</p>
+<div class="path-title" style="margin-top:8px">最終狀態</div>
+<p style="font-size:.82em">視事件嚴重程度。群聯供貨異常 → 股價 -15~25%。地緣衝擊 → 整個半導體板塊下跌，非個股問題。</p>
+</div>
+</div></div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">路徑敏感度分析</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">關鍵變數</th><th>變化方向</th><th>影響最大的路徑</th><th>敏感度</th></tr>
+<tr><td style="text-align:left;font-weight:700">2026 Q1 EPS</td><td>&gt; 3.5 元 / &lt; 2 元</td><td>路徑 A（↑）或 路徑 C（↑）</td><td style="color:var(--bear);font-weight:700">極高</td></tr>
+<tr><td style="text-align:left;font-weight:700">DDR4 現貨價格</td><td>持續漲 / 開始回落</td><td>路徑 A / 路徑 C</td><td style="color:var(--bear);font-weight:700">極高</td></tr>
+<tr><td style="text-align:left;font-weight:700">投信動態</td><td>開始買超 / 持續零交易</td><td>路徑 A / 路徑 B</td><td style="color:var(--warn);font-weight:700">高</td></tr>
+<tr><td style="text-align:left">DDR5 價格趨勢</td><td>持續下跌 / 回穩</td><td>路徑 D</td><td style="font-weight:700">中</td></tr>
+<tr><td style="text-align:left">華邦電高雄廠進度</td><td>提前/延後</td><td>路徑 D / 路徑 B</td><td>中低</td></tr>
+</table>
+<div class="tip info"><b>最關鍵變數</b>2026 Q1 EPS 是改變所有路徑機率的「超級變數」。&gt; 3.5 元路徑 A 機率可上調至 40%+；&lt; 2 元路徑 C 機率可上調至 30%+。<strong>5 月公布的 Q1 財報是本次推衍最重要的驗證點。</strong></div>
+</div></div>
+
+<div class="card" style="border:2px solid var(--warn)">
+<h3 style="color:var(--warn)">路徑交叉點：何時必須做決定？</h3>
+<div class="card-body">
+<table>
+<tr><th>時間</th><th style="text-align:left">決策點</th><th style="text-align:left">選擇</th></tr>
+<tr><td style="font-weight:700">3/30</td><td style="text-align:left">處置解除日</td><td style="text-align:left">觀察：解除後首週量能和價格反應。量能放大+股價站穩 = 路徑 A/B 機率增；量價齊跌 = 路徑 C 機率增</td></tr>
+<tr><td style="font-weight:700">4/10</td><td style="text-align:left">3 月營收公布</td><td style="text-align:left">若 3 月營收 &gt; 20 億，年化動能加速確認。&lt; 15 億則需重新評估</td></tr>
+<tr><td style="font-weight:700;color:var(--bear)">5 月中</td><td style="text-align:left;font-weight:700">Q1 財報公布（最關鍵）</td><td style="text-align:left;font-weight:700">EPS &gt; 3.5 元 → 明確利多，可考慮進場。EPS &lt; 2 元 → 立即撤退觀望</td></tr>
+<tr><td style="font-weight:700">6～7 月</td><td style="text-align:left">TrendForce Q3 預測</td><td style="text-align:left">若預測 DDR4 價格轉跌 → 路徑 C/D 啟動。維持漲 → 路徑 A 持續</td></tr>
+</table>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 五、個人化推衍                                                      -->
+<!-- ================================================================ -->
+<div class="section-title" id="s5">五、個人化推衍</div>
+<div class="section-sub">針對三種投資人情境的具體行動建議</div>
+
+<div class="card">
+<h3>情境 1：目前空手觀望</h3>
+<div class="card-body">
+<div class="tip info">
+<b>建議策略：等待 Q1 財報驗證後再行動</b>
+<p style="margin-top:4px"><strong>理由：</strong>OSINT 更新雖然使基本面更偏利多，但五法估值仍全面顯示偏高。在 Q1 EPS 尚未驗證前，追高的風報比不佳。</p>
+</div>
+<table>
+<tr><th style="text-align:left">行動</th><th style="text-align:left">條件</th><th>目標/停損</th></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bull)">進場買入</td><td style="text-align:left">Q1 EPS &gt; 3.5 元 + 投信開始買超 + DDR4 持續漲</td><td>進場價 ≤ 前瞻 PE 15 倍 × 年化 EPS</td></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bull)">分批佈局</td><td style="text-align:left">股價回跌至 130~150 元（安全邊際區）</td><td>分 3 批，每批 ≤ 3% 資金</td></tr>
+<tr><td style="text-align:left;font-weight:700">持續觀望</td><td style="text-align:left">Q1 EPS 2~3.5 元（符合但不超預期）</td><td>等 Q2 營收數據進一步確認</td></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bear)">放棄追蹤</td><td style="text-align:left">Q1 EPS &lt; 2 元 或 DDR4 價格連跌 2 月</td><td>—</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>情境 2：已小量持有（部位 ≤ 5%）</h3>
+<div class="card-body">
+<div class="tip warn">
+<b>建議策略：持有等待驗證，設好停損</b>
+<p style="margin-top:4px"><strong>理由：</strong>OSINT 更新偏利多，短期無須急著出場。但需設定明確的停損條件，避免黑天鵝和景氣反轉造成過大損失。</p>
+</div>
+<table>
+<tr><th style="text-align:left">行動</th><th style="text-align:left">條件</th></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bull)">加碼至 10%</td><td style="text-align:left">Q1 EPS &gt; 3.5 元 + 投信進場 + PE 降至 15 倍以下</td></tr>
+<tr><td style="text-align:left;font-weight:700">續抱</td><td style="text-align:left">DDR4 持續漲 + 月營收維持 YoY &gt; 100%</td></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bear)">停損出場</td><td style="text-align:left">股價跌破 145 元（-23%）或 DDR4 現貨連跌 2 月 或 Q1 EPS &lt; 2 元</td></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--warn)">部分獲利了結</td><td style="text-align:left">股價突破 250 元（+33%）→ 賣出 50%，讓利潤奔跑</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>情境 3：重倉持有（部位 &gt; 10%）</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>建議策略：偏高風險，建議逐步降低部位</b>
+<p style="margin-top:4px"><strong>理由：</strong>即使 OSINT 偏利多，重倉景氣循環股+處置股+速動比率 58% 的風險極高。加權期望值 135.5 元仍低於現價 188 元。建議先降至 5~8% 再觀望。</p>
+</div>
+<table>
+<tr><th style="text-align:left">行動</th><th style="text-align:left">條件</th></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bear)">處置解除後降至 8%</td><td style="text-align:left">3/30 解除後首週，分批賣出至 8% 部位</td></tr>
+<tr><td style="text-align:left;font-weight:700">Q1 財報後決定</td><td style="text-align:left">EPS &gt; 3.5 元 → 可維持 8%。EPS &lt; 2.5 元 → 降至 3~5%</td></tr>
+<tr><td style="text-align:left;font-weight:700;color:var(--bear)">緊急停損</td><td style="text-align:left">DDR4 現貨價格單月跌幅 &gt; 10% → 立即降至 3%</td></tr>
+</table>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 六、催化劑時間表                                                     -->
+<!-- ================================================================ -->
+<div class="section-title" id="s6">六、催化劑時間表</div>
+<div class="section-sub">未來 6 個月的關鍵事件日曆 + 預期影響</div>
+
+<div class="card">
+<h3>2026 年 3～9 月催化劑時間軸</h3>
+<div class="card-body">
+<!-- CSS 時間軸 -->
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/03/30</div>
+            <div class="tl-event">處置股解除</div>
+            <div class="tl-detail">流動性恢復。首週量能+股價站穩→路徑A/B；量價齊跌→路徑C。</div>
+            <span class="tl-impact mixed">雙向觀察</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/04/10 前</div>
+            <div class="tl-event">3 月營收公布</div>
+            <div class="tl-detail">若 > 20 億 = 動能持續。< 15 億 = 大幅低於趨勢，需重新評估。</div>
+            <span class="tl-impact bull">營收驗證</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/04 月</div>
+            <div class="tl-event">TrendForce Q2 DRAM 報價預測</div>
+            <div class="tl-detail">Q2 合約價走向。持平或再漲 = DDR4 紅利延續；轉跌 = 景氣見頂前兆。</div>
+            <span class="tl-impact mixed">價格方向</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot red"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/05 月中</div>
+            <div class="tl-event">Q1 財報公布（超級催化劑）</div>
+            <div class="tl-detail">毛利率>35% + EPS>3.5元 + 零存貨跌價 → 路徑A確認。任一為負 → 路徑C強化。</div>
+            <span class="tl-impact critical">決定性事件</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/05～06 月</div>
+            <div class="tl-event">華邦電高雄廠設備進場</div>
+            <div class="tl-detail">2027年DDR4新供給的實體進度確認。信號效應可能壓制漲價預期。</div>
+            <span class="tl-impact bear">長期供給風險</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/06 月</div>
+            <div class="tl-event">法說會（若召開）</div>
+            <div class="tl-detail">管理層H2展望 + 庫存策略更新。觀察是否釋放偏空或偏多訊號。</div>
+            <span class="tl-impact mixed">管理層態度</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/07 月</div>
+            <div class="tl-event">TrendForce Q3 報價預測</div>
+            <div class="tl-detail">DDR4價格方向最終確認。若轉跌 = 景氣見頂訊號；維持漲 = 紅利延續。</div>
+            <span class="tl-impact mixed">方向確認</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/08 月</div>
+            <div class="tl-event">Q2 財報公布</div>
+            <div class="tl-detail">第二次EPS驗證。毛利率趨勢確認。路徑分歧進一步明朗。</div>
+            <span class="tl-impact mixed">二次驗證</span>
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-content">
+            <div class="tl-date">2026/09 月</div>
+            <div class="tl-event">DDR5 價格 6 個月趨勢確認</div>
+            <div class="tl-detail">若持續下跌 → H4替代效應機率大幅上升。回穩 → DDR4紅利暫安。</div>
+            <span class="tl-impact mixed">替代效應</span>
+        </div>
+    </div>
+</div>
+
+<div class="tip danger"><b>最關鍵催化劑</b>5 月中的 Q1 財報。觀察三個數字：(1) 毛利率是否突破 35%；(2) 單季 EPS 是否 > 3.5 元；(3) 存貨跌價損失是否為零。<strong>這三個數字同時為正 → 路徑 A 確認；任一為負 → 需重新評估。</strong></div>
+</div></div>
+
+<!-- ================================================================ -->
+<!-- 七、推衍結論                                                        -->
+<!-- ================================================================ -->
+<div class="section-title" id="s7">七、推衍結論</div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">最可能路徑判斷</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card bull-card">
+    <div class="title">最高機率路徑</div>
+    <div class="num" style="font-size:1em">路徑 A：景氣加速</div>
+    <div class="num" style="color:var(--bull)">32%</div>
+    <div class="desc">OSINT 後上調 7 個百分點</div>
+</div>
+<div class="mini-card neutral-card">
+    <div class="title">次高機率路徑</div>
+    <div class="num" style="font-size:1em">路徑 B：高位震盪</div>
+    <div class="num" style="color:var(--neutral)">30%</div>
+    <div class="desc">兩路徑差距僅 2%</div>
+</div>
+</div>
+<div class="tip info"><b>推衍判斷</b>OSINT 更新使路徑 A 和路徑 B 的機率幾乎相等（32% vs 30%），顯示市場正處於「即將分歧」的狀態。<strong>5 月 Q1 財報將是打破平衡的決定性事件。</strong>在此之前，任何行動都帶有賭博成分。</div>
+</div></div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">更新後的加權期望值</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>機率</th><th>6 個月後股價中位數</th><th>加權貢獻</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">A 景氣加速</td><td>32%</td><td>275 元</td><td>88.0</td></tr>
+<tr><td style="color:var(--neutral);font-weight:700">B 高位震盪</td><td>30%</td><td>180 元</td><td>54.0</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">C 景氣見頂</td><td>17%</td><td>125 元</td><td>21.3</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">D DDR5 替代</td><td>12%</td><td>110 元</td><td>13.2</td></tr>
+<tr><td style="color:#9c27b0;font-weight:700">E 黑天鵝</td><td>9%</td><td>80 元</td><td>7.2</td></tr>
+<tr style="font-weight:900;background:rgba(90,125,96,.08)"><td>加權期望值</td><td>100%</td><td></td><td style="font-size:1.2em">183.7 元</td></tr>
+</table>
+<div class="tip warn"><b>vs 第七步比較</b>加權期望值從 135.5 元上修至 183.7 元（+36%），主因路徑 A 機率上調且股價中位數因 DDR4 暴漲而提高。<strong>更新後的期望值 183.7 元與現價 188 元幾乎持平，顯示市場定價已相當接近合理期望值。</strong>這代表：上行空間和下行空間幾乎對等 — 不再像第七步報告那樣明確偏空。</div>
+</div></div>
+
+<div class="card" style="border:2px solid var(--accent)">
+<h3 style="color:var(--accent)">行動清單</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th style="text-align:left">行動</th><th>時間</th><th>優先級</th></tr>
+<tr><td>1</td><td style="text-align:left">觀察 3/30 處置解除後首週量能和價格反應</td><td>3/30～4/4</td><td style="font-weight:700;color:var(--bear)">高</td></tr>
+<tr><td>2</td><td style="text-align:left">追蹤 3 月營收（4/10 前公布）</td><td>4/10</td><td style="font-weight:700;color:var(--bear)">高</td></tr>
+<tr><td>3</td><td style="text-align:left">關注 TrendForce Q2 DRAM 報價預測</td><td>4 月</td><td style="font-weight:700">中</td></tr>
+<tr><td>4</td><td style="text-align:left;font-weight:700">等待 Q1 財報公布 → 決定行動</td><td style="font-weight:700">5 月中</td><td style="font-weight:700;color:var(--bear)">最高</td></tr>
+<tr><td>5</td><td style="text-align:left">追蹤 DDR5 價格連續走勢（是否連跌 3 月）</td><td>持續</td><td>中</td></tr>
+<tr><td>6</td><td style="text-align:left">監控華邦電高雄廠設備進場新聞</td><td>5～6 月</td><td>中低</td></tr>
+<tr><td>7</td><td style="text-align:left">投信買賣超動態（是否開始進場）</td><td>持續</td><td style="font-weight:700">中</td></tr>
+</table>
+</div></div>
+
+<div class="card" style="border:2px solid var(--warn)">
+<h3 style="color:var(--warn)">推衍有效期聲明</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card"><div class="title">推衍日期</div><div class="num" style="font-size:1em">2026-03-21</div></div>
+<div class="mini-card"><div class="title">有效期至</div><div class="num" style="font-size:1em;color:var(--warn)">2026-04-18</div><div class="desc">或遇重大事件即失效</div></div>
+</div>
+<div class="tip warn">
+<b>本次推衍的失效條件（任一觸發即需重新推衍）</b>
+<p>1. DDR4 現貨價格出現連續 2 週下跌</p>
+<p>2. 2026/03 月營收低於 15 億元（大幅低於趨勢）</p>
+<p>3. 投信連續 5 日買超宇瞻（重大訊號變化）</p>
+<p>4. 任何地緣政治/供應鏈重大事件</p>
+<p>5. Q1 財報提前釋出或管理層重大發言</p>
+<p style="font-size:.8em;color:var(--txt3);margin-top:4px">推衍是「當下資訊快照」的未來投射，不是預言。新資訊出現時必須更新。</p>
+</div>
+</div></div>
+
+<div class="tip warn" style="margin-top:10px">
+    <b>免責提醒</b>
+    本推衍報告所有分析僅供個人研究參考，不構成任何投資建議。推衍基於 2026-03-21 的資訊快照，有效期 4 週。所有路徑機率和股價預測均為推估，實際結果可能因不可預見的因素而大幅偏離。投資有風險，決策請自行負責。
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 投資分析引擎 v1.7</p>
+    <p>推衍日期：2026-03-21｜第八步：推衍推演</p>
+    <p>基準股價：188 元｜推衍有效期：至 2026-04-18</p>
+    <p>完整版評審等級：B 級｜FIAS 統計：F:68 / I:18 / A:6 / S:2</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){document.querySelectorAll('.card').forEach(function(c){if(collapse)c.classList.add('collapsed');else c.classList.remove('collapsed');});}
+document.querySelectorAll('.card').forEach(function(c){c.classList.add('collapsed');});
+document.querySelectorAll('.card h3').forEach(function(h3){h3.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed');});});
+</script>
+</body>
+</html>
