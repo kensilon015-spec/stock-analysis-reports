@@ -304,7 +304,7 @@ ROOTEOF
         # 資料夾中的檔案
         DISPLAY_NAME="$FKEY"
         cat >> "$TARGET_DIR/index.html" << FOLDEREOF
-<details class="folder">
+<details class="folder" open>
 <summary><span class="folder-name">${DISPLAY_NAME}</span><span class="folder-count">${FILE_COUNT} 份</span><span class="folder-time">${LATEST_DATE}</span></summary>
 <div class="folder-body">
 ${FILES_HTML}
@@ -340,29 +340,6 @@ cat >> "$TARGET_DIR/index.html" << HTMLEOF
     <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
 </div>
 </div>
-<script>
-function sortRows(mode){
-  var btns=document.querySelectorAll('.sort-btn');
-  btns.forEach(function(b){b.classList.remove('active')});
-  document.getElementById('sort-'+mode).classList.add('active');
-  var rl=document.getElementById('report-list');
-  var rows=Array.from(rl.querySelectorAll('a.row'));
-  if(!rows.length)return;
-  if(mode==='folder'){
-    rows.sort(function(a,b){
-      var fa=a.getAttribute('data-folder')||'';
-      var fb=b.getAttribute('data-folder')||'';
-      if(fa!==fb)return fa.localeCompare(fb,'zh-TW');
-      return (parseInt(b.getAttribute('data-time'))||0)-(parseInt(a.getAttribute('data-time'))||0);
-    });
-  }else{
-    rows.sort(function(a,b){
-      return (parseInt(b.getAttribute('data-time'))||0)-(parseInt(a.getAttribute('data-time'))||0);
-    });
-  }
-  rows.forEach(function(r){rl.appendChild(r)});
-}
-</script>
 </body>
 </html>
 HTMLEOF
