@@ -134,7 +134,7 @@ echo "[3/5] 自動產生首頁..."
 REPORT_CARDS=""
 REPORT_COUNT=0
 
-for f in "$TARGET_DIR/天機錄"/*.html; do
+for f in $(ls -t "$TARGET_DIR/天機錄"/*.html 2>/dev/null); do
     [ -f "$f" ] || continue
     FNAME="$(basename "$f")"
     REPORT_COUNT=$((REPORT_COUNT + 1))
