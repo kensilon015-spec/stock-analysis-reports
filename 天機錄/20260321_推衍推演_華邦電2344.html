@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>華邦電 (2344) — 天機閣推衍報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--base:#3d3a36;--bull:#2e7d32;--bear:#c62828;--gold:#8c7a3e;--warn:#b8960c;--link:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px}
+.hero{text-align:center;padding:28px 16px 20px;margin-bottom:20px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.85em;color:var(--accent);font-weight:600;margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.tag{background:var(--accent);color:#fff;padding:2px 10px;border-radius:12px;font-size:.72em;font-weight:600}
+.tag.bear{background:var(--bear)}.tag.bull{background:var(--bull)}.tag.gold{background:var(--gold)}
+h2{font-size:1.15em;font-weight:800;color:var(--base);padding:16px 0 8px;border-top:2px solid var(--border);margin-top:24px}
+h3{font-size:1em;font-weight:700;color:var(--accent);margin:12px 0 6px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:.82em;margin:8px 0}
+th{background:var(--base);color:#fff;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border)}
+tr:hover td{background:rgba(90,125,96,.06)}
+.tip{padding:10px 14px;border-radius:8px;margin:8px 0;font-size:.85em;border-left:3px solid}
+.tip.good{background:rgba(46,125,50,.08);border-color:var(--bull);color:#1b5e20}
+.tip.danger{background:rgba(198,40,40,.08);border-color:var(--bear);color:#b71c1c}
+.tip.warn{background:rgba(184,150,12,.08);border-color:var(--warn);color:#7a6a00}
+.tip.info{background:rgba(90,125,140,.08);border-color:var(--link);color:#37474f}
+details{margin:6px 0}
+summary{cursor:pointer;font-weight:600;font-size:.88em;color:var(--base);padding:6px 0}
+summary:hover{color:var(--accent)}
+.fias{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.65em;font-weight:700;color:#fff;vertical-align:middle;margin-left:4px}
+.fias-f{background:#2e7d32}.fias-i{background:#1565c0}.fias-a{background:#e65100}.fias-s{background:#6a1b9a}
+/* 影響鏈 */
+.chain-box{margin:10px 0;padding:12px;background:rgba(90,125,96,.04);border-radius:8px;border:1px solid var(--border)}
+.chain-nodes{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:8px 0}
+.chain-node{padding:6px 10px;border-radius:6px;font-size:.78em;font-weight:600;flex:1;min-width:120px;text-align:center}
+.chain-l1{background:rgba(46,125,50,.15);color:var(--bull)}
+.chain-l2{background:rgba(21,101,192,.12);color:#1565c0}
+.chain-l3{background:rgba(184,150,12,.12);color:var(--gold)}
+.chain-l4{background:rgba(198,40,40,.12);color:var(--bear)}
+.chain-arrow{font-size:.9em;color:var(--txt3);flex-shrink:0}
+/* 量表 */
+.gauge{margin:6px 0}.gauge-label{font-size:.72em;color:var(--txt3);font-weight:600;margin-bottom:2px}
+.gauge-track{height:14px;background:var(--border);border-radius:7px;overflow:hidden;position:relative}
+.gauge-fill{height:100%;border-radius:7px;transition:width .4s}
+.gauge-fill.green{background:var(--bull)}.gauge-fill.red{background:var(--bear)}.gauge-fill.gold{background:var(--gold)}.gauge-fill.blue{background:var(--link)}
+.gauge-pct{position:absolute;right:6px;top:0;line-height:14px;font-size:.65em;font-weight:700;color:var(--base)}
+/* 時間軸 */
+.timeline{position:relative;padding:10px 0 10px 30px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:3px;background:var(--border);border-radius:2px}
+.tl-item{position:relative;padding:8px 0 16px 20px}
+.tl-dot{position:absolute;left:-23px;top:12px;width:14px;height:14px;border-radius:50%;border:2px solid var(--panel)}
+.tl-dot.green{background:var(--bull)}.tl-dot.red{background:var(--bear)}.tl-dot.yellow{background:var(--warn)}.tl-dot.blue{background:var(--link)}
+.tl-date{font-size:.78em;font-weight:700;color:var(--accent)}
+.tl-desc{font-size:.82em;color:var(--txt2);margin-top:2px}
+.tl-impact{font-size:.72em;padding:2px 8px;border-radius:4px;display:inline-block;margin-top:3px;font-weight:600}
+.tl-impact.bull{background:rgba(46,125,50,.12);color:var(--bull)}
+.tl-impact.bear{background:rgba(198,40,40,.12);color:var(--bear)}
+.tl-impact.neutral{background:rgba(90,125,140,.12);color:var(--link)}
+/* 路徑卡 */
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.path-header{display:flex;align-items:center;gap:8px}
+.path-label{font-weight:800;font-size:.9em}.path-prob{font-size:.78em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
+.path-prob.high{background:var(--bull)}.path-prob.mid{background:var(--gold)}.path-prob.low{background:var(--bear)}
+.path-target{font-size:.82em;font-weight:700;margin-left:auto}
+/* 指標卡 */
+.metric-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.metric{flex:1;min-width:100px;text-align:center;padding:10px 8px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.metric .val{font-size:1.3em;font-weight:900;color:var(--accent)}
+.metric .lbl{font-size:.7em;color:var(--txt3);font-weight:500}
+.footer{text-align:center;padding:20px;color:var(--txt3);font-size:.75em;border-top:2px solid var(--border);margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>華邦電 (2344) — 天機閣推衍報告</h1>
+    <div class="sub">天機閣深度調查系統｜第八步：推衍推演</div>
+    <div class="tags">
+        <span class="tag">2344 華邦電</span>
+        <span class="tag">推衍日期 2026-03-21</span>
+        <span class="tag">基準股價 121 元</span>
+        <span class="tag">推衍有效期：至 2026-04-10</span>
+        <span class="tag">完整版評審 B 級</span>
+    </div>
+</div>
+
+<!-- ===== 指標速覽 ===== -->
+<div class="metric-row">
+    <div class="metric"><div class="val">B 級</div><div class="lbl">評審等級</div></div>
+    <div class="metric"><div class="val">60%</div><div class="lbl">信心度（偏多）</div></div>
+    <div class="metric"><div class="val">113 元</div><div class="lbl">第七步期望值</div></div>
+    <div class="metric"><div class="val">128 元</div><div class="lbl">推衍後期望值</div></div>
+    <div class="metric"><div class="val">95-105</div><div class="lbl">安全邊際進場價</div></div>
+</div>
+
+<!-- ===== 第一章 ===== -->
+<h2>一、推衍基礎摘要（第七步核心結論）</h2>
+
+<div class="card">
+    <h3>投資決策總結</h3>
+    <div class="tip info">
+        <b>一句話結論：</b>NOR Flash + 利基型 DRAM 雙引擎正處漲價循環中段，基本面改善明確，但估值偏高、法人分歧，不宜追高。
+    </div>
+    <table>
+        <tr><th>項目</th><th>數值</th><th>說明</th></tr>
+        <tr><td>評審等級</td><td><b>B 級</b></td><td>3-4 關通過，需附帶條件</td></tr>
+        <tr><td>信心度</td><td><b>60% 偏多</b></td><td>ACH 75% - 盲點 15%</td></tr>
+        <tr><td>加權期望值</td><td><b>113 元</b></td><td>vs 現價 121 元偏貴約 7%</td></tr>
+        <tr><td>安全邊際進場價</td><td><b>95-105 元</b></td><td>需等回檔</td></tr>
+        <tr><td>護城河</td><td><b>窄（7.3/10）</b></td><td>NOR Flash 1/3 全球市佔</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>ACH 假說分配（第七步基準）</h3>
+    <div class="gauge-label">H1 結構性多頭 — 45%</div>
+    <div class="gauge-track"><div class="gauge-fill green" style="width:45%"><span class="gauge-pct">45%</span></div></div>
+    <div class="gauge-label" style="margin-top:6px">H2 循環回升 — 30%</div>
+    <div class="gauge-track"><div class="gauge-fill blue" style="width:30%"><span class="gauge-pct">30%</span></div></div>
+    <div class="gauge-label" style="margin-top:6px">H3 已反映 — 15%</div>
+    <div class="gauge-track"><div class="gauge-fill gold" style="width:15%"><span class="gauge-pct">15%</span></div></div>
+    <div class="gauge-label" style="margin-top:6px">H4 估值過高 — 7%</div>
+    <div class="gauge-track"><div class="gauge-fill red" style="width:7%"><span class="gauge-pct">7%</span></div></div>
+    <div class="gauge-label" style="margin-top:6px">H5 中國衝擊 — 3%</div>
+    <div class="gauge-track"><div class="gauge-fill red" style="width:3%"><span class="gauge-pct">3%</span></div></div>
+</div>
+
+<div class="card">
+    <h3>致命因子排序（前五）</h3>
+    <table>
+        <tr><th>#</th><th>因子</th><th>風險分</th><th>最大衝擊</th></tr>
+        <tr><td>1</td><td><b>估值修正（PE 壓縮）</b></td><td style="color:var(--bear);font-weight:700">15</td><td>股價 -40% 即使 EPS 不變</td></tr>
+        <tr><td>2</td><td><b>記憶體價格反轉</b></td><td style="color:var(--bear);font-weight:700">10</td><td>EPS -60%</td></tr>
+        <tr><td>3</td><td><b>全球經濟衰退</b></td><td style="color:var(--bear);font-weight:700">10</td><td>EPS -40%</td></tr>
+        <tr><td>4</td><td><b>台幣升值</b></td><td style="color:var(--warn);font-weight:700">9</td><td>EPS -15%</td></tr>
+        <tr><td>5</td><td><b>中國記憶體廠擴產</b></td><td style="color:var(--warn);font-weight:700">8</td><td>毛利率 -10pp</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>五法估值交叉驗證</h3>
+    <table>
+        <tr><th>估值法</th><th>合理區間</th><th>vs 現價 121</th><th>結論</th></tr>
+        <tr><td>前瞻 PE 法（強勢）</td><td>119-136 元</td><td>-2%~+12%</td><td style="color:var(--bull)">偏合理</td></tr>
+        <tr><td>前瞻 PE 法（維持）</td><td>91-106 元</td><td>-25%~-12%</td><td style="color:var(--bear)">偏高</td></tr>
+        <tr><td>PB 法</td><td>歷史極端高位</td><td>超越歷史</td><td style="color:var(--bear)">偏高</td></tr>
+        <tr><td>分部估值法</td><td>78-89 元</td><td>-36%~-26%</td><td style="color:var(--bear)">偏高</td></tr>
+        <tr><td>歷史循環法</td><td>80-100 元</td><td>-34%~-17%</td><td style="color:var(--bear)">偏高</td></tr>
+    </table>
+    <div class="tip warn">
+        <b>綜合判斷：</b>5 種方法中僅 1 種支持現價，4 種顯示偏高。需要 Q1 EPS 大幅超預期才能支撐當前估值。
+    </div>
+</div>
+
+<!-- ===== 第二章 ===== -->
+<h2>二、OSINT 最新情報更新</h2>
+
+<div class="card">
+    <h3>情報差異表（對比第七步基準）</h3>
+    <table>
+        <tr><th>項目</th><th>第七步基準</th><th>最新情報</th><th>方向</th><th>FIAS</th></tr>
+        <tr><td>月營收 YoY</td><td>+88%（2026/02）</td><td>營收 119.73 億<span class="fias fias-f">F</span></td><td style="color:var(--bull)">持續高成長</td><td>F</td></tr>
+        <tr><td>NOR Flash Q1 報價</td><td>季漲雙位數</td><td>合約價 +30%<span class="fias fias-f">F</span></td><td style="color:var(--bull)">超預期</td><td>F</td></tr>
+        <tr><td>DDR4 現貨價</td><td>漲幅 50%+</td><td>DDR4 合約價 Q1 季增 90-95%<span class="fias fias-f">F</span></td><td style="color:var(--bull)">大幅超預期</td><td>F</td></tr>
+        <tr><td>中芯 NOR 產能</td><td>未追蹤</td><td>產能轉向邏輯IC，減 2/3<span class="fias fias-i">I</span></td><td style="color:var(--bull)">供給缺口擴大</td><td>I</td></tr>
+        <tr><td>三星 DRAM 策略</td><td>未追蹤</td><td>改簽長約不做現貨<span class="fias fias-i">I</span></td><td style="color:var(--bull)">漲價持續</td><td>I</td></tr>
+        <tr><td>法人態度</td><td>三大法人同步賣超</td><td>外資賣超 -1,327 萬<span class="fias fias-f">F</span></td><td style="color:var(--bear)">持續偏空</td><td>F</td></tr>
+        <tr><td>封測費用</td><td>未追蹤</td><td>調漲 30%<span class="fias fias-i">I</span></td><td style="color:var(--warn)">成本壓力</td><td>I</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>情報完整性聲明</h3>
+    <div class="tip info">
+        <b>本次推衍新增 7 條情報，其中 F 級 3 條、I 級 4 條。</b><br>
+        缺失項目：即時分點進出（無法取得）、券商最新目標價更新（部分取得）、華邦電管理層最新談話（待下次法說會 2026/05）。
+    </div>
+</div>
+
+<!-- ===== 第三章 ===== -->
+<h2>三、影響鏈分析</h2>
+
+<div class="chain-box">
+    <h3 style="color:var(--bull)">影響鏈 A：NOR Flash + DDR4 雙漲價持續（利多鏈）</h3>
+    <div class="chain-nodes">
+        <div class="chain-node chain-l1">觸發：NOR Flash Q1<br>合約價 +30%<br><b>85%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l2">一階：2026Q1<br>毛利率維持 40%+<br><b>75%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l3">二階：Q1 EPS<br>0.75-0.90 元<br><b>65%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l1">三階：Forward PE<br>降至 30-35x<br><b>55%</b></div>
+    </div>
+    <div class="gauge-label">觸發 → 一階（85% → 75%）</div>
+    <div class="gauge-track"><div class="gauge-fill green" style="width:75%"><span class="gauge-pct">75%</span></div></div>
+    <div class="gauge-label">一階 → 二階（75% → 65%）</div>
+    <div class="gauge-track"><div class="gauge-fill green" style="width:65%"><span class="gauge-pct">65%</span></div></div>
+    <div class="gauge-label">二階 → 三階（65% → 55%）</div>
+    <div class="gauge-track"><div class="gauge-fill green" style="width:55%"><span class="gauge-pct">55%</span></div></div>
+    <div class="tip good">
+        <b>結論：</b>若 Q1 財報驗證 EPS 0.80+ 元，第七步「PE 125 倍過高」的 Bear 論點將大幅修正（年化 EPS 3.0-3.6 元，PE 降至 33-40x）。漲價確認時間為 2026 年 5 月中。
+    </div>
+</div>
+
+<div class="chain-box">
+    <h3 style="color:var(--bear)">影響鏈 B：法人持續賣超 + 估值壓縮（利空鏈）</h3>
+    <div class="chain-nodes">
+        <div class="chain-node chain-l4">觸發：外資連續<br>賣超 -1,327 萬<br><b>90%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l4">一階：籌碼面<br>持續惡化<br><b>70%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l3">二階：股價承壓<br>測試 110 支撐<br><b>55%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l4">三階：若跌破 105<br>觸發停損賣壓<br><b>35%</b></div>
+    </div>
+    <div class="gauge-label">觸發 → 三階機率遞減</div>
+    <div class="gauge-track"><div class="gauge-fill red" style="width:35%"><span class="gauge-pct">35%</span></div></div>
+    <div class="tip danger">
+        <b>結論：</b>法人賣超是目前最大逆風。即使基本面改善，若法人態度不轉變，股價上行空間受限。轉折點在 Q1 財報公布後法人是否翻多。
+    </div>
+</div>
+
+<div class="chain-box">
+    <h3 style="color:var(--link)">影響鏈 C：CUBE 邊緣 AI 記憶體進展（中性→長期利多鏈）</h3>
+    <div class="chain-nodes">
+        <div class="chain-node chain-l2">觸發：CUBE 與<br>台積電合作<br><b>80%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l3">一階：2026Q2<br>少量試產<br><b>50%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l3">二階：Q4 初期<br>營收貢獻<br><b>30%</b></div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node chain-l1">三階：2027 年<br>改變估值邏輯<br><b>20%</b></div>
+    </div>
+    <div class="gauge-label">CUBE 量產機率遞減</div>
+    <div class="gauge-track"><div class="gauge-fill blue" style="width:20%"><span class="gauge-pct">20%</span></div></div>
+    <div class="tip info">
+        <b>結論：</b>CUBE 是長期選擇權，短期（6 個月內）對營收無實質貢獻。若 2027 年成功量產，可能重新定義華邦電的估值倍數（從記憶體股轉為 AI 概念股）。
+    </div>
+</div>
+
+<!-- ===== 第四章 ===== -->
+<h2>四、情境模擬（概率決策樹）</h2>
+
+<div class="card">
+    <h3>ACH 假說信心更新（OSINT 調整後）</h3>
+    <table>
+        <tr><th>假說</th><th>第七步</th><th>推衍後</th><th>調整</th><th>原因</th></tr>
+        <tr><td>H1 結構性多頭</td><td>45%</td><td style="color:var(--bull);font-weight:700">52%</td><td>↑7</td><td>NOR Flash +30%、DDR4 +90% 超預期</td></tr>
+        <tr><td>H2 循環回升</td><td>30%</td><td>26%</td><td>↓4</td><td>更偏結構性而非單純循環</td></tr>
+        <tr><td>H3 已反映</td><td>15%</td><td>13%</td><td>↓2</td><td>漲價幅度超出市場預期</td></tr>
+        <tr><td>H4 估值過高</td><td>7%</td><td>6%</td><td>↓1</td><td>若 Q1 EPS 驗證，PE 自動修正</td></tr>
+        <tr><td>H5 中國衝擊</td><td>3%</td><td>3%</td><td>持平</td><td>中芯減產反而利多台廠</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>五條未來路徑</h3>
+
+    <div class="path-card">
+        <div class="path-header">
+            <span class="path-label" style="color:var(--bull)">路徑 A — 漲價延續，EPS 驗證</span>
+            <span class="path-prob high">52%</span>
+            <span class="path-target" style="color:var(--bull)">目標：135-160 元</span>
+        </div>
+        <p style="font-size:.82em;margin-top:6px"><b>觸發條件：</b>Q1 EPS >0.80 + NOR Flash/DDR4 Q2 續漲 + 法人態度轉變</p>
+        <p style="font-size:.82em"><b>演進過程：</b>毛利率維持 40%+ → 年化 EPS 3.2-3.6 元 → Forward PE 降至 33-38x → 法人認同度提升</p>
+        <div class="gauge-label">加權貢獻：52% × 147.5 = 76.7 元</div>
+        <div class="gauge-track"><div class="gauge-fill green" style="width:52%"><span class="gauge-pct">76.7</span></div></div>
+    </div>
+
+    <div class="path-card">
+        <div class="path-header">
+            <span class="path-label" style="color:var(--gold)">路徑 B — 高位震盪</span>
+            <span class="path-prob mid">24%</span>
+            <span class="path-target" style="color:var(--gold)">目標：110-130 元</span>
+        </div>
+        <p style="font-size:.82em;margin-top:6px"><b>觸發條件：</b>Q1 EPS 0.65-0.80 + 漲價趨緩 + 法人觀望</p>
+        <p style="font-size:.82em"><b>演進過程：</b>營收 YoY 收斂至 40-60% → 年化 EPS ~3.0 → PE 維持 35-40x → 區間盤整</p>
+        <div class="gauge-label">加權貢獻：24% × 120 = 28.8 元</div>
+        <div class="gauge-track"><div class="gauge-fill gold" style="width:24%"><span class="gauge-pct">28.8</span></div></div>
+    </div>
+
+    <div class="path-card">
+        <div class="path-header">
+            <span class="path-label" style="color:var(--bear)">路徑 C — 估值修正</span>
+            <span class="path-prob low">13%</span>
+            <span class="path-target" style="color:var(--bear)">目標：85-105 元</span>
+        </div>
+        <p style="font-size:.82em;margin-top:6px"><b>觸發條件：</b>法人持續賣超 + PE 壓縮至 25-30x + 營收 YoY 降至 <30%</p>
+        <p style="font-size:.82em"><b>演進過程：</b>漲價趨緩 → 法人大幅賣超 → PE 壓縮 → 股價修正至安全邊際區</p>
+        <div class="gauge-label">加權貢獻：13% × 95 = 12.4 元</div>
+        <div class="gauge-track"><div class="gauge-fill red" style="width:13%"><span class="gauge-pct">12.4</span></div></div>
+    </div>
+
+    <div class="path-card">
+        <div class="path-header">
+            <span class="path-label" style="color:var(--bear)">路徑 D — 基期墊高效應</span>
+            <span class="path-prob low">7%</span>
+            <span class="path-target" style="color:var(--bear)">目標：80-100 元</span>
+        </div>
+        <p style="font-size:.82em;margin-top:6px"><b>觸發條件：</b>營收 YoY 大幅收斂至 <20% + DDR4 供過於求</p>
+        <p style="font-size:.82em"><b>演進過程：</b>2026H2 基期效應浮現 → 成長放緩 → PE 壓縮 + EPS 停滯 → 股價回落</p>
+        <div class="gauge-label">加權貢獻：7% × 90 = 6.3 元</div>
+        <div class="gauge-track"><div class="gauge-fill red" style="width:7%"><span class="gauge-pct">6.3</span></div></div>
+    </div>
+
+    <div class="path-card">
+        <div class="path-header">
+            <span class="path-label" style="color:var(--bear)">路徑 E — 漲價反轉 / 黑天鵝</span>
+            <span class="path-prob low">4%</span>
+            <span class="path-target" style="color:var(--bear)">目標：60-80 元</span>
+        </div>
+        <p style="font-size:.82em;margin-top:6px"><b>觸發條件：</b>NOR Flash/DDR4 合約價連 2 季下跌 or 重大黑天鵝事件</p>
+        <p style="font-size:.82em"><b>演進過程：</b>漲價循環急轉直下 → 庫存跌價損失 → EPS 轉虧 → 股價大幅修正</p>
+        <div class="gauge-label">加權貢獻：4% × 70 = 2.8 元</div>
+        <div class="gauge-track"><div class="gauge-fill red" style="width:4%"><span class="gauge-pct">2.8</span></div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>加權期望值計算</h3>
+    <div class="metric-row">
+        <div class="metric"><div class="val" style="color:var(--bull)">76.7</div><div class="lbl">路徑A 貢獻</div></div>
+        <div class="metric"><div class="val" style="color:var(--gold)">28.8</div><div class="lbl">路徑B 貢獻</div></div>
+        <div class="metric"><div class="val" style="color:var(--bear)">12.4</div><div class="lbl">路徑C 貢獻</div></div>
+        <div class="metric"><div class="val" style="color:var(--bear)">6.3</div><div class="lbl">路徑D 貢獻</div></div>
+        <div class="metric"><div class="val" style="color:var(--bear)">2.8</div><div class="lbl">路徑E 貢獻</div></div>
+    </div>
+    <div class="tip good" style="text-align:center;font-size:1.1em">
+        <b>OSINT 更新後加權期望值：127.0 元</b>（vs 第七步 113 元 ↑12.4%）<br>
+        vs 現價 121 元：<b>上行空間約 +5%</b>
+    </div>
+    <div class="tip warn">
+        <b>解讀：</b>期望值上修主因 NOR Flash/DDR4 漲價幅度超預期，路徑 A 機率從 45% 上調至 52%。但與現價 121 元接近，顯示市場已部分反映利多。不建議追高，等回檔至 100-115 元分批佈局。
+    </div>
+</div>
+
+<div class="card">
+    <h3>敏感度分析</h3>
+    <table>
+        <tr><th>關鍵變數</th><th>樂觀變化</th><th>悲觀變化</th><th>影響最大路徑</th><th>敏感度</th></tr>
+        <tr><td><b>2026Q1 EPS</b></td><td>>0.85 元</td><td><0.65 元</td><td>路徑 A↑ / C↑</td><td style="color:var(--bear);font-weight:700">極高</td></tr>
+        <tr><td><b>NOR Flash Q2 報價</b></td><td>續漲 10%+</td><td>轉跌</td><td>路徑 A / E</td><td style="color:var(--bear);font-weight:700">極高</td></tr>
+        <tr><td><b>法人態度</b></td><td>轉買超</td><td>持續賣超</td><td>路徑 A / C</td><td style="color:var(--warn);font-weight:700">高</td></tr>
+        <tr><td><b>月營收 YoY</b></td><td>維持 >60%</td><td>降至 <40%</td><td>路徑 A / D</td><td style="color:var(--warn);font-weight:700">高</td></tr>
+        <tr><td><b>CUBE 進度</b></td><td>Q2 試產</td><td>延後至 Q4+</td><td>路徑 A（長期）</td><td style="color:var(--link);font-weight:700">中</td></tr>
+    </table>
+</div>
+
+<!-- ===== 第五章 ===== -->
+<h2>五、個人化推衍</h2>
+
+<div class="card">
+    <h3>情境 1：目前空手觀望</h3>
+    <div class="tip good">
+        <b>建議：等回檔至 100-115 元分批佈局</b>
+    </div>
+    <table>
+        <tr><th>進場條件</th><th>說明</th></tr>
+        <tr><td>Q1 EPS 驗證</td><td>>0.80 元 + 毛利率 >38%</td></tr>
+        <tr><td>法人態度</td><td>外資轉買超或至少中立</td></tr>
+        <tr><td>漲價延續</td><td>NOR Flash Q2 合約價續漲</td></tr>
+    </table>
+    <p style="font-size:.82em;margin-top:8px"><b>分批策略：</b>95-105 元（第一批 30%）→ 105-115 元（第二批 40%）→ 突破 120 元確認加碼（第三批 30%）</p>
+</div>
+
+<div class="card">
+    <h3>情境 2：已小量持有（部位 ≤5%）</h3>
+    <div class="tip info">
+        <b>建議：續抱等待 Q1 財報驗證，設定移動停損</b>
+    </div>
+    <table>
+        <tr><th>動作</th><th>條件</th></tr>
+        <tr><td>加碼</td><td>Q1 EPS >0.85 元 + 股價回檔至 110 元 + 法人轉買</td></tr>
+        <tr><td>停損</td><td>股價跌破 105 元（-13%）或月營收連 2 月 <90 億</td></tr>
+        <tr><td>停利</td><td>股價突破 150 元 + DDR4 報價出現見頂跡象 → 減碼 1/2</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>情境 3：重倉持有（部位 >10%）</h3>
+    <div class="tip danger">
+        <b>建議：風險偏高，逐步降低部位至 5-8%</b>
+    </div>
+    <table>
+        <tr><th>動作</th><th>說明</th></tr>
+        <tr><td>分批減碼</td><td>現價 121 元逐步降至 8% 部位，Q1 財報後決定</td></tr>
+        <tr><td>保留核心</td><td>若 Q1 驗證強勢，可保留 5% 核心部位至 2026H2</td></tr>
+        <tr><td>緊急停損</td><td>NOR Flash 合約價連 2 季下跌 → 立即降至 3%</td></tr>
+    </table>
+</div>
+
+<!-- ===== 第六章 ===== -->
+<h2>六、催化劑時間表</h2>
+
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-date">2026/04/10</div>
+        <div class="tl-desc"><b>3 月營收公布</b> — 關注點：能否維持 >100 億、YoY 趨勢方向</div>
+        <span class="tl-impact bull">營收驗證</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-date">2026/04 月</div>
+        <div class="tl-desc"><b>TrendForce Q2 DRAM 報價預測</b> — DDR4/NOR Flash 漲價是否延續</div>
+        <span class="tl-impact neutral">價格方向</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot red"></div>
+        <div class="tl-date">2026/05 月中</div>
+        <div class="tl-desc"><b>2026Q1 季報公布（超級催化劑）</b> — 毛利率 / EPS / 營收品質的決定性驗證</div>
+        <span class="tl-impact bear">決定性事件</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-date">2026/05 下旬</div>
+        <div class="tl-desc"><b>法說會（預估）</b> — 稼動率、合約結構、CUBE 進度更新</div>
+        <span class="tl-impact neutral">管理層態度</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-date">2026/06 月</div>
+        <div class="tl-desc"><b>Q2 合約價談判結果</b> — NOR Flash/DDR4 漲價是否延續至 H2</div>
+        <span class="tl-impact bull">價格方向確認</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot yellow"></div>
+        <div class="tl-date">2026 H2</div>
+        <div class="tl-desc"><b>16nm DRAM 量產進度</b> — 良率、客戶導入、產能爬坡</div>
+        <span class="tl-impact neutral">長期成長動能</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot blue"></div>
+        <div class="tl-date">2026 Q4</div>
+        <div class="tl-desc"><b>CUBE 初期出貨</b> — 實際營收貢獻、客戶導入進度</div>
+        <span class="tl-impact bull">估值邏輯轉變</span>
+    </div>
+    <div class="tl-item">
+        <div class="tl-dot red"></div>
+        <div class="tl-date">2027 Q1</div>
+        <div class="tl-desc"><b>產業循環高峰預估</b> — 漲價見頂風險、華邦電高雄廠新增產能</div>
+        <span class="tl-impact bear">週期風險</span>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑交叉點（何時必須做決定）</h3>
+    <table>
+        <tr><th>時間</th><th>決策點</th><th>路徑 A/B 條件</th><th>路徑 C/D/E 條件</th></tr>
+        <tr><td><b>4/10</b></td><td>3 月營收</td><td>>100 億</td><td><90 億</td></tr>
+        <tr><td><b>5 月中</b></td><td>Q1 財報（最關鍵）</td><td>EPS >0.80、毛利率 >38%</td><td>EPS <0.65、毛利率 <35%</td></tr>
+        <tr><td><b>6 月</b></td><td>Q2 合約價</td><td>續漲 ≥5%</td><td>持平或轉跌</td></tr>
+        <tr><td><b>9 月</b></td><td>半年假說驗證</td><td>H1 持續主導</td><td>H3/H4 機率上升</td></tr>
+    </table>
+</div>
+
+<!-- ===== 第七章 ===== -->
+<h2>七、推衍結論</h2>
+
+<div class="card">
+    <div class="metric-row">
+        <div class="metric"><div class="val" style="color:var(--bull)">路徑 A</div><div class="lbl">最可能路徑（52%）</div></div>
+        <div class="metric"><div class="val">62%</div><div class="lbl">推衍信心度</div></div>
+        <div class="metric"><div class="val">127 元</div><div class="lbl">加權期望值</div></div>
+        <div class="metric"><div class="val">+5%</div><div class="lbl">vs 現價上行空間</div></div>
+    </div>
+
+    <div class="tip warn" style="font-size:1em;text-align:center;margin-top:12px">
+        <b>不建議追高 121 元。等回檔至 100-115 元分批佈局。</b><br>
+        <b>關鍵轉折：2026Q1 財報（5 月中）— 決定漲價能否延續。</b>
+    </div>
+
+    <div class="tip info" style="margin-top:8px">
+        <b>推衍有效期：</b>至 2026-04-10（3 月營收公布），屆時需根據實際數據更新機率分配。<br>
+        <b>下次更新：</b>常規 2026-04-10 / 重大事件：Q1 財報（5 月）、法說會（5 月下旬）
+    </div>
+</div>
+
+<div class="footer">
+    華邦電 (2344) 天機閣推衍報告 v1.0 | 第八步：推衍推演<br>
+    資料日期：2026-03-21 | 基準股價：121 元<br>
+    僅供個人研究參考，不構成任何投資建議。
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NOR Flash / 記憶體IC 產業鏈完整結構</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--upstream:#6b8f71;--midstream:#5a7d8c;--downstream:#c27c6e;--trend:#8b6f47}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:32px 24px}
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.label{display:inline-block;font-size:.76em;padding:5px 14px;border-radius:8px;font-weight:700;margin-bottom:14px;letter-spacing:.5px;color:#fff}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
+.card p{font-size:.9em;color:var(--txt2);margin-bottom:8px}
+.tip{padding:12px 16px;border-radius:8px;margin:8px 0;border-left:3px solid;font-size:.88em}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08);color:var(--txt)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.warn b{color:var(--food);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600;font-size:.92em;color:var(--base);padding:6px 0}
+summary:hover{color:var(--accent)}
+.section-title{font-size:1.3em;font-weight:900;color:var(--base);margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.badge{display:inline-block;font-size:.72em;padding:2px 8px;border-radius:6px;font-weight:600;color:#fff;margin-left:6px;vertical-align:middle}
+.badge-up{background:var(--upstream)}
+.badge-mid{background:var(--midstream)}
+.badge-down{background:var(--downstream)}
+.badge-trend{background:var(--trend)}
+/* 產業鏈流程圖 */
+.chain-flow{display:flex;align-items:center;justify-content:center;gap:0;margin:20px 0;flex-wrap:wrap}
+.chain-node{padding:12px 18px;border-radius:10px;font-weight:700;font-size:.82em;color:#fff;text-align:center;min-width:100px}
+.chain-arrow{font-size:1.4em;color:var(--txt3);padding:0 4px}
+.node-up{background:var(--upstream)}
+.node-mid{background:var(--midstream)}
+.node-down{background:var(--downstream)}
+.node-end{background:var(--trend)}
+/* 競爭格局 */
+.rank-bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.rank-num{font-size:1.2em;font-weight:900;color:var(--accent);min-width:30px;text-align:center}
+.rank-bar-fill{height:22px;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-size:.78em;font-weight:600;color:#fff}
+.rank-tw{background:var(--accent)}
+.rank-cn{background:#c27c6e}
+.rank-eu{background:var(--link)}
+/* 價格趨勢 */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0}
+.price-card{padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--panel);text-align:center}
+.price-card .value{font-size:1.6em;font-weight:900;color:var(--food)}
+.price-card .label-sm{font-size:.78em;color:var(--txt3);margin-top:4px}
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+.source-list{font-size:.82em;color:var(--txt3);margin-top:12px}
+.source-list a{color:var(--link);text-decoration:none}
+.source-list a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>NOR Flash / 記憶體IC 產業鏈</h1>
+    <div class="sub">完整上中下游結構 — 台股相關公司總覽</div>
+    <div class="desc">宇瞻(8271)投資分析延伸研究 | 2026年3月21日更新</div>
+    <div class="tags">
+        <span class="tag">上游 13 家</span>
+        <span class="tag">中游 10 家</span>
+        <span class="tag">下游 20+ 家</span>
+        <span class="tag">2026 超級循環</span>
+    </div>
+</div>
+
+<!-- 產業鏈流程圖 -->
+<div class="section-title">產業鏈全景流程圖</div>
+<div class="chain-flow">
+    <div class="chain-node node-up">矽晶圓<br>原料/設備</div>
+    <div class="chain-arrow">&#10132;</div>
+    <div class="chain-node node-mid">IC設計<br>NOR Flash</div>
+    <div class="chain-arrow">&#10132;</div>
+    <div class="chain-node node-mid">晶圓製造<br>IDM/代工</div>
+    <div class="chain-arrow">&#10132;</div>
+    <div class="chain-node node-down">封裝測試</div>
+    <div class="chain-arrow">&#10132;</div>
+    <div class="chain-node node-down">模組/品牌</div>
+    <div class="chain-arrow">&#10132;</div>
+    <div class="chain-node node-end">終端應用<br>車用/IoT/AI</div>
+</div>
+
+<!-- ===== 上游 ===== -->
+<div class="section-title"><span class="badge badge-up">UPSTREAM</span> 上游：原料與設備</div>
+
+<div class="card">
+    <h3>矽晶圓供應商</h3>
+    <p>半導體製程核心基礎材料，AI伺服器使用的矽晶圓面積是一般伺服器的3.8倍</p>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>市場</th><th>主要產品/特色</th></tr>
+        <tr><td><b>環球晶</b></td><td>6488</td><td>上市</td><td>全球第三大矽晶圓廠，12吋/8吋產能完整，矽晶圓族群市值龍頭</td></tr>
+        <tr><td><b>台勝科</b></td><td>3532</td><td>上市</td><td>SUMCO 台灣子公司，專攻12吋矽晶圓</td></tr>
+        <tr><td><b>合晶</b></td><td>6182</td><td>上市</td><td>8吋矽晶圓/磊晶片，碳化矽(SiC)佈局</td></tr>
+        <tr><td><b>嘉晶</b></td><td>3016</td><td>上市</td><td>磊晶片、化合物半導體基板</td></tr>
+        <tr><td><b>中美晶</b></td><td>5483</td><td>上市</td><td>環球晶母公司，太陽能/半導體材料</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>光罩 / 設備 / 化學品</h3>
+    <p>晶片製程所需光罩、蝕刻設備、濕製程設備、特用化學品</p>
+    <details>
+        <summary>展開設備與材料廠商清單 (8家)</summary>
+        <table>
+            <tr><th>公司</th><th>代號</th><th>市場</th><th>主要業務</th></tr>
+            <tr><td><b>台灣光罩</b></td><td>2338</td><td>上市</td><td>光罩製造服務</td></tr>
+            <tr><td><b>家登</b></td><td>3680</td><td>上櫃</td><td>EUV光罩盒全球領導者，台積電核心供應商</td></tr>
+            <tr><td><b>弘塑</b></td><td>3131</td><td>上櫃</td><td>濕製程設備廠</td></tr>
+            <tr><td><b>辛耘</b></td><td>3583</td><td>上櫃</td><td>濕製程清洗設備</td></tr>
+            <tr><td><b>漢唐</b></td><td>2404</td><td>上市</td><td>無塵室/廠務工程</td></tr>
+            <tr><td><b>三福化</b></td><td>4744</td><td>上市</td><td>半導體製程用化學品</td></tr>
+            <tr><td><b>勝一</b></td><td>1773</td><td>上市</td><td>電子級溶劑</td></tr>
+            <tr><td><b>關東鑫林</b></td><td>4570</td><td>上櫃</td><td>半導體濕式化學品</td></tr>
+        </table>
+    </details>
+</div>
+
+<!-- ===== 中游 ===== -->
+<div class="section-title"><span class="badge badge-mid">MIDSTREAM</span> 中游：IC設計 + 晶圓製造</div>
+
+<div class="card">
+    <h3>NOR Flash IDM 廠（設計+製造一體）— 產業鏈核心</h3>
+    <p>自有晶圓廠製造NOR Flash，全球僅少數廠商，供給高度集中</p>
+    <div class="tip good">
+        <b>關鍵事實：台廠稱霸 NOR Flash</b>
+        旺宏(2337)與華邦電(2344)合計全球NOR Flash市佔率超過50%，為全球前二大供應商。
+    </div>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>全球排名</th><th>主力產品</th><th>主要應用</th></tr>
+        <tr>
+            <td><b>旺宏</b></td><td>2337</td><td>前二</td>
+            <td>高容量NOR Flash、NAND Flash、ROM</td>
+            <td>車用(ADAS/儀表板)、5G基地台、伺服器BIOS、工控</td>
+        </tr>
+        <tr>
+            <td><b>華邦電</b></td><td>2344</td><td>前二</td>
+            <td>中低容量NOR Flash、利基型DRAM(DDR3/4/5)、SLC NAND</td>
+            <td>消費性電子、IoT、車用、網通、AIoT</td>
+        </tr>
+    </table>
+    <details>
+        <summary>旺宏 vs 華邦電 差異比較</summary>
+        <div class="tip info">
+            <b>市場區隔</b>
+            <b>旺宏</b>：專注高容量NOR Flash（128Mb以上），車用/工控/伺服器BIOS比重高，技術上積極佈局3D NOR Flash。美系外資2026年目標價上修至202元。<br>
+            <b>華邦電</b>：主攻中低容量NOR Flash + 利基型DRAM雙引擎，消費性/IoT市場為主。屬「多元記憶體供應商」定位，DDR4漲幅預估超過50%。
+        </div>
+    </details>
+</div>
+
+<div class="card">
+    <h3>利基型記憶體IC設計</h3>
+    <p>設計DDR3/DDR4 SDRAM、NOR/NAND Flash等利基產品，委外代工</p>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>主要產品</th><th>2026年展望</th></tr>
+        <tr><td><b>晶豪科</b></td><td>3006</td><td>DDR3/DDR4 SDRAM、NOR/NAND Flash、LED驅動IC</td><td>EPS預估29.47元創新高，DDR3大廠退出享漲價紅利</td></tr>
+        <tr><td><b>南亞科</b></td><td>2408</td><td>DDR4、DDR5、LPDDR4/5</td><td>2026/01營收153億創歷史新高(年增608%)</td></tr>
+        <tr><td><b>鈺創</b></td><td>5351</td><td>利基型DRAM、3D感測IC、AI影像辨識IC</td><td>受惠DRAM漲價循環</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>記憶體晶圓代工</h3>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>定位</th><th>記憶體代工能力</th></tr>
+        <tr><td><b>力積電</b></td><td>6770</td><td>全球第七大晶圓代工</td><td>記憶體佔營收40%，25nm/22nm DRAM、28nm/24nm NAND/NOR Flash，月產能14萬片12吋。2026年代工費大漲100%</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>記憶體控制IC</h3>
+    <p>Flash控制晶片 — 連接主機端與Flash記憶體顆粒的橋梁</p>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>市場</th><th>主要產品</th></tr>
+        <tr><td><b>群聯</b></td><td>8299</td><td>上市</td><td>NAND Flash控制IC龍頭，USB/SD/eMMC/UFS/SSD控制晶片</td></tr>
+        <tr><td><b>安國</b></td><td>8054</td><td>上櫃</td><td>USB/記憶卡控制IC</td></tr>
+        <tr><td><b>點序</b></td><td>6187</td><td>上櫃</td><td>NAND Flash控制IC</td></tr>
+        <tr><td><b>祥碩</b></td><td>5765</td><td>上市</td><td>高速傳輸IC（USB/PCIe），與SSD相關</td></tr>
+    </table>
+    <div class="tip info">
+        <b>備註</b>
+        慧榮科技(SIMO)原為台灣IC設計公司，已在美股NASDAQ上市，後被MaxLinear收購，主力產品為SSD/eMMC控制IC。
+    </div>
+</div>
+
+<!-- ===== 下游 ===== -->
+<div class="section-title"><span class="badge badge-down">DOWNSTREAM</span> 下游：封測 + 模組 + 終端</div>
+
+<div class="card">
+    <h3>記憶體封裝測試（OSAT）</h3>
+    <p>2026年封測費用調漲30%，產能利用率接近飽和</p>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>市場</th><th>定位與特色</th></tr>
+        <tr><td><b>力成</b></td><td>6239</td><td>上市</td><td>全球最大記憶體封測廠，DRAM/NAND封測，稼動率近滿載</td></tr>
+        <tr><td><b>南茂</b></td><td>8150</td><td>上市</td><td>記憶體封測大廠，DDR4佔營收7-8%，DRAM封測產能近飽和</td></tr>
+        <tr><td><b>華東</b></td><td>8110</td><td>上櫃</td><td>記憶體封測，漲價幅度與力成同步</td></tr>
+        <tr><td><b>華泰</b></td><td>2329</td><td>上市</td><td>記憶體封測/電子代工(OST)，受惠AI伺服器HBM題材</td></tr>
+        <tr><td><b>京元電子</b></td><td>2449</td><td>上市</td><td>IC測試龍頭，含記憶體測試業務</td></tr>
+        <tr><td><b>欣銓</b></td><td>3264</td><td>上市</td><td>IC測試，含記憶體相關</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>記憶體模組廠</h3>
+    <p>將DRAM/Flash顆粒組裝為記憶體模組或儲存產品，直接面對終端客戶</p>
+    <table>
+        <tr><th>公司</th><th>代號</th><th>市場</th><th>定位與特色</th><th>2025營收規模</th></tr>
+        <tr><td><b>威剛</b></td><td>3260</td><td>上櫃</td><td>台灣最大模組品牌，消費+電競+工控</td><td>破500億</td></tr>
+        <tr><td><b>十銓</b></td><td>4967</td><td>上櫃</td><td>電競品牌(T-Force)/工控，成長動能強</td><td>破200億</td></tr>
+        <tr><td><b>創見</b></td><td>2451</td><td>上市</td><td>老牌模組品牌，全球140國銷售</td><td>模組市值龍頭</td></tr>
+        <tr><td><b>宇瞻</b></td><td>8271</td><td>上櫃</td><td>工控記憶體為主，車用/醫療/國防利基市場</td><td>破110億</td></tr>
+        <tr><td><b>宜鼎</b></td><td>5289</td><td>上市</td><td>工控記憶體龍頭，轉型邊緣運算解決方案</td><td>2026/02單月EPS 16.22元</td></tr>
+        <tr><td><b>廣穎</b></td><td>4973</td><td>上櫃</td><td>記憶體/外接儲存品牌</td><td>-</td></tr>
+        <tr><td><b>品安</b></td><td>8088</td><td>上櫃</td><td>記憶體模組OEM/ODM</td><td>-</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>NOR Flash 終端應用領域</h3>
+    <p>NOR Flash 因具備高可靠度、快速讀取、XiP(直接執行程式碼)特性，為以下領域不可替代元件</p>
+    <details>
+        <summary>車用電子 — 成長最快的NOR Flash應用</summary>
+        <div class="tip good">
+            <b>單車NOR Flash用量：從2-3顆成長至8-10顆以上</b>
+            ADAS先進駕駛輔助、儀表板、車載資訊娛樂(IVI)、車身控制器均需NOR Flash儲存韌體/開機碼。車規要求高可靠度與長壽命，NOR Flash幾乎不可替代。2025年全球車規級NOR Flash市場規模達8.91億美元。
+        </div>
+        <p>相關台股：同欣電(6271)車用IC封裝、凌陽(2401)車用影像處理IC</p>
+    </details>
+    <details>
+        <summary>AI伺服器 / 資料中心</summary>
+        <div class="tip info">
+            <b>AI伺服器BIOS容量需求為傳統伺服器數倍</b>
+            伺服器主機板BIOS、BMC韌體均使用NOR Flash儲存。AI伺服器功能複雜，BIOS容量需求大幅增加，帶動高容量NOR Flash需求。
+        </div>
+    </details>
+    <details>
+        <summary>5G基地台 / 網通設備</summary>
+        <p>5G基地台、路由器、交換器等需NOR Flash儲存韌體，要求高穩定度。<br>
+        相關台股：啟碁(6285)小型基地台、智邦(2345)網路交換器</p>
+    </details>
+    <details>
+        <summary>工業控制 (IPC)</summary>
+        <p>PLC、HMI、工業電腦等工控設備要求寬溫/長壽命NOR Flash。<br>
+        相關台股：研華(2395)全球工業電腦龍頭、凌華(6166)工業電腦/邊緣運算</p>
+    </details>
+    <details>
+        <summary>IoT / AIoT / 穿戴裝置</summary>
+        <p>智慧家庭、TWS耳機、智慧感測等均需小容量NOR Flash。IoT裝置數量爆發性成長，每台至少需1顆NOR Flash。</p>
+    </details>
+    <details>
+        <summary>AI邊緣運算 — 新興成長動能</summary>
+        <div class="tip info">
+            <b>邊緣AI部署三階段</b>
+            2025年：消費裝置（口袋裝置）<br>
+            2026-2027年：企業/工業採用（私有5G/工廠邊緣/零售視覺）<br>
+            2028年+：主流化部署<br>
+            NOR Flash 的 XiP(eXecute in Place) 直接執行特性，使其成為邊緣AI裝置儲存開機碼的理想選擇。
+        </div>
+    </details>
+</div>
+
+<!-- ===== 競爭格局 ===== -->
+<div class="section-title"><span class="badge badge-mid">COMPETITION</span> 全球 NOR Flash 競爭格局</div>
+
+<div class="card">
+    <h3>2026年全球NOR Flash主要供應商排名</h3>
+    <div class="rank-bar"><div class="rank-num">1</div><div class="rank-bar-fill rank-tw" style="width:90%">旺宏 Macronix (2337) — 台灣</div></div>
+    <div class="rank-bar"><div class="rank-num">2</div><div class="rank-bar-fill rank-tw" style="width:85%">華邦電 Winbond (2344) — 台灣</div></div>
+    <div class="rank-bar"><div class="rank-num">3</div><div class="rank-bar-fill rank-cn" style="width:60%">兆易創新 GigaDevice (603986.SH) — 中國</div></div>
+    <div class="rank-bar"><div class="rank-num">4</div><div class="rank-bar-fill rank-eu" style="width:40%">英飛凌/原Cypress (IFX) — 德國</div></div>
+    <div class="tip warn" style="margin-top:12px">
+        <b>2026年關鍵變化：中國產能排擠</b>
+        兆易創新在中芯國際代工的NOR Flash產能，因中芯將產能轉向利潤更高的邏輯IC，減少代工比重達2/3（約4000-5000片晶圓/月）。產能轉換過程無法無縫銜接，造成全球NOR Flash供給缺口，有利台廠旺宏與華邦電。
+    </div>
+</div>
+
+<!-- ===== 趨勢與價格 ===== -->
+<div class="section-title"><span class="badge badge-trend">TRENDS</span> 2025-2026年 NOR Flash 產業趨勢</div>
+
+<div class="card">
+    <h3>報價走勢一覽</h3>
+    <div class="price-grid">
+        <div class="price-card">
+            <div class="value">+30%</div>
+            <div class="label-sm">NOR Flash Q1 2026<br>合約價漲幅</div>
+        </div>
+        <div class="price-card">
+            <div class="value">+50%</div>
+            <div class="label-sm">DDR4 2026<br>漲幅預估</div>
+        </div>
+        <div class="price-card">
+            <div class="value">+30%</div>
+            <div class="label-sm">封測費用<br>調漲幅度</div>
+        </div>
+        <div class="price-card">
+            <div class="value">+100%</div>
+            <div class="label-sm">力積電代工費<br>漲幅</div>
+        </div>
+    </div>
+    <div class="tip info">
+        <b>全年展望</b>
+        NOR Flash 2026年預期逐季雙位數調升，結構性缺口延續至2026年下半年。記憶體產業迎來「超級循環」，從DRAM到NAND到NOR Flash全面供給偏緊。
+    </div>
+</div>
+
+<div class="card">
+    <h3>供需結構轉緊的五大驅動力</h3>
+    <table>
+        <tr><th>#</th><th>驅動因素</th><th>說明</th></tr>
+        <tr><td>1</td><td><b>中國產能排擠</b></td><td>中芯國際將NOR Flash產能轉向邏輯IC，兆易創新產能缺口約4000-5000片/月</td></tr>
+        <tr><td>2</td><td><b>AI伺服器BIOS需求</b></td><td>AI伺服器功能複雜，BIOS容量需求為傳統伺服器數倍，帶動高容量NOR Flash</td></tr>
+        <tr><td>3</td><td><b>車用滲透率提升</b></td><td>自動駕駛等級提升，單車NOR Flash用量從2-3顆成長至8-10顆+</td></tr>
+        <tr><td>4</td><td><b>IoT/AIoT爆發</b></td><td>IoT裝置數量持續爆發，每台裝置需至少1顆NOR Flash</td></tr>
+        <tr><td>5</td><td><b>大廠產能重配置</b></td><td>記憶體大廠優先配置HBM/DDR5高端產能，壓縮NOR Flash/DDR4供給</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>技術趨勢</h3>
+    <table>
+        <tr><th>趨勢</th><th>說明</th></tr>
+        <tr><td><b>3D NOR Flash</b></td><td>旺宏積極佈局，透過垂直堆疊提升容量密度，突破2D製程瓶頸</td></tr>
+        <tr><td><b>XiP邊緣AI</b></td><td>NOR Flash的XiP(eXecute in Place)特性使其成為邊緣AI裝置理想選擇</td></tr>
+        <tr><td><b>車用容量升級</b></td><td>車用NOR Flash從32Mb向256Mb/512Mb升級</td></tr>
+        <tr><td><b>HBM先進封裝</b></td><td>HBM技術帶動封測產能重新配置，間接影響傳統記憶體封測產能</td></tr>
+    </table>
+</div>
+
+<!-- ===== 台股總表 ===== -->
+<div class="section-title">台股 NOR Flash / 記憶體IC 產業鏈完整清單</div>
+
+<div class="card">
+    <h3>一覽表（依產業鏈位置分類）</h3>
+    <table>
+        <tr><th>層級</th><th>公司 (代號)</th></tr>
+        <tr>
+            <td style="background:rgba(107,143,113,.12);font-weight:700">上游<br>原料設備</td>
+            <td>環球晶(6488)、台勝科(3532)、合晶(6182)、嘉晶(3016)、中美晶(5483)、台灣光罩(2338)、家登(3680)、弘塑(3131)、辛耘(3583)、漢唐(2404)、三福化(4744)、勝一(1773)、關東鑫林(4570)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(90,125,140,.12);font-weight:700">中游<br>NOR Flash IDM</td>
+            <td><b>旺宏(2337)</b>、<b>華邦電(2344)</b></td>
+        </tr>
+        <tr>
+            <td style="background:rgba(90,125,140,.12);font-weight:700">中游<br>利基型IC設計</td>
+            <td>晶豪科(3006)、南亞科(2408)、鈺創(5351)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(90,125,140,.12);font-weight:700">中游<br>晶圓代工</td>
+            <td>力積電(6770)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(90,125,140,.12);font-weight:700">中游<br>控制IC</td>
+            <td>群聯(8299)、安國(8054)、點序(6187)、祥碩(5765)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(194,124,110,.12);font-weight:700">下游<br>封測</td>
+            <td>力成(6239)、南茂(8150)、華東(8110)、華泰(2329)、京元電子(2449)、欣銓(3264)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(194,124,110,.12);font-weight:700">下游<br>模組</td>
+            <td>威剛(3260)、十銓(4967)、創見(2451)、<b>宇瞻(8271)</b>、宜鼎(5289)、廣穎(4973)、品安(8088)</td>
+        </tr>
+        <tr>
+            <td style="background:rgba(139,111,71,.12);font-weight:700">終端應用<br>相關</td>
+            <td>研華(2395)、凌華(6166)、同欣電(6271)、啟碁(6285)、智邦(2345)、凌陽(2401)</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 宇瞻定位 -->
+<div class="card">
+    <h3>宇瞻(8271)在產業鏈中的位置</h3>
+    <div class="tip good">
+        <b>定位：下游模組廠，專攻工控利基市場</b>
+        宇瞻位於產業鏈下游「記憶體模組」環節，向上游採購DRAM/Flash顆粒（主要供應商：群聯、三星、SK海力士、美光、南亞科、華邦電），組裝為工控級記憶體模組與儲存方案，銷售至車用/醫療/國防/工廠自動化等利基市場。在NOR Flash漲價循環中，宇瞻作為模組廠主要受影響於原料成本上升，但工控市場客戶對價格敏感度較低，有較好的成本轉嫁能力。
+    </div>
+</div>
+
+<!-- 資料來源 -->
+<div class="card">
+    <h3>資料來源</h3>
+    <div class="source-list">
+        <p>本報告資料來源為2026年3月21日公開網路搜尋彙整，主要參考：</p>
+        <ul style="margin:8px 0 0 20px">
+            <li><a href="https://technews.tw/2026/01/02/nor-flash-rise/" target="_blank">TechNews 科技新報 — NOR Flash 供需結構轉緊，台廠可望受惠</a></li>
+            <li><a href="https://tw.stock.yahoo.com/news/nor-flash%E5%82%B3%E6%9A%B4%E6%BC%B250-%E5%88%A5%E5%8F%AA%E7%9C%8B%E8%8F%AF%E9%82%A6%E9%9B%BB-%E9%80%99%E6%AA%94%E8%80%81dram%E8%82%A1%E6%89%8D%E6%98%AF%E5%A4%A7%E8%B4%8F%E5%AE%B6-113530069.html" target="_blank">Yahoo股市 — NOR Flash傳暴漲50%</a></li>
+            <li><a href="https://my-finance.com.tw/tw/News_Detail/2231" target="_blank">MY-Learning 理財通 — 2026台股記憶體概念股終極版</a></li>
+            <li><a href="https://www.sinotrade.com.tw/richclub/industry/-2025%E8%A8%98%E6%86%B6%E9%AB%94%E6%A6%82%E5%BF%B5%E8%82%A1%E9%82%84%E5%80%BC%E5%BE%97%E7%95%99%E6%84%8F%E5%97%8E" target="_blank">永豐金豐雲學堂 — 記憶體概念股還值得留意嗎？</a></li>
+            <li><a href="https://statementdog.com/tags/20620" target="_blank">財報狗 — NOR Flash 概念股</a></li>
+            <li><a href="https://www.pocket.tw/school/report/perspective/6928/" target="_blank">口袋學堂 — NOR Flash報價狂飆50%</a></li>
+            <li><a href="https://money.udn.com/money/story/5612/9258921" target="_blank">經濟日報 — 記憶體封測掀漲價大潮</a></li>
+            <li><a href="https://technews.tw/2026/01/28/mcu-nor-flash-15-50/" target="_blank">TechNews — 中微半導體 MCU、NOR Flash 調漲 15%~50%</a></li>
+            <li><a href="https://www.digitimes.com.tw/tech/dt/n/shwnws.asp?id=0000743045_V3MLIQS35MZHXP4DTP8E1" target="_blank">DIGITIMES — NOR Flash合約價強勢補漲</a></li>
+            <li><a href="https://fmstudio.blog/macronix-memory-turnaround-2025/" target="_blank">理財研究室 — 旺宏記憶體深度解析</a></li>
+            <li><a href="https://cmnews.com.tw/article/cmoney-3d4c86c3-f5b2-11f0-a46c-80c6b1fdc406" target="_blank">CMoney — 記憶體漲價潮延續到2028，16檔受惠產業鏈</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="footer">
+    NOR Flash / 記憶體IC 產業鏈完整結構 | 宇瞻(8271)投資分析延伸研究<br>
+    資料日期：2026-03-21 | 僅供研究參考，非投資建議
+</div>
+
+</div>
+</body>
+</html>
