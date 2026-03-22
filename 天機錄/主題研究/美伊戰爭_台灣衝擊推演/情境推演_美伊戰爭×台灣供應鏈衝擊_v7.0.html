@@ -2,20 +2,21 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>情境推演 — 美伊戰爭×台灣供應鏈衝擊 v6.0</title>
+<title>情境推演 — 美伊戰爭×台灣供應鏈衝擊 v7.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c;--lazy-bg:#3d3a36;--lazy-txt:#f5f0e8}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c;--lazy-bg:#3d3a36;--lazy-txt:#f5f0e8;
+--ec-energy:#E67E22;--ec-transport:#3498DB;--ec-finance:#9B59B6;--ec-supply:#27AE60;--ec-geo:#E74C3C;--ec-consumer:#F39C12;--ec-tech:#1ABC9C;--ec-special:#95A5A6}
 body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
-.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px}
 .hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
 .hero h1{font-size:1.5em;font-weight:900;color:var(--base)}
 .hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
 .hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
 .tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
 .tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
-/* 大標題收合 */
 .sec-collapse{margin:12px 0 0;border-top:1.5px solid var(--border);padding-top:0}
 .sec-collapse>summary{font-size:1.15em;font-weight:900;color:var(--base);cursor:pointer;padding:12px 0 6px;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
 .sec-collapse>summary::-webkit-details-marker{display:none}
@@ -28,14 +29,10 @@ th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left
 td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
 tr:hover td{background:var(--hover)}
 .tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
-.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
-.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
-.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
-.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
-.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
-.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
-.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
-.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
 details{margin:5px 0}
 details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
 details summary:hover{color:var(--accent)}
@@ -48,11 +45,7 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 .mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
 .mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
 .mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
-.bull-card{border-left:4px solid var(--bull)}
-.bear-card{border-left:4px solid var(--bear)}
-.warn-card{border-left:4px solid var(--warn)}
-.info-card{border-left:4px solid var(--link)}
-/* 懶人結論區 */
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.warn-card{border-left:4px solid var(--warn)}.info-card{border-left:4px solid var(--link)}
 .lazy{background:var(--lazy-bg);color:var(--lazy-txt);border-radius:10px;padding:18px 20px;margin:0 0 14px}
 .lazy h2{font-size:1.2em;font-weight:900;margin-bottom:10px;color:#e6c88a}
 .lazy .yaml{background:rgba(255,255,255,.08);border-radius:6px;padding:10px 14px;font-family:'Courier New',monospace;font-size:.82em;line-height:1.6;margin:8px 0;white-space:pre-wrap;color:#ddd}
@@ -62,40 +55,31 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 .lazy .lcard .lt{font-size:.75em;color:#bbb;margin-top:2px}
 @media(max-width:700px){.lazy .cards{grid-template-columns:1fr 1fr}}
 .lazy .one-line{font-size:.95em;font-weight:700;color:#e6c88a;margin-top:10px;text-align:center;padding:8px;border:1px dashed rgba(230,200,138,.3);border-radius:6px}
-/* 行為者標籤 */
 .actor-tag{display:inline-block;font-size:.72em;font-weight:700;padding:1px 6px;border-radius:3px;margin:1px 2px}
-.actor-tag.us{background:#1a5276;color:#fff}
-.actor-tag.il{background:#2471a3;color:#fff}
-.actor-tag.ir{background:#922b21;color:#fff}
-.actor-tag.cn{background:#c0392b;color:#fff}
-.actor-tag.ru{background:#2980b9;color:#fff}
-.actor-tag.eu{background:#2c3e50;color:#fff}
-.actor-tag.opec{background:#27ae60;color:#fff}
-.actor-tag.houthi{background:#8e44ad;color:#fff}
-.actor-tag.hezb{background:#d35400;color:#fff}
-.actor-tag.nk{background:#7f8c8d;color:#fff}
-.actor-tag.in{background:#f39c12;color:#fff}
-.actor-tag.tr{background:#e74c3c;color:#fff}
-.actor-tag.jp{background:#1abc9c;color:#fff}
-.actor-tag.kr{background:#3498db;color:#fff}
-.actor-tag.ins{background:#7d6608;color:#fff}
+.actor-tag.us{background:#1a5276;color:#fff}.actor-tag.il{background:#2471a3;color:#fff}.actor-tag.ir{background:#922b21;color:#fff}
+.actor-tag.cn{background:#c0392b;color:#fff}.actor-tag.ru{background:#2980b9;color:#fff}.actor-tag.eu{background:#2c3e50;color:#fff}
+.actor-tag.opec{background:#27ae60;color:#fff}.actor-tag.houthi{background:#8e44ad;color:#fff}.actor-tag.hezb{background:#d35400;color:#fff}
+.actor-tag.nk{background:#7f8c8d;color:#fff}.actor-tag.in{background:#f39c12;color:#fff}.actor-tag.tr{background:#e74c3c;color:#fff}
+.actor-tag.jp{background:#1abc9c;color:#fff}.actor-tag.kr{background:#3498db;color:#fff}.actor-tag.ins{background:#7d6608;color:#fff}
 .branch{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0}
 .branch-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
 .branch-id{font-weight:900;font-size:.9em;padding:2px 8px;border-radius:4px;color:#fff}
-.branch-id.high{background:var(--danger)}
-.branch-id.mid{background:var(--warn)}
-.branch-id.low{background:var(--accent)}
-.branch-id.info{background:var(--link)}
+.branch-id.high{background:var(--danger)}.branch-id.mid{background:var(--warn)}.branch-id.low{background:var(--accent)}.branch-id.info{background:var(--link)}
 .branch-title{font-weight:700;color:var(--base);font-size:.95em}
 .branch-prob{font-size:.8em;font-weight:700;margin-left:auto}
 .suf{font-size:.72em;font-weight:700;border-radius:3px;padding:1px 5px;vertical-align:middle;margin-left:4px}
-.suf.g{background:rgba(46,125,50,.15);color:var(--bull)}
-.suf.y{background:rgba(212,160,23,.15);color:var(--warn)}
-.suf.r{background:rgba(198,40,40,.15);color:var(--bear)}
+.suf.g{background:rgba(46,125,50,.15);color:var(--bull)}.suf.y{background:rgba(212,160,23,.15);color:var(--warn)}.suf.r{background:rgba(198,40,40,.15);color:var(--bear)}
 .toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
-.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
-.toc a:hover{color:var(--accent);text-decoration:underline}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}.toc a:hover{color:var(--accent);text-decoration:underline}
 .footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+/* ECharts 容器 */
+.ec-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;overflow:hidden}
+.ec-chart{width:100%;height:500px;min-height:400px}
+.ec-legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;justify-content:center}
+.ec-legend span{font-size:.72em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
+.ec-timeline{display:flex;justify-content:space-between;padding:4px 20px;font-size:.72em;color:var(--txt3);font-weight:600;border-top:1px dashed var(--border);margin-top:4px}
+/* 節點編號標籤 */
+.node-id{font-family:'Courier New',monospace;font-size:.75em;font-weight:700;color:var(--accent);margin-right:4px}
 </style>
 </head>
 <body>
@@ -103,24 +87,20 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 
 <div class="hero">
     <h1>情境推演 — 美伊戰爭 × 台灣供應鏈衝擊</h1>
-    <div class="sub">天機閣 — 情境推演實驗室 v6.0｜Skill v2.0 架構重整版</div>
+    <div class="sub">天機閣 — 情境推演實驗室 v7.0｜Skill v2.2 ECharts 互動版</div>
     <div class="desc">整合 v5.0 獨立情報（150+ 條）+ v5.1 分支推演（12 子路線）+ 外部環境衝擊（8 面向）<br>
-    完全依照情境推演實驗室 Skill v2.0 十五節架構重整<br>
+    v2.2 升級：ECharts 互動式分支樹（tooltip + 展開收合 + 縮放拖曳）+ 迴路節點樹狀展開<br>
     報告日期：2026-03-23｜情報截止：2026-03-22 23:30 UTC+8</div>
     <div class="tags">
-        <span class="tag">5 母劇本</span>
-        <span class="tag">12 子路線</span>
-        <span class="tag">16 行為者</span>
-        <span class="tag">17 家公司</span>
-        <span class="tag">10 監控觸發器</span>
-        <span class="tag">8 環境連鎖</span>
+        <span class="tag">5 母劇本</span><span class="tag">12 子路線</span><span class="tag">16 行為者</span>
+        <span class="tag">17 家公司</span><span class="tag">10 監控觸發器</span><span class="tag">8 環境連鎖</span>
+        <span class="tag">ECharts 互動</span>
     </div>
 </div>
 
 <!-- ===== SEC 0: 懶人結論 ===== -->
 <div class="lazy">
 <h2>0. 懶人結論</h2>
-
 <div class="yaml">戰爭狀態：  進行中（第 24 天）
 行動代號：  Operation Epic Fury（美）/ Roaring Lion（以）
 開戰日期：  2026-02-28
@@ -133,14 +113,12 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
   - Bushehr 核電廠：  3/17 遭擊（IAEA 稱「最紅線」）
 情報來源：  6 組獨立代理 × 150+ 筆結構化情報
 情報充足度：  整體 🟢（軍事/能源/半導體充足）、🟡（社會輿論尚可）</div>
-
 <div class="cards">
 <div class="lcard"><div class="ln" style="color:#e67e22">$112</div><div class="lt">布蘭特原油 /桶</div></div>
 <div class="lcard"><div class="ln" style="color:#e74c3c">6,801億</div><div class="lt">外資累計賣超</div></div>
 <div class="lcard"><div class="ln" style="color:#f39c12">11天</div><div class="lt">台灣 LNG 安全存量</div></div>
 <div class="lcard"><div class="ln" style="color:#e74c3c">-8.5%</div><div class="lt">台股機率加權期望值</div></div>
 </div>
-
 <table style="background:rgba(255,255,255,.06);border-radius:6px;margin:8px 0">
 <tr><th style="background:rgba(255,255,255,.1);color:#ddd">劇本</th><th style="background:rgba(255,255,255,.1);color:#ddd">機率</th><th style="background:rgba(255,255,255,.1);color:#ddd">台股影響</th><th style="background:rgba(255,255,255,.1);color:#ddd">油價區間</th></tr>
 <tr style="color:#ddd"><td>S1 外交突破</td><td>8%</td><td style="color:#6b8f71">+5~8%</td><td>$75-85</td></tr>
@@ -149,25 +127,23 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 <tr style="color:#ddd"><td>S4 荷莫茲封鎖</td><td>20%</td><td style="color:#c27c6e">-15~40%</td><td>$150-220</td></tr>
 <tr style="color:#ddd"><td>S5 全面戰爭</td><td>7%</td><td style="color:#c27c6e">-30~50%</td><td>$200+</td></tr>
 </table>
-
 <div style="font-size:.82em;color:#bbb;margin-top:6px">
 <b>結構性利多</b>：台塑化/長榮/漢翔/石油ETF/黃金（戰爭越久越受惠）<br>
 <b>結構性利空</b>：台積電/聯發科/華邦電/長榮航/元晶（氦氣+限電+成本三重壓力）<br>
-<b>唯一正期望值板塊</b>：石化（+4.2%）、航運（+3.8%）、國防（+5.1%）
+<b>唯一正期望值板塊</b>：石化（+8.5%）、航運（+11.7%）、國防（+7.8%）
 </div>
-
 <div class="one-line">一句話結論：48 小時通牒（3/23 到期）是分水嶺 — 攻擊發電廠則 S3 機率跳升至 50%+，台灣 LNG 11 天存量是最致命軟肋</div>
 </div>
 
 <div class="toc">
-    <strong style="font-size:.88em;color:var(--base)">報告結構（v2.0 Skill 架構）</strong>
+    <strong style="font-size:.88em;color:var(--base)">報告結構（v2.2 Skill 架構）</strong>
     <a href="#sec0">0. 懶人結論</a>
     <a href="#sec1">1. 全部行為者（六類 × 16 個）</a>
     <a href="#sec2">2. 關鍵事實（截至 2026-03-22）</a>
-    <a href="#sec2h">2.5 資料預載摘要</a>
+    <a href="#sec2h">2.5 資料預載摘要（預設收合）</a>
     <a href="#sec3">3. 劇本推演（5 母劇本 × 三層發展）</a>
-    <a href="#sec3h">3.5 高機率分支展開（12 子路線）</a>
-    <a href="#sec4">4. 系統動力學（迴路 + 級聯）</a>
+    <a href="#sec3h">3.5 高機率分支展開（ECharts 互動 + 12 子路線）</a>
+    <a href="#sec4">4. 系統動力學（迴路節點樹狀展開）</a>
     <a href="#sec5">5. 供應鏈圖譜傳導分析（8 條路徑）</a>
     <a href="#sec6">6. 量化衝擊矩陣（17 家 × 5 劇本）</a>
     <a href="#sec7">7. 特殊槓桿分析（俄/中/北韓/氦氣）</a>
@@ -180,143 +156,67 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
     <a href="#sec14">14. 外部環境連鎖衝擊（→獨立 HTML）</a>
 </div>
 
-<!-- ===== SEC 1: 行為者 ===== -->
+<!-- ===== SEC 1: 行為者（精簡表格，≤15% 篇幅）===== -->
 <details class="sec-collapse" open id="sec1">
 <summary>1. 全部行為者（六類 × 16 個）</summary>
-<div class="sec-sub">行為者驅動的推演核心 — 理解「人會做什麼」比「數字會怎麼變」更重要 <span class="suf g">🟢 充足</span></div>
-
-<details open><summary>1A. 直接交戰方（3 個）</summary>
+<div class="sec-sub">精簡表格 — 核心動機 + 最可能行動 + 紅線 <span class="suf g">🟢 充足</span></div>
 <table>
-<tr><th>行為者</th><th>目標</th><th>核心矛盾</th><th>紅線</th><th>時鐘</th></tr>
-<tr><td><span class="actor-tag us">美國</span></td><td>摧毀伊朗核武/飛彈產能、展示威懾力</td><td>川普要「速戰速決」vs 軍方評估需 2-3 個月；國內反對 vs 展示強硬</td><td>美軍傷亡破百→國內壓力劇增</td><td>日（川普 Truth Social 即時反應）</td></tr>
-<tr><td><span class="actor-tag il">以色列</span></td><td>去核化 + 殲滅真主黨/哈瑪斯</td><td>七線作戰消耗巨大 vs 歷史性「去核化窗口」</td><td>真主黨遠程飛彈擊中特拉維夫核心區</td><td>日-週</td></tr>
-<tr><td><span class="actor-tag ir">伊朗</span></td><td>政權存續、維持核能力底線</td><td>飛彈庫存耗竭（發射率降 90%）vs 「永不投降」意識形態</td><td>Bushehr 被炸（已觸發 3/17）→ 全面報復</td><td>日（IRGC 行動）/ 月（政治決策）</td></tr>
+<tr><th>類別</th><th>行為者</th><th>核心動機</th><th>最可能行動</th><th>紅線/轉折</th></tr>
+<tr><td rowspan="3">交戰方</td><td><span class="actor-tag us">美國</span></td><td>摧毀伊朗核武/飛彈產能</td><td>空襲持續 + 通牒施壓</td><td>美軍傷亡破百→國內壓力劇增</td></tr>
+<tr><td><span class="actor-tag il">以色列</span></td><td>去核化 + 殲滅真主黨</td><td>七線作戰、配合美軍節奏</td><td>特拉維夫遭遠程飛彈擊中</td></tr>
+<tr><td><span class="actor-tag ir">伊朗</span></td><td>政權存續、維持核能力底線</td><td>飛彈庫存耗竭→轉入游擊/代理人</td><td>Bushehr 被炸（已觸發 3/17）</td></tr>
+<tr><td rowspan="3">受害方</td><td><span class="actor-tag jp">日本</span></td><td>85% 中東原油依賴</td><td>釋出 45 天油儲、考慮掃雷艦</td><td>日系化學材料供應受限</td></tr>
+<tr><td><span class="actor-tag kr">南韓</span></td><td>KOSPI -18%、半導體材料配給</td><td>2,246 萬桶釋儲</td><td>三星/SK 減產→HBM 短缺</td></tr>
+<tr><td><span class="actor-tag in">印度</span></td><td>95% 能源進口、LPG 短缺</td><td>轉購俄油、等美伊朗油豁免</td><td>經濟衰退→IT 外包延遲</td></tr>
+<tr><td rowspan="2">機會方</td><td><span class="actor-tag ru">俄羅斯</span></td><td>油價紅利（月額外 50-70 億美元）</td><td>升級烏克蘭攻勢至四年最高</td><td>愛國者被中東消耗→烏防空缺口</td></tr>
+<tr><td><span class="actor-tag nk">北韓</span></td><td>趁美國分散施壓</td><td>3/14 試射 10 枚飛彈 + 核砲測試</td><td>S3c 時可能核試爆</td></tr>
+<tr><td rowspan="2">博弈方</td><td><span class="actor-tag cn">中國</span></td><td>40% 原油經荷莫茲、不想破壞中美關係</td><td>克制觀望、暫緩對台施壓</td><td>封鎖 >4 週→PLA-N 護航（S4c）</td></tr>
+<tr><td><span class="actor-tag eu">歐盟</span></td><td>能源危機 2.0 + 難民潮</td><td>拒絕參戰、內部嚴重分裂</td><td>S3→德法召回大使（史上首次）</td></tr>
+<tr><td rowspan="3">代理人</td><td><span class="actor-tag hezb">真主黨</span></td><td>伊朗「抵抗之弧」核心</td><td>全面開戰、攻擊以北、100 萬人流離</td><td>已觸發，牽制以色列兵力</td></tr>
+<tr><td><span class="actor-tag houthi">胡塞</span></td><td>伊朗遠端代理</td><td>異常沉默 3 週（等伊朗指令）</td><td>解除限制→72hr 恢復紅海攻擊</td></tr>
+<tr><td><span class="actor-tag tr">土耳其</span></td><td>NATO 但獨立外交</td><td>中立不介入、調停失敗</td><td>S3c 難民潮→被迫選邊</td></tr>
+<tr><td rowspan="3">斷路器</td><td><span class="actor-tag opec">OPEC+</span></td><td>供給控制者</td><td>僅增 20.6 萬桶/日（杯水車薪）</td><td>決定油價天花板</td></tr>
+<tr><td><span class="actor-tag ins">保險/信評</span></td><td>風險定價者</td><td>荷莫茲保費漲 10 倍、多國信評轉負</td><td>保費決定航運成本</td></tr>
+<tr><td>UN/IAEA</td><td>國際法框架</td><td>3 次停火決議被否決</td><td>人道壓力是 S3d 推動力</td></tr>
 </table>
 </details>
 
-<details open><summary>1B. 受害方（3 個）</summary>
-<table>
-<tr><th>行為者</th><th>受害方式</th><th>當前狀態</th><th>對台影響</th></tr>
-<tr><td><span class="actor-tag jp">日本</span></td><td>85% 中東原油依賴、荷莫茲封鎖直擊</td><td>釋出 45 天油儲、考慮掃雷艦出動</td><td>日系化學材料供應可能受限</td></tr>
-<tr><td><span class="actor-tag kr">南韓</span></td><td>KOSPI -18%（4 天）、2,246 萬桶釋儲</td><td>半導體產業進入材料配給模式</td><td>三星/SK 海力士減產→HBM 短缺→台廠間接受影響</td></tr>
-<tr><td><span class="actor-tag in">印度</span></td><td>95% 能源進口、LPG 短缺引發抗議</td><td>大量轉購俄油、等待美國伊朗油豁免</td><td>印度經濟衰退→IT 外包訂單可能延遲</td></tr>
-</table>
-</details>
-
-<details open><summary>1C. 機會主義者（2 個）</summary>
-<table>
-<tr><th>行為者</th><th>獲利方式</th><th>行動</th><th>對劇本影響</th></tr>
-<tr><td><span class="actor-tag ru">俄羅斯</span></td><td>油價紅利（$100+/桶每月額外 50-70 億美元）、美國分心</td><td>升級烏克蘭攻勢至四年最高強度；S-400/Su-35 已交付伊朗</td><td>間接延長戰爭、削弱烏克蘭防空（愛國者被中東消耗）</td></tr>
-<tr><td><span class="actor-tag nk">北韓</span></td><td>趁美國過度延伸施壓南韓</td><td>3/14 試射 10 枚短程飛彈、3/15 核武級火箭砲測試</td><td>分散美國注意力、S3c 時可能進行 2017 年來首次核試爆</td></tr>
-</table>
-</details>
-
-<details open><summary>1D. 戰略博弈方（2 個）</summary>
-<table>
-<tr><th>行為者</th><th>戰略考量</th><th>當前態度</th><th>轉折點</th></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>40% 原油經荷莫茲、13% 直接來自伊朗；不想破壞中美關係但無法放棄能源命脈</td><td>克制觀望：撤僑 3,000+ 人、暫緩對台施壓、措辭低調</td><td>封鎖 > 4 週→PLA-N 獨立護航（S4c）；美國五線分散→「十年一遇窗口期」評估</td></tr>
-<tr><td><span class="actor-tag eu">歐盟/北約</span></td><td>能源危機 2.0 + 難民潮 + 與美國關係</td><td>拒絕參戰：成員國拒派海軍、川普怒罵「膽小鬼」、內部嚴重分裂</td><td>S3→德法可能召回大使商議（史上首次）；S4b→能源危機達不可承受→壓美國停火</td></tr>
-</table>
-</details>
-
-<details open><summary>1E. 代理人/附屬方（3 個）</summary>
-<table>
-<tr><th>行為者</th><th>隸屬</th><th>當前狀態</th><th>升級觸發</th></tr>
-<tr><td><span class="actor-tag hezb">真主黨</span></td><td>伊朗「抵抗之弧」核心</td><td><b>全面開戰</b>：3/2 起攻擊以色列北部、遠程飛彈瞄準特拉維夫、100 萬人流離</td><td>已觸發；牽制以色列兵力</td></tr>
-<tr><td><span class="actor-tag houthi">胡塞武裝</span></td><td>伊朗遠端代理</td><td><b>異常沉默</b>：威脅恢復紅海攻擊但 3 週未行動，疑等伊朗指令</td><td>伊朗解除限制→72 小時內恢復紅海攻擊→雙咽喉封鎖</td></tr>
-<tr><td><span class="actor-tag tr">土耳其</span></td><td>NATO 成員但獨立外交</td><td>中立不介入：拒開領空、調停失敗、飛彈侵入領空被攔截</td><td>S3c 黎巴嫩擴大→難民潮+安全威脅→被迫選邊</td></tr>
-</table>
-</details>
-
-<details open><summary>1F. 無聲斷路器（3 個）</summary>
-<table>
-<tr><th>行為者</th><th>角色</th><th>當前動態</th><th>影響力</th></tr>
-<tr><td><span class="actor-tag opec">OPEC+</span></td><td>供給控制者</td><td>僅增 20.6 萬桶/日（杯水車薪 vs 2,000 萬缺口）；替代管線僅 350-550 萬桶/日</td><td>決定油價天花板→直接影響所有劇本嚴重程度</td></tr>
-<tr><td><span class="actor-tag ins">保險/信評</span></td><td>風險定價者</td><td>荷莫茲保費漲 10 倍；巴林 CDS +40%；多國信評展望轉負</td><td>保費決定航運成本→間接決定運費/油價/貿易可行性</td></tr>
-<tr><td>聯合國/IAEA</td><td>國際法框架</td><td>3 次停火決議被否決；IAEA 署長稱 Bushehr 被炸「跨越最紅線」</td><td>人道壓力是 S3d（人道停火）的核心推動力</td></tr>
-</table>
-</details>
-</details>
-
-<!-- ===== SEC 2: 關鍵事實 ===== -->
+<!-- ===== SEC 2: 關鍵事實（精簡）===== -->
 <details class="sec-collapse" open id="sec2">
 <summary>2. 關鍵事實（截至 2026-03-22）</summary>
-<div class="sec-sub">150+ 筆獨立蒐集情報中的核心數據點 <span class="suf g">🟢 充足</span></div>
-
-<details open><summary>2A. 衝突時間軸</summary>
+<div class="sec-sub">精簡核心數據點 — 完整 150+ 筆情報見 JSON 檔案 <span class="suf g">🟢 充足</span></div>
 <table>
-<tr><th>日期</th><th>事件</th><th>FIAS</th></tr>
-<tr><td>2025/6/13-24</td><td>十二日戰爭：以色列+美軍「午夜之錘行動」突襲伊朗核設施（GBU-57 鑽地彈 ×14）</td><td>F</td></tr>
-<tr><td>2026/1</td><td>伊朗爆發最大規模抗議，安全部隊殺害數千人；川普威脅軍事行動</td><td>F</td></tr>
-<tr><td>2026/2</td><td>核談判破裂（阿曼管道）+ 美國自 2003 年以來最大中東軍事集結</td><td>F</td></tr>
-<tr><td>2026/2/28</td><td><b>Operation Epic Fury 開戰</b>：首 12 小時 900 次空襲</td><td>F</td></tr>
-<tr><td>2026/3/2</td><td>真主黨全面加入，攻擊以色列北部</td><td>F</td></tr>
-<tr><td>2026/3/8</td><td>布蘭特原油突破 $100/桶</td><td>F</td></tr>
-<tr><td>2026/3/14-15</td><td>北韓試射 10 枚短程飛彈 + 核武級火箭砲測試</td><td>F</td></tr>
-<tr><td>2026/3/17</td><td><b>Bushehr 核電廠遭擊</b>（IAEA 稱「最紅線」）</td><td>F</td></tr>
-<tr><td>2026/3/19</td><td>杜拜原油創歷史新高 $166.80/桶</td><td>F</td></tr>
-<tr><td>2026/3/20</td><td>川普在空軍一號稱考慮「逐步收尾」，但同時增派陸戰隊</td><td>F</td></tr>
-<tr style="background:rgba(198,40,40,.08)"><td><b>2026/3/21</b></td><td><b>川普發出 48 小時通牒</b>：要求伊朗投降，否則轟炸發電廠</td><td>F</td></tr>
+<tr><th>面向</th><th>關鍵數據</th><th>值</th><th>FIAS</th></tr>
+<tr><td rowspan="3">衝突</td><td>開戰日期</td><td>2026-02-28（第 24 天）</td><td>F</td></tr>
+<tr><td>48 小時通牒</td><td>3/21 發出→3/23 23:44 GMT 到期</td><td>F</td></tr>
+<tr><td>Bushehr 核電廠遭擊</td><td>3/17（IAEA 稱「最紅線」）</td><td>F</td></tr>
+<tr><td rowspan="4">能源</td><td>布蘭特原油</td><td>$112.19/桶（+55.8%）</td><td>F</td></tr>
+<tr><td>杜拜原油</td><td>$166.80（歷史新高、WTI 價差 >$50）</td><td>F</td></tr>
+<tr><td>荷莫茲通行量</td><td>降 97%（正常 2,000 萬桶/日）</td><td>F</td></tr>
+<tr><td>氦氣價格</td><td>$600/MCF（+100%、庫存 4-8 週）</td><td>F</td></tr>
+<tr><td rowspan="3">台灣</td><td>外資賣超</td><td>累計 6,801 億台幣</td><td>F</td></tr>
+<tr><td>LNG 安全存量</td><td>11 天（全球主要經濟體最低）</td><td>F</td></tr>
+<tr><td>台積電用電佔比</td><td>全台 10%</td><td>F</td></tr>
+<tr><td rowspan="3">軍事</td><td>美軍航母打擊群</td><td>3 個 + 2 兩棲戒備群</td><td>F</td></tr>
+<tr><td>伊朗飛彈庫存</td><td>發射率降 90%（耗竭訊號）</td><td>I</td></tr>
+<tr><td>IRGC 水雷</td><td>48hr 可布放 5,000+ 枚（美 MCM 僅 7 艘）</td><td>I</td></tr>
 </table>
 </details>
 
-<details open><summary>2B. 能源市場數據</summary>
-<table>
-<tr><th>指標</th><th>數值</th><th>變化</th><th>來源</th><th>FIAS</th></tr>
-<tr><td>布蘭特原油</td><td>$112.19/桶</td><td>+55.8%（戰前 $72）</td><td>CNBC 3/20</td><td>F</td></tr>
-<tr><td>WTI 原油</td><td>$98.32/桶</td><td>+36.4%</td><td>CNBC 3/20</td><td>F</td></tr>
-<tr><td>杜拜原油</td><td>$166.80/桶（歷史新高）</td><td>WTI 價差 >$50（正常 $5-8）</td><td>CNBC 3/19</td><td>F</td></tr>
-<tr><td>天然氣（TTF）</td><td>+32%</td><td>歐洲飆漲</td><td>IEA 3/26</td><td>F</td></tr>
-<tr><td>荷莫茲通行量</td><td>降 97%</td><td>正常 2,000 萬桶/日</td><td>CNBC</td><td>F</td></tr>
-<tr><td>氦氣價格</td><td>$600/MCF</td><td>+100%（正常 $300）</td><td>TrendForce</td><td>F</td></tr>
-<tr><td>航運保費</td><td>漲 10 倍</td><td>戰區通行成本飆漲</td><td>Lloyd's List</td><td>F</td></tr>
-</table>
-</details>
-
-<details open><summary>2C. 台灣金融數據</summary>
-<table>
-<tr><th>指標</th><th>數值</th><th>來源</th><th>FIAS</th></tr>
-<tr><td>外資賣超</td><td>累計 <b>6,801 億</b>台幣</td><td>證交所</td><td>F</td></tr>
-<tr><td>國安基金</td><td>待命中（授權額度 5,000 億）</td><td>財政部</td><td>F</td></tr>
-<tr><td>LNG 安全存量</td><td><b>11 天</b>（全球主要經濟體最低）</td><td>經濟部/台電</td><td>F</td></tr>
-<tr><td>台積電用電佔比</td><td>全台 <b>10%</b></td><td>經濟部</td><td>F</td></tr>
-<tr><td>黃金價格</td><td>$5,700/oz（創歷史新高，預期挑戰 $6,000）</td><td>Bloomberg</td><td>F</td></tr>
-</table>
-</details>
-
-<details open><summary>2D. 軍事部署數據</summary>
-<table>
-<tr><th>指標</th><th>數值</th><th>FIAS</th></tr>
-<tr><td>美軍航母打擊群</td><td>3 個（CVN-78/CVN-69/CVN-72）+ 2 個兩棲戒備群</td><td>F</td></tr>
-<tr><td>美軍空襲架次</td><td>5,000+</td><td>F</td></tr>
-<tr><td>伊朗飛彈庫存</td><td>發射率降 90%（庫存耗竭訊號）</td><td>I</td></tr>
-<tr><td>IRGC 水雷庫存</td><td>可 48 小時內布放 5,000+ 枚</td><td>I</td></tr>
-<tr><td>美軍 MCM（掃雷）</td><td>僅 7 艘（需 16 艘）</td><td>F</td></tr>
-<tr><td>困灣油輪</td><td>85+ 艘大型油輪（載 210 億公升原油）</td><td>F</td></tr>
-</table>
-</details>
-</details>
-
-<!-- ===== SEC 2.5: 資料預載摘要 ===== -->
-<details class="sec-collapse" open id="sec2h">
+<!-- ===== SEC 2.5: 資料預載（v2.1：預設收合）===== -->
+<details class="sec-collapse" id="sec2h">
 <summary>2.5 資料預載摘要</summary>
-<div class="sec-sub">6 組代理 × 150+ 筆結構化情報的來源清單與覆蓋度評估</div>
-
+<div class="sec-sub">6 組代理 × 150+ 筆情報的覆蓋度（預設收合 — 已知事實精簡化）</div>
 <table>
-<tr><th>情報管道</th><th>筆數</th><th>檔案</th><th>涵蓋面向</th><th>充足度</th></tr>
-<tr><td>軍事動態</td><td>20</td><td>step1_軍事動態.json</td><td>戰爭起因/兵力部署/空襲進度/飛彈庫存</td><td><span class="suf g">🟢</span></td></tr>
-<tr><td>能源市場</td><td>22</td><td>step1_能源市場.json</td><td>油價/LNG/氦氣/替代管線/OPEC 產能</td><td><span class="suf g">🟢</span></td></tr>
-<tr><td>半導體供應鏈</td><td>25</td><td>step1_半導體供應鏈.json</td><td>氦氣/溴素/EUV/封測/車用晶片</td><td><span class="suf g">🟢</span></td></tr>
-<tr><td>地緣政治外交</td><td>40+</td><td>step1_地緣政治外交.json</td><td>16 行為者動態/UN/IAEA/通牒</td><td><span class="suf g">🟢</span></td></tr>
-<tr><td>台灣金融市場</td><td>28</td><td>step1_台灣金融市場.json</td><td>外資/國安基金/匯率/產業衝擊</td><td><span class="suf g">🟢</span></td></tr>
-<tr><td>供應鏈傳導</td><td>18</td><td>step1_供應鏈傳導.json</td><td>8 條傳導路徑/替代方案/時間窗</td><td><span class="suf y">🟡</span></td></tr>
+<tr><th>情報管道</th><th>筆數</th><th>涵蓋面向</th><th>充足度</th></tr>
+<tr><td>軍事動態</td><td>20</td><td>戰爭起因/兵力部署/空襲進度/飛彈庫存</td><td><span class="suf g">🟢</span></td></tr>
+<tr><td>能源市場</td><td>22</td><td>油價/LNG/氦氣/替代管線/OPEC 產能</td><td><span class="suf g">🟢</span></td></tr>
+<tr><td>半導體供應鏈</td><td>25</td><td>氦氣/溴素/EUV/封測/車用晶片</td><td><span class="suf g">🟢</span></td></tr>
+<tr><td>地緣政治外交</td><td>40+</td><td>16 行為者動態/UN/IAEA/通牒</td><td><span class="suf g">🟢</span></td></tr>
+<tr><td>台灣金融市場</td><td>28</td><td>外資/國安基金/匯率/產業衝擊</td><td><span class="suf g">🟢</span></td></tr>
+<tr><td>供應鏈傳導</td><td>18</td><td>8 條傳導路徑/替代方案/時間窗</td><td><span class="suf y">🟡</span></td></tr>
 </table>
-
-<div class="tip info">
-<b>資料缺口標示</b>
-<b>🟡 供應鏈傳導</b>：部分傳導數據為分析師推估（如氦氣價格漲幅對台積電良率的具體影響百分比），非精確實測數據。<br>
-<b>🔴 尚缺</b>：台灣民間社會輿論的系統性數據（反戰情緒、消費信心指數變化）；伊朗/阿拉伯語原始報導覆蓋不足。
-</div>
+<div class="tip info"><b>資料缺口</b> 🟡 供應鏈傳導部分為分析師推估。🔴 台灣民間輿論/消費信心數據缺乏系統性蒐集。</div>
 </details>
 
 <!-- ===== SEC 3: 劇本推演 ===== -->
@@ -328,322 +228,248 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 <b>機率推導依據</b><br>
 S1（8%）：外交管道均已凍結，阿曼/瑞士管道未重啟跡象<br>
 S2（40%）：當前基線 — 空襲持續但無重大升級，雙方消耗中<br>
-S3（25%）：48 小時通牒到期（3/23）是直接觸發器，川普矛盾訊號<br>
+S3（25%）：48 小時通牒到期（3/23）是直接觸發器<br>
 S4（20%）：Bushehr 已遭擊 + IRGC 水雷庫存充足 = 封鎖門檻已降低<br>
-S5（7%）：需要多個低機率事件連鎖觸發（地面入侵 + 中美對峙 + 核升級）
+S5（7%）：需要多個低機率事件連鎖觸發
 </div>
 
 <table>
-<tr><th>劇本</th><th>機率</th><th>觸發條件</th><th>時間軸</th><th>台股影響</th><th>油價</th></tr>
-<tr style="background:rgba(90,125,96,.08)"><td><b>S1 外交突破</b></td><td>8%</td><td>阿曼/瑞士秘密管道 + 中俄聯合施壓 + 穆傑塔巴停火聲明</td><td>4-6 週</td><td style="color:var(--bull)">+5~8%</td><td>$75-85</td></tr>
-<tr><td><b>S2 持續空襲</b></td><td><b>40%</b></td><td>當前基線持續，通牒僅象徵性升級</td><td>2-4 月</td><td>-3~5%</td><td>$95-115</td></tr>
-<tr style="background:rgba(212,160,23,.08)"><td><b>S3 全面轟炸</b></td><td>25%</td><td>通牒執行→攻擊發電廠→伊朗 8,000 萬人斷電</td><td>1-3 週內升級</td><td style="color:var(--danger)">-8~18%</td><td>$120-170</td></tr>
-<tr style="background:rgba(194,124,110,.08)"><td><b>S4 荷莫茲封鎖</b></td><td>20%</td><td>IRGC 全面佈雷 + 反艦飛彈→海峽關閉</td><td>S3 後 48 小時</td><td style="color:var(--danger)">-15~40%</td><td>$150-220</td></tr>
-<tr style="background:rgba(194,124,110,.15)"><td><b>S5 全面戰爭</b></td><td>7%</td><td>S4 + 中美海上對峙 + 代理人全面開戰 + 地面入侵</td><td>S4 後 2-4 週</td><td style="color:var(--danger)">-30~50%</td><td>$200+</td></tr>
+<tr><th>劇本</th><th>機率</th><th>觸發條件</th><th>台股影響</th><th>油價</th></tr>
+<tr style="background:rgba(90,125,96,.08)"><td><b>S1 外交突破</b></td><td>8%</td><td>阿曼/瑞士秘密管道 + 中俄聯合施壓</td><td style="color:var(--bull)">+5~8%</td><td>$75-85</td></tr>
+<tr><td><b>S2 持續空襲</b></td><td><b>40%</b></td><td>當前基線持續，通牒僅象徵性升級</td><td>-3~5%</td><td>$95-115</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td><b>S3 全面轟炸</b></td><td>25%</td><td>通牒執行→攻擊發電廠→8,000 萬人斷電</td><td style="color:var(--danger)">-8~18%</td><td>$120-170</td></tr>
+<tr style="background:rgba(194,124,110,.08)"><td><b>S4 荷莫茲封鎖</b></td><td>20%</td><td>IRGC 全面佈雷 + 反艦飛彈→海峽關閉</td><td style="color:var(--danger)">-15~40%</td><td>$150-220</td></tr>
+<tr style="background:rgba(194,124,110,.15)"><td><b>S5 全面戰爭</b></td><td>7%</td><td>S4 + 中美海上對峙 + 代理人全面開戰</td><td style="color:var(--danger)">-30~50%</td><td>$200+</td></tr>
 </table>
 
-<details open><summary>劇本發展路徑圖（三層）</summary>
 <div class="tip warn">
 <b>三大不確定性（決定走哪條路）</b><br>
 <b>1. 48 小時通牒（3/23 到期）</b>：攻擊發電廠→S3 跳升至 50%+<br>
 <b>2. 胡塞「神秘沉默」何時結束</b>：恢復紅海攻擊→雙咽喉封鎖<br>
 <b>3. 4 月底氦氣硬停頓</b>：戰爭持續→半導體全面承壓
 </div>
-
-<table>
-<tr><th>第一層（觸發）</th><th>第二層（反應）</th><th>第三層（結局走向）</th></tr>
-<tr><td rowspan="2">通牒到期→<b>未執行</b></td><td>伊朗飛彈耗盡→停火壓力↑</td><td>S2a 有限停火（12.0%）</td></tr>
-<tr><td>雙方無力升級→低強度消耗</td><td>S2b 持續僵局（14.0%）</td></tr>
-<tr><td rowspan="3">通牒到期→<b>攻擊發電廠</b></td><td>核設施全毀 + 穆傑塔巴求和</td><td>S3a 伊朗屈服（5.0%）</td></tr>
-<tr><td>IRGC 孤注一擲→全面佈雷</td><td>S3b→S4 封鎖（8.75%）</td></tr>
-<tr><td>真主黨+胡塞同步升級</td><td>S3c 區域多線戰爭（7.5%）</td></tr>
-<tr><td rowspan="2">海峽封鎖→<b>掃雷結果</b></td><td>MCM 集結成功 + 2-4 週重開</td><td>S4a 短期封鎖（5.0%）</td></tr>
-<tr><td>MCM 不足 + 持續補雷</td><td>S4b 長期封鎖→衰退（7.0%）</td></tr>
-</table>
-</details>
 </details>
 
-<!-- ===== SEC 3.5: 高機率分支展開 ===== -->
+<!-- ===== SEC 3.5: 高機率分支展開 + ECharts ===== -->
 <details class="sec-collapse" open id="sec3h">
-<summary>3.5 高機率分支展開（S2/S3/S4 × 12 子路線）</summary>
-<div class="sec-sub">v2.0 新增 — 三個高機率劇本的多層再分支推演 <span class="suf g">🟢 充足</span></div>
+<summary>3.5 高機率分支展開（ECharts 互動 + S2/S3/S4 × 12 子路線）</summary>
+<div class="sec-sub">v2.2 升級 — ECharts 互動式分支樹（懸停詳情 / 點擊展開 / 縮放拖曳）+ 文字表格雙模式 <span class="suf g">🟢 充足</span></div>
+
+<div class="ec-legend">
+<span style="background:var(--ec-energy)">能源(E)</span>
+<span style="background:var(--ec-transport)">航運(T)</span>
+<span style="background:var(--ec-finance)">金融(F)</span>
+<span style="background:var(--ec-supply)">供應鏈(S)</span>
+<span style="background:var(--ec-geo)">地緣(G)</span>
+<span style="background:var(--ec-consumer)">民生(C)</span>
+<span style="background:var(--ec-tech)">科技(I)</span>
+<span style="background:var(--ec-special)">特殊(X)</span>
+</div>
 
 <div class="tip info">
-<b>分支邏輯</b>：每個母劇本各分 4 條子路線，子路線機率為<b>條件機率</b>（給定母劇本發生時的分布）。<b>絕對機率 = 母機率 × 條件機率</b>。12 條子路線絕對機率加總 ≈ 85%（S1 8% + S5 7% 未展開）。
+<b>操作說明</b>：滑鼠懸停節點 → 顯示完整資訊（機率/依據/影響）｜點擊節點 → 展開/收合子分支｜滾輪 → 縮放｜拖曳 → 平移
 </div>
 
-<table>
-<tr><th>母劇本</th><th>母機率</th><th>子路線</th><th>條件機率</th><th>絕對機率</th><th>關鍵驅動</th></tr>
-<tr style="background:rgba(212,160,23,.08)"><td rowspan="4"><b>S2 持續空襲</b></td><td rowspan="4"><b>40%</b></td><td>S2a 空襲疲勞→停火</td><td>30%</td><td>12.0%</td><td>伊朗飛彈耗盡 + 美國國內壓力</td></tr>
-<tr style="background:rgba(212,160,23,.08)"><td>S2b 持續僵局→消耗戰</td><td>35%</td><td>14.0%</td><td>雙方無力升級也不願停火</td></tr>
-<tr style="background:rgba(212,160,23,.08)"><td>S2c 通牒升級→轉S3</td><td>25%</td><td>10.0%</td><td>48小時通牒執行→攻擊發電廠</td></tr>
-<tr style="background:rgba(212,160,23,.08)"><td>S2d 外部介入→談判</td><td>10%</td><td>4.0%</td><td>中俄聯合施壓 + 歐盟能源危機</td></tr>
-<tr><td rowspan="4"><b>S3 全面轟炸</b></td><td rowspan="4"><b>25%</b></td><td>S3a 轟炸成功→屈服</td><td>20%</td><td>5.0%</td><td>核設施摧毀 + 穆傑塔巴接班求和</td></tr>
-<tr><td>S3b 伊朗報復→S4封鎖</td><td>35%</td><td>8.75%</td><td>Bushehr被炸→IRGC全面佈雷</td></tr>
-<tr><td>S3c 代理人連鎖→區域擴散</td><td>30%</td><td>7.5%</td><td>真主黨+胡塞同步開戰</td></tr>
-<tr><td>S3d 人道危機→壓力停火</td><td>15%</td><td>3.75%</td><td>平民傷亡破萬+UN強勢介入</td></tr>
-<tr style="background:rgba(194,124,110,.08)"><td rowspan="4"><b>S4 荷莫茲封鎖</b></td><td rowspan="4"><b>20%</b></td><td>S4a 短期封鎖（2-4週）</td><td>25%</td><td>5.0%</td><td>美英MCM加速+日韓出動</td></tr>
-<tr style="background:rgba(194,124,110,.08)"><td>S4b 長期封鎖（1-3月）</td><td>35%</td><td>7.0%</td><td>MCM不足+持續補雷</td></tr>
-<tr style="background:rgba(194,124,110,.08)"><td>S4c 中國護航→中美對峙</td><td>20%</td><td>4.0%</td><td>中國石油生命線被斷</td></tr>
-<tr style="background:rgba(194,124,110,.08)"><td>S4d 替代路線飽和→$200+</td><td>20%</td><td>4.0%</td><td>管線不足+紅海也被封</td></tr>
-</table>
-
-<div class="tip warn">
-<b>最高機率路徑（前三）</b><br>
-1. <b>S2b 持續僵局</b>（14.0%）— 最可能但也最無聊，市場慢慢消化<br>
-2. <b>S2a 空襲疲勞→停火</b>（12.0%）— 最樂觀的高機率路徑<br>
-3. <b>S2c 通牒升級</b>（10.0%）— 48 小時通牒是即將到來的分水嶺
+<!-- S2 ECharts -->
+<div class="ec-wrap">
+<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S2 持續空襲（40%）— 互動分支樹</h3>
+<div id="chart-s2" class="ec-chart"></div>
+<div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
 </div>
 
-<!-- S2 子路線 -->
-<details open><summary>S2 持續空襲 — 4 條子路線展開</summary>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id low">S2a</span>
-    <span class="branch-title">空襲疲勞→有限停火</span>
-    <span class="branch-prob" style="color:var(--bull)">絕對 12.0%</span>
-</div>
-<p><b>觸發</b>：伊朗飛彈發射率已降 90%（庫存耗竭）+ 美國國內反對升至 50%+ + 穆傑塔巴停火聲明。<b>時間軸</b>：4 月上旬～中旬。</p>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>積極參與停火框架、要求重建分一杯羹、恢復對台常態施壓</td></tr>
-<tr><td><span class="actor-tag ru">俄羅斯</span></td><td>油價回落削弱收入、試圖延遲停火但不直接阻撓</td></tr>
-<tr><td><span class="actor-tag houthi">胡塞</span></td><td>繼續沉默（伊朗指令：勿破壞停火框架）</td></tr>
-</table>
-<p><b>台股</b>：+3~5%。石化/航運回吐漲幅，半導體/科技反彈。油價 $80-90。</p>
+<!-- S3 ECharts -->
+<div class="ec-wrap">
+<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S3 全面轟炸（25%）— 互動分支樹</h3>
+<div id="chart-s3" class="ec-chart"></div>
+<div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
 </div>
 
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id mid">S2b</span>
-    <span class="branch-title">持續僵局→消耗戰（最高機率路徑）</span>
-    <span class="branch-prob" style="color:var(--warn)">絕對 14.0%</span>
+<!-- S4 ECharts -->
+<div class="ec-wrap">
+<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S4 荷莫茲封鎖（20%）— 互動分支樹</h3>
+<div id="chart-s4" class="ec-chart"></div>
+<div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
 </div>
-<p><b>觸發</b>：通牒到期但僅象徵性升級 + 伊朗報復能力衰減 + 海峽「半封鎖」（部分通行、高保費）。<b>時間軸</b>：持續 2-4 月（類似 1980-88 油輪戰）。</p>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag ru">俄羅斯</span></td><td><b>最大受益者</b>。油價 $100+ 每月額外 50-70 億美元。烏克蘭攻勢達四年最高。愛國者飛彈被中東稀釋</td></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>加速「避險能源走廊」（Power of Siberia 2）。3 月中恢復台海巡航</td></tr>
-<tr><td><span class="actor-tag nk">北韓</span></td><td>每 2-3 週一次飛彈試射成「新常態」</td></tr>
-</table>
-<p><b>台股</b>：32,000-34,000 區間震盪。油價 $95-115。<b>關鍵</b>：4 月底氦氣是否硬停頓。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S2c</span>
-    <span class="branch-title">通牒升級→轉 S3</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 10.0%</span>
-</div>
-<p><b>觸發</b>：3/23 23:44 GMT 通牒到期→B-2 打擊伊朗電力網→8,000 萬人斷電→IRGC 全面報復。</p>
-<div class="tip danger">
-<b>72 小時內最大風險</b><br>
-若通牒執行：伊朗 8,000 萬人斷電→人道災難；IRGC 孤注一擲→海峽佈雷機率 60%+；真主黨/胡塞同步升級→區域戰爭。
-</div>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag eu">歐盟</span></td><td>與美國公開決裂。德法召回大使商議（史上首次）</td></tr>
-<tr><td><span class="actor-tag houthi">胡塞</span></td><td>伊朗解除限制→紅海攻擊 72 小時內恢復</td></tr>
-</table>
-<p><b>台股</b>：單日暴跌 800-1,500 點。國安基金被迫進場。→轉入 S3 分支。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id info">S2d</span>
-    <span class="branch-title">外部介入→被迫談判</span>
-    <span class="branch-prob" style="color:var(--link)">絕對 4.0%</span>
-</div>
-<p><b>觸發</b>：中俄聯合聲明 + 歐盟能源不可承受 + 阿曼秘密管道重啟。<b>機率低因</b>：中國克制/俄羅斯受益/歐盟分裂，三方利益不一致。</p>
-<p><b>台股</b>：+2~3%。油價 $85-95。談判漫長，市場反映有限。</p>
-</div>
-
-</details>
-
-<!-- S3 子路線 -->
-<details open><summary>S3 全面轟炸 — 4 條子路線展開</summary>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id low">S3a</span>
-    <span class="branch-title">轟炸成功→伊朗屈服</span>
-    <span class="branch-prob" style="color:var(--bull)">絕對 5.0%</span>
-</div>
-<p><b>觸發</b>：Fordow/Natanz/Isfahan 全毀 + IRGC 指揮鏈崩潰 + 穆傑塔巴停火。<b>機率低因</b>：核設施深埋 80 公尺岩層，GBU-57 未必一次摧毀；IRGC 有分散式指揮。</p>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>確認「美國願動用全部軍力」→對台策略更審慎</td></tr>
-<tr><td><span class="actor-tag hezb">真主黨</span></td><td>失去最大後盾→可能接受法國調停黎巴嫩停火</td></tr>
-</table>
-<p><b>台股</b>：短期暴跌 -5~8%→數日反彈 +8~12%。淨效果 +3~5%。油價回落 $80-90。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S3b</span>
-    <span class="branch-title">伊朗報復→轉 S4 全面封鎖（S3 最高機率）</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 8.75%</span>
-</div>
-<p><b>升級邏輯</b>：Bushehr 是心理紅線（國家威望 + 輻射災難）。IRGC 海軍 48 小時可布放 5,000+ 枚水雷，美軍 MCM 僅 7 艘。</p>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td><b>最關鍵</b>：40% 原油經荷莫茲→PLA-N 可能首次在印度洋部署護航編隊</td></tr>
-<tr><td><span class="actor-tag opec">OPEC+</span></td><td>沙烏地 Petroline 全產能（700 萬桶/日）但遠不足填補缺口。油價 $150+ 確認</td></tr>
-</table>
-<div class="tip danger"><b>級聯</b>Bushehr 輻射擴散：波斯灣北岸→科威特/巴林/卡達→人道+環境雙重災難→全球輿論翻轉。</div>
-<p><b>台股</b>：S4 等級衝擊 -15~25%。→轉入 S4 分支。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S3c</span>
-    <span class="branch-title">代理人連鎖→區域擴散</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 7.5%</span>
-</div>
-<p><b>五線同時作戰</b>：1.伊朗本土 2.黎巴嫩（真主黨，100 萬人流離）3.紅海（胡塞→17% 全球網路流量海底電纜受威脅）4.伊拉克（民兵攻美軍基地）5.敘利亞（以色列已入侵德拉省）</p>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag nk">北韓</span></td><td>美國五線分散→可能進行 2017 年來首次核試爆</td></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>美國 overstretch→評估為「十年一遇戰略窗口期」</td></tr>
-</table>
-<p><b>台股</b>：系統性 -10~18%。國安基金正式進場但效果有限。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id info">S3d</span>
-    <span class="branch-title">人道危機→國際壓力停火</span>
-    <span class="branch-prob" style="color:var(--link)">絕對 3.75%</span>
-</div>
-<p><b>觸發</b>：平民傷亡破萬→CNN/Al Jazeera 直播→美國國內反對 60%+→國會兩黨聯手要求停火。</p>
-<p><b>台股</b>：先跌後彈 ≈ 淨效果 0%。波動劇烈。</p>
-</div>
-
-</details>
-
-<!-- S4 子路線 -->
-<details open><summary>S4 荷莫茲封鎖 — 4 條子路線展開</summary>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id mid">S4a</span>
-    <span class="branch-title">短期封鎖（2-4 週）→掃雷成功</span>
-    <span class="branch-prob" style="color:var(--warn)">絕對 5.0%</span>
-</div>
-<table>
-<tr><th>因素</th><th>現狀</th><th>評估</th></tr>
-<tr><td>美軍 MCM</td><td>僅 7 艘（需 16 艘）</td><td>嚴重不足</td></tr>
-<tr><td>盟國 MCM</td><td>英國 4 艘、日本海自可提供</td><td>需協調 1-2 週</td></tr>
-<tr><td>伊朗補雷</td><td>小型快艇+漁船持續補雷</td><td>須同時壓制 IRGC 海軍</td></tr>
-</table>
-<p><b>台股</b>：封鎖期 -15~20%→重開後反彈 +10~15%。淨 -5~8%。<b>LNG 11 天存量是台灣撐過極限</b>。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S4b</span>
-    <span class="branch-title">長期封鎖（1-3 月）→全球衰退（S4 最高機率）</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 7.0%</span>
-</div>
-<div class="tip danger">
-<b>1973 石油危機 × 3 等級</b><br>
-油價 $150-200→全球 GDP 損失 2-3%（IMF 模型）→Stagflation→美國 CPI 6%+→企業盈利壓縮 15-20%→全球熊市<br>
-<b>台灣致命風險</b>：LNG 11 天耗盡→限電/停電→台積電產能受限→全球 AI 晶片斷供
-</div>
-<table>
-<tr><th>行為者</th><th>預期反應</th></tr>
-<tr><td><span class="actor-tag cn">中國</span></td><td>GDP 降至 3% 以下。封鎖 > 6 週→PLA-N 獨立護航可能出動</td></tr>
-<tr><td><span class="actor-tag jp">日</span><span class="actor-tag kr">韓</span></td><td>日本核電重啟加速。韓半導體「戰時配給」— 三星/SK 減產 20-30%</td></tr>
-</table>
-<p><b>台股</b>：-20~30%（跌至 24,000-28,000）。外資賣超破 1 兆。國安基金 5,000 億全額進場但無力扭轉。</p>
-<div class="tip danger"><b>台灣特殊脆弱性</b>全球主要經濟體中台灣天然氣存量最低（11 天 vs 日本 254 天）。封鎖超 2 週且替代 LNG 銜接不及→台灣成第一個被迫限電的已開發經濟體。</div>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S4c</span>
-    <span class="branch-title">中國護航介入→中美海上對峙</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 4.0%（低機率但後果極端）</span>
-</div>
-<p><b>觸發</b>：中國 40% 原油經荷莫茲→封鎖 > 4 週→戰略儲備加速消耗→PLA-N 054A/055 編隊「保護中國商船」。</p>
-<div class="tip danger">
-<b>全球地緣最危險子路線</b><br>
-中美海軍波斯灣入口遭遇→擦槍走火→若升級為中美軍事衝突→全球金融系統崩潰（非 2008，是 1929 等級）→台灣直接暴露於中美對抗前線。
-</div>
-<p><b>台股</b>：<b>系統性崩盤 -30~40%</b>。中美對抗+地緣風險+限電 = 三重打擊。外資可能完全撤離。</p>
-</div>
-
-<div class="branch">
-<div class="branch-head">
-    <span class="branch-id high">S4d</span>
-    <span class="branch-title">替代路線飽和→油價 $200+</span>
-    <span class="branch-prob" style="color:var(--danger)">絕對 4.0%</span>
-</div>
-<table>
-<tr><th>咽喉</th><th>正常流量</th><th>替代方案</th></tr>
-<tr><td>荷莫茲海峽</td><td>2,000 萬桶/日</td><td>管線 350-550 萬桶/日（僅 25%）</td></tr>
-<tr><td>紅海/曼德海峽</td><td>890 萬桶/日</td><td>好望角繞行 +10-14 天</td></tr>
-<tr><td><b>合計若雙封</b></td><td><b>2,890 萬桶/日</b></td><td><b>替代僅覆蓋 ~20%</b></td></tr>
-</table>
-<p><b>台股</b>：跌至 22,000-25,000。金融系統壓力測試。</p>
-</div>
-
-</details>
 
 <!-- 機率加權期望值 -->
 <div class="tip info">
 <b>12 子路線機率加權台股期望值</b><br>
 EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×(-20%) + 7.5%×(-14%) + 3.75%×(0%) + 5%×(-6.5%) + 7%×(-25%) + 4%×(-35%) + 4%×(-30%)<br>
-= <b>約 -8.5%</b>（含尾部風險，較 v5.0 母劇本 EV -6.5% 更悲觀）
+= <b>約 -8.5%</b>（含尾部風險）
 </div>
+
+<!-- 文字表格（收合，詳細版）-->
+<details><summary>文字表格詳細版（12 子路線完整展開）</summary>
+
+<h4 style="font-size:.9em;margin:8px 0 4px">S2 持續空襲 — 4 條子路線</h4>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id low">S2a</span><span class="branch-title">空襲疲勞→有限停火</span><span class="branch-prob" style="color:var(--bull)">絕對 12.0%</span></div>
+<p><b>觸發</b>：伊朗飛彈發射率已降 90% + 美國國內反對升至 50%+ + 穆傑塔巴停火聲明。<b>時間</b>：4 月上旬。</p>
+<p><span class="node-id">S2-G-1A</span> 中國積極參與停火框架　<span class="node-id">S2-G-1B</span> 俄羅斯試圖延遲但不阻撓　<span class="node-id">S2-E-1A</span> 油價回落 $80-90</p>
+<p><b>台股</b>：+3~5%。石化/航運回吐漲幅，半導體/科技反彈。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id mid">S2b</span><span class="branch-title">持續僵局→消耗戰（最高機率）</span><span class="branch-prob" style="color:var(--warn)">絕對 14.0%</span></div>
+<p><b>觸發</b>：通牒到期僅象徵性升級 + 伊朗報復能力衰減 + 海峽「半封鎖」。<b>時間</b>：持續 2-4 月。</p>
+<p><span class="node-id">S2-E-1A</span> 油價 $95-115 區間　<span class="node-id">S2-G-1A</span> 俄羅斯最大受益者（月額外 50-70 億美元）　<span class="node-id">S2-G-1B</span> 中國加速「避險能源走廊」　<span class="node-id">S2-I-1A</span> 4 月底氦氣硬停頓是關鍵</p>
+<p><b>台股</b>：32,000-34,000 區間震盪。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S2c</span><span class="branch-title">通牒升級→轉 S3</span><span class="branch-prob" style="color:var(--danger)">絕對 10.0%</span></div>
+<p><b>觸發</b>：3/23 通牒到期→B-2 打擊電力網→8,000 萬人斷電→IRGC 全面報復。</p>
+<p><span class="node-id">S2-G-1A</span> 歐盟與美國公開決裂　<span class="node-id">S2-G-1B</span> 胡塞 72hr 恢復紅海攻擊　→【跨枝】直接觸發 S3 全部分支</p>
+<p><b>台股</b>：單日暴跌 800-1,500 點。國安基金被迫進場。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id info">S2d</span><span class="branch-title">外部介入→被迫談判</span><span class="branch-prob" style="color:var(--link)">絕對 4.0%</span></div>
+<p><b>觸發</b>：中俄聯合聲明 + 歐盟能源不可承受 + 阿曼秘密管道重啟。<b>機率低因</b>：三方利益不一致。</p>
+<p><b>台股</b>：+2~3%。油價 $85-95。</p>
+</div>
+
+<h4 style="font-size:.9em;margin:12px 0 4px">S3 全面轟炸 — 4 條子路線</h4>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id low">S3a</span><span class="branch-title">轟炸成功→伊朗屈服</span><span class="branch-prob" style="color:var(--bull)">絕對 5.0%</span></div>
+<p><b>觸發</b>：核設施全毀 + IRGC 指揮鏈崩潰 + 穆傑塔巴停火。<b>機率低因</b>：核設施深埋 80 公尺。</p>
+<p><span class="node-id">S3-G-1A</span> 中國確認「美國願動用全部軍力」→對台更審慎　<span class="node-id">S3-G-1B</span> 真主黨失後盾→接受停火</p>
+<p><b>台股</b>：短期 -5~8%→反彈 +8~12%。淨 +3~5%。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S3b</span><span class="branch-title">伊朗報復→轉 S4 封鎖（S3 最高機率）</span><span class="branch-prob" style="color:var(--danger)">絕對 8.75%</span></div>
+<p><b>升級邏輯</b>：Bushehr 是心理紅線。IRGC 48hr 可布 5,000+ 枚水雷，美 MCM 僅 7 艘。</p>
+<p><span class="node-id">S3-G-1A</span> 中國 PLA-N 可能首次印度洋護航　<span class="node-id">S3-E-1A</span> 油價 $150+ 確認　→【跨枝】直接觸發 S4</p>
+<p><b>台股</b>：S4 等級衝擊 -15~25%。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S3c</span><span class="branch-title">代理人連鎖→區域擴散</span><span class="branch-prob" style="color:var(--danger)">絕對 7.5%</span></div>
+<p><b>五線同時作戰</b>：伊朗/黎巴嫩/紅海/伊拉克/敘利亞。17% 全球網路流量海底電纜受威脅。</p>
+<p><span class="node-id">S3-G-1A</span> 北韓趁機核試爆　<span class="node-id">S3-G-1B</span> 中國評估「十年一遇窗口期」</p>
+<p><b>台股</b>：系統性 -10~18%。國安基金效果有限。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id info">S3d</span><span class="branch-title">人道危機→壓力停火</span><span class="branch-prob" style="color:var(--link)">絕對 3.75%</span></div>
+<p><b>觸發</b>：平民傷亡破萬→CNN/Al Jazeera 直播→國會兩黨要求停火。</p>
+<p><b>台股</b>：先跌後彈 ≈ 淨 0%。波動劇烈。</p>
+</div>
+
+<h4 style="font-size:.9em;margin:12px 0 4px">S4 荷莫茲封鎖 — 4 條子路線</h4>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id mid">S4a</span><span class="branch-title">短期封鎖（2-4 週）→掃雷成功</span><span class="branch-prob" style="color:var(--warn)">絕對 5.0%</span></div>
+<p>美 MCM 7 艘 + 英 4 艘 + 日海自協調 1-2 週。<b>台灣 LNG 11 天存量是撐過極限</b>。</p>
+<p><b>台股</b>：封鎖期 -15~20%→重開後反彈。淨 -5~8%。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S4b</span><span class="branch-title">長期封鎖（1-3 月）→全球衰退</span><span class="branch-prob" style="color:var(--danger)">絕對 7.0%</span></div>
+<p><b>1973 石油危機 × 3</b>：油價 $150-200→全球 GDP -2~3%→Stagflation→台灣 LNG 耗盡→限電→台積電減產→全球 AI 晶片斷供。</p>
+<p><b>台股</b>：-20~30%（24,000-28,000）。外資賣超破兆。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S4c</span><span class="branch-title">中國護航→中美海上對峙</span><span class="branch-prob" style="color:var(--danger)">絕對 4.0%（低機率極端後果）</span></div>
+<p><b>觸發</b>：封鎖 >4 週→PLA-N 054A/055 編隊「保護中國商船」。擦槍走火→1929 等級金融崩潰。</p>
+<p><b>台股</b>：系統性崩盤 -30~40%。外資可能完全撤離。</p>
+</div>
+
+<div class="branch">
+<div class="branch-head"><span class="branch-id high">S4d</span><span class="branch-title">替代路線飽和→油價 $200+</span><span class="branch-prob" style="color:var(--danger)">絕對 4.0%</span></div>
+<p>荷莫茲 2,000 萬桶/日 + 紅海 890 萬桶/日 = 雙封鎖 2,890 萬桶/日，替代僅覆蓋 ~20%。</p>
+<p><b>台股</b>：跌至 22,000-25,000。金融系統壓力測試。</p>
+</div>
+
+</details>
 </details>
 
 <!-- ===== SEC 4: 系統動力學 ===== -->
 <details class="sec-collapse" open id="sec4">
-<summary>4. 系統動力學（迴路 + 級聯風險）</summary>
-<div class="sec-sub">回饋迴路識別 + 級聯風險矩陣 <span class="suf y">🟡 尚可</span></div>
+<summary>4. 系統動力學（迴路 + 級聯風險 + 節點展開）</summary>
+<div class="sec-sub">回饋迴路識別 + 級聯風險矩陣 + 高影響力節點樹狀展開（v2.1） <span class="suf y">🟡 尚可</span></div>
 
+<!-- 4A: 正回饋迴路 -->
 <details open><summary>4A. 正回饋迴路（自我強化 — 越打越糟）</summary>
 <table>
-<tr><th>迴路</th><th>機制</th><th>加速因子</th></tr>
-<tr><td><b>R1 油價螺旋</b></td><td>戰爭→供給中斷→油價漲→伊朗收入增（制裁漏洞）→有資源繼續打→供給持續中斷</td><td>加密貨幣規避（E5）：年 $1,040 億</td></tr>
-<tr><td><b>R2 軍備消耗</b></td><td>升級→消耗彈藥→需補充→從烏克蘭調撥→烏克蘭防空弱化→俄羅斯得利→戰略平衡惡化</td><td>愛國者飛彈全球供應鏈已滿載</td></tr>
-<tr><td><b>R3 代理人擴散</b></td><td>打伊朗→代理人報復→美軍分散→壓力增加→更多軍事行動→更多代理人加入</td><td>胡塞沉默打破 = 此迴路啟動開關</td></tr>
+<tr><th>迴路</th><th>機制</th><th>加速因子</th><th>觸發劇本</th></tr>
+<tr><td><b>R1 油價螺旋</b></td><td>戰爭→供給中斷→油價漲→伊朗收入增（制裁漏洞）→有資源繼續打→供給持續中斷</td><td>加密貨幣規避（E5）：年 $1,040 億</td><td>S2b/S3/S4</td></tr>
+<tr><td><b>R2 軍備消耗</b></td><td>升級→消耗彈藥→需補充→從烏克蘭調撥→烏克蘭防空弱化→俄羅斯得利→戰略平衡惡化</td><td>愛國者飛彈全球供應鏈已滿載</td><td>S2c/S3 全部</td></tr>
+<tr><td><b>R3 代理人擴散</b></td><td>打伊朗→代理人報復→美軍分散→壓力增加→更多軍事行動→更多代理人加入</td><td>胡塞沉默打破 = 此迴路啟動開關</td><td>S3c 核心迴路</td></tr>
 </table>
 </details>
 
+<!-- 4B: 負回饋迴路 -->
 <details open><summary>4B. 負回饋迴路（自我修正 — 可能剎車）</summary>
 <table>
-<tr><th>迴路</th><th>機制</th><th>啟動條件</th></tr>
-<tr><td><b>B1 人道壓力</b></td><td>轟炸→平民傷亡→媒體報導→國際壓力→政治壓力→被迫停火</td><td>傷亡破萬（S3d 觸發器）</td></tr>
-<tr><td><b>B2 經濟痛覺</b></td><td>封鎖→油價飆→通膨→選民不滿→政治壓力→被迫談判</td><td>美國 CPI > 5%（預計 S4b 後 6-8 週）</td></tr>
+<tr><th>迴路</th><th>機制</th><th>啟動條件</th><th>預估時間</th></tr>
+<tr><td><b>B1 人道壓力</b></td><td>轟炸→平民傷亡→媒體報導→國際壓力→政治壓力→被迫停火</td><td>傷亡破萬（S3d 觸發器）</td><td>S3 啟動後 2-4 週</td></tr>
+<tr><td><b>B2 經濟痛覺</b></td><td>封鎖→油價飆→通膨→選民不滿→政治壓力→被迫談判</td><td>美國 CPI > 5%（預計 S4b 後 6-8 週）</td><td>S4 啟動後 6-8 週</td></tr>
 </table>
+<div class="tip good"><b>剎車能力評估</b>：B1 只在 S3 有效（空襲可控傷亡），B2 在 S4 最有效但啟動慢（通膨傳導需 6-8 週）。在 S5（全面戰爭）兩者均失效 — 系統失控。</div>
 </details>
 
-<details open><summary>4C. 級聯風險鏈（四條主要鏈）</summary>
+<!-- 4C: 級聯風險鏈 + v2.1 節點樹狀展開 -->
+<details open><summary>4C. 級聯風險鏈（四條主要鏈 × 節點樹狀展開）</summary>
 
+<div class="ec-wrap">
+<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">系統動力學 — 級聯風險節點展開圖</h3>
+<div id="chart-causal" class="ec-chart" style="height:600px"></div>
+</div>
+
+<!-- C1 節點展開 -->
 <div class="tip danger">
 <b>C1. 能源→限電→半導體斷供鏈</b><br>
 荷莫茲封鎖→LNG 斷供→台灣 11 天存量耗盡→限電→台積電減產→全球 AI 晶片斷供→科技股崩盤→全球衰退<br>
 <b>關鍵節點</b>：台灣 LNG 存量（當前 11 天）是整條鏈的最脆弱環節
 </div>
 
+<details open><summary>C1 節點展開：LNG 耗盡後的分支路徑（v2.1 新增）</summary>
+<table>
+<tr><th>層級</th><th>節點</th><th>描述</th><th>影響</th></tr>
+<tr><td>L0</td><td><span class="node-id">C1-E-0</span> LNG 存量跌破 7 天</td><td>台電啟動「供電吃緊」橙燈警示</td><td>市場恐慌開始</td></tr>
+<tr style="background:rgba(194,124,110,.08)"><td>L1a</td><td><span class="node-id">C1-E-1A</span> 工業限電令</td><td>經濟部啟動限電第一階段：大用戶（契約容量 >5,000kW）限電 5%</td><td>鋼鐵/水泥/面板首當其衝，台積電暫免</td></tr>
+<tr style="background:rgba(194,124,110,.08)"><td>L1b</td><td><span class="node-id">C1-E-1B</span> 緊急 LNG 採購</td><td>中油向澳洲/美國緊急競標 spot cargo，溢價 300-500%</td><td>LNG 現貨 $80→$300/MMBtu 以上</td></tr>
+<tr style="background:rgba(194,124,110,.15)"><td>L2a</td><td><span class="node-id">C1-E-2A</span> 台積電減產 10-20%</td><td>LNG 耗盡→限電擴大→台積電被迫從 N3/N5 產線輪停</td><td>全球 AI 晶片交期 +8-12 週</td></tr>
+<tr style="background:rgba(194,124,110,.15)"><td>L2b</td><td><span class="node-id">C1-F-2A</span> 科技股崩盤</td><td>NVDA/AMD/AAPL 供應鏈中斷→費半指數 -15~25%</td><td>全球市值蒸發 3-5 兆美元</td></tr>
+<tr style="background:rgba(194,124,110,.2)"><td>L3</td><td><span class="node-id">C1-S-3A</span> 全球 AI 產業暫停</td><td>GPU 斷供→資料中心擴建停滯→AI 軍備競賽暫停</td><td>重新定義全球算力地緣政治</td></tr>
+</table>
+</details>
+
+<!-- C2 節點展開 -->
 <div class="tip danger">
 <b>C2. 氦氣→EUV→先進製程斷裂鏈</b><br>
-卡達氦氣停產（佔全球 30%）→庫存 4-8 週→4 月底耗盡→EUV 光刻無法運作→3nm/5nm 停線→AI/HPC 晶片交期暴增→客戶恐慌搶購→價格飆漲→車用/消費電子 2021 年式晶片荒重演<br>
+卡達氦氣停產（佔全球 30%）→庫存 4-8 週→4 月底耗盡→EUV 光刻無法運作→3nm/5nm 停線→AI/HPC 晶片交期暴增<br>
 <b>關鍵節點</b>：只有 S2a（停火）能避免此風險
 </div>
 
+<details open><summary>C2 節點展開：氦氣硬停頓後的分支路徑（v2.1 新增）</summary>
+<table>
+<tr><th>層級</th><th>節點</th><th>描述</th><th>影響</th></tr>
+<tr><td>L0</td><td><span class="node-id">C2-S-0</span> 氦氣現貨破 $1,000/MCF</td><td>供應商宣布不可抗力條款</td><td>半導體全產業警報</td></tr>
+<tr style="background:rgba(194,124,110,.08)"><td>L1a</td><td><span class="node-id">C2-I-1A</span> EUV 光刻停機</td><td>台積電/三星 N3/N5 產線無法使用 EUV 步驟</td><td>先進製程產能 -40~60%</td></tr>
+<tr style="background:rgba(194,124,110,.08)"><td>L1b</td><td><span class="node-id">C2-I-1B</span> 優先分配啟動</td><td>台積電將剩餘氦氣全給 AI 晶片（NVDA/AMD），車用/消費排擠</td><td>車用晶片交期 +16-24 週</td></tr>
+<tr style="background:rgba(194,124,110,.15)"><td>L2a</td><td><span class="node-id">C2-S-2A</span> 車用晶片荒 2.0</td><td>2021 年式重演：車廠停產→GDP 衝擊 0.3-0.5%</td><td>Tesla/Toyota 產線停工</td></tr>
+<tr style="background:rgba(194,124,110,.15)"><td>L2b</td><td><span class="node-id">C2-F-2A</span> 氦氣替代方案啟動</td><td>Air Products/Linde 加速開發氫氣/氖氣替代，但需 12-18 月</td><td>緩不濟急，但長期受惠</td></tr>
+</table>
+</details>
+
+<!-- C3 -->
 <div class="tip warn">
 <b>C3. 油價→通膨→新興市場債務骨牌鏈</b><br>
 油價 $150+→能源進口成本翻倍→外匯儲備枯竭→主權信用惡化→連鎖違約（埃及→巴基斯坦→孟加拉）→跨國銀行壞帳→歐洲銀行承壓→全球風險資產拋售→台灣外資加速撤離
 </div>
 
+<!-- C4 -->
 <div class="tip warn">
 <b>C4. 難民→政治→聯盟瓦解鏈</b><br>
-伊朗轟炸→320 萬→潛在 4,000 萬+流離→土耳其/歐洲難民壓力→極右政黨支持飆升→歐盟團結瓦解→對俄/中政策軟化→全球安全秩序弱化→台灣安全保障不確定性↑
+伊朗轟炸→已 320 萬、潛在 4,000 萬+流離→土耳其/歐洲難民壓力→極右政黨支持飆升→歐盟團結瓦解→對俄/中政策軟化→全球安全秩序弱化→台灣安全保障不確定性↑
 </div>
+
 </details>
 </details>
 
@@ -922,7 +748,8 @@ EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×
 <tr><td>v4.0</td><td>2026-03-22</td><td>情境推演實驗室首測版（4 代理蒐集 200+ 條）</td></tr>
 <tr><td>v5.0</td><td>2026-03-22</td><td>獨立情報版 — 完全不參考 v3.0/v4.0，6 組代理獨立蒐集 150+ 筆</td></tr>
 <tr><td>v5.1</td><td>2026-03-22</td><td>劇本分支樹 — 12 子路線 + 8 環境連鎖衝擊（獨立 HTML）</td></tr>
-<tr style="background:rgba(90,125,96,.1)"><td><b>v6.0</b></td><td><b>2026-03-23</b></td><td><b>Skill v2.0 架構重整版 — 完全依照情境推演實驗室 v2.0 十五節架構重整，整合 v5.0+v5.1 全部內容，新增：懶人結論/資料預載摘要/特殊槓桿章/劇本切換協議/追蹤驗證表/四次信心校準/情報充足度標記/大標題可收合</b></td></tr>
+<tr><td>v6.0</td><td>2026-03-23</td><td>Skill v2.0 架構重整版 — 十五節架構 + 整合 v5.0+v5.1</td></tr>
+<tr style="background:rgba(90,125,96,.1)"><td><b>v7.0</b></td><td><b>2026-03-23</b></td><td><b>Skill v2.2 ECharts 互動版 — 三大升級：1️⃣ ECharts 互動分支樹（S2/S3/S4 三張，tooltip+展開收合+縮放拖曳）2️⃣ 系統動力學級聯節點樹狀展開（C1/C2 高影響力節點 2+ 層展開）3️⃣ 因果迴路 ECharts 視覺化圖</b></td></tr>
 </table>
 </details>
 
@@ -946,7 +773,7 @@ EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×
 <!-- ===== SEC 14: 外部環境連鎖衝擊 ===== -->
 <details class="sec-collapse" open id="sec14">
 <summary>14. 外部環境連鎖衝擊（→獨立 HTML）</summary>
-<div class="sec-sub">v2.0 新增 — 8 大面向完整分析於獨立檔案 <span class="suf g">🟢 充足</span></div>
+<div class="sec-sub">8 大面向完整分析於獨立檔案 <span class="suf g">🟢 充足</span></div>
 
 <div class="tip info">
 <b>完整報告</b>：<a href="美伊戰爭_外部環境連鎖衝擊_v6.0.html" style="color:var(--link);font-weight:700">美伊戰爭_外部環境連鎖衝擊_v6.0.html</a>（獨立 HTML）
@@ -1010,13 +837,225 @@ EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×
 
 <!-- ===== 頁尾 ===== -->
 <div class="footer">
-  天機閣情境推演實驗室 v6.0（Skill v2.0 架構重整版）｜方法十一｜2026-03-23<br>
+  天機閣情境推演實驗室 v7.0（Skill v2.2 ECharts 互動版）｜方法十一｜2026-03-23<br>
+  三大升級：ECharts 互動分支樹 × 級聯節點樹狀展開 × 因果迴路視覺化<br>
   整合 v5.0 獨立情報（150+ 條）+ v5.1 分支推演（12 子路線）+ 外部環境衝擊（8 面向）<br>
-  架構：sec 0~14 完全依照情境推演實驗室 Skill v2.0 規範<br>
   下次審查：2026-03-24（通牒到期後）或任一監控觸發器啟動時<br>
   <b>免責聲明：所有分析僅供個人研究參考，不構成任何投資建議。</b>
 </div>
 
 </div><!-- /wrap -->
+
+<!-- ===== ECharts 初始化腳本 ===== -->
+<script>
+(function(){
+'use strict';
+// 面向色系
+var AC={E:'#E67E22',T:'#3498DB',F:'#9B59B6',S:'#27AE60',G:'#E74C3C',C:'#F39C12',I:'#1ABC9C',X:'#95A5A6'};
+function asp(id){var m=id.match(/-([A-Z])-/);return m?AC[m[1]]:'#888'}
+// tooltip 格式化
+function fmt(p){
+  var d=p.data.value||{};
+  var h='<b style="font-size:13px">'+p.name+'</b>';
+  if(d.id) h+='<br><span style="color:'+asp(d.id)+'">'+d.id+'</span>';
+  if(d.prob) h+='<br>機率：'+d.prob;
+  if(d.time) h+='<br>時間：'+d.time;
+  if(d.desc) h+='<br>'+d.desc;
+  if(d.impact) h+='<br><b>影響</b>：'+d.impact;
+  if(d.basis) h+='<br><span style="color:#aaa;font-size:11px">依據：'+d.basis+'</span>';
+  if(d.crossLink) h+='<br><span style="color:#E74C3C">⚡ 跨枝：'+d.crossLink+'</span>';
+  return h;
+}
+// 共用 option 建構
+function mkOpt(data,h){
+  return {
+    tooltip:{trigger:'item',formatter:fmt,backgroundColor:'rgba(50,48,44,.95)',borderColor:'#b8b0a5',textStyle:{color:'#faf9f7',fontSize:12}},
+    series:[{type:'tree',data:[data],orient:'LR',roam:true,expandAndCollapse:true,initialTreeDepth:2,
+      symbol:'circle',symbolSize:10,
+      label:{position:'right',fontSize:11,color:'#2c2a26',fontFamily:'Noto Sans TC'},
+      leaves:{label:{position:'right'}},
+      itemStyle:{borderWidth:2},
+      lineStyle:{width:1.5,curveness:0.4,color:'#b8b0a5'},
+      emphasis:{focus:'descendant',itemStyle:{borderColor:'#E67E22',borderWidth:3}},
+      animationDurationUpdate:600}]
+  };
+}
+function init(id,data,h){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var c=echarts.init(el);
+  c.setOption(mkOpt(data,h||500));
+  window.addEventListener('resize',function(){c.resize()});
+}
+
+// ===== S2 持續空襲 樹資料 =====
+var s2={
+  name:'S2 持續空襲',
+  value:{id:'S2',prob:'母劇本 40%',desc:'精準打擊伊朗軍事/核設施，不攻擊民用基礎設施'},
+  itemStyle:{color:AC.G},
+  children:[
+    {name:'S2a 空襲疲勞→停火',itemStyle:{color:AC.G},
+     value:{id:'S2-G-1A',prob:'條件 30%→絕對 12%',time:'4 月上旬',desc:'伊朗飛彈發射率降 90%+美國國內反對升至 50%',impact:'台股 +3~5%，油價回落 $80-90',basis:'2003 伊拉克「任務完成」模式',aspect:'G'},
+     children:[
+       {name:'中國參與停火',value:{id:'S2-G-1A',desc:'積極參與框架以展示大國角色',impact:'台海壓力暫緩',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'油價回落 $80-90',value:{id:'S2-E-1A',desc:'供給恢復預期→期貨走跌',impact:'石化/航運回吐漲幅',aspect:'E'},itemStyle:{color:AC.E}},
+       {name:'半導體/科技反彈',value:{id:'S2-I-1A',desc:'氦氣供應恢復預期',impact:'台積電/聯發科反彈 +5~8%',aspect:'I'},itemStyle:{color:AC.I}}
+     ]},
+    {name:'S2b 持續僵局（最高機率）',itemStyle:{color:AC.E},
+     value:{id:'S2-E-1A',prob:'條件 35%→絕對 14%',time:'持續 2-4 月',desc:'通牒到期僅象徵性升級+伊朗報復衰減+海峽半封鎖',impact:'台股 32,000-34,000 震盪',basis:'1980-88 兩伊油輪戰模式',aspect:'E'},
+     children:[
+       {name:'油價 $95-115 區間',value:{id:'S2-E-1A',desc:'供給擔憂但未斷供',impact:'石化板塊穩定受惠',aspect:'E'},itemStyle:{color:AC.E}},
+       {name:'俄羅斯最大受益',value:{id:'S2-G-1A',desc:'月額外 50-70 億美元',impact:'烏克蘭戰線惡化',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'4 月底氦氣硬停頓',value:{id:'S2-I-1A',desc:'卡達 30% 產能停→庫存耗盡',impact:'EUV 停機→先進製程減產',aspect:'I',crossLink:'C2 級聯鏈'},itemStyle:{color:AC.I}}
+     ]},
+    {name:'S2c 通牒升級→轉 S3',itemStyle:{color:AC.G},
+     value:{id:'S2-G-1B',prob:'條件 25%→絕對 10%',time:'3/23 通牒後',desc:'B-2 打擊電力網→8,000 萬人斷電→IRGC 全面報復',impact:'台股單日暴跌 800-1,500 點',basis:'川普 Truth Social 通牒模式',aspect:'G'},
+     children:[
+       {name:'歐盟與美國決裂',value:{id:'S2-G-1A',desc:'歐洲公開反對轟炸民用設施',impact:'跨大西洋聯盟裂痕',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'胡塞 72hr 恢復攻擊',value:{id:'S2-T-1A',desc:'打破 3 週沉默→紅海再封',impact:'航運運價飆漲',aspect:'T',crossLink:'觸發 S3/S4'},itemStyle:{color:AC.T}},
+       {name:'國安基金進場',value:{id:'S2-F-1A',desc:'授權 5,000 億但效果有限',impact:'短期止跌但無法扭轉趨勢',aspect:'F'},itemStyle:{color:AC.F}}
+     ]},
+    {name:'S2d 外部介入→談判',itemStyle:{color:AC.G},
+     value:{id:'S2-G-1C',prob:'條件 10%→絕對 4%',time:'數週',desc:'中俄聯合聲明+歐盟能源不可承受+阿曼管道',impact:'台股 +2~3%，油價 $85-95',basis:'三方利益不一致故機率低',aspect:'G'},
+     children:[
+       {name:'安理會決議',value:{id:'S2-G-1A',desc:'第 4 次嘗試（前 3 次被否決）',impact:'象徵意義大於實質',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'油價緩降',value:{id:'S2-E-1A',desc:'$85-95 區間',impact:'市場反映有限',aspect:'E'},itemStyle:{color:AC.E}}
+     ]}
+  ]
+};
+
+// ===== S3 全面轟炸 樹資料 =====
+var s3={
+  name:'S3 全面轟炸',
+  value:{id:'S3',prob:'母劇本 25%',desc:'攻擊範圍擴大至發電廠/港口/基礎設施'},
+  itemStyle:{color:AC.G},
+  children:[
+    {name:'S3a 轟炸成功→伊朗屈服',itemStyle:{color:AC.G},
+     value:{id:'S3-G-1A',prob:'條件 20%→絕對 5%',time:'轟炸後 2-4 週',desc:'核設施全毀+IRGC 指揮崩潰+穆傑塔巴停火',impact:'台股短期-5~8%→反彈+8~12%，淨+3~5%',basis:'核設施深埋 80m，GBU-57 未必一次摧毀，機率低',aspect:'G'},
+     children:[
+       {name:'中國對台更審慎',value:{id:'S3-G-1A',desc:'確認美國願動用全部軍力',impact:'台海壓力降低',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'真主黨接受停火',value:{id:'S3-G-1B',desc:'失去最大後盾',impact:'黎巴嫩局勢緩和',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'油價回落 $80-90',value:{id:'S3-E-1A',desc:'戰爭結束預期',impact:'石化回吐但避險解除',aspect:'E'},itemStyle:{color:AC.E}}
+     ]},
+    {name:'S3b 伊朗報復→轉 S4（最高機率）',itemStyle:{color:AC.E},
+     value:{id:'S3-E-1A',prob:'條件 35%→絕對 8.75%',time:'轟炸後即時',desc:'Bushehr 是心理紅線，IRGC 48hr 布 5,000+ 水雷',impact:'台股 S4 等級衝擊 -15~25%',basis:'Bushehr 輻射擴散將觸發全球輿論翻轉',aspect:'E'},
+     children:[
+       {name:'PLA-N 印度洋護航',value:{id:'S3-G-1A',desc:'中國 40% 原油經荷莫茲→首次部署',impact:'中美關係急遽惡化',aspect:'G',crossLink:'S4c'},itemStyle:{color:AC.G}},
+       {name:'油價 $150+ 確認',value:{id:'S3-E-1A',desc:'供給預期完全中斷',impact:'全球通膨飆升',aspect:'E'},itemStyle:{color:AC.E}},
+       {name:'Bushehr 輻射擴散',value:{id:'S3-X-1A',desc:'波斯灣北岸→科威特/巴林/卡達',impact:'人道+環境雙重災難',aspect:'X'},itemStyle:{color:AC.X}}
+     ]},
+    {name:'S3c 代理人連鎖→區域擴散',itemStyle:{color:AC.G},
+     value:{id:'S3-G-1B',prob:'條件 30%→絕對 7.5%',time:'轟炸後 1-2 週',desc:'五線同時作戰：伊朗/黎巴嫩/紅海/伊拉克/敘利亞',impact:'台股系統性 -10~18%',basis:'17% 全球網路流量海底電纜受威脅',aspect:'G'},
+     children:[
+       {name:'北韓趁機核試爆',value:{id:'S3-G-1A',desc:'2017 年來首次，趁全球注意力在中東',impact:'東亞安全再崩塌',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'中國「十年窗口期」',value:{id:'S3-G-1B',desc:'美國 overstretch→評估戰略機會',impact:'台海灰色地帶行動升級',aspect:'G',crossLink:'S4c'},itemStyle:{color:AC.G}},
+       {name:'紅海電纜受威脅',value:{id:'S3-T-1A',desc:'胡塞攻擊 17% 全球網路流量電纜',impact:'歐亞通訊受影響',aspect:'T'},itemStyle:{color:AC.T}}
+     ]},
+    {name:'S3d 人道危機→壓力停火',itemStyle:{color:AC.C},
+     value:{id:'S3-C-1A',prob:'條件 15%→絕對 3.75%',time:'轟炸後 2-4 週',desc:'平民傷亡破萬→CNN/Al Jazeera 直播→國會兩黨要求停火',impact:'台股先跌後彈≈淨0%',basis:'歷史：B1 人道壓力迴路啟動',aspect:'C'},
+     children:[
+       {name:'美國國內反對 60%+',value:{id:'S3-C-1A',desc:'選舉年壓力',impact:'政策轉向',aspect:'C'},itemStyle:{color:AC.C}},
+       {name:'停火但不解決根因',value:{id:'S3-G-1A',desc:'凍結衝突→隨時可復發',impact:'地緣風險溢價持續',aspect:'G'},itemStyle:{color:AC.G}}
+     ]}
+  ]
+};
+
+// ===== S4 荷莫茲封鎖 樹資料 =====
+var s4={
+  name:'S4 荷莫茲封鎖',
+  value:{id:'S4',prob:'母劇本 20%',desc:'伊朗封鎖荷莫茲海峽，全球能源危機'},
+  itemStyle:{color:AC.E},
+  children:[
+    {name:'S4a 短期封鎖→掃雷成功',itemStyle:{color:AC.T},
+     value:{id:'S4-T-1A',prob:'條件 25%→絕對 5%',time:'2-4 週',desc:'美 MCM 7 艘+英 4 艘+日海自協調 1-2 週',impact:'台股封鎖期 -15~20%→重開後反彈，淨 -5~8%',basis:'台灣 LNG 11 天是撐過極限',aspect:'T'},
+     children:[
+       {name:'LNG 11 天極限',value:{id:'S4-E-1A',desc:'台灣天然氣存量全球最低',impact:'封鎖超 2 週→限電',aspect:'E',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E}},
+       {name:'盟國 MCM 協調',value:{id:'S4-T-1A',desc:'英日聯合掃雷需 1-2 週',impact:'拖延=LNG 更吃緊',aspect:'T'},itemStyle:{color:AC.T}}
+     ]},
+    {name:'S4b 長期封鎖→全球衰退（最高機率）',itemStyle:{color:AC.E},
+     value:{id:'S4-E-1A',prob:'條件 35%→絕對 7%',time:'1-3 月',desc:'油價 $150-200→全球 GDP -2~3%→Stagflation',impact:'台股 -20~30%（24,000-28,000），外資賣超破兆',basis:'1973 石油危機 ×3 等級',aspect:'E'},
+     children:[
+       {name:'台灣 LNG 耗盡→限電',value:{id:'S4-E-1A',desc:'11 天耗盡→台積電產能受限',impact:'全球 AI 晶片斷供',aspect:'E',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E}},
+       {name:'全球 Stagflation',value:{id:'S4-F-1A',desc:'美國 CPI 6%+→企業盈利壓縮 15-20%',impact:'全球熊市',aspect:'F'},itemStyle:{color:AC.F}},
+       {name:'日本核電重啟加速',value:{id:'S4-E-2A',desc:'能源自主需求急迫',impact:'日本長期能源政策轉向',aspect:'E'},itemStyle:{color:AC.E}},
+       {name:'韓半導體戰時配給',value:{id:'S4-S-1A',desc:'三星/SK 減產 20-30%',impact:'HBM/DRAM 價格飆漲',aspect:'S'},itemStyle:{color:AC.S}}
+     ]},
+    {name:'S4c 中國護航→中美對峙',itemStyle:{color:AC.G},
+     value:{id:'S4-G-1A',prob:'條件 20%→絕對 4%（低機率極端後果）',time:'封鎖 >4 週後',desc:'PLA-N 054A/055 編隊「保護中國商船」→擦槍走火',impact:'台股系統性崩盤 -30~40%，外資完全撤離',basis:'中國 40% 原油經荷莫茲+戰略儲備消耗',aspect:'G'},
+     children:[
+       {name:'中美海軍遭遇',value:{id:'S4-G-1A',desc:'波斯灣入口→擦槍走火風險',impact:'若升級→1929 等級崩潰',aspect:'G'},itemStyle:{color:AC.G}},
+       {name:'台灣暴露前線',value:{id:'S4-G-1B',desc:'中美對抗→台灣直接在交火線上',impact:'地緣+限電+外資三重打擊',aspect:'G',crossLink:'S5'},itemStyle:{color:AC.G}},
+       {name:'全球金融系統崩潰',value:{id:'S4-F-1A',desc:'非 2008 是 1929 等級',impact:'全球市值蒸發 30-50%',aspect:'F'},itemStyle:{color:AC.F}}
+     ]},
+    {name:'S4d 替代路線飽和→油價 $200+',itemStyle:{color:AC.E},
+     value:{id:'S4-E-2A',prob:'條件 20%→絕對 4%',time:'封鎖後 1-2 月',desc:'荷莫茲 2,000 萬桶/日+紅海 890 萬=雙封鎖，替代僅覆蓋 ~20%',impact:'台股跌至 22,000-25,000，金融壓力測試',basis:'管線替代僅 350-550 萬桶/日',aspect:'E'},
+     children:[
+       {name:'雙咽喉封鎖',value:{id:'S4-T-1A',desc:'荷莫茲+紅海同時中斷',impact:'2,890 萬桶/日斷供',aspect:'T'},itemStyle:{color:AC.T}},
+       {name:'好望角繞行 +14 天',value:{id:'S4-T-1B',desc:'運費暴漲 3-5 倍',impact:'全球貿易成本飆升',aspect:'T'},itemStyle:{color:AC.T}}
+     ]}
+  ]
+};
+
+// ===== 因果迴路節點展開圖 =====
+var causal={
+  name:'美伊戰爭級聯風險',
+  value:{desc:'四條級聯風險鏈的節點展開'},
+  itemStyle:{color:'#5c564e'},
+  children:[
+    {name:'C1 能源→限電→斷供',itemStyle:{color:AC.E},value:{desc:'最致命鏈',impact:'台灣 LNG 11 天是最脆弱環節'},
+     children:[
+       {name:'荷莫茲封鎖',itemStyle:{color:AC.E},value:{id:'C1-E-0',desc:'2,000 萬桶/日中斷'},
+        children:[
+          {name:'LNG 斷供',itemStyle:{color:AC.E},value:{id:'C1-E-1A',desc:'台灣 11 天存量'},
+           children:[
+             {name:'工業限電',itemStyle:{color:AC.E},value:{id:'C1-E-1B',desc:'大用戶限電 5%',impact:'鋼鐵/水泥/面板首當其衝'}},
+             {name:'台積電減產',itemStyle:{color:AC.I},value:{id:'C1-I-2A',desc:'N3/N5 輪停',impact:'全球 AI 晶片交期 +8-12 週',crossLink:'C2'},
+              children:[
+                {name:'費半崩盤 -15~25%',itemStyle:{color:AC.F},value:{id:'C1-F-2A',desc:'NVDA/AMD/AAPL 斷供',impact:'市值蒸發 3-5 兆美元'}},
+                {name:'AI 產業暫停',itemStyle:{color:AC.I},value:{id:'C1-I-3A',desc:'資料中心擴建停滯',impact:'重新定義算力地緣政治'}}
+              ]}
+           ]},
+          {name:'緊急 LNG 採購',itemStyle:{color:AC.E},value:{id:'C1-E-1C',desc:'現貨溢價 300-500%',impact:'LNG $80→$300+/MMBtu'}}
+        ]},
+    ]},
+    {name:'C2 氦氣→EUV→晶片荒',itemStyle:{color:AC.I},value:{desc:'4 月底跨劇本共同風險',impact:'只有 S2a 能避免'},
+     children:[
+       {name:'卡達 30% 停產',itemStyle:{color:AC.S},value:{id:'C2-S-0',desc:'庫存 4-8 週→4月底耗盡'},
+        children:[
+          {name:'EUV 停機',itemStyle:{color:AC.I},value:{id:'C2-I-1A',desc:'先進製程產能 -40~60%',impact:'台積電/三星 N3 停線'}},
+          {name:'優先分配 AI',itemStyle:{color:AC.I},value:{id:'C2-I-1B',desc:'車用/消費被排擠',impact:'車用晶片交期 +16-24 週',crossLink:'H2'},
+           children:[
+             {name:'車用晶片荒 2.0',itemStyle:{color:AC.S},value:{id:'C2-S-2A',desc:'2021 年式重演',impact:'車廠停產→GDP -0.3~0.5%'}},
+             {name:'氦氣替代 12-18 月',itemStyle:{color:AC.I},value:{id:'C2-I-2B',desc:'APD/LIN 開發中',impact:'緩不濟急但長期受惠'}}
+           ]}
+        ]}
+     ]},
+    {name:'C3 油價→通膨→債務骨牌',itemStyle:{color:AC.F},value:{desc:'新興市場連鎖違約'},
+     children:[
+       {name:'能源進口成本翻倍',itemStyle:{color:AC.E},value:{desc:'外匯儲備枯竭'}},
+       {name:'連鎖違約',itemStyle:{color:AC.F},value:{desc:'埃及→巴基斯坦→孟加拉'},
+        children:[
+          {name:'跨國銀行壞帳',itemStyle:{color:AC.F},value:{desc:'歐洲銀行承壓'}},
+          {name:'全球風險拋售',itemStyle:{color:AC.F},value:{desc:'台灣外資加速撤離'}}
+        ]}
+     ]},
+    {name:'C4 難民→政治→聯盟瓦解',itemStyle:{color:AC.C},value:{desc:'4,000 萬+潛在難民'},
+     children:[
+       {name:'歐洲極右飆升',itemStyle:{color:AC.C},value:{desc:'難民壓力→政治右轉'}},
+       {name:'歐盟對俄/中軟化',itemStyle:{color:AC.G},value:{desc:'安全秩序弱化',impact:'台灣安全保障不確定性↑'}}
+     ]}
+  ]
+};
+
+// 初始化四張圖表
+if(typeof echarts!=='undefined'){
+  init('chart-s2',s2);
+  init('chart-s3',s3);
+  init('chart-s4',s4);
+  init('chart-causal',causal);
+}
+})();
+</script>
+
 </body>
 </html>
