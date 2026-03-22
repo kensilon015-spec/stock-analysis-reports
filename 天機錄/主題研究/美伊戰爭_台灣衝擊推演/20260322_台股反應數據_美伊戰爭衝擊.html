@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>台股反應數據：美伊戰爭衝擊全覽（2026/2/28~3/22）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（暖棕慢活風） === */
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--danger);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.red{border-color:var(--danger);color:var(--danger);background:rgba(194,124,110,.1)}
+.tag.warn{border-color:var(--warn);color:#8a6d00;background:rgba(212,160,23,.08)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.red{color:var(--bear);font-weight:700}
+.green{color:var(--bull);font-weight:700}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.warn-card{border-left:4px solid var(--warn)}
+
+/* === 小字來源 === */
+.source{font-size:.72em;color:var(--txt3);margin-top:4px;font-style:italic}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);padding:12px 0 6px;border-bottom:2px solid var(--accent);margin:14px 0 8px}
+.data-note{font-size:.78em;color:var(--txt3);background:rgba(90,125,140,.06);padding:6px 10px;border-radius:4px;margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <h1>台股反應數據：美伊戰爭衝擊全覽</h1>
+  <div class="sub">2026/2/28 「咆哮雄獅行動」開戰至今（3/22）</div>
+  <div class="desc">2026年2月28日美國與以色列聯合發動「咆哮雄獅行動」（Operation Roaring Lion）空襲伊朗，<br>隨後伊朗封鎖荷莫茲海峽，全球能源市場劇震，本報告追蹤台灣股匯市反應數據。</div>
+  <div class="tags">
+    <span class="tag red">地緣風險：極高</span>
+    <span class="tag warn">油價突破 US$126/桶</span>
+    <span class="tag">資料截止：2026/3/22</span>
+    <span class="tag">荷莫茲海峽封鎖</span>
+  </div>
+</div>
+
+<!-- ==================== 數據概覽 ==================== -->
+<div class="section-title">核心衝擊數據概覽</div>
+
+<div class="grid4">
+  <div class="mini-card bear-card">
+    <div class="title">開戰前 TAIEX 高點</div>
+    <div class="num">35,414</div>
+    <div class="desc">2/27 歷史收盤新高</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">最低點</div>
+    <div class="num">31,530</div>
+    <div class="desc">3/9 盤中最低</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">最大跌幅</div>
+    <div class="num">-10.96%</div>
+    <div class="desc">高點至盤中最低</div>
+  </div>
+  <div class="mini-card warn-card">
+    <div class="title">3月外資累計賣超</div>
+    <div class="num">6,801億</div>
+    <div class="desc">截至3/21</div>
+  </div>
+</div>
+
+<div class="grid4">
+  <div class="mini-card bear-card">
+    <div class="title">VIX（CBOE）高點</div>
+    <div class="num">31.77</div>
+    <div class="desc">3/9 盤中最高</div>
+  </div>
+  <div class="mini-card warn-card">
+    <div class="title">布蘭特原油最高</div>
+    <div class="num">US$126</div>
+    <div class="desc">2022年以來新高</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">新台幣最弱</div>
+    <div class="num">31.920</div>
+    <div class="desc">3/9 兌美元收盤</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">目前 TAIEX</div>
+    <div class="num">~33,544</div>
+    <div class="desc">3/20 收盤</div>
+  </div>
+</div>
+
+<!-- ==================== 1. 加權指數走勢 ==================== -->
+<div class="section-title">1. 加權指數（TAIEX）開戰前後走勢</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">每日收盤數據（經交叉比對確認）</h3>
+  <div class="card-body">
+    <div class="data-note">2/28 為二二八和平紀念日，台股休市。戰爭於該週末爆發，3/3 週一為開戰後首個交易日。</div>
+    <table>
+      <tr><th>日期</th><th>收盤價</th><th>漲跌點</th><th>漲跌幅</th><th>事件背景</th></tr>
+      <tr><td>2/27（四）</td><td>35,414.49</td><td>--</td><td>--</td><td>歷史收盤新高，連四日創高</td></tr>
+      <tr><td style="background:#f0e0d8">2/28（五）</td><td colspan="4" style="background:#f0e0d8;color:var(--danger);font-weight:600">休市（二二八和平紀念日）｜當晚「咆哮雄獅行動」空襲伊朗</td></tr>
+      <tr><td>3/3（一）</td><td>35,095.09</td><td class="red">-319.40</td><td class="red">-0.90%</td><td>開戰首日交易，跌幅收斂，外資賣超 389.9 億</td></tr>
+      <tr><td>3/4（二）</td><td>34,323.65</td><td class="red">-771.44</td><td class="red">-2.20%</td><td>伊朗封鎖荷莫茲海峽，恐慌擴散<br>首小時成交 5,015 億（歷史紀錄）</td></tr>
+      <tr><td>3/5（三）</td><td>32,828.88</td><td class="red">-1,494.77</td><td class="red">-4.35%</td><td>史上第三大單日跌點<br>成交量 1.033 兆，外資賣超 964.7 億</td></tr>
+      <tr><td>3/6（四）</td><td>33,672.94</td><td class="green">+844.06</td><td class="green">+2.57%</td><td>傳美伊可能對話，史上第五大反彈<br>成交量 7,604 億</td></tr>
+      <tr><td>3/7（五）</td><td>~33,600</td><td>小幅變動</td><td>~持平</td><td>週末觀望氣氛濃厚</td></tr>
+      <tr><td>3/9（一）</td><td>32,110.42</td><td class="red">-1,489.12</td><td class="red">-4.43%</td><td>史上第四大跌點｜盤中一度崩跌 2,070 點（-6.16%）<br>成交量 8,083 億｜外資賣超 1,208.2 億（史上最大單日）</td></tr>
+      <tr><td>3/10（二）</td><td>32,771.87</td><td class="green">+661.45</td><td class="green">+2.06%</td><td>川普稱戰爭「很快結束」，盤中反彈 1,146 點<br>成交量 7,028 億</td></tr>
+      <tr><td>3/16（一）</td><td>33,342.51</td><td class="green">+57.81</td><td class="green">+0.17%</td><td>市場逐步消化衝擊，震盪回穩</td></tr>
+      <tr><td>3/20（四）</td><td>33,543.88</td><td class="red">-145.80</td><td class="red">-0.43%</td><td>盤中上下震盪 610 點，三巫日前夕觀望</td></tr>
+    </table>
+    <div class="tip danger">
+      <b>歷史紀錄梳理</b>
+      3/5 創下史上第三大單日跌點（-1,494.77 點）；3/9 創第四大（-1,489.12 點）。
+      3/9 盤中一度崩跌 2,070 點（-6.16%），為史上第二大盤中跌點。
+      從 2/27 歷史高點 35,414 到 3/9 盤中最低 31,530，累計最大跌幅約 -10.96%（-3,884 點）。
+    </div>
+    <p class="source">資料來源：Focus Taiwan、Taipei Times、Taiwan News、TWSE 歷史資料交叉比對。部分盤中數據取自即時新聞報導，3/7 收盤價為推估值。</p>
+  </div>
+</div>
+
+<!-- ==================== 2. 外資買賣超 ==================== -->
+<div class="section-title">2. 外資買賣超數據</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">重大外資賣超紀錄（3月以來）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>日期</th><th>外資淨賣超（億元台幣）</th><th>歷史排名</th></tr>
+      <tr><td>3/3（一）</td><td class="red">-389.9 億</td><td>--</td></tr>
+      <tr><td>3/4（二）</td><td class="red">-947.1 億</td><td>前十大單日賣超</td></tr>
+      <tr><td>3/5（三）</td><td class="red">-964.7 億</td><td>史上第三大單日賣超</td></tr>
+      <tr><td>3/9（一）</td><td class="red">-1,208.2 億（約 US$38 億）</td><td style="color:var(--danger);font-weight:900">史上最大單日賣超</td></tr>
+    </table>
+
+    <div class="tip danger">
+      <b>3月累計賣超：6,801 億元台幣</b>
+      其中四度單日賣超超過 900 億元，全部擠進歷史前十大單日賣超排行。外資大舉匯出避險，是台幣貶值的主要推手之一。
+    </div>
+
+    <div class="tip good">
+      <b>買方力量：公股行庫進場護盤</b>
+      八大公股行庫率先進場承接，其中台積電單一個股買超 142.83 億元，創史上公股行庫單一個股買超最大金額。投信法人則維持逆勢買超，3/5 當日買進 67.3 億元。
+    </div>
+    <p class="source">資料來源：TWSE 三大法人買賣超日報、鉅亨網、Yahoo 股市</p>
+  </div>
+</div>
+
+<!-- ==================== 3. 成交量 ==================== -->
+<div class="section-title">3. 成交量變化</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">成交量紀錄彙整</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>日期</th><th>成交金額</th><th>備註</th></tr>
+      <tr><td>2/27（戰前）</td><td>1.14 兆（歷史新高）</td><td>連四日創歷史新高成交</td></tr>
+      <tr><td>3/4</td><td>估計超過 1 兆</td><td>首小時成交 5,015 億，創歷史紀錄</td></tr>
+      <tr><td>3/5</td><td>1.033 兆（US$325.9 億）</td><td>恐慌賣壓，大量成交</td></tr>
+      <tr><td>3/6</td><td>7,604 億（US$240 億）</td><td>反彈日，量能回落</td></tr>
+      <tr><td>3/9</td><td>8,083 億（US$253.5 億）</td><td>恐慌再起，但未破兆</td></tr>
+      <tr><td>3/10</td><td>7,028 億（US$221 億）</td><td>反彈交易</td></tr>
+    </table>
+    <div class="tip info">
+      <b>量能觀察</b>
+      戰爭爆發初期，日均成交量較開戰前明顯放大。3/4 首小時便達 5,015 億元（歷史單小時紀錄），顯示市場恐慌情緒極端。隨戰事延續，成交量逐步回落但仍高於正常水準。
+    </div>
+    <p class="source">資料來源：Focus Taiwan、Taipei Times、TWSE</p>
+  </div>
+</div>
+
+<!-- ==================== 4. VIX 恐慌指標 ==================== -->
+<div class="section-title">4. 恐慌指標（VIX / VIXTWN）</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">全球及台灣恐慌指數走勢</h3>
+  <div class="card-body">
+    <div class="grid2">
+      <div class="mini-card bear-card">
+        <div class="title">CBOE VIX（美股）</div>
+        <div class="num">31.77</div>
+        <div class="desc">3/9 盤中最高</div>
+      </div>
+      <div class="mini-card warn-card">
+        <div class="title">VIX 戰前水準</div>
+        <div class="num">~15</div>
+        <div class="desc">2月中旬基線</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>時間點</th><th>CBOE VIX</th><th>變化</th><th>備註</th></tr>
+      <tr><td>2月中旬（戰前）</td><td>~15（中低位）</td><td>--</td><td>市場平穩</td></tr>
+      <tr><td>3/3</td><td>~19.9</td><td class="red">+31%</td><td>觸發「19.9 門檻」警戒</td></tr>
+      <tr><td>3/4</td><td>28.15</td><td class="red">+87%（自戰前）</td><td>2025年11月以來最高</td></tr>
+      <tr><td>3/9</td><td>31.77</td><td class="red">+112%（自戰前）</td><td>荷莫茲封鎖恐慌頂點</td></tr>
+      <tr><td>3/11</td><td>~25</td><td>回落中</td><td>川普暗示戰事縮短</td></tr>
+      <tr><td>3/20</td><td>~25</td><td>仍高位</td><td>戰事持續，恐慌未完全消退</td></tr>
+    </table>
+
+    <div class="tip warn">
+      <b>台灣波動率指數（VIXTWN）</b>
+      台灣期交所編製的 TAIEX 選擇權波動率指數（VIXTWN），基於台指選擇權（TXO）價格，反映未來 30 天預期波動率。3月初隨美伊戰事急遽飆升，但具體數值需至台灣期交所官網查詢。全球 VIX 從戰前約 15 飆升超過 100% 至 31.77，反映出「戰爭溢價」與「停滯性通膨恐懼」的雙重壓力。
+    </div>
+    <p class="source">資料來源：FinancialContent、CNBC、Yahoo Finance VIX 歷史數據</p>
+  </div>
+</div>
+
+<!-- ==================== 5. 產業板塊 ==================== -->
+<div class="section-title">5. 產業板塊表現</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">各產業類股漲跌分析（3/9 為例）</h3>
+  <div class="card-body">
+    <div class="tip info">
+      <b>以 3/9 最恐慌日為基準的類股表現</b>
+      戰爭造成的板塊分化極為明顯：電子/半導體承壓最重，石化航運逆勢受惠。
+    </div>
+
+    <table>
+      <tr><th>產業板塊</th><th>3/9 表現</th><th>代表個股</th><th>戰爭影響邏輯</th></tr>
+      <tr>
+        <td style="font-weight:700">半導體</td>
+        <td class="red">重挫 -4%~-6%</td>
+        <td>台積電 -4.23%、聯發科 -5.57%<br>日月光 -6.43%</td>
+        <td>外資大舉賣超權值股避險；台灣 LNG 進口依賴荷莫茲海峽，電力供應受威脅影響晶片製造</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700">電子代工</td>
+        <td class="red">重挫 -5%~-9%</td>
+        <td>鴻海 -5.61%、台達電 -7.58%</td>
+        <td>全球供應鏈中斷疑慮、能源成本飆升壓縮毛利</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700">電子類股整體</td>
+        <td class="red">-4.89%</td>
+        <td>--</td>
+        <td>權重最大類股，承受外資主要賣壓</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700">金融</td>
+        <td class="red">-2.01%</td>
+        <td>金融指數</td>
+        <td>跌幅相對溫和，受惠升息預期部分對沖</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--bull)">石化/塑化</td>
+        <td class="green">逆勢上漲</td>
+        <td>台塑化 +3.67%（3/3）<br>大達化學 +10%（3/9 漲停）</td>
+        <td>油價飆升直接受惠：煉油利差擴大、石化產品報價上揚</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--bull)">航運</td>
+        <td class="green">逆勢上漲</td>
+        <td>陽明海運 +1.48%<br>萬海航運 +3.18%</td>
+        <td>荷莫茲海峽封鎖推升運費，航線繞道效應利多</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--bull)">軍工/國防</td>
+        <td class="green">逆勢強勢</td>
+        <td>漢翔、龍德造船（漲停）<br>台船、中信造船 +5%</td>
+        <td>國防預算衝刺 GDP 3%，1.25兆軍購案點火<br>全球軍工需求激增</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700">鋼鐵</td>
+        <td>表現分化</td>
+        <td>--</td>
+        <td>原物料價格上漲利多，但需求面不確定</td>
+      </tr>
+    </table>
+    <p class="source">資料來源：Taipei Times、Focus Taiwan、永豐金豐雲學堂</p>
+  </div>
+</div>
+
+<!-- ==================== 6. 台積電 ==================== -->
+<div class="section-title">6. 台積電（2330）股價與外資動向</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">台積電逐日走勢與關鍵數據</h3>
+  <div class="card-body">
+    <div class="grid3">
+      <div class="mini-card bear-card">
+        <div class="title">戰前高點</div>
+        <div class="num">~2,000</div>
+        <div class="desc">2月下旬區間</div>
+      </div>
+      <div class="mini-card bear-card">
+        <div class="title">3/9 盤中最低</div>
+        <div class="num">1,790</div>
+        <div class="desc">一度跌破 1,800</div>
+      </div>
+      <div class="mini-card neutral-card">
+        <div class="title">目前股價</div>
+        <div class="num">~1,840</div>
+        <div class="desc">3/20 左右</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>日期</th><th>收盤價（元）</th><th>漲跌幅</th><th>備註</th></tr>
+      <tr><td>3/3（一）</td><td>1,975</td><td class="red">-1.00%</td><td>盤中最低 1,940</td></tr>
+      <tr><td>3/4（二）</td><td>1,935</td><td class="red">-2.03%</td><td>拖累大盤約 320 點</td></tr>
+      <tr><td>3/5（三）</td><td>~1,870</td><td class="red">-3.62%</td><td>外資持續賣超</td></tr>
+      <tr><td>3/6（四）</td><td>~1,900</td><td class="green">+1.88%</td><td>反彈收復 1,900</td></tr>
+      <tr><td>3/9（一）</td><td>1,810</td><td class="red">-4.23%</td><td>盤中跌至 1,790，失守 1,800 大關<br>近半根停板跌幅</td></tr>
+      <tr><td>3/10（二）</td><td>1,855</td><td class="green">+2.49%</td><td>川普談話反彈</td></tr>
+      <tr><td>3/19</td><td>~1,905</td><td>--</td><td>逐步回穩</td></tr>
+    </table>
+
+    <div class="tip danger">
+      <b>台積電特有風險：LNG 11 天懸崖</b>
+      摩根士丹利報告指出，台灣通常僅維持約 11 天的 LNG 陸上儲存量。台積電佔全台電力消耗 9~10%，荷莫茲海峽封鎖直接威脅台灣 LNG 進口（約三分之一經荷莫茲海峽運輸），進而影響先進製程晶片製造。此外，硫磺短缺可能衝擊半導體供應鏈中的硫酸供應。
+    </div>
+
+    <div class="tip good">
+      <b>散戶逆勢進場</b>
+      台積電股東人數一週暴增 23 萬人，總人數達 224 萬（台股第二多，僅次於 0050）。公股行庫單日買超台積電 142.83 億元，創史上最大。
+    </div>
+    <p class="source">資料來源：Yahoo 股市、Taipei Times、Focus Taiwan、Morgan Stanley 報告</p>
+  </div>
+</div>
+
+<!-- ==================== 7. 央行與匯率 ==================== -->
+<div class="section-title">7. 台灣央行措施與新台幣匯率</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">新台幣兌美元匯率走勢</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>日期</th><th>新台幣兌美元</th><th>變動</th><th>備註</th></tr>
+      <tr><td>2/27（戰前）</td><td>~31.25</td><td>--</td><td>戰前水準</td></tr>
+      <tr><td>3/3（一）</td><td>31.431</td><td class="red">貶值 0.180 元（-0.57%）</td><td>開戰後首日急貶</td></tr>
+      <tr><td>3/5（三）</td><td>31.695</td><td class="red">續貶</td><td>10 個月新低<br>外匯成交 US$41.3 億（史上第五大）</td></tr>
+      <tr><td>3/6（四）</td><td>31.678</td><td class="green">小幅升值 0.5 分</td><td>隨台股反彈回穩</td></tr>
+      <tr><td>3/9（一）</td><td>31.920</td><td class="red">貶值 0.242 元（-0.76%）</td><td>3月最弱，連破 31.5、31.6、31.9</td></tr>
+    </table>
+
+    <div class="tip warn">
+      <b>央行 3/19 理監事會決議</b>
+      <ul style="font-size:.85em;margin-top:4px;padding-left:16px">
+        <li>政策利率「連八凍」，維持不變</li>
+        <li>上修 2026 全年 CPI 預測至 1.8%、核心 CPI 至 1.75%</li>
+        <li>上修國際油價全年均價預測：從 US$58.3/桶大幅上修至 US$85/桶</li>
+        <li>上修經濟成長率預測至 7.28%（AI 出口帶動）</li>
+        <li>總裁楊金龍警告：「第二季是關鍵，若戰事擴大，貨幣政策朝緊縮方向走」</li>
+      </ul>
+    </div>
+
+    <div class="tip info">
+      <b>央行匯率干預態度</b>
+      央行維持一貫立場：僅在「不規則因素導致匯率過度波動與失序變動，不利經濟與金融穩定」時才出手干預，以維持匯率動態穩定。3月以來多次在台幣急貶時進場調節，外匯成交量急增為佐證。
+    </div>
+
+    <div class="tip info">
+      <b>台灣能源進口分散化進展</b>
+      中油（CPC）已將中東原油進口佔比從 2022 年的 45% 降至 2025 年的 34.9%，但仍有顯著曝險。中油 3/2 聲明表示，目前 LNG 與原油供應尚未中斷，但密切監控荷莫茲海峽局勢。
+    </div>
+    <p class="source">資料來源：央行官網、NOWnews、Taipei Times、Taiwan News</p>
+  </div>
+</div>
+
+<!-- ==================== 8. 油價 ==================== -->
+<div class="section-title">8. 國際油價走勢（驅動台股的核心變數）</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">布蘭特原油價格變動</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>時間點</th><th>布蘭特原油（US$/桶）</th><th>備註</th></tr>
+      <tr><td>戰前（2月下旬）</td><td>~72</td><td>正常區間</td></tr>
+      <tr><td>3/2</td><td>~80-82</td><td>開戰消息後首波上漲 10-13%</td></tr>
+      <tr><td>3/4（荷莫茲封鎖）</td><td>突破 100</td><td>四年來首度站上三位數</td></tr>
+      <tr><td>3/8</td><td>~107-118</td><td>伊朗飛彈擊中沙烏地、卡達能源設施</td></tr>
+      <tr><td>3/9</td><td>120+（恐慌高點 126）</td><td>2022 年以來最高，全球油價飆漲 30%+</td></tr>
+      <tr><td>3/10</td><td>跌回 100 以下</td><td>川普暗示戰爭快結束</td></tr>
+      <tr><td>3/18</td><td>~110</td><td>伊朗揚言「新方式升級戰爭」</td></tr>
+    </table>
+    <div class="tip danger">
+      <b>荷莫茲海峽封鎖衝擊</b>
+      伊朗自 2/28 起實質封鎖荷莫茲海峽，全球約 20% 石油供給與大量 LNG 出口受阻。亞洲約 80% 石油進口經荷莫茲海峽，衝擊尤為嚴重。國際能源署（IEA）稱此為「史上最嚴重的全球能源與糧食安全挑戰」。
+    </div>
+    <p class="source">資料來源：IEA 3月報告、CNBC、CNN Business、Al Jazeera、Fortune</p>
+  </div>
+</div>
+
+<!-- ==================== 9. 亞洲比較 ==================== -->
+<div class="section-title">9. 台股與亞洲其他市場比較</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">三大亞洲市場跌幅比較</h3>
+  <div class="card-body">
+    <div class="grid3">
+      <div class="mini-card bear-card">
+        <div class="title">韓國 KOSPI</div>
+        <div class="num red">-16%+</div>
+        <div class="desc">開戰以來累計（跌幅最大）</div>
+      </div>
+      <div class="mini-card bear-card">
+        <div class="title">台灣 TAIEX</div>
+        <div class="num red">~-10.96%</div>
+        <div class="desc">高點至盤中最低</div>
+      </div>
+      <div class="mini-card bear-card">
+        <div class="title">日本 Nikkei</div>
+        <div class="num red">~-10%</div>
+        <div class="desc">開戰以來累計</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>日期</th><th>台灣 TAIEX</th><th>日本 Nikkei 225</th><th>韓國 KOSPI</th></tr>
+      <tr>
+        <td>3/4（二）</td>
+        <td class="red">-2.20%<br>收 34,323.65</td>
+        <td class="red">-3.61%<br>收 54,245.54</td>
+        <td class="red">-12.1%（觸發熔斷）<br>收 5,093.54<br><b>史上最大單日跌幅</b></td>
+      </tr>
+      <tr>
+        <td>3/5（三）</td>
+        <td class="red">-4.35%<br>收 32,828.88</td>
+        <td class="red">續跌</td>
+        <td class="green">+9.63%<br>收 5,583.90（大反彈）</td>
+      </tr>
+      <tr>
+        <td>3/9（一）</td>
+        <td class="red">-4.43%<br>收 32,110.42</td>
+        <td class="red">-5.2%<br>收 52,728.72<br>（盤中一度跌 7%+）</td>
+        <td class="red">-6.0%<br>收 5,251.87<br>（觸發熔斷）</td>
+      </tr>
+      <tr>
+        <td>3/18</td>
+        <td>--</td>
+        <td class="green">+2.87%<br>收 55,239.40</td>
+        <td class="green">+5%+<br>收 5,925.03</td>
+      </tr>
+    </table>
+
+    <div class="tip warn">
+      <b>跌幅排名分析</b>
+      <ul style="font-size:.85em;margin-top:4px;padding-left:16px">
+        <li><b>韓國 KOSPI 跌幅最重</b>（累計 -16%+），3/4 單日暴跌 12.1% 觸發熔斷，創史上最大單日跌幅。韓國高度依賴中東能源進口，若油價維持高位，CPI 恐上升 0.6 個百分點。</li>
+        <li><b>台灣 TAIEX 居中</b>，受惠台積電強大護城河與散戶進場承接，跌幅略優於日韓。但 LNG 僅 11 天儲備的脆弱性是獨特風險。</li>
+        <li><b>日本 Nikkei 跌幅相對溫和</b>（~10%），日本戰略石油儲備較充足，且日圓避險屬性部分對沖風險。</li>
+        <li><b>澳洲 ASX 200</b> 跌幅最小（~-6%），作為能源出口國反而部分受惠。</li>
+      </ul>
+    </div>
+
+    <div class="tip info">
+      <b>全球經濟衝擊評估</b>
+      若油價在 2026 上半年維持高位，全球 GDP 年化成長率恐被拉低 0.6 個百分點。世界經濟論壇（WEF）與牛津經濟研究院均警告，此次衝擊規模可比 1970 年代石油危機。
+    </div>
+    <p class="source">資料來源：CNBC、Fortune、Euronews、Oxford Economics、WEF、Al Jazeera</p>
+  </div>
+</div>
+
+<!-- ==================== 資料來源總表 ==================== -->
+<div class="section-title">資料來源與免責聲明</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">完整參考來源</h3>
+  <div class="card-body">
+    <details open>
+      <summary>新聞媒體來源</summary>
+      <ul style="font-size:.8em;padding-left:16px;color:var(--txt2)">
+        <li>Taipei Times — TAIEX sinks on Middle East tensions（3/3）、TAIEX records third-largest daily fall（3/5）、War-driven price spikes hit TAIEX hard（3/10）</li>
+        <li>Focus Taiwan — Taiex dives over 770 points（3/3）、Taiex posts 4th largest fall（3/9）、Taiex tumbles more than 5% Monday morning（3/9）</li>
+        <li>Taiwan News — Taiwan stock market gains on relief（3/5）、Taiwan stock market rebounds（3/10）、CPC says LNG unaffected（3/2）</li>
+        <li>TaiwanPlus — Taiex Sees Second-Largest Intraday Drop（3/9）</li>
+        <li>CNBC — South Korea Kospi sinks triggering circuit breaker（3/9）、Asia-Pacific markets decline（3/20）</li>
+        <li>Fortune — Oil worries hammer Asian stocks（3/9）、Oil prices hit nearly $110（3/18）</li>
+        <li>Al Jazeera — Oil prices swing wildly（3/11）、Iran war threatens prolonged impact（3/8）</li>
+        <li>CNN Business — Oil surges and stock futures sink（3/1）</li>
+        <li>理財周刊 — 美伊戰爭市場分析</li>
+        <li>永豐金豐雲學堂 — 咆哮雄獅行動分析（3月）</li>
+        <li>TVBS — 美伊戰爭懶人包</li>
+        <li>天下雜誌 — 美伊戰爭經濟影響</li>
+        <li>NOWnews — 央行總裁稱第二季是關鍵（3/19）</li>
+        <li>壹蘋新聞 — 法人點名 6 大族群概念股（3/2）</li>
+      </ul>
+    </details>
+    <details>
+      <summary>研究機構報告</summary>
+      <ul style="font-size:.8em;padding-left:16px;color:var(--txt2)">
+        <li>Oxford Economics — The 2026 Iran War Initial Take and Implications</li>
+        <li>IEA — Oil Market Report March 2026</li>
+        <li>WEF — The global price tag of war in the Middle East</li>
+        <li>Dallas Fed — What the closure of the Strait of Hormuz means</li>
+        <li>CFR — How the Iran War Ignited a Geoeconomic Firestorm</li>
+        <li>Stimson Center — Global Markets and the Strait of Hormuz</li>
+        <li>Atlantic Council — What a Middle East oil and LNG crisis means for East Asia</li>
+        <li>Kpler — US-Iran conflict: Strait of Hormuz crisis reshapes global oil markets</li>
+        <li>Wood Mackenzie — Strait of Hormuz closure pressures LNG spot prices</li>
+        <li>Morgan Stanley — Taiwan's 11-day LNG cliff threatens global chip supply</li>
+        <li>富邦金投資研究部 — 市場轉折焦點（3/9）、投資策略週報（3/16-20）</li>
+      </ul>
+    </details>
+    <details>
+      <summary>官方數據來源</summary>
+      <ul style="font-size:.8em;padding-left:16px;color:var(--txt2)">
+        <li>TWSE 臺灣證券交易所 — 三大法人買賣超日報、每日收盤行情、加權指數歷史資料</li>
+        <li>中央銀行 — 3/19 理監事會後記者會資料、新台幣/美元銀行間收盤匯率</li>
+        <li>台灣期貨交易所 — VIXTWN 波動率指數</li>
+        <li>CBOE — VIX 歷史數據</li>
+      </ul>
+    </details>
+
+    <div class="tip warn">
+      <b>免責聲明</b>
+      本報告數據係透過多個公開新聞來源與官方資料交叉比對彙整。部分數據（如 3/7 收盤價）為根據上下文推估，已明確標注。建議以 TWSE 官方歷史資料為最終確認依據。標記「~」之數值為近似值。本報告不構成投資建議。
+    </div>
+    <p style="font-size:.75em;color:var(--txt3);text-align:center;margin-top:8px">報告製作日期：2026/3/22 ｜ 天機閣藏經閣</p>
+  </div>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// 卡片收合功能
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>
