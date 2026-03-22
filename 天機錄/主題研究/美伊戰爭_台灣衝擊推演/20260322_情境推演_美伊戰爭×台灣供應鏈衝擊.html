@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>情境推演：美伊戰爭 × 台灣供應鏈衝擊</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（暖棕慢活風） === */
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--danger);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.red{border-color:var(--danger);color:var(--danger);background:rgba(194,124,110,.1)}
+.tag.warn{border-color:var(--warn);color:#8a6d00;background:rgba(212,160,23,.08)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.danger-card{border-left:4px solid var(--danger)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 時間線 === */
+.timeline{position:relative;padding-left:24px;margin:8px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:10px;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid var(--danger);background:var(--panel)}
+.tl-item.red::before{background:var(--danger)}
+.tl-item .tl-date{font-weight:700;font-size:.82em;color:var(--danger)}
+.tl-item .tl-text{font-size:.84em;color:var(--txt2);margin-top:2px}
+
+/* === 情境矩陣 === */
+.scenario{border:2px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;background:var(--panel)}
+.scenario.s-red{border-color:var(--danger);background:rgba(194,124,110,.06)}
+.scenario.s-yellow{border-color:var(--warn);background:rgba(212,160,23,.04)}
+.scenario.s-green{border-color:var(--accent);background:rgba(90,125,96,.04)}
+.scenario .s-title{font-weight:900;font-size:.95em;margin-bottom:4px}
+.scenario .s-prob{font-size:.75em;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;font-weight:700}
+.s-red .s-prob{background:rgba(194,124,110,.2);color:var(--danger)}
+.s-yellow .s-prob{background:rgba(212,160,23,.15);color:#8a6d00}
+.s-green .s-prob{background:rgba(90,125,96,.15);color:var(--accent)}
+
+/* === 蝴蝶效應連鎖圖 === */
+.chain{display:flex;align-items:center;gap:4px;margin:4px 0;flex-wrap:wrap;font-size:.82em}
+.chain .node{padding:3px 8px;border-radius:4px;background:var(--panel);border:1px solid var(--border);font-weight:600;white-space:nowrap}
+.chain .arrow{color:var(--danger);font-weight:900}
+.chain .node.trigger{background:rgba(194,124,110,.15);border-color:var(--danger);color:var(--danger)}
+.chain .node.impact{background:rgba(212,160,23,.12);border-color:var(--warn);color:#8a6d00}
+.chain .node.result{background:rgba(90,125,96,.12);border-color:var(--accent);color:var(--accent)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.red{background:var(--danger)}.badge.warn{background:var(--warn)}.badge.green{background:var(--accent)}.badge.blue{background:var(--link)}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>情境推演：美伊戰爭 × 台灣供應鏈衝擊</h1>
+    <div class="sub">2026 Operation Epic Fury — 全方位蝴蝶效應分析</div>
+    <div class="desc">基於 2026/2/28 美以聯軍對伊朗發動「史詩之怒行動」後的真實衝突進展，系統性推演對台灣供應鏈、能源安全、國防態勢、經濟與社會的多層次連鎖衝擊。</div>
+    <div class="tags">
+        <span class="tag red">即時衝突 — 進行中</span>
+        <span class="tag warn">荷姆茲海峽封鎖</span>
+        <span class="tag">地緣政治</span>
+        <span class="tag">能源安全</span>
+        <span class="tag">供應鏈風險</span>
+        <span class="tag">蝴蝶效應</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#sec1">一、衝突態勢總覽 — 關鍵數據儀表板</a>
+    <a href="#sec2">二、衝突時間線（2026/2/28 — 2026/3/22）</a>
+    <a href="#sec3">三、荷姆茲海峽危機 — 全球能源咽喉</a>
+    <a href="#sec4">四、能源市場衝擊 — 油價與 LNG 風暴</a>
+    <a href="#sec5">五、台灣能源安全 — 脆弱度評估</a>
+    <a href="#sec6">六、台灣供應鏈衝擊矩陣</a>
+    <a href="#sec7">七、蝴蝶效應 — 多路徑級聯分析</a>
+    <a href="#sec8">八、情境推演矩陣（三情境 × 六維度）</a>
+    <a href="#sec9">九、台灣國防安全連帶影響</a>
+    <a href="#sec10">十、全球經濟傳導路徑</a>
+    <a href="#sec11">十一、歷史先例對照</a>
+    <a href="#sec12">十二、台灣應對策略建議</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 一、衝突態勢總覽 ===== -->
+<div class="section-title" id="sec1">一、衝突態勢總覽 — 關鍵數據儀表板</div>
+<div class="section-sub">截至 2026/3/22 即時戰況關鍵指標</div>
+
+<div class="grid4">
+    <div class="mini-card danger-card">
+        <div class="title">衝突持續天數</div>
+        <div class="num" style="color:var(--danger)">22 天</div>
+        <div class="desc">2/28 開戰至今</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">布蘭特原油</div>
+        <div class="num" style="color:var(--bear)">$107.4</div>
+        <div class="desc">峰值 $126/桶</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">全球供應中斷</div>
+        <div class="num" style="color:var(--bear)">10M+</div>
+        <div class="desc">桶/日（史上最大）</div>
+    </div>
+    <div class="mini-card danger-card">
+        <div class="title">商船遇襲</div>
+        <div class="num" style="color:var(--danger)">21+</div>
+        <div class="desc">荷姆茲海峽</div>
+    </div>
+</div>
+
+<div class="grid3">
+    <div class="mini-card danger-card">
+        <div class="title">伊朗死亡人數</div>
+        <div class="num" style="color:var(--danger)">1,500+</div>
+        <div class="desc">軍民合計</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">黎巴嫩死亡</div>
+        <div class="num" style="color:var(--bear)">1,000+</div>
+        <div class="desc">真主黨相關衝突</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">美軍陣亡</div>
+        <div class="num" style="color:var(--neutral)">13</div>
+        <div class="desc">中東基地遇襲</div>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>IEA 評估</b>
+    國際能源署（IEA）將此次危機定性為「史上最嚴重的全球能源安全挑戰」，供應中斷規模超過 1973 年石油危機。
+</div>
+
+<!-- ===== 二、衝突時間線 ===== -->
+<div class="section-title" id="sec2">二、衝突時間線（2026/2/28 — 3/22）</div>
+<div class="section-sub">「十二日戰爭」及後續升級</div>
+
+<div class="card">
+    <h3>完整衝突時間線</h3>
+    <div class="card-body">
+        <div class="timeline">
+            <div class="tl-item red">
+                <div class="tl-date">2/28 — D-Day：史詩之怒行動</div>
+                <div class="tl-text">美以聯軍 20:38 UTC 發動「Operation Epic Fury」，12 小時內執行近 <strong>900 次空襲</strong>。目標涵蓋德黑蘭國防部、情報部、原子能總部、最高領袖官邸、司法大樓、總統府。<br><strong>最高領袖哈梅內伊及多名高官遭擊殺。</strong></div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/1 — 伊朗確認哈梅內伊死亡</div>
+                <div class="tl-text">最高國家安全委員會確認死訊。伊朗以飛彈和無人機反擊以色列、美軍基地及海灣盟國（UAE、卡達、巴林）。臨時領導委員會成立。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/2 — 荷姆茲海峽威脅</div>
+                <div class="tl-text">IRGC 透過 VHF 無線電宣布海峽「關閉」，威脅攻擊任何通過的船隻。油輪 Skylight 號遭擊中，2 名印度船員喪生。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/3 — 核設施與指揮中心遭毀</div>
+                <div class="tl-text">美以聯軍摧毀最高國安會總部、專家鑑定委員會大樓，以及一處代號「Min Zadai」的地下核武設施。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/4 — 海峽正式封鎖</div>
+                <div class="tl-text">伊朗軍隊宣布荷姆茲海峽關閉，開始系統性攻擊商船。海峽交通量暴跌 70%，超過 150 艘船滯留海峽外。</div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">3/8 — 布蘭特原油突破 $100</div>
+                <div class="tl-text">Brent 原油四年來首次突破每桶 100 美元，峰值觸及 $126。卡達宣布 LNG 出口不可抗力。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/9 — 穆傑塔巴·哈梅內伊繼位</div>
+                <div class="tl-text">專家會議選出 56 歲的穆傑塔巴·哈梅內伊（前最高領袖之子）為新任最高領袖，但至今未公開露面，美方稱其可能受傷。</div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">3/10 — 全球供應中斷 10M 桶/日</div>
+                <div class="tl-text">科威特、伊拉克、沙烏地、UAE 合計減產 670 萬桶/日；至 3/12 擴大至超過 1,000 萬桶/日。</div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">3/11 — 沙烏地啟用東西管線全產能</div>
+                <div class="tl-text">Petroline 管線（Abqaiq→Yanbu）轉為全產能 700 萬桶/日運行，但 Yanbu 港實際裝載能力僅約 300-400 萬桶/日。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/16 — 海上無人機擴大攻擊</div>
+                <div class="tl-text">伊朗海上無人機攻擊科威特穆巴拉克港附近油輪 Sonangol Namibe 號（距海峽 800+ 公里），衝突範圍大幅擴大。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/20 — 卡達 LNG 設施遭襲</div>
+                <div class="tl-text">伊朗飛彈攻擊卡達 Ras Laffan LNG 終端（報復以色列攻擊南帕斯氣田），全球 LNG 市場劇震。</div>
+            </div>
+            <div class="tl-item red">
+                <div class="tl-date">3/21 — 川普 48 小時最後通牒</div>
+                <div class="tl-text">川普威脅若伊朗不在 48 小時內重開荷姆茲海峽，將攻擊伊朗發電廠。美以再次攻擊 Natanz 核設施（第四次）。</div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">3/22 — 今日</div>
+                <div class="tl-text">布蘭特原油 $107.4/桶。新最高領袖下落不明。衝突持續升級中。眾院以 219:212 否決戰爭權力決議案。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 三、荷姆茲海峽危機 ===== -->
+<div class="section-title" id="sec3">三、荷姆茲海峽危機 — 全球能源咽喉</div>
+<div class="section-sub">史上首次主要石油咽喉點遭軍事封鎖</div>
+
+<div class="card">
+    <h3>海峽戰略數據</h3>
+    <div class="card-body">
+        <div class="grid2">
+            <div class="mini-card danger-card">
+                <div class="title">日通行石油量</div>
+                <div class="num" style="color:var(--danger)">2,000 萬桶</div>
+                <div class="desc">佔全球海運石油 20%</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">目前通行率</div>
+                <div class="num" style="color:var(--bear)">~30%</div>
+                <div class="desc">暴跌 70%</div>
+            </div>
+        </div>
+
+        <table>
+            <tr><th>項目</th><th>數據</th><th>影響</th></tr>
+            <tr><td>IRGC 水雷儲量</td><td>約 5,000 枚</td><td>觸發式、磁性、聲納多型號混合</td></tr>
+            <tr><td>已確認商船攻擊</td><td>21+ 次</td><td>含飛彈、無人機、水雷</td></tr>
+            <tr><td>滯留船隻</td><td>150+ 艘</td><td>錨泊於海峽外等待</td></tr>
+            <tr><td>戰爭險費率</td><td>飆升數倍</td><td>保費從 0.05% → 5%+</td></tr>
+            <tr><td>美軍掃雷能力</td><td>嚴重不足</td><td>波斯灣內掃雷艦極少</td></tr>
+        </table>
+
+        <div class="tip danger">
+            <b>不對稱戰力優勢</b>
+            儘管美以聯軍已嚴重削弱伊朗傳統海軍力量，IRGC 仍保有不對稱戰力優勢：水雷、海上無人機、快艇、反艦飛彈。這些武器足以癱瘓海峽通行，且清除水雷需要數週至數月。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>替代路線能力評估</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>替代方案</th><th>容量</th><th>缺口</th><th>限制</th></tr>
+            <tr><td>沙烏地 Petroline（Abqaiq→Yanbu）</td><td>管線 700 萬桶/日<br>港口實際 300-400 萬桶/日</td><td>仍缺 1,600 萬桶/日</td><td>Yanbu 港裝載瓶頸</td></tr>
+            <tr><td>UAE ADCOP 管線（Habshan→Fujairah）</td><td>150-180 萬桶/日</td><td>杯水車薪</td><td>僅供 UAE 自身出口</td></tr>
+            <tr><td>好望角繞行</td><td>理論無上限</td><td>增加 15-20 天航程</td><td>運費翻倍、船隻不足</td></tr>
+            <tr><td>合計替代能力</td><td><strong>~400-500 萬桶/日</strong></td><td><strong>缺口仍達 1,500 萬桶/日</strong></td><td>遠不足以替代海峽</td></tr>
+        </table>
+        <div class="tip warn">
+            <b>結構性瓶頸</b>
+            替代管線合計最多僅能承載海峽通行量的 20-25%，且紅海航線本身也面臨胡塞武裝威脅。這代表<strong>全球有 15-20% 的石油供應無法在短期內恢復</strong>。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 四、能源市場衝擊 ===== -->
+<div class="section-title" id="sec4">四、能源市場衝擊 — 油價與 LNG 風暴</div>
+<div class="section-sub">史上最大規模石油供應中斷</div>
+
+<div class="card">
+    <h3>油價走勢與衝擊</h3>
+    <div class="card-body">
+        <div class="grid3">
+            <div class="mini-card bear-card">
+                <div class="title">戰前油價</div>
+                <div class="num">~$70</div>
+                <div class="desc">2026/2 月中旬</div>
+            </div>
+            <div class="mini-card danger-card">
+                <div class="title">峰值油價</div>
+                <div class="num" style="color:var(--danger)">$126</div>
+                <div class="desc">漲幅 80%</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">目前油價</div>
+                <div class="num" style="color:var(--bear)">$107.4</div>
+                <div class="desc">3/22 收盤</div>
+            </div>
+        </div>
+
+        <table>
+            <tr><th>油價情境</th><th>對全球 GDP 影響</th><th>對通膨影響</th><th>機率評估</th></tr>
+            <tr><td>$100-120/桶（短期衝擊後回落）</td><td>GDP -0.3~0.5%</td><td>CPI +1~2%</td><td><span class="badge green">基準</span></td></tr>
+            <tr><td>$140-150/桶（持續 2 個月）</td><td>GDP -0.8~1.2%（溫和衰退）</td><td>CPI +3~4%（美 CPI 6%）</td><td><span class="badge warn">中等</span></td></tr>
+            <tr><td>$180-200/桶（封鎖持續半年）</td><td>GDP -2~3%（全球衰退）</td><td>CPI +5~8%</td><td><span class="badge red">低但非零</span></td></tr>
+        </table>
+
+        <p style="margin-top:8px"><strong>IMF 估算</strong>：油價每上漲 10%，全球通膨增加 0.4 個百分點，經濟成長減少 0.15 個百分點。</p>
+        <p><strong>Oxford Economics</strong>：$140/桶持續兩個月足以將全球部分經濟體推入溫和衰退。</p>
+        <p><strong>Wood Mackenzie</strong>：$200/桶並非不可能，將成為「全球經濟的重大煞車」。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>LNG 市場連鎖衝擊</h3>
+    <div class="card-body">
+        <div class="tip danger">
+            <b>卡達 LNG 危機</b>
+            卡達 Ras Laffan LNG 終端遭伊朗飛彈攻擊（3/20），QatarEnergy 3/2 起已宣布不可抗力停止出口。卡達佔全球 LNG 出口約 22%，停產直接衝擊亞洲天然氣供應。
+        </div>
+        <div class="grid2">
+            <div class="mini-card bear-card">
+                <div class="title">LNG 價格漲幅</div>
+                <div class="num" style="color:var(--bear)">+60%</div>
+                <div class="desc">開戰以來</div>
+            </div>
+            <div class="mini-card danger-card">
+                <div class="title">卡達出口狀態</div>
+                <div class="num" style="color:var(--danger);font-size:1em">不可抗力</div>
+                <div class="desc">全面停止</div>
+            </div>
+        </div>
+        <p style="margin-top:6px"><strong>受影響最大的亞洲國家</strong>：日本（LNG 進口大國）、韓國、台灣、印度、菲律賓。</p>
+    </div>
+</div>
+
+<!-- ===== 五、台灣能源安全 ===== -->
+<div class="section-title" id="sec5">五、台灣能源安全 — 脆弱度評估</div>
+<div class="section-sub">96% 能源仰賴進口，高度曝險中東</div>
+
+<div class="card">
+    <h3>台灣能源依賴結構</h3>
+    <div class="card-body">
+        <div class="grid2">
+            <div class="mini-card danger-card">
+                <div class="title">能源進口依賴度</div>
+                <div class="num" style="color:var(--danger)">96%+</div>
+                <div class="desc">幾乎全仰賴進口</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">石油經荷姆茲</div>
+                <div class="num" style="color:var(--bear)">~60%</div>
+                <div class="desc">六成石油過海峽</div>
+            </div>
+        </div>
+
+        <table>
+            <tr><th>能源類別</th><th>中東佔比</th><th>儲備天數</th><th>風險等級</th></tr>
+            <tr><td><strong>原油</strong></td><td>沙烏地 33.9%、科威特 21.2%、UAE 8.3%、阿曼 6.8%<br><strong>中東合計 ~70%</strong></td><td>~120 天</td><td><span class="light yellow"></span> 中高</td></tr>
+            <tr><td><strong>天然氣 (LNG)</strong></td><td>卡達 ~25%、其餘中東 ~8%<br><strong>中東合計 ~33%</strong></td><td style="color:var(--danger);font-weight:700">僅 11 天</td><td><span class="light red"></span> <strong>極高</strong></td></tr>
+            <tr><td><strong>煤炭</strong></td><td>澳洲、印尼為主<br>中東佔比低</td><td>~30 天</td><td><span class="light green"></span> 低</td></tr>
+        </table>
+
+        <div class="tip danger">
+            <b>天然氣是台灣的阿基里斯之踵</b>
+            台灣法定 LNG 最低庫存僅 11 天，而天然氣發電佔台灣總發電量約 40%（大潭電廠等）。卡達 LNG 停止出口直接威脅台灣電力供應穩定，比石油危機更為急迫。
+        </div>
+
+        <div class="tip info">
+            <b>政府應變措施</b>
+            經濟部已指示國內石油公司提高油氣儲備量，並啟動每日更新庫存與運輸時間表機制。但短期內難以根本改變供應結構。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 六、台灣供應鏈衝擊矩陣 ===== -->
+<div class="section-title" id="sec6">六、台灣供應鏈衝擊矩陣</div>
+<div class="section-sub">按產業別的衝擊路徑與嚴重度評估</div>
+
+<div class="card">
+    <h3>產業衝擊總覽</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>產業</th><th>衝擊路徑</th><th>嚴重度</th><th>時間窗口</th></tr>
+            <tr>
+                <td><strong>石化/塑化</strong><br>（台塑、中油、台聚）</td>
+                <td>原油成本飆升 → 石化原料漲價 → 下游塑膠、紡織、包材成本暴增</td>
+                <td><span class="light red"></span> 極高</td>
+                <td>即時（已發生）</td>
+            </tr>
+            <tr>
+                <td><strong>電力/公用事業</strong><br>（台電、大潭電廠）</td>
+                <td>LNG 斷供風險 → 天然氣發電減少 → 限電/輪流供電</td>
+                <td><span class="light red"></span> 極高</td>
+                <td>2-4 週內</td>
+            </tr>
+            <tr>
+                <td><strong>半導體</strong><br>（台積電、聯發科）</td>
+                <td>①電力穩定性風險 ②特氣/化學品部分源自中東 ③客戶端需求可能下修</td>
+                <td><span class="light yellow"></span> 中高</td>
+                <td>1-3 個月</td>
+            </tr>
+            <tr>
+                <td><strong>航運</strong><br>（長榮、陽明、萬海）</td>
+                <td>中東航線停航/繞行 → 運費飆升 → 戰爭險暴增 → 短期利多但長期風險</td>
+                <td><span class="light yellow"></span> 雙面</td>
+                <td>即時</td>
+            </tr>
+            <tr>
+                <td><strong>鋼鐵/金屬</strong><br>（中鋼）</td>
+                <td>能源成本推升 → 中東鋁/鋼出口受阻 → 原料漲價</td>
+                <td><span class="light yellow"></span> 中</td>
+                <td>1-2 個月</td>
+            </tr>
+            <tr>
+                <td><strong>食品/農業</strong></td>
+                <td>海運費暴漲 → 進口穀物/飼料成本增加 → 食品漲價</td>
+                <td><span class="light yellow"></span> 中</td>
+                <td>1-3 個月</td>
+            </tr>
+            <tr>
+                <td><strong>金融/保險</strong></td>
+                <td>市場恐慌 → 股市下跌 → 資金流向避險資產 → 保險理賠增加</td>
+                <td><span class="light yellow"></span> 中</td>
+                <td>即時</td>
+            </tr>
+            <tr>
+                <td><strong>觀光/航空</strong></td>
+                <td>中東航線停飛 → 油價推升票價 → 旅遊需求下降</td>
+                <td><span class="light green"></span> 低中</td>
+                <td>即時</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>電力供應危機 — 深度分析</h3>
+    <div class="card-body">
+        <p>台灣發電結構中，天然氣發電佔比約 <strong>40%</strong>。若 LNG 供應中斷持續：</p>
+        <table>
+            <tr><th>庫存天數</th><th>狀態</th><th>可能措施</th></tr>
+            <tr><td>11 天（法定最低）</td><td><span class="light red"></span> 緊急</td><td>啟動燃油/燃煤替代發電、大型用電戶限電</td></tr>
+            <tr><td>7 天</td><td><span class="light red"></span> 極度緊急</td><td>全面限電輪流供電、工業用電管制</td></tr>
+            <tr><td>3 天</td><td><span class="light red"></span> 危機</td><td>核電廠延役討論、緊急進口非中東 LNG</td></tr>
+        </table>
+        <div class="tip danger">
+            <b>台積電風險</b>
+            台積電晶圓廠需要極穩定電力，任何電壓波動都可能造成良率損失。限電情境下，台灣半導體產能可能被迫減產，進而影響全球晶片供應。這是一條從中東延伸到全球科技產業的關鍵連鎖。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 七、蝴蝶效應 ===== -->
+<div class="section-title" id="sec7">七、蝴蝶效應 — 多路徑級聯分析</div>
+<div class="section-sub">一場中東戰爭如何在 12 條路徑上衝擊台灣</div>
+
+<div class="card">
+    <h3>路徑 1：能源斷供 → 電力危機 → 半導體減產 → 全球科技震盪</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">荷姆茲封鎖</span>
+            <span class="arrow">→</span>
+            <span class="node trigger">卡達 LNG 停供</span>
+            <span class="arrow">→</span>
+            <span class="node impact">台灣 LNG 庫存 11 天告急</span>
+            <span class="arrow">→</span>
+            <span class="node impact">天然氣發電減量</span>
+            <span class="arrow">→</span>
+            <span class="node impact">台電限電/輪流供電</span>
+            <span class="arrow">→</span>
+            <span class="node result">台積電/聯電減產</span>
+            <span class="arrow">→</span>
+            <span class="node result">全球晶片供應惡化</span>
+            <span class="arrow">→</span>
+            <span class="node result">汽車/手機/AI 伺服器延遲交貨</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：2-4 週內浮現 | <strong>嚴重度</strong>：<span class="light red"></span> 極高</p>
+        <p>此為台灣最獨特且最嚴重的蝴蝶效應路徑，因為台灣半導體佔全球先進製程 90%+，限電即等於全球科技斷鏈。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 2：油價飆升 → 石化成本 → 通膨 → 央行升息 → 房市/股市承壓</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">油價 $70→$126</span>
+            <span class="arrow">→</span>
+            <span class="node impact">石化原料漲 40-80%</span>
+            <span class="arrow">→</span>
+            <span class="node impact">塑膠/紡織/包材漲價</span>
+            <span class="arrow">→</span>
+            <span class="node impact">台灣 CPI 上升 2-3%</span>
+            <span class="arrow">→</span>
+            <span class="node result">央行被迫升息</span>
+            <span class="arrow">→</span>
+            <span class="node result">房貸利率上升</span>
+            <span class="arrow">→</span>
+            <span class="node result">房市降溫/股市修正</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：1-3 個月 | <strong>嚴重度</strong>：<span class="light yellow"></span> 中高</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 3：美軍兵力分散 → 台海威懾弱化 → 中國窗口期</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">美軍投入中東作戰</span>
+            <span class="arrow">→</span>
+            <span class="node impact">航母/驅逐艦調離印太</span>
+            <span class="arrow">→</span>
+            <span class="node impact">西太平洋軍力真空</span>
+            <span class="arrow">→</span>
+            <span class="node result">中國感知「戰略窗口」</span>
+            <span class="arrow">→</span>
+            <span class="node result">台海軍事壓力可能升級</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：中期（3-12 個月）| <strong>嚴重度</strong>：<span class="light red"></span> 極高（潛在性）</p>
+        <div class="tip danger">
+            <b>歷史先例</b>
+            2003 年伊拉克戰爭期間，中國軍方內部出現「利用美軍分身乏術推進統一議程」的討論。2026 年的規模更大、持續更久，中國可能進行更大膽的軍事測試。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 4：中國石油恐慌 → 搶購/囤積 → 亞洲能源競爭加劇</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">中國是伊朗最大石油買家</span>
+            <span class="arrow">→</span>
+            <span class="node impact">伊朗原油出口中斷</span>
+            <span class="arrow">→</span>
+            <span class="node impact">中國緊急搶購替代油源</span>
+            <span class="arrow">→</span>
+            <span class="node result">亞洲現貨油價溢價擴大</span>
+            <span class="arrow">→</span>
+            <span class="node result">台灣/日本/韓國採購成本暴增</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：即時 | <strong>嚴重度</strong>：<span class="light yellow"></span> 中高</p>
+        <p>中國每日從伊朗進口約 150 萬桶石油，中斷後將在全球現貨市場與台灣競爭有限的非中東油源。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 5：運費飆升 → 全球供應鏈成本 → 「再通膨」</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">海峽封鎖 + 紅海胡塞威脅</span>
+            <span class="arrow">→</span>
+            <span class="node impact">好望角繞行（+15-20天）</span>
+            <span class="arrow">→</span>
+            <span class="node impact">運費翻倍 + 戰爭險 100 倍</span>
+            <span class="arrow">→</span>
+            <span class="node result">全球貿易成本上升</span>
+            <span class="arrow">→</span>
+            <span class="node result">進口消費品漲價</span>
+            <span class="arrow">→</span>
+            <span class="node result">全球央行緊縮困境</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：1-3 個月 | <strong>嚴重度</strong>：<span class="light yellow"></span> 中</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 6：糧食安全 → 海灣國家 80% 糧食中斷 → 難民潮</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">海峽封鎖</span>
+            <span class="arrow">→</span>
+            <span class="node impact">GCC 國家 80% 糧食進口中斷</span>
+            <span class="arrow">→</span>
+            <span class="node impact">食品價格飆漲 40-120%</span>
+            <span class="arrow">→</span>
+            <span class="node result">海灣國家社會動盪</span>
+            <span class="arrow">→</span>
+            <span class="node result">南亞/中東難民潮</span>
+            <span class="arrow">→</span>
+            <span class="node result">全球人道危機</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：2-6 週 | <strong>嚴重度</strong>：<span class="light red"></span> 極高（區域性）</p>
+        <p>GCC 國家超過 80% 的熱量攝取依賴海運進口。3 月中旬已有 70% 食品進口遭中斷，零售商被迫空運基本物資。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 7：新台幣貶值 → 進口成本 → 外資撤離</h3>
+    <div class="card-body">
+        <div class="chain">
+            <span class="node trigger">全球避險情緒</span>
+            <span class="arrow">→</span>
+            <span class="node impact">資金湧入美元/黃金</span>
+            <span class="arrow">→</span>
+            <span class="node impact">新興市場貨幣承壓</span>
+            <span class="arrow">→</span>
+            <span class="node result">新台幣貶值</span>
+            <span class="arrow">→</span>
+            <span class="node result">進口能源成本更高</span>
+            <span class="arrow">→</span>
+            <span class="node result">雙重打擊（量減+價增）</span>
+        </div>
+        <p style="margin-top:6px"><strong>衝擊時間</strong>：即時 | <strong>嚴重度</strong>：<span class="light yellow"></span> 中</p>
+        <p>參考菲律賓披索已跌至 60.1 PHP/USD 的歷史新低。台灣雖有較強外匯存底，但大量外資持有台股，恐慌性撤離仍是風險。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 8-12：其他連鎖效應</h3>
+    <div class="card-body">
+        <details open>
+            <summary>路徑 8：核擴散風險 → 中東軍備競賽</summary>
+            <p style="font-size:.84em">伊朗核設施被攻擊但 IAEA 表示無法完全消除核計劃 → 殘餘核知識擴散風險 → 沙烏地/土耳其/埃及加速核計劃 → 中東核擴散 → 全球安全格局改變</p>
+        </details>
+        <details open>
+            <summary>路徑 9：俄羅斯漁翁得利</summary>
+            <p style="font-size:.84em">美國注意力轉向中東 → 烏克蘭戰場壓力減輕 → 俄羅斯石油成為替代供應（價格溢價）→ 制裁效果弱化 → 俄羅斯戰略地位提升 → 全球權力格局重塑</p>
+        </details>
+        <details open>
+            <summary>路徑 10：氦氣/鋁/肥料供應鏈</summary>
+            <p style="font-size:.84em">卡達是全球第二大氦氣生產國 → LNG 設施停產連帶氦氣停供 → 半導體/醫療/科研用氦氣短缺 → 又一條衝擊台灣半導體的隱形路徑</p>
+        </details>
+        <details open>
+            <summary>路徑 11：電價上漲 → 民生壓力 → 社會情緒</summary>
+            <p style="font-size:.84em">LNG 漲價 60% → 台電發電成本暴增 → 電價調漲壓力 → 製造業成本上升 → 物價全面上漲 → 民眾購買力下降 → 消費萎縮 → 經濟放緩</p>
+        </details>
+        <details open>
+            <summary>路徑 12：保險/再保險危機</summary>
+            <p style="font-size:.84em">戰爭險費率從 0.05% 飆至 5%+ → 部分船東拒絕進入高風險水域 → 即使海峽部分重開，保費成本也永久墊高 → 長期貿易成本結構性上升</p>
+        </details>
+    </div>
+</div>
+
+<!-- ===== 八、情境推演矩陣 ===== -->
+<div class="section-title" id="sec8">八、情境推演矩陣（三情境 × 六維度）</div>
+<div class="section-sub">從「快速停火」到「長期消耗」的全光譜推演</div>
+
+<div class="scenario s-green">
+    <div class="s-title">情境 A：快速停火（4-6 週內結束）</div>
+    <div class="s-prob">機率 25-30%</div>
+    <p style="font-size:.84em;margin-bottom:6px"><strong>前提</strong>：川普 48 小時最後通牒生效，伊朗新領導層在內外壓力下接受停火談判。</p>
+    <table>
+        <tr><th>維度</th><th>預期結果</th></tr>
+        <tr><td>海峽</td><td>4-6 週內逐步重開，但掃雷需 2-3 個月</td></tr>
+        <tr><td>油價</td><td>回落至 $85-95，但不會回到 $70</td></tr>
+        <tr><td>台灣能源</td><td>LNG 庫存緊張但可撐過，電力不至限電</td></tr>
+        <tr><td>台灣經濟</td><td>GDP 影響 -0.2~0.3%，CPI +0.5~1%</td></tr>
+        <tr><td>台海安全</td><td>美軍快速回歸印太，影響有限</td></tr>
+        <tr><td>全球影響</td><td>短暫衝擊後復甦，類似 2019 沙烏地油田事件放大版</td></tr>
+    </table>
+</div>
+
+<div class="scenario s-yellow">
+    <div class="s-title">情境 B：持續衝突（3-6 個月）</div>
+    <div class="s-prob">機率 40-45%（目前最可能）</div>
+    <p style="font-size:.84em;margin-bottom:6px"><strong>前提</strong>：伊朗拒絕投降但無法反攻，陷入不對稱消耗戰。海峽時開時關。</p>
+    <table>
+        <tr><th>維度</th><th>預期結果</th></tr>
+        <tr><td>海峽</td><td>部分重開但持續有零星攻擊，保費居高不下</td></tr>
+        <tr><td>油價</td><td>$100-140 區間波動，均值 $110-120</td></tr>
+        <tr><td>台灣能源</td><td><strong>LNG 危機持續，可能出現限電</strong>。石油儲備消耗至 60-80 天</td></tr>
+        <tr><td>台灣經濟</td><td>GDP -0.5~1.0%，CPI +2~3%，央行升息 1-2 碼</td></tr>
+        <tr><td>台海安全</td><td><strong>美軍分身乏術，中國可能加大軍事施壓</strong></td></tr>
+        <tr><td>全球影響</td><td>歐洲/亞洲溫和衰退風險，全球通膨回升至 5-6%</td></tr>
+    </table>
+    <div class="tip warn">
+        <b>對台灣最關鍵的變數</b>
+        在此情境下，LNG 供應是否能找到替代來源（澳洲、美國、馬來西亞）將決定台灣是否面臨限電。若限電持續超過 2 週，台積電等半導體廠可能被迫減產，引發全球科技產業連鎖反應。
+    </div>
+</div>
+
+<div class="scenario s-red">
+    <div class="s-title">情境 C：全面升級 / 長期化（6 個月以上）</div>
+    <div class="s-prob">機率 15-20%</div>
+    <p style="font-size:.84em;margin-bottom:6px"><strong>前提</strong>：衝突擴大至伊拉克/敘利亞全面戰爭，或伊朗啟動「汙彈」/殘餘核報復。</p>
+    <table>
+        <tr><th>維度</th><th>預期結果</th></tr>
+        <tr><td>海峽</td><td>長期封鎖，水雷區需 6-12 個月清除</td></tr>
+        <tr><td>油價</td><td>$150-200+，突破歷史紀錄</td></tr>
+        <tr><td>台灣能源</td><td><strong>嚴重能源危機，大規模限電</strong>，石油儲備耗盡倒計時</td></tr>
+        <tr><td>台灣經濟</td><td>GDP -2~3%，CPI +5~8%，停滯性通膨</td></tr>
+        <tr><td>台海安全</td><td><strong>最危險窗口期</strong>，中國可能採取行動</td></tr>
+        <tr><td>全球影響</td><td>全球衰退，堪比 1973 石油危機。新興市場金融危機</td></tr>
+    </table>
+    <div class="tip danger">
+        <b>黑天鵝觸發點</b>
+        ①伊朗水雷擊中美軍艦艇 → 美國大規模報復 ②伊朗以殘餘核材料製造「汙彈」③真主黨/胡塞全面開戰 ④中國趁機對台施壓 ⑤川普攻擊伊朗發電廠 → 人道危機
+    </div>
+</div>
+
+<!-- ===== 九、台灣國防安全 ===== -->
+<div class="section-title" id="sec9">九、台灣國防安全連帶影響</div>
+<div class="section-sub">美軍兩線作戰與台海威懾平衡</div>
+
+<div class="card">
+    <h3>美軍兵力分散分析</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>指標</th><th>戰前</th><th>現況</th><th>對台影響</th></tr>
+            <tr><td>中東美軍規模</td><td>~45,000</td><td>估計 80,000+</td><td>從印太抽調兵力</td></tr>
+            <tr><td>航母戰鬥群</td><td>1 個在中東</td><td>2-3 個在中東</td><td>西太可用數量減少</td></tr>
+            <tr><td>美軍陣亡</td><td>0</td><td>13 人</td><td>國內反戰情緒上升</td></tr>
+            <tr><td>國會態度</td><td>—</td><td>險否決戰爭權力案（219:212）</td><td>未來軍事介入意願可能降低</td></tr>
+        </table>
+
+        <div class="tip danger">
+            <b>兩線作戰困境</b>
+            美軍 13 名服役人員在中東基地遇襲陣亡，國會以極微差距否決戰爭權力決議案。若衝突拖延，美國國內「不再介入海外衝突」的情緒可能影響其對台承諾的可信度。中國可能據此評估美國介入台海的意願已降低。
+        </div>
+
+        <div class="tip info">
+            <b>反面觀點</b>
+            也有分析認為，美國在中東展現的打擊能力（12 小時 900 次空襲斬首伊朗領導層）反而強化了對中國的威懾——證明美軍有能力對任何對手發動毀滅性打擊。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 十、全球經濟傳導路徑 ===== -->
+<div class="section-title" id="sec10">十、全球經濟傳導路徑</div>
+<div class="section-sub">從中東到全球的經濟衝擊波</div>
+
+<div class="card">
+    <h3>多重傳導機制</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>傳導路徑</th><th>已發生的影響</th><th>未來風險</th></tr>
+            <tr><td><strong>石油價格</strong></td><td>漲幅 25%+（$70→$107）</td><td>持續封鎖可推至 $150-200</td></tr>
+            <tr><td><strong>LNG 價格</strong></td><td>漲幅 60%</td><td>卡達停產持續則亞洲 LNG 危機</td></tr>
+            <tr><td><strong>航運/運費</strong></td><td>中東航線停航，繞行成本翻倍</td><td>戰爭險永久性墊高</td></tr>
+            <tr><td><strong>糧食</strong></td><td>GCC 食品漲 40-120%</td><td>全球穀物運輸成本上升</td></tr>
+            <tr><td><strong>金融市場</strong></td><td>美股期貨下跌，黃金飆漲</td><td>新興市場貨幣危機</td></tr>
+            <tr><td><strong>鋁/氦/肥料</strong></td><td>價格全面上漲</td><td>半導體/醫療/農業受衝擊</td></tr>
+        </table>
+
+        <div class="tip warn">
+            <b>CFR 分析：地緣經濟風暴</b>
+            美國外交關係協會（CFR）將此次衝突的經濟衝擊描述為「地緣經濟風暴」（Geoeconomic Firestorm），強調能源、貿易、金融三重管道同時傳導衝擊，這在後冷戰時代前所未見。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 十一、歷史先例對照 ===== -->
+<div class="section-title" id="sec11">十一、歷史先例對照</div>
+<div class="section-sub">與過去石油危機的比較</div>
+
+<div class="card">
+    <h3>歷史比較表</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>事件</th><th>年份</th><th>供應中斷量</th><th>油價影響</th><th>持續時間</th><th>與本次比較</th></tr>
+            <tr><td>第一次石油危機</td><td>1973</td><td>~4.3M 桶/日</td><td>+300%</td><td>6 個月</td><td>本次中斷量是其 2.3 倍</td></tr>
+            <tr><td>伊朗革命</td><td>1979</td><td>~5.6M 桶/日</td><td>+150%</td><td>12 個月</td><td>本次中斷量是其 1.8 倍</td></tr>
+            <tr><td>波斯灣戰爭</td><td>1990</td><td>~4.3M 桶/日</td><td>+100%</td><td>6 個月</td><td>本次中斷量是其 2.3 倍</td></tr>
+            <tr><td>沙烏地油田攻擊</td><td>2019</td><td>~5.7M 桶/日</td><td>+15%</td><td>2 週</td><td>短暫衝擊，快速恢復</td></tr>
+            <tr style="background:rgba(194,124,110,.08)"><td><strong>2026 美伊戰爭</strong></td><td><strong>2026</strong></td><td><strong>10M+ 桶/日</strong></td><td><strong>+80%</strong></td><td><strong>進行中</strong></td><td><strong>史上最大供應中斷</strong></td></tr>
+        </table>
+        <div class="tip danger">
+            <b>史無前例</b>
+            IEA 確認此次中斷規模為「全球石油市場史上最大供應中斷」。1973 年石油危機導致全球 GDP 下降 3%，而本次中斷量是其 2 倍以上。
+        </div>
+    </div>
+</div>
+
+<!-- ===== 十二、台灣應對策略 ===== -->
+<div class="section-title" id="sec12">十二、台灣應對策略建議</div>
+<div class="section-sub">按時間軸的多層次應對框架</div>
+
+<div class="card">
+    <h3>即時（0-2 週）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>領域</th><th>建議措施</th><th>優先度</th></tr>
+            <tr><td>LNG 緊急採購</td><td>向澳洲 Woodside、美國 Cheniere 等非中東供應商緊急採購現貨 LNG</td><td><span class="badge red">最高</span></td></tr>
+            <tr><td>石油替代來源</td><td>增加美國（目前 20.4%）和西非原油採購比例</td><td><span class="badge red">最高</span></td></tr>
+            <tr><td>電力調度</td><td>降低天然氣發電比例、提高燃煤替代、重啟備用機組</td><td><span class="badge red">最高</span></td></tr>
+            <tr><td>戰略儲備管理</td><td>設定分級使用閾值，避免無計劃消耗</td><td><span class="badge warn">高</span></td></tr>
+            <tr><td>金融穩定</td><td>央行準備外匯干預，防止新台幣急貶</td><td><span class="badge warn">高</span></td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>短期（2-8 週）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>領域</th><th>建議措施</th><th>優先度</th></tr>
+            <tr><td>電力需求管理</td><td>大型用電戶自願節電方案、彈性電價</td><td><span class="badge warn">高</span></td></tr>
+            <tr><td>半導體產業保護</td><td>確保台積電等關鍵廠區優先供電</td><td><span class="badge red">最高</span></td></tr>
+            <tr><td>航運替代</td><td>協調國籍船隊使用好望角替代航線</td><td><span class="badge warn">高</span></td></tr>
+            <tr><td>物價穩定</td><td>必要時凍結部分民生必需品價格</td><td><span class="badge blue">中</span></td></tr>
+            <tr><td>國防警戒</td><td>提升台海監控強度，密切關注中國軍事動態</td><td><span class="badge red">最高</span></td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>中長期（2 個月以上）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>領域</th><th>建議措施</th><th>性質</th></tr>
+            <tr><td>能源結構轉型</td><td>加速再生能源建設、重新評估核電政策</td><td>結構性</td></tr>
+            <tr><td>LNG 接收站擴建</td><td>加快第三/四接收站進度、增加儲槽容量</td><td>結構性</td></tr>
+            <tr><td>戰略儲備升級</td><td>將 LNG 法定最低庫存從 11 天提升至 30 天</td><td>制度性</td></tr>
+            <tr><td>供應來源多元化</td><td>降低中東依賴至 50% 以下，增加美國/澳洲比重</td><td>結構性</td></tr>
+            <tr><td>半導體能源韌性</td><td>關鍵廠區建設獨立供電系統/緊急發電機組</td><td>產業性</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ===== 總結 ===== -->
+<div class="card" style="border:2px solid var(--danger);margin-top:16px">
+    <h3 style="color:var(--danger)">核心結論</h3>
+    <div class="card-body">
+        <div class="tip danger">
+            <b>台灣面臨三重風險疊加</b>
+            <strong>1. 能源安全</strong>：LNG 僅 11 天庫存是最急迫的威脅，天然氣發電佔 40%，斷供將直接導致限電。<br>
+            <strong>2. 經濟衝擊</strong>：油價飆升 + 運費翻倍 + 原物料漲價，CPI 上升 2-3% 以上，停滯性通膨風險。<br>
+            <strong>3. 國防窗口</strong>：美軍分身乏術，中國可能評估這是對台施壓的戰略機會窗口。<br><br>
+            <strong>最壞的蝴蝶效應路徑</strong>：荷姆茲封鎖 → LNG 斷供 → 台灣限電 → 台積電減產 → 全球晶片危機 → 科技股崩跌 → 全球經濟衰退。這條路徑的每一環都已開始出現壓力。
+        </div>
+        <div class="tip info">
+            <b>時間是關鍵變數</b>
+            台灣石油儲備 120 天提供了緩衝，但 LNG 僅 11 天的庫存意味著天然氣供應是最先也最嚴重的瓶頸。在情境 B（持續衝突 3-6 個月，機率 40-45%）下，台灣將在 2-4 週內面臨 LNG 供應危機的臨界點。
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 情境推演系統</p>
+    <p>報告日期：2026-03-22</p>
+    <p style="margin-top:4px">免責聲明：本報告為情境推演分析，基於公開來源情報整理，僅供研究參考。不構成任何投資或政策建議。</p>
+    <p style="margin-top:4px;font-size:.7em;color:var(--txt3)">
+        資料來源：Wikipedia、Al Jazeera、CNN、CNBC、Bloomberg、Reuters、NPR、Washington Post、CFR、IEA、Oxford Economics、Vanguard、天下雜誌、工商時報、自由財經等公開資料
+    </p>
+</div>
+
+</div>
+<script>
+// 全部展開/收合
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 點擊 h3 切換
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
