@@ -178,10 +178,21 @@ for f in $(find "$TARGET_DIR/天機錄" -name "*.html" -type f -printf '%T@ %p\n
     TITLE=$(echo "$FNAME" | sed 's/\.html//' | sed 's/^[0-9_-]*//')
     [ -z "$TITLE" ] && TITLE="$FNAME"
 
-    FOLDER_KEY="$SUBDIR"
-    [ "$SUBDIR" = "." ] && FOLDER_KEY="__root__"
+    # 子資料夾合併到父資料夾（例如 GOOGL_Alphabet/歷史 → GOOGL_Alphabet）
+    if [ "$SUBDIR" = "." ]; then
+        FOLDER_KEY="__root__"
+        SUB_LABEL=""
+    else
+        FOLDER_KEY="$(echo "$SUBDIR" | cut -d/ -f1)"
+        SUB_PART="$(echo "$SUBDIR" | cut -d/ -f2- -s)"
+        if [ -n "$SUB_PART" ]; then
+            SUB_LABEL=" <span style=\"font-size:.65em;color:#7a7268;font-weight:400\">[${SUB_PART}]</span>"
+        else
+            SUB_LABEL=""
+        fi
+    fi
 
-    ROW_HTML="<a class=\"row\" href=\"${REL_PATH}\"><span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}</span><span class=\"row-time\">${MTIME}</span></a>"
+    ROW_HTML="<a class=\"row\" href=\"${REL_PATH}\"><span class=\"tag\">${TAG_TEXT}</span><span class=\"row-title\">${TITLE}${SUB_LABEL}</span><span class=\"row-time\">${MTIME}</span></a>"
 
     FOLDER_FILES["$FOLDER_KEY"]="${FOLDER_FILES[$FOLDER_KEY]}${ROW_HTML}
 "
