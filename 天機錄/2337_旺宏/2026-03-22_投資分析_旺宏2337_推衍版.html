@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>旺宏電子 (2337) — 天機閣推衍報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+/* 時間軸 */
+.timeline{position:relative;padding:10px 0 10px 24px;border-left:3px solid var(--accent)}
+.timeline .tl-item{position:relative;margin-bottom:14px;padding-left:12px}
+.timeline .tl-item::before{content:'';position:absolute;left:-30px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.timeline .tl-date{font-size:.75em;color:var(--txt3);font-weight:600}
+.timeline .tl-title{font-weight:700;font-size:.88em;color:var(--base)}
+.timeline .tl-desc{font-size:.82em;color:var(--txt2)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>旺宏電子 (2337) — 天機閣推衍報告</h1>
+    <div class="sub">第八步：推衍推演 ｜ 影響鏈 + 情境模擬 + 蝴蝶效應 + 貓膩推衍</div>
+    <div class="desc">本報告專注推演「未來會怎麼走」。以第七步完整版分析為基礎，調用天機閣推衍系統四大方法，產出未來 1-12 個月的預測與行動建議。</div>
+    <div class="tags">
+        <span class="tag">推衍日期：2026-03-22</span>
+        <span class="tag">基準股價：160 元</span>
+        <span class="tag">推衍有效期：至 2026-04-15</span>
+        <span class="tag">H2 信心：55%</span>
+        <span class="tag" style="background:rgba(46,125,50,.1);color:#2e7d32">F:12</span>
+        <span class="tag" style="background:rgba(21,101,192,.1);color:#1565c0">I:18</span>
+        <span class="tag" style="background:rgba(184,150,12,.1);color:#b8960c">A:8</span>
+        <span class="tag" style="background:rgba(198,40,40,.1);color:#c62828">S:3</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">推衍報告結構</strong>
+    <a href="#s8a">8a. 推衍基礎確認</a>
+    <a href="#s8b">8b. 最新情報更新</a>
+    <a href="#s8c">8c. 影響鏈分析</a>
+    <a href="#s8d">8d. 情境模擬（概率決策樹）</a>
+    <a href="#s8e">8e. 個人化推衍</a>
+    <a href="#s8f">8f. 催化劑時間表</a>
+    <a href="#s8g">8g. 蝴蝶效應推衍</a>
+    <a href="#s8h">8h. 貓膩推衍</a>
+    <a href="#s8i">8i. 推衍結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 8a. 推衍基礎確認 ===== -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">從原始資料回溯確認的關鍵事實，作為所有推衍的出發點。</div>
+
+<div class="card">
+<h3>推衍錨點：已確認事實（F 等級）</h3>
+<div class="card-body">
+<table>
+<tr><th>錨點</th><th>數值</th><th>來源</th></tr>
+<tr><td>收盤價</td><td>160 元（2026/3/20）</td><td>finlab</td></tr>
+<tr><td>PB</td><td>6.74x（歷史新高）</td><td>finlab</td></tr>
+<tr><td>TTM EPS</td><td>-1.78 元</td><td>finlab</td></tr>
+<tr><td>Q4 2025 毛利率</td><td>24.17%</td><td>法說會</td></tr>
+<tr><td>2026/1-2月營收 YoY</td><td>+55.58%</td><td>鉅亨網</td></tr>
+<tr><td>三星退出 MLC NAND</td><td>已確認</td><td>法說會 + Digitimes</td></tr>
+<tr><td>220 億擴產計畫</td><td>董事會已通過</td><td>公開資訊觀測站</td></tr>
+<tr><td>融資餘額</td><td>172,329 張</td><td>finlab</td></tr>
+<tr><td>融券餘額</td><td>399 張（軋空完成）</td><td>finlab</td></tr>
+<tr><td>可轉債轉換價</td><td>23 元（30 億，到期 2027/3）</td><td>Yahoo 股市</td></tr>
+</table>
+
+<p style="font-weight:700;margin:8px 0 4px;font-size:.88em">承接分析結論（參考框架）</p>
+<table>
+<tr><th>來源</th><th>結論</th></tr>
+<tr><td>ACH（第四步）</td><td>H2 溫和看多 55% 信心，EPS 1.5-3 / 價格 150-200</td></tr>
+<tr><td>壓力測試（第五步）</td><td>風險期望損失 -45% vs 催化劑 +22.5%，致命因子：A-01 三星回頭、A-06 EPS 不及</td></tr>
+<tr><td>評審團（第六步）</td><td>基本面 8.5/10、估值安全 2.0/10、分類：短期強勢型</td></tr>
+<tr><td>估值（第七步）</td><td>五方法一致偏高，安全邊際價 80-100 元，期望值 95 元</td></tr>
+<tr><td>貓膩（第七步 D）</td><td>黃燈，敘事紅旗（六因素完美對齊），CR3=91% 寡占結構</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 8b. 最新情報更新 ===== -->
+<div class="section-title" id="s8b">8b. 最新情報更新</div>
+<div class="section-sub">與第一步收集日（2026/3/21）的差異。推衍日 = 2026/3/22，時間差僅 1 天，情報差異有限。</div>
+
+<div class="card">
+<h3>情報差異表</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>分析日（3/21）</th><th>推衍日（3/22）</th><th>含義</th></tr>
+<tr><td>股價</td><td>160 元</td><td>160 元（未開盤）</td><td>無變化，處置期間量縮</td></tr>
+<tr><td>處置狀態</td><td>第五檔處置中</td><td>持續中</td><td>預計處置期 ~2 週</td></tr>
+<tr><td>融資餘額</td><td>172,329 張</td><td>待更新</td><td>處置期間可能小幅減少</td></tr>
+<tr><td>NOR 合約價</td><td>Q1 漲 30-100%</td><td>無新消息</td><td>Q2 談判尚未開始</td></tr>
+<tr><td>3月營收</td><td>尚未公布</td><td>尚未公布</td><td>4月初公布，為關鍵驗證點</td></tr>
+</table>
+<div class="tip info"><b>情報評估</b>推衍日距分析日僅 1 天，無重大新情報。所有推衍基於 3/21 的資料基準。下次推衍建議在 4 月初（3 月營收公布後）或 4 月底（Q1 財報公布後）進行。</div>
+</div>
+</div>
+
+<!-- ===== 8c. 影響鏈分析 ===== -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">從關鍵事件建構因果推衍鏈，識別跨鏈交互作用。</div>
+
+<div class="card">
+<h3>影響鏈 1：eMMC 獨佔 → 營收爆發</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">F</span> 三星退出 MLC NAND</div>
+    <div class="ev-d">
+    <strong>→ 一階：</strong>eMMC 供給缺口擴大，價格飆漲 <span class="fias-f">F</span><br>
+    <strong>→ 二階：</strong>旺宏 eMMC 營收從 ~50 億 → 100-150 億 <span class="fias-i">I</span><br>
+    <strong>→ 三階：</strong>毛利率因產品組合改善推升至 30-35% <span class="fias-a">A</span><br>
+    <strong>→ 四階：</strong>首次單季轉虧為盈，EPS 轉正 <span class="fias-a">A</span><br>
+    <strong>機率：</strong>一階 95% → 二階 70% → 三階 55% → 四階 50%<br>
+    <strong>影響：</strong>如果四階實現，股價有基本面支撐留在 120+
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 2：NOR 漲價 → 存量業務利潤暴增</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">F</span> NOR Flash Q1 漲價 30-100%</div>
+    <div class="ev-d">
+    <strong>→ 一階：</strong>NOR 營收 ASP 提升 → Q1 營收超預期 <span class="fias-i">I</span><br>
+    <strong>→ 二階：</strong>毛利率在 NOR 端額外提升 5-8pp <span class="fias-i">I</span><br>
+    <strong>→ 三階：</strong>NOR + eMMC 雙引擎同步推升，獲利超預期 <span class="fias-a">A</span><br>
+    <strong>機率：</strong>一階 85% → 二階 70% → 三階 50%
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 3（風險鏈）：處置解除 → 融資斷頭</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 處置解除後成交量暴增</div>
+    <div class="ev-d">
+    <strong>→ 一階：</strong>多空激烈交鋒，波動率飆升 <span class="fias-i">I</span><br>
+    <strong>→ 二階：</strong>若開低 → 17.2 萬張融資面臨維持率不足 <span class="fias-a">A</span><br>
+    <strong>→ 三階：</strong>融資斷頭連鎖賣壓 → 股價加速下跌 <span class="fias-a">A</span><br>
+    <strong>→ 四階：</strong>跌破融資成本線（估 ~120-130）→ 恐慌性賣壓 <span class="fias-s">S</span><br>
+    <strong>機率：</strong>一階 80% → 二階 40% → 三階 25% → 四階 15%
+    </div>
+</div>
+<div class="tip danger"><b>跨鏈交互</b>影響鏈 1（正面）和影響鏈 3（負面）可能同時發生。如果 Q1 財報良好但處置解除時剛好遇到系統性回檔，基本面利多可能被籌碼面利空抵消。這是最危險的「時間差」風險。</div>
+</div>
+</div>
+
+<!-- ===== 8d. 情境模擬 ===== -->
+<div class="section-title" id="s8d">8d. 情境模擬</div>
+<div class="section-sub">基於 ACH 假說建立 4 條未來路徑，標註機率和分支點。</div>
+
+<div class="card">
+<h3>概率決策樹</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>觸發條件</th><th>6 個月後股價</th><th>12 個月後股價</th><th>機率</th></tr>
+<tr style="background:rgba(46,125,50,.05)">
+    <td style="color:var(--bull);font-weight:700">A. 雙引擎全開</td>
+    <td>Q1 轉盈 + 32GB 如期 + NOR 持續漲</td>
+    <td>150-200</td><td>180-250</td><td>20%</td>
+</tr>
+<tr style="background:rgba(90,125,140,.05)">
+    <td style="color:var(--neutral);font-weight:700">B. 穩健成長</td>
+    <td>Q1 接近損平 + eMMC 緩步放量</td>
+    <td>110-150</td><td>130-180</td><td>35%</td>
+</tr>
+<tr style="background:rgba(212,160,23,.05)">
+    <td style="color:var(--warn);font-weight:700">C. 預期落空</td>
+    <td>Q1 仍虧 + 32GB 延遲 + NOR 漲價不持續</td>
+    <td>80-110</td><td>60-100</td><td>30%</td>
+</tr>
+<tr style="background:rgba(198,40,40,.05)">
+    <td style="color:var(--bear);font-weight:700">D. 黑天鵝</td>
+    <td>三星回頭 or 中國廠切入 or 系統性風險</td>
+    <td>40-70</td><td>30-60</td><td>15%</td>
+</tr>
+</table>
+
+<p style="font-size:.84em;font-weight:700;margin-top:8px">機率加權期望值</p>
+<p style="font-size:.84em;color:var(--txt2)">
+6 個月：(175×20%) + (130×35%) + (95×30%) + (55×15%) = 35 + 45.5 + 28.5 + 8.25 = <strong>117 元</strong><br>
+12 個月：(215×20%) + (155×35%) + (80×30%) + (45×15%) = 43 + 54.25 + 24 + 6.75 = <strong>128 元</strong>
+</p>
+
+<div class="tip warn"><b>敏感度分析</b>最能影響結果的變數是<strong>「Q1 2026 是否轉虧為盈」</strong>。如果 Q1 EPS &gt; 0，路徑 A+B 的合計機率從 55% 提升到 70%。如果 Q1 仍虧損，路徑 C+D 的合計機率從 45% 提升到 65%。Q1 財報是分水嶺。</div>
+
+<p style="font-size:.84em;font-weight:700;margin-top:8px">路徑交叉點（必須做決定的時刻）</p>
+<table>
+<tr><th>時間</th><th>事件</th><th>決策</th></tr>
+<tr><td>2026/4 月底</td><td>Q1 財報公布</td><td>轉盈 → 持有/加碼；仍虧 → 減碼/觀望</td></tr>
+<tr><td>2026/6 月</td><td>32GB eMMC 量產進度</td><td>如期 → 維持看多；延遲 → 下調估值 20%</td></tr>
+<tr><td>2026/7 月底</td><td>Q2 法說會</td><td>毛利率 &gt; 30% → 確認趨勢；&lt; 25% → 故事打折</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 8e. 個人化推衍 ===== -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">根據不同投資人情境提供具體行動建議。</div>
+
+<div class="card">
+<h3>情境 A：空手觀望者</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>立場</td><td style="color:var(--bear);font-weight:700">不追高。等待回檔</td></tr>
+<tr><td>理想進場價</td><td>80-100 元（PB 3.4-4.2x）</td></tr>
+<tr><td>次優進場價</td><td>110-120 元（若 Q1 轉盈確認）</td></tr>
+<tr><td>觸發條件</td><td>Q1 EPS &gt; 0 + 股價回檔至安全邊際價</td></tr>
+<tr><td>停損設定</td><td>進場價 -15%</td></tr>
+<tr><td>倉位建議</td><td>分 3 批建倉（1/3 + 1/3 + 1/3），不一次重押</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>情境 B：已持有者（成本 &lt; 80 元）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>立場</td><td style="color:var(--warn);font-weight:700">至少停利一半</td></tr>
+<tr><td>理由</td><td>已獲利 100%+，鎖定利潤是風險管理第一原則</td></tr>
+<tr><td>留倉策略</td><td>留 50% 觀察 Q1 財報，設動態停利（跌破 130 出清）</td></tr>
+<tr><td>加碼條件</td><td>Q1 EPS &gt; 0.5 + 毛利率 &gt; 28% → 可回補 1/3</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>情境 C：已持有者（成本 &gt; 130 元）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>立場</td><td style="color:var(--bear);font-weight:700">設嚴格停損</td></tr>
+<tr><td>停損價</td><td>136 元（-15%）或跌破 10 日均線</td></tr>
+<tr><td>理由</td><td>高成本 + 高波動 + 高槓桿環境 = 斷頭風險極大</td></tr>
+<tr><td>不建議</td><td>攤平加碼（在歷史極端 PB 位置攤平 = 加大風險暴露）</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 8f. 催化劑時間表 ===== -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月的關鍵事件日曆。</div>
+
+<div class="card">
+<h3>催化劑時間軸</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-date">2026/4 月初</div>
+        <div class="tl-title">3 月營收公布</div>
+        <div class="tl-desc">預期 YoY &gt; 50%。觀察：是否維持 30 億+ 月營收水準。影響方向：正面（確認加速）</div>
+    </div>
+    <div class="tl-item" style="--accent:var(--bear)">
+        <div class="tl-date">2026/4 月中</div>
+        <div class="tl-title">處置解除（預估）</div>
+        <div class="tl-desc">處置約 2 週。解除後成交量暴增，多空決戰。觀察：開盤方向 + 融資變化。影響方向：不確定（高波動）</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/4 月底</div>
+        <div class="tl-title" style="color:var(--bear)">Q1 財報公布（最關鍵）</div>
+        <div class="tl-desc">分水嶺事件。觀察：EPS 是否轉正、毛利率是否突破 28%、營業利益率是否轉正。影響方向：決定路徑 A/B 或 C/D</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/5-6 月</div>
+        <div class="tl-title">32GB eMMC 量產驗證</div>
+        <div class="tl-desc">法說會承諾 Q2 底量產。觀察：是否有量產公告或客戶認證新聞。影響方向：正面（確認 eMMC 故事）</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/7 月初</div>
+        <div class="tl-title">6 月營收 + Q2 展望</div>
+        <div class="tl-desc">觀察：月營收是否突破 35 億、擴產進度。影響方向：正面（成長加速）</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/7 月底</div>
+        <div class="tl-title">Q2 法說會</div>
+        <div class="tl-desc">觀察：下半年展望、eMMC 接單狀況、NOR 合約價趨勢。影響方向：方向性指引</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/9 月</div>
+        <div class="tl-title">擴產設備到位進度</div>
+        <div class="tl-desc">220 億計畫的首批設備應在 H2 陸續到位。觀察：月產能是否開始提升。影響方向：正面（產能擴張兌現）</div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ===== 8g. 蝴蝶效應推衍 ===== -->
+<div class="section-title" id="s8g">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">從本次分析中找出被忽略的弱訊號，推演可能的連鎖反應。</div>
+
+<div class="card">
+<h3>弱訊號雷達</h3>
+<div class="card-body">
+<table>
+<tr><th>類型</th><th>弱訊號</th><th>來源</th><th>潛在影響</th></tr>
+<tr><td style="color:var(--bear)">A. 異常數據</td><td>存貨 98 億元（佔流動資產 33%）</td><td>finlab Q4 資產負債表</td><td>如果是「刻意囤貨等漲價」→ 正面；如果是「賣不掉」→ 嚴重負面</td></tr>
+<tr><td style="color:var(--warn)">B. 被忽略的關聯</td><td>可轉債 23372 在 3/9 出現異常波動</td><td>Yahoo 股市公告</td><td>CB 持有人可能已開始轉換 + 賣出，成為隱形賣壓</td></tr>
+<tr><td style="color:var(--warn)">C. 時間差異常</td><td>投信在暴漲期間連續淨賣出</td><td>finlab 投信買賣超</td><td>機構法人不認同 160 元定價，可能預見回檔</td></tr>
+<tr><td style="color:var(--bull)">D. 被低估的趨勢</td><td>營業現金流 Q3-Q4 合計 +44.7 億</td><td>finlab</td><td>現金流先行指標已大幅好轉，獲利拐點可能比市場預期更早</td></tr>
+<tr><td style="color:var(--warn)">E. 反直覺訊號</td><td>外資持股在暴漲前從 29.7% 降到 22.9%</td><td>finlab</td><td>外資在散戶追高前大量賣出 → 可能知道什麼？或只是獲利了結？</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應推演鏈 Top 3</h3>
+<div class="card-body">
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">A</span> 推演鏈 1：存貨 98 億 → 隱藏的定時炸彈？</div>
+    <div class="ev-d">
+    <strong>弱訊號：</strong>Q4 存貨 98 億，佔總資產 12.5%<br>
+    <strong>→ 階段 1：</strong>如果存貨中大部分是 NOR Flash 成品 → 公司可能在囤貨等 Q1 漲價<br>
+    <strong>→ 階段 2：</strong>Q1 漲價實現後大量出貨 → Q1 營收 + 毛利率同步暴增<br>
+    <strong>→ 階段 3：</strong>但存貨出清後，後續營收可能出現「斷層」（出貨高峰後的空窗期）<br>
+    <strong>→ 階段 4：</strong>Q2 營收若低於 Q1 → 市場解讀為「高峰已過」→ 股價回檔<br>
+    <strong>蝴蝶效應：</strong>存貨水位的變化可能提前 1 季揭示營收趨勢的真實方向。<br>
+    <strong>追蹤指標：</strong>Q1 財報存貨金額 — 如果存貨大幅下降 = 出貨潮（正面但可能不持續）；如果存貨繼續增加 = 需求拉動（持續正面）
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 推演鏈 2：可轉債轉換 → 隱形賣壓 → 跌價催化劑</div>
+    <div class="ev-d">
+    <strong>弱訊號：</strong>23372 在 3/9 出現異常價格波動<br>
+    <strong>→ 階段 1：</strong>CB 持有人在股價 160 元時轉換（轉換價 23 元 = 獲利 596%）<br>
+    <strong>→ 階段 2：</strong>轉換後的 ~1.3 億股（6.7% 稀釋）陸續在市場賣出<br>
+    <strong>→ 階段 3：</strong>每日如果有 1,000-3,000 張 CB 轉換股在賣出，以日均量 18 萬張計，額外供給 ~1-2%<br>
+    <strong>→ 階段 4：</strong>持續 2-3 個月的隱形賣壓壓制股價上行空間<br>
+    <strong>蝴蝶效應：</strong>看似微小的 CB 轉換，累計起來可能在未來 3 個月內釋放 1.3 億股的賣壓。<br>
+    <strong>追蹤指標：</strong>每月 CB 未轉換餘額 → 如果快速下降 = 轉換潮已開始
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 推演鏈 3：營業現金流拐點 → 比市場預期更早獲利</div>
+    <div class="ev-d">
+    <strong>弱訊號：</strong>Q3-Q4 營業現金流合計 +44.7 億，但 EPS 仍為負<br>
+    <strong>→ 階段 1：</strong>EPS 仍虧損是因為折舊/攤銷等非現金費用（每季 ~15-20 億）<br>
+    <strong>→ 階段 2：</strong>隨著營收成長，固定費用佔比下降 → 營業槓桿效應<br>
+    <strong>→ 階段 3：</strong>Q1 2026 如果營收維持 90-100 億，營業利益有機會首次轉正<br>
+    <strong>→ 階段 4：</strong>「首季獲利」的新聞效應可能觸發新一波買盤<br>
+    <strong>蝴蝶效應：</strong>現金流先行指標暗示獲利拐點比市場共識的「2026 H2」提前到 Q1。<br>
+    <strong>追蹤指標：</strong>Q1 營業利益率 — 如果 &gt; 0% = 超預期轉盈
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>盲點洞察 Top 3</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 盲點 1：所有人都在算 EPS，沒人在算 FCF</div>
+    <div class="ev-d">市場聚焦「何時轉虧為盈」，但自由現金流已經轉正（Q4 +24.5 億）。對於資本密集產業，FCF 比 EPS 更能反映真實經營品質。如果用 FCF yield 來看（年化 FCF ~60 億 / 市值 3,090 億 = 1.94%），估值仍然偏高，但至少不是「虧損公司」。</div>
+</div>
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">A</span> 盲點 2：沒人討論 eMMC 的「賞味期限」</div>
+    <div class="ev-d">所有多方論述都在說「eMMC 獨佔」，但很少人討論這個獨佔窗口有多長。eMMC 是舊技術，下游每年有 5-10% 的設計案轉向 UFS。假設 2026 年 eMMC 市場 = 100，2028 = 85，2030 = 60。旺宏需要在窗口關閉前把 220 億投資回本。</div>
+</div>
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 盲點 3：華邦電的反應會改變賽局</div>
+    <div class="ev-d">大摩把首選從華邦電改為旺宏，但華邦電 NOR 投片正在擴產（月 2.5 萬→3 萬片）。如果華邦電也切入 eMMC 市場（他們有 MLC NAND 的技術基礎），旺宏的獨佔地位就不成立了。目前沒有華邦電進入 eMMC 的公開計畫，但不代表他們不會。</div>
+</div>
+</div>
+</div>
+
+<!-- ===== 8h. 貓膩推衍 ===== -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">承接第七步 D 貓膩探索的求證結論，推演「如果貓膩成立」的未來路徑。</div>
+
+<div class="card">
+<h3>8h-1. 承接貓膩結論</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>結論</th></tr>
+<tr><td>貓膩燈號</td><td><span class="light yellow"></span> 黃燈（有疑點需觀察）</td></tr>
+<tr><td>敘事紅旗</td><td>六因素完美對齊 = 過度完美</td></tr>
+<tr><td>核心假說</td><td>NOR 寡占暗默共謀（25%）+ 散戶被引導追高（35%）</td></tr>
+<tr><td>確認假說</td><td>CB 持有人套利出場（80%）</td></tr>
+<tr><td>監控指標</td><td>融資餘額、CB 轉換進度、NOR Q2 合約價、外資動向</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-2. 歷史劇本推演：如果寡占共謀成立</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">I</span> 最相似歷史案例：2017-2018 DRAM 超級週期</div>
+    <div class="ev-d">
+    <strong>相似度：</strong>70/100<br>
+    <strong>相似點：</strong>供給紀律（CR3&gt;90%）+ 缺貨漲價 + 「超級週期」敘事 + 股價飆漲<br>
+    <strong>差異點：</strong>DRAM 市場規模遠大於 NOR；DRAM 三巨頭有更強的產能控制力；旺宏有 eMMC 獨佔這個額外因素<br>
+    <strong>歷史時間軸：</strong>漲價週期 ~18 個月（2017 Q1 → 2018 Q3）→ 崩盤 ~12 個月（跌幅 40-60%）<br>
+    <strong>推演：</strong>如果 NOR Flash 漲價週期類似 → 可能在 2026 Q4 ~ 2027 Q1 見頂 → 之後 12 個月回跌 30-50%
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-3. 反轉路徑推演</h3>
+<div class="card-body">
+<table>
+<tr><th>觸發條件</th><th>預估時間</th><th>市場反應</th><th>股價路徑</th></tr>
+<tr><td>三星宣布保留 MLC</td><td>12+ 個月（機率低）</td><td>恐慌性賣出</td><td>160 → 80（-50%）in 1 週</td></tr>
+<tr><td>華邦電宣布進入 eMMC</td><td>6-12 個月（機率 20%）</td><td>獨佔溢價消失</td><td>160 → 100（-37%）in 1 月</td></tr>
+<tr><td>NOR Q2 合約價下跌</td><td>3-6 個月（機率 20%）</td><td>漲價故事打折</td><td>160 → 120（-25%）漸進</td></tr>
+<tr><td>Q1 EPS 仍為負</td><td>1 個月（機率 35%）</td><td>預期落空</td><td>160 → 110（-31%）in 2 週</td></tr>
+</table>
+
+<div class="tip warn"><b>先知先覺指標</b>在正式利空公布之前，以下指標可能先動：(1) 外資持股率持續下降（跌破 24%）(2) 融資餘額異常減少（非處置期）(3) CB 轉換速度加快（每週 &gt; 2,000 張）。如果同時出現 2 個以上 → 可能有人已知道壞消息。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-4. 保護策略</h3>
+<div class="card-body">
+<table>
+<tr><th>如果你相信...</th><th>建議行動</th></tr>
+<tr><td>貓膩存在（寡占操控價格）</td><td>立即減碼至 25% 以下，設 -10% 停損，等漲價週期明確見頂再空手</td></tr>
+<tr><td>不確定</td><td>倉位不超過 50%，設動態停利（高點回落 15% 出場），同時觀察 Q1 財報驗證</td></tr>
+<tr><td>貓膩不存在（相信基本面）</td><td>維持部位，但在 PB &gt; 5 的區間不加碼，等 PB 回到 3-4 再加碼</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-5. 貓膩追蹤清單</h3>
+<div class="card-body">
+<table>
+<tr><th>追蹤指標</th><th>確認門檻</th><th>否定門檻</th><th>檢查頻率</th></tr>
+<tr><td>NOR Q2 合約價</td><td>下跌 &gt; 10% = 漲價不持續</td><td>續漲 &gt; 20% = 需求真實</td><td>每月</td></tr>
+<tr><td>華邦電 eMMC 動態</td><td>任何 eMMC 產品公告</td><td>法說會明確表示不進入</td><td>每季</td></tr>
+<tr><td>外資持股率</td><td>跌破 22% = 機構撤退</td><td>突破 30% = 機構認可</td><td>每週</td></tr>
+<tr><td>融資餘額</td><td>突破 20 萬張 = 過熱</td><td>降至 10 萬以下 = 降溫</td><td>每週</td></tr>
+<tr><td>CB 轉換進度</td><td>單月轉換 &gt; 5,000 張 = 賣壓開始</td><td>到期前 6 月仍未大量轉換</td><td>每月</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px"><strong>下次檢查日期：</strong>2026/4/15（Q1 財報公布後立即更新推衍）</p>
+</div>
+</div>
+
+<!-- ===== 8i. 推衍結論 ===== -->
+<div class="section-title" id="s8i">8i. 推衍結論</div>
+<div class="section-sub">綜合所有推衍方法的最終判斷。</div>
+
+<div class="card">
+<h3>最可能路徑判斷</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card neutral-card">
+    <div class="title">最可能路徑</div>
+    <div class="num" style="color:var(--neutral)">路徑 B</div>
+    <div class="desc">穩健成長（35% 機率）<br>6 個月後 110-150 元</div>
+</div>
+<div class="mini-card" style="border-left:4px solid var(--warn)">
+    <div class="title">加權期望值</div>
+    <div class="num" style="color:var(--warn)">117 元（6M）</div>
+    <div class="desc">低於現價 160 元<br>隱含下行風險 -27%</div>
+</div>
+</div>
+
+<div class="tip warn"><b>第三次信心校準</b>
+ACH 初始 H2 = 65% → 壓力測試後 = 55% → <strong>推衍後 = 50%</strong>（再降 5pp）。<br>
+降低原因：蝴蝶效應推衍揭示了 (1) CB 隱形賣壓被低估 (2) eMMC 賞味期限風險 (3) 華邦電可能反擊。加權期望值 117 元低於現價 160 元，代表在目前價位買入的期望報酬為負。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應洞察摘要</h3>
+<div class="card-body">
+<table>
+<tr><th>排名</th><th>洞察</th><th>影響</th></tr>
+<tr><td>1</td><td>CB 30 億轉換 = 未來 3 月 1.3 億股隱形賣壓</td><td style="color:var(--bear)">壓制上行空間</td></tr>
+<tr><td>2</td><td>eMMC 賞味期限 ~3-5 年，220 億投資必須搶時間回本</td><td style="color:var(--warn)">長期風險被低估</td></tr>
+<tr><td>3</td><td>營業現金流拐點暗示 Q1 可能超預期轉盈</td><td style="color:var(--bull)">短期正面催化</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>行動清單</h3>
+<div class="card-body">
+<table>
+<tr><th>優先序</th><th>行動</th><th>時間</th></tr>
+<tr><td>1</td><td style="font-weight:700">不在 160 元追高 — 期望值為負</td><td>立即</td></tr>
+<tr><td>2</td><td>追蹤處置解除後的開盤方向和成交量</td><td>~4 月初</td></tr>
+<tr><td>3</td><td>等 Q1 財報公布後重新評估（是否轉盈？）</td><td>4 月底</td></tr>
+<tr><td>4</td><td>若股價回檔至 80-100 元 → 考慮分批建倉</td><td>待機</td></tr>
+<tr><td>5</td><td>每週檢查融資餘額 + 外資持股率 + CB 轉換進度</td><td>持續</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍有效期聲明</h3>
+<div class="card-body">
+<div class="tip info"><b>推衍有效期：2026/3/22 ~ 2026/4/15</b>
+本次推衍基於 2026/3/20 的資料。以下事件發生後，推衍需立即更新：<br>
+(1) Q1 財報公布（4 月底）<br>
+(2) 處置解除後首日交易結果<br>
+(3) 任何關於 eMMC 競爭格局的重大新聞<br>
+(4) 股價突破 200 或跌破 100<br>
+超過有效期未更新的推衍不應作為決策依據。
+</div>
+</div>
+</div>
+
+<!-- ===== 完成門檻自檢表 ===== -->
+<div class="card" style="border:2px solid var(--accent);margin-top:16px">
+<h3 style="color:var(--accent)">第八步完成門檻自檢表</h3>
+<div class="card-body">
+<table>
+<tr><th>檢查項目</th><th>狀態</th></tr>
+<tr><td>8a 推衍基礎確認（錨點 + 分析結論）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8b 最新情報更新（差異表）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8c 影響鏈分析（3 條含跨鏈交互）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8d 情境模擬（4 路徑 + 機率 + 交叉點）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8e 個人化推衍（3 情境行動建議）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8f 催化劑時間表（6 個月 7 事件）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8g 蝴蝶效應（弱訊號 5 個 + 推演鏈 3 條 + 盲點 3 個）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8h 貓膩推衍（歷史劇本 + 反轉路徑 + 保護策略 + 追蹤清單）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>8i 推衍結論（最可能路徑 + 信心校準 + 行動清單 + 有效期）</td><td style="color:var(--bull)">達標</td></tr>
+<tr><td>第三次信心校準（H2: 55% → 50%）</td><td style="color:var(--bull)">達標</td></tr>
+</table>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>推衍日期：2026-03-22 ｜ 有效期至：2026-04-15</p>
+    <p style="margin-top:4px">免責聲明：所有推衍僅供個人研究參考，不構成任何投資建議。推衍基於已知情報，未來可能與預期大幅偏離。</p>
+</div>
+
+</div><!-- end wrap -->
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
