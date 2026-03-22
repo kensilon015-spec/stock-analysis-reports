@@ -277,7 +277,7 @@ S5（7%）：需要多個低機率事件連鎖觸發
 <div class="ec-wrap">
 <h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">美伊戰爭劇本分支樹 — S2/S3/S4 整合互動圖</h3>
 <div class="ec-btns"><button onclick="ecCtrl('chart-all','expand')">全部展開</button><button onclick="ecCtrl('chart-all','collapse')">全部收合</button><button onclick="ecCtrl('chart-all','reset')">恢復視角</button></div>
-<div id="chart-all" class="ec-chart" style="height:700px"></div>
+<div id="chart-all" class="ec-chart" style="height:450px" data-h="450"></div>
 <div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
 </div>
 
@@ -409,7 +409,7 @@ EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×
 <div class="ec-wrap">
 <h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">系統動力學 — 級聯風險節點展開圖</h3>
 <div class="ec-btns"><button onclick="ecCtrl('chart-causal','expand')">全部展開</button><button onclick="ecCtrl('chart-causal','collapse')">全部收合</button><button onclick="ecCtrl('chart-causal','reset')">恢復視角</button></div>
-<div id="chart-causal" class="ec-chart" style="height:600px"></div>
+<div id="chart-causal" class="ec-chart" style="height:400px" data-h="400"></div>
 </div>
 
 <!-- C1 節點展開 -->
@@ -863,19 +863,43 @@ var _EC={};
 function setCol(node,val){node.collapsed=val;if(node.children){for(var i=0;i<node.children.length;i++)setCol(node.children[i],val)}}
 // 設定到指定深度展開
 function setDepth(node,maxD,cur){cur=cur||0;node.collapsed=cur>=maxD;if(node.children){for(var i=0;i<node.children.length;i++)setDepth(node.children[i],maxD,cur+1)}}
+// 計算可見葉節點數（展開狀態）
+function countLeaves(node){
+  if(!node.children||node.children.length===0)return 1;
+  if(node.collapsed)return 1;
+  var c=0;for(var i=0;i<node.children.length;i++)c+=countLeaves(node.children[i]);
+  return c;
+}
+// 動態調整容器高度
+function autoSize(id){
+  var ec=_EC[id];if(!ec)return;
+  var el=document.getElementById(id);if(!el)return;
+  var defH=parseInt(el.getAttribute('data-h'))||450;
+  var leaves=countLeaves(ec.data);
+  var needH=Math.max(defH,leaves*28);
+  el.style.height=needH+'px';
+  ec.chart.resize();
+}
 // 控制函式（全域）
 window.ecCtrl=function(id,action){
   var ec=_EC[id];if(!ec)return;
+  var el=document.getElementById(id);
+  var defH=parseInt(el.getAttribute('data-h'))||450;
   if(action==='expand'){
     setCol(ec.data,false);
     ec.chart.setOption({series:[{data:[ec.data]}]});
+    autoSize(id);
   }else if(action==='collapse'){
     setCol(ec.data,true);
-    ec.data.collapsed=false;// 根節點保持展開
+    ec.data.collapsed=false;
+    el.style.height=defH+'px';
+    ec.chart.resize();
     ec.chart.setOption({series:[{data:[ec.data]}]});
   }else if(action==='reset'){
-    setDepth(ec.data,2,0);// 恢復 initialTreeDepth:2
-    ec.chart.dispatchAction({type:'restore'});// 重設縮放平移
+    setDepth(ec.data,2,0);
+    el.style.height=defH+'px';
+    ec.chart.resize();
+    ec.chart.dispatchAction({type:'restore'});
     ec.chart.setOption({series:[{data:[ec.data]}]});
   }
 };
