@@ -80,6 +80,9 @@ details[open]>summary{margin-bottom:4px;border-bottom:1px solid var(--border);pa
 .ec-timeline{display:flex;justify-content:space-between;padding:4px 20px;font-size:.72em;color:var(--txt3);font-weight:600;border-top:1px dashed var(--border);margin-top:4px}
 /* 節點編號標籤 */
 .node-id{font-family:'Courier New',monospace;font-size:.75em;font-weight:700;color:var(--accent);margin-right:4px}
+.ec-btns{display:flex;gap:4px;margin:0 0 6px}
+.ec-btns button{padding:3px 10px;border:1px solid var(--border);border-radius:5px;background:var(--panel);font-size:.72em;font-weight:600;color:var(--txt2);cursor:pointer;font-family:inherit;transition:all .15s}
+.ec-btns button:hover{background:var(--border);color:var(--base)}
 </style>
 </head>
 <body>
@@ -270,24 +273,11 @@ S5（7%）：需要多個低機率事件連鎖觸發
 <b>操作說明</b>：滑鼠懸停節點 → 顯示完整資訊（機率/依據/影響）｜點擊節點 → 展開/收合子分支｜滾輪 → 縮放｜拖曳 → 平移
 </div>
 
-<!-- S2 ECharts -->
+<!-- 整合式分支樹（S2+S3+S4 合併一棵樹） -->
 <div class="ec-wrap">
-<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S2 持續空襲（40%）— 互動分支樹</h3>
-<div id="chart-s2" class="ec-chart"></div>
-<div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
-</div>
-
-<!-- S3 ECharts -->
-<div class="ec-wrap">
-<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S3 全面轟炸（25%）— 互動分支樹</h3>
-<div id="chart-s3" class="ec-chart"></div>
-<div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
-</div>
-
-<!-- S4 ECharts -->
-<div class="ec-wrap">
-<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">S4 荷莫茲封鎖（20%）— 互動分支樹</h3>
-<div id="chart-s4" class="ec-chart"></div>
+<h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">美伊戰爭劇本分支樹 — S2/S3/S4 整合互動圖</h3>
+<div class="ec-btns"><button onclick="ecCtrl('chart-all','expand')">全部展開</button><button onclick="ecCtrl('chart-all','collapse')">全部收合</button><button onclick="ecCtrl('chart-all','reset')">恢復視角</button></div>
+<div id="chart-all" class="ec-chart" style="height:700px"></div>
 <div class="ec-timeline"><span>即時</span><span>1-2 週</span><span>1-3 月</span><span>3-6 月</span><span>6-12 月</span></div>
 </div>
 
@@ -418,6 +408,7 @@ EV ≈ 12%×(+4%) + 14%×(-4%) + 10%×(-11%) + 4%×(+2.5%) + 5%×(+4%) + 8.75%×
 
 <div class="ec-wrap">
 <h3 style="font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px">系統動力學 — 級聯風險節點展開圖</h3>
+<div class="ec-btns"><button onclick="ecCtrl('chart-causal','expand')">全部展開</button><button onclick="ecCtrl('chart-causal','collapse')">全部收合</button><button onclick="ecCtrl('chart-causal','reset')">恢復視角</button></div>
 <div id="chart-causal" class="ec-chart" style="height:600px"></div>
 </div>
 
@@ -866,6 +857,28 @@ function fmt(p){
   if(d.crossLink) h+='<br><span style="color:#E74C3C">⚡ 跨枝：'+d.crossLink+'</span>';
   return h;
 }
+// 全域圖表儲存
+var _EC={};
+// 遞迴設定 collapsed
+function setCol(node,val){node.collapsed=val;if(node.children){for(var i=0;i<node.children.length;i++)setCol(node.children[i],val)}}
+// 設定到指定深度展開
+function setDepth(node,maxD,cur){cur=cur||0;node.collapsed=cur>=maxD;if(node.children){for(var i=0;i<node.children.length;i++)setDepth(node.children[i],maxD,cur+1)}}
+// 控制函式（全域）
+window.ecCtrl=function(id,action){
+  var ec=_EC[id];if(!ec)return;
+  if(action==='expand'){
+    setCol(ec.data,false);
+    ec.chart.setOption({series:[{data:[ec.data]}]});
+  }else if(action==='collapse'){
+    setCol(ec.data,true);
+    ec.data.collapsed=false;// 根節點保持展開
+    ec.chart.setOption({series:[{data:[ec.data]}]});
+  }else if(action==='reset'){
+    setDepth(ec.data,2,0);// 恢復 initialTreeDepth:2
+    ec.chart.dispatchAction({type:'restore'});// 重設縮放平移
+    ec.chart.setOption({series:[{data:[ec.data]}]});
+  }
+};
 // 共用 option 建構
 function mkOpt(data,h){
   return {
@@ -885,6 +898,7 @@ function init(id,data,h){
   if(!el)return;
   var c=echarts.init(el);
   c.setOption(mkOpt(data,h||500));
+  _EC[id]={chart:c,data:data};
   window.addEventListener('resize',function(){c.resize()});
 }
 
@@ -1047,11 +1061,23 @@ var causal={
   ]
 };
 
-// 初始化四張圖表
+// ===== 合併為一棵完整分支樹 =====
+var allTree={
+  name:'美伊戰爭劇本分支',
+  value:{desc:'5 母劇本 × 12 子路線完整推演',prob:'S1(8%)+S2(40%)+S3(25%)+S4(20%)+S5(7%)'},
+  itemStyle:{color:'#5c564e'},
+  children:[
+    {name:'S1 外交解決(8%)',value:{id:'S1',prob:'8%',desc:'秘密管道重啟→全面停火',impact:'台股+5~8%'},itemStyle:{color:AC.G},collapsed:true,children:[]},
+    s2,
+    s3,
+    s4,
+    {name:'S5 全面戰爭(7%)',value:{id:'S5',prob:'7%',desc:'S4+中國護航+北韓核試=多點引爆',impact:'台股崩盤-30~50%，1929等級'},itemStyle:{color:AC.G},collapsed:true,children:[]}
+  ]
+};
+
+// 初始化兩張圖表（整合分支樹 + 因果迴路圖）
 if(typeof echarts!=='undefined'){
-  init('chart-s2',s2);
-  init('chart-s3',s3);
-  init('chart-s4',s4);
+  init('chart-all',allTree);
   init('chart-causal',causal);
 }
 })();
