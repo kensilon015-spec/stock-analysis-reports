@@ -902,110 +902,268 @@ function init(id,data,h){
   window.addEventListener('resize',function(){c.resize()});
 }
 
-// ===== S2 持續空襲 樹資料 =====
+// ===== S2 持續空襲 樹資料（5 層深度）=====
 var s2={
   name:'S2 持續空襲',
   value:{id:'S2',prob:'母劇本 40%',desc:'精準打擊伊朗軍事/核設施，不攻擊民用基礎設施'},
   itemStyle:{color:AC.G},
   children:[
     {name:'S2a 空襲疲勞→停火',itemStyle:{color:AC.G},
-     value:{id:'S2-G-1A',prob:'條件 30%→絕對 12%',time:'4 月上旬',desc:'伊朗飛彈發射率降 90%+美國國內反對升至 50%',impact:'台股 +3~5%，油價回落 $80-90',basis:'2003 伊拉克「任務完成」模式',aspect:'G'},
+     value:{id:'S2-G-1A',prob:'條件 30%→絕對 12%',time:'4 月上旬',desc:'伊朗飛彈發射率降 90%+美國國內反對升至 50%',impact:'台股 +3~5%，油價回落 $80-90',basis:'2003 伊拉克「任務完成」模式'},
      children:[
-       {name:'中國參與停火',value:{id:'S2-G-1A',desc:'積極參與框架以展示大國角色',impact:'台海壓力暫緩',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'油價回落 $80-90',value:{id:'S2-E-1A',desc:'供給恢復預期→期貨走跌',impact:'石化/航運回吐漲幅',aspect:'E'},itemStyle:{color:AC.E}},
-       {name:'半導體/科技反彈',value:{id:'S2-I-1A',desc:'氦氣供應恢復預期',impact:'台積電/聯發科反彈 +5~8%',aspect:'I'},itemStyle:{color:AC.I}}
+       {name:'中國參與停火框架',value:{id:'S2-G-2A',desc:'展示大國角色',impact:'台海壓力暫緩'},itemStyle:{color:AC.G},
+        children:[
+          {name:'台海灰色地帶降溫',value:{id:'S2-G-3A',desc:'軍演頻率降低',impact:'外資回流台股'},itemStyle:{color:AC.G},
+           children:[{name:'台積電估值修復',value:{id:'S2-I-4A',desc:'地緣折價收窄',impact:'ADR 溢價回正'},itemStyle:{color:AC.I}}]},
+          {name:'「一帶一路」能源安全重估',value:{id:'S2-G-3B',desc:'加速中巴/中亞管道',impact:'長期減依賴荷莫茲'},itemStyle:{color:AC.G}}
+        ]},
+       {name:'油價回落 $80-90',value:{id:'S2-E-2A',desc:'供給恢復預期→期貨走跌',impact:'石化/航運回吐漲幅'},itemStyle:{color:AC.E},
+        children:[
+          {name:'石化板塊回吐 -8~12%',value:{id:'S2-E-3A',desc:'台塑化/台塑/台化獲利縮水',impact:'Q2 營收預期下修'},itemStyle:{color:AC.E},
+           children:[{name:'台塑集團估值正常化',value:{id:'S2-E-4A',desc:'戰爭溢價消失',impact:'回到基本面定價'},itemStyle:{color:AC.E}}]},
+          {name:'航運運價正常化',value:{id:'S2-T-3A',desc:'紅海恢復→運費 -30~40%',impact:'長榮/萬海回吐 Q1 漲幅'},itemStyle:{color:AC.T},
+           children:[{name:'出口商成本降低',value:{id:'S2-S-4A',desc:'交期恢復→庫存壓力釋放',impact:'電子業毛利回升'},itemStyle:{color:AC.S}}]}
+        ]},
+       {name:'半導體/科技反彈',value:{id:'S2-I-2A',desc:'氦氣供應恢復預期',impact:'台積電/聯發科 +5~8%'},itemStyle:{color:AC.I},
+        children:[
+          {name:'EUV 產線恢復全產能',value:{id:'S2-I-3A',desc:'氦氣庫存回補 4-8 週',impact:'先進製程交期正常化'},itemStyle:{color:AC.I},
+           children:[{name:'AI 晶片供給回升',value:{id:'S2-I-4B',desc:'NVDA/AMD 訂單重新排程',impact:'費半反彈 +8~12%'},itemStyle:{color:AC.I}}]},
+          {name:'車用晶片荒避免',value:{id:'S2-S-3A',desc:'優先分配壓力解除',impact:'車廠生產正常化'},itemStyle:{color:AC.S}}
+        ]}
      ]},
     {name:'S2b 持續僵局（最高機率）',itemStyle:{color:AC.E},
-     value:{id:'S2-E-1A',prob:'條件 35%→絕對 14%',time:'持續 2-4 月',desc:'通牒到期僅象徵性升級+伊朗報復衰減+海峽半封鎖',impact:'台股 32,000-34,000 震盪',basis:'1980-88 兩伊油輪戰模式',aspect:'E'},
+     value:{id:'S2-E-1A',prob:'條件 35%→絕對 14%',time:'持續 2-4 月',desc:'通牒到期僅象徵性升級+伊朗報復衰減+海峽半封鎖',impact:'台股 32,000-34,000 震盪',basis:'1980-88 兩伊油輪戰模式'},
      children:[
-       {name:'油價 $95-115 區間',value:{id:'S2-E-1A',desc:'供給擔憂但未斷供',impact:'石化板塊穩定受惠',aspect:'E'},itemStyle:{color:AC.E}},
-       {name:'俄羅斯最大受益',value:{id:'S2-G-1A',desc:'月額外 50-70 億美元',impact:'烏克蘭戰線惡化',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'4 月底氦氣硬停頓',value:{id:'S2-I-1A',desc:'卡達 30% 產能停→庫存耗盡',impact:'EUV 停機→先進製程減產',aspect:'I',crossLink:'C2 級聯鏈'},itemStyle:{color:AC.I}}
+       {name:'油價 $95-115 區間',value:{id:'S2-E-2B',desc:'供給擔憂但未斷供',impact:'石化穩定受惠'},itemStyle:{color:AC.E},
+        children:[
+          {name:'台塑化轉單效應',value:{id:'S2-E-3B',desc:'中東產能受限→亞洲轉單',impact:'營收 +15~20% YoY'},itemStyle:{color:AC.E},
+           children:[{name:'石化下游成本轉嫁',value:{id:'S2-S-4B',desc:'塑膠/紡織原料漲價',impact:'CPI +0.3~0.5%'},itemStyle:{color:AC.S}}]},
+          {name:'保險附加費持續',value:{id:'S2-F-3A',desc:'戰爭險費率 +200~500bp',impact:'運費維持高位'},itemStyle:{color:AC.F}}
+        ]},
+       {name:'俄羅斯最大受益',value:{id:'S2-G-2B',desc:'月額外 50-70 億美元',impact:'烏克蘭戰線惡化'},itemStyle:{color:AC.G},
+        children:[
+          {name:'愛國者飛彈調撥',value:{id:'S2-G-3C',desc:'從歐洲/亞洲調往中東',impact:'烏克蘭防空缺口擴大'},itemStyle:{color:AC.G},
+           children:[{name:'歐洲國防預算加速',value:{id:'S2-G-4A',desc:'NATO 3% GDP 門檻',impact:'Rheinmetall/BAE 受惠'},itemStyle:{color:AC.G}}]},
+          {name:'俄烏和談窗口關閉',value:{id:'S2-G-3D',desc:'俄羅斯無談判動機',impact:'歐洲能源成本持續高位'},itemStyle:{color:AC.G}}
+        ]},
+       {name:'4 月底氦氣硬停頓',value:{id:'S2-I-2B',desc:'卡達 30% 產能停→庫存耗盡',impact:'EUV 停機→先進製程減產',crossLink:'C2 級聯鏈'},itemStyle:{color:AC.I},
+        children:[
+          {name:'EUV 製程停線',value:{id:'S2-I-3B',desc:'台積電/三星 N3/N5 受限',impact:'先進製程產能 -40~60%'},itemStyle:{color:AC.I},
+           children:[
+             {name:'台積電減產→AI 晶片交期 +8-12 週',value:{id:'S2-I-4C',desc:'NVDA/AMD 供應中斷',impact:'費半 -15~25%'},itemStyle:{color:AC.I}},
+             {name:'車用晶片荒 2.0',value:{id:'S2-S-4C',desc:'2021 年式重演',impact:'Toyota/Tesla 停產'},itemStyle:{color:AC.S}}
+           ]},
+          {name:'氦氣現貨 $1,200+/MCF',value:{id:'S2-S-3B',desc:'$300→$1,200（×4）',impact:'APD/LIN 受惠'},itemStyle:{color:AC.S}}
+        ]}
      ]},
     {name:'S2c 通牒升級→轉 S3',itemStyle:{color:AC.G},
-     value:{id:'S2-G-1B',prob:'條件 25%→絕對 10%',time:'3/23 通牒後',desc:'B-2 打擊電力網→8,000 萬人斷電→IRGC 全面報復',impact:'台股單日暴跌 800-1,500 點',basis:'川普 Truth Social 通牒模式',aspect:'G'},
+     value:{id:'S2-G-1B',prob:'條件 25%→絕對 10%',time:'3/23 通牒後',desc:'B-2 打擊電力網→8,000 萬人斷電→IRGC 全面報復',impact:'台股單日暴跌 800-1,500 點',basis:'川普 Truth Social 通牒模式'},
      children:[
-       {name:'歐盟與美國決裂',value:{id:'S2-G-1A',desc:'歐洲公開反對轟炸民用設施',impact:'跨大西洋聯盟裂痕',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'胡塞 72hr 恢復攻擊',value:{id:'S2-T-1A',desc:'打破 3 週沉默→紅海再封',impact:'航運運價飆漲',aspect:'T',crossLink:'觸發 S3/S4'},itemStyle:{color:AC.T}},
-       {name:'國安基金進場',value:{id:'S2-F-1A',desc:'授權 5,000 億但效果有限',impact:'短期止跌但無法扭轉趨勢',aspect:'F'},itemStyle:{color:AC.F}}
+       {name:'歐盟與美國決裂',value:{id:'S2-G-2C',desc:'歐洲公開反對轟炸民用設施',impact:'跨大西洋聯盟裂痕'},itemStyle:{color:AC.G},
+        children:[
+          {name:'歐洲獨立外交啟動',value:{id:'S2-G-3E',desc:'法德繞過美國直接與伊朗對話',impact:'多極化加速'},itemStyle:{color:AC.G},
+           children:[{name:'美元霸權信心鬆動',value:{id:'S2-F-4A',desc:'歐元/人民幣結算增加',impact:'長期美元地位侵蝕'},itemStyle:{color:AC.F}}]}
+        ]},
+       {name:'胡塞 72hr 恢復攻擊',value:{id:'S2-T-2A',desc:'打破 3 週沉默→紅海再封',impact:'航運運價飆漲',crossLink:'觸發 S3/S4'},itemStyle:{color:AC.T},
+        children:[
+          {name:'紅海保險費暴漲',value:{id:'S2-F-3B',desc:'戰爭險 +500bp',impact:'歐亞航運成本翻倍'},itemStyle:{color:AC.F},
+           children:[{name:'好望角繞行成常態',value:{id:'S2-T-4A',desc:'+10-14 天航程',impact:'全球供應鏈交期延長 2-3 週'},itemStyle:{color:AC.T}}]},
+          {name:'海底電纜受威脅',value:{id:'S2-T-3B',desc:'17% 全球網路流量',impact:'金融交易延遲'},itemStyle:{color:AC.T}}
+        ]},
+       {name:'國安基金進場',value:{id:'S2-F-2A',desc:'授權 5,000 億但效果有限',impact:'短期止跌'},itemStyle:{color:AC.F},
+        children:[
+          {name:'外資持續賣超',value:{id:'S2-F-3C',desc:'單日賣超 300-500 億',impact:'國安基金子彈消耗快'},itemStyle:{color:AC.F},
+           children:[{name:'台幣貶值壓力',value:{id:'S2-F-4B',desc:'央行動用外匯儲備',impact:'進口通膨傳導'},itemStyle:{color:AC.F}}]}
+        ]}
      ]},
     {name:'S2d 外部介入→談判',itemStyle:{color:AC.G},
-     value:{id:'S2-G-1C',prob:'條件 10%→絕對 4%',time:'數週',desc:'中俄聯合聲明+歐盟能源不可承受+阿曼管道',impact:'台股 +2~3%，油價 $85-95',basis:'三方利益不一致故機率低',aspect:'G'},
+     value:{id:'S2-G-1C',prob:'條件 10%→絕對 4%',time:'數週',desc:'中俄聯合聲明+歐盟能源不可承受+阿曼管道',impact:'台股 +2~3%，油價 $85-95',basis:'三方利益不一致故機率低'},
      children:[
-       {name:'安理會決議',value:{id:'S2-G-1A',desc:'第 4 次嘗試（前 3 次被否決）',impact:'象徵意義大於實質',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'油價緩降',value:{id:'S2-E-1A',desc:'$85-95 區間',impact:'市場反映有限',aspect:'E'},itemStyle:{color:AC.E}}
+       {name:'安理會決議',value:{id:'S2-G-2D',desc:'第 4 次嘗試（前 3 次被否決）',impact:'象徵意義大於實質'},itemStyle:{color:AC.G},
+        children:[
+          {name:'停火監督機制',value:{id:'S2-G-3F',desc:'UN 維和部隊部署',impact:'長期低強度對峙'},itemStyle:{color:AC.G},
+           children:[{name:'制裁框架重議',value:{id:'S2-G-4B',desc:'伊朗要求解除部分制裁',impact:'核協議 2.0 談判啟動'},itemStyle:{color:AC.G}}]}
+        ]},
+       {name:'油價緩降 $85-95',value:{id:'S2-E-2C',desc:'供給擔憂緩解',impact:'市場反映有限'},itemStyle:{color:AC.E},
+        children:[
+          {name:'OPEC+ 配額調整',value:{id:'S2-E-3C',desc:'沙烏地小幅增產填補',impact:'油價底部支撐 $80'},itemStyle:{color:AC.E},
+           children:[{name:'能源轉型加速',value:{id:'S2-E-4B',desc:'各國加速脫碳投資',impact:'太陽能/風電長期受惠'},itemStyle:{color:AC.E}}]}
+        ]}
      ]}
   ]
 };
 
-// ===== S3 全面轟炸 樹資料 =====
+// ===== S3 全面轟炸 樹資料（5 層深度）=====
 var s3={
   name:'S3 全面轟炸',
   value:{id:'S3',prob:'母劇本 25%',desc:'攻擊範圍擴大至發電廠/港口/基礎設施'},
   itemStyle:{color:AC.G},
   children:[
     {name:'S3a 轟炸成功→伊朗屈服',itemStyle:{color:AC.G},
-     value:{id:'S3-G-1A',prob:'條件 20%→絕對 5%',time:'轟炸後 2-4 週',desc:'核設施全毀+IRGC 指揮崩潰+穆傑塔巴停火',impact:'台股短期-5~8%→反彈+8~12%，淨+3~5%',basis:'核設施深埋 80m，GBU-57 未必一次摧毀，機率低',aspect:'G'},
+     value:{id:'S3-G-1A',prob:'條件 20%→絕對 5%',time:'轟炸後 2-4 週',desc:'核設施全毀+IRGC 指揮崩潰+穆傑塔巴停火',impact:'台股短期-5~8%→反彈+8~12%，淨+3~5%',basis:'核設施深埋 80m，GBU-57 未必一次摧毀'},
      children:[
-       {name:'中國對台更審慎',value:{id:'S3-G-1A',desc:'確認美國願動用全部軍力',impact:'台海壓力降低',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'真主黨接受停火',value:{id:'S3-G-1B',desc:'失去最大後盾',impact:'黎巴嫩局勢緩和',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'油價回落 $80-90',value:{id:'S3-E-1A',desc:'戰爭結束預期',impact:'石化回吐但避險解除',aspect:'E'},itemStyle:{color:AC.E}}
+       {name:'中國對台更審慎',value:{id:'S3-G-2A',desc:'確認美國願動用全部軍力',impact:'台海壓力降低'},itemStyle:{color:AC.G},
+        children:[
+          {name:'外資回流台股',value:{id:'S3-F-3A',desc:'地緣折價收窄',impact:'權值股反彈 +5~8%'},itemStyle:{color:AC.F},
+           children:[{name:'台幣升值 32→31.5',value:{id:'S3-F-4A',desc:'避險情緒消退',impact:'進口成本降低'},itemStyle:{color:AC.F}}]}
+        ]},
+       {name:'真主黨接受停火',value:{id:'S3-G-2B',desc:'失去最大後盾',impact:'黎巴嫩局勢緩和'},itemStyle:{color:AC.G},
+        children:[
+          {name:'以色列北部安全改善',value:{id:'S3-G-3A',desc:'火箭威脅消失',impact:'以色列經濟反彈'},itemStyle:{color:AC.G},
+           children:[{name:'溴素出口恢復',value:{id:'S3-S-4A',desc:'死海工廠復產',impact:'PCB/阻燃劑供應正常化'},itemStyle:{color:AC.S}}]}
+        ]},
+       {name:'油價回落 $80-90',value:{id:'S3-E-2A',desc:'戰爭結束預期',impact:'石化回吐但避險解除'},itemStyle:{color:AC.E},
+        children:[
+          {name:'重建需求啟動',value:{id:'S3-S-3A',desc:'伊朗基礎設施重建',impact:'鋼鐵/水泥需求激增'},itemStyle:{color:AC.S},
+           children:[{name:'中國建設公司受惠',value:{id:'S3-S-4B',desc:'一帶一路重建標案',impact:'伊朗市場重新開放'},itemStyle:{color:AC.S}}]}
+        ]}
      ]},
     {name:'S3b 伊朗報復→轉 S4（最高機率）',itemStyle:{color:AC.E},
-     value:{id:'S3-E-1A',prob:'條件 35%→絕對 8.75%',time:'轟炸後即時',desc:'Bushehr 是心理紅線，IRGC 48hr 布 5,000+ 水雷',impact:'台股 S4 等級衝擊 -15~25%',basis:'Bushehr 輻射擴散將觸發全球輿論翻轉',aspect:'E'},
+     value:{id:'S3-E-1A',prob:'條件 35%→絕對 8.75%',time:'轟炸後即時',desc:'Bushehr 是心理紅線，IRGC 48hr 布 5,000+ 水雷',impact:'台股 S4 等級衝擊 -15~25%',basis:'Bushehr 輻射擴散觸發全球輿論翻轉'},
      children:[
-       {name:'PLA-N 印度洋護航',value:{id:'S3-G-1A',desc:'中國 40% 原油經荷莫茲→首次部署',impact:'中美關係急遽惡化',aspect:'G',crossLink:'S4c'},itemStyle:{color:AC.G}},
-       {name:'油價 $150+ 確認',value:{id:'S3-E-1A',desc:'供給預期完全中斷',impact:'全球通膨飆升',aspect:'E'},itemStyle:{color:AC.E}},
-       {name:'Bushehr 輻射擴散',value:{id:'S3-X-1A',desc:'波斯灣北岸→科威特/巴林/卡達',impact:'人道+環境雙重災難',aspect:'X'},itemStyle:{color:AC.X}}
+       {name:'PLA-N 印度洋護航',value:{id:'S3-G-2C',desc:'中國 40% 原油經荷莫茲→首次部署',impact:'中美關係急遽惡化',crossLink:'S4c'},itemStyle:{color:AC.G},
+        children:[
+          {name:'印度洋軍事化',value:{id:'S3-G-3B',desc:'中/美/印三方海軍對峙',impact:'全球海運保險再飆'},itemStyle:{color:AC.G},
+           children:[{name:'QUAD 聯盟強化',value:{id:'S3-G-4A',desc:'美日印澳聯合巡航',impact:'亞太安全架構重組'},itemStyle:{color:AC.G}}]}
+        ]},
+       {name:'油價 $150+ 確認',value:{id:'S3-E-2B',desc:'供給預期完全中斷',impact:'全球通膨飆升'},itemStyle:{color:AC.E},
+        children:[
+          {name:'美國 CPI 衝破 5%',value:{id:'S3-F-3B',desc:'能源傳導→核心通膨',impact:'Fed 被迫升息暫停'},itemStyle:{color:AC.F},
+           children:[{name:'美股修正 -10~15%',value:{id:'S3-F-4B',desc:'估值壓縮+盈利下修',impact:'全球資金避險美債/黃金'},itemStyle:{color:AC.F}}]},
+          {name:'新興市場債務壓力',value:{id:'S3-F-3C',desc:'埃及/巴基斯坦外匯枯竭',impact:'主權違約風險↑↑'},itemStyle:{color:AC.F}}
+        ]},
+       {name:'Bushehr 輻射擴散',value:{id:'S3-X-2A',desc:'波斯灣北岸→科威特/巴林/卡達',impact:'人道+環境雙重災難'},itemStyle:{color:AC.X},
+        children:[
+          {name:'海水淡化廠停擺',value:{id:'S3-X-3A',desc:'卡達 >99% 飲水靠淡化',impact:'人道危機'},itemStyle:{color:AC.X},
+           children:[{name:'波灣國家大撤離',value:{id:'S3-C-4A',desc:'外籍勞工 1,500 萬+撤離',impact:'建設/能源產業停擺'},itemStyle:{color:AC.C}}]},
+          {name:'全球環保運動爆發',value:{id:'S3-C-3A',desc:'反核+反戰疊加',impact:'各國核能政策重議'},itemStyle:{color:AC.C}}
+        ]}
      ]},
     {name:'S3c 代理人連鎖→區域擴散',itemStyle:{color:AC.G},
-     value:{id:'S3-G-1B',prob:'條件 30%→絕對 7.5%',time:'轟炸後 1-2 週',desc:'五線同時作戰：伊朗/黎巴嫩/紅海/伊拉克/敘利亞',impact:'台股系統性 -10~18%',basis:'17% 全球網路流量海底電纜受威脅',aspect:'G'},
+     value:{id:'S3-G-1B',prob:'條件 30%→絕對 7.5%',time:'轟炸後 1-2 週',desc:'五線同時作戰：伊朗/黎巴嫩/紅海/伊拉克/敘利亞',impact:'台股系統性 -10~18%',basis:'17% 全球網路流量海底電纜受威脅'},
      children:[
-       {name:'北韓趁機核試爆',value:{id:'S3-G-1A',desc:'2017 年來首次，趁全球注意力在中東',impact:'東亞安全再崩塌',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'中國「十年窗口期」',value:{id:'S3-G-1B',desc:'美國 overstretch→評估戰略機會',impact:'台海灰色地帶行動升級',aspect:'G',crossLink:'S4c'},itemStyle:{color:AC.G}},
-       {name:'紅海電纜受威脅',value:{id:'S3-T-1A',desc:'胡塞攻擊 17% 全球網路流量電纜',impact:'歐亞通訊受影響',aspect:'T'},itemStyle:{color:AC.T}}
+       {name:'北韓趁機核試爆',value:{id:'S3-G-2D',desc:'2017 年來首次，趁全球注意力在中東',impact:'東亞安全再崩塌'},itemStyle:{color:AC.G},
+        children:[
+          {name:'韓元暴跌 -8~12%',value:{id:'S3-F-3D',desc:'資本外逃+軍事風險溢價',impact:'KOSPI 跌破 2,000'},itemStyle:{color:AC.F},
+           children:[{name:'三星/SK 海力士三重壓力',value:{id:'S3-S-4C',desc:'軍事+能源+材料',impact:'HBM 交期失控'},itemStyle:{color:AC.S}}]},
+          {name:'日本防衛費突破 GDP 2%',value:{id:'S3-G-3C',desc:'朝核+台海雙重威脅',impact:'漢翔/三菱重工受惠'},itemStyle:{color:AC.G}}
+        ]},
+       {name:'中國「十年窗口期」',value:{id:'S3-G-2E',desc:'美國 overstretch→評估戰略機會',impact:'台海灰色地帶升級',crossLink:'S4c'},itemStyle:{color:AC.G},
+        children:[
+          {name:'台海軍演頻率倍增',value:{id:'S3-G-3D',desc:'PLA 環島演習常態化',impact:'台灣地緣風險溢價↑↑'},itemStyle:{color:AC.G},
+           children:[{name:'外資加速撤離台股',value:{id:'S3-F-4C',desc:'累計賣超突破兆元',impact:'台幣貶至 34+'},itemStyle:{color:AC.F}}]},
+          {name:'經濟施壓升級',value:{id:'S3-G-3E',desc:'限制對台稀土/農產出口',impact:'供應鏈斷鏈風險'},itemStyle:{color:AC.G}}
+        ]},
+       {name:'紅海電纜受威脅',value:{id:'S3-T-2A',desc:'胡塞攻擊 17% 全球網路流量電纜',impact:'歐亞通訊受影響'},itemStyle:{color:AC.T},
+        children:[
+          {name:'金融交易延遲',value:{id:'S3-F-3E',desc:'倫敦-亞洲交易延遲 200ms+',impact:'高頻交易中斷'},itemStyle:{color:AC.F},
+           children:[{name:'替代衛星通訊需求爆發',value:{id:'S3-I-4A',desc:'Starlink/OneWeb 訂單暴增',impact:'SpaceX 估值再創新高'},itemStyle:{color:AC.I}}]}
+        ]}
      ]},
     {name:'S3d 人道危機→壓力停火',itemStyle:{color:AC.C},
-     value:{id:'S3-C-1A',prob:'條件 15%→絕對 3.75%',time:'轟炸後 2-4 週',desc:'平民傷亡破萬→CNN/Al Jazeera 直播→國會兩黨要求停火',impact:'台股先跌後彈≈淨0%',basis:'歷史：B1 人道壓力迴路啟動',aspect:'C'},
+     value:{id:'S3-C-1A',prob:'條件 15%→絕對 3.75%',time:'轟炸後 2-4 週',desc:'平民傷亡破萬→CNN/Al Jazeera 直播→國會兩黨要求停火',impact:'台股先跌後彈≈淨0%',basis:'B1 人道壓力迴路啟動'},
      children:[
-       {name:'美國國內反對 60%+',value:{id:'S3-C-1A',desc:'選舉年壓力',impact:'政策轉向',aspect:'C'},itemStyle:{color:AC.C}},
-       {name:'停火但不解決根因',value:{id:'S3-G-1A',desc:'凍結衝突→隨時可復發',impact:'地緣風險溢價持續',aspect:'G'},itemStyle:{color:AC.G}}
+       {name:'美國國內反對 60%+',value:{id:'S3-C-2A',desc:'選舉年壓力',impact:'政策轉向'},itemStyle:{color:AC.C},
+        children:[
+          {name:'國會撤銷戰爭授權',value:{id:'S3-G-3F',desc:'兩黨聯合法案',impact:'總統被迫 30 天內停火'},itemStyle:{color:AC.G},
+           children:[{name:'川普支持率跌破 40%',value:{id:'S3-C-4B',desc:'中期選舉風險',impact:'政策 180 度轉向'},itemStyle:{color:AC.C}}]}
+        ]},
+       {name:'停火但不解決根因',value:{id:'S3-G-2F',desc:'凍結衝突→隨時可復發',impact:'地緣風險溢價持續'},itemStyle:{color:AC.G},
+        children:[
+          {name:'伊朗加速核武化',value:{id:'S3-G-3G',desc:'停火後 6-12 月內可能擁核',impact:'中東核武擴散'},itemStyle:{color:AC.G},
+           children:[{name:'沙烏地啟動核計畫',value:{id:'S3-G-4B',desc:'巴基斯坦技術轉移',impact:'NPT 體系瓦解'},itemStyle:{color:AC.G}}]}
+        ]}
      ]}
   ]
 };
 
-// ===== S4 荷莫茲封鎖 樹資料 =====
+// ===== S4 荷莫茲封鎖 樹資料（5 層深度）=====
 var s4={
   name:'S4 荷莫茲封鎖',
   value:{id:'S4',prob:'母劇本 20%',desc:'伊朗封鎖荷莫茲海峽，全球能源危機'},
   itemStyle:{color:AC.E},
   children:[
     {name:'S4a 短期封鎖→掃雷成功',itemStyle:{color:AC.T},
-     value:{id:'S4-T-1A',prob:'條件 25%→絕對 5%',time:'2-4 週',desc:'美 MCM 7 艘+英 4 艘+日海自協調 1-2 週',impact:'台股封鎖期 -15~20%→重開後反彈，淨 -5~8%',basis:'台灣 LNG 11 天是撐過極限',aspect:'T'},
+     value:{id:'S4-T-1A',prob:'條件 25%→絕對 5%',time:'2-4 週',desc:'美 MCM 7 艘+英 4 艘+日海自協調',impact:'台股封鎖期 -15~20%→重開後反彈，淨 -5~8%',basis:'台灣 LNG 11 天是撐過極限'},
      children:[
-       {name:'LNG 11 天極限',value:{id:'S4-E-1A',desc:'台灣天然氣存量全球最低',impact:'封鎖超 2 週→限電',aspect:'E',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E}},
-       {name:'盟國 MCM 協調',value:{id:'S4-T-1A',desc:'英日聯合掃雷需 1-2 週',impact:'拖延=LNG 更吃緊',aspect:'T'},itemStyle:{color:AC.T}}
+       {name:'LNG 11 天極限',value:{id:'S4-E-2A',desc:'台灣天然氣存量全球最低',impact:'封鎖超 2 週→限電',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E},
+        children:[
+          {name:'工業限電第一階段',value:{id:'S4-E-3A',desc:'大用戶限電 5%',impact:'鋼鐵/水泥/面板首當其衝'},itemStyle:{color:AC.E},
+           children:[{name:'中鋼/台泥減產',value:{id:'S4-S-4A',desc:'高耗能產業優先限電',impact:'營收損失 10-15%'},itemStyle:{color:AC.S}}]},
+          {name:'緊急 LNG 競標',value:{id:'S4-E-3B',desc:'中油向澳/美 spot cargo',impact:'LNG 溢價 300-500%'},itemStyle:{color:AC.E}}
+        ]},
+       {name:'盟國 MCM 協調',value:{id:'S4-T-2A',desc:'英日聯合掃雷需 1-2 週',impact:'拖延=LNG 更吃緊'},itemStyle:{color:AC.T},
+        children:[
+          {name:'伊朗持續補雷',value:{id:'S4-T-3A',desc:'小型快艇+漁船補放',impact:'掃雷速度 < 補雷速度'},itemStyle:{color:AC.T},
+           children:[{name:'須同時壓制 IRGC 海軍',value:{id:'S4-G-4A',desc:'軍事行動擴大',impact:'衝突升級風險↑'},itemStyle:{color:AC.G}}]}
+        ]}
      ]},
     {name:'S4b 長期封鎖→全球衰退（最高機率）',itemStyle:{color:AC.E},
-     value:{id:'S4-E-1A',prob:'條件 35%→絕對 7%',time:'1-3 月',desc:'油價 $150-200→全球 GDP -2~3%→Stagflation',impact:'台股 -20~30%（24,000-28,000），外資賣超破兆',basis:'1973 石油危機 ×3 等級',aspect:'E'},
+     value:{id:'S4-E-1A',prob:'條件 35%→絕對 7%',time:'1-3 月',desc:'油價 $150-200→全球 GDP -2~3%→Stagflation',impact:'台股 -20~30%（24,000-28,000），外資賣超破兆',basis:'1973 石油危機 ×3 等級'},
      children:[
-       {name:'台灣 LNG 耗盡→限電',value:{id:'S4-E-1A',desc:'11 天耗盡→台積電產能受限',impact:'全球 AI 晶片斷供',aspect:'E',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E}},
-       {name:'全球 Stagflation',value:{id:'S4-F-1A',desc:'美國 CPI 6%+→企業盈利壓縮 15-20%',impact:'全球熊市',aspect:'F'},itemStyle:{color:AC.F}},
-       {name:'日本核電重啟加速',value:{id:'S4-E-2A',desc:'能源自主需求急迫',impact:'日本長期能源政策轉向',aspect:'E'},itemStyle:{color:AC.E}},
-       {name:'韓半導體戰時配給',value:{id:'S4-S-1A',desc:'三星/SK 減產 20-30%',impact:'HBM/DRAM 價格飆漲',aspect:'S'},itemStyle:{color:AC.S}}
+       {name:'台灣 LNG 耗盡→限電',value:{id:'S4-E-2B',desc:'11 天耗盡→台積電受限',impact:'全球 AI 晶片斷供',crossLink:'C1 級聯鏈'},itemStyle:{color:AC.E},
+        children:[
+          {name:'台積電 N3/N5 輪停',value:{id:'S4-I-3A',desc:'減產 10-20%',impact:'全球 AI 晶片交期 +8-12 週'},itemStyle:{color:AC.I},
+           children:[
+             {name:'費半崩盤 -15~25%',value:{id:'S4-F-4A',desc:'NVDA/AMD/AAPL 斷供',impact:'市值蒸發 3-5 兆美元'},itemStyle:{color:AC.F}},
+             {name:'AI 軍備競賽暫停',value:{id:'S4-I-4A',desc:'資料中心擴建停滯',impact:'重新定義算力地緣政治'},itemStyle:{color:AC.I}}
+           ]},
+          {name:'民生限電擴大',value:{id:'S4-E-3C',desc:'工業→商業→住宅',impact:'台灣社會恐慌'},itemStyle:{color:AC.E},
+           children:[{name:'核電重啟辯論白熱化',value:{id:'S4-E-4A',desc:'能源安全 vs 反核',impact:'政治風暴'},itemStyle:{color:AC.E}}]}
+        ]},
+       {name:'全球 Stagflation',value:{id:'S4-F-2A',desc:'美國 CPI 6%+→企業盈利壓縮 15-20%',impact:'全球熊市'},itemStyle:{color:AC.F},
+        children:[
+          {name:'Fed 政策兩難',value:{id:'S4-F-3A',desc:'升息壓通膨 vs 降息救經濟',impact:'市場信心崩潰'},itemStyle:{color:AC.F},
+           children:[{name:'美債殖利率倒掛加深',value:{id:'S4-F-4B',desc:'2s10s -100bp+',impact:'衰退確認訊號'},itemStyle:{color:AC.F}}]},
+          {name:'企業裁員潮',value:{id:'S4-C-3A',desc:'科技業→金融業→製造業',impact:'失業率攀升'},itemStyle:{color:AC.C}}
+        ]},
+       {name:'日本核電重啟加速',value:{id:'S4-E-2C',desc:'能源自主需求急迫',impact:'日本能源政策轉向'},itemStyle:{color:AC.E},
+        children:[
+          {name:'日本 LNG 自給計畫',value:{id:'S4-E-3D',desc:'加速開發秋田/新潟氣田',impact:'2030 自給率目標上修'},itemStyle:{color:AC.E},
+           children:[{name:'亞洲 LNG 市場重組',value:{id:'S4-E-4B',desc:'日韓競爭澳/美 LNG 合約',impact:'台灣議價能力弱化'},itemStyle:{color:AC.E}}]}
+        ]},
+       {name:'韓半導體戰時配給',value:{id:'S4-S-2A',desc:'三星/SK 減產 20-30%',impact:'HBM/DRAM 價格飆漲'},itemStyle:{color:AC.S},
+        children:[
+          {name:'HBM 供給崩潰',value:{id:'S4-S-3A',desc:'SK 海力士產能受限',impact:'NVDA H200 交期翻倍'},itemStyle:{color:AC.S},
+           children:[{name:'華邦電/旺宏間接受損',value:{id:'S4-S-4B',desc:'傳統定價崩跌+能源成本',impact:'營收 -15~25%'},itemStyle:{color:AC.S}}]}
+        ]}
      ]},
     {name:'S4c 中國護航→中美對峙',itemStyle:{color:AC.G},
-     value:{id:'S4-G-1A',prob:'條件 20%→絕對 4%（低機率極端後果）',time:'封鎖 >4 週後',desc:'PLA-N 054A/055 編隊「保護中國商船」→擦槍走火',impact:'台股系統性崩盤 -30~40%，外資完全撤離',basis:'中國 40% 原油經荷莫茲+戰略儲備消耗',aspect:'G'},
+     value:{id:'S4-G-1A',prob:'條件 20%→絕對 4%（低機率極端後果）',time:'封鎖 >4 週後',desc:'PLA-N 054A/055 編隊「保護中國商船」→擦槍走火',impact:'台股系統性崩盤 -30~40%，外資完全撤離',basis:'中國 40% 原油經荷莫茲+戰略儲備消耗'},
      children:[
-       {name:'中美海軍遭遇',value:{id:'S4-G-1A',desc:'波斯灣入口→擦槍走火風險',impact:'若升級→1929 等級崩潰',aspect:'G'},itemStyle:{color:AC.G}},
-       {name:'台灣暴露前線',value:{id:'S4-G-1B',desc:'中美對抗→台灣直接在交火線上',impact:'地緣+限電+外資三重打擊',aspect:'G',crossLink:'S5'},itemStyle:{color:AC.G}},
-       {name:'全球金融系統崩潰',value:{id:'S4-F-1A',desc:'非 2008 是 1929 等級',impact:'全球市值蒸發 30-50%',aspect:'F'},itemStyle:{color:AC.F}}
+       {name:'中美海軍遭遇',value:{id:'S4-G-2A',desc:'波斯灣入口→擦槍走火風險',impact:'若升級→1929 等級崩潰'},itemStyle:{color:AC.G},
+        children:[
+          {name:'雙方召回大使',value:{id:'S4-G-3A',desc:'外交關係降級',impact:'全球供應鏈脫鉤加速'},itemStyle:{color:AC.G},
+           children:[{name:'台灣成第一線戰場',value:{id:'S4-G-4B',desc:'中美對抗升級',impact:'台海封鎖可能性↑↑'},itemStyle:{color:AC.G}}]},
+          {name:'全球股市熔斷',value:{id:'S4-F-3B',desc:'美/歐/亞同步觸發熔斷',impact:'單日市值蒸發 5+ 兆'},itemStyle:{color:AC.F}}
+        ]},
+       {name:'台灣暴露前線',value:{id:'S4-G-2B',desc:'中美對抗→台灣直接在交火線上',impact:'地緣+限電+外資三重打擊',crossLink:'S5'},itemStyle:{color:AC.G},
+        children:[
+          {name:'國防動員升級',value:{id:'S4-G-3B',desc:'後備軍人教召擴大',impact:'經濟活動進一步萎縮'},itemStyle:{color:AC.G},
+           children:[{name:'民間囤貨潮',value:{id:'S4-C-4A',desc:'民生物資搶購',impact:'CPI 衝破 5%+'},itemStyle:{color:AC.C}}]},
+          {name:'外資完全撤離',value:{id:'S4-F-3C',desc:'持股降至 30% 以下',impact:'台股流動性危機'},itemStyle:{color:AC.F}}
+        ]},
+       {name:'全球金融系統崩潰',value:{id:'S4-F-2B',desc:'非 2008 是 1929 等級',impact:'全球市值蒸發 30-50%'},itemStyle:{color:AC.F},
+        children:[
+          {name:'黃金衝破 $8,000/oz',value:{id:'S4-F-3D',desc:'終極避險需求',impact:'央行儲備重新配置'},itemStyle:{color:AC.F},
+           children:[{name:'布列敦森林 3.0 討論',value:{id:'S4-F-4C',desc:'國際貨幣體系重建',impact:'美元地位根本動搖'},itemStyle:{color:AC.F}}]},
+          {name:'全球貿易量萎縮 15-25%',value:{id:'S4-T-3B',desc:'保護主義抬頭',impact:'WTO 體系崩潰'},itemStyle:{color:AC.T}}
+        ]}
      ]},
     {name:'S4d 替代路線飽和→油價 $200+',itemStyle:{color:AC.E},
-     value:{id:'S4-E-2A',prob:'條件 20%→絕對 4%',time:'封鎖後 1-2 月',desc:'荷莫茲 2,000 萬桶/日+紅海 890 萬=雙封鎖，替代僅覆蓋 ~20%',impact:'台股跌至 22,000-25,000，金融壓力測試',basis:'管線替代僅 350-550 萬桶/日',aspect:'E'},
+     value:{id:'S4-E-2D',prob:'條件 20%→絕對 4%',time:'封鎖後 1-2 月',desc:'荷莫茲 2,000 萬桶/日+紅海 890 萬=雙封鎖，替代僅覆蓋 ~20%',impact:'台股跌至 22,000-25,000',basis:'管線替代僅 350-550 萬桶/日'},
      children:[
-       {name:'雙咽喉封鎖',value:{id:'S4-T-1A',desc:'荷莫茲+紅海同時中斷',impact:'2,890 萬桶/日斷供',aspect:'T'},itemStyle:{color:AC.T}},
-       {name:'好望角繞行 +14 天',value:{id:'S4-T-1B',desc:'運費暴漲 3-5 倍',impact:'全球貿易成本飆升',aspect:'T'},itemStyle:{color:AC.T}}
+       {name:'雙咽喉封鎖',value:{id:'S4-T-2B',desc:'荷莫茲+紅海同時中斷',impact:'2,890 萬桶/日斷供'},itemStyle:{color:AC.T},
+        children:[
+          {name:'全球石油儲備啟用',value:{id:'S4-E-3E',desc:'IEA 60 天協調釋放',impact:'僅維持 2-3 個月'},itemStyle:{color:AC.E},
+           children:[{name:'儲備耗盡後二次危機',value:{id:'S4-E-4C',desc:'無法補充',impact:'油價可能衝 $250+'},itemStyle:{color:AC.E}}]},
+          {name:'Petroline 滿載',value:{id:'S4-E-3F',desc:'沙烏地管線 700 萬桶/日',impact:'僅覆蓋 25%'},itemStyle:{color:AC.E}}
+        ]},
+       {name:'好望角繞行 +14 天',value:{id:'S4-T-2C',desc:'運費暴漲 3-5 倍',impact:'全球貿易成本飆升'},itemStyle:{color:AC.T},
+        children:[
+          {name:'港口壅塞連鎖',value:{id:'S4-T-3C',desc:'新加坡/鹿特丹超載',impact:'全球物流癱瘓'},itemStyle:{color:AC.T},
+           children:[{name:'糧食危機爆發',value:{id:'S4-C-4B',desc:'化肥+運費→糧價+40%',impact:'1 億人面臨糧食不安全'},itemStyle:{color:AC.C}}]}
+        ]}
      ]}
   ]
 };
