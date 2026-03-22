@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第九步：追蹤回饋設定 — SNDK SanDisk Corporation</title>
+<style>
+:root {
+    --bg-dark: #1a1410; --bg-card: #2a2118; --bg-card-hover: #342a1f;
+    --border: #4a3828; --border-light: #5a4838;
+    --text: #e8dcc8; --text-dim: #a89878; --text-bright: #fff8e8;
+    --accent: #d4a574; --accent-light: #e8c49a; --accent-dark: #b8854a;
+    --green: #7cb87c; --green-bg: rgba(124,184,124,0.12);
+    --red: #d47c7c; --red-bg: rgba(212,124,124,0.12);
+    --blue: #7c9cd4; --blue-bg: rgba(124,156,212,0.12);
+    --gold: #d4b87c; --gold-bg: rgba(212,184,124,0.12);
+    --orange: #d4944c; --orange-bg: rgba(212,148,76,0.12);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: var(--bg-dark); color: var(--text);
+    line-height: 1.7; min-height: 100vh;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+.hero {
+    background: linear-gradient(135deg, #2a2118 0%, #3a2a18 50%, #2a2118 100%);
+    border: 1px solid var(--accent-dark); border-radius: 16px;
+    padding: 32px 28px; margin-bottom: 24px; text-align: center;
+}
+.hero h1 { font-size: 1.5em; color: var(--accent-light); margin-bottom: 6px; }
+.hero .subtitle { font-size: 0.92em; color: var(--text-dim); margin-bottom: 14px; }
+.hero .badge-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.82em;
+    background: rgba(212,165,116,0.12); border: 1px solid var(--accent-dark); color: var(--accent-light);
+}
+.badge.green { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.badge.gold { background: var(--gold-bg); border-color: var(--gold); color: var(--gold); }
+.badge.red { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.badge.blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+details.card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 16px; overflow: hidden;
+}
+details.card[open] { border-color: var(--accent-dark); }
+details.card > summary {
+    padding: 14px 18px; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 1.05em; font-weight: 700; color: var(--accent-light);
+    user-select: none;
+}
+details.card > summary:hover { background: var(--bg-card-hover); }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after {
+    content: '▼'; font-size: 0.7em; color: var(--text-dim); transition: transform 0.2s;
+}
+details.card:not([open]) > summary::after { transform: rotate(-90deg); }
+details.card > .card-body { padding: 0 18px 18px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.86em; }
+th, td { padding: 7px 10px; border: 1px solid var(--border); text-align: left; }
+th { background: rgba(212,165,116,0.1); color: var(--accent-light); font-weight: 600; }
+.status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 700; }
+.status.ok { background: var(--green-bg); color: var(--green); }
+.status.warn { background: var(--gold-bg); color: var(--gold); }
+.status.alert { background: var(--red-bg); color: var(--red); }
+.status.pending { background: var(--blue-bg); color: var(--blue); }
+.schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 12px 0; }
+.schedule-item {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; text-align: center;
+}
+.schedule-item .freq { font-size: 0.8em; color: var(--text-dim); margin-bottom: 4px; }
+.schedule-item .date { font-size: 1.1em; font-weight: 700; color: var(--accent-light); }
+.schedule-item .desc { font-size: 0.82em; color: var(--text); margin-top: 4px; }
+.info-box {
+    background: rgba(212,165,116,0.06); border: 1px solid var(--accent-dark);
+    border-radius: 10px; padding: 14px 16px; margin: 10px 0; font-size: 0.9em;
+}
+.info-box h4 { color: var(--accent-light); margin-bottom: 6px; }
+.toggle-btns { text-align: right; margin-bottom: 12px; }
+.toggle-btns button {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 0.82em; margin-left: 6px;
+}
+.toggle-btns button:hover { background: var(--bg-card-hover); color: var(--accent-light); }
+.trend-bar { display: flex; align-items: center; gap: 4px; }
+.trend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.trend-arrow { font-size: 0.85em; font-weight: 700; }
+.metric-highlight {
+    font-size: 1.3em; font-weight: 700; color: var(--accent-light);
+    text-align: center; padding: 8px 0;
+}
+.metric-sub { font-size: 0.78em; color: var(--text-dim); font-weight: 400; }
+.step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 10px 0; }
+.step-item {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px; text-align: center; font-size: 0.82em;
+}
+.step-item .step-num { font-weight: 700; color: var(--accent-light); margin-bottom: 2px; }
+.step-item .step-name { color: var(--text-dim); }
+.step-item.done { border-color: var(--green); }
+.step-item.done .step-num { color: var(--green); }
+footer {
+    text-align: center; padding: 30px 0 10px;
+    font-size: 0.78em; color: var(--text-dim);
+    border-top: 1px solid var(--border); margin-top: 30px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ==================== Hero 區塊 ==================== -->
+    <div class="hero">
+        <h1>第九步：追蹤回饋設定</h1>
+        <div class="subtitle">SNDK — SanDisk Corporation｜天機閣深度調查系統</div>
+        <div class="badge-row">
+            <span class="badge">SNDK</span>
+            <span class="badge gold">謹慎看多 / 中性偏多</span>
+            <span class="badge">分析日：2026-03-22</span>
+            <span class="badge">版本：v1.0</span>
+            <span class="badge red">預期報酬 -6.5%</span>
+            <span class="badge blue">有效期至 FQ3 財報發布後</span>
+        </div>
+    </div>
+
+    <!-- ==================== 全部展開 / 收合按鈕 ==================== -->
+    <div class="toggle-btns">
+        <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=true)">全部展開</button>
+        <button onclick="document.querySelectorAll('details.card').forEach(d=>d.open=false)">全部收合</button>
+    </div>
+
+    <!-- ==================== 1. 追蹤機制總覽 ==================== -->
+    <details class="card" open>
+        <summary>一、追蹤機制總覽</summary>
+        <div class="card-body">
+            <table>
+                <tr>
+                    <th>項目</th>
+                    <th>內容</th>
+                </tr>
+                <tr>
+                    <td>股票代號</td>
+                    <td><strong>SNDK</strong>（SanDisk Corporation）</td>
+                </tr>
+                <tr>
+                    <td>分析日期</td>
+                    <td>2026-03-22</td>
+                </tr>
+                <tr>
+                    <td>分析版本</td>
+                    <td>v1.0（首次九步驟完整分析）</td>
+                </tr>
+                <tr>
+                    <td>分析時現價</td>
+                    <td><strong>$709.71</strong></td>
+                </tr>
+                <tr>
+                    <td>概率加權預期值</td>
+                    <td><strong>$663.90</strong>（預期報酬 <span style="color:var(--red);">-6.5%</span>）</td>
+                </tr>
+                <tr>
+                    <td>投資結論</td>
+                    <td><span class="status warn">謹慎看多 / 中性偏多</span></td>
+                </tr>
+                <tr>
+                    <td>推衍有效期</td>
+                    <td>至 2026 年 5 月 FQ3 財報發布後</td>
+                </tr>
+                <tr>
+                    <td>監控頻率</td>
+                    <td>每月檢查</td>
+                </tr>
+                <tr>
+                    <td>失效條件數</td>
+                    <td>7 項</td>
+                </tr>
+                <tr>
+                    <td>追蹤預測數</td>
+                    <td>6 項（命中率：N/A，首次分析無歷史數據）</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>風險報酬比解讀</h4>
+                <p>概率加權預期值 $663.90 <strong>低於</strong>分析現價 $709.71，代表在推衍推演的概率加權下，四條路徑的加權平均目標價低於現價。
+                這是「謹慎看多但風險報酬比不佳」的核心原因：看多的 H1 路徑（$1,000+）機率僅 20%，而 H2 見頂路徑（$430-550）有 34% 機率，
+                拉低了整體預期值。投資人需依賴超級週期假說實現才能取得超額報酬。</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 2. 下次檢查排程 ==================== -->
+    <details class="card" open>
+        <summary>二、下次檢查排程</summary>
+        <div class="card-body">
+            <div class="schedule-grid">
+                <div class="schedule-item" style="border-color: var(--red);">
+                    <div class="freq">最關鍵</div>
+                    <div class="date">2026/04 底 - 05 初</div>
+                    <div class="desc">SanDisk FQ3 財報<br>驗證營收/毛利率/EPS + 所有假說</div>
+                </div>
+                <div class="schedule-item">
+                    <div class="freq">重要</div>
+                    <div class="date">2026/04 下旬</div>
+                    <div class="desc">Samsung Q1 法說會<br>檢查 NAND 增產/提價策略</div>
+                </div>
+                <div class="schedule-item">
+                    <div class="freq">次要</div>
+                    <div class="date">2026/05 中旬</div>
+                    <div class="desc">13F 揭露（Q1 持倉）<br>檢查機構增減持狀況</div>
+                </div>
+                <div class="schedule-item">
+                    <div class="freq">全面重評</div>
+                    <div class="date">2026/07 - 08 初</div>
+                    <div class="desc">SanDisk FQ4 財報<br>全面重新評估所有路徑</div>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 3. 月度監控儀表板 ==================== -->
+    <details class="card" open>
+        <summary>三、月度監控儀表板（7 項失效條件）</summary>
+        <div class="card-body">
+            <div class="info-box">
+                <h4>監控頻率：每月檢查</h4>
+                <p>以下 7 項失效條件（Stop-Loss Triggers）為持續監控項目。任一條件觸發時，應立即執行對應行動，不等待下次定期檢查。</p>
+            </div>
+            <table>
+                <tr>
+                    <th style="width:60px;">編號</th>
+                    <th>失效條件</th>
+                    <th>觸發行動</th>
+                    <th style="width:110px;">目前狀態</th>
+                    <th>監控來源</th>
+                </tr>
+                <tr>
+                    <td><strong>SL-01</strong></td>
+                    <td>Samsung 宣布 NAND 增產 &gt;10% 或停止提價</td>
+                    <td style="color:var(--red);">立即減持 50-100%</td>
+                    <td><span class="status ok">未觸發</span></td>
+                    <td>Samsung 法說會 / TrendForce 產能報告</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-02</strong></td>
+                    <td>NAND 合約價連續 2 個月持平或下跌</td>
+                    <td style="color:var(--red);">減持 50%，重新評估路徑</td>
+                    <td><span class="status ok">未觸發</span></td>
+                    <td>TrendForce 月度合約價</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-03</strong></td>
+                    <td>SanDisk FQ3 毛利率低於 60%</td>
+                    <td style="color:var(--orange);">減持 30%</td>
+                    <td><span class="status pending">待 FQ3 財報驗證</span></td>
+                    <td>SanDisk FQ3 8-K Filing</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-04</strong></td>
+                    <td>前 5 大機構中 3 家以上減持（13F 揭露）</td>
+                    <td style="color:var(--orange);">降低部位至組合 3% 以下</td>
+                    <td><span class="status warn">部分觸發</span></td>
+                    <td>SEC EDGAR 13F</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-05</strong></td>
+                    <td>股價跌破 $550</td>
+                    <td style="color:var(--red);">停損出場</td>
+                    <td><span class="status ok">未觸發</span></td>
+                    <td>即時股價</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-06</strong></td>
+                    <td>超大規模客戶 AI CapEx 指引下調 &gt;10%</td>
+                    <td style="color:var(--orange);">重新評估 H1 假說，考慮減持</td>
+                    <td><span class="status ok">未觸發</span></td>
+                    <td>Microsoft / Google / Meta / Amazon 季報</td>
+                </tr>
+                <tr>
+                    <td><strong>SL-07</strong></td>
+                    <td>日本東北 M7.5+ 地震</td>
+                    <td style="color:var(--red);">立即檢查 Kioxia/SanDisk 產能影響</td>
+                    <td><span class="status ok">未觸發</span></td>
+                    <td>日本氣象廳</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>SL-04 詳細說明</h4>
+                <p><strong>狀態：部分觸發</strong> — BlackRock 已減持約 40%，但目前僅 1 家減持，尚未達到「3 家以上」的觸發門檻。
+                需於 2026 年 5 月中旬 13F 揭露後，確認 Vanguard、State Street、Fidelity 等其他前 5 大機構的持倉變化。</p>
+            </div>
+
+            <div class="info-box">
+                <h4>SL-07 詳細說明</h4>
+                <p><strong>狀態：未觸發</strong> — 2026 年 3 月曾發生 M7.3 地震，但未造成 Kioxia/SanDisk 產能損害。持續監控中。</p>
+            </div>
+
+            <div class="info-box">
+                <h4>SL-05 距離觸發緩衝</h4>
+                <p>現價 $709.71 距離 $550 停損線尚有 <strong>$159.71（-22.5%）</strong>的緩衝空間。</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 4. 預測 vs 實際追蹤 ==================== -->
+    <details class="card" open>
+        <summary>四、預測 vs 實際追蹤（6 項預測）</summary>
+        <div class="card-body">
+            <div class="metric-highlight">
+                命中率：N/A <span class="metric-sub">（首次分析，6 項預測全部待驗證）</span>
+            </div>
+            <table>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th>預測項目</th>
+                    <th>官方指引 / 市場預測</th>
+                    <th>我方判斷</th>
+                    <th style="width:120px;">實際結果</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>FQ3 營收</td>
+                    <td>&gt;$44-48 億（指引）</td>
+                    <td>大概率超預期（50% 機率 &gt;$48 億）</td>
+                    <td><span class="status pending">待 FQ3 發布</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>FQ3 Non-GAAP EPS</td>
+                    <td>$12.00 - $14.00（指引）</td>
+                    <td>大概率超預期（歷史 100% 超越率）</td>
+                    <td><span class="status pending">待 FQ3 發布</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>FQ3 毛利率</td>
+                    <td>65-67%（指引）</td>
+                    <td>大概率達成（NAND 合約價支撐）</td>
+                    <td><span class="status pending">待 FQ3 發布</span></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Q2 NAND 合約價趨勢</td>
+                    <td>季增 15-30%（較 Q1 收窄）</td>
+                    <td>漲幅收窄但不反轉</td>
+                    <td><span class="status pending">待 TrendForce 公布</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Samsung Q1 NAND 策略</td>
+                    <td>維持減產提價</td>
+                    <td>75% 維持，25% 反轉</td>
+                    <td><span class="status pending">待 Samsung 法說會</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>企業 SSD 首批出貨</td>
+                    <td>2026 年中</td>
+                    <td>55% 機率在 FQ3 期間宣布出貨</td>
+                    <td><span class="status pending">待確認</span></td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>追蹤備註</h4>
+                <p>此 6 項預測將於各自的驗證時間點逐一核實。FQ3 財報（預計 2026/04 底至 05 初）為一次性驗證 3 項預測（營收、EPS、毛利率）的最關鍵事件。
+                每次驗證完畢後，更新此表並重新計算命中率。</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 5. ACH 假說信心追蹤 ==================== -->
+    <details class="card" open>
+        <summary>五、ACH 假說信心追蹤（三次校準）</summary>
+        <div class="card-body">
+            <table>
+                <tr>
+                    <th>假說</th>
+                    <th style="text-align:center;">ACH 初始</th>
+                    <th style="text-align:center;">壓力測試後</th>
+                    <th style="text-align:center;">推衍後（最終）</th>
+                    <th style="text-align:center;">趨勢</th>
+                    <th>關鍵驗證指標</th>
+                </tr>
+                <tr>
+                    <td><strong>H1</strong> — AI 儲存超級週期</td>
+                    <td style="text-align:center;color:var(--green);">45%</td>
+                    <td style="text-align:center;color:var(--gold);">32%</td>
+                    <td style="text-align:center;color:var(--red);">20%</td>
+                    <td style="text-align:center;">
+                        <span class="trend-arrow" style="color:var(--red);">&#9660; 大幅下修</span>
+                    </td>
+                    <td>企業 SSD 出貨 + AI CapEx 持續 + NAND 價格不反轉</td>
+                </tr>
+                <tr>
+                    <td><strong>H2</strong> — NAND 週期見頂</td>
+                    <td style="text-align:center;color:var(--text-dim);">15%</td>
+                    <td style="text-align:center;color:var(--gold);">18%</td>
+                    <td style="text-align:center;color:var(--red);">34%</td>
+                    <td style="text-align:center;">
+                        <span class="trend-arrow" style="color:var(--red);">&#9650; 大幅上修</span>
+                    </td>
+                    <td>Q2 合約價走勢 + Samsung 策略</td>
+                </tr>
+                <tr>
+                    <td><strong>H3</strong> — 轉型期中等成長</td>
+                    <td style="text-align:center;color:var(--gold);">30%</td>
+                    <td style="text-align:center;color:var(--gold);">33%</td>
+                    <td style="text-align:center;color:var(--green);">35%</td>
+                    <td style="text-align:center;">
+                        <span class="trend-arrow" style="color:var(--green);">&#8594; 穩定</span>
+                    </td>
+                    <td>FQ3 符合預期 + 合約價漲幅收窄 + 企業 SSD 緩慢推進</td>
+                </tr>
+                <tr>
+                    <td><strong>H4</strong> — 黑天鵝</td>
+                    <td style="text-align:center;color:var(--text-dim);">10%</td>
+                    <td style="text-align:center;color:var(--text-dim);">12%</td>
+                    <td style="text-align:center;color:var(--text-dim);">11%</td>
+                    <td style="text-align:center;">
+                        <span class="trend-arrow" style="color:var(--text-dim);">&#8594; 穩定</span>
+                    </td>
+                    <td>不可預測事件</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>三次校準趨勢解讀</h4>
+                <p><strong>H1 超級週期假說</strong>經三次校準從 45% 大幅下修至 20%。壓力測試揭示了單一客戶依賴、Samsung 策略反轉風險及企業 SSD 出貨延遲等結構性弱點；
+                推衍推演進一步考量多路徑概率分布後，將樂觀情境的機率壓至最低。</p>
+                <p style="margin-top:8px;"><strong>H2 週期見頂假說</strong>從 15% 大幅上修至 34%，成為與 H3 並列的主要情境。
+                這反映壓力測試中 NAND 合約價可能反轉的證據獲得更高權重，Samsung 若重啟增產將迅速改變供需格局。</p>
+                <p style="margin-top:8px;"><strong>H3 中等成長假說</strong>穩定維持在 30-35% 區間，成為推衍後的最高概率路徑。
+                這代表「不好不壞」的基準情境：FQ3 大致符合預期、合約價漲幅收窄、企業 SSD 緩慢但有進展。</p>
+                <p style="margin-top:8px;"><strong>結論：</strong>推衍後的概率分布呈現 H3（35%）≈ H2（34%）＞ H1（20%）＞ H4（11%），
+                市場偏向中性到偏空的情境合計佔 69%（H2+H3），這是概率加權預期值低於現價的數學根因。</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 6. 關鍵日期提醒 ==================== -->
+    <details class="card" open>
+        <summary>六、關鍵日期提醒（7 個事件）</summary>
+        <div class="card-body">
+            <table>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th style="width:160px;">日期</th>
+                    <th>事件</th>
+                    <th>對應行動</th>
+                    <th style="width:80px;">重要度</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2026/04/01 - 04/05</td>
+                    <td>TrendForce Q2 合約價預測</td>
+                    <td>檢查 SL-02</td>
+                    <td><span class="status warn">高</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2026/04/15 - 04/25</td>
+                    <td>超大規模客戶 Q1 財報<br><span style="color:var(--text-dim);font-size:0.85em;">（Microsoft / Google / Meta / Amazon）</span></td>
+                    <td>檢查 SL-06</td>
+                    <td><span class="status warn">高</span></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>2026/04/20 - 04/30</td>
+                    <td>Samsung Q1 法說會</td>
+                    <td>檢查 SL-01</td>
+                    <td><span class="status warn">高</span></td>
+                </tr>
+                <tr style="background: rgba(212,124,124,0.06);">
+                    <td>4</td>
+                    <td><strong>2026/04/28 - 05/05</strong></td>
+                    <td><strong>SanDisk FQ3 財報</strong></td>
+                    <td><strong>檢查 SL-03 + 所有假說驗證</strong></td>
+                    <td><span class="status alert">最關鍵</span></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>2026/05/10 - 05/20</td>
+                    <td>13F 揭露（Q1 持倉）</td>
+                    <td>檢查 SL-04</td>
+                    <td><span class="status pending">中</span></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>2026/07/01 - 07/05</td>
+                    <td>TrendForce Q3 合約價</td>
+                    <td>檢查 SL-02</td>
+                    <td><span class="status warn">高</span></td>
+                </tr>
+                <tr style="background: rgba(212,124,124,0.06);">
+                    <td>7</td>
+                    <td><strong>2026/07/25 - 08/05</strong></td>
+                    <td><strong>SanDisk FQ4 財報</strong></td>
+                    <td><strong>全面重新評估</strong></td>
+                    <td><span class="status alert">最關鍵</span></td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>時間軸視覺化</h4>
+                <p style="font-family: monospace; font-size: 0.82em; line-height: 2; color: var(--text-dim);">
+                    <span style="color:var(--accent-light);">2026/04</span> ──┬── Q2合約價 ──┬── 超大客戶財報 ──┬── Samsung法說 ──┬── <span style="color:var(--red);font-weight:700;">FQ3財報</span><br>
+                    <span style="color:var(--accent-light);">2026/05</span> ──┬── 13F揭露<br>
+                    <span style="color:var(--accent-light);">2026/07</span> ──┬── Q3合約價 ──────────────────────────┬── <span style="color:var(--red);font-weight:700;">FQ4財報（全面重評）</span>
+                </p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 7. 版本紀錄 ==================== -->
+    <details class="card" open>
+        <summary>七、版本紀錄</summary>
+        <div class="card-body">
+            <table>
+                <tr>
+                    <th>版本</th>
+                    <th>日期</th>
+                    <th>事件</th>
+                    <th>當時股價</th>
+                    <th>結論</th>
+                    <th>概率加權預期值</th>
+                </tr>
+                <tr>
+                    <td><strong>v1.0</strong></td>
+                    <td>2026-03-22</td>
+                    <td>首次九步驟完整分析</td>
+                    <td>$709.71</td>
+                    <td><span class="status warn">謹慎看多</span></td>
+                    <td>$663.90</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>版本更新規則</h4>
+                <p>每次發生以下事件時，應建立新版本並更新此追蹤頁面：</p>
+                <ul style="margin-left: 18px; margin-top: 6px; color: var(--text);">
+                    <li>任一失效條件（SL）觸發</li>
+                    <li>重大財報發布（FQ3 / FQ4）</li>
+                    <li>預測項目驗證結果出爐</li>
+                    <li>假說概率需重新校準</li>
+                    <li>市場或產業出現重大變化</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== 8. 九步驟產出總覽 ==================== -->
+    <details class="card" open>
+        <summary>八、九步驟產出總覽</summary>
+        <div class="card-body">
+            <div class="step-grid">
+                <div class="step-item done">
+                    <div class="step-num">第一步</div>
+                    <div class="step-name">資料收集</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第二步</div>
+                    <div class="step-name">FIAS 分級</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第三步</div>
+                    <div class="step-name">競爭力分析</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第四步</div>
+                    <div class="step-name">ACH 分析</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第五步</div>
+                    <div class="step-name">壓力測試</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第六步</div>
+                    <div class="step-name">評審團</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第七步</div>
+                    <div class="step-name">決策報告</div>
+                </div>
+                <div class="step-item done">
+                    <div class="step-num">第八步</div>
+                    <div class="step-name">推衍推演</div>
+                </div>
+                <div class="step-item done" style="border-color: var(--accent);">
+                    <div class="step-num" style="color: var(--accent);">第九步</div>
+                    <div class="step-name">追蹤回饋設定</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>分析完整度</h4>
+                <p>SNDK（SanDisk）九步驟深度調查已全部完成（9/9），版本 v1.0。所有步驟均有對應的獨立 HTML 報告及 JSON 數據檔案，
+                存放於 <code style="color:var(--accent-light);background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;">天機閣-藏經閣/投資分析資料/SNDK_SanDisk/</code> 目錄下。</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ==================== Footer ==================== -->
+    <footer>
+        <p>天機閣深度調查系統 — 第九步：追蹤回饋設定</p>
+        <p>SNDK SanDisk Corporation｜v1.0｜2026-03-22</p>
+        <p style="margin-top: 8px;">本報告所有數據來源於 SNDK 追蹤.json，所有預測為分析師判斷，不構成投資建議。</p>
+    </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>推衍推演 — Alphabet Inc. (GOOGL) v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>推衍推演 — Alphabet Inc. (GOOGL)</h1>
+    <div class="sub">天機閣 — 推衍系統 v2.0｜獨立推衍版</div>
+    <div class="desc">基於第一至七步分析結論，結合最新情報，進行多路徑推衍推演<br>
+    主假說：H2 溫和看多（信心度 60%）｜推衍日期：2026-03-22｜推衍有效期至 2026-06-30</div>
+    <div class="tags">
+        <span class="tag">GOOGL</span>
+        <span class="tag">$301.00</span>
+        <span class="tag">信心 60%</span>
+        <span class="tag">推衍有效期 3 個月</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">推衍結構</strong>
+    <a href="#s8a">8a. 推衍基礎確認</a>
+    <a href="#s8b">8b. 情報差異表</a>
+    <a href="#s8c">8c. 影響鏈分析</a>
+    <a href="#s8d">8d. 情境模擬與機率樹</a>
+    <a href="#s8e">8e. 個人化推衍（三種風險偏好）</a>
+    <a href="#s8f">8f. 催化劑時間表</a>
+    <a href="#s8g">8g. 推衍結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 8a ===== -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">回溯原始分析的核心事實與假說狀態</div>
+
+<div class="card">
+<h3>核心事實鎖定</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>數值/狀態</th><th>來源</th></tr>
+<tr><td>FY2025 營收</td><td>$4,028 億（+15%）</td><td>10-K FY2025</td></tr>
+<tr><td>FY2025 EPS（報告/正常化）</td><td>$10.81 / $9.18</td><td>yfinance / 自算</td></tr>
+<tr><td>FY2025 FCF</td><td>$733 億</td><td>yfinance cashflow</td></tr>
+<tr><td>FY2026 CapEx 指引</td><td>$1,750-1,850 億</td><td>Q4 法說會</td></tr>
+<tr><td>Cloud RPO</td><td>$2,400 億（翻倍）</td><td>Q4 法說會</td></tr>
+<tr><td>搜尋市佔</td><td>90.04%（止跌回升 +0.17%）</td><td>BrightEdge</td></tr>
+<tr><td>Gemini MAU</td><td>7.5 億 / DAU 佔比 25%</td><td>多來源</td></tr>
+<tr><td>ACH 主假說</td><td>H2 溫和看多，信心 60%</td><td>第四至六步</td></tr>
+<tr><td>燈號</td><td>3 綠 / 5 黃 / 0 紅（黃綠）</td><td>第七步</td></tr>
+<tr><td>Base Case 合理價</td><td>~$285（六法中位數）</td><td>第七步 Ch10</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 8b ===== -->
+<div class="section-title" id="s8b">8b. 情報差異表（分析日 vs 最新）</div>
+<div class="section-sub">2026-03-22 最新狀態確認</div>
+
+<div class="card">
+<h3>情報差異表</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>分析基準（3/21-22）</th><th>最新狀態（3/22）</th><th>差異</th></tr>
+<tr><td>GOOGL 股價</td><td>$301.00</td><td>$301.00（無變化）</td><td>無</td></tr>
+<tr><td>Wiz 併購</td><td>3/11 完成</td><td>整合中，無新資訊</td><td>無</td></tr>
+<tr><td>Apple-Gemini Siri</td><td>延後至 iOS 26.5（5月）</td><td>3/20 報導本月仍可能</td><td><span class="light yellow"></span>時程不確定</td></tr>
+<tr><td>Ad Tech 案</td><td>閉庭辯論完成</td><td>等待裁決中</td><td>無</td></tr>
+<tr><td>DeepMind</td><td>挖角 Bridgewater CSO</td><td>3/18 已宣布</td><td>已反映</td></tr>
+<tr><td>RSI</td><td>43.9</td><td>43.9</td><td>中性偏弱</td></tr>
+<tr><td>50 SMA</td><td>$317.80</td><td>$317.98</td><td>股價低於 50 SMA 5.3%</td></tr>
+</table>
+<div class="tip info"><b>差異總結</b>
+本次推衍距分析基準日僅 1 天，無重大新增情報。唯一不確定性為 Apple-Gemini 時程（3 月或 5 月），需持續追蹤。
+</div>
+</div>
+</div>
+
+<!-- ===== 8c ===== -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">關鍵事件 → 一階 → 二階 → 三階影響推演</div>
+
+<div class="card">
+<h3>影響鏈 1：Q1 財報（~4/28）</h3>
+<div class="card-body">
+<p><strong>事件</strong>：Q1 2026 財報公布，共識 EPS $2.76、營收 $919.6B</p>
+<table>
+<tr><th>階層</th><th>正面路徑</th><th>負面路徑</th></tr>
+<tr><td><strong>一階</strong></td><td>營收超 $930B、Cloud 重回 30%+ → 盤後 +5-8%</td><td>營收低於 $910B、Cloud < 25% → 盤後 -8-12%</td></tr>
+<tr><td><strong>二階</strong></td><td>分析師上調目標價至 $380+ → 帶動 Mag7 輪動資金回流</td><td>分析師下調 EPS 預估 → CapEx 質疑聲浪加大</td></tr>
+<tr><td><strong>三階</strong></td><td>AI 投資敘事強化 → 全市場科技股估值支撐</td><td>AI 寒冬擔憂 → Big Tech CapEx 集體被重新審視</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)"><strong>機率</strong>：正面 45% / 中性 35% / 負面 20%</p>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 2：Ad Tech 補救裁決（2026 H2）</h3>
+<div class="card-body">
+<table>
+<tr><th>階層</th><th>行為性補救（65%機率）</th><th>結構性剝離（25%機率）</th><th>和解（10%機率）</th></tr>
+<tr><td><strong>一階</strong></td><td>限制 AdX 自我優先交易，短期 -2-3%</td><td>強制出售 AdX+DFP，短期 -10-15%</td><td>罰款 + 行為承諾，+3-5%</td></tr>
+<tr><td><strong>二階</strong></td><td>Google Network 營收微降 5-10%，整體影響有限</td><td>Google Network 營收損失 50%+，程式化廣告生態重組</td><td>監管不確定性消除，估值修復</td></tr>
+<tr><td><strong>三階</strong></td><td>市場消化後，焦點回到成長</td><td>激發 Chrome/Android 後續拆分訴求</td><td>其他科技公司壓力也降低</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 3：CapEx 週期演變</h3>
+<div class="card-body">
+<table>
+<tr><th>階層</th><th>CapEx 受控（$1,750B，40%）</th><th>CapEx 按指引（$1,800B，40%）</th><th>CapEx 超支（>$1,900B，20%）</th></tr>
+<tr><td><strong>一階</strong></td><td>FY2026 FCF ~$100-200 億，好於預期</td><td>FY2026 FCF ~$50 億，符合壓縮預期</td><td>FY2026 FCF 轉負，市場恐慌</td></tr>
+<tr><td><strong>二階</strong></td><td>市場重新定價 FCF 回升時程，+5-8%</td><td>維持目前估值水準</td><td>P/E 收縮 2-3 倍數，-10-15%</td></tr>
+<tr><td><strong>三階</strong></td><td>2027 年 FCF 大幅回升敘事確立</td><td>需 2027 年數據驗證</td><td>AI 投資泡沫質疑蔓延至整個科技板塊</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>跨鏈交互作用</h3>
+<div class="card-body">
+<div class="tip warn"><b>危險交互</b>
+若「Q1 財報低於預期 + CapEx 超支 + Ad Tech 結構性剝離」三者在 2026 H2 同時發生，將形成完美風暴。聯合機率：20% × 20% × 25% = 1%。機率極低但影響極大（-30-40%）。
+</div>
+<div class="tip good"><b>正向交互</b>
+若「Q1 超預期 + Apple-Gemini 上線 + Ad Tech 行為性補救」三者在 Q2 前兌現，將啟動強力上行。聯合機率：45% × 50% × 65% = 14.6%。影響：+20-30%。
+</div>
+</div>
+</div>
+
+<!-- ===== 8d ===== -->
+<div class="section-title" id="s8d">8d. 情境模擬與機率樹</div>
+<div class="section-sub">基於 ACH 假說的五條未來路徑</div>
+
+<div class="card">
+<h3>路徑 A：AI 飛輪啟動（對應 H1 強烈看多）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>機率</td><td><strong>10%</strong></td></tr>
+<tr><td>觸發條件</td><td>Cloud 重回 35%+ 增速 + Gemini 破 10 億 MAU + Apple Siri 帶動品牌爆發</td></tr>
+<tr><td>演進過程</td><td>Q1 大幅超預期 → 分析師目標升至 $400+ → 資金從其他 Mag7 輪動至 GOOGL</td></tr>
+<tr><td>12 個月目標</td><td><strong>$380-$420</strong></td></tr>
+<tr><td>路徑驗證指標</td><td>Q1 Cloud > $135B、Gemini MAU > 9B、CapEx < $1,750B</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 B：穩健成長（對應 H2 溫和看多 — 主路徑）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>機率</td><td><strong>40%</strong></td></tr>
+<tr><td>觸發條件</td><td>Q1 符合預期、Cloud 維持 25-30%、CapEx 按指引、Ad Tech 行為性補救</td></tr>
+<tr><td>演進過程</td><td>區間震盪 $285-$330 → H2 催化劑逐步兌現 → 年底回到 $320-$340</td></tr>
+<tr><td>12 個月目標</td><td><strong>$310-$345</strong></td></tr>
+<tr><td>路徑驗證指標</td><td>Cloud 營收增速穩定 25-30%、營業利潤率 > 30%、CapEx 在指引範圍內</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 C：橫盤消化（對應 H3 中性）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>機率</td><td><strong>25%</strong></td></tr>
+<tr><td>觸發條件</td><td>Q1 平淡、Cloud 放緩至 20-25%、Apple 延期、Ad Tech 案拖延</td></tr>
+<tr><td>演進過程</td><td>缺乏催化劑 → 在 $270-$310 區間橫盤 → 等待 FY2026 下半年方向明朗</td></tr>
+<tr><td>12 個月目標</td><td><strong>$275-$310</strong></td></tr>
+<tr><td>路徑驗證指標</td><td>各項指標不好不壞，市場注意力轉移至其他標的</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 D：溫和修正（對應 H4 溫和看空）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>機率</td><td><strong>17%</strong></td></tr>
+<tr><td>觸發條件</td><td>Cloud 跌破 20% + CapEx 超支 + 搜尋市佔重回下降軌道</td></tr>
+<tr><td>演進過程</td><td>Q1 miss → 跌至 $270 → Q2 確認放緩 → 跌至 $240-$260 → 年底等待 2027 指引</td></tr>
+<tr><td>12 個月目標</td><td><strong>$230-$270</strong></td></tr>
+<tr><td>路徑驗證指標</td><td>Cloud < 20%、CapEx > $2,000B、搜尋市佔 < 89%</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 E：深度修正（對應 H5 強烈看空）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>機率</td><td><strong>8%</strong></td></tr>
+<tr><td>觸發條件</td><td>Ad Tech 結構性剝離 + CapEx 失控 + AI 寒冬 + 總體經濟衰退</td></tr>
+<tr><td>演進過程</td><td>多重利空共振 → 跌破 $250 → 恐慌性拋售 → 跌至 $180-$210</td></tr>
+<tr><td>12 個月目標</td><td><strong>$180-$220</strong></td></tr>
+<tr><td>路徑驗證指標</td><td>Ad Tech 剝離確定 + FCF 轉負 + P/E 收縮至 18-20x</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>機率樹加權期望值</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card bull-card">
+    <div class="title">加權 12 個月目標</div>
+    <div class="num" style="color:var(--bull)">$306</div>
+    <div class="desc">10%×$400 + 40%×$328 + 25%×$293 + 17%×$250 + 8%×$200</div>
+</div>
+<div class="mini-card neutral-card">
+    <div class="title">期望報酬率</div>
+    <div class="num">+1.7%</div>
+    <div class="desc">含股利 +0.28% = +2.0%</div>
+</div>
+</div>
+<div class="tip warn"><b>推衍結論</b>
+加權目標 $306 僅略高於 $301（+1.7%）。這意味著在目前價位，上行和下行的機率大致均衡。不是一個具有明確方向性的投資機會 — 更像是「等待時機」的配置。
+</div>
+</div>
+</div>
+
+<!-- ===== 8e ===== -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">依風險偏好的三種策略建議</div>
+
+<div class="card">
+<h3>策略一：積極型投資人</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>目前持倉建議</td><td>可建立 1/3 部位（$301 入場），Q1 財報後視結果加碼或停損</td></tr>
+<tr><td>加碼條件</td><td>Q1 營收 > $930B + Cloud > 30%：加碼至 2/3</td></tr>
+<tr><td>停損條件</td><td>跌破 $270（200 SMA $260 附近）：減至 1/3 並重新評估</td></tr>
+<tr><td>目標價</td><td>$340-$370（基於路徑 A/B）</td></tr>
+<tr><td>時間軸</td><td>6-12 個月</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>策略二：穩健型投資人（推薦）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>目前持倉建議</td><td>觀望。等待回檔至 $275-$285 再開始建倉</td></tr>
+<tr><td>買入條件</td><td>$275-285：建立 1/3 部位 → $260-275：加碼至 2/3 → $240 以下：滿倉</td></tr>
+<tr><td>停損條件</td><td>跌破 $220：全部出場（基本面假設可能已打破）</td></tr>
+<tr><td>目標價</td><td>$310-$340（基於路徑 B）</td></tr>
+<tr><td>時間軸</td><td>12-18 個月</td></tr>
+</table>
+<div class="tip good"><b>為什麼推薦這個策略？</b>
+Base Case 合理價 $285，目前 $301 溢價 ~6%。等待回檔至 $275-285 可獲得接近 Base Case 的安全邊際，同時保留上行空間。Q1 財報前的 4 週是最佳觀察窗口。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>策略三：保守型投資人</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td>目前持倉建議</td><td>不入場。等待 Ad Tech 裁決結果明朗後再評估</td></tr>
+<tr><td>買入條件</td><td>Ad Tech 行為性補救確定 + 股價 $260 以下：開始小量建倉</td></tr>
+<tr><td>停損條件</td><td>跌破 $200：不加碼，持有觀望</td></tr>
+<tr><td>目標價</td><td>$300-$320</td></tr>
+<tr><td>時間軸</td><td>18-24 個月</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 8f ===== -->
+<div class="section-title" id="s8f">8f. 催化劑時間表（2026/3-9 月）</div>
+
+<div class="card">
+<h3>未來 6 個月關鍵事件日曆</h3>
+<div class="card-body">
+<table>
+<tr><th>日期</th><th>事件</th><th>方向</th><th>影響</th><th>觀察指標</th></tr>
+<tr><td>3/22-4/20</td><td>Q1 財報前靜默期</td><td>中性</td><td>低</td><td>機構持倉變動、選擇權佈局</td></tr>
+<tr><td>4/22-24</td><td>Google Cloud Next 2026</td><td><span class="light green"></span></td><td>中高</td><td>新產品公告、企業合約數</td></tr>
+<tr><td>~4/28</td><td>Q1 2026 財報</td><td><span class="light yellow"></span></td><td>極高</td><td>Revenue、Cloud 增速、CapEx 實際數、EPS</td></tr>
+<tr><td>5月</td><td>iOS 26.5（Gemini Siri？）</td><td><span class="light green"></span></td><td>高</td><td>是否如期推出、初始採用數據</td></tr>
+<tr><td>5/6-7</td><td>FOMC 利率決策</td><td><span class="light yellow"></span></td><td>中</td><td>降息/維持/升息對成長股影響</td></tr>
+<tr><td>~6/9</td><td>除息日</td><td>中性</td><td>低</td><td>殖利率僅 0.28%</td></tr>
+<tr><td>6/17-18</td><td>FOMC 利率決策</td><td><span class="light yellow"></span></td><td>中</td><td>同上</td></tr>
+<tr><td>6/23</td><td>Google Play $7B 和解聽證</td><td><span class="light yellow"></span></td><td>低</td><td>最終金額確認</td></tr>
+<tr><td>~7/28</td><td>Q2 2026 財報</td><td><span class="light yellow"></span></td><td>極高</td><td>Cloud 增速拐點驗證、H1 CapEx 總額</td></tr>
+<tr><td>H2 某日</td><td>Ad Tech 補救裁決</td><td><span class="light red"></span></td><td>極高</td><td>行為性 vs 結構性 — 二元結果</td></tr>
+</table>
+
+<div class="tip info"><b>決策節點</b>
+<strong>節點 1（4/28 Q1 財報後）</strong>：根據 Cloud 增速和 CapEx 實際數，決定是否啟動建倉。<br>
+<strong>節點 2（7/28 Q2 財報後）</strong>：確認 Cloud 是季節性還是結構性放緩，決定部位調整。<br>
+<strong>節點 3（Ad Tech 裁決後）</strong>：根據結果，決定是否大幅增減部位。
+</div>
+</div>
+</div>
+
+<!-- ===== 8g ===== -->
+<div class="section-title" id="s8g">8g. 推衍結論</div>
+
+<div class="card">
+<h3>最終推衍判斷</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card neutral-card">
+    <div class="title">最可能路徑</div>
+    <div class="num">路徑 B</div>
+    <div class="desc">穩健成長，$310-$345（機率 40%）</div>
+</div>
+<div class="mini-card neutral-card">
+    <div class="title">推衍信心度</div>
+    <div class="num">55%</div>
+    <div class="desc">ACH 70% → 壓力測試 65% → 評審團 60% → 推衍 55%</div>
+</div>
+</div>
+
+<div class="tip warn"><b>信心校準第四次（推衍版 — 最嚴格）</b>
+從評審團的 60% 再降至 <strong>55%</strong>（-5%）。原因：<br>
+1. DCF 估值顯示目前股價需要極樂觀假設才能支撐（WACC 8% + TG 3.5%）<br>
+2. 加權期望目標 $306 僅微幅高於目前 $301（上行空間不足）<br>
+3. Q1 財報前存在不確定性窗口（4 週內無新催化劑）<br>
+4. Ad Tech 裁決是 2026 最大的單一二元風險事件
+</div>
+
+<table>
+<tr><th>判斷</th><th>內容</th></tr>
+<tr><td>整體方向</td><td>中性偏多，但安全邊際不足</td></tr>
+<tr><td>行動建議</td><td><strong>觀望為主，等待 $275-285 或 Q1 超預期後再行動</strong></td></tr>
+<tr><td>進場條件</td><td>① 股價跌至 $275-285 ② Q1 Cloud > 30% + CapEx 受控 ③ Ad Tech 行為性補救確定</td></tr>
+<tr><td>觀望條件</td><td>目前 $301 — 安全邊際不足，等待回檔或催化劑</td></tr>
+<tr><td>出場條件</td><td>已持有者：跌破 $260 減碼 / 跌破 $220 停損</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>觀察清單（下次推衍前必追蹤）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>追蹤項目</th><th>頻率</th><th>資料來源</th></tr>
+<tr><td>1</td><td>Q1 2026 財報（營收/EPS/Cloud/CapEx）</td><td>~4/28 一次</td><td>SEC EDGAR / yfinance</td></tr>
+<tr><td>2</td><td>Apple-Gemini Siri 是否推出</td><td>每週</td><td>9to5Mac / MacRumors</td></tr>
+<tr><td>3</td><td>Ad Tech 補救裁決進度</td><td>每兩週</td><td>DOJ / AdExchanger</td></tr>
+<tr><td>4</td><td>搜尋市佔率變化</td><td>每月</td><td>StatCounter / BrightEdge</td></tr>
+<tr><td>5</td><td>Gemini MAU / DAU 趨勢</td><td>每季</td><td>Alphabet 法說會</td></tr>
+<tr><td>6</td><td>Waymo 擴張進度（新城市、載客量）</td><td>每月</td><td>TechCrunch / Waymo Blog</td></tr>
+<tr><td>7</td><td>Fed 利率決策</td><td>FOMC 會後</td><td>Fed / CME FedWatch</td></tr>
+<tr><td>8</td><td>Norges Bank 等大型機構持倉變動</td><td>每季</td><td>13-F filings</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍有效期聲明</h3>
+<div class="card-body">
+<div class="tip danger"><b>本次推衍有效期：2026-03-22 至 2026-06-30</b>
+以下事件將導致推衍立即失效，需重新分析：<br>
+1. Q1 2026 財報公布（預計 4/28）— 無論結果如何均需更新<br>
+2. Ad Tech 補救裁決公布<br>
+3. GOOGL 單日漲跌超過 10%<br>
+4. 重大併購或業務分拆公告<br>
+5. 總體經濟劇變（Fed 緊急降息/升息、重大地緣政治事件）
+</div>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 v2.0 / 推衍推演</p>
+    <p>推衍日期：2026-03-22｜有效期至：2026-06-30</p>
+    <p>標的：GOOGL Alphabet Inc.｜基準股價：$301.00｜信心度：55%</p>
+    <p style="margin-top:4px">免責聲明：所有推衍預測僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){document.querySelectorAll('.card').forEach(function(c){if(collapse)c.classList.add('collapsed');else c.classList.remove('collapsed')});}
+document.querySelectorAll('.card').forEach(function(c){c.classList.add('collapsed');});
+document.querySelectorAll('.card h3').forEach(function(h3){h3.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed');});});
+</script>
+</body>
+</html>
