@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>文曄科技(3036) 第四五六步：ACH + 壓力測試 + 評審團</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+ul{margin-left:20px;font-size:.84em}
+ol{margin-left:20px;font-size:.84em}
+.ach-matrix{display:grid;gap:2px;font-size:.78em;margin:6px 0}
+.ach-cell{padding:6px 8px;text-align:center;border-radius:4px}
+.ach-cc{background:rgba(46,125,50,.15);color:var(--bull)}
+.ach-ci{background:rgba(21,101,192,.1);color:#1565c0}
+.ach-cn{background:rgba(90,125,140,.1);color:var(--neutral)}
+.ach-ii{background:rgba(198,40,40,.1);color:var(--bear)}
+.reviewer{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:6px 0}
+.reviewer .name{font-weight:700;color:var(--base);font-size:.9em}
+.reviewer .role{font-size:.78em;color:var(--txt3);margin-bottom:4px}
+.reviewer .verdict{font-size:.85em;margin-top:4px}
+.bar-container{background:#ddd;border-radius:4px;height:18px;margin:4px 0;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:.72em;font-weight:700;color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<h1>文曄科技 (3036)</h1>
+<div class="sub">第四步 ACH + 第五步壓力測試 + 第六步評審團</div>
+<div class="desc">天機閣深度調查 v3.0 — 競爭假說分析 → 壓力測試 → 多角色評審</div>
+<div class="tags">
+<span class="tag">信心校準第 1~3 次</span>
+<span class="tag">分析日：2026-03-23</span>
+</div>
+</div>
+
+<!-- ============================= -->
+<!-- 第四步：ACH 分析 -->
+<!-- ============================= -->
+<div class="section-title">第四步：ACH 競爭假說分析</div>
+<div class="section-sub">設定 4 個競爭假說，用所有 F/I 級證據逐一檢驗一致性/不一致性</div>
+
+<details open>
+<summary>假說定義</summary>
+<table>
+<tr><th>假說</th><th>描述</th><th>對投資的含意</th></tr>
+<tr><td><b>H1 牛市</b></td><td>AI 驅動結構性成長，營收持續高成長，毛利金額增加足以抵消毛利率下滑。2026 EPS 達 14~16 元。</td><td>強力買進，股價上看 300+</td></tr>
+<tr><td><b>H2 溫和正面</b></td><td>AI 成長持續但放緩，毛利率穩定在 3~3.5%。Future 整合逐步貢獻。2026 EPS 12~14 元。</td><td>持有/小幅加碼，目標 240~260</td></tr>
+<tr><td><b>H3 中性偏空</b></td><td>AI 資本支出 2026H2 放緩，存貨去化壓力浮現，毛利率跌破 3%。2026 EPS 10~12 元。</td><td>減碼，股價回至 180~220</td></tr>
+<tr><td><b>H4 熊市</b></td><td>AI 泡沫戳破或重大原廠終止代理，存貨減損。2026 EPS &lt;10 元。</td><td>賣出，股價跌至 120~160</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>ACH 證據矩陣</summary>
+<table>
+<tr><th>證據 (FIAS-F/I)</th><th>H1 牛市</th><th>H2 溫和</th><th>H3 偏空</th><th>H4 熊市</th></tr>
+<tr><td>Q1 營收指引 +92% YoY <span class="fias-f">F</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-cn">N</td><td class="ach-ii">II</td></tr>
+<tr><td>Q1 毛利率指引降至 3.2~3.3% <span class="fias-f">F</span></td><td class="ach-cn">N</td><td class="ach-ci">CI</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>Q4 營收超標 12% <span class="fias-f">F</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-cn">N</td><td class="ach-ii">II</td></tr>
+<tr><td>Q4 毛利率未達指引 <span class="fias-f">F</span></td><td class="ach-ci">CI</td><td class="ach-cn">N</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>存貨 +159%（8Q）<span class="fias-f">F</span></td><td class="ach-cn">N</td><td class="ach-ci">CI</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>營業現金流轉負 <span class="fias-f">F</span></td><td class="ach-ci">CI</td><td class="ach-ci">CI</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>外資+投信持續買超 <span class="fias-f">F</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-ci">CI</td><td class="ach-ii">II</td></tr>
+<tr><td>Gartner 資料中心 CAGR 25.7% <span class="fias-i">I</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-ci">CI</td><td class="ach-ii">II</td></tr>
+<tr><td>大聯大 Q1 營收僅 +8% <span class="fias-f">F</span></td><td class="ach-cn">N</td><td class="ach-cn">N</td><td class="ach-cc">CC</td><td class="ach-ci">CI</td></tr>
+<tr><td>股價超越所有目標價 <span class="fias-f">F</span></td><td class="ach-ci">CI</td><td class="ach-ii">II</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>NVIDIA 需求達 1 兆美元 <span class="fias-i">I</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-cn">N</td><td class="ach-ii">II</td></tr>
+<tr><td>PE 26x（同業 10~18x）<span class="fias-f">F</span></td><td class="ach-ci">CI</td><td class="ach-ii">II</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>負債比 77.6% <span class="fias-f">F</span></td><td class="ach-cn">N</td><td class="ach-ci">CI</td><td class="ach-cc">CC</td><td class="ach-cc">CC</td></tr>
+<tr><td>Future 車用 Q1 雙位數成長 <span class="fias-i">I</span></td><td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-cn">N</td><td class="ach-ii">II</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">CC=高度一致 / CI=部分不一致 / N=中性 / II=高度不一致</p>
+</details>
+
+<details open>
+<summary>ACH 評分與初始信心</summary>
+<table>
+<tr><th>假說</th><th>CC 數</th><th>CI 數</th><th>II 數</th><th>淨得分</th><th>初始信心</th></tr>
+<tr><td>H1 牛市</td><td>7</td><td>4</td><td>0</td><td>+3</td><td style="color:var(--warn);">30%</td></tr>
+<tr><td>H2 溫和正面</td><td>6</td><td>4</td><td>2</td><td>0</td><td style="color:var(--bull);">35%</td></tr>
+<tr><td>H3 中性偏空</td><td>7</td><td>2</td><td>0</td><td>+5</td><td style="color:var(--warn);">25%</td></tr>
+<tr><td>H4 熊市</td><td>6</td><td>1</td><td>5</td><td>0</td><td>10%</td></tr>
+</table>
+
+<div class="tip warn"><b>ACH 初始結論（信心校準第 1 次）</b>
+<b>H2 溫和正面（35%）略勝 H1 牛市（30%）</b>。值得注意的是 H3 偏空在 CC 數量上其實很高（7），因為毛利率下滑、存貨暴增、估值過高等多項負面證據都高度支持 H3。<br><br>
+核心分歧：<b>營收成長（支持 H1/H2）vs 獲利品質惡化（支持 H3）</b>。市場似乎全面押注 H1，但證據顯示 H2 更可能、H3 的風險不容忽視。
+</div>
+</details>
+
+<!-- ============================= -->
+<!-- 第五步：壓力測試 -->
+<!-- ============================= -->
+<div class="section-title">第五步：假設壓力測試</div>
+<div class="section-sub">對每個假說施加極端情境，測試信心是否改變</div>
+
+<details open>
+<summary>壓力情境 1：AI 資本支出 2026H2 縮減 30%</summary>
+<ul>
+<li><b>觸發條件</b>：Meta/Google/Microsoft 財報顯示 AI 投資報酬率不如預期，宣布削減資本支出</li>
+<li><b>對文曄影響</b>：資料中心佔營收 58%，若需求急凍，Q3/Q4 營收可能較 Q1 腰斬</li>
+<li><b>存貨風險</b>：2,598 億存貨中若 50% 為 AI 相關，減損金額可達數百億</li>
+<li><b>假說影響</b>：H1 機率降至 10%，H3 升至 40%，H4 升至 25%</li>
+</ul>
+</details>
+
+<details open>
+<summary>壓力情境 2：重大原廠終止代理（TI 2.0）</summary>
+<ul>
+<li><b>觸發條件</b>：某主要原廠（如 ADI 或 Broadcom）宣布轉為直銷</li>
+<li><b>歷史參照</b>：2019 TI 佔營收 20%，股價從 40 跌至 34.6（-13.5%）</li>
+<li><b>現在差異</b>：代理線從 80→400 家，單一原廠佔比理論上已降低</li>
+<li><b>假說影響</b>：若佔比 >10%，H4 機率升至 30%；若 <5%，影響可控</li>
+</ul>
+</details>
+
+<details open>
+<summary>壓力情境 3：美中科技戰全面升級</summary>
+<ul>
+<li><b>觸發條件</b>：美國全面禁止向中國出售 AI 相關晶片（含成熟製程）</li>
+<li><b>對文曄影響</b>：亞洲營收佔 84%，中國為重要市場。代理美系品牌（ADI/Broadcom/Intel）在中國銷售可能被全面封鎖</li>
+<li><b>假說影響</b>：H1 不受直接影響（AI 需求來自全球 CSP），但 Future 的歐美業務成為避險</li>
+</ul>
+</details>
+
+<details open>
+<summary>壓力情境 4：毛利率跌破 3%</summary>
+<ul>
+<li><b>觸發條件</b>：AI 伺服器佔比升至 65%+，大單價格競爭加劇</li>
+<li><b>計算</b>：若 Q2 毛利率 2.8%、營收 5,000 億 → 毛利 140 億（vs Q4 128 億，僅增 9%）</li>
+<li><b>對 EPS 影響</b>：毛利金額成長趨緩 → EPS 增幅放緩 → PE 倍數壓縮</li>
+<li><b>假說影響</b>：H2 降至 25%，H3 升至 35%</li>
+</ul>
+</details>
+
+<details open>
+<summary>壓力測試後信心調整（信心校準第 2 次）</summary>
+<table>
+<tr><th>假說</th><th>ACH 初始</th><th>壓力測試後</th><th>變動</th></tr>
+<tr><td>H1 牛市</td><td>30%</td><td style="color:var(--warn);">25%</td><td>-5%（存貨+毛利率壓力）</td></tr>
+<tr><td>H2 溫和正面</td><td>35%</td><td style="color:var(--bull);">35%</td><td>持平（最穩健假說）</td></tr>
+<tr><td>H3 中性偏空</td><td>25%</td><td style="color:var(--warn);">28%</td><td>+3%（多項壓力情境支持）</td></tr>
+<tr><td>H4 熊市</td><td>10%</td><td>12%</td><td>+2%（極端情境機率小但存在）</td></tr>
+</table>
+</details>
+
+<!-- ============================= -->
+<!-- 第六步：評審團 -->
+<!-- ============================= -->
+<div class="section-title">第六步：多角色評審團</div>
+<div class="section-sub">5 位虛擬評審從不同角度挑戰分析結論</div>
+
+<div class="reviewer">
+<div class="name">評審 1：價值投資者（巴菲特學派）</div>
+<div class="role">關注護城河深度、獲利品質、估值安全邊際</div>
+<div class="verdict">
+<b>評語</b>：<span style="color:var(--bear);">不建議買入</span><br>
+「毛利率 3~4%、淨利率 1.2%、ROE ~4% — 這不是一家具有持久競爭優勢的公司。IC 通路商本質是中間人，無定價能力，護城河極淺。PE 26x 買一家淨利率 1.2% 的公司？我看不到安全邊際。存貨暴增 +159% 而管理層未主動說明，這是紅旗。」<br>
+<b>關鍵質疑</b>：為何 Future 毛利率 18~20% 卻沒有拉升混合毛利率？是否 Future 整合實際上不如預期？
+</div>
+</div>
+
+<div class="reviewer">
+<div class="name">評審 2：成長股投資者</div>
+<div class="role">關注營收成長動能、市場規模、催化劑</div>
+<div class="verdict">
+<b>評語</b>：<span style="color:var(--bull);">可考慮持有</span><br>
+「Q1 營收年增 92%、EPS 指引 4.5~5.1 元 — 這是爆發性成長。AI 資料中心 CAGR 25.7% 是多年趨勢，不是一次性的。文曄是 AI 供應鏈的關鍵節點，全球第一的地位有持續價值。毛利率下滑是 AI 通路商的常態，重點是毛利金額和 EPS 有沒有增加 — 答案是有。」<br>
+<b>關鍵質疑</b>：但股價已漲 63% 在 2 個月內，我會等回調到 220~230 再加碼，不會在 254 追高。
+</div>
+</div>
+
+<div class="reviewer">
+<div class="name">評審 3：風控經理</div>
+<div class="role">關注下行風險、財務穩定性、最壞情境</div>
+<div class="verdict">
+<b>評語</b>：<span style="color:var(--danger);">高風險警示</span><br>
+「三個紅旗同時亮起：(1) 存貨 2,598 億較營收增速嚴重失衡；(2) 營業現金流 Q4 轉負；(3) 負債比 77.6% + 速動比 55.1。這家公司的資產負債表在快速惡化。如果 AI 需求一旦放緩，存貨減損 + 現金流惡化 + 高負債 = 完美風暴。」<br>
+<b>建議</b>：持倉不超過投資組合的 3%，設定停損在成本價 -15%。
+</div>
+</div>
+
+<div class="reviewer">
+<div class="name">評審 4：產業分析師</div>
+<div class="role">關注產業趨勢、競爭格局、技術變遷</div>
+<div class="verdict">
+<b>評語</b>：<span style="color:var(--warn);">中性偏多</span><br>
+「AI 伺服器需求是真的 — NVIDIA Blackwell 需求達 1 兆美元不是空話，CSP 資本支出持續擴張。文曄作為全球 #1 通路商，確實是這波浪潮的直接受益者。但我擔心三件事：(1) 原廠直銷趨勢（TI 前例）；(2) 大聯大 Q1 營收僅 +8% 暗示非 AI 通路需求疲弱；(3) 資料中心佔比 58% 的集中度風險。」<br>
+<b>關鍵觀點</b>：文曄的「一站式購足」轉型方向正確，但轉型尚未完成，現在的高估值定價的是「已經轉型成功」的未來。
+</div>
+</div>
+
+<div class="reviewer">
+<div class="name">評審 5：技術面/籌碼面交易者</div>
+<div class="role">關注股價技術位置、籌碼結構、短線風險</div>
+<div class="verdict">
+<b>評語</b>：<span style="color:var(--bear);">短線偏空</span><br>
+「技術面嚴重超買：(1) 2 個月漲 63%（156→254）；(2) 現價 254 距 250 天均價 137.33 偏離 85%；(3) 已突破所有分析師目標價。籌碼面看外資+投信在買，但自營商偏空。我的判斷是短線有 10~15% 回調空間到 220 附近才會有支撐。」<br>
+<b>建議</b>：不要在 254 追買。等待回調至 20 日均線或 220 附近再考慮。
+</div>
+</div>
+
+<details open>
+<summary>評審團投票結果與信心校準（第 3 次）</summary>
+<table>
+<tr><th>假說</th><th>壓力後</th><th>評審團後</th><th>投票</th></tr>
+<tr><td>H1 牛市</td><td>25%</td><td style="color:var(--warn);">20%</td><td>僅成長股投資者支持，其餘 4 位不認同在此價位</td></tr>
+<tr><td>H2 溫和正面</td><td>35%</td><td style="color:var(--bull);">35%</td><td>產業分析師+成長股投資者支持，但強調需等回調</td></tr>
+<tr><td>H3 中性偏空</td><td>28%</td><td style="color:var(--warn);">30%</td><td>風控+價值投資者+技術面交易者支持</td></tr>
+<tr><td>H4 熊市</td><td>12%</td><td>15%</td><td>風控經理警示存貨+負債風險</td></tr>
+</table>
+
+<div class="tip danger"><b>評審團共識</b>
+<ol>
+<li><b>基本面有支撐</b>：AI 需求是真實的，文曄的全球 #1 地位有價值</li>
+<li><b>估值已充分反映</b>：PE 26x + 股價超越所有目標價 → 在 254 元追買的風險報酬比不佳</li>
+<li><b>短線過熱</b>：2 個月 +63%，需等回調至 220 附近才有較好的進場時機</li>
+<li><b>財務面隱憂</b>：存貨暴增 + 現金流轉負 + 高負債，需在 Q1 季報中確認是否改善</li>
+<li><b>信心分佈</b>：H2 溫和正面（35%）> H3 偏空（30%）> H1 牛市（20%）> H4 熊市（15%）</li>
+</ol>
+</div>
+</details>
+
+<!-- Footer -->
+<div style="margin-top:20px;padding-top:12px;border-top:1.5px solid var(--border);font-size:.78em;color:var(--txt3);text-align:center;">
+天機閣深度調查 v3.0 — 第四步 ACH + 第五步壓力測試 + 第六步評審團<br>
+文曄科技 (3036) | 分析日：2026-03-23<br>
+信心校準 3 次：ACH → 壓力測試 → 評審團 | 最終信心：H2(35%) H3(30%) H1(20%) H4(15%)
+</div>
+
+</div>
+</body>
+</html>
