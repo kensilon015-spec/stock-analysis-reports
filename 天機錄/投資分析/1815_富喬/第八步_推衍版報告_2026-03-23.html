@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>1815 富喬工業 — 天機錄推衍版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.verdict-box{padding:12px 16px;border-radius:8px;margin:8px 0;font-size:.88em}
+.verdict-box.fail{background:rgba(198,40,40,.08);border:1px solid rgba(198,40,40,.3);color:#c62828}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>1815 富喬工業 — 天機錄推衍版</h1>
+    <div class="sub">天機閣深度調查系統 v3.0 ｜ 第八步：推衍推演</div>
+    <div class="desc">四情境推衍 + 時間線 + 風險級聯 + 貓膩推衍 + 行動方案</div>
+    <div class="tags">
+        <span class="tag">1815.TWO</span>
+        <span class="tag">推衍版</span>
+        <span class="tag">不建議買入</span>
+        <span class="tag">2026-03-23</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">推衍版結構</strong>
+    <a href="#s8a">8a. 四情境推衍</a>
+    <a href="#s8b">8b. 時間線推衍</a>
+    <a href="#s8c">8c. 催化劑辨識</a>
+    <a href="#s8d">8d. 風險級聯分析</a>
+    <a href="#s8e">8e. 部位策略</a>
+    <a href="#s8f">8f. 退場策略</a>
+    <a href="#s8g">8g. 監控框架</a>
+    <a href="#s8h">8h. 貓膩推衍</a>
+    <a href="#s8i">8i. 推衍結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- 8a -->
+<div id="s8a" class="section-title">8a. 四情境推衍</div>
+<div class="section-sub">基於四次校準後的假說機率，展開每個情境的推衍路徑</div>
+
+<div class="card">
+<h3>情境 S1：AI超級週期（H1，機率5%）</h3>
+<div class="card-body">
+<p><strong>前提條件</strong>：AI CapEx持續超預期 + 缺貨延長至2028年 + 富喬成功轉型高階材料商</p>
+<table>
+<tr><th>時間點</th><th>事件推衍</th><th>股價估算</th></tr>
+<tr><td>2026Q2</td><td>EPS季度達0.8-1.0元，高階占比突破55%</td><td>110-120元</td></tr>
+<tr><td>2026Q4</td><td>全年EPS達3.0-3.5元，泰國廠建設順利</td><td>130-150元</td></tr>
+<tr><td>2027Q2</td><td>LowCTE放量，進入NVIDIA供應鏈</td><td>150-180元</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3)">此情境需要：EPS年增83%+高階占比突破+泰國廠不延期，三者同時成立。機率極低。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>情境 S2：週期反轉（H2，機率47%）— 最可能情境</h3>
+<div class="card-body">
+<p><strong>前提條件</strong>：漲價動能2026H2放緩 + 2027H2供給大量釋放 + PE壓縮</p>
+<table>
+<tr><th>時間點</th><th>事件推衍</th><th>股價估算</th></tr>
+<tr><td>2026Q2</td><td>營收增速進一步放緩至年增<20%，法人持續減碼</td><td>85-95元</td></tr>
+<tr><td>2026Q4</td><td>台玻Low-Dk量產開始搶單，漲價動能減弱</td><td>65-80元</td></tr>
+<tr><td>2027Q2</td><td>日東紡新產能投產消息確認，市場開始定價供給過剩</td><td>45-60元</td></tr>
+<tr><td>2027Q4</td><td>供給海嘯：日東紡3倍+巨石10萬噸，電子布價格回落</td><td>35-50元</td></tr>
+</table>
+<div class="tip danger">
+    <b>S2 推衍路徑：緩跌→加速跌</b>
+    週期反轉不是一天發生的。先是增速放緩（2026H1已開始），然後是漲價動能消失（2026H2-2027H1），最後是價格戰（2027H2+）。股價通常會提前6-12個月反映，意味著股價下跌可能在2026Q3-Q4就開始加速。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>情境 S3：競爭惡化（H3，機率35%）</h3>
+<div class="card-body">
+<p><strong>前提條件</strong>：台玻/巨石擴產成功 + 高端市佔洗牌 + 富喬毛利率壓縮</p>
+<table>
+<tr><th>時間點</th><th>事件推衍</th><th>股價估算</th></tr>
+<tr><td>2026Q3</td><td>台玻Low-Dk產品取得NVIDIA認證，開始分食市場</td><td>80-90元</td></tr>
+<tr><td>2026Q4</td><td>巨石高端產品開始出貨，以低價策略搶佔市場</td><td>65-75元</td></tr>
+<tr><td>2027H1</td><td>富喬毛利率從27%降至18-20%，回到2022年水準</td><td>50-65元</td></tr>
+<tr><td>2027H2</td><td>高端電子布供給過剩，價格戰全面展開</td><td>35-50元</td></tr>
+</table>
+<p style="font-size:.82em">S3與S2可能重疊，形成「週期反轉+競爭惡化」雙重打擊。合併機率 = 47%+35% = 82%（部分重疊）。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>情境 S4：黑天鵝（H4，機率13%）</h3>
+<div class="card-body">
+<p><strong>可能觸發事件</strong>：</p>
+<ul style="font-size:.82em;color:var(--txt2);margin:4px 0 4px 16px">
+<li><strong>管理層醜聞</strong>：董事長新的法律問題/內線交易案判決不利/質押爆倉</li>
+<li><strong>會計問題</strong>：12月獲利暴跌真正原因是會計不當/費用隱藏</li>
+<li><strong>AI CapEx凍結</strong>：全球科技巨頭同步縮減AI資本支出</li>
+<li><strong>地緣政治</strong>：台海緊張/中國對台灣玻纖布產品加徵關稅</li>
+</ul>
+<table>
+<tr><th>觸發事件</th><th>股價衝擊</th><th>恢復可能</th></tr>
+<tr><td>董事長質押爆倉</td><td style="color:var(--bear)">跌停鎖死數日，-40~50%</td><td>低</td></tr>
+<tr><td>會計問題爆發</td><td style="color:var(--bear)">-50~70%</td><td>視嚴重程度</td></tr>
+<tr><td>AI CapEx全面凍結</td><td style="color:var(--bear)">-30~40%（全產業下跌）</td><td>中（長期會恢復）</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 8b -->
+<div id="s8b" class="section-title">8b. 時間線推衍</div>
+
+<div class="card">
+<h3>關鍵時間節點路線圖</h3>
+<div class="card-body">
+<table>
+<tr><th>時間</th><th>預期事件</th><th>對富喬影響</th><th>監控重點</th></tr>
+<tr><td>2026/04</td><td>Q1財報公布</td><td>EPS能否維持0.3+</td><td>毛利率是否維持27%+</td></tr>
+<tr><td>2026/05</td><td>2025年報公布</td><td>研發費用/存貨/12月獲利說明</td><td>12月暴跌有無註解</td></tr>
+<tr><td>2026/06</td><td>台玻Low-Dk產線量產</td><td>直接競爭壓力開始</td><td>台玻高階出貨量</td></tr>
+<tr><td>2026/08</td><td>股東會+配息決議</td><td>是否配息、配多少</td><td>管理層態度</td></tr>
+<tr><td>2026Q4</td><td>日東紡新產能量產消息</td><td>市場開始定價供給增加</td><td>日東紡法說會</td></tr>
+<tr><td>2027Q1</td><td>巨石淮安產線50%投產</td><td>低價高端產品開始衝擊</td><td>巨石出貨報價</td></tr>
+<tr><td>2027Q3</td><td>富喬泰國廠量產</td><td>新產能貢獻+折舊壓力</td><td>良率/認證進度</td></tr>
+<tr><td>2027H2</td><td>供給海嘯全面到來</td><td>價格戰風險最高點</td><td>電子布ASP變化</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 8c -->
+<div id="s8c" class="section-title">8c. 催化劑辨識</div>
+
+<div class="card">
+<h3>上行與下行催化劑</h3>
+<div class="card-body">
+<p><strong>下行催化劑（更可能觸發）</strong></p>
+<table>
+<tr><th>#</th><th>催化劑</th><th>機率</th><th>衝擊</th></tr>
+<tr><td>D1</td><td>Q1財報EPS低於0.3元或毛利率跌破25%</td><td>35%</td><td style="color:var(--bear)">-15~20%</td></tr>
+<tr><td>D2</td><td>法人連續賣超擴大至30,000張以上</td><td>30%</td><td style="color:var(--bear)">-10~15%</td></tr>
+<tr><td>D3</td><td>台玻宣布Low-Dk通過重大客戶認證</td><td>40%</td><td style="color:var(--bear)">-8~12%</td></tr>
+<tr><td>D4</td><td>董事長質押比率上升或追繳訊號</td><td>15%</td><td style="color:var(--bear)">-20~30%</td></tr>
+<tr><td>D5</td><td>電子布漲價動能停滯或反轉</td><td>20%</td><td style="color:var(--bear)">-15~25%</td></tr>
+</table>
+
+<p style="margin-top:8px"><strong>上行催化劑（較低機率）</strong></p>
+<table>
+<tr><th>#</th><th>催化劑</th><th>機率</th><th>衝擊</th></tr>
+<tr><td>U1</td><td>Q1財報EPS達0.8元以上（超預期）</td><td>10%</td><td style="color:var(--bull)">+15~20%</td></tr>
+<tr><td>U2</td><td>LowCTE通過NVIDIA認證出貨放大</td><td>15%</td><td style="color:var(--bull)">+10~15%</td></tr>
+<tr><td>U3</td><td>外資大幅回補買進</td><td>10%</td><td style="color:var(--bull)">+10~15%</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 8d -->
+<div id="s8d" class="section-title">8d. 風險級聯分析</div>
+
+<div class="card">
+<h3>級聯效應路徑圖</h3>
+<div class="card-body">
+<p><strong>級聯路徑 1：漲價停滯 → 毛利率壓縮 → PE崩塌</strong></p>
+<p style="font-size:.82em;color:var(--txt2)">電子布漲價停滯 → 營收增速歸零 → 毛利率從27%回落至18% → EPS從1.64降至0.8 → PE從62x需壓縮至30x → 目標價24元（-76%）</p>
+
+<p style="margin-top:8px"><strong>級聯路徑 2：質押爆倉 → 強制賣出 → 融資追繳</strong></p>
+<p style="font-size:.82em;color:var(--txt2)">股價跌破質押維持率 → 董事長被迫賣股 → 市場恐慌 → 融資追繳 → 斷頭賣壓 → 股價加速下跌（融資78,000張 × 追繳 = 巨大賣壓）</p>
+
+<p style="margin-top:8px"><strong>級聯路徑 3：供給海嘯 → 價格戰 → 虧損</strong></p>
+<p style="font-size:.82em;color:var(--txt2)">2027H2日東紡3倍+巨石10萬噸投產 → 電子布價格大跌30-40% → 富喬毛利率回到0-5% → 再度虧損 → 股價回到2023年水準（15-25元）</p>
+
+<div class="tip danger">
+    <b>三條級聯路徑互相強化</b>
+    漲價停滯導致股價下跌 → 觸發質押爆倉 → 融資追繳加速下跌 → 恰好碰上供給海嘯 → 形成負面循環。這就是為什麼高質押+高融資+週期反轉的組合如此危險。
+</div>
+</div>
+</div>
+
+<!-- 8e -->
+<div id="s8e" class="section-title">8e. 部位策略</div>
+
+<div class="card">
+<h3>建議：不建立部位（0%配置）</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>數值</th><th>建議部位</th></tr>
+<tr><td>看多信心度</td><td>5%</td><td style="color:var(--bear)">0%（門檻30%以上才考慮）</td></tr>
+<tr><td>加權期望報酬</td><td>-40%</td><td style="color:var(--bear)">0%（需正報酬才建倉）</td></tr>
+<tr><td>Iker通過率</td><td>35%</td><td style="color:var(--bear)">0%（需60%以上）</td></tr>
+<tr><td>護城河分數</td><td>35/100</td><td style="color:var(--bear)">0%（窄護城河不值得重倉）</td></tr>
+</table>
+<p style="margin-top:6px"><strong>唯一例外</strong>：如果閣主已持有部位，建議逢反彈減碼至0%。不建議新建任何多頭部位。</p>
+</div>
+</div>
+
+<!-- 8f -->
+<div id="s8f" class="section-title">8f. 退場策略（若已持有）</div>
+
+<div class="card">
+<h3>分批退場建議</h3>
+<div class="card-body">
+<table>
+<tr><th>階段</th><th>觸發條件</th><th>動作</th></tr>
+<tr><td>第一批（30%）</td><td>反彈至105-110元</td><td>逢反彈先減持1/3</td></tr>
+<tr><td>第二批（40%）</td><td>Q1財報公布前或法人賣超加劇</td><td>在財報風險前出場</td></tr>
+<tr><td>第三批（30%）</td><td>股價跌破月線支撐（~87元）</td><td>停損出場</td></tr>
+<tr><td>緊急全出</td><td>董事長質押追繳/12月獲利原因爆出負面/跌停鎖死</td><td>不計價全數出場</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 8g -->
+<div id="s8g" class="section-title">8g. 監控框架</div>
+
+<div class="card">
+<h3>定期監控指標</h3>
+<div class="card-body">
+<table>
+<tr><th>頻率</th><th>監控項目</th><th>警戒線</th></tr>
+<tr><td>每月</td><td>月營收年增率</td><td>連續2月年增<10% = 增速見頂</td></tr>
+<tr><td>每月</td><td>法人買賣超</td><td>連續10日賣超 = 機構系統性撤退</td></tr>
+<tr><td>每季</td><td>毛利率</td><td>跌破25% = 漲價效應消退</td></tr>
+<tr><td>每季</td><td>自由現金流</td><td>連續10季為負 = 財務風險升高</td></tr>
+<tr><td>每季</td><td>董事長質押比率</td><td>上升至75%+ = 爆倉風險</td></tr>
+<tr><td>即時</td><td>電子布報價趨勢</td><td>漲價停滯或反轉 = 週期轉折</td></tr>
+<tr><td>即時</td><td>台玻/巨石擴產進度</td><td>量產提前 = 競爭加速</td></tr>
+<tr><td>即時</td><td>NVIDIA AI CapEx指引</td><td>下修 = 需求風險</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 8h -->
+<div id="s8h" class="section-title">8h. 貓膩推衍</div>
+<div class="section-sub">基於第七步D的貓膩判定（嚴重性78/100），推衍貓膩可能的演化路徑</div>
+
+<div class="card">
+<h3>貓膩推衍：三種演化路徑</h3>
+<div class="card-body">
+
+<details open>
+<summary>路徑 M1：12月獲利暴跌為一次性費用（機率40%）</summary>
+<p><strong>推衍</strong>：公司在年報中說明12月獲利暴跌為泰國廠前期費用/設備折舊/年度獎金一次性認列。</p>
+<p><strong>影響</strong>：緩解部分擔憂，但不改變估值過高的事實。股價可能反彈至110元後再度下跌。</p>
+<p><strong>後果</strong>：管理層誠信度從25/100微升至35/100，但仍低於50閾值。看空信心從95%降至88%。</p>
+</details>
+
+<details open>
+<summary>路徑 M2：12月獲利暴跌反映結構性問題（機率35%）</summary>
+<p><strong>推衍</strong>：年報揭露12月獲利暴跌源於原物料成本飆升/客戶要求降價/產品組合惡化，且此趨勢在2026Q1持續。</p>
+<p><strong>影響</strong>：「超級週期」敘事瓦解。市場重新定價，PE從62x壓縮至25-30x。</p>
+<p><strong>後果</strong>：股價快速修正至40-50元。管理層誠信度維持25/100。看空信心升至97%。</p>
+</details>
+
+<details open>
+<summary>路徑 M3：管理層新醜聞/質押危機爆發（機率25%）</summary>
+<p><strong>推衍</strong>：董事長內線交易案有新進展（如判刑/新案件）、質押維持率跌破、或現增特定人名單被揭露與董事長有關聯。</p>
+<p><strong>影響</strong>：公司治理危機，市場信心崩潰。</p>
+<p><strong>後果</strong>：股價可能跌至20-30元。此路徑一旦發生將不可逆。</p>
+</details>
+
+<div class="tip warn">
+    <b>貓膩推衍加權結果</b>
+    三條路徑的加權目標價：110×0.40 + 45×0.35 + 25×0.25 = <strong>66.0元</strong>（vs現價102元 = -35%）。即使最樂觀的貓膩路徑（M1一次性費用），股價上行空間也僅有限（+8%至110元），而下行風險巨大（M2-55%、M3-76%）。
+</div>
+</div>
+</div>
+
+<!-- 8i -->
+<div id="s8i" class="section-title">8i. 推衍結論</div>
+
+<div class="verdict-box fail" style="padding:14px 18px">
+    <p style="font-weight:900;font-size:1.1em;margin-bottom:8px">推衍版最終結論：不買入、迴避、等待</p>
+
+    <div class="grid2">
+        <div class="mini-card bear-card">
+            <div class="title">加權期望價格</div>
+            <div class="num" style="color:var(--bear)">61.5元</div>
+            <div class="desc">vs 現價102元 = -40%</div>
+        </div>
+        <div class="mini-card bear-card">
+            <div class="title">貓膩推衍價格</div>
+            <div class="num" style="color:var(--bear)">66.0元</div>
+            <div class="desc">vs 現價102元 = -35%</div>
+        </div>
+    </div>
+
+    <p style="margin-top:8px"><strong>推衍核心判斷</strong>：</p>
+    <ul style="margin:4px 0 0 16px;font-size:.88em">
+        <li><strong>最可能情境</strong>（S2+S3合計82%）：股價在12個月內修正至50-70元區間</li>
+        <li><strong>安全邊際買入價</strong>：43元（加權期望值61.5元 × 70%安全邊際）</li>
+        <li><strong>最大風險</strong>：質押爆倉 + 融資追繳 + 供給海嘯 三重級聯</li>
+        <li><strong>關鍵觀察期</strong>：2026Q1財報（4月）+ 年報（5月）確認12月暴跌原因</li>
+    </ul>
+
+    <p style="margin-top:8px"><strong>推衍建議行動</strong>：</p>
+    <ol style="margin:4px 0 0 16px;font-size:.88em">
+        <li>不建立任何多頭部位</li>
+        <li>若已持有，逢反彈分批退場（105→Q1前→87元停損）</li>
+        <li>持續監控：月營收年增率、法人買賣超、董事長質押比率、電子布報價</li>
+        <li>等待價格修正至43元以下或EPS確認3元以上才重新考慮</li>
+    </ol>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0｜第八步：推衍版天機錄報告</p>
+    <p>報告日期：2026-03-23｜資料截止：2026-03-23</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。推衍為情境推演，非預測。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

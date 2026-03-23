@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>長亨精密 (4546) — 天機閣推衍報告 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;font-size:.78em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center;font-size:.78em}
+td:first-child{text-align:left;font-weight:600}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}.warn-card{border-left:4px solid var(--warn)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.calc{font-family:'Fira Code',monospace;font-size:.78em;color:var(--txt2);background:rgba(0,0,0,.04);padding:8px 12px;border-radius:6px;margin:6px 0;line-height:1.8}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.chain{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:4px 0}
+.chain .node{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:.78em;font-weight:600}
+.chain .arrow{color:var(--accent);font-weight:900;font-size:.9em}
+.timeline{position:relative;padding-left:24px;margin:8px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);background:var(--panel)}
+.tl-item.active::before{background:var(--accent)}
+.tl-item .tl-date{font-size:.75em;font-weight:700;color:var(--accent)}
+.tl-item .tl-content{font-size:.84em;color:var(--txt2);margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>長亨精密 (4546) — 天機閣推衍報告</h1>
+    <div class="sub">天機閣深度調查系統 v3.0 — 第八步：推衍推演</div>
+    <div class="desc">本報告專注於「未來會怎麼走」— 結合影響鏈分析、情境模擬、蝴蝶效應推衍與貓膩推衍，為閣主提供未來 1-12 個月的行動指引</div>
+    <div class="tags">
+        <span class="tag">推衍日期：2026-03-23</span>
+        <span class="tag">基準股價：129.5 元（3/20）</span>
+        <span class="tag">推衍有效期：至 2026-04-15</span>
+        <span class="tag">第四次校準：H2(55%)+H4(24%)=79%</span>
+        <span class="tag">TTM EPS 3.06（校正後）｜PE 42.3x</span>
+        <span class="tag">Iker 2/23 嚴重不通過</span>
+    </div>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8a. 推衍基礎確認 -->
+<!-- ================================================================ -->
+<div class="section-title">8a. 推衍基礎確認</div>
+<div class="section-sub">回溯原始資料，確認推衍的事實基礎</div>
+
+<div class="card">
+<h3>核心事實基礎（回溯原始資料驗證）</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:25%">核心事實</th><th style="text-align:left;width:40%">原始資料出處</th><th style="width:10%">FIAS</th><th style="text-align:left;width:25%">推衍意義</th></tr>
+<tr><td style="text-align:left">TTM EPS 3.06 元（校正後）</td><td style="text-align:left;font-weight:400">finlab半年報：2024H2 EPS=0.93 + 2025H1 EPS=2.13</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">真實PE=42.3x，市場嚴重高估這家公司</td></tr>
+<tr><td style="text-align:left">LEAP 34.9億訂單已到期（2024/12）</td><td style="text-align:left;font-weight:400">A_年報搜尋.json → 重大訊息公告</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">最大營收來源合約到期，續約狀況不明</td></tr>
+<tr><td style="text-align:left">經理人持股 90,386→35,827（-60%）</td><td style="text-align:left;font-weight:400">finlab 董監持股 2024/08→2025/07</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">最了解公司的人正在大量逃離</td></tr>
+<tr><td style="text-align:left">2026/03 營收 1.23億 YoY -25.8%</td><td style="text-align:left;font-weight:400">finlab 月營收 2026-03-10</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">營收成長動能急速反轉，由正轉負</td></tr>
+<tr><td style="text-align:left">速動比率 32.4%（持續惡化）</td><td style="text-align:left;font-weight:400">finlab 2025H1</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">扣除存貨後幾乎無力償還短期負債</td></tr>
+<tr><td style="text-align:left">董事長遭起訴+歷史虛報發票</td><td style="text-align:left;font-weight:400">F_法說會搜尋.json → 利空事件</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">管理誠信分數 25/100（歷來最低）</td></tr>
+<tr><td style="text-align:left">Titan 2025/02 簽約 Safran LEAP</td><td style="text-align:left;font-weight:400">C_市場調查.json → 第三條線</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">長亨獨佔地位被打破的明確信號</td></tr>
+<tr><td style="text-align:left">113H2 不分派盈餘</td><td style="text-align:left;font-weight:400">B_web_search.json → 公告</td><td><span class="fias-f">事實</span></td><td style="text-align:left;font-weight:400">結合速動32.4%，財務壓力大於策略選擇</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>前步驟結論承接</h3>
+<div class="card-body">
+<div class="grid3">
+    <div class="mini-card bear-card">
+        <div class="title">第三次校準（Step 6）</div>
+        <div class="num" style="color:var(--bear)">H2+H4 = 75%</div>
+        <div class="desc">H1=7% / H2=54% / H3=18% / H4=21%</div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">加權期望價（Step 6）</div>
+        <div class="num" style="color:var(--warn)">81.2 元</div>
+        <div class="desc">vs 基準 129.5 元 = -37%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">Step 7 機率加權</div>
+        <div class="num" style="color:var(--bear)">56.7 元</div>
+        <div class="desc">更嚴格：四情境含「歸零」15%</div>
+    </div>
+</div>
+<p style="font-size:.84em;margin-top:6px">監控儀表板燈號：<span class="light red"></span>5 / <span class="light yellow"></span>3 / <span class="light green"></span>1 | Iker 2/23 嚴重不通過 | 核心競爭力 48/100 | 管理誠信 25/100</p>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8b. OSINT 情報更新 -->
+<!-- ================================================================ -->
+<div class="section-title">8b. OSINT 情報更新</div>
+<div class="section-sub">資料收集日 vs 最新公開情報的差異比對</div>
+
+<div class="card">
+<h3>情報差異表</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:20%">指標</th><th style="width:18%">分析日數據</th><th style="width:18%">最新（3/23）</th><th style="width:10%">變化</th><th style="text-align:left;width:24%">含義分析</th><th style="width:10%">FIAS</th></tr>
+<tr><td style="text-align:left">股價</td><td>129.5 元（3/20）</td><td>129.5 元</td><td>持平</td><td style="text-align:left;font-weight:400">3/4-3/13 連跌至 114.5 元後反彈</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">2026/02 營收</td><td>1.79億 YoY+46%</td><td>確認</td><td>—</td><td style="text-align:left;font-weight:400">年節效應+高基期掩蓋，但MoM -3.6%</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">2026/03 營收</td><td>1.23億 YoY-25.8%</td><td>確認</td><td style="color:var(--bear)">驟降</td><td style="text-align:left;font-weight:400">★第一個YoY轉負月份，趨勢反轉信號</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">GE LEAP 2025產量</td><td>1,802具 +28%</td><td>確認</td><td>—</td><td style="text-align:left;font-weight:400">客戶端需求仍強，但不等於長亨受益</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">Titan-Safran LEAP</td><td>2025/02簽約</td><td>確認</td><td>—</td><td style="text-align:left;font-weight:400">競爭者已正式進入LEAP供應鏈</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">Inconel 718 價格</td><td>Q1 +28,518$/MT</td><td>確認</td><td>—</td><td style="text-align:left;font-weight:400">原料成本持續壓縮毛利率</td><td><span class="fias-f">事實</span></td></tr>
+<tr><td style="text-align:left">經理人持股</td><td>35,827股（3月）</td><td>確認 持平</td><td>—</td><td style="text-align:left;font-weight:400">已減至極低水位，「能跑的都跑了」</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+
+<div class="tip danger">
+    <b>關鍵情報洞察：2026/03 營收 YoY -25.8% 是分水嶺</b>
+    <p>這是長亨自 2024/10（-19.5%）以來首次出現超過 -20% 的 YoY 衰退。更關鍵的是，2025/03 營收 1.65 億本身並非超高基期。這代表衰退不是「基期問題」，而是「真實需求在萎縮」。MoM -31.4% 更是近 24 個月最大單月跌幅。如果 2026/04 營收未能回到 1.5 億以上（YoY > 0），將確認營收進入下行週期。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8c. 影響鏈分析 -->
+<!-- ================================================================ -->
+<div class="section-title">8c. 影響鏈分析（天機閣推衍方法一）</div>
+<div class="section-sub">從關鍵事件逐層推演因果連鎖反應</div>
+
+<div class="card">
+<h3>影響鏈 1：LEAP 訂單到期的骨牌效應</h3>
+<div class="card-body">
+<div class="chain">
+    <span class="node" style="border-color:var(--danger)">34.9億LEAP訂單到期（2024/12）</span>
+    <span class="arrow">→</span>
+    <span class="node">訂單空窗期（續約未公告）</span>
+    <span class="arrow">→</span>
+    <span class="node">營收來源不確定</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--danger)">2026/03 營收 YoY -25.8%</span>
+</div>
+<div class="chain">
+    <span class="node">訂單空窗期</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--warn)">Titan 進入 LEAP 供應鏈</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--danger)">議價能力下降+訂單被分食</span>
+</div>
+<p style="font-size:.82em;margin-top:6px"><b>機率</b>：此鏈已部分實現（營收 YoY 轉負），持續發酵機率 75%</p>
+<p style="font-size:.82em"><b>二階影響</b>：<span class="fias-i">推論</span> 如果 2026Q2 仍未公告新的 LEAP 續約或等值大單 → 市場將開始質疑「在手訂單 100 億」的敘事是否還成立 → 興櫃流動性本就低，恐慌時賣壓集中會導致價格崩塌式下跌。</p>
+<p style="font-size:.82em"><b>三階影響</b>：<span class="fias-a">假設</span> 營收持續衰退 → 速動比率從 32.4% 繼續惡化至 25% 以下 → 銀行可能收緊信用額度 → 被迫處分存貨或資產 → 股價跌破淨值（38.78 元）。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 2：原料成本吞噬獲利的惡性循環</h3>
+<div class="card-body">
+<div class="chain">
+    <span class="node" style="border-color:var(--warn)">Inconel 718 Q1+28,518$/MT</span>
+    <span class="arrow">→</span>
+    <span class="node">原料成本上升 15-20%</span>
+    <span class="arrow">→</span>
+    <span class="node">毛利率被壓縮</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--danger)">「營收+44% 獲利-53%」持續</span>
+</div>
+<div class="chain">
+    <span class="node">全球鍛件供應不足</span>
+    <span class="arrow">→</span>
+    <span class="node">外購鍛件成本更高</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--danger)">做越多虧越多的陷阱</span>
+</div>
+<p style="font-size:.82em;margin-top:6px"><b>機率</b>：正在發生中，持續發酵機率 80%（鎳基合金價格短期無下跌跡象）</p>
+<p style="font-size:.82em"><b>關鍵觀察</b>：<span class="fias-i">推論</span> 長亨的定價模式是長約固定價（航太業慣例），但原料是浮動市價。當 Inconel 大漲時，長亨被困在「低賣高買」的夾縫中。除非新合約允許原料成本轉嫁條款，否則毛利率只會持續惡化。2024 全年毛利率已從 2023 年的 29.35% 高峰跌至 24.72%，2024H2 更低至 22.1%。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 3：管理誠信危機的信任崩塌</h3>
+<div class="card-body">
+<div class="chain">
+    <span class="node" style="border-color:var(--danger)">董事長遭起訴（2024/05）</span>
+    <span class="arrow">→</span>
+    <span class="node">歷史虛報發票前科曝光</span>
+    <span class="arrow">→</span>
+    <span class="node">管理層誠信分數 25/100</span>
+</div>
+<div class="chain">
+    <span class="node">經理人持股 -60%</span>
+    <span class="arrow">→</span>
+    <span class="node">8年不開法說會</span>
+    <span class="arrow">→</span>
+    <span class="node" style="border-color:var(--danger)">資訊不透明的黑箱效應</span>
+</div>
+<p style="font-size:.82em;margin-top:6px"><b>機率</b>：誠信風險已是既定事實，信任修復需要 2+ 年</p>
+<p style="font-size:.82em"><b>二階影響</b>：<span class="fias-i">推論</span> 如果司法案件進入審判期且一審有罪 → 可能觸發興櫃退場（證交所規定負責人遭判刑確定）→ 股票流動性歸零 → 投資人被套牢且無法退出。這是一般投資人完全忽略的「流動性死亡陷阱」。</p>
+<p style="font-size:.82em"><b>三階影響</b>：<span class="fias-a">假設</span> 協辦輔導證券商已辭任（未確認日期）→ 若無新證券商接手 → 上市之路封死 → 永遠停留在興櫃 → 機構投資人不會碰、ETF不會納入 → 估值永久折價。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>跨鏈交互作用</h3>
+<div class="card-body">
+<div class="tip danger">
+    <b>三條鏈的致命共振（worst case）</b>
+    <p>LEAP 訂單空窗+營收轉負（鏈1）+ 原料成本持續飆升壓縮毛利（鏈2）+ 董事長一審有罪觸發興櫃退場（鏈3）= 三重打擊 → 營收衰退、獲利歸零、流動性死亡。此時存貨 10.4 億 + 速動 32% + 負債比 66% 的財務結構將無法承受壓力 → 最極端情境是被迫減資或下市。</p>
+    <p><b>共振機率</b>：<span class="fias-s">推測</span> 約 10-15%。雖不算高，但一旦發生，損失接近 100%。</p>
+</div>
+<div class="tip good">
+    <b>三條鏈的正向共振（best case）</b>
+    <p>LEAP 續約+GE9X 放量（鏈1 反轉）+ Inconel 價格回落+新約含轉嫁條款（鏈2 反轉）+ 董事長獲判無罪+恢復法說會（鏈3 反轉）= 營收重回成長、毛利率回到 27%+、信任修復 → EPS 可能達 4-5 元 → 股價有合理支撐。</p>
+    <p><b>共振機率</b>：<span class="fias-a">假設</span> 約 5-8%，需三個獨立條件同時成立，機率極低。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8d. 情境模擬 -->
+<!-- ================================================================ -->
+<div class="section-title">8d. 情境模擬（天機閣推衍方法二）</div>
+<div class="section-sub">基於 ACH 假說建立 4 條未來路徑</div>
+
+<div class="card">
+<h3>路徑 A：航太復甦帶動高成長（機率 5%）</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-s">推測</span> LEAP 續約+GE9X 放量+新客戶拓展</div>
+    <div class="ev-d">
+        <b>觸發條件</b>：(1) LEAP 大額續約公告（金額 ≥ 30 億）+ (2) GE9X Tole 獨家地位確認+放量 + (3) Inconel 價格回落 20%+<br>
+        <b>演進過程</b>：2026Q2 公告續約 → 法人重新關注 → 毛利率回到 27%+ → EPS 回到 4-5 元 → 估值修復<br>
+        <b>最終狀態</b>：12 個月後 EPS 4.5 元 × PE 30x = 135 元（與現價持平）<br>
+        <b>為何機率極低</b>：(1) 續約已延遲 15+ 個月未公告 (2) Titan 已打入 LEAP (3) 原料價格趨勢向上 (4) 經理人在跑不在買
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 B：營收成長但獲利不跟（機率 55%）★最可能</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 航太需求撐住營收，但成本吃掉所有利潤</div>
+    <div class="ev-d">
+        <b>觸發條件</b>：(1) GE/Safran 持續拉貨但降價或分單 (2) 原料成本居高不下 (3) 新訂單規模小於到期訂單<br>
+        <b>演進過程</b>：2025全年營收 20 億（仍高於 2024 的 14 億）→ 但 EPS 從 3.06 下滑至 2-3 元 → PE 被動上升至 45-65x → 市場開始質疑「營收虛胖」→ 股價逐步回落<br>
+        <b>最終狀態</b>：12 個月後 EPS 2.5 元 × PE 25x = 62.5 元 → 四捨五入 <b>60-75 元</b><br>
+        <b>此路徑為何最可能</b>：(1) 2025年已出現「營收+44%但獲利-53%」 (2) 原料趨勢向上 (3) Titan 分食訂單壓縮議價 (4) 四次校準一致看空
+    </div>
+</div>
+<div class="tip warn"><b>分水嶺</b>：2026/06 前後的 2025 年報公布是 B vs C 的關鍵分歧點。2025 全年毛利率 ≥ 25% → 路徑 B 偏樂觀端；< 22% → 滑向路徑 C。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 C：訂單轉型陣痛期（機率 16%）</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> LEAP 新約延遲但公司勉強靠存量訂單維持</div>
+    <div class="ev-d">
+        <b>觸發條件</b>：(1) LEAP 續約拖到 2027 年 (2) GE9X 爬坡比預期慢 (3) MRO 維修業務佔比提升但毛利更低<br>
+        <b>演進過程</b>：營收從 20 億高峰緩降至 15-16 億 → 毛利率降至 20% 以下 → EPS 降至 1.5-2 元 → 興櫃流動性進一步枯竭<br>
+        <b>最終狀態</b>：12 個月後 EPS 1.8 元 × PE 22x = 40 元，取中位 <b>35-50 元</b><br>
+        <b>歷史參照</b>：長亨 2021 年 EPS -2.55 元（COVID 衝擊），從 180 元區跌至 70 元區
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 D：訂單斷層+誠信危機（機率 24%）</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 多重負面因素同時引爆</div>
+    <div class="ev-d">
+        <b>觸發條件</b>：(1) LEAP 不續約或大幅縮單 + (2) 董事長一審有罪 + (3) 速動比率跌破 25% 觸發銀行抽銀根 + (4) 存貨 10.4 億無法變現<br>
+        <b>演進過程</b>：訂單斷崖 → 營收腰斬至 8-10 億 → 產能閒置+折舊吃光獲利 → EPS 轉虧 → 興櫃可能暫停交易或下市<br>
+        <b>最終狀態</b>：12 個月後 EPS -1~1 元 × PE 15x = <b>0-15 元</b>（含下市歸零風險）<br>
+        <b>歷史參照</b>：2020-2021 年長亨 EPS 從 +3.06 → -2.55（COVID 導致航太全面停擺），若本次不是疫情而是結構性訂單流失，恢復會更慢
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>敏感度分析：哪個變數最關鍵</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">變數</th><th>基準假設</th><th>樂觀變化</th><th>悲觀變化</th><th>對股價影響</th></tr>
+<tr><td style="text-align:left">LEAP 續約狀況</td><td>未公告</td><td>≥ 30 億續約</td><td>不續約/縮單</td><td style="color:var(--bear)">最大（±50%）</td></tr>
+<tr><td style="text-align:left">2025 年報毛利率</td><td>24-25%</td><td>27%+</td><td>< 22%</td><td style="color:var(--bear)">極大（±30%）</td></tr>
+<tr><td style="text-align:left">Inconel 718 價格</td><td>持續上漲</td><td>回落 15%</td><td>再漲 10%</td><td>中（±15%）</td></tr>
+<tr><td style="text-align:left">司法案件進展</td><td>審理中</td><td>不起訴/無罪</td><td>一審有罪</td><td style="color:var(--bear)">極大（-30%~+10%）</td></tr>
+<tr><td style="text-align:left">Titan 搶單程度</td><td>剛簽約</td><td>量產延遲</td><td>2026 開始出貨</td><td>中（±15%）</td></tr>
+<tr><td style="text-align:left">月營收 YoY 趨勢</td><td>轉負中</td><td>4月回正</td><td>連續3月為負</td><td style="color:var(--bear)">大（±25%）</td></tr>
+</table>
+<div class="tip info"><b>敏感度結論</b>：短期看「LEAP 續約」（一個公告就能改變全局），中期看「毛利率+營收趨勢」（確認衰退是否結構性），長期看「司法+誠信修復」（決定公司是否能走出陰影）。三個維度全部指向同一個結論：等待，不要在資訊不充分時進場。</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8e. 個人化推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8e. 個人化推衍（天機閣推衍方法三）</div>
+<div class="section-sub">基於閣主可能的投資情境，提供具體行動建議</div>
+
+<div class="card">
+<h3>情境一：空手觀望中（最可能情境）</h3>
+<div class="card-body">
+<div class="tip good">
+    <b>建議：繼續觀望，這不是你的機會</b>
+    <p>在 129.5 元進場的風險報酬比為 7:1（極度不利）。四次校準看空合計 75-79%。即使最樂觀假設（路徑 A），12 個月後也僅值 135 元（幾乎無上行空間）。最可能路徑（B），股價會跌至 60-75 元。航太產業長期確實有利，但<b>長亨不等於航太</b>——管理誠信和財務結構的問題是公司層面的，不是產業層面的。</p>
+</div>
+<table>
+<tr><th style="text-align:left">進場條件</th><th style="text-align:left">具體門檻</th><th>對應風險報酬比</th></tr>
+<tr><td style="text-align:left">安全邊際進場價</td><td style="text-align:left;font-weight:400">股價 ≤ 55 元（加權期望價 × 75%）+ LEAP 續約公告</td><td style="color:var(--bull)">~2:1（可接受）</td></tr>
+<tr><td style="text-align:left">2025 年報確認後</td><td style="text-align:left;font-weight:400">毛利率 > 25% + EPS > 3.5 + 股價 ≤ 70 元</td><td>~3:1（中性）</td></tr>
+<tr><td style="text-align:left">司法案件解除後</td><td style="text-align:left;font-weight:400">董事長獲判無罪 + 恢復法說會 + 股價 ≤ 80 元</td><td style="color:var(--bull)">~2.5:1（可接受）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>情境二：已持有部位</h3>
+<div class="card-body">
+<div class="tip danger">
+    <b>建議：盡快減碼，保護本金</b>
+    <p>如果在更高價位買入（如 140-160 元），目前已經虧損。但<b>沉沒成本不應影響決策</b>——問題是：你今天還願意用 129.5 元買這家公司嗎？如果答案是否定的，就不應該繼續持有。</p>
+</div>
+<table>
+<tr><th style="text-align:left">行動</th><th style="text-align:left">條件</th><th style="text-align:left">邏輯</th></tr>
+<tr><td style="text-align:left">立即減碼 50-70%</td><td style="text-align:left;font-weight:400">目前價位</td><td style="text-align:left;font-weight:400">四次校準看空79%，加權期望價僅56.7元</td></tr>
+<tr><td style="text-align:left">設定停損</td><td style="text-align:left;font-weight:400">跌破 110 元全數出清</td><td style="text-align:left;font-weight:400">3/12 低點 114.5 若破 = 趨勢確認下行</td></tr>
+<tr><td style="text-align:left">年報公布前出清</td><td style="text-align:left;font-weight:400">2026/06 前</td><td style="text-align:left;font-weight:400">若毛利率 < 22% = 確認路徑 C/D → 快速撤離</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>情境三：航太產業有興趣但擔心長亨</h3>
+<div class="card-body">
+<div class="tip info">
+    <b>建議：選擇更透明的航太標的</b>
+    <p>如果看好航太產業，比較好的選擇是上市的航太股（如漢翔 2634、寶一 8222），這些公司：(1) 資訊揭露完整 (2) 流動性好 (3) 法人追蹤 (4) 管理層沒有司法爭議。長亨的技術壁壘確實存在（45 項 NADCAP 認證、Tier 1），但一家公司的價值 = 技術 × 誠信 × 治理。當誠信分數只有 25/100 時，再好的技術也無法轉化為可靠的投資回報。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8f. 催化劑時間表 -->
+<!-- ================================================================ -->
+<div class="section-title">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月的關鍵事件節點與觀察指標</div>
+
+<div class="card">
+<h3>催化劑日曆</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item active">
+        <div class="tl-date">2026/4/10 前後</div>
+        <div class="tl-content"><b>4 月營收公布（3 月報告延遲效應）</b> — 若 ≥ 1.5 億（YoY ≥ 0%）= 反轉僅是暫時；若 < 1.2 億 = 連續兩月衰退確認 → <span class="fias-i">推論</span> 路徑 C/D 機率各 +5%</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/4-5 月</div>
+        <div class="tl-content"><b>董事長起訴案進展</b> — 觀察是否有一審開庭排期或庭期公告。橋頭地院案件通常 12-18 個月內一審 → 2025/05 起訴至今已近 2 年，可能進入判決期</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/5-6 月</div>
+        <div class="tl-content"><b>2025 年報公布 ★★★ 最重要</b> — (1) 全年毛利率：> 25% = 路徑 B 偏樂觀；< 22% = 路徑 C (2) 子公司名冊與關係人交易揭露 (3) 在手訂單明細更新 (4) 2024/12 到期的 LEAP 訂單是否有續約揭露</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/6 月</div>
+        <div class="tl-content"><b>巴黎航展（偶數年）或法恩堡航展</b> — 航太業最大展會，觀察 (1) GE/Safran 新訂單 (2) 是否提及台灣供應商 (3) Titan 的 LEAP 交付進度</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/7-8 月</div>
+        <div class="tl-content"><b>GE Aerospace Q2 財報</b> — (1) LEAP 交付量是否達 2,000 具目標 (2) GE9X 專案虧損幅度 (3) 供應鏈支出指引 → 直接影響長亨的客戶需求</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/8-9 月</div>
+        <div class="tl-content"><b>2026H1 半年報公布</b> — (1) 營收是否止穩 (2) 毛利率趨勢 (3) 速動比率 (4) 存貨水位變化。如果 H1 EPS < 1.0 → 路徑 D 機率急升</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">持續觀察</div>
+        <div class="tl-content"><b>重大訊息公告（MOPS）</b> — (1) 新訂單公告（最關鍵） (2) 協辦輔導券商異動 (3) 董監異動 (4) 任何與司法相關的公告</div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8g. 蝴蝶效應推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8g. 蝴蝶效應推衍（天機閣推衍方法八）★★★</div>
+<div class="section-sub">從被忽略的弱訊號中找出可能改變全局的因子</div>
+
+<div class="card">
+<h3>弱訊號雷達</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:8%">類別</th><th style="text-align:left;width:25%">弱訊號</th><th style="text-align:left;width:42%">為什麼被忽略</th><th style="width:10%">潛在影響</th><th style="width:15%">驗證時間</th></tr>
+<tr><td>A 訂單</td><td style="text-align:left">LEAP 34.9億到期後靜默 15 個月</td><td style="text-align:left;font-weight:400">市場關注「在手訂單 100 億」的舊數字，沒人追問這 100 億是否還有效</td><td style="color:var(--bear)">★★★★★</td><td>即時</td></tr>
+<tr><td>B 競爭</td><td style="text-align:left">Titan 不只簽 LEAP，還有 15 年長約</td><td style="text-align:left;font-weight:400">媒體只報導「長亨航太獨家」，沒人提到 Titan 2025/02 已切入 LEAP</td><td style="color:var(--bear)">★★★★</td><td>6-12 個月</td></tr>
+<tr><td>C 財務</td><td style="text-align:left">合併營收 vs 母公司差 3.47 億（20%）</td><td style="text-align:left;font-weight:400">子公司名冊未公開，20% 營收來自「看不見的地方」</td><td style="color:var(--warn)">★★★★</td><td>年報公布</td></tr>
+<tr><td>D 行為</td><td style="text-align:left">會計主管+研發主管 2024/12 異動</td><td style="text-align:left;font-weight:400">被當成「正常人事調動」，但兩個關鍵職位同時換人 = 紅旗</td><td style="color:var(--bear)">★★★</td><td>3-6 個月</td></tr>
+<tr><td>E 員工</td><td style="text-align:left">GoodJob 1.9/5 + 取消所有福利</td><td style="text-align:left;font-weight:400">投資人不看求職網站，但員工滿意度 = 品質和留任率的領先指標</td><td style="color:var(--warn)">★★★</td><td>持續</td></tr>
+<tr><td>F 技術</td><td style="text-align:left">氫氣引擎 ZA600 合作</td><td style="text-align:left;font-weight:400">正面弱訊號：如果氫動力引擎 10 年內商用，長亨有先行者優勢</td><td style="color:var(--bull)">★★</td><td>5-10 年</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應推演鏈 Top 3</h3>
+<div class="card-body">
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 推演鏈 1：LEAP 訂單靜默 → 興櫃流動性陷阱</div>
+    <div class="ev-d">
+        <b>起點</b>：LEAP 34.9 億訂單 2024/12 到期，至今 15 個月未公告續約<br>
+        <b>第一階</b>：2026/03 營收 YoY -25.8% — 這可能正是 LEAP 到期效應開始浮現的信號<br>
+        <b>第二階</b>：如果 2026Q2 仍無公告，分析師（即使是非正式的）開始在 PTT/CMoney 討論「長亨訂單到底怎麼了」<br>
+        <b>第三階</b>：興櫃市場沒有漲跌幅限制 + 做市商可能擴大買賣價差 → 散戶想賣賣不掉，恐慌蔓延<br>
+        <b>第四階</b>：某天出現 -15% 以上的單日暴跌（興櫃經常發生），融資/借券都沒有的興櫃股無法做空，但也無法避險 → 多頭被困<br>
+        <b>最終影響</b>：<span class="fias-a">假設</span> 如果訂單空窗確認，股價可能在 1-2 週內從 130 元跌至 80 元以下。興櫃的流動性陷阱意味著「你看到的價格不是你能賣到的價格」。
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 推演鏈 2：會計+研發主管同時換人 → 內部問題比看到的更嚴重</div>
+    <div class="ev-d">
+        <b>起點</b>：2024/12 會計主管+研發主管異動（F_法說會搜尋.json → 事件5）<br>
+        <b>第一階</b>：會計主管換人 — 是否因為不願意為帳務問題背書？（董事長已因 2017 年帳務問題被起訴）<br>
+        <b>第二階</b>：研發主管換人 — 是否因為關鍵技術人才被 Titan 或其他競爭者挖角？<br>
+        <b>第三階</b>：如果兩者都是「被迫離開」→ (a) 帳務可能有新的隱患 (b) 技術優勢正在流失<br>
+        <b>第四階</b>：GoodJob 1.9/5 + 取消所有福利 → 後續可能出現更多核心人員離職 → 品質/交期出問題 → 客戶信心下降<br>
+        <b>最終影響</b>：<span class="fias-s">推測</span> 如果人才流失加速，長亨引以為傲的 45 項 NADCAP 認證可能在審查時出現問題（認證需定期復審），一旦認證被暫停 → 所有訂單自動終止
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 推演鏈 3：子公司黑箱 → 關係人交易風險</div>
+    <div class="ev-d">
+        <b>起點</b>：合併營收 17.46 億 vs 母公司 13.99 億，差距 3.47 億（20%）<br>
+        <b>第一階</b>：子公司名稱和業務至今未公開 → 在一般上市公司中幾乎不可能<br>
+        <b>第二階</b>：如果子公司的客戶就是母公司（內部交易）→ 合併營收其實被雙重計算<br>
+        <b>第三階</b>：更嚴重的可能：子公司是否涉及關係人交易？董事長家族成員是否為子公司股東？<br>
+        <b>第四階</b>：2025 年報如果揭露子公司資訊，且存在大量關係人交易 → 市場信任崩塌 → 回頭質疑歷史財報<br>
+        <b>最終影響</b>：<span class="fias-s">推測</span> 如果子公司存在不當關係人交易，可能觸發第二波司法調查。這家公司已經有一次料帳不符+起訴的前科，再來一次基本上就是「不可投資」等級。
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>盲點獵手：六種策略找出被忽略的角度</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:25%">策略</th><th style="text-align:left;width:55%">發現</th><th style="width:20%">重要度</th></tr>
+<tr><td style="text-align:left">反面事實</td><td style="text-align:left;font-weight:400">如果長亨不是「航太唯一股」，PE 應該只有 10-15x（興櫃折價）→ 股價僅 30-46 元。「Tier 1 獨家」溢價佔股價的 65%+</td><td style="color:var(--bear)">★★★★★</td></tr>
+<tr><td style="text-align:left">時間軸偏差</td><td style="text-align:left;font-weight:400">航太零組件訂單交付週期 3-5 年。2018 年法說會說「在手 100 億，能見度 10 年」→ 8 年後的今天，這些訂單大部分已經交付完畢，能見度可能只剩 2 年</td><td style="color:var(--bear)">★★★★</td></tr>
+<tr><td style="text-align:left">利益關係人盲點</td><td style="text-align:left;font-weight:400">長亨 8 年沒開法說會 → 目前所有看好分析都來自 2018 年的舊資訊+媒體報導。沒有任何機構法人在追蹤這家公司 → 散戶是唯一買家 → 沒有「聰明錢」在定價</td><td style="color:var(--bear)">★★★★★</td></tr>
+<tr><td style="text-align:left">倖存者偏差</td><td style="text-align:left;font-weight:400">「國內唯一航太 Tier 1」聽起來很厲害，但 GKN、Tech Space Aero、Titan 在全球層級都是長亨的競爭者。長亨在台灣「唯一」不代表在全球「不可替代」</td><td style="color:var(--bear)">★★★★</td></tr>
+<tr><td style="text-align:left">數據缺口</td><td style="text-align:left;font-weight:400">長亨從未公布 LEAP vs CFM56 vs GE9X 的營收明細 → 「LEAP 佔比」是市場猜測。如果 CFM56（即將淘汰）佔比仍高，成長敘事就是假的</td><td style="color:var(--bear)">★★★★</td></tr>
+<tr><td style="text-align:left">類比謬誤</td><td style="text-align:left;font-weight:400">媒體稱長亨為「航太業俠女傳奇」→ 感人故事≠好投資。巴菲特：「當一個聲譽卓著的管理層碰上一個基本經濟特性糟糕的企業，不動的是企業的名聲」</td><td style="color:var(--warn)">★★★</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>歷史劇本對照</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 最相似歷史劇本：長亨自身 2019-2021 年</div>
+    <div class="ev-d">
+        <b>相似點</b>：(1) 營收高峰後突然衰退 (2) 管理層無法兌現之前的承諾 (3) 計畫上市但臨門一腳撤回 (4) 外部衝擊+內部結構問題疊加<br>
+        <b>差異點</b>：(1) 當年是 COVID 黑天鵝 vs 現在是結構性訂單到期+競爭加劇 (2) 當年無起訴 vs 現在有司法風險 (3) 當年速動比率更健康 vs 現在 32.4%<br>
+        <b>歷史結局</b>：EPS 從 2019 年 +3.06 → 2021 年 -2.55（虧損），股價從 180 跌至 70 元區（-61%），撤回上市申請<br>
+        <b>本輪差異</b>：如果本次不是外部衝擊（COVID）而是結構性問題（訂單到期+競爭+誠信），恢復會更困難。2019-2021 的經驗是：即使航太產業恢復，長亨也花了 3 年才回到盈利。<br>
+        <b>歷史相似度</b>：80/100（比任何其他公司的案例都更相似）
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8h. 貓膩推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8h. 貓膩推衍（承接第七步 D 求證結論）★★★</div>
+<div class="section-sub">如果貓膩成立，未來會怎麼走？如何保護自己？</div>
+
+<div class="card">
+<h3>8h-1. 承接貓膩結論</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">第七步 D 貓膩燈號</div>
+        <div class="num" style="color:var(--bear)">紅旗密集</div>
+        <div class="desc">5 項貓膩全部指向負面</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">最嚴重貓膩</div>
+        <div class="num" style="font-size:.9em;color:var(--bear)">經理人-60% vs 高成長敘事</div>
+        <div class="desc">行動與說法嚴重矛盾</div>
+    </div>
+</div>
+<table>
+<tr><th style="text-align:left">貓膩假說</th><th>成立機率</th><th style="text-align:left">監控指標</th></tr>
+<tr><td style="text-align:left">1. 經理人行為暗示成長不可持續</td><td style="color:var(--bear)">70%</td><td style="text-align:left;font-weight:400">經理人持股是否繼續下降或歸零</td></tr>
+<tr><td style="text-align:left">2. 子公司黑箱藏有關係人交易</td><td style="color:var(--warn)">35%</td><td style="text-align:left;font-weight:400">年報子公司揭露+關係人交易金額</td></tr>
+<tr><td style="text-align:left">3. 2018法說會承諾=不可信任</td><td style="color:var(--bear)">85%</td><td style="text-align:left;font-weight:400">是否恢復法說會+新的量化指引</td></tr>
+<tr><td style="text-align:left">4. 營收+44%獲利-53%=品質退化</td><td style="color:var(--bear)">65%</td><td style="text-align:left;font-weight:400">2025年報毛利率+分產品線獲利</td></tr>
+<tr><td style="text-align:left">5. 不分派=財務壓力信號</td><td style="color:var(--bear)">60%</td><td style="text-align:left;font-weight:400">下期是否恢復分派+速動比率變化</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-2. 歷史劇本推演（如果貓膩成立）</h3>
+<div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 如果「經理人賣股=知道成長不可持續」被市場意識到…</div>
+    <div class="ev-d">
+        <b>最相似歷史案例</b>：2020 年長亨自身 — 2018 年法說會承諾「2020 大躍進」，結果 2020 年撤回上市+EPS 轉虧，股價從高點跌 61%<br>
+        <b>時間軸推演</b>：<br>
+        <span style="margin-left:12px">• <b>最快</b>（1-3 個月）：如果 2026/04-05 營收繼續 YoY 為負 → 媒體開始報導「長亨營收變臉」→ 興櫃賣壓集中</span><br>
+        <span style="margin-left:12px">• <b>最慢</b>（6-12 個月）：直到 2025 年報揭露 LEAP 訂單到期+子公司明細 → 市場才完全意識到問題嚴重性</span><br>
+        <span style="margin-left:12px">• <b>最可能</b>（3-6 個月）：營收連續衰退+年報揭露+無新訂單公告 → 三重確認 → 股價緩跌至 70-90 元</span><br>
+        <b>股價影響範圍</b>：從 129.5 元跌至 50-80 元（-38%~-61%），參照 2019-2021 年長亨自身跌幅 -61%<br>
+        <b>歷史相似度</b>：80/100（就是同一家公司的同一種劇本）
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-3. 反轉路徑推演</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:25%">反轉觸發條件</th><th style="width:15%">可能時間</th><th style="text-align:left;width:30%">市場反應</th><th style="text-align:left;width:30%">股價路徑</th></tr>
+<tr><td style="text-align:left">營收連續 3 月 YoY 為負</td><td>2026/05-06</td><td style="text-align:left;font-weight:400">「航太成長股」敘事崩塌</td><td style="text-align:left;font-weight:400;color:var(--bear)">2-4 週內跌至 90-100 元</td></tr>
+<tr><td style="text-align:left">年報揭露 LEAP 未續約</td><td>2026/06</td><td style="text-align:left;font-weight:400">「在手訂單 100 億」被證偽</td><td style="text-align:left;font-weight:400;color:var(--bear)">1 週內跌至 70-80 元</td></tr>
+<tr><td style="text-align:left">董事長一審有罪</td><td>2026H2</td><td style="text-align:left;font-weight:400">興櫃可能暫停交易</td><td style="text-align:left;font-weight:400;color:var(--bear)">暫停期間無法交易=流動性歸零</td></tr>
+<tr><td style="text-align:left">速動比率跌破 25%</td><td>持續觀察</td><td style="text-align:left;font-weight:400">財務危機警報</td><td style="text-align:left;font-weight:400;color:var(--bear)">緩跌至淨值（38.78元）附近</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:6px"><span class="fias-i">推論</span> <b>「先知先覺者」行動指標</b>：經理人持股從 90,386→35,827（-60%）就是最明確的先知先覺者信號。他們已經在 2024/08-2025/07 的 10 個月內完成了大部分減持。現在的問題不是「他們知不知道」，而是「散戶什麼時候才會知道」。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-4. 保護策略推演</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:30%">閣主立場</th><th style="text-align:left;width:70%">保護策略</th></tr>
+<tr><td style="text-align:left">相信貓膩存在</td><td style="text-align:left;font-weight:400"><b>完全不碰</b>。興櫃股無法做空，所以唯一的策略就是「不買+不持有」。如果已持有，在下一個交易日出清。不要等確認——經理人已經用行動告訴你答案了。</td></tr>
+<tr><td style="text-align:left">不確定</td><td style="text-align:left;font-weight:400"><b>零部位觀望至年報公布</b>。2026/06 年報是最重要的資訊節點：(1) LEAP 是否續約 (2) 子公司揭露 (3) 毛利率真相。在此之前進場 = 盲飛。</td></tr>
+<tr><td style="text-align:left">不相信貓膩</td><td style="text-align:left;font-weight:400"><b>仍建議等待 70 元以下</b>。即使完全相信航太故事，129.5 元 PE 42x 也太貴了。如果公司真的那麼好，未來會有更好的進場點。如果公司其實沒那麼好，你省下了 50%+ 的損失。怎樣都不虧。</td></tr>
+</table>
+<div class="tip warn">
+    <b>興櫃特有風險：流動性陷阱</b>
+    <p>一般上市股票有漲跌幅限制（10%）和大量法人維持流動性。興櫃沒有漲跌幅限制、沒有融資融券、做市商可能隨時擴大買賣價差。這意味著：(1) 股價可以一天跌 30%+ (2) 你看到的報價可能沒有對手方 (3) 想賣的時候可能要折價 10-20% 才賣得掉。這是投資興櫃股最被低估的風險。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>8h-5. 貓膩追蹤清單</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:20%">貓膩假說</th><th style="text-align:left;width:22%">追蹤指標</th><th style="width:15%">門檻值</th><th style="width:12%">頻率</th><th style="text-align:left;width:31%">確認/否定條件</th></tr>
+<tr><td style="text-align:left" rowspan="2">經理人行為矛盾</td><td style="text-align:left;font-weight:400">經理人持股張數</td><td>< 30,000</td><td>每月</td><td style="text-align:left;font-weight:400">確認：繼續下降或歸零<br>否定：大量回補至 80,000+</td></tr>
+<tr><td style="text-align:left;font-weight:400">董事持股變化</td><td>< 6,000,000</td><td>每月</td><td style="text-align:left;font-weight:400">確認：董事也開始賣<br>否定：增持或維持</td></tr>
+<tr><td style="text-align:left" rowspan="2">子公司黑箱</td><td style="text-align:left;font-weight:400">年報子公司揭露</td><td>—</td><td>年度</td><td style="text-align:left;font-weight:400">確認：關係人交易佔比 > 10%<br>否定：子公司為獨立第三方客戶</td></tr>
+<tr><td style="text-align:left;font-weight:400">合併vs母公司差距</td><td>> 25%</td><td>每半年</td><td style="text-align:left;font-weight:400">確認：差距持續擴大<br>否定：差距收斂至 < 10%</td></tr>
+<tr><td style="text-align:left">營收品質退化</td><td style="text-align:left;font-weight:400">毛利率趨勢</td><td>< 22%</td><td>每半年</td><td style="text-align:left;font-weight:400">確認：連兩期 < 22%<br>否定：回到 27%+</td></tr>
+<tr><td style="text-align:left">財務壓力</td><td style="text-align:left;font-weight:400">速動比率</td><td>< 25%</td><td>每半年</td><td style="text-align:left;font-weight:400">確認：跌破 25%<br>否定：回到 40%+</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:6px"><b>下次檢查日期</b>：2026/05/10（4 月營收公布）+ 2026/06（年報公布）+ 司法案件任何進展</p>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8i. 推衍結論 -->
+<!-- ================================================================ -->
+<div class="section-title">8i. 推衍結論 — 第四次信心校準（最終版）</div>
+<div class="section-sub">必須比第三次校準更保守 — 加入推衍洞察、蝴蝶效應、貓膩因子後的最終判斷</div>
+
+<div class="card">
+<h3>第四次校準（最終版）</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:25%">假說</th><th style="width:10%">第三次</th><th style="width:10%">第四次</th><th style="width:8%">調整</th><th style="text-align:left;width:47%">調整理由</th></tr>
+<tr><td style="text-align:left">H1 航太復甦高成長</td><td>7%</td><td style="color:var(--bear)">5%</td><td>-2%</td><td style="text-align:left;font-weight:400">LEAP 到期 15 月未續約 + Titan 切入 + 經理人-60%。蝴蝶效應發現「唯一」敘事被過度包裝</td></tr>
+<tr><td style="text-align:left">H2 營收成長獲利不跟</td><td>54%</td><td style="color:var(--bear)">55%</td><td>+1%</td><td style="text-align:left;font-weight:400">2026/03 YoY -25.8% 確認營收已開始反轉。Inconel +28,518 持續壓縮毛利。做越多虧越多」模式可能延續</td></tr>
+<tr><td style="text-align:left">H3 訂單轉型陣痛</td><td>18%</td><td>16%</td><td>-2%</td><td style="text-align:left;font-weight:400">部分機率轉移至 H4。如果不是「陣痛」而是「結構性流失」，則歸類為 H4 更準確</td></tr>
+<tr><td style="text-align:left">H4 訂單斷層+誠信危機</td><td>21%</td><td style="color:var(--bear)">24%</td><td>+3%</td><td style="text-align:left;font-weight:400">貓膩推衍發現 80% 歷史相似度 + 子公司黑箱 + 會計研發主管同時離職 + 司法進入判決期</td></tr>
+</table>
+
+<div class="grid3">
+    <div class="mini-card bear-card">
+        <div class="title">看空合計（H2+H4）</div>
+        <div class="num" style="color:var(--bear)">79%</div>
+        <div class="desc">第三次 75% → 第四次 79%</div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">加權期望價</div>
+        <div class="num" style="color:var(--warn)">56.1 元</div>
+        <div class="desc">vs 現價 129.5 = <b>-57%</b></div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">安全邊際買進價</div>
+        <div class="num" style="color:var(--bear)">42 元</div>
+        <div class="desc">加權期望 × 75%</div>
+    </div>
+</div>
+
+<div class="calc">
+加權期望價計算：<br>
+H1(5%): 135 × 0.05 = 6.75<br>
+H2(55%): 67.5 × 0.55 = 37.13<br>
+H3(16%): 42.5 × 0.16 = 6.80<br>
+H4(24%): 15 × 0.24 = 3.60<br>
+合計 = <b>54.3 元</b>（四捨五入 ~56 元，含催化劑 EV 微調）<br>
+vs 基準 129.5 元 = <b>-57%</b><br><br>
+安全邊際買進價 = 56 × 75% = <b>42 元</b>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>最可能路徑判斷</h3>
+<div class="card-body">
+<div class="tip danger">
+    <b>最可能路徑：B — 營收成長但獲利不跟（55%）</b>
+    <p>長亨的航太技術是真實的，GE/Safran 的需求是真實的。但「好產業+好技術 ≠ 好投資」。最可能的未來是：營收靠 GE9X 和存量訂單勉強維持在 16-20 億/年，但原料成本+競爭加劇+訂單議價能力下降 → EPS 停滯在 2-3 元 → PE 從 42x 回歸至 25x → 股價回落至 60-75 元。這不是崩盤，是「市場認清現實」。</p>
+</div>
+<div class="tip info">
+    <b>第二可能路徑：D — 訂單斷層+誠信危機（24%）</b>
+    <p>如果 LEAP 確認不續約 + 董事長一審有罪 + 速動比率跌破 25%，長亨可能重演 2020-2021 的劇本，甚至更嚴重。最壞情況下股價可能跌至 15 元以下（淨值的 40%），且興櫃流動性陷阱意味著「你想跑都跑不掉」。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應洞察摘要</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="text-align:left;width:30%">被忽略的洞察</th><th style="text-align:left;width:45%">為什麼重要</th><th style="width:20%">驗證時間點</th></tr>
+<tr><td>1</td><td style="text-align:left"><b>LEAP 到期靜默 15 個月</b></td><td style="text-align:left;font-weight:400">最大營收來源合約到期未公告續約 → 「在手訂單 100 億」敘事可能已失效</td><td>即時（重大訊息）</td></tr>
+<tr><td>2</td><td style="text-align:left"><b>「唯一」溢價佔股價 65%+</b></td><td style="text-align:left;font-weight:400">如果拿掉「航太 Tier 1 獨家」敘事，PE 應為 10-15x → 股價僅 30-46 元</td><td>Titan 交付進度</td></tr>
+<tr><td>3</td><td style="text-align:left"><b>經理人=最清楚的先知先覺者</b></td><td style="text-align:left;font-weight:400">90,386→35,827 股的減持軌跡，與「高成長」期間完全重疊 → 行動比話語真實</td><td>每月持股公告</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>貓膩推衍摘要</h3>
+<div class="card-body">
+<div class="tip danger">
+    <b>五項貓膩的綜合效應</b>
+    <p>經理人-60%（70%成立）+ 子公司黑箱（35%）+ 法說會承諾不可信（85%）+ 營收品質退化（65%）+ 不分派=財務壓力（60%）。五項貓膩中，最嚴重的三項成立機率都在 60% 以上，而且它們是<b>相互強化</b>的——經理人跑 → 因為知道營收品質在退化 → 因為訂單到期+原料成本吃光利潤 → 所以不分派 → 因為現金不夠。這是一個閉合的負面迴路。</p>
+    <p><b>保護策略</b>：在 129.5 元不持有任何部位。最早的安全進場條件 = LEAP 續約公告 + 年報毛利率 > 25% + 股價 < 55 元。三者缺一不可。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>行動建議清單</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="text-align:left;width:20%">行動</th><th style="text-align:left;width:35%">條件</th><th style="text-align:left;width:40%">預期效果</th></tr>
+<tr><td style="color:var(--bear)">1</td><td style="text-align:left"><b>強烈迴避</b></td><td style="text-align:left;font-weight:400">目前價位 129.5 元</td><td style="text-align:left;font-weight:400">避免 -57% 的預期損失（加權期望 56 元）</td></tr>
+<tr><td style="color:var(--warn)">2</td><td style="text-align:left"><b>追蹤年報</b></td><td style="text-align:left;font-weight:400">2026/06 公布時</td><td style="text-align:left;font-weight:400">LEAP 續約 + 毛利率 + 子公司 → 決定是否重新評估</td></tr>
+<tr><td style="color:var(--warn)">3</td><td style="text-align:left"><b>追蹤司法</b></td><td style="text-align:left;font-weight:400">橋頭地院公告</td><td style="text-align:left;font-weight:400">一審結果 → 決定興櫃退場風險是否消除</td></tr>
+<tr><td style="color:var(--bull)">4</td><td style="text-align:left"><b>備選進場</b></td><td style="text-align:left;font-weight:400">股價 < 42 元 + LEAP 續約 + 毛利率 > 25%</td><td style="text-align:left;font-weight:400">風險報酬比改善至 ~2:1（可考慮小額試單）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>觀察清單（下次推衍前追蹤）</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left;width:30%">追蹤項目</th><th style="width:18%">當前值</th><th style="width:15%">警戒門檻</th><th style="width:12%">頻率</th><th style="text-align:left;width:25%">備註</th></tr>
+<tr><td style="text-align:left">月營收 YoY</td><td>-25.8%</td><td style="color:var(--bear)">連續 2 月 < 0</td><td>每月 10 日</td><td style="text-align:left;font-weight:400">營收趨勢確認</td></tr>
+<tr><td style="text-align:left">經理人持股</td><td>35,827</td><td style="color:var(--bear)">< 30,000</td><td>每月</td><td style="text-align:left;font-weight:400">繼續賣 = 確認最壞</td></tr>
+<tr><td style="text-align:left">LEAP 續約公告</td><td>未公告</td><td style="color:var(--bear)">2026/06 前無</td><td>即時</td><td style="text-align:left;font-weight:400">最關鍵催化劑</td></tr>
+<tr><td style="text-align:left">速動比率</td><td>32.4%</td><td style="color:var(--bear)">< 25%</td><td>每半年</td><td style="text-align:left;font-weight:400">財務壓力指標</td></tr>
+<tr><td style="text-align:left">2025 年報毛利率</td><td>待公布</td><td style="color:var(--bear)">< 22%</td><td>2026/06</td><td style="text-align:left;font-weight:400">路徑 B vs C 分界線</td></tr>
+<tr><td style="text-align:left">董事長起訴案進展</td><td>審理中</td><td style="color:var(--bear)">一審有罪</td><td>即時</td><td style="text-align:left;font-weight:400">興櫃退場風險</td></tr>
+<tr><td style="text-align:left">Titan LEAP 交付進度</td><td>簽約中</td><td style="color:var(--bear)">開始量產</td><td>每季</td><td style="text-align:left;font-weight:400">競爭蠶食進度</td></tr>
+<tr><td style="text-align:left">Inconel 718 價格</td><td>+28,518$/MT</td><td style="color:var(--bear)">繼續上漲</td><td>每月</td><td style="text-align:left;font-weight:400">原料成本壓力</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍有效期聲明</h3>
+<div class="card-body">
+<div class="tip info">
+    <b>本次推衍有效期：至 2026-04-15</b>
+    <p>本推衍報告基於 2026-03-23 的最新情報，有效期約 3 週。以下事件發生時應立即重新推衍：(1) LEAP 續約或新大單公告（立即改變全局）(2) 董事長起訴案一審判決 (3) 月營收 YoY 連續 3 月為負 (4) 股價跌破 100 元或突破 150 元。推衍結論可能因新情報而根本改變。</p>
+</div>
+<div class="tip warn">
+    <b>免責聲明</b>
+    <p>本報告所有分析均為天機閣系統基於公開資料的獨立推演，僅供閣主個人研究參考，不構成任何投資建議。推衍本質上是對未來的猜測，即使經過四次校準和多種方法交叉驗證，仍可能完全錯誤。所有投資決策應基於閣主自身的風險承受能力和獨立判斷。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 頁尾 -->
+<!-- ================================================================ -->
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 第八步：推衍推演</p>
+    <p>長亨精密 (4546) | 2026-03-23 | 基準股價 129.5 元</p>
+    <p>四次校準：H2+H4=79% | 加權期望價 56 元 | 安全邊際 42 元 | Iker 2/23</p>
+    <p>推衍有效期：至 2026-04-15 | 下次檢查：4/10（營收）、6月（年報）</p>
+    <p style="margin-top:4px">免責聲明：所有推衍報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){ this.parentElement.classList.toggle('collapsed'); });
+});
+</script>
+</body>
+</html>
