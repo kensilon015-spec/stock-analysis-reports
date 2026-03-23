@@ -304,7 +304,7 @@ echo -e "$SORTED_FOLDERS" | sort -rn | while read -r EPOCH FKEY; do
     if [ "$FKEY" = "__root__" ]; then
         # 根目錄檔案直接顯示（不包在資料夾裡）
         cat >> "$TARGET_DIR/index.html" << ROOTEOF
-<details class="folder" open>
+<details class="folder">
 <summary><span class="folder-name">系統報表</span><span class="folder-count">${FILE_COUNT} 份</span><span class="folder-time">${LATEST_DATE}</span></summary>
 <div class="folder-body">
 ${FILES_HTML}
@@ -315,7 +315,7 @@ ROOTEOF
         # 資料夾中的檔案
         DISPLAY_NAME="$FKEY"
         cat >> "$TARGET_DIR/index.html" << FOLDEREOF
-<details class="folder" open>
+<details class="folder">
 <summary><span class="folder-name">${DISPLAY_NAME}</span><span class="folder-count">${FILE_COUNT} 份</span><span class="folder-time">${LATEST_DATE}</span></summary>
 <div class="folder-body">
 ${FILES_HTML}
