@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>1815 富喬工業 — 第七步：決策輸出（含貓膩探索求證）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.catni-red{background:rgba(198,40,40,.08);border:1px solid rgba(198,40,40,.25);border-radius:6px;padding:8px 12px;margin:6px 0}
+.catni-yellow{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25);border-radius:6px;padding:8px 12px;margin:6px 0}
+.catni-green{background:rgba(90,125,96,.08);border:1px solid rgba(90,125,96,.25);border-radius:6px;padding:8px 12px;margin:6px 0}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>1815 富喬工業 — 決策輸出</h1>
+    <div class="sub">第七步：基本面 + 護城河 + 股價合理性 + 貓膩探索求證</div>
+    <div class="desc">天機閣深度調查系統 v3.0 ｜ 整合前六步分析結論，輸出最終決策建議<br>含反共識偵測引擎六步框架（D-1~D-6），即時搜尋求證</div>
+    <div class="tags">
+        <span class="tag">1815.TWO</span>
+        <span class="tag">玻纖布</span>
+        <span class="tag">AI伺服器材料</span>
+        <span class="tag">2026-03-23</span>
+        <span class="tag">收盤 102.0 元</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#secA">A. 基本面綜合評估</a>
+    <a href="#secB">B. 護城河評估</a>
+    <a href="#secC">C. 股價合理性（四種估值法）</a>
+    <a href="#secD">D. 貓膩探索與求證（反共識偵測引擎六步）</a>
+    <a href="#secE">E. 第四次信心校準</a>
+    <a href="#secF">F. 最終決策建議</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- A. 基本面綜合評估 -->
+<!-- ============================================================ -->
+<div class="section-title" id="secA">A. 基本面綜合評估</div>
+<div class="section-sub">整合第一~六步分析結論，以數據為核心</div>
+
+<div class="card">
+<h3>A-1. 營收與獲利趨勢</h3>
+<div class="card-body">
+<div class="grid3">
+    <div class="mini-card bull-card">
+        <div class="title">2025 全年 EPS</div>
+        <div class="num" style="color:var(--bull)">1.64 元</div>
+        <div class="desc">YoY +1,162%（2024: 0.13元）</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">2026/03 月營收</div>
+        <div class="num" style="color:var(--bull)">6.29 億</div>
+        <div class="desc">YoY +60.76%，170個月新高</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">毛利率趨勢</div>
+        <div class="num" style="color:var(--neutral)">27%+</div>
+        <div class="desc">2023同期僅2%，V型反轉</div>
+    </div>
+</div>
+<table>
+<tr><th>指標</th><th>2023</th><th>2024/前三季</th><th>2025/前三季</th><th>趨勢</th></tr>
+<tr><td>毛利率</td><td>~2%</td><td>~14%</td><td>27%+</td><td style="color:var(--bull)">持續改善</td></tr>
+<tr><td>營益率</td><td>-13%</td><td>—</td><td>17%</td><td style="color:var(--bull)">轉虧為盈</td></tr>
+<tr><td>EPS</td><td>0.13元</td><td>—</td><td>0.81元（前三季）</td><td style="color:var(--bull)">爆發性成長</td></tr>
+<tr><td>月營收趨勢</td><td colspan="3">2024下半年起逐月攀升，Q4突破5億，2026/03創新高6.29億</td><td style="color:var(--bull)">強勁</td></tr>
+</table>
+<div class="tip good"><b>正面：營運確實處於 V 型反轉軌道</b>高階產品佔比從 30% → 45% → 目標 60%，漲價+量增雙引擎帶動。台灣布廠滿載，東莞廠 Q4 也滿載。</div>
+<div class="tip warn"><b>注意：基期效應誇大成長幅度</b>2023 年 EPS 僅 0.13 元（近乎虧損），「YoY +1,162%」在低基期下容易產生數字幻覺。以絕對值看，EPS 1.64 元對應 102 元股價 = PE 62 倍，並不便宜。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>A-2. 財務體質</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card neutral-card">
+        <div class="title">負債比</div>
+        <div class="num">31.7%</div>
+        <div class="desc">2025Q4（增資後驟降）</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">資本支出強度</div>
+        <div class="num" style="color:var(--bear)">77%</div>
+        <div class="desc">兩年46億/年營收59.6億</div>
+    </div>
+</div>
+<table>
+<tr><th>項目</th><th>數值</th><th>評估</th></tr>
+<tr><td>每股淨值</td><td>21.54 元</td><td>增資後提升</td></tr>
+<tr><td>股價淨值比（PBR）</td><td>4.7 倍</td><td style="color:var(--bear)">偏高（玻纖業通常 1~2 倍）</td></tr>
+<tr><td>2025 年資本支出</td><td>26 億元</td><td>台灣廠高階產能擴充</td></tr>
+<tr><td>2026 年資本支出</td><td>20 億元</td><td>不含泰國廠建設</td></tr>
+<tr><td>泰國廠第一期</td><td>31 億元</td><td>2027Q3 預計量產</td></tr>
+<tr><td>現金增資</td><td>39.6 億元（6萬張@66元）</td><td style="color:var(--bear)">股本膨脹約10.3%</td></tr>
+<tr><td>自由現金流展望</td><td>短期承壓</td><td style="color:var(--warn)">資本支出遠超營業現金流</td></tr>
+</table>
+<div class="tip danger"><b>資本支出風險</b>兩年合計 46 億元資本支出（不含泰國廠），占年營收 77%。若 2027 年下半年產業景氣反轉，大量新產能開出時恰逢需求放緩，將形成「產能詛咒」——這是典型週期股的最大風險。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>A-3. 管理層誠信度</h3>
+<div class="card-body">
+<div class="score-bar">
+    <span style="font-size:.82em;min-width:80px">誠信度評分</span>
+    <div class="bar"><div class="fill" style="width:55%;background:var(--warn)"></div></div>
+    <span class="val" style="color:var(--warn)">55/100</span>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin:4px 0">★★☆☆☆ 低度可靠（初始 60 分，因言行不一致扣分）</p>
+
+<table>
+<tr><th>驗證項目</th><th>結果</th><th>評分影響</th></tr>
+<tr><td>法說會宣稱「審慎正向」+ 高階佔比提升</td><td>與實際營收趨勢一致</td><td style="color:var(--bull)">+3</td></tr>
+<tr><td>2026 資本支出「不會超過 2025」→ 實際編 20 億+泰國 31 億</td><td>方向一致但泰國廠超出預期</td><td style="color:var(--warn)">-2</td></tr>
+<tr><td>兩大法人董事 100% 棄權認購現增</td><td style="color:var(--bear)">言行不一致：看好公司但不投錢</td><td style="color:var(--bear)">-10</td></tr>
+<tr><td>董事長個人持股減少 24.3%</td><td style="color:var(--bear)">經營者持續減持</td><td style="color:var(--bear)">-10</td></tr>
+<tr><td>董事德隆高點申讓觸發跌停</td><td style="color:var(--bear)">內部人認為股價偏高</td><td style="color:var(--bear)">-5</td></tr>
+</table>
+
+<div class="tip danger"><b>最嚴重的言行不一致</b>
+管理層在法說會上表示「審慎正向」、「AI 市場大有可為」，但同期：<br>
+(1) 達泰投資（董事長關聯公司）100% 放棄認購 5,553,125 股<br>
+(2) 德隆倉儲 100% 放棄認購 316,523 股<br>
+(3) 董事長張元賓個人持股從 717 萬股降至 543 萬股（-24.3%）<br>
+行動比言語更誠實。經營者用行動投票——他們不願意以 66 元認購自家股票。</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- B. 護城河評估 -->
+<!-- ============================================================ -->
+<div class="section-title" id="secB">B. 護城河評估</div>
+<div class="section-sub">來源：第三步競爭力分析結論</div>
+
+<div class="card">
+<h3>B-1. 護城河結論：無護城河（週期性窗口機會）</h3>
+<div class="card-body">
+<table>
+<tr><th>護城河維度</th><th>評估</th><th>評級</th></tr>
+<tr><td>品牌溢價</td><td>無品牌溢價，B2B 材料供應商</td><td><span class="badge none">無</span></td></tr>
+<tr><td>轉換成本</td><td>客戶認證需時 6~12 個月，但一旦巨石通過認證即可替代</td><td><span class="badge narrow">窄</span></td></tr>
+<tr><td>網絡效應</td><td>不適用</td><td><span class="badge none">無</span></td></tr>
+<tr><td>成本優勢</td><td>與中國巨石相比完全沒有成本優勢（巨石成本低 20~30%）</td><td><span class="badge none">無</span></td></tr>
+<tr><td>規模經濟</td><td>台灣規模遠不如中國巨石（12萬噸單線 vs 台灣全部廠）</td><td><span class="badge none">無</span></td></tr>
+<tr><td>專利/技術</td><td>Low-Dk/Low-CTE 有一定技術門檻，但非獨佔</td><td><span class="badge narrow">窄</span></td></tr>
+<tr><td>垂直整合</td><td>紗布一條龍（台灣唯一），有生產彈性優勢</td><td><span class="badge narrow">窄</span></td></tr>
+</table>
+
+<div class="tip warn"><b>核心判斷：這不是護城河，是窗口期</b>
+富喬受惠的主因是「日東紡產能不足 → 外溢訂單到台廠」。這是供給端瓶頸造成的暫時性紅利，不是富喬自身不可替代的競爭優勢。一旦日東紡產能翻倍（2026Q4）+ 中國巨石高階追趕，外溢紅利將被壓縮。預估窗口期 2~3 年（至 2027 下半年）。</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- C. 股價合理性 -->
+<!-- ============================================================ -->
+<div class="section-title" id="secC">C. 股價合理性（四種估值法）</div>
+<div class="section-sub">當前股價 102.0 元（2026-03-20 收盤）</div>
+
+<div class="card">
+<h3>C-1. 本益比估值法（PE）</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>預估 EPS</th><th>合理 PE</th><th>估值區間</th><th>vs 現價</th></tr>
+<tr><td>樂觀（2026E EPS 大幅成長）</td><td>3.0~3.5 元</td><td>20~25 倍</td><td>60~88 元</td><td style="color:var(--bear)">高估 16%~70%</td></tr>
+<tr><td>中性（2026E EPS 穩健成長）</td><td>2.5~3.0 元</td><td>15~20 倍</td><td>38~60 元</td><td style="color:var(--bear)">高估 70%~168%</td></tr>
+<tr><td>悲觀（景氣反轉）</td><td>1.0~1.5 元</td><td>10~15 倍</td><td>10~23 元</td><td style="color:var(--bear)">高估 343%~920%</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><b>PE 合理性說明</b>：玻纖布為週期性產業，合理 PE 應參考中週期水準（15~25 倍），而非成長股估值。以週期股 MU 2018 案例為鑑：EPS 高峰時 PE 3x，7 個月後股價跌 54%。目前 PE 62 倍隱含市場預期 2026 年 EPS 至少 4~5 元才合理，但此假設高度依賴漲價持續。</p>
+<div class="tip danger"><b>週期股估值陷阱警告</b>週期股低 PE ≠ 便宜，高 PE 也不一定貴——但 62 倍 PE 在「營收已創新高 + 產業全員擴產」的情境下，幾乎肯定是在為即將到來的產能過剩買單。歷史告訴我們：週期股最好的 EPS 往往出現在股價見頂前。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>C-2. 股價淨值比估值法（PBR）</h3>
+<div class="card-body">
+<table>
+<tr><th>參數</th><th>數值</th></tr>
+<tr><td>每股淨值</td><td>21.54 元（2025Q4，增資後）</td></tr>
+<tr><td>當前 PBR</td><td>4.7 倍（102 / 21.54）</td></tr>
+<tr><td>玻纖業歷史 PBR 區間</td><td>0.5~2.5 倍</td></tr>
+<tr><td>景氣高峰 PBR 上限</td><td>2.5~3.0 倍</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:4px"><b>PBR 合理估值</b>：以增資後淨值 21.54 元 × 景氣高峰 PBR 2.5 倍 = <b>53.9 元</b>，遠低於現價 102 元。即使給予最極端的 PBR 3.0 倍 = 64.6 元，仍低於現價 37%。</p>
+<div class="tip danger"><b>PBR 4.7 倍嚴重偏離歷史區間</b>這意味著市場認為富喬的 ROE 將長期大幅提升至足以支撐 4.7 倍 PBR 的水準。但富喬並沒有寬護城河保障高 ROE 持續。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>C-3. 同業比較估值法</h3>
+<div class="card-body">
+<table>
+<tr><th>公司</th><th>股價</th><th>2025 EPS</th><th>PE（估）</th><th>PBR</th><th>特色</th></tr>
+<tr><td>富喬 1815</td><td>102.0</td><td>1.64</td><td>~62x</td><td>4.7x</td><td>Low-Dk + Low-CTE 雙軌</td></tr>
+<tr><td>台玻 1802</td><td>~46</td><td>—</td><td>—</td><td>~1.5x</td><td>Low-Dk 突破，產線 4→12 條</td></tr>
+<tr><td>建榮 5340</td><td>—</td><td>—</td><td>—</td><td>—</td><td>日東紡嫡系，T-glass</td></tr>
+<tr><td>德宏 5475</td><td>~102</td><td>—</td><td>—</td><td>—</td><td>Q-glass 差異化（2025漲686%）</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">台玻 PBR 僅 1.5 倍 vs 富喬 4.7 倍，但台玻擴產規模更大（4→12 條線）且取得 Low-Dk 認證。富喬的估值溢價缺乏基本面支撐。</p>
+<div class="tip info"><b>法人目標價參考</b>理周投研部目標價 135 元（基於 2026E 高成長預期）。但法人目標價往往在景氣高點最樂觀，需打折看待。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>C-4. 週期調整估值法（Shiller 概念）</h3>
+<div class="card-body">
+<p style="font-size:.85em">由於富喬為週期性產業，使用近 3~5 年平均 EPS 比單年 EPS 更合理：</p>
+<table>
+<tr><th>年度</th><th>EPS</th><th>備註</th></tr>
+<tr><td>2022</td><td>~0.20 元</td><td>景氣下行</td></tr>
+<tr><td>2023</td><td>~-0.20 元</td><td>谷底虧損</td></tr>
+<tr><td>2024</td><td>0.13 元</td><td>由虧轉盈</td></tr>
+<tr><td>2025</td><td>1.64 元</td><td>景氣高峰</td></tr>
+<tr><td><b>4 年平均</b></td><td><b>~0.44 元</b></td><td>中週期平均</td></tr>
+</table>
+<p style="font-size:.85em;margin-top:6px"><b>週期調整 PE</b>：102 元 / 0.44 元 = <b>232 倍</b>。即使用 2024~2025 兩年平均 EPS（0.89 元），PE 也高達 115 倍。這顯示市場完全在交易「未來預期」而非「已驗證的獲利能力」。</p>
+<div class="tip danger"><b>四種估值法結論一致：嚴重高估</b>
+<br>PE 法：合理價 38~88 元（中位 63 元）
+<br>PBR 法：合理價 54~65 元
+<br>同業比較：富喬 PBR 是台玻的 3 倍以上，缺乏合理性
+<br>週期調整：中週期 PE 232 倍，極度高估
+<br><b>四法平均合理價區間：約 50~70 元，現價 102 元高估 46%~104%</b></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- D. 貓膩探索與求證（反共識偵測引擎六步） -->
+<!-- ============================================================ -->
+<div class="section-title" id="secD">D. 貓膩探索與求證</div>
+<div class="section-sub">反共識偵測引擎（Contrarian Detection Engine）v2.1 ─ 六步框架，含即時搜尋求證</div>
+
+<div class="card">
+<h3>D-1. 敘事解剖（Narrative Forensics）</h3>
+<div class="card-body">
+<details open>
+<summary>目前市場主流敘事</summary>
+<div class="tip info"><b>主流敘事：「AI 伺服器材料軍火商，玻纖布史詩級缺貨」</b>
+<br>富喬是 AI 伺服器供應鏈的關鍵材料供應商，受惠於高階玻纖布（Low-Dk / Low-CTE）缺貨潮，公司正從傳統玻纖廠轉型為 AI 材料軍火商。2025 年營運 V 型反轉，EPS 從 0.13 元暴增至 1.64 元。缺貨持續到 2027 年，訂單排到滿，產能全面滿載。</div>
+</details>
+
+<details open>
+<summary>誰在說？誰受益？</summary>
+<table>
+<tr><th>敘事推動者</th><th>代表</th><th>受益程度</th><th>動機偏誤</th></tr>
+<tr><td>公司管理層</td><td>總經理陳壁程、董事長張元賓</td><td style="color:var(--bull)">直接受益</td><td style="color:var(--bear)">高：推升股價利於增資定價</td></tr>
+<tr><td>承銷券商</td><td>富邦證券（主辦法說會）</td><td style="color:var(--bull)">直接受益</td><td style="color:var(--bear)">高：現增承銷手續費</td></tr>
+<tr><td>法人研究報告</td><td>理周投研部（目標價 135 元）</td><td style="color:var(--bull)">間接受益</td><td style="color:var(--warn)">中：研究報告驅動交易量</td></tr>
+<tr><td>媒體</td><td>鉅亨網、TechNews 等</td><td>間接受益</td><td style="color:var(--warn)">中：熱門題材吸引流量</td></tr>
+<tr><td>散戶投資人</td><td>融資買超者</td><td>直接暴露</td><td style="color:var(--bear)">高：確認偏誤最嚴重群體</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>什麼數據支撐？什麼被忽略？</summary>
+<div class="grid2">
+<div>
+<p style="font-weight:700;color:var(--bull);font-size:.88em">被大量引用的支撐數據</p>
+<p style="font-size:.82em">• 月營收 YoY +60.76%</p>
+<p style="font-size:.82em">• EPS YoY +1,162%</p>
+<p style="font-size:.82em">• 毛利率從 2% → 27%</p>
+<p style="font-size:.82em">• 訂單排到 2027 年</p>
+<p style="font-size:.82em">• 缺貨持續到 2027H2</p>
+<p style="font-size:.82em">• 高階佔比 45% → 60%</p>
+</div>
+<div>
+<p style="font-weight:700;color:var(--bear);font-size:.88em">被刻意忽略或淡化的數據</p>
+<p style="font-size:.82em">• PE 62 倍（週期股極高）</p>
+<p style="font-size:.82em">• PBR 4.7 倍（歷史區間 0.5~2.5x）</p>
+<p style="font-size:.82em">• 董事 100% 棄權認購</p>
+<p style="font-size:.82em">• 董事長持股減 24.3%</p>
+<p style="font-size:.82em">• 中國巨石 10 萬噸新線已點火</p>
+<p style="font-size:.82em">• 2027H2 多方產能集中開出</p>
+</div>
+</div>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>D-2. 歷史前科搜查（Criminal Record Check）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>結果</th></tr>
+<tr><td>反壟斷/聯合漲價案件</td><td><span class="light green"></span> 未發現富喬涉及反壟斷案件</td></tr>
+<tr><td>財報造假/重編紀錄</td><td><span class="light green"></span> 未發現</td></tr>
+<tr><td>處置股紀錄</td><td><span class="light red"></span> 2025年8月因短線漲幅過大被列為處置股</td></tr>
+<tr><td>違約交割紀錄</td><td><span class="light red"></span> 2025年11月發生違約交割，金額 1,255 萬元</td></tr>
+<tr><td>會計師意見</td><td><span class="light green"></span> 無保留意見（待確認最近期）</td></tr>
+</table>
+
+<p style="font-size:.85em;margin-top:6px"><b>產業寡占度（HHI）</b>：全球玻纖布市場 CR3（中國巨石+泰山+重慶國際）≈ 66%（中國國內），但電子級高階市場更集中——日東紡 T-glass 市佔 >90%。台灣廠商在高階市場僅是「外溢受惠者」，非寡占參與者。</p>
+
+<div class="tip info"><b>前科搜查結論</b>富喬本身無重大前科，但處置股 + 違約交割紀錄顯示該股票的投機特質和散戶佔比偏高，籌碼面風險較大。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>D-3. 巧合偵測（Coincidence Detector）</h3>
+<div class="card-body">
+<p style="font-size:.85em;font-weight:700;margin-bottom:6px">同業同步行為矩陣（即時搜尋結果）</p>
+<table>
+<tr><th>廠商</th><th>漲價</th><th>擴產</th><th>同步程度</th><th>性質判定</th></tr>
+<tr><td>台玻 1802</td><td style="color:var(--bull)">跟漲</td><td style="color:var(--bull)">22.5億，4→12條線</td><td>高度同步</td><td>產業領頭羊</td></tr>
+<tr><td>建榮 5340</td><td style="color:var(--bull)">跟漲</td><td style="color:var(--bull)">承接日東紡溢單</td><td>高度同步</td><td>被動受惠</td></tr>
+<tr><td>德宏 5475</td><td style="color:var(--bull)">跟漲</td><td>差異化Q-glass</td><td>中度同步</td><td>差異化路線</td></tr>
+<tr><td>富喬 1815</td><td style="color:var(--bull)">同步漲停</td><td style="color:var(--bull)">兩年46億資本支出</td><td>高度同步</td><td>跟隨產業</td></tr>
+<tr><td>南亞 1303</td><td style="color:var(--bull)">跟漲</td><td>與日東紡合作</td><td>中度同步</td><td>集團配置</td></tr>
+</table>
+
+<div class="catni-yellow">
+<p style="font-weight:700;font-size:.88em;color:var(--warn)">巧合偵測結論：產業結構性驅動，非默契壟斷</p>
+<p style="font-size:.82em;margin-top:4px">
+規則：≥3 家同步行為 = 紅旗。<b>觸發</b>（5家同步漲價+擴產）。<br>
+但深入分析後，此同步行為有合理解釋：<br>
+• 需求端驅動明確（AI 伺服器 + CSP 資本支出）<br>
+• 漲價由大陸端發起（月度 10~15%），台廠跟進<br>
+• 擴產節奏各異（台玻主動、建榮被動、德宏差異化）<br>
+• 下游客戶主動搶料（欣興上修資本支出至 340 億）<br>
+<b>判定：黃燈</b>——同步行為合理，但「全員擴產」本身就是週期反轉的前兆信號。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>D-4. 反轉假說 + 即時求證（Inversion Hypothesis）</h3>
+<div class="card-body">
+<p style="font-size:.85em;font-weight:700;margin-bottom:6px">如果主流敘事是錯的，真相可能是什麼？</p>
+
+<details open>
+<summary>反轉假說一：「缺貨」是暫時性外溢紅利，不是結構性需求提升</summary>
+<div class="tip danger"><b>反轉論述</b>：富喬受惠的核心原因是日東紡產能不足的「外溢訂單」。一旦日東紡 2026Q4 產能翻三倍 + 中國巨石淮安線量產，外溢紅利將迅速縮水。台灣廠商從來不是這個市場的主角，只是暫時的替補。</div>
+<p style="font-size:.82em"><b>即時求證結果（WebSearch 2026-03-23）</b>：</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 中國巨石淮安線 2026/3/19 已點火，年產 10 萬噸 + 3.9 億米電子布，占全球 9%</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 日東紡投入 1,500 億日圓擴產，2026Q4 完工，產能翻三倍</p>
+<p style="font-size:.82em">• <span class="fias-i">I</span> 工商時報專題：「台廠外溢能吃多久？」直接質疑外溢紅利的持續性</p>
+<p style="font-size:.82em;color:var(--bear);font-weight:700">求證結論：支持反轉假說。外溢紅利在 12~18 個月後面臨實質壓縮風險。</p>
+</details>
+
+<details open>
+<summary>反轉假說二：「產能滿載」是週期高峰特徵，不是持久狀態</summary>
+<div class="tip warn"><b>反轉論述</b>：「稼動率 100%、訂單排到 2027 年」——這些在週期股語境下，恰恰是景氣即將見頂的經典信號。歷史上每次玻纖布產業「全員滿載+全員擴產」之後，都伴隨著嚴重的供過於求。</div>
+<p style="font-size:.82em"><b>即時求證結果（WebSearch 2026-03-23）</b>：</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 2022 年粗紗高峰 5,750 元/噸 → 2024 谷底 3,000 元/噸（跌 48.7%），上一輪擴產→供過於求僅 2 年</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 目前全球擴產規模：巨石 10 萬噸 + 日東紡 3 倍 + 台玻 3 倍 + 富喬 46 億 + 國際復材等</p>
+<p style="font-size:.82em">• <span class="fias-i">I</span> 產業分析預估缺貨到 2027H2，但供給在 2026H2 開始大量開出</p>
+<p style="font-size:.82em;color:var(--warn);font-weight:700">求證結論：部分支持。目前確實供不應求，但「全員擴產」是 2027H2 供過於求的領先指標。</p>
+</details>
+
+<details open>
+<summary>反轉假說三：管理層在「最好的時候」融資稀釋股東</summary>
+<div class="tip danger"><b>反轉論述</b>：公司選在股價最高、市場最樂觀的時候進行歷來最大規模現增（39.6 億元），這是典型的「高位稀釋」策略——管理層比散戶更清楚景氣位階，所以趁高點賣新股。更關鍵的是，他們自己不認購。</div>
+<p style="font-size:.82em"><b>即時求證結果（WebSearch 2026-03-23）</b>：</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 達泰投資（董事長關聯公司）100% 棄權 5,553,125 股，德隆 100% 棄權 316,523 股</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 董事長張元賓個人持股從 717 萬股降至 543 萬股（-24.3%）</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 現增價 66 元，上櫃首日收 94.4 元——董事放棄的每股潛在利潤 28.4 元</p>
+<p style="font-size:.82em">• <span class="fias-f">F</span> 棄權股轉由元大證券等特定人認購，非策略投資人而是券商代理帳戶</p>
+<p style="font-size:.82em;color:var(--bear);font-weight:700">求證結論：強烈支持反轉假說。經營者放棄確定獲利（每股28.4元），這不是「財務規劃」能解釋的。</p>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>D-5. 利益追蹤（Follow the Money）</h3>
+<div class="card-body">
+<p style="font-size:.85em;font-weight:700;margin-bottom:6px">資金流向追蹤（即時搜尋結果 2026-03-23）</p>
+
+<table>
+<tr><th>追蹤項目</th><th>發現</th><th>訊號</th></tr>
+<tr><td>董事長個人持股</td><td>717 萬股 → 543 萬股（-24.3%）</td><td><span class="light red"></span> 持續減持</td></tr>
+<tr><td>法人董事認購</td><td>達泰+德隆 100% 棄權（586 萬股）</td><td><span class="light red"></span> 極度異常</td></tr>
+<tr><td>外資動態（2026/03）</td><td>3/5 單日賣超 7,337 張，整體轉賣</td><td><span class="light red"></span> 轉空</td></tr>
+<tr><td>投信動態</td><td>幾乎零交易</td><td><span class="light yellow"></span> 不感興趣</td></tr>
+<tr><td>融資餘額</td><td>77,854 張（仍偏高）</td><td><span class="light yellow"></span> 散戶槓桿高</td></tr>
+<tr><td>違約交割</td><td>2025/11 發生，金額 1,255 萬元</td><td><span class="light red"></span> 投機過度</td></tr>
+<tr><td>董監持股比例</td><td>12.44%（偏低）</td><td><span class="light yellow"></span> 經營層綁定不足</td></tr>
+</table>
+
+<div class="catni-red">
+<p style="font-weight:700;font-size:.88em;color:var(--bear)">利益追蹤結論：多重紅旗</p>
+<p style="font-size:.82em;margin-top:4px">
+資金流向揭示清晰的模式：<b>內部人出、外資出、散戶進</b>。<br>
+• 經營者用行動投票——減持 + 棄權認購 = 不看好<br>
+• 外資 2026/03 轉為淨賣超 = 機構撤退<br>
+• 融資餘額仍高 + 違約交割 = 散戶在接最後一棒<br>
+這是典型的「聰明錢離場、散戶追高」的格局。
+</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>D-6. 貓膩總評</h3>
+<div class="card-body">
+
+<div class="catni-red">
+<p style="font-weight:700;font-size:1em;color:var(--bear)"><span class="light red"></span> 紅燈：高度警戒</p>
+<p style="font-size:.85em;margin-top:6px">
+<b>貓膩成立機率：65%（中高）</b><br>
+<b>影響幅度：高（股價可能回落 40~60%）</b>
+</p>
+</div>
+
+<table>
+<tr><th>偵測面向</th><th>燈號</th><th>發現摘要</th></tr>
+<tr><td>D-1 敘事解剖</td><td><span class="light yellow"></span> 黃燈</td><td>主流敘事由受益者推動（管理層+券商+媒體），忽略估值過高和供給反轉風險</td></tr>
+<tr><td>D-2 歷史前科</td><td><span class="light green"></span> 綠燈</td><td>公司無重大前科，但有處置股和違約交割紀錄</td></tr>
+<tr><td>D-3 巧合偵測</td><td><span class="light yellow"></span> 黃燈</td><td>5家同步漲價擴產，有合理解釋但「全員擴產」本身是週期反轉前兆</td></tr>
+<tr><td>D-4 反轉假說</td><td><span class="light red"></span> 紅燈</td><td>3個反轉假說均獲實質證據支持：外溢紅利脆弱 + 週期高峰 + 高位稀釋</td></tr>
+<tr><td>D-5 利益追蹤</td><td><span class="light red"></span> 紅燈</td><td>內部人出+外資出+散戶進，經營者棄權認購是最強負面信號</td></tr>
+<tr><td colspan="3" style="font-weight:700;color:var(--bear);font-size:.88em;text-align:center">總評：2 紅燈 + 2 黃燈 + 1 綠燈 = 高度警戒</td></tr>
+</table>
+
+<p style="font-size:.85em;margin-top:8px;font-weight:700">貓膩嫌疑清單：</p>
+<p style="font-size:.82em">1. <span class="light red"></span> <b>高位稀釋 + 內部人出走</b>：管理層在景氣高峰融資 39.6 億，自己不認購反而減持。成立機率 <b>80%</b>（事實已確認）</p>
+<p style="font-size:.82em">2. <span class="light red"></span> <b>外溢紅利 ≠ 持久競爭力</b>：市場將暫時性供需失衡定價為永久性成長。成立機率 <b>70%</b></p>
+<p style="font-size:.82em">3. <span class="light yellow"></span> <b>週期高峰全員擴產</b>：歷史重演的機率。成立機率 <b>60%</b></p>
+
+<p style="font-size:.85em;margin-top:8px;font-weight:700">監控指標清單：</p>
+<table>
+<tr><th>指標</th><th>監控門檻</th><th>意義</th><th>檢查頻率</th></tr>
+<tr><td>月營收 YoY</td><td>連續 2 月轉負</td><td>景氣反轉</td><td>每月 10 日</td></tr>
+<tr><td>電子布報價</td><td>月度漲幅趨零或轉跌</td><td>漲價動能消退</td><td>每月</td></tr>
+<tr><td>中國巨石淮安線良率</td><td>高階品良率達 80%+</td><td>供給端反轉</td><td>每季</td></tr>
+<tr><td>日東紡新產能認證進度</td><td>通過客戶認證</td><td>外溢訂單縮減</td><td>每季</td></tr>
+<tr><td>外資買賣超</td><td>連續 10 日淨賣超</td><td>機構撤退</td><td>每週</td></tr>
+<tr><td>融資維持率</td><td>跌破 130%</td><td>散戶斷頭風險</td><td>每週</td></tr>
+<tr><td>董監持股異動</td><td>再有申讓公告</td><td>經營者繼續出走</td><td>即時</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- E. 第四次信心校準 -->
+<!-- ============================================================ -->
+<div class="section-title" id="secE">E. 第四次信心校準</div>
+<div class="section-sub">整合 A~D 所有發現，進行第七步信心微調</div>
+
+<div class="card">
+<h3>E-1. 校準過程</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>第三次<br>（評審團後）</th><th>第四次調整</th><th>調整依據</th></tr>
+<tr><td>H1 看多（AI超級週期）</td><td>8%</td><td style="color:var(--bear);font-weight:700">5%</td><td>四法估值一致高估 + 內部人出走 + 外溢紅利脆弱</td></tr>
+<tr><td>H2 看空（週期高峰+高估）</td><td>22%</td><td style="color:var(--bear);font-weight:700">30%</td><td>貓膩偵測 D-4/D-5 提供新增紅旗證據</td></tr>
+<tr><td>H3 結構性轉變（TLD-glass）</td><td>23%</td><td>23%</td><td>維持不變（巨石已點火但良率未明）</td></tr>
+<tr><td>H4 黑天鵝</td><td>12%</td><td>12%</td><td>維持不變</td></tr>
+<tr><td>H5 中性區間盤整</td><td>35%</td><td style="color:var(--warn);font-weight:700">30%</td><td>四法估值顯示 102 元已在區間上緣之上</td></tr>
+<tr><td colspan="4" style="font-weight:700;text-align:center;color:var(--base)">總計 100%</td></tr>
+</table>
+
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">下行風險合計</div>
+        <div class="num" style="color:var(--bear)">65%</div>
+        <div class="desc">H2 30% + H3 23% + H4 12%</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">上行機會</div>
+        <div class="num" style="color:var(--bull)">5%</div>
+        <div class="desc">H1 看多假說</div>
+    </div>
+</div>
+
+<div class="tip danger"><b>風險報酬比極度不對稱：13:1</b>
+下行風險 65% vs 上行機會 5% = 13:1。即使 H5 中性維持現價，持有的預期報酬也接近零。在任何理性框架下，這都不是值得建立多頭部位的標的。</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- F. 最終決策建議 -->
+<!-- ============================================================ -->
+<div class="section-title" id="secF">F. 最終決策建議</div>
+<div class="section-sub">基於 A~E 全面分析的結論</div>
+
+<div class="card">
+<h3>F-1. 決策結論</h3>
+<div class="card-body">
+
+<div class="catni-red">
+<p style="font-weight:900;font-size:1.1em;color:var(--bear);text-align:center">不建議買入 — 觀望 / 空手為宜</p>
+</div>
+
+<table>
+<tr><th>決策面向</th><th>結論</th></tr>
+<tr><td>估值</td><td style="color:var(--bear);font-weight:700">嚴重高估（四法合理價 50~70 元 vs 現價 102 元）</td></tr>
+<tr><td>護城河</td><td style="color:var(--bear);font-weight:700">無（僅有 2~3 年窗口期）</td></tr>
+<tr><td>管理層誠信</td><td style="color:var(--bear);font-weight:700">55/100 低度可靠（棄權認購+減持）</td></tr>
+<tr><td>週期位階</td><td style="color:var(--bear);font-weight:700">高峰期（全員擴產 = 反轉前兆）</td></tr>
+<tr><td>籌碼</td><td style="color:var(--bear);font-weight:700">內部人出、外資出、散戶進</td></tr>
+<tr><td>貓膩偵測</td><td style="color:var(--bear);font-weight:700">紅燈（2紅+2黃+1綠）</td></tr>
+<tr><td>信心分布</td><td style="color:var(--bear);font-weight:700">下行 65% vs 上行 5%（13:1）</td></tr>
+</table>
+
+<p style="font-size:.85em;margin-top:8px;font-weight:700">如果已持有的建議：</p>
+<p style="font-size:.82em">• 102 元以上考慮分批減碼<br>
+• 設定停損：跌破 85 元全部出場（2026E EPS 3 元 × PE 28 倍）<br>
+• 持續監控月營收 YoY 和電子布報價，若任一轉負則加速減碼</p>
+
+<p style="font-size:.85em;margin-top:8px;font-weight:700">如果想要波段操作的建議：</p>
+<p style="font-size:.82em">• 等待股價回落至合理區間（50~70 元）再考慮<br>
+• 等待 2026Q4 日東紡/巨石產能實際開出情況明朗化<br>
+• 關注 2026 年 EPS 是否真的能達到 3 元以上（目前為假設，未驗證）</p>
+</div>
+</div>
+
+<div class="card">
+<h3>F-2. 此分析的已知限制與免責</h3>
+<div class="card-body">
+<div class="tip info"><b>已知資料限制</b>
+<br>• 未取得富喬完整年報 PDF（MOPS 下載受限）
+<br>• 未取得詳細客戶名單和訂單簿資料（商業機密）
+<br>• 2026E EPS 為推估值，實際數字需等財報公布
+<br>• 中國巨石 TLD-glass 良率為未公開資訊
+<br>• finlab 部分上櫃股數據有限制
+</div>
+<div class="tip warn"><b>免責聲明</b>
+本報告為天機閣深度調查系統自動化分析產出，僅供個人研究參考，不構成任何投資建議。所有分析基於公開資訊，可能存在資訊滯後或解讀偏差。投資決策請自行負責。</div>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 第七步：決策輸出</p>
+    <p>報告日期：2026-03-23 ｜ 資料截止：2026-03-23</p>
+    <p style="margin-top:4px">四次信心校準軌跡：ACH(25%) → 壓力測試(10%) → 評審團(8%) → 決策輸出(5%)</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

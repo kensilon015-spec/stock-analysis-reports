@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機閣 — 1815 富喬工業 第一步：資料收集總覽</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.gate-table td:first-child{font-weight:700}
+.status-ok{color:var(--bull);font-weight:700}
+.status-partial{color:var(--warn);font-weight:700}
+.status-miss{color:var(--bear);font-weight:700}
+.channel-header{font-size:1em;font-weight:700;color:var(--accent);margin:14px 0 4px;padding:4px 0;border-bottom:1px dashed var(--border)}
+ul{padding-left:18px;margin:4px 0}
+li{font-size:.84em;color:var(--txt2);margin:2px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero 標題 -->
+<div class="hero">
+  <h1>1815 富喬工業 — 第一步：資料收集總覽</h1>
+  <div class="sub">天機閣深度調查系統 v3.0 | 台股個股研究</div>
+  <div class="desc">資料收集日期：2026-03-23 | 特別研究：玻纖布產業競爭格局</div>
+  <div class="tags">
+    <span class="tag">玻纖布</span>
+    <span class="tag">AI 伺服器</span>
+    <span class="tag">Low-Dk / Low-CTE</span>
+    <span class="tag">上櫃</span>
+    <span class="tag">日東紡供應鏈</span>
+  </div>
+</div>
+
+<!-- ============ 快速概覽 ============ -->
+<div class="section-title">快速概覽</div>
+<div class="section-sub">核心數據一眼看</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">股價 (2026/3/20)</div>
+    <div class="num">102.0 元</div>
+    <div class="desc">近三個月：80~115.5 元</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">2025 年 EPS</div>
+    <div class="num">1.64 元</div>
+    <div class="desc">年增 &gt;10 倍（2024 年僅 0.13 元）</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">本益比（年化）</div>
+    <div class="num">~62x</div>
+    <div class="desc">以 102 元 / 年化 EPS 估算</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">2026/3 月營收</div>
+    <div class="num">6.29 億</div>
+    <div class="desc">創 170 個月新高，YoY +60.8%</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">高階佔比目標</div>
+    <div class="num">60%→70%</div>
+    <div class="desc">2025 年 45% → 2026 目標 60~70%</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">現金增資</div>
+    <div class="num">39.6 億</div>
+    <div class="desc">6 萬張，每股 66 元，稀釋 EPS</div>
+  </div>
+</div>
+
+<!-- ============ 管道一：年報 ============ -->
+<div class="section-title">六管道資料收集詳覽</div>
+
+<div class="channel-header">管道一：年報 / 財報</div>
+<div class="card">
+  <h3>財務數據總覽（finlab + 網路搜尋）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>指標</th><th>2024 年</th><th>2025 年</th><th>變化</th></tr>
+      <tr><td>全年營收</td><td>約 42 億（推估）</td><td>約 59.6 億</td><td>+40% 以上</td></tr>
+      <tr><td>EPS</td><td>0.13 元</td><td>1.64 元</td><td>+1,162%</td></tr>
+      <tr><td>毛利率</td><td>約 2%</td><td>27%+</td><td>+25 個百分點</td></tr>
+      <tr><td>營益率</td><td>-13%</td><td>17%</td><td>+30 個百分點</td></tr>
+      <tr><td>負債比</td><td>~50%</td><td>31.7%（Q4，增資後）</td><td>大幅下降</td></tr>
+      <tr><td>每股淨值</td><td>~16 元</td><td>21.54 元</td><td>增資效應</td></tr>
+    </table>
+    <div class="tip info"><b>備註</b>1815 為上櫃股，部分上市專用欄位（如 dividend_tse 每股淨值）無法直接取得，改用股東權益/股本計算。2025Q4 股東權益從 80 億暴增至 126 億，為現金增資 39.6 億所致。</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>月營收趨勢</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>月份</th><th>營收（億元）</th><th>年增率</th></tr>
+      <tr><td>2024/08</td><td>4.38</td><td>—</td></tr>
+      <tr><td>2024/09</td><td>4.81</td><td>—</td></tr>
+      <tr><td>2024/10</td><td>5.65</td><td>創歷史新高</td></tr>
+      <tr><td>2025/01</td><td>5.59</td><td>+46.3%</td></tr>
+      <tr><td>2025/02</td><td>4.52</td><td>+25%（工作天數少）</td></tr>
+      <tr><td>2025/03</td><td>6.29</td><td>+60.76%（170 個月新高）</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 管道二：必搜清單 ============ -->
+<div class="channel-header">管道二：必搜清單</div>
+<div class="card">
+  <h3>必搜清單完成度</h3>
+  <div class="card-body">
+    <table class="gate-table">
+      <tr><th>類別</th><th>必要性</th><th>狀態</th><th>說明</th></tr>
+      <tr><td>公司基本資料</td><td>必須</td><td class="status-ok">完成</td><td>代號 1815、上櫃、玻纖布製造、垂直整合</td></tr>
+      <tr><td>財務數據</td><td>必須</td><td class="status-ok">完成</td><td>營收/EPS/毛利率/ROE/負債比/淨值 均已取得</td></tr>
+      <tr><td>法說會</td><td>必須</td><td class="status-ok">完成</td><td>2025/12/31 法說會完整摘要+管理層展望</td></tr>
+      <tr><td>月營收</td><td>必須</td><td class="status-ok">完成</td><td>近 20 個月月營收（finlab）+ YoY 成長率</td></tr>
+      <tr><td>新聞</td><td>必須</td><td class="status-ok">完成</td><td>MSCI 增列、泰國廠、漲價、缺貨等</td></tr>
+      <tr><td>法人動態</td><td>必須</td><td class="status-partial">部分</td><td>法人合計 &gt;70%、挪威主權基金入股，缺具體日買賣超數據</td></tr>
+      <tr><td>融資融券</td><td>建議</td><td class="status-miss">未取得</td><td>上櫃股融資融券數據需額外來源</td></tr>
+      <tr><td>同業比較</td><td>必須</td><td class="status-ok">完成</td><td>台玻/建榮/德宏/南亞 詳細比較</td></tr>
+      <tr><td>產業報告</td><td>建議</td><td class="status-ok">完成</td><td>全球玻纖布市場深度研究（含中國巨石/日東紡）</td></tr>
+    </table>
+    <div class="tip warn"><b>資料完整度：約 85%（完整級）</b>「必須」類別 6/6 完成（法人動態部分完成），「建議」類別 1/2 完成。後續步驟可隨時補齊。</div>
+  </div>
+</div>
+
+<!-- ============ 管道三：市場調查 ============ -->
+<div class="channel-header">管道三：市場調查（產業深度研究）</div>
+<div class="card">
+  <h3>全球玻纖布產業格局</h3>
+  <div class="card-body">
+    <details open>
+      <summary>中國三巨頭（壟斷格局）</summary>
+      <table>
+        <tr><th>廠商</th><th>產能</th><th>全球市佔</th><th>成本</th></tr>
+        <tr><td>中國巨石</td><td>粗紗 289 萬噸 + 電子紗 27 萬噸</td><td>~25%</td><td>3,883 元/噸</td></tr>
+        <tr><td>泰山玻纖</td><td>&gt;140 萬噸</td><td>全球第二</td><td>4,777 元/噸</td></tr>
+        <tr><td>重慶國際</td><td>—</td><td>CR3 合計 ~66%</td><td>—</td></tr>
+      </table>
+      <p>2024 年全球玻纖產量 1,050 萬噸，中國貢獻 72% 產能。中國巨石每噸成本較新進入者低 20~30%。</p>
+    </details>
+
+    <details open>
+      <summary>中國巨石淮安新線（2026/3/19 點火）</summary>
+      <ul>
+        <li>年產 10 萬噸電子玻纖 + 3.9 億公尺電子布</li>
+        <li>佔全球電子布市場約 9%</li>
+        <li>高階品種（薄布/超薄布）佔比 30%（~1.17 億公尺）</li>
+        <li>總投資超過 100 億元人民幣</li>
+        <li>自研 TLD glass 宣稱成本領先 30%，已覆蓋輝達 GB200 認證</li>
+      </ul>
+      <div class="tip danger"><b>重大威脅</b>中國巨石電子布產能已達 9.6 億公尺（全球第一），加上新線 3.9 億公尺 = 13.5 億公尺。自研 TLD glass 若通過國際認證，其成本優勢 20~30% 的殺傷力非常可觀。</div>
+    </details>
+
+    <details open>
+      <summary>技術金字塔</summary>
+      <table>
+        <tr><th>等級</th><th>材料</th><th>價格</th><th>主要供應商</th></tr>
+        <tr><td>最高階</td><td>Q-glass（石英布）</td><td>最高</td><td>德宏（台灣唯一）、美日廠</td></tr>
+        <tr><td>高階</td><td>T-glass（Low-CTE）</td><td>80~100 美元/kg</td><td>日東紡（&gt;90%）</td></tr>
+        <tr><td>中高階</td><td>NE-glass（Low-Dk）</td><td>顯著溢價</td><td>日東紡、台玻（第三家認證）</td></tr>
+        <tr><td>中階</td><td>Low-Dk1/Dk2/Dk3</td><td>溢價</td><td>日東紡、台玻、富喬</td></tr>
+        <tr><td>低階</td><td>E-glass（通用）</td><td>數元人民幣/m</td><td>中國巨石絕對主導</td></tr>
+      </table>
+    </details>
+  </div>
+</div>
+
+<div class="card">
+  <h3>為什麼台灣廠商過去沒吃到？（核心研究題）</h3>
+  <div class="card-body">
+    <details open>
+      <summary>第一層：低階被中國成本碾壓</summary>
+      <ul>
+        <li>E-glass 市場中國巨石成本 3,883 元/噸，台廠完全無法競爭</li>
+        <li>2021~2022 年中國新增 12~18 萬噸電子布產能（投資 ~150 億人民幣）</li>
+        <li>2022~2024 年價格暴跌 48.7%（粗紗從 5,750→3,000 元/噸）</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>第二層：高階被日東紡技術壟斷</summary>
+      <ul>
+        <li>T-glass（Low-CTE）市場，日東紡全球市佔率超過 90%</li>
+        <li>技術門檻極高：低熱膨脹配方、超細紗織造、表面處理均為核心機密</li>
+        <li>日東紡投入 1,500 億日圓擴產，2026 年底產能翻三倍</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>第三層：夾心定位尷尬</summary>
+      <ul>
+        <li>台灣 PCB/載板全球龍頭（欣興 26.6%、南亞 13.5%），但上游玻纖布市佔僅 15~25%</li>
+        <li>多數時候扮演「代工織布」角色，紗配方掌握在日廠手中</li>
+        <li>2025 年出口 3.5 億美元創新高，但 57.3% 出口到中國 — 替中國 CCL 廠做嫁衣</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>現在轉折：AI 需求引爆結構性缺貨</summary>
+      <div class="tip good"><b>結構性轉折</b>AI 伺服器 PCB 必須使用 Low-CTE / Low-Dk 玻纖布（否則高功耗運作導致板材彎曲、晶片失效）。日東紡產能已達極限，T-Glass 價格飆至 80~100 美元/kg。缺貨預計延續至 2027 年下半年。台廠正承接外溢訂單。</div>
+      <ul>
+        <li>輝達、蘋果、Google、Amazon、微軟均派人搶購</li>
+        <li>BT 載板交期從 8~10 週拉長至 16~20 週</li>
+        <li>高盛報告：BT 載板廠 T-glass 缺口達雙位數百分比</li>
+        <li>花旗預測：2026 年電子布漲幅達 25% 以上</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>窗口期評估：可能只有 2~3 年</summary>
+      <div class="tip warn"><b>關鍵判斷</b>台廠目前吃到的是「日東紡產能不足外溢」的訂單，並非自己搶到的。一旦日東紡 2026 年底產能翻三倍 + 中國巨石高階追趕，窗口期可能關閉。台廠必須在窗口期內完成從量到質的升級。</div>
+    </details>
+  </div>
+</div>
+
+<div class="card">
+  <h3>價格週期定位</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>時間</th><th>事件</th><th>價格動態</th></tr>
+      <tr><td>2022/06</td><td>價格高峰</td><td>粗紗 5,750 元/噸</td></tr>
+      <tr><td>2024/02</td><td>價格谷底</td><td>3,000 元/噸（累計 -48.7%）</td></tr>
+      <tr><td>2025</td><td>反彈</td><td>累計漲幅 &gt;50%</td></tr>
+      <tr><td>2025/09</td><td>中國反內卷聲明</td><td>調價 5~10%</td></tr>
+      <tr><td>2025/10~2026/02</td><td>持續漲價</td><td>普通電子布四次漲價</td></tr>
+      <tr><td>2026</td><td>新一輪漲價潮</td><td>月度調整 10~15%</td></tr>
+    </table>
+    <div class="tip info"><b>週期判斷</b>目前處於上行週期中段偏早期。缺貨至少持續到 2027 年下半年。但 2028 年後需密切關注中國大規模新產能稀釋效應。</div>
+  </div>
+</div>
+
+<!-- ============ 管道四：finlab 量化數據 ============ -->
+<div class="channel-header">管道四：finlab 量化數據</div>
+<div class="card">
+  <h3>finlab 數據收集摘要</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>指標</th><th>狀態</th><th>資料範圍</th><th>關鍵數值</th></tr>
+      <tr><td>月營收</td><td class="status-ok">成功</td><td>20 個月</td><td>最新 6.29 億（2026/3）</td></tr>
+      <tr><td>ROE 稅後</td><td class="status-ok">成功</td><td>20 季</td><td>持續改善中</td></tr>
+      <tr><td>股東權益/每股淨值</td><td class="status-ok">成功</td><td>20 季</td><td>最新 21.54 元</td></tr>
+      <tr><td>營業現金流</td><td class="status-ok">成功</td><td>20 季</td><td>—</td></tr>
+      <tr><td>自由現金流</td><td class="status-ok">成功</td><td>20 季</td><td>泰國廠+擴產將承壓</td></tr>
+      <tr><td>流動/速動比率</td><td class="status-ok">成功</td><td>20 季</td><td>—</td></tr>
+      <tr><td>毛利率/營益率</td><td class="status-ok">成功</td><td>20 季</td><td>毛利率 27%+，營益率 17%</td></tr>
+      <tr><td>負債比</td><td class="status-ok">成功</td><td>20 季</td><td>31.7%（增資後驟降）</td></tr>
+      <tr><td>EPS</td><td class="status-ok">成功</td><td>20 季</td><td>2025 全年 1.64 元</td></tr>
+      <tr><td>收盤價</td><td class="status-ok">成功</td><td>60 日</td><td>102.0 元（2026/3/20）</td></tr>
+    </table>
+    <p>共 14 個指標全數成功收集。原始資料已存檔為 JSON。</p>
+  </div>
+</div>
+
+<!-- ============ 管道五：WebSearch ============ -->
+<div class="channel-header">管道五：WebSearch 網路搜尋</div>
+<div class="card">
+  <h3>搜尋涵蓋範圍</h3>
+  <div class="card-body">
+    <ul>
+      <li>富喬 1815 基本面、營收、EPS、毛利率（多輪搜尋）</li>
+      <li>富喬 法人持股、外資、投信（挪威主權基金入股）</li>
+      <li>富喬 股價、本益比、目標價（理周 135 元）</li>
+      <li>富喬 玻纖布 產能 市佔率</li>
+      <li>富喬 泰國廠 投資 31 億 2027 量產</li>
+      <li>全球玻纖布市場份額（中國/台灣/日本）</li>
+      <li>中國巨石 產能 價格戰 TLD glass</li>
+      <li>日東紡 T-glass 壟斷 擴產</li>
+      <li>台灣玻纖布出口 3.5 億美元創新高</li>
+      <li>AI 伺服器 PCB 升級需求 缺貨</li>
+      <li>反傾銷/關稅/去中化議題</li>
+      <li>Low-Dk / Low-CTE 技術門檻</li>
+      <li>MSCI 增列 2026/2</li>
+    </ul>
+    <p>共進行超過 40 輪網路搜尋 + 多次 WebFetch 深度閱讀。</p>
+  </div>
+</div>
+
+<!-- ============ 管道六：法說會 ============ -->
+<div class="channel-header">管道六：法說會</div>
+<div class="card">
+  <h3>最近法說會摘要（2025/12/31）</h3>
+  <div class="card-body">
+    <details open>
+      <summary>管理層展望</summary>
+      <ul>
+        <li><strong>總經理陳壁程</strong>：「AI 相關應用仍是未來電子產業主要成長的動能」「LowDk 產品因應 AI 市場需求仍大有可為」</li>
+        <li><strong>董事長張元賓</strong>：「因應全球 AI 市場持續發展及 PCB 供應鏈在泰國佈局日趨完整，決定擴大泰國廠投資」</li>
+        <li>2026 年 Q1 營運有機會力拚與 2025 年 Q4 持平</li>
+        <li>台灣廠 2026 年資本支出提高至 26 億元</li>
+        <li>高階產品占比目標 70%（台灣廠）</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>產品線三大支柱</summary>
+      <table>
+        <tr><th>產品</th><th>定位</th><th>狀態</th></tr>
+        <tr><td>FLD1（Low Dk 一代）</td><td>AI 伺服器市場</td><td>已量產，穩定供貨</td></tr>
+        <tr><td>FLD2（Low Dk 二代）</td><td>800G 交換器（M8 材料）</td><td>2024 Q4 導入量產</td></tr>
+        <tr><td>FLE（Low CTE）</td><td>IC 載板</td><td>2025 Q4 認證，2026 逐季放量</td></tr>
+      </table>
+    </details>
+
+    <details open>
+      <summary>產能比重演進</summary>
+      <table>
+        <tr><th>時間</th><th>先進製程占比</th></tr>
+        <tr><td>2024 年初</td><td>20%</td></tr>
+        <tr><td>2024 年底</td><td>30%</td></tr>
+        <tr><td>2025 年 Q4</td><td>45%</td></tr>
+        <tr><td>2026 年目標</td><td>60%~70%</td></tr>
+      </table>
+    </details>
+
+    <details open>
+      <summary>泰國廠</summary>
+      <ul>
+        <li>2026/2/25 董事會通過投資案</li>
+        <li>第一期投資：31 億元</li>
+        <li>廠址：泰國北柳府（毗鄰燿華電子泰國廠）</li>
+        <li>量產時間：2027 年 Q3</li>
+        <li>產品定位：低軌衛星、AI 伺服器、IC 載板</li>
+      </ul>
+    </details>
+
+    <details open>
+      <summary>資金規劃</summary>
+      <table>
+        <tr><th>項目</th><th>金額</th><th>用途</th></tr>
+        <tr><td>2026 台灣廠 CapEx</td><td>26 億元</td><td>先進製程產能擴充</td></tr>
+        <tr><td>泰國廠第一期</td><td>31 億元</td><td>2027 Q3 量產</td></tr>
+        <tr><td>2025 底現金增資</td><td>39.6 億元</td><td>6 萬張，每股 66 元</td></tr>
+      </table>
+      <div class="tip warn"><b>注意</b>現金增資時兩大董事全數放棄認購，涉及逾 586 萬股洽特定人接手。需關注大股東動機。</div>
+    </details>
+  </div>
+</div>
+
+<!-- ============ 台灣同業比較 ============ -->
+<div class="section-title">台灣玻纖布同業比較</div>
+<div class="card">
+  <h3>五大台廠定位與進度</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>廠商</th><th>股號</th><th>核心策略</th><th>高階進度</th><th>展望</th></tr>
+      <tr><td>台玻</td><td>1802</td><td>Low-Dk 量產突破</td><td>全球第三家 Low-Dk 認證，打入輝達 GB200</td><td>投入 22.5 億擴至 12 條線，目標市佔 40%</td></tr>
+      <tr><td>建榮</td><td>5340</td><td>日東紡嫡系 T-glass</td><td>福隆玻纖供應 T-glass 紗→建榮織布</td><td>高階佔產能 30~40%</td></tr>
+      <tr><td>富喬</td><td>1815</td><td>Low-Dk + Low-CTE 雙軌</td><td>FLE（Low CTE）2025Q4 少量出貨</td><td>高階佔比 45%→60~70%，訂單到 2027</td></tr>
+      <tr><td>德宏</td><td>5475</td><td>Q-glass 差異化</td><td>2025 正式量產石英紗</td><td>對應輝達 Rubin 平台</td></tr>
+      <tr><td>南亞</td><td>1303</td><td>垂直整合+日東紡合作</td><td>取得 NER 原紗長期供應</td><td>不排除增產</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 存檔清單 ============ -->
+<div class="section-title">存檔清單</div>
+<div class="card">
+  <h3>本步驟產出檔案</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>檔案</th><th>大小</th><th>內容</th></tr>
+      <tr><td>原始資料_產業研究.json</td><td>6,139 bytes</td><td>全球玻纖布格局、中國巨石、技術金字塔、價格週期</td></tr>
+      <tr><td>原始資料_富喬財務.json</td><td>2,961 bytes</td><td>營收/EPS/毛利率/法人/投資/風險</td></tr>
+      <tr><td>原始資料_finlab量化.json</td><td>2,408 bytes</td><td>14 指標量化數據</td></tr>
+      <tr><td>原始資料_法說會.json</td><td>9,493 bytes</td><td>法說會摘要+管理層展望+資金規劃</td></tr>
+      <tr><td>第一步_資料收集_2026-03-23.html</td><td>本檔</td><td>資料收集總覽報告</td></tr>
+    </table>
+    <p>所有檔案存放路徑：天機閣-藏經閣/投資分析資料/1815_富喬/</p>
+  </div>
+</div>
+
+<!-- ============ 資料來源 ============ -->
+<div class="section-title">主要資料來源</div>
+<div class="card">
+  <h3>引用來源列表</h3>
+  <div class="card-body">
+    <ul>
+      <li>富果直送 — 富喬法說會重點內容備忘錄（2025/12/31）</li>
+      <li>經濟日報 — 我國玻璃纖維梭織布出口值大增 4 成（2025 年 3.5 億美元）</li>
+      <li>經濟日報 — 陸玻纖布業再掀漲價潮（月度 10~15%）</li>
+      <li>TechNews — 玻纖布史詩級缺貨成下一個記憶體？</li>
+      <li>TechNews — 一次搞懂「玻纖布」題材！T-Glass 大缺貨</li>
+      <li>TrendForce — T-Glass Critical for AI Servers</li>
+      <li>永豐金證券 — 科技巨頭掀玻纖布搶料戰 台廠訂單排至 2027 年</li>
+      <li>工商時報 — 陸企新產線全球市佔 9%</li>
+      <li>鉅亨網 — 富喬啟動泰國首期投資 31 億元</li>
+      <li>理財周刊 — AI 伺服器爆料荒 富喬目標價 135 元</li>
+      <li>智研諮詢 — 中國電子布行業從跟跑到並跑</li>
+      <li>2024 建材行業玻纖全成本分析框架</li>
+      <li>TPCA — T-Glass 價格飆升百美元</li>
+      <li>MarketsandMarkets — Fiberglass Fabric Market 131.7 億美元（2029）</li>
+      <li>finlab 量化數據平台（14 指標）</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))
+});
+</script>
+</body>
+</html>

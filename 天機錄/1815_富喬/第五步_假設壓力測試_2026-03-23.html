@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>1815 富喬 — 第五步 假設壓力測試</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+td:first-child,td:nth-child(2){text-align:left}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.green{background:var(--bull)}.badge.yellow{background:var(--warn)}.badge.red{background:var(--bear)}
+.conf-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:6px 0}
+.conf-bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72em;font-weight:700}
+.risk-high{background:rgba(198,40,40,.15);border:1px solid var(--bear);border-radius:6px;padding:8px 12px;margin:4px 0}
+.risk-med{background:rgba(212,160,23,.1);border:1px solid var(--warn);border-radius:6px;padding:8px 12px;margin:4px 0}
+.risk-low{background:rgba(90,125,96,.08);border:1px solid var(--accent);border-radius:6px;padding:8px 12px;margin:4px 0}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>1815 富喬工業 — 假設壓力測試</h1>
+    <div class="sub">天機閣深度調查 第五步</div>
+    <div class="desc">四大子模組：關鍵假設檢查（CIA）→ 事前驗屍（Klein）→ 敏感度分析 → 盲點聲明<br>目的：找出隱藏假設、致命因子，校準第二次信心水準</div>
+    <div class="tags">
+        <span class="tag">1815.TW</span>
+        <span class="tag">壓力測試</span>
+        <span class="tag">信心校準 #2</span>
+        <span class="tag">2026-03-23</span>
+    </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#secA">A. 關鍵假設檢查（CIA Key Assumptions Check）</a>
+    <a href="#secB">B. 事前驗屍法（Gary Klein Premortem）</a>
+    <a href="#secC">C. 敏感度分析（致命因子排序）</a>
+    <a href="#secD">D. 盲點聲明（Analytical Caveat）</a>
+    <a href="#secE">E. 信心校準（第 2 次）</a>
+    <a href="#secF">F. 壓力測試判定結果</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== A. 關鍵假設檢查 ===== -->
+<div class="section-title" id="secA">A. 關鍵假設檢查（CIA Key Assumptions Check）</div>
+<div class="section-sub">CIA 研究：每 4 個假設中有 1 個經不起檢查。列出 10 個隱含假設 → 五問挑戰 → 三桶分類</div>
+
+<div class="card">
+<h3>10 大隱含假設 — 三桶分類總覽</h3>
+<div class="card-body">
+
+<div class="grid3" style="margin-bottom:10px">
+<div class="mini-card bull-card">
+    <div class="title">有支撐</div>
+    <div class="num" style="color:var(--bull)">1</div>
+    <div class="desc">有 F/I 級事實直接支撐</div>
+</div>
+<div class="mini-card" style="border-left:4px solid var(--warn)">
+    <div class="title">需附註</div>
+    <div class="num" style="color:var(--warn)">7</div>
+    <div class="desc">部分證據但不完整</div>
+</div>
+<div class="mini-card bear-card">
+    <div class="title">無支撐</div>
+    <div class="num" style="color:var(--bear)">2</div>
+    <div class="desc">紅旗！純推測或慣性</div>
+</div>
+</div>
+
+<table>
+<tr><th style="width:35px">#</th><th>假設描述</th><th style="width:55px">類別</th><th style="width:55px">分桶</th><th style="width:38px">影響</th><th>五問挑戰摘要</th></tr>
+
+<tr>
+<td>KA1</td>
+<td style="text-align:left">AI 伺服器需求 2026-2027 持續高成長（253 萬台）</td>
+<td>市場</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: CSP 削減資本支出即不成立<br>
+Q2: 2022 年加密貨幣泡沫後 GPU 需求驟降即為反例<br>
+Q3: 可追蹤 NVIDIA/AMD 季報、CSP 資本支出公告<br>
+Q5: 「AI 一定持續成長」有慣性思維風險
+</td>
+</tr>
+
+<tr>
+<td>KA2</td>
+<td style="text-align:left">玻纖布缺貨持續至 2027H2</td>
+<td>市場</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 巨石淮安新線（3.9 億公尺）已點火，若良率爬升順利可提前結束缺貨<br>
+Q2: 2021 年航運/面板缺貨論也稱「延續 2 年」，實際 12 個月即反轉<br>
+Q3: 可追蹤電子布現貨價、巨石出貨量<br>
+Q5: 明顯慣性 — 「現在缺所以會繼續缺」
+</td>
+</tr>
+
+<tr>
+<td>KA3</td>
+<td style="text-align:left">電子布價格持續上漲（花旗估 +25%）</td>
+<td>市場</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 巨石新產能 + 日東紡三倍產能開出即反轉<br>
+Q2: 2022 年電子布價格從高峰跌 49%（E-glass 粗紗 5750→3000 元/噸）<br>
+Q3: TrendForce 月度報價、通路商報價可直接追蹤<br>
+Q5: 強烈慣性 — 已連漲四次，預期繼續漲
+</td>
+</tr>
+
+<tr>
+<td>KA4</td>
+<td style="text-align:left">高階佔比如期從 45% → 60% → 70%</td>
+<td>公司</td>
+<td><span class="badge green">有支撐</span></td>
+<td style="font-weight:700;color:var(--warn)">4/5</td>
+<td style="text-align:left;font-size:.75em">
+歷史趨勢 20→30→45 穩定推進，且有虎尾二廠升級、東莞廠轉型等具體措施支撐。<br>
+但 45→60→70 的跨幅更大，需要 FLE 產品放量才能達成。
+</td>
+</tr>
+
+<tr>
+<td>KA5</td>
+<td style="text-align:left">FLE（Low CTE）產品 2026 年逐季成長</td>
+<td>公司</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--warn)">3/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 客戶認證延遲或良率不達標即不成立<br>
+Q2: 2025Q4 才「少量出貨」，缺乏量產實績，風險偏高<br>
+Q3: 追蹤法說會揭露的 FLE 出貨金額變化
+</td>
+</tr>
+
+<tr>
+<td>KA6</td>
+<td style="text-align:left">泰國廠 2027Q3 順利量產</td>
+<td>公司</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--warn)">3/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 建設延遲、環評問題、設備交期延長均可能<br>
+Q2: 多數海外建廠案例延遲 3-12 個月是常態<br>
+Q3: 追蹤建設進度、設備採購公告<br>
+2026/2 才通過董事會，距離量產僅 18 個月，時程偏緊
+</td>
+</tr>
+
+<tr style="background:rgba(198,40,40,.06)">
+<td>KA7</td>
+<td style="text-align:left;font-weight:700;color:var(--bear)">市場持續給予 PE 40-60x 估值</td>
+<td>估值</td>
+<td><span class="badge red">無支撐</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+<b>紅旗！</b>週期股高 PE 不可持續是歷史鐵律。<br>
+Q2: MU 2018 案例 — EPS 高峰 $11.51 時 PE 僅 3x，7 個月後股價 -54%<br>
+Q2: 2021 航運股長榮 PE 2x 被視為「低估」，實際已是週期頂部<br>
+Q5: 典型慣性 — 「成長股應該給高 PE」但忽略週期性本質<br>
+<b>結論：富喬當前 PE 62x 是基於低基期 EPS 的虛高，若獲利不能持續加速成長，PE 必然壓縮</b>
+</td>
+</tr>
+
+<tr>
+<td>KA8</td>
+<td style="text-align:left">2026 年 EPS 可達 2.5-3.5 元</td>
+<td>估值</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 依賴漲價持續 + 高階佔比提升 + 稼動率維持滿載三條件同時成立<br>
+Q2: 2025 EPS 1.64 已含低基期效應（2024 僅 0.13），2026 年化比較基期拉高<br>
+Q3: 追蹤月營收 + 季報毛利率<br>
+增資後股本增加 ~13%，EPS 成長需跑贏稀釋
+</td>
+</tr>
+
+<tr style="background:rgba(198,40,40,.06)">
+<td>KA9</td>
+<td style="text-align:left;font-weight:700;color:var(--bear)">管理層法說會描述反映真實狀況</td>
+<td>資料品質</td>
+<td><span class="badge red">無支撐</span></td>
+<td style="font-weight:700;color:var(--warn)">4/5</td>
+<td style="text-align:left;font-size:.75em">
+<b>紅旗！</b>管理層誠信度僅 55/100（★★☆☆☆）<br>
+矛盾信號：法說會「審慎正向」vs 董事全數放棄認購<br>
+資本支出承諾前後不一：法說會稱「不超過 2025 年」→ 實際提高至 26 億 + 泰國 31 億<br>
+展望多為定性描述（「有信心」「看好」），缺乏具體數字<br>
+<b>結論：管理層發言需打折看待，展望類資訊降一級處理</b>
+</td>
+</tr>
+
+<tr>
+<td>KA10</td>
+<td style="text-align:left">巨石 TLD-glass 尚未通過量產驗證</td>
+<td>市場</td>
+<td><span class="badge yellow">需附註</span></td>
+<td style="font-weight:700;color:var(--bear)">5/5</td>
+<td style="text-align:left;font-size:.75em">
+Q1: 若通過 Tier-1 PCB 廠量產驗證即不成立<br>
+Q2: 中國在面板、LED、太陽能等產業均實現了從跟跑到超越<br>
+Q3: 追蹤巨石客戶認證公告、台系 CCL 廠是否試用<br>
+中國企業資訊透明度低，存在「已通過但未公告」的可能
+</td>
+</tr>
+</table>
+
+<div class="tip danger" style="margin-top:8px">
+<b>紅旗假設統計：2 個無支撐（KA7 PE估值 + KA9 管理層誠信）</b><br>
+<span style="font-size:.82em">
+KA7：週期股高 PE 無歷史先例可持續 → 投資建議必須考慮 PE 壓縮風險<br>
+KA9：管理層誠信度不足 → 所有管理層展望類資訊降一級、打 7 折使用
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== B. 事前驗屍法 ===== -->
+<div class="section-title" id="secB">B. 事前驗屍法（Premortem Analysis）</div>
+<div class="section-sub">「現在是 2027 年 3 月，你在 102 元買入富喬，現在虧損 40%（跌至 61 元）。回頭看，原因是什麼？」</div>
+
+<div class="card">
+<h3>8 大失敗原因 × 風險分數矩陣</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:35px">#</th><th>失敗原因</th><th style="width:50px">類別</th><th style="width:45px">機率</th><th style="width:45px">衝擊</th><th style="width:50px">風險分</th><th>預警信號</th><th>應對方案</th></tr>
+
+<tr style="background:rgba(198,40,40,.08)">
+<td style="font-weight:700;color:var(--bear)">PM1</td>
+<td style="text-align:left;font-weight:700">PE 壓縮：市場重新定位為週期股</td>
+<td>估值</td>
+<td>3</td>
+<td>5</td>
+<td style="font-weight:900;color:var(--bear);font-size:1.1em">15</td>
+<td style="text-align:left;font-size:.75em">法人報告開始用「週期股估值」框架分析富喬；同業 PE 開始下滑</td>
+<td style="text-align:left;font-size:.75em">減碼/停損。週期股 PE 壓縮往往快速且劇烈（MU 案例：PE 從 20x→3x）</td>
+</tr>
+
+<tr style="background:rgba(212,160,23,.08)">
+<td style="font-weight:700;color:var(--warn)">PM2</td>
+<td style="text-align:left">供需反轉：巨石新線 + 日東紡擴產</td>
+<td>產業</td>
+<td>3</td>
+<td>4</td>
+<td style="font-weight:700;color:var(--warn)">12</td>
+<td style="text-align:left;font-size:.75em">電子布現貨價連續 2 月下跌；客戶反映交期縮短</td>
+<td style="text-align:left;font-size:.75em">減碼 50%。供給釋放後的價格修正通常來得又快又猛</td>
+</tr>
+
+<tr style="background:rgba(212,160,23,.08)">
+<td style="font-weight:700;color:var(--warn)">PM3</td>
+<td style="text-align:left">AI 投資放緩：CSP 削減資本支出</td>
+<td>宏觀</td>
+<td>2</td>
+<td>5</td>
+<td style="font-weight:700;color:var(--warn)">10</td>
+<td style="text-align:left;font-size:.75em">NVIDIA 季報 data center 營收 YoY 降至個位數；META/Google 宣布削減 AI CapEx</td>
+<td style="text-align:left;font-size:.75em">清倉。AI 需求是整個投資論述的基石，基石崩塌則全盤瓦解</td>
+</tr>
+
+<tr style="background:rgba(212,160,23,.08)">
+<td style="font-weight:700;color:var(--warn)">PM4</td>
+<td style="text-align:left">TLD-glass 認證成功，中國替代加速</td>
+<td>產業</td>
+<td>2</td>
+<td>4</td>
+<td style="font-weight:700;color:var(--warn)">8</td>
+<td style="text-align:left;font-size:.75em">台系 CCL 廠（台燿/聯茂）開始採購巨石高階產品；富喬高階產品報價被迫降價</td>
+<td style="text-align:left;font-size:.75em">減碼 50%+。結構性風險不可逆</td>
+</tr>
+
+<tr>
+<td>PM5</td>
+<td style="text-align:left">高階佔比不及預期，卡在 50%</td>
+<td>公司</td>
+<td>2</td>
+<td>3</td>
+<td>6</td>
+<td style="text-align:left;font-size:.75em">法說會揭露高階佔比 < 55%；FLE 出貨量未顯著成長</td>
+<td style="text-align:left;font-size:.75em">觀望，但下調 EPS 預估</td>
+</tr>
+
+<tr>
+<td>PM6</td>
+<td style="text-align:left">增資稀釋 + 泰國廠資金壓力</td>
+<td>公司</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+<td style="text-align:left;font-size:.75em">負債比回升至 40%+；ROE 因股本增加而下降</td>
+<td style="text-align:left;font-size:.75em">觀望，已在預期內</td>
+</tr>
+
+<tr>
+<td>PM7</td>
+<td style="text-align:left">地緣政治：兩岸緊張升級</td>
+<td>地緣</td>
+<td>1</td>
+<td>4</td>
+<td>4</td>
+<td style="text-align:left;font-size:.75em">台海軍事演習規模升級；中國對台商限制措施</td>
+<td style="text-align:left;font-size:.75em">系統性風險，非個股可控</td>
+</tr>
+
+<tr>
+<td>PM8</td>
+<td style="text-align:left">管理層誠信問題曝光</td>
+<td>公司</td>
+<td>1</td>
+<td>5</td>
+<td>5</td>
+<td style="text-align:left;font-size:.75em">會計異常公告；內部人大量出脫持股；主管機關調查</td>
+<td style="text-align:left;font-size:.75em">立即清倉。誠信問題無法修復</td>
+</tr>
+</table>
+
+<!-- 風險矩陣視覺化 -->
+<div style="margin-top:10px">
+<div class="risk-high">
+<span style="font-weight:700;color:var(--bear);font-size:.88em">高風險（≥15）：1 個</span><br>
+<span style="font-size:.82em"><b>PM1 PE 壓縮</b>（風險分 15）— 週期股估值重估是最大單一風險。PE 從 62x 壓縮至 20x，即使 EPS 不變，股價也將從 102→33 元（-68%）。<b>必須設定預警信號。</b></span>
+</div>
+<div class="risk-med">
+<span style="font-weight:700;color:var(--warn);font-size:.88em">中風險（8-14）：3 個</span><br>
+<span style="font-size:.82em"><b>PM2</b> 供需反轉（12）、<b>PM3</b> AI 投資放緩（10）、<b>PM4</b> TLD-glass 認證（8）— 均需設定監控指標。</span>
+</div>
+<div class="risk-low">
+<span style="font-weight:700;color:var(--bull);font-size:.88em">低風險（<8）：4 個</span><br>
+<span style="font-size:.82em">PM5~PM8，記錄並持續觀察即可。</span>
+</div>
+</div>
+
+<div class="tip warn" style="margin-top:8px">
+<b>信心校準影響（Premortem）</b><br>
+<span style="font-size:.82em">
+發現 1 個高風險 + 3 個中風險原因 → 依規則下調 10%<br>
+所有高風險原因均可設定預警信號 → 不需重啟 ACH
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== C. 敏感度分析 ===== -->
+<div class="section-title" id="secC">C. 敏感度分析（致命因子排序）</div>
+<div class="section-sub">找出「一旦錯誤，結論全翻」的致命因子</div>
+
+<div class="card">
+<h3>敏感度排序 — EPS 影響量化</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:35px">#</th><th>假設</th><th>如果錯了</th><th style="width:70px">EPS 影響</th><th style="width:55px">敏感度</th><th>監控指標</th><th>觸發條件</th></tr>
+
+<tr style="background:rgba(198,40,40,.08)">
+<td style="font-weight:700;color:var(--bear)">SF1</td>
+<td style="text-align:left">電子布價格持續上漲</td>
+<td style="text-align:left;font-size:.78em">價格反轉下跌 20-30%，毛利率從 27% 降至 15-18%</td>
+<td style="font-weight:700;color:var(--bear)">-50%~-65%</td>
+<td><span class="badge red">致命</span></td>
+<td style="text-align:left;font-size:.75em">TrendForce 月度電子布報價</td>
+<td style="text-align:left;font-size:.75em">連續 2 月現貨價持平或下跌</td>
+</tr>
+
+<tr style="background:rgba(212,160,23,.08)">
+<td style="font-weight:700;color:var(--warn)">SF2</td>
+<td style="text-align:left">高階佔比達 60%+</td>
+<td style="text-align:left;font-size:.78em">卡在 50%，產品結構改善不如預期，ASP 提升空間受限</td>
+<td style="font-weight:700;color:var(--warn)">-25%~-35%</td>
+<td><span class="badge yellow">重要</span></td>
+<td style="text-align:left;font-size:.75em">法說會揭露產品結構比重</td>
+<td style="text-align:left;font-size:.75em">2026H1 高階佔比 < 52%</td>
+</tr>
+
+<tr style="background:rgba(212,160,23,.08)">
+<td style="font-weight:700;color:var(--warn)">SF3</td>
+<td style="text-align:left">AI 伺服器需求持續高成長</td>
+<td style="text-align:left;font-size:.78em">出貨量 2026 不達 253 萬台，僅 180-200 萬台</td>
+<td style="font-weight:700;color:var(--warn)">-20%~-40%</td>
+<td><span class="badge yellow">重要</span></td>
+<td style="text-align:left;font-size:.75em">NVIDIA/AMD data center 季營收</td>
+<td style="text-align:left;font-size:.75em">data center YoY 降至個位數</td>
+</tr>
+
+<tr>
+<td>SF4</td>
+<td style="text-align:left">稼動率維持滿載</td>
+<td style="text-align:left;font-size:.78em">稼動率從 100% 降至 80%</td>
+<td>-15%~-20%</td>
+<td><span class="badge green">一般</span></td>
+<td style="text-align:left;font-size:.75em">月營收絕對值趨勢</td>
+<td style="text-align:left;font-size:.75em">月營收連續 2 月 < 5 億</td>
+</tr>
+
+<tr>
+<td>SF5</td>
+<td style="text-align:left">增資不影響 ROE</td>
+<td style="text-align:left;font-size:.78em">股本稀釋 13% 但獲利未同步增長</td>
+<td>-10%~-15%</td>
+<td><span class="badge green">一般</span></td>
+<td style="text-align:left;font-size:.75em">季報 EPS vs 增資前季度對比</td>
+<td style="text-align:left;font-size:.75em">增資後 EPS 低於增資前同期</td>
+</tr>
+</table>
+
+<div class="tip danger" style="margin-top:8px">
+<b>致命因子：SF1 電子布價格</b><br>
+<span style="font-size:.82em">
+電子布價格是富喬獲利的最大單一變數。若價格反轉下跌 20-30%：<br>
+- 毛利率從 27% → 15-18%（回到 2024 年水準）<br>
+- EPS 影響 -50%~-65%<br>
+- 疊加 PE 壓縮效應：股價可能從 102 → 40-60 元<br>
+<b>此致命因子可設預警信號（TrendForce 月度報價），但反應時間可能僅 1-2 個月。</b>
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== D. 盲點聲明 ===== -->
+<div class="section-title" id="secD">D. 盲點聲明（Analytical Caveat）</div>
+<div class="section-sub">誠實列出本報告看不到的東西 — 情報分析慣例</div>
+
+<div class="card">
+<h3>6 大資訊盲點</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:35px">#</th><th>缺失資料</th><th style="width:65px">分類</th><th style="width:55px">影響</th><th>可能的結論改變</th><th>建議取得方式</th></tr>
+
+<tr>
+<td>BP1</td>
+<td style="text-align:left">富喬實際客戶清單和合約價格</td>
+<td>不可取得</td>
+<td style="color:var(--bear);font-weight:700">高</td>
+<td style="text-align:left;font-size:.78em">若客戶集中度過高或合約價低於現貨，獲利彈性被高估</td>
+<td style="text-align:left;font-size:.78em">年報揭露前十大客戶比重；法說會 Q&A 追問</td>
+</tr>
+
+<tr>
+<td>BP2</td>
+<td style="text-align:left">巨石 TLD-glass 真實量產良率</td>
+<td>不可取得</td>
+<td style="color:var(--bear);font-weight:700">高</td>
+<td style="text-align:left;font-size:.78em">若良率已達標，H3 結構性轉變信心應上調至 35%+</td>
+<td style="text-align:left;font-size:.78em">追蹤下游 CCL 廠試用回饋；產業展會實物品質</td>
+</tr>
+
+<tr>
+<td>BP3</td>
+<td style="text-align:left">富喬完整年報財務報表（PDF）</td>
+<td>可查但未查</td>
+<td style="color:var(--warn);font-weight:700">中</td>
+<td style="text-align:left;font-size:.78em">年報附註可能揭露關係人交易、或有負債等重要資訊</td>
+<td style="text-align:left;font-size:.78em">從 MOPS 下載年報 PDF 全文閱讀</td>
+</tr>
+
+<tr>
+<td>BP4</td>
+<td style="text-align:left">內部人持股異動完整明細</td>
+<td>可查但未查</td>
+<td style="color:var(--warn);font-weight:700">中</td>
+<td style="text-align:left;font-size:.78em">若內部人近期大量出脫，印證 KA9 管理層誠信問題</td>
+<td style="text-align:left;font-size:.78em">公開資訊觀測站 → 內部人持股異動查詢</td>
+</tr>
+
+<tr>
+<td>BP5</td>
+<td style="text-align:left">泰國廠具體建設進度</td>
+<td>不可取得</td>
+<td style="color:var(--warn);font-weight:700">中</td>
+<td style="text-align:left;font-size:.78em">若建設延遲 > 6 個月，H4(4c) 機率上升</td>
+<td style="text-align:left;font-size:.78em">追蹤季報揭露、當地新聞、衛星圖像</td>
+</tr>
+
+<tr>
+<td>BP6</td>
+<td style="text-align:left">其他潛在競爭者（未知的未知）</td>
+<td style="color:var(--bear);font-weight:700">存在但不知道</td>
+<td style="color:var(--warn);font-weight:700">中</td>
+<td style="text-align:left;font-size:.78em">可能有中國二線廠或韓廠也在開發高階玻纖布，但尚未公開</td>
+<td style="text-align:left;font-size:.78em">持續追蹤產業新聞、專利申請</td>
+</tr>
+</table>
+
+<div class="tip warn" style="margin-top:8px">
+<b>盲點影響統計</b><br>
+<span style="font-size:.82em">
+高影響：2 個（BP1 客戶清單、BP2 TLD-glass 良率）→ 信心下調 -6%~-10%<br>
+中影響：4 個（BP3~BP6）→ 信心下調 -4%~-8%<br>
+盲點總數 6 個（> 5）→ 額外下調 -3%<br>
+含「存在但不知道」類（BP6）→ 額外下調 -2%
+</span>
+</div>
+
+<div class="tip info" style="margin-top:4px">
+<b>免責聲明</b><br>
+<span style="font-size:.82em">以上任一資料若取得，可能顯著改變報告結論。閣主應自行評估這些盲點對決策的影響。特別是 BP1（客戶集中度）和 BP2（TLD-glass 良率）若揭露，有可能推翻主要結論。</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== E. 信心校準 ===== -->
+<div class="section-title" id="secE">E. 信心校準（第 2 次）</div>
+<div class="section-sub">整合四個模組的下調量，更新假說信心分配</div>
+
+<div class="card">
+<h3>信心校準明細</h3>
+<div class="card-body">
+
+<table>
+<tr><th>下調來源</th><th>依據</th><th>H1 影響</th><th>其他假說影響</th></tr>
+<tr>
+<td style="text-align:left">A. 紅旗假設（2 個）</td>
+<td style="text-align:left;font-size:.78em">KA7 PE估值無支撐 + KA9 管理層誠信無支撐</td>
+<td style="color:var(--bear);font-weight:700">-5%</td>
+<td style="text-align:left;font-size:.78em">H2 +2%、H5 +3%</td>
+</tr>
+<tr>
+<td style="text-align:left">B. 事前驗屍（1 高 + 3 中風險）</td>
+<td style="text-align:left;font-size:.78em">PM1 PE壓縮=15分 + PM2/3/4 合計 30 分</td>
+<td style="color:var(--bear);font-weight:700">-5%</td>
+<td style="text-align:left;font-size:.78em">H2 +3%、H3 +2%</td>
+</tr>
+<tr>
+<td style="text-align:left">D. 盲點（6 個含未知的未知）</td>
+<td style="text-align:left;font-size:.78em">2 高影響 + 4 中影響 + >5 個 + 含未知</td>
+<td style="color:var(--bear);font-weight:700">-5%</td>
+<td style="text-align:left;font-size:.78em">H3 +1%、H4 +2%、H5 +2%</td>
+</tr>
+<tr style="font-weight:700;background:rgba(198,40,40,.06)">
+<td style="text-align:left">合計</td>
+<td></td>
+<td style="color:var(--bear)">-15%</td>
+<td style="text-align:left;font-size:.78em">H2 +5%、H3 +3%、H4 +2%、H5 +5%</td>
+</tr>
+</table>
+
+<div style="margin-top:12px">
+<p style="font-weight:700;font-size:.95em;margin-bottom:6px">校準前後對比：</p>
+
+<table>
+<tr><th>假說</th><th>ACH 信心（第 4 步）</th><th>調整量</th><th>壓測後信心（第 5 步）</th></tr>
+<tr>
+<td><b style="color:var(--neutral)">H5 中性震盪</b></td>
+<td>30%</td>
+<td style="color:var(--bull)">+5%</td>
+<td style="font-weight:900;font-size:1.1em">35%</td>
+</tr>
+<tr>
+<td><b style="color:#7b1fa2">H3 結構性轉變</b></td>
+<td>20%</td>
+<td style="color:var(--bull)">+3%</td>
+<td style="font-weight:900;font-size:1.1em">23%</td>
+</tr>
+<tr>
+<td><b style="color:var(--bear)">H2 看空見頂</b></td>
+<td>15%</td>
+<td style="color:var(--bull)">+5%</td>
+<td style="font-weight:900;font-size:1.1em">20%</td>
+</tr>
+<tr>
+<td><b style="color:#212121">H4 黑天鵝</b></td>
+<td>10%</td>
+<td style="color:var(--bull)">+2%</td>
+<td style="font-weight:900;font-size:1.1em">12%</td>
+</tr>
+<tr style="background:rgba(198,40,40,.06)">
+<td><b style="color:var(--bull)">H1 看多超級週期</b></td>
+<td>25%</td>
+<td style="color:var(--bear);font-weight:700">-15%</td>
+<td style="font-weight:900;font-size:1.1em;color:var(--bear)">10%</td>
+</tr>
+</table>
+
+<div class="conf-bar" style="margin-top:10px">
+    <div style="width:35%;background:var(--neutral)">H5 35%</div>
+    <div style="width:23%;background:#7b1fa2">H3 23%</div>
+    <div style="width:20%;background:var(--bear)">H2 20%</div>
+    <div style="width:12%;background:#212121">H4 12%</div>
+    <div style="width:10%;background:var(--bull)">H1 10%</div>
+</div>
+</div>
+
+<div class="tip danger" style="margin-top:10px">
+<b>壓力測試核心結論</b>
+<ul style="font-size:.82em;margin-top:4px;padding-left:18px">
+<li><b>H1 看多從 25% 暴降至 10%</b> — 壓力測試大幅削弱看多論述</li>
+<li><b>下行風險合計 55%（H2+H3+H4）</b> vs 上行 10%（H1）— 風險報酬嚴重不對稱</li>
+<li><b>H5 中性升至 35%</b> — 最可能的情境仍是區間震盪，但偏向下方風險</li>
+<li>兩個「無支撐」紅旗（PE 估值 + 管理層誠信）是最大的信心殺手</li>
+</ul>
+</div>
+
+<div class="tip info">
+<b>vs 週期股教訓（MU 2018）</b><br>
+<span style="font-size:.82em">
+記憶體（DRAM）的教訓完全適用於玻纖布：<br>
+- MU 2018：EPS 高峰 $11.51 → PE 僅 3x → 7 個月後股價 -54%<br>
+- 富喬 2025：EPS 1.64（從 0.13 暴漲 12 倍）→ PE 62x → ???<br>
+差異在於富喬有高階轉型故事，但轉型是否真能讓它脫離週期股宿命，是最關鍵的待驗證假設。
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== F. 判定結果 ===== -->
+<div class="section-title" id="secF">F. 壓力測試判定結果</div>
+
+<div class="card">
+<h3>通過/附條件/不通過 判定</h3>
+<div class="card-body">
+
+<table>
+<tr><th>判定項目</th><th>門檻</th><th>實際</th><th>結果</th></tr>
+<tr>
+<td style="text-align:left">致命因子</td>
+<td style="text-align:left">無致命因子 或 可設預警</td>
+<td style="text-align:left">1 個（SF1 電子布價格），<b>可設預警</b></td>
+<td style="color:var(--warn);font-weight:700">附條件</td>
+</tr>
+<tr>
+<td style="text-align:left">紅旗假設</td>
+<td style="text-align:left">≤ 1 通過 / 2-3 附條件 / ≥ 4 不通過</td>
+<td style="text-align:left"><b>2 個</b>（KA7 PE估值、KA9 管理層誠信）</td>
+<td style="color:var(--warn);font-weight:700">附條件</td>
+</tr>
+<tr>
+<td style="text-align:left">盲點數量</td>
+<td style="text-align:left">≤ 3 通過 / 4-6 附條件 / ≥ 7 不通過</td>
+<td style="text-align:left"><b>6 個</b>（含 1 個未知的未知）</td>
+<td style="color:var(--warn);font-weight:700">附條件</td>
+</tr>
+<tr>
+<td style="text-align:left">信心下降幅度</td>
+<td style="text-align:left">> 15% 需重啟 ACH</td>
+<td style="text-align:left"><b>H1 下降 15%</b>（剛好在門檻上）</td>
+<td style="color:var(--warn);font-weight:700">邊界</td>
+</tr>
+</table>
+
+<div class="tip warn" style="margin-top:8px">
+<b>最終判定：附條件通過</b><br>
+<span style="font-size:.82em">
+壓力測試揭露了看多論述的多個弱點，但<b>所有風險均可設定預警信號</b>，不需重啟 ACH。<br>
+附加條件：<br>
+1. 第七步決策輸出必須以「觀望/保守」為基調<br>
+2. 電子布價格須列入第九步最高優先監控項目<br>
+3. 管理層展望類資訊一律降一級、打七折使用<br>
+4. PE 壓縮風險須在估值分析中作為核心假設
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- 完成門檻自檢 -->
+<div class="section-title">完成門檻自檢表</div>
+
+<div class="card">
+<h3>第五步壓力測試完成門檻</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:30px">#</th><th>門檻項目</th><th style="width:55px">狀態</th><th>說明</th></tr>
+<tr><td>1</td><td style="text-align:left">A. 關鍵假設 ≥ 8 個 + 五問挑戰</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">10 個假設，逐一五問挑戰</td></tr>
+<tr><td>2</td><td style="text-align:left">A. 三桶分類完成</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">有支撐 1 / 需附註 7 / 無支撐 2</td></tr>
+<tr><td>3</td><td style="text-align:left">B. 事前驗屍 ≥ 7 個原因</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">8 個原因，涵蓋 5 大類別</td></tr>
+<tr><td>4</td><td style="text-align:left">B. 風險分數計算 + 高風險預警</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">1 高 + 3 中 + 4 低，高風險有預警信號</td></tr>
+<tr><td>5</td><td style="text-align:left">C. 敏感度排序 + 致命因子</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">1 致命（電子布價格）+ 2 重要 + 2 一般</td></tr>
+<tr><td>6</td><td style="text-align:left">D. 盲點聲明 + 影響評估</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">6 個盲點，含高/中影響分級</td></tr>
+<tr><td>7</td><td style="text-align:left">E. 信心校準（第 2 次）</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">H1: 25→10% / H5: 30→35% / 總和 100%</td></tr>
+<tr><td>8</td><td style="text-align:left">F. 通過/附條件/不通過判定</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">附條件通過，附 4 項條件</td></tr>
+<tr><td>9</td><td style="text-align:left">HTML 檔案存檔</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">第五步_假設壓力測試_2026-03-23.html</td></tr>
+</table>
+<div class="tip good" style="margin-top:8px">
+<b>完成度：9/9（100%）</b><br>
+所有門檻項目均達標。等待閣主確認後進入第六步：評審團。
+</div>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-03-23</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

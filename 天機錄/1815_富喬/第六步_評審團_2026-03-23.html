@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>1815 富喬 — 第六步 評審團</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+td:first-child,td:nth-child(2){text-align:left}tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+.iker-item{display:flex;gap:8px;align-items:baseline;padding:2px 0;font-size:.82em;border-bottom:1px dashed var(--border)}
+.iker-item:last-child{border-bottom:none}
+.iker-id{flex-shrink:0;font-weight:700;color:var(--base);min-width:28px}
+.iker-name{flex-shrink:0;min-width:100px;font-weight:600;color:var(--txt)}
+.iker-assess{flex:1;color:var(--txt2)}
+.iker-data{flex-shrink:0;font-size:.75em;padding:1px 6px;border-radius:4px}
+.iker-data.ok{background:rgba(46,125,50,.1);color:#2e7d32}
+.iker-data.judge{background:rgba(184,150,12,.1);color:#b8960c}
+.iker-data.manual{background:rgba(198,40,40,.1);color:#c62828}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.green{background:var(--bull)}.badge.yellow{background:var(--warn)}.badge.red{background:var(--bear)}
+.conf-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:6px 0}
+.conf-bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72em;font-weight:700}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}.toc a:hover{color:var(--accent);text-decoration:underline}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>1815 富喬工業 — 評審團</h1>
+    <div class="sub">天機閣深度調查 第六步</div>
+    <div class="desc">6 位評審 × Iker 四層框架 23 維度 + 偏誤檢查 8 項 → 第 3 次信心校準</div>
+    <div class="tags"><span class="tag">1815.TW</span><span class="tag">評審團</span><span class="tag">信心校準 #3</span><span class="tag">2026-03-23</span></div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#r1">一、產業分析師（第一層 7 維度）</a>
+    <a href="#r2">二、個股研究員（第二層 6 維度）</a>
+    <a href="#r3">三、籌碼分析師（第三層 5 維度）</a>
+    <a href="#r4">四、策略長（第四層 5 維度）</a>
+    <a href="#r5">五、風控官（橫跨所有層）</a>
+    <a href="#r6">六、BenTsai 價值波段顧問（12 條心法）</a>
+    <a href="#bias">七、認知偏誤檢查（8 項）</a>
+    <a href="#cal">八、第 3 次信心校準</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 一、產業分析師 ===== -->
+<div class="section-title" id="r1">一、產業分析師</div>
+<div class="reviewer"><span class="r-name">產業分析師</span><span class="r-layer">第一層：產業面篩選 7 維度</span><div class="r-verdict cond">判定：附條件通過 — 供需有利但窗口倒數中</div></div>
+
+<div class="card">
+<h3>Iker 第一層 — 7 維度逐項評估</h3>
+<div class="card-body">
+<div class="iker-item"><span class="iker-id">1</span><span class="iker-name">供需失衡</span><span class="iker-assess"><b>是，但正在收斂。</b>欣興確認缺貨至 2026H2 [I][B+C]。但巨石淮安新線 3/19 已點火（3.9 億公尺 = 全球 ~9%新增 [F][B]），日東紡 T-glass 產能年底翻三倍 [F][B]。供需缺口正在從「嚴重」走向「緩解」。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">2</span><span class="iker-name">失衡原因</span><span class="iker-assess"><b>需求驅動 + 產能轉移雙重因素。</b>AI 伺服器出貨量預估從 140→253 萬台 [A][C]。日東紡 T-glass 產能長期不足 → 外溢到 Low Dk。本質是 AI 需求爆發 + 高階產品供給不足。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">3</span><span class="iker-name">持續多久</span><span class="iker-assess"><b>12-18 個月（比市場預期短）。</b>業內估缺貨至 2027H2 [I][C]，但巨石新線良率爬升 + 日東紡擴產可能使缺貨在 2026Q4-2027Q1 即開始緩解。2022 年電子布從高峰跌 49% 的歷史教訓不可忽視。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">4</span><span class="iker-name">定價權</span><span class="iker-assess"><b>目前賣方定價，但時間有限。</b>四次調漲 10-15% [F][B]。但富喬不是定價領導者（日東紡/巨石才是），只是受惠於整體市場供不應求的跟漲者。一旦供需反轉，定價權將快速回到買方。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">5</span><span class="iker-name">報價趨勢</span><span class="iker-assess"><b>短期正面。</b>花旗估 2026 年電子布 +25% [I][C]，反內捲政策持續推升 [F][B]。但需每月追蹤 TrendForce 報價。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">6</span><span class="iker-name">主流題材</span><span class="iker-assess"><b>是。</b>AI/玻纖布是 2026 年台股主流題材之一。MSCI 增列、法人關注度提升。</span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">7</span><span class="iker-name">法說會確認</span><span class="iker-assess"><b>附條件。</b>有 2025/12/31 法說會 [F][B]，方向確認為高階轉型。但管理層誠信度僅 55/100 [F]，展望需打折。資本支出承諾前後不一（法說會「不超過 2025」→ 實際提高至 26 億 + 泰國 31 億）。</span><span class="iker-data ok">可查</span></div>
+</div>
+</div>
+
+<!-- ===== 二、個股研究員 ===== -->
+<div class="section-title" id="r2">二、個股研究員</div>
+<div class="reviewer"><span class="r-name">個股研究員</span><span class="r-layer">第二層：個股受惠程度 6 維度</span><div class="r-verdict cond">判定：附條件通過 — 稼動率滿載=增量天花板明確</div></div>
+
+<div class="card">
+<h3>Iker 第二層 — 6 維度逐項評估</h3>
+<div class="card-body">
+<div class="iker-item"><span class="iker-id">1</span><span class="iker-name">上下游受惠</span><span class="iker-assess"><b>中游布廠目前最受惠。</b>上游紗（台玻、富喬自有）→ 中游布（富喬、建榮）→ 下游 CCL/PCB（台燿、欣興）。缺貨時中游代工方享有最大漲價彈性。但富喬不是最上游，利潤空間不如掌握原紗的日東紡。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">2</span><span class="iker-name">稼動率</span><span class="iker-assess"><b>布廠 ~100% 滿載 [F][B]，紗廠 80% [F][B]。</b>關鍵問題：滿載 = 無增量空間。營收要再創新高只能靠漲價或產品結構改善（ASP 提升），不能靠量。下一波增量要等泰國廠 2027Q3。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">3</span><span class="iker-name">低價庫存</span><span class="iker-assess"><b>資料缺口。</b>毛利率從 2%→27% 的 V 型反轉暗示可能有低價庫存消化效應，但無法直接確認。若低價庫存已消化完畢，後續毛利率改善將趨緩。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">4</span><span class="iker-name">月營收趨勢</span><span class="iker-assess"><b>仍在加速。</b>2026/3 月營收 6.29 億 YoY+61%，創 170 個月新高 [F][A]。但管理層指引 Q1「力拚與 Q4 持平」[IC][B] — 暗示加速期可能接近頂部。Iker 說：「放緩又在高點就可以準備抹油了。」</span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">5</span><span class="iker-name">上游龍頭</span><span class="iker-assess"><b>確認產業翻好。</b>台玻投 22.5 億擴產、日東紡砸 1,500 億日圓、中國巨石淮安新線，上游龍頭全部在動。但龍頭的大規模擴產也意味著供給將在 12-18 個月後大量釋放。</span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">6</span><span class="iker-name">CB 狀態</span><span class="iker-assess"><b>N/A。</b>富喬目前無可轉債。無 CB 轉換壓力，但也缺少主力拉抬動機指標。</span><span class="iker-data ok">可查</span></div>
+</div>
+</div>
+
+<!-- ===== 三、籌碼分析師 ===== -->
+<div class="section-title" id="r3">三、籌碼分析師</div>
+<div class="reviewer"><span class="r-name">籌碼分析師</span><span class="r-layer">第三層：籌碼面驗證 5 維度</span><div class="r-verdict cond">判定：資料不足 — 僅 MSCI 增列為正面，內部人行為為負面</div></div>
+
+<div class="card">
+<h3>Iker 第三層 — 5 維度逐項評估</h3>
+<div class="card-body">
+<div class="iker-item"><span class="iker-id">1</span><span class="iker-name">法人在追</span><span class="iker-assess"><b>部分正面。</b>2026/2 獲 MSCI 小型股增列 [F][A]，被動資金流入。但主動型法人買超力道未確認（資料缺口）。法人合計持股逾 70% [I][C] 但未區分被動/主動。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">2</span><span class="iker-name">主力分點</span><span class="iker-assess"><b>資料缺口。</b>未查詢特定券商分點進出明細，無法判斷公司派分點或主力是否在佈局。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">3</span><span class="iker-name">分點換手</span><span class="iker-assess"><b>資料缺口。</b>同上。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">4</span><span class="iker-name">融資比例</span><span class="iker-assess"><b>資料缺口。</b>finlab 中無融資餘額欄位。未從其他來源取得。</span><span class="iker-data manual">需手動找</span></div>
+<div class="iker-item"><span class="iker-id">5</span><span class="iker-name">ETF 入選</span><span class="iker-assess"><b>已入 MSCI 小型股。</b>但市值不足入 0050（上櫃股），無 0050 入選行情。MSCI 增列帶來被動資金但效果有限。</span><span class="iker-data judge">需研判</span></div>
+
+<div class="tip danger" style="margin-top:6px">
+<b>最大籌碼警訊：內部人行為</b><br>
+<span style="font-size:.82em">兩大董事全數放棄認購增資 [F][A]（逾 586 萬股洽特定人）。在 Iker 框架中，「內部人買進比法人買超更有參考價值」。內部人不認購 = 最強負面籌碼信號。</span>
+</div>
+</div>
+</div>
+
+<!-- ===== 四、策略長 ===== -->
+<div class="section-title" id="r4">四、策略長</div>
+<div class="reviewer"><span class="r-name">策略長</span><span class="r-layer">第四層：空間估算 5 維度</span><div class="r-verdict fail">判定：觀望 — 風險報酬不對稱，不建議建倉</div></div>
+
+<div class="card">
+<h3>Iker 第四層 — 5 維度逐項評估</h3>
+<div class="card-body">
+<div class="iker-item"><span class="iker-id">1</span><span class="iker-name">歷史類比</span><span class="iker-assess"><b>2021 面板循環。</b>友達從 10→60 元（6 倍），後跌回 15 元（-75%）。玻纖布的週期性質類似。富喬已從 2024 低點 ~20 元漲至 102 元（~5 倍），歷史類比暗示接近循環後段。若以面板循環折半算，頂部可能在 120-150 元，但下行風險到 30-50 元。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">2</span><span class="iker-name">法人目標價</span><span class="iker-assess"><b>理周投研部 135 元 [I][C]。</b>距現價 +32%。但 Iker 說「機構的報告都不能給太樂觀」，目標價是天花板而非地板。且第五步已將法人目標價標記為錨定偏誤風險。</span><span class="iker-data ok">可查</span></div>
+<div class="iker-item"><span class="iker-id">3</span><span class="iker-name">估值可算嗎</span><span class="iker-assess"><b>可算但分歧極大。</b>PE 62x 搭配 2025 EPS 1.64 = 市場已定價。若 2026 EPS 達 3.0 元，合理 PE 20-30x → 目標 60-90 元（低於現價！）。若給成長股 PE 40x → 120 元（+18%）。估值有答案但答案取決於「週期股」vs「成長股」定位，分歧極大。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">4</span><span class="iker-name">風險在哪</span><span class="iker-assess"><b>三大風險。</b>(1) 巨石 + 日東紡新產能 2026H2-2027 開出 → 供需反轉 (2) TLD-glass 認證成功 → 窗口縮短 (3) PE 壓縮（週期股宿命）。三個風險同時存在 = 高度不確定。</span><span class="iker-data judge">需研判</span></div>
+<div class="iker-item"><span class="iker-id">5</span><span class="iker-name">部位建議</span><span class="iker-assess"><b>不建議建倉。</b>上行空間 18-47%（至 120-150）vs 下行風險 41-70%（至 30-60）。風險報酬比 < 1:1。若已持有，建議減碼至觀察部位（5% 以下）。等待 Q2-Q3 驗證期（巨石良率 + 電子布報價）再決定。</span><span class="iker-data judge">需研判</span></div>
+</div>
+</div>
+
+<!-- ===== 五、風控官 ===== -->
+<div class="section-title" id="r5">五、風控官</div>
+<div class="reviewer"><span class="r-name">風控官</span><span class="r-layer">橫跨所有層</span><div class="r-verdict cond">判定：附條件通過 — 多處資料缺口 + 近因偏誤風險</div></div>
+
+<div class="card">
+<h3>風控官 — 四大檢查</h3>
+<div class="card-body">
+
+<p style="font-weight:700;margin-bottom:4px">1. 資料缺口盤點</p>
+<table>
+<tr><th style="width:30px">#</th><th>缺口項目</th><th style="width:55px">影響</th><th>建議補齊方式</th></tr>
+<tr><td>G1</td><td style="text-align:left">客戶清單與合約價格</td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left;font-size:.78em">年報前十大客戶揭露</td></tr>
+<tr><td>G2</td><td style="text-align:left">券商分點進出明細</td><td style="color:var(--warn);font-weight:700">中</td><td style="text-align:left;font-size:.78em">券商看盤軟體查詢</td></tr>
+<tr><td>G3</td><td style="text-align:left">融資融券數據</td><td style="color:var(--warn);font-weight:700">中</td><td style="text-align:left;font-size:.78em">證交所每日公告</td></tr>
+<tr><td>G4</td><td style="text-align:left">巨石 TLD-glass 良率實況</td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left;font-size:.78em">產業展會、下游訪查</td></tr>
+</table>
+
+<p style="font-weight:700;margin-top:10px;margin-bottom:4px">2. FIAS 等級分布檢查</p>
+<p style="font-size:.82em;color:var(--txt2)">支持看多的證據：F 級 10 筆 + I 級 5 筆 = 15 筆<br>
+警示風險的證據：F 級 7 筆 + I 級 1 筆 + S 級 1 筆 = 9 筆<br>
+比例：60% vs 40% — 反面證據占比達 40%，未發現嚴重確認偏誤。</p>
+
+<p style="font-weight:700;margin-top:10px;margin-bottom:4px">3. 強制反面觀點</p>
+<div class="tip danger">
+<b>風控官的反面觀點</b><br>
+<span style="font-size:.82em">
+「所有人都在喊超級週期的時候，通常離頂不遠。」<br><br>
+富喬的故事和 2021 年面板/航運幾乎一模一樣：<br>
+- 營收創新高 ✓ → 友達/長榮也是<br>
+- 法人大喊目標價 ✓ → 面板/航運法人也是<br>
+- PE 看似低估（因為 EPS 在高峰膨脹）✓ → 長榮 PE 也曾只有 2x<br>
+- 供給端新產能即將開出 ✓ → 面板新線/新船下水<br><br>
+唯一不同：富喬有「高階轉型」故事。但高階佔比從 45% 到 70% 的路還很長，FLE 才剛少量出貨，TLD-glass 虎視眈眈。轉型是否真能讓它脫離週期股宿命？我持保留態度。
+</span>
+</div>
+
+<p style="font-weight:700;margin-top:10px;margin-bottom:4px">4. 推論鏈完整性</p>
+<p style="font-size:.82em;color:var(--txt2)">
+「AI 需求 → 玻纖布缺貨 → 富喬受惠」✓ 鏈條完整<br>
+「缺貨持續 → 漲價持續 → 獲利持續」⚠ 有斷鏈風險（巨石新線 2026/3 已點火）<br>
+「高階轉型 → 脫離週期 → 享受成長股估值」⚠ 未驗證（FLE 剛起步、TLD-glass 威脅）
+</p>
+
+</div>
+</div>
+
+<!-- ===== 六、BenTsai ===== -->
+<div class="section-title" id="r6">六、BenTsai 價值波段顧問</div>
+<div class="reviewer" style="border-color:#7b1fa2"><span class="r-name" style="color:#7b1fa2">BenTsai 價值波段顧問</span><span class="r-layer">12 條心法逐項檢視</span><div class="r-verdict fail">判定：不符合心法 — 不建議佈局</div></div>
+
+<div class="card">
+<h3>BenTsai 12 條心法 × 富喬檢視</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:30px">#</th><th>心法</th><th style="width:65px">符合度</th><th>分析</th></tr>
+<tr><td>1</td><td style="text-align:left">CB 狙擊術</td><td><span class="badge" style="background:var(--txt3)">N/A</span></td><td style="text-align:left;font-size:.78em">無 CB，此心法不適用。缺少 BenTsai 最核心的武器。</td></tr>
+<tr><td>2</td><td style="text-align:left">營收三階段論</td><td><span class="badge green">符合</span></td><td style="text-align:left;font-size:.78em">屬「產品質變」階段（高階佔比 20→45%），可享最高估值倍數。唯一正面項。</td></tr>
+<tr><td>3</td><td style="text-align:left">逢低分批</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">現價 102 元已是高位（從 20 元漲 5 倍），不是逢低時機。BenTsai 不追高。</td></tr>
+<tr><td>4</td><td style="text-align:left">深度田野調查</td><td><span class="badge yellow">部分</span></td><td style="text-align:left;font-size:.78em">有法說會資料但未實地訪查。BenTsai 重視親赴法說會、電訪公司。</td></tr>
+<tr><td>5</td><td style="text-align:left">籌碼反向思維</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">董事放棄認購 = 最強負面內部人信號。BenTsai 最重視內部人行為。</td></tr>
+<tr><td>6</td><td style="text-align:left">期望差投資</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">AI 玻纖布題材已被市場充分定價（PE 62x、法人目標 135）。無期望差 = 無超額報酬空間。</td></tr>
+<tr><td>7</td><td style="text-align:left">大魚策略</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">PE 62x 的股票不具備翻倍潛力。即使 EPS 翻倍至 3.3 元，PE 壓縮至 30x 也僅 99 元（< 現價）。</td></tr>
+<tr><td>8</td><td style="text-align:left">耐心佛系</td><td><span class="badge" style="background:var(--txt3)">N/A</span></td><td style="text-align:left;font-size:.78em">未持有，無適用。若在 30-40 元買入才值得佛系持有。</td></tr>
+<tr><td>9</td><td style="text-align:left">總經風險優先</td><td><span class="badge yellow">部分</span></td><td style="text-align:left;font-size:.78em">中國營收佔 22%、出口 57.3% 去中國，地緣風險中等。</td></tr>
+<tr><td>10</td><td style="text-align:left">舒適圈自覺</td><td><span class="badge yellow">部分</span></td><td style="text-align:left;font-size:.78em">AI 題材光環效應需警覺。</td></tr>
+<tr><td>11</td><td style="text-align:left">內部人追蹤</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">兩大董事全數放棄認購。BenTsai 心法第 11 條直接否決。</td></tr>
+<tr><td>12</td><td style="text-align:left">估值錨定法</td><td><span class="badge red">不符</span></td><td style="text-align:left;font-size:.78em">PE 62x 遠超同業歷史區間。無 CB 轉換價可錨定。法人目標 135 元為唯一參考點，但上漲空間僅 32%，不夠 BenTsai 的翻倍標準。</td></tr>
+</table>
+
+<div class="tip danger" style="margin-top:8px">
+<b>BenTsai 判定：不符合心法 — 12 項中 6 項不符、3 項部分、2 項 N/A、僅 1 項符合</b><br>
+<span style="font-size:.82em">核心否決理由：(1) 無 CB 狙擊機會 (2) 內部人放棄認購 (3) 無期望差 (4) 估值過高無翻倍空間 (5) 現價已是高位非逢低時機。BenTsai 會在 30-40 元時佈局這檔股票，不會在 102 元追。</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 七、偏誤檢查 ===== -->
+<div class="section-title" id="bias">七、認知偏誤檢查（8 項）</div>
+<div class="section-sub">偏誤檢查清單 v1.0 — B-01 至 B-08 逐項</div>
+
+<div class="card">
+<h3>偏誤檢查結果</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:48px">編號</th><th>偏誤名稱</th><th style="width:58px">結果</th><th>分析</th></tr>
+<tr><td>B-01</td><td style="text-align:left">確認偏誤</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">反面證據 9 筆 / 正面 15 筆 = 60%，且反面含 7 筆 F 級。充分。</td></tr>
+<tr><td>B-02</td><td style="text-align:left">錨定效應</td><td><span class="badge yellow">觸發</span></td><td style="text-align:left;font-size:.78em">理周目標價 135 元被多次引用為空間參考。僅有 1 個法人目標價（非 ≥3 種獨立估值）。策略長的歷史類比法是第二種，但估值方法仍偏少。</td></tr>
+<tr><td>B-03</td><td style="text-align:left">近因偏誤</td><td><span class="badge yellow">觸發</span></td><td style="text-align:left;font-size:.78em">報告大量引用近 12 個月營收數據。2022-2024 年電子布價格崩跌 49% 的完整下跌段有提及，但篇幅明顯少於上漲段。「缺貨至 2027H2」的假設有慣性風險。</td></tr>
+<tr><td>B-04</td><td style="text-align:left">存活者偏誤</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">有提及 2021 面板/航運循環的完整起落作反面參照。有提及 E-glass 被中國碾壓的失敗案例。</td></tr>
+<tr><td>B-05</td><td style="text-align:left">光環效應</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">7 維度競爭力地圖中最弱維度（競爭 5 分、管理 5 分）有被明確標出。護城河判定「無護城河」直接反映弱項。</td></tr>
+<tr><td>B-06</td><td style="text-align:left">過度自信</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">H1 信心從 25%→10% 經兩次下調。有完整盲點聲明 6 項。最終立場「觀望」而非「買進」。</td></tr>
+<tr><td>B-07</td><td style="text-align:left">沉沒成本</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">壓力測試紅旗有反映在結論中。「觀望」建議與下行風險 55% 方向一致。</td></tr>
+<tr><td>B-08</td><td style="text-align:left">框架效應</td><td><span class="badge green">通過</span></td><td style="text-align:left;font-size:.78em">EPS +1162% 的正面框架有對應「低基期效應」的負面解讀。毛利率 V 型反轉有對應「可能已近頂部」的解讀。</td></tr>
+</table>
+
+<div class="tip warn" style="margin-top:8px">
+<b>觸發 2 項（B-02 錨定 + B-03 近因）→ 判定：附註通過</b><br>
+<span style="font-size:.82em">
+修正建議：<br>
+- B-02：第七步估值分析需使用 ≥ 3 種獨立方法（歷史循環類比 / 分部估值 / 前瞻 PE / PBR），不以 135 元為錨<br>
+- B-03：第七步需給予歷史下跌段（2022-2024 跌 49%）與上漲段同等篇幅
+</span>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 八、第 3 次信心校準 ===== -->
+<div class="section-title" id="cal">八、第 3 次信心校準</div>
+
+<div class="card">
+<h3>評審團投票結果 × 信心校準</h3>
+<div class="card-body">
+
+<table>
+<tr><th>評審</th><th>判定</th><th>對 H1 影響</th></tr>
+<tr><td style="text-align:left">產業分析師</td><td style="color:var(--warn);font-weight:700">附條件通過</td><td>0%（產業有利但窗口有限）</td></tr>
+<tr><td style="text-align:left">個股研究員</td><td style="color:var(--warn);font-weight:700">附條件通過</td><td>0%（滿載=天花板明確）</td></tr>
+<tr><td style="text-align:left">籌碼分析師</td><td style="color:var(--warn);font-weight:700">資料不足</td><td>-1%（內部人負面信號）</td></tr>
+<tr><td style="text-align:left">策略長</td><td style="color:var(--bear);font-weight:700">觀望</td><td>-1%（風險報酬不對稱）</td></tr>
+<tr><td style="text-align:left">風控官</td><td style="color:var(--warn);font-weight:700">附條件通過</td><td>0%（資料缺口 + 推論鏈風險）</td></tr>
+<tr><td style="text-align:left">BenTsai</td><td style="color:var(--bear);font-weight:700">不符合心法</td><td>0%（6/12 不符，但 BenTsai 框架偏向逆勢佈局型）</td></tr>
+<tr style="font-weight:700"><td style="text-align:left">合計</td><td></td><td style="color:var(--bear)">H1 -2%</td></tr>
+</table>
+
+<p style="font-weight:700;font-size:.95em;margin-top:12px;margin-bottom:6px">校準後信心分配（第 3 次）：</p>
+
+<div class="conf-bar">
+    <div style="width:35%;background:var(--neutral)">H5 35%</div>
+    <div style="width:23%;background:#7b1fa2">H3 23%</div>
+    <div style="width:22%;background:var(--bear)">H2 22%</div>
+    <div style="width:12%;background:#212121">H4 12%</div>
+    <div style="width:8%;background:var(--bull)">H1 8%</div>
+</div>
+
+<table style="margin-top:8px">
+<tr><th>假說</th><th>ACH（第4步）</th><th>壓測後（第5步）</th><th>評審後（第6步）</th></tr>
+<tr><td><b style="color:var(--neutral)">H5 中性震盪</b></td><td>30%</td><td>35%</td><td style="font-weight:900">35%</td></tr>
+<tr><td><b style="color:#7b1fa2">H3 結構性轉變</b></td><td>20%</td><td>23%</td><td style="font-weight:900">23%</td></tr>
+<tr><td><b style="color:var(--bear)">H2 看空見頂</b></td><td>15%</td><td>20%</td><td style="font-weight:900">22%</td></tr>
+<tr><td><b style="color:#212121">H4 黑天鵝</b></td><td>10%</td><td>12%</td><td style="font-weight:900">12%</td></tr>
+<tr style="background:rgba(198,40,40,.06)"><td><b style="color:var(--bull)">H1 看多</b></td><td>25%</td><td>10%</td><td style="font-weight:900;color:var(--bear)">8%</td></tr>
+</table>
+
+<div class="grid2" style="margin-top:10px">
+<div class="mini-card bear-card">
+    <div class="title">下行風險合計</div>
+    <div class="num" style="color:var(--bear)">57%</div>
+    <div class="desc">H2(22%) + H3(23%) + H4(12%)</div>
+</div>
+<div class="mini-card bull-card">
+    <div class="title">上行信心</div>
+    <div class="num" style="color:var(--bull)">8%</div>
+    <div class="desc">H1 看多（從 25% 降至 8%）</div>
+</div>
+</div>
+
+<div class="tip danger" style="margin-top:8px">
+<b>評審團共識：觀望偏保守</b>
+<ul style="font-size:.82em;margin-top:4px;padding-left:18px">
+<li>6 位評審中：0 位通過、4 位附條件通過、2 位不通過/觀望</li>
+<li>BenTsai 直接否決（12 條心法 6 項不符）</li>
+<li>策略長明確建議「不建議建倉」</li>
+<li>H1 看多信心從 ACH 的 25% → 經三次校準降至 8%</li>
+<li><b>下行風險 57% vs 上行 8% — 接近 7:1 的不利比</b></li>
+</ul>
+</div>
+
+</div>
+</div>
+
+<!-- 完成門檻 -->
+<div class="section-title">完成門檻自檢表</div>
+<div class="card">
+<h3>第六步評審團完成門檻</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:30px">#</th><th>門檻項目</th><th style="width:55px">狀態</th><th>說明</th></tr>
+<tr><td>1</td><td style="text-align:left">6 位評審逐項評估</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">產業/個股/籌碼/策略/風控/BenTsai 全部完成</td></tr>
+<tr><td>2</td><td style="text-align:left">Iker 四層 23 維度覆蓋</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">7+6+5+5=23 維度逐項</td></tr>
+<tr><td>3</td><td style="text-align:left">BenTsai 12 心法檢視</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">12 條逐項，6 不符/3 部分/2 N/A/1 符合</td></tr>
+<tr><td>4</td><td style="text-align:left">偏誤檢查 8 項</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">6 通過 / 2 觸發 → 附註通過</td></tr>
+<tr><td>5</td><td style="text-align:left">信心校準（第 3 次）</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">H1: 10→8% / H2: 20→22% / 總和 100%</td></tr>
+<tr><td>6</td><td style="text-align:left">HTML 存檔</td><td style="color:var(--bull);font-weight:700">達標</td><td style="text-align:left;font-size:.78em">第六步_評審團_2026-03-23.html</td></tr>
+</table>
+<div class="tip good" style="margin-top:8px"><b>完成度：6/6（100%）</b></div>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-03-23</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){document.querySelectorAll('.card').forEach(function(c){if(collapse) c.classList.add('collapsed');else c.classList.remove('collapsed');})}
+document.querySelectorAll('.card h3').forEach(function(h3){h3.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed')})});
+</script>
+</body>
+</html>
