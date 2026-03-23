@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>富喬(1815) — 日東紡轉單題材效益估算與股價推估</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.highlight-box{background:rgba(90,125,96,.08);border:2px solid var(--accent);border-radius:8px;padding:14px 16px;margin:10px 0;text-align:center}
+.highlight-box .big-num{font-size:2em;font-weight:900;color:var(--bear)}
+.highlight-box .big-label{font-size:.88em;font-weight:700;color:var(--base);margin-top:2px}
+.flow-box{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:.84em;font-family:'Fira Code',monospace;white-space:pre-line;line-height:1.6;color:var(--txt2)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>富喬(1815) — 日東紡轉單題材效益估算</h1>
+    <div class="sub">轉單效益量化 + 2026 年底股價推估</div>
+    <div class="desc">基於富喬九步驟深度分析資料、日東紡最新產能資訊、全球貿易局勢交叉比對</div>
+    <div class="tags">
+        <span class="tag">備註文件</span>
+        <span class="tag">2026-03-23</span>
+        <span class="tag">估價模型</span>
+        <span class="tag">週期股風險</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">備註結構</strong>
+    <a href="#s1">一、「轉單」的真實面貌</a>
+    <a href="#s2">二、轉單效益量化（三層拆解）</a>
+    <a href="#s3">三、2026 全年 EPS 推估</a>
+    <a href="#s4">四、本益比推估與壓縮邏輯</a>
+    <a href="#s5">五、2026 年底目標價矩陣</a>
+    <a href="#s6">六、世界局勢影響</a>
+    <a href="#s7">七、週期股見頂時序圖</a>
+    <a href="#s8">八、底線結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ==============================
+     一、轉單真實面貌
+     ============================== -->
+<div id="s1" class="section-title">一、「轉單」的真實面貌 — 產能溢出，非退出</div>
+<div class="section-sub">核心修正：日東紡不是退出，是供不應求</div>
+
+<div class="card">
+<h3>日東紡現況與擴產計畫</h3>
+<div class="card-body">
+
+<div class="tip warn">
+<b>關鍵認知修正</b>
+市場俗稱的「日東紡轉單」其實不是日東紡退出或關廠。日東紡正在進行史無前例的 800 億日圓擴產計畫。「轉單」的本質是：T-Glass 產能 100% 滿載 + AI 需求爆炸 → 客戶被迫尋找替代方案。
+</div>
+
+<table>
+<tr><th>項目</th><th>數據</th></tr>
+<tr><td>T-Glass 全球市占</td><td><strong>&gt;90%</strong>（近乎獨佔）</td></tr>
+<tr><td>產能利用率</td><td>100% 滿載</td></tr>
+<tr><td>供需缺口</td><td>15-25%</td></tr>
+<tr><td>擴產投資總額</td><td>800 億日圓（~170 億台幣）</td></tr>
+<tr><td>福島新廠（日本）</td><td>150 億日圓，2026/12 完工，2027H2 量產，產能 3 倍</td></tr>
+<tr><td>福隆二廠（嘉義）</td><td>近百億台幣，2026/2 已啟動量產儀式</td></tr>
+<tr><td>日本政府補助</td><td>最高 24 億日圓（經濟安全保障法）</td></tr>
+</table>
+
+<p style="margin-top:8px"><strong>富喬不能做 T-Glass</strong>。T-Glass 配方為日東紡獨家機密，台廠目前無法生產。富喬受惠機制是透過 Low Dk / Low CTE 替代部分應用場景 + 漲價連動。</p>
+
+<p style="margin-top:4px"><strong>全球能供應 Low Dk 電子級材料的廠商僅 4 家</strong>：日東紡、AGY（美國）、台玻、富喬。扣掉滿載的日東紡，實質可供增量的只有 3 家。</p>
+</div>
+</div>
+
+<!-- ==============================
+     二、轉單效益量化
+     ============================== -->
+<div id="s2" class="section-title">二、轉單效益量化（三層拆解）</div>
+<div class="section-sub">直接替代 + 漲價 ASP + 產能利用率</div>
+
+<div class="card">
+<h3>溢出訂單市場規模與分配</h3>
+<div class="card-body">
+
+<table>
+<tr><th>項目</th><th>估算</th></tr>
+<tr><td>日東紡電子材料年營收（FY2025）</td><td>~479 億日圓（約 100 億台幣）</td></tr>
+<tr><td>供需缺口比率</td><td>15-25%</td></tr>
+<tr><td>溢出訂單總值</td><td><strong>15-25 億台幣</strong></td></tr>
+</table>
+
+<p style="margin-top:8px;font-weight:700">溢出訂單分配競爭：</p>
+<table>
+<tr><th>受惠者</th><th>優先級</th><th>估計分食比例</th><th>說明</th></tr>
+<tr><td>建榮(5340)</td><td>最高</td><td>30-35%</td><td>日東紡持股 47.65% 子公司，OEM 最直接</td></tr>
+<tr><td>南亞(1303)</td><td>高</td><td>25-30%</td><td>簽策略合作，承接 20% 織造產能</td></tr>
+<tr><td>台玻(1802)</td><td>中高</td><td>20-25%</td><td>通過 NVIDIA Low Dk 認證，擴產 12 條線</td></tr>
+<tr><td><strong>富喬(1815)</strong></td><td><strong>中</strong></td><td><strong>15-20%</strong></td><td>Low Dk/CTE 自主開發，但規模較台玻小</td></tr>
+<tr><td>AGY（美國）</td><td>低</td><td>5-10%</td><td>遠在美國，物流成本較高</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>富喬三層效益拆解</h3>
+<div class="card-body">
+
+<p style="font-weight:700;margin-bottom:6px">第一層：直接替代訂單（客戶改用 Low Dk/CTE）</p>
+<table>
+<tr><th>情境</th><th>計算</th><th>營收增量</th></tr>
+<tr><td>樂觀</td><td>溢出 25 億 × 20%</td><td><strong>5.0 億</strong></td></tr>
+<tr><td>基準</td><td>溢出 20 億 × 17%</td><td><strong>3.4 億</strong></td></tr>
+<tr><td>保守</td><td>溢出 15 億 × 15%</td><td><strong>2.25 億</strong></td></tr>
+</table>
+
+<p style="font-weight:700;margin:8px 0 6px">第二層：漲價帶動 ASP 提升（間接效益最大）</p>
+<table>
+<tr><th>項目</th><th>數據</th></tr>
+<tr><td>2026 年電子布預估漲幅</td><td>25%+（花旗預測），月度調整 10-15%</td></tr>
+<tr><td>2025 年高階產品營收</td><td>~26.9 億元（佔比 45%）</td></tr>
+<tr><td>ASP 提升 20-25% 帶來增量</td><td><strong>5.4-6.7 億元</strong></td></tr>
+</table>
+
+<p style="font-weight:700;margin:8px 0 6px">第三層：產能利用率與結構升級</p>
+<p>布廠從 2023 谷底 ~70% 升至 2025 滿載，高階產品毛利率 ~30% vs 傳統 ~10%。此效益已反映在 2025 年毛利率回升中（從負值 → 27%），2026 年將持續深化。</p>
+
+<div class="tip good" style="margin-top:10px">
+<b>三層效益加總（基準情境）</b>
+直接替代：3.4 億 + 漲價 ASP：5.5 億 = 合計增量 <strong>~8.9 億元</strong>，佔 2026 預估營收約 <strong>10.5%</strong><br>
+換算 EPS 增量：增量 8.9 億 × 30% 毛利率 → 稅後 ~2 億 → <strong>EPS +0.33~0.36 元</strong>（佔 2025 EPS 的 20-22%）
+</div>
+
+</div>
+</div>
+
+<!-- ==============================
+     三、2026 全年 EPS 推估
+     ============================== -->
+<div id="s3" class="section-title">三、2026 全年 EPS 推估</div>
+<div class="section-sub">基於月營收趨勢、獲利率改善、股本稀釋</div>
+
+<div class="card">
+<h3>營收推估基礎</h3>
+<div class="card-body">
+<table>
+<tr><th>錨點數據</th><th>數值</th></tr>
+<tr><td>2025 全年營收</td><td>59.75 億</td></tr>
+<tr><td>2026/1 月營收</td><td>5.71 億（YoY +19.2%）</td></tr>
+<tr><td>2026/2 月營收</td><td>6.29 億（YoY +60.8%，歷史新高）</td></tr>
+<tr><td>2026/1-2 累計</td><td>12.00 億（YoY +37.89%）</td></tr>
+<tr><td>2026/1 自結 EPS</td><td>0.21 元（稅後淨利 1.53 億）</td></tr>
+<tr><td>增資後股本</td><td>5.85 億股（2025/12 現增 6,000 萬股後）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>三情境 EPS 推估</h3>
+<div class="card-body">
+<table>
+<tr><th></th><th>保守</th><th>基準</th><th>樂觀</th></tr>
+<tr><td>營收（億元）</td><td>74.7</td><td>80.7</td><td>86.6</td></tr>
+<tr><td>營收成長率</td><td>+25%</td><td>+35%</td><td>+45%</td></tr>
+<tr><td>毛利率</td><td>28%</td><td>30%</td><td>32%</td></tr>
+<tr><td>營益率</td><td>16%</td><td>18%</td><td>20%</td></tr>
+<tr><td>稅後淨利率</td><td>14%</td><td>16%</td><td>18%</td></tr>
+<tr><td>稅後淨利（億元）</td><td>10.5</td><td>12.9</td><td>15.6</td></tr>
+<tr><td>股本（億股）</td><td>5.85</td><td>5.85</td><td>5.85</td></tr>
+<tr><td><strong>2026E EPS</strong></td><td><strong>1.79 元</strong></td><td><strong>2.21 元</strong></td><td><strong>2.67 元</strong></td></tr>
+</table>
+
+<div class="tip info" style="margin-top:8px">
+<b>交叉驗證</b>
+2026/1 自結月 EPS 0.21 元 × 12 = 年化 2.52 元，介於基準與樂觀之間。考慮 1 月通常非最強月，全年 EPS 基準情境 2.21 元偏保守，2.50 元左右較合理。
+</div>
+
+<div class="tip warn" style="margin-top:6px">
+<b>注意：2025 Q4 業外收入不可外推</b>
+2025 Q4 營益率僅 12.18% 卻交出 EPS 0.83 元，顯示有明顯業外收入。2026 年估值不宜假設同等業外將重複。
+</div>
+</div>
+</div>
+
+<!-- ==============================
+     四、本益比推估
+     ============================== -->
+<div id="s4" class="section-title">四、本益比推估與壓縮邏輯</div>
+<div class="section-sub">週期股的關鍵：PE 不是固定的，會隨市場預期壓縮</div>
+
+<div class="card">
+<h3>PE 參考基準</h3>
+<div class="card-body">
+<table>
+<tr><th>參考對象</th><th>PE</th><th>說明</th></tr>
+<tr><td>富喬目前（trailing 2025 EPS 1.64）</td><td>62x</td><td>含大量題材溢價</td></tr>
+<tr><td>同業平均</td><td>47x</td><td>含建榮 109x 拉高</td></tr>
+<tr><td>台灣中型成長股合理區間</td><td>20-35x</td><td>成長確定但非永久性</td></tr>
+<tr><td>週期股見頂前</td><td>15-25x</td><td>市場預期盈餘即將反轉</td></tr>
+<tr><td>富喬 2017 年正常年</td><td>~15-18x</td><td>EPS 1.16 元，股價 ~18 元</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>為什麼 PE 會壓縮？</h3>
+<div class="card-body">
+
+<div class="tip danger">
+<b>週期股核心邏輯：盈餘好 ≠ 股價漲</b>
+到 2026 年底，市場同時看到兩件事：①2026 全年 EPS 很漂亮 ②2027 年供給大增即將到來。這會造成「盈餘好但估值壓縮」的典型週期股頂部特徵。股價通常在盈餘高峰前 6-12 個月就開始下跌。
+</div>
+
+<div class="flow-box">
+2026 年底市場思維鏈：
+
+2026 EPS 很好（2.2-2.7 元）
+          ↓
+但 2027 年...
+  ├─ 日東紡 3 倍產能到位（2027H2）
+  ├─ 中國巨石 10 萬噸高端線投產
+  └─ 台玻 12 條 Low Dk 線全開
+          ↓
+供需翻轉風險 → 價格戰 → 毛利率壓縮
+          ↓
+2027 EPS 可能只剩 1.0-1.5 元
+          ↓
+∴ 市場提前壓縮 PE 倍數
+</div>
+
+<p style="margin-top:8px;font-size:.85em;color:var(--txt2)"><strong>旺宏(2337)前車之鑑</strong>：NOR Flash 週期高點 EPS 好看，但市場提前 6-12 個月反映供需反轉，股價在盈餘高峰前就開始下跌。當前分析 2337 結論：期望值 66.6 元 vs 現價 160 元 = 溢價 140%。</p>
+
+<p style="margin-top:6px;font-size:.85em"><strong>合理 PE 區間（2026 年底）</strong>：</p>
+<table>
+<tr><th>情境</th><th>PE 倍數</th><th>理由</th></tr>
+<tr><td>樂觀</td><td>30-35x</td><td>AI 需求超預期，2027 風險被忽視</td></tr>
+<tr><td>基準</td><td>22-28x</td><td>市場開始定價 2027 供給風險</td></tr>
+<tr><td>保守</td><td>15-20x</td><td>提前反映供給過剩 + AI 支出放緩</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ==============================
+     五、目標價矩陣
+     ============================== -->
+<div id="s5" class="section-title">五、2026 年底目標價矩陣</div>
+<div class="section-sub">EPS × PE = 目標價</div>
+
+<div class="card">
+<h3>完整矩陣（EPS × PE）</h3>
+<div class="card-body">
+<table>
+<tr><th></th><th>PE 15x</th><th>PE 20x</th><th>PE 25x</th><th>PE 30x</th><th>PE 35x</th></tr>
+<tr><td>EPS 1.79（保守）</td><td>27</td><td>36</td><td>45</td><td>54</td><td>63</td></tr>
+<tr><td>EPS 2.21（基準）</td><td>33</td><td>44</td><td><strong>55</strong></td><td><strong>66</strong></td><td>77</td></tr>
+<tr><td>EPS 2.67（樂觀）</td><td>40</td><td>53</td><td>67</td><td>80</td><td>93</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>三大情境結論</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>2026E EPS</th><th>PE</th><th>目標價</th><th>vs 現價 ~100 元</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">樂觀</td><td>2.67</td><td>32x</td><td><strong>85 元</strong></td><td style="color:var(--bear)">-15%</td></tr>
+<tr><td style="color:var(--neutral);font-weight:700">基準</td><td>2.21</td><td>25x</td><td><strong>55 元</strong></td><td style="color:var(--bear)">-45%</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">保守</td><td>1.79</td><td>18x</td><td><strong>32 元</strong></td><td style="color:var(--bear)">-68%</td></tr>
+</table>
+
+<div class="highlight-box" style="margin-top:12px">
+    <div style="font-size:.82em;color:var(--txt3)">加權期望值（樂觀 20% / 基準 55% / 保守 25%）</div>
+    <div class="big-num">~58 元</div>
+    <div class="big-label">vs 現價 ~100 元 → 下行空間 -42%</div>
+</div>
+
+<div class="tip danger" style="margin-top:10px">
+<b>即使樂觀情境也是虧損</b>
+三種情境下，沒有任何一種支持在現價 ~100 元買入能獲得正報酬。樂觀情境（AI 超預期 + 市場無視 2027 風險）也只到 85 元，仍虧 15%。
+</div>
+</div>
+</div>
+
+<!-- ==============================
+     六、世界局勢
+     ============================== -->
+<div id="s6" class="section-title">六、世界局勢影響</div>
+<div class="section-sub">關稅戰 + AI 資本支出 + 地緣供應鏈</div>
+
+<div class="card">
+<h3>有利因素</h3>
+<div class="card-body">
+<table>
+<tr><th>因素</th><th>影響</th></tr>
+<tr><td>美中關稅 145%</td><td>中國巨石等出口美國成本暴增，台灣（僅 10%）相對大幅受益</td></tr>
+<tr><td>AI 資本支出持續飆升</td><td>GB200 / MI400 需大量高階基板材料，需求面強勁</td></tr>
+<tr><td>缺貨至少延續到 2027H1</td><td>供需缺口結構性存在，台廠享替代溢價 1.5 年</td></tr>
+<tr><td>Low Dk 全球僅 4 家</td><td>寡占格局短期不會改變，進入門檻極高</td></tr>
+<tr><td>美台關稅僅 10%</td><td>台灣玻纖廠出口美國成本優勢明顯</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>不利因素</h3>
+<div class="card-body">
+<table>
+<tr><th>因素</th><th>影響</th></tr>
+<tr><td>2027H2 日東紡 3 倍產能</td><td>供需翻轉，替代需求縮水（最大風險）</td></tr>
+<tr><td>中國巨石 10 萬噸新線</td><td>高端市占 5% → 15-20%，中長期價格壓力</td></tr>
+<tr><td>AI 資本支出放緩風險</td><td>若 2026H2 科技巨頭縮減，需求端直接衰退</td></tr>
+<tr><td>IEEPA 關稅法律不確定性</td><td>最高法院裁定可能影響關稅架構</td></tr>
+<tr><td>台玻 12 條 Low Dk 線</td><td>瓜分富喬 Low Dk 市佔，直接競爭</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ==============================
+     七、週期時序圖
+     ============================== -->
+<div id="s7" class="section-title">七、日東紡轉單效益時序圖</div>
+<div class="section-sub">甜蜜期 → 平台期 → 消退期 → 結束</div>
+
+<div class="card">
+<h3>效益時間軸</h3>
+<div class="card-body">
+<table>
+<tr><th>階段</th><th>時間</th><th>效應</th><th>股價預期</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">甜蜜期</td><td>2025Q4 - 2026H1</td><td>缺貨最嚴重，漲價最猛，替代需求最旺</td><td>股價高點可能在此</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">平台期</td><td>2026H2</td><td>台玻新線投產分食、市場開始觀望</td><td>高位震盪，聰明錢離場</td></tr>
+<tr><td style="color:var(--danger);font-weight:700">消退期</td><td>2027H1</td><td>福隆嘉義廠量產漸放大</td><td>股價可能已提前反映下跌</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">結束期</td><td>2027H2</td><td>日東紡福島 3 倍 + 巨石高端線</td><td>題材完全消退</td></tr>
+</table>
+
+<div class="tip warn" style="margin-top:8px">
+<b>到 2026 年底，市場看到的是「甜蜜期已結束、消退期即將到來」</b>
+這正是為什麼即使 2026 EPS 好看，PE 仍會被壓縮的根本原因。
+</div>
+</div>
+</div>
+
+<!-- ==============================
+     八、底線結論
+     ============================== -->
+<div id="s8" class="section-title">八、底線結論</div>
+<div class="section-sub">現價已透支題材</div>
+
+<div class="card">
+<h3>最終判斷</h3>
+<div class="card-body">
+
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">2026 年底合理股價區間</div>
+        <div class="num" style="color:var(--bear)">45-85 元</div>
+        <div class="desc">中位數 ~58 元</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">現價 vs 加權期望值</div>
+        <div class="num" style="color:var(--bear)">-42%</div>
+        <div class="desc">100 元 → 58 元</div>
+    </div>
+</div>
+
+<table style="margin-top:10px">
+<tr><th>結論項目</th><th>內容</th></tr>
+<tr><td>日東紡轉單對富喬營收增量</td><td>基準 ~8.9 億（直接替代 3.4 億 + 漲價 5.5 億）</td></tr>
+<tr><td>佔 2026 預估營收比重</td><td>~10-11%</td></tr>
+<tr><td>EPS 增量</td><td>+0.33~0.36 元</td></tr>
+<tr><td>效益持續期間</td><td>2025Q4 至 2027H1（約 1.5-2 年）</td></tr>
+<tr><td>最大風險時間點</td><td>2027H2 — 日東紡 3 倍產能 + 巨石高端線</td></tr>
+<tr><td>受惠排名</td><td>建榮 &gt; 南亞 &gt; 台玻 &gt; <strong>富喬（第四）</strong></td></tr>
+<tr><td>合理進場價</td><td>50-65 元（2026E EPS 25x 以內）</td></tr>
+</table>
+
+<div class="tip danger" style="margin-top:10px">
+<b>核心結論</b>
+日東紡轉單對富喬是<strong>真實但有限期</strong>的利多。現價 ~100 元已充分反映甚至透支此題材。在受惠者中富喬排第四（建榮 &gt; 南亞 &gt; 台玻 &gt; 富喬），且富喬無法生產 T-Glass，吃到的是間接替代 + 漲價紅利。2027H2 之後題材將逐步消退。
+</div>
+
+<div class="tip info" style="margin-top:6px">
+<b>與九步驟報告結論一致</b>
+本備註的估價結論與 2026-03-23 完成的富喬九步驟深度調查一致：加權期望報酬 -27%，不建議在現價買入。日東紡轉單題材的量化分析進一步強化了這個結論。
+</div>
+
+</div>
+</div>
+
+<!-- ==============================
+     資料來源
+     ============================== -->
+<div class="card">
+<h3>資料來源與免責</h3>
+<div class="card-body">
+<p><strong>主要來源</strong>：富喬九步驟分析資料（6 管道 JSON + Step2-8 HTML）、日東紡 Integrated Report 2025、TechNews 科技新報、經濟日報、鉅亨網、永豐金豐雲學堂、TrendForce、Digitimes、花旗研究報告引述、Tax Foundation（關稅數據）</p>
+<p style="margin-top:4px"><strong>估算不確定性</strong>：日東紡電子材料事業中 T-Glass 精確佔比未能取得（可能佔電子材料營收 50-70%）；溢出訂單實際分配比例為推估；PE 倍數選擇帶有主觀判斷成分；週期股估值高度取決於市場情緒，極端樂觀或恐慌都可能讓股價大幅偏離基本面估值。</p>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 備註文件 / 日東紡轉單效益分析</p>
+    <p>建立日期：2026-03-23</p>
+    <p style="margin-top:4px">免責聲明：本備註僅供個人研究參考，不構成任何投資建議。估值模型含主觀假設，實際結果可能大幅偏離。</p>
+</div>
+
+</div>
+
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
