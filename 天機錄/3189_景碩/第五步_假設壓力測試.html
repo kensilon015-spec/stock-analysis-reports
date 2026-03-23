@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>景碩科技 (3189) — 第五步：假設壓力測試 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;font-size:.78em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center;font-size:.78em}
+td:first-child{text-align:left;font-weight:600}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.warn-card{border-left:4px solid var(--warn)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.cc{color:#2e7d32;font-weight:700}.ii{color:#c62828;font-weight:700}.nn{color:#7a7268}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.calc{font-family:'Fira Code',monospace;font-size:.78em;color:var(--txt2);background:rgba(0,0,0,.04);padding:8px 12px;border-radius:6px;margin:6px 0;line-height:1.8}
+.stress-pass{background:rgba(46,125,50,.08);border:1px solid rgba(46,125,50,.3);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:.82em}
+.stress-fail{background:rgba(198,40,40,.08);border:1px solid rgba(198,40,40,.3);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:.82em}
+.stress-warn{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.3);border-radius:6px;padding:6px 10px;margin:4px 0;font-size:.82em}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>景碩科技 (3189) — 第五步：假設壓力測試</h1>
+    <div class="sub">天機閣深度調查系統 v3.0</div>
+    <div class="desc">對第四步 ACH 的四組假說施加極端壓力，檢驗每個假說在最不利條件下是否仍能成立<br>v3.0 四次信心校準之第二次 — 原則：比 ACH 更嚴格更保守</div>
+    <div class="tags">
+        <span class="tag">壓力測試</span>
+        <span class="tag">2026-03-23</span>
+        <span class="tag">第二次信心校準</span>
+        <span class="tag">股價 380 元</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#base">A. 基準數據與壓力情境一覽</a>
+    <a href="#s1">B1. 毛利率未達預期壓力（H3 核心情境）</a>
+    <a href="#s2">B2. H1 超級循環可行性反向驗證</a>
+    <a href="#s3">B3. AI CapEx 放緩 + 台幣升值雙殺</a>
+    <a href="#s4">B4. 匯率敏感度分析</a>
+    <a href="#s5">B5. 晶碩分離估值 — 載板隱含估值合理性</a>
+    <a href="#s6">B6. 235 億 CapEx 折舊壓力</a>
+    <a href="#premortem">C. 事前驗屍法</a>
+    <a href="#blind">D. 盲點聲明</a>
+    <a href="#risk">E. 風險情報驗證卡</a>
+    <a href="#catalyst">F. 催化劑情報驗證卡</a>
+    <a href="#calibration">G. 第二次信心校準</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== A. 基準數據 ===== -->
+<div id="base" class="section-title">A. 基準數據與壓力情境一覽</div>
+<div class="section-sub">所有壓力計算的基準參數</div>
+
+<div class="card">
+<h3>A1. 基準數據表</h3>
+<div class="card-body">
+<div class="tip info">
+<b>基準數據（2025 實績 + 2026 共識）</b>
+<table>
+<tr><th>指標</th><th>2025 實績</th><th>2026E 共識</th><th>來源</th></tr>
+<tr><td style="text-align:left">營收（億）</td><td>393.51</td><td>451.2</td><td>finlab / 法人共識</td></tr>
+<tr><td style="text-align:left">毛利率</td><td>21.1%</td><td>25.7%</td><td>finlab / 法人預估</td></tr>
+<tr><td style="text-align:left">營業利益（億）</td><td>26.69</td><td>~54（推算）</td><td>疑點求證 / 推算</td></tr>
+<tr><td style="text-align:left">營業費用（億）</td><td>~56.3</td><td>~62（+10%估）</td><td>推算</td></tr>
+<tr><td style="text-align:left">稅後純益（億）</td><td>15.95</td><td>33-42</td><td>finlab / 推算</td></tr>
+<tr><td style="text-align:left">EPS</td><td>3.51</td><td>6.3-8.0</td><td>法人共識</td></tr>
+<tr><td style="text-align:left">總股本（億股）</td><td colspan="2">5.27</td><td>公開資訊</td></tr>
+<tr><td style="text-align:left">淨美元曝險</td><td colspan="2">~30%（營收 USD 70-80%, 成本 USD 50%）</td><td>法說會</td></tr>
+<tr><td style="text-align:left">晶碩 EPS 貢獻</td><td colspan="2">~1.5-2.0 元（估）</td><td>疑點求證推算</td></tr>
+<tr><td style="text-align:left">台幣匯率</td><td colspan="2">~32.0（2026/03/23）</td><td>即時匯率</td></tr>
+</table>
+</div>
+
+<table>
+<tr><th style="width:6%">#</th><th style="width:30%;text-align:left">壓力情境</th><th style="width:12%">壓力等級</th><th style="width:12%">主攻假說</th><th style="width:40%;text-align:left">來源依據</th></tr>
+<tr><td>S1</td><td style="text-align:left">毛利率僅回升至 23%（未達 25.7%）</td><td><span class="light yellow"></span>中壓</td><td>H2</td><td style="text-align:left">ACH F3 第 1 項</td></tr>
+<tr><td>S2</td><td style="text-align:left">H1 超級循環全部成立（EPS 14.3）</td><td><span class="light green"></span>反向驗證</td><td>H1 驗證</td><td style="text-align:left">ACH F3 第 2 項</td></tr>
+<tr><td>S3</td><td style="text-align:left">AI CapEx 放緩 30% + 台幣升值至 29</td><td><span class="light red"></span>高壓</td><td>H1, H2</td><td style="text-align:left">Fortune 報導 + ACH 敏感度 KA1</td></tr>
+<tr><td>S4</td><td style="text-align:left">匯率敏感度（每 1 元台幣升值）</td><td><span class="light yellow"></span>參數</td><td>全假說</td><td style="text-align:left">ACH F3 第 4 項</td></tr>
+<tr><td>S5</td><td style="text-align:left">晶碩分離估值 → 載板隱含 PE</td><td><span class="light red"></span>揭露</td><td>H3</td><td style="text-align:left">ACH F3 第 5 項</td></tr>
+<tr><td>S6</td><td style="text-align:left">235 億 CapEx 折舊壓力</td><td><span class="light red"></span>高壓</td><td>H1, H2</td><td style="text-align:left">ACH F3 第 6 項</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== S1: 毛利率未達預期 ===== -->
+<div id="s1" class="section-title">B1. 毛利率未達預期壓力</div>
+<div class="section-sub">壓力等級：<span class="light yellow"></span>中壓 | 主攻假說：H2 穩健成長</div>
+
+<div class="card">
+<h3>S1. 毛利率 23% vs 共識 25.7%</h3>
+<div class="card-body">
+<p><strong>情境假設</strong>：BT 載板競爭壓力持續 + 匯率不利 + T-Glass 成本轉嫁不完全，毛利率僅回升至 23%（未達法人預估 25.7%）。</p>
+
+<div class="calc">
+【基準情境 — 共識毛利率 25.7%】<br>
+營收 451.2 億 × 毛利率 25.7% = 毛利 115.96 億<br>
+營業費用（估）62 億 → 營業利益 53.96 億<br>
+稅後純益（×60%）= 32.38 → EPS = 32.38 / 5.27 = <strong>6.14 元</strong><br>
+380 元 / 6.14 = 前瞻 PE <strong>61.9 倍</strong><br>
+<br>
+【壓力情境 — 毛利率僅 23%】<br>
+營收 451.2 億 × 毛利率 23% = 毛利 103.78 億<br>
+毛利差額：115.96 - 103.78 = <strong>-12.18 億</strong><br>
+稅後影響：-12.18 × 0.78 = <strong>-9.50 億</strong><br>
+調整後 EPS：6.14 - (9.50/5.27) = 6.14 - 1.80 = <strong>4.34 元</strong><br>
+380 元 / 4.34 = 前瞻 PE <strong>87.6 倍</strong>
+</div>
+
+<div class="stress-fail">
+<strong>壓力結果：H2 勉強存活，但 380 元不合理</strong><br>
+EPS 4.34 元對應 PE 87.6 倍，遠超 IC 載板歷史合理區間（15-35 倍）。即使以 H2「穩健成長」最樂觀端（8 元）計算，PE 仍達 47.5 倍。毛利率每低於共識 1 個百分點，EPS 減少約 0.67 元。
+</div>
+</div>
+</div>
+
+<!-- ===== S2: H1 反向驗證 ===== -->
+<div id="s2" class="section-title">B2. H1 超級循環可行性反向驗證</div>
+<div class="section-sub">壓力等級：<span class="light green"></span>反向驗證 | 唯一讓 380 元合理的情境</div>
+
+<div class="card">
+<h3>S2. 高盛全部假設成立（EPS 14.3）</h3>
+<div class="card-body">
+<p><strong>情境假設</strong>：GPU 載板市佔 5%→10%、ABF 供需缺口達 42%（2028）、毛利率突破 28%+、景碩在 NVIDIA CPU 供應鏈市佔 →50%。</p>
+
+<div class="calc">
+【高盛情境 — EPS 14.3 元】<br>
+380 元 / 14.3 = 前瞻 PE <strong>26.6 倍</strong> ← 唯一合理 PE<br>
+若給 30 倍 PE：合理價 = 14.3 × 30 = <strong>429 元</strong>（+13%）<br>
+若給 25 倍 PE：合理價 = 14.3 × 25 = <strong>357.5 元</strong>（-6%）<br>
+<br>
+【高盛假設必要條件檢查】<br>
+1. GPU 市佔 5%→10%：需 NVIDIA 擴大對景碩採購 ← <span class="fias-a">A</span> 無公開訂單確認<br>
+2. ABF 供需缺口 42%：需 AI 需求加速 + 產能無法跟上 ← <span class="fias-i">I</span> 基於模型推算<br>
+3. 毛利率 28%+：需高階 ABF 佔比大幅提升 + 匯率穩定 ← <span class="fias-a">A</span> 2025 最高僅 22.1%<br>
+4. NVIDIA CPU 市佔 50%：需擠壓 Ibiden/欣興份額 ← <span class="fias-s">S</span> 景碩市佔僅 4%
+</div>
+
+<div class="stress-warn">
+<strong>壓力結果：H1 在「證據品質」面前極其脆弱</strong><br>
+4 項核心假設中，F 級（事實）= 0 項，I 級 = 1 項，A 級 = 2 項，S 級 = 1 項。高盛情境的假設基礎主要建立在推論和假設之上。<br>
+<strong>關鍵矛盾</strong>：景碩 2025 毛利率最高僅 22.1%（Q4），高盛要求 28%+ 需要跨越 6 個百分點 — 這在載板產業歷史上極為罕見，除非產品組合發生根本性轉變。
+</div>
+</div>
+</div>
+
+<!-- ===== S3: AI CapEx 放緩 + 匯率 ===== -->
+<div id="s3" class="section-title">B3. AI CapEx 放緩 + 台幣升值雙殺</div>
+<div class="section-sub">壓力等級：<span class="light red"></span>高壓 | 主攻假說：H1, H2</div>
+
+<div class="card">
+<h3>S3. 極端情境量化</h3>
+<div class="card-body">
+<p><strong>情境假設</strong>：2026H2 AI 資本支出成長率從 36% 降至 17%（Fortune 報導），科技巨頭估值修正 15-20%（板塊輪動已開始），台幣從 32 升值至 29。</p>
+
+<div class="calc">
+【營收衝擊】<br>
+AI 需求降溫 → ABF 載板需求低於預期 15%<br>
+共識營收 451.2 億 × 0.85 = 383.5 億<br>
+匯率影響：台幣 32→29（升值 9.4%），淨 USD 曝險 30%<br>
+匯率營收衝擊：383.5 × 30% × 9.4% = -10.81 億<br>
+調整營收：383.5 - 10.81 = <strong>372.7 億</strong>（vs 共識 451.2，-17.4%）<br>
+<br>
+【獲利衝擊 — 假設毛利率僅維持 21%（不改善）】<br>
+毛利 = 372.7 × 21% = 78.27 億<br>
+營業費用 62 億 → 營業利益 16.27 億<br>
+稅後純益 = 16.27 × 0.60 = 9.76 億<br>
+EPS = 9.76 / 5.27 = <strong>1.85 元</strong><br>
+380 元 / 1.85 = 前瞻 PE <strong>205 倍</strong>
+</div>
+
+<div class="stress-fail">
+<strong>壓力結果：H1/H2 完全崩潰，H4 確認</strong><br>
+在 AI 放緩 + 匯率升值的雙殺下，EPS 僅 1.85 元，380 元完全不可辯護。此情境下合理股價約 46-65 元（PE 25-35 倍）。<br>
+<strong>發生機率評估</strong>：AI CapEx 放緩（中，25-35%），台幣同時大幅升值至 29（低，10-15%），雙殺同時發生機率約 5-8%。但「部分放緩 + 部分升值」的溫和版本機率較高（20-30%）。
+</div>
+</div>
+</div>
+
+<!-- ===== S4: 匯率敏感度 ===== -->
+<div id="s4" class="section-title">B4. 匯率敏感度分析</div>
+<div class="section-sub">壓力等級：<span class="light yellow"></span>參數 | 影響所有假說</div>
+
+<div class="card">
+<h3>S4. 每 1 元台幣升值的 EPS 衝擊</h3>
+<div class="card-body">
+<div class="calc">
+【匯率敏感度模型】<br>
+2026E 營收 451.2 億 × 淨 USD 曝險 30% = 135.36 億<br>
+台幣每升值 1 元（32→31）：升值幅度 3.13%<br>
+營收衝擊：135.36 × 3.13% = 4.24 億<br>
+假設直接影響毛利（成本端部分抵銷，淨影響約 70%）：4.24 × 70% = 2.97 億<br>
+稅後衝擊：2.97 × 0.78 = 2.31 億<br>
+<strong>EPS 衝擊：2.31 / 5.27 = -0.44 元 / 每 1 元台幣升值</strong>
+</div>
+
+<table>
+<tr><th>台幣匯率</th><th>變動</th><th>EPS 衝擊</th><th>調整 EPS（基準 7 元）</th><th>380 元隱含 PE</th></tr>
+<tr><td>33（貶值）</td><td>+1</td><td style="color:var(--bull)">+0.44</td><td>7.44</td><td>51.1x</td></tr>
+<tr><td>32（現行）</td><td>—</td><td>—</td><td>7.00</td><td>54.3x</td></tr>
+<tr><td>31</td><td>-1</td><td style="color:var(--bear)">-0.44</td><td>6.56</td><td>57.9x</td></tr>
+<tr><td>30</td><td>-2</td><td style="color:var(--bear)">-0.88</td><td>6.12</td><td>62.1x</td></tr>
+<tr><td>29</td><td>-3</td><td style="color:var(--bear)">-1.32</td><td>5.68</td><td>66.9x</td></tr>
+</table>
+
+<div class="tip warn">
+<b>匯率是隱形的獲利殺手</b>
+台幣每升值 1 元，景碩 EPS 減少約 0.44 元（佔共識 EPS 的 ~6%）。若台幣從目前 32 升值至 30，EPS 將減少 0.88 元（-12.6%），前瞻 PE 從 54 倍升至 62 倍。2025Q3 毛利率 18.96%（全年最低）正是台幣升值所致的前例。
+</div>
+</div>
+</div>
+
+<!-- ===== S5: 晶碩分離估值 ===== -->
+<div id="s5" class="section-title">B5. 晶碩分離估值 — 載板隱含估值合理性</div>
+<div class="section-sub">壓力等級：<span class="light red"></span>揭露 | 主攻假說：H3 的核心支撐</div>
+
+<div class="card">
+<h3>S5. SOTP 分部加總估值</h3>
+<div class="card-body">
+<p><strong>方法</strong>：將晶碩光學獨立估值後扣除，看載板業務的隱含估值是否合理。</p>
+
+<div class="calc">
+【晶碩光學估值】<br>
+晶碩 2025 EPS 23.47 元 × 景碩持股 36.81%<br>
+晶碩 2025 純益 ≈ 23.47 × 晶碩股本（估約 2 億股）= ~46.9 億<br>
+景碩認列（按比例）≈ 46.9 × 36.81% ≈ 17.26 億<br>
+每股貢獻 = 17.26 / 5.27 = <strong>3.28 元</strong>（含業外投資收益）<br>
+<br>
+但景碩認列的是合併損益（非按比例），實際更複雜。<br>
+保守估計晶碩對景碩合併 EPS 貢獻：<strong>1.5-2.5 元</strong>（佔 EPS 3.51 的 43-71%）<br>
+<br>
+【晶碩隱形眼鏡業：PE 25-30 倍（穩健消費類）】<br>
+晶碩 EPS 貢獻 2.0 元 × PE 28 = 每股價值 <strong>56 元</strong><br>
+<br>
+【載板業務隱含估值】<br>
+景碩股價 380 - 晶碩價值 56 = 載板隱含價值 <strong>324 元</strong><br>
+載板 EPS = 共識 7.0 - 晶碩 2.0 = <strong>5.0 元</strong><br>
+載板隱含 PE = 324 / 5.0 = <strong>64.8 倍</strong>
+</div>
+
+<div class="stress-fail">
+<strong>壓力結果：載板隱含 PE 64.8 倍 — 荒謬等級</strong><br>
+全球主要 IC 載板廠歷史 PE 區間：Ibiden 20-35 倍、欣興 15-30 倍、南電 12-25 倍。景碩載板業務的隱含 PE 64.8 倍是同業上限的 2-3 倍。<br>
+<strong>即使用 2026E 最樂觀的載板 EPS 8 元（扣晶碩）= 6 元</strong>：324/6 = 54 倍，仍遠超合理範圍。<br>
+<strong>結論</strong>：市場要么（a）給了晶碩過低的估值，要么（b）對載板業務賦予了超級循環等級的溢價 — 但 ACH 顯示 H1 僅有 10% 機率。
+</div>
+</div>
+</div>
+
+<!-- ===== S6: CapEx 折舊 ===== -->
+<div id="s6" class="section-title">B6. 235 億 CapEx 折舊壓力</div>
+<div class="section-sub">壓力等級：<span class="light red"></span>高壓 | 主攻假說：H1, H2 的中期風險</div>
+
+<div class="card">
+<h3>S6. 折舊對損益兩平點的影響</h3>
+<div class="card-body">
+<div class="calc">
+【折舊估算】<br>
+235 億 CapEx × 假設 10 年折舊 = 每年新增折舊 <strong>23.5 億</strong><br>
+分年到位（2026: 80 億 → 折舊 8 億，2027-2028 陸續增加）<br>
+<br>
+【2027 年折舊衝擊（假設 160 億已投入）】<br>
+新增年折舊 ≈ 16 億<br>
+加上 K6 廠既有折舊 ≈ 25 億/年<br>
+合計固定折舊 ≈ 41 億/年<br>
+稅後 EPS 衝擊 = 16 × 0.78 / 5.27 = <strong>-2.37 元</strong>（vs 基準）<br>
+<br>
+【損益兩平營收估算】<br>
+若營業費用含新折舊 ≈ 78 億/年（62+16），毛利率 25.7%<br>
+損益兩平營收 = 78 / 0.257 = <strong>303.5 億</strong><br>
+2025 年營收 393.51 億 — 安全邊際 = (393.51-303.5)/393.51 = <strong>22.9%</strong>
+</div>
+
+<div class="stress-warn">
+<strong>壓力結果：折舊是雙面刃</strong><br>
+235 億投入後，損益兩平營收約 303 億（目前營收 394 億，安全邊際 23%）。若 2027 年以後 AI 需求放緩導致營收回落至 350 億以下，景碩將再次面臨巨額折舊壓力 — 重演 K6 廠的費用暴增困境。<br>
+<strong>正面解讀</strong>：若 2027 產能擴充 25% 順利帶來營收增長至 550 億+，折舊佔比將自然攤薄。關鍵在於需求是否匹配產能。
+</div>
+</div>
+</div>
+
+<!-- ===== C. 事前驗屍法 ===== -->
+<div id="premortem" class="section-title">C. 事前驗屍法</div>
+<div class="section-sub">「假設 12 個月後（2027年3月）虧損 40%（股價跌至 228 元），回頭看原因是什麼？」</div>
+
+<div class="card">
+<h3>C1. 事前驗屍 — 9 個可能原因</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:5%">#</th><th style="width:28%;text-align:left">可能原因</th><th style="width:7%">類別</th><th style="width:10%">機率<br>(1-5)</th><th style="width:10%">衝擊<br>(1-5)</th><th style="width:10%">風險<br>分數</th><th style="width:30%;text-align:left">預警信號</th></tr>
+<tr style="background:rgba(198,40,40,.06)">
+    <td>PM1</td>
+    <td style="text-align:left;font-weight:400">ABF 報價 Q3 開始下跌（週期反轉）</td>
+    <td>產業</td>
+    <td>3</td><td>5</td><td style="font-weight:900;color:var(--bear)">15</td>
+    <td style="text-align:left;font-weight:400">產業報價指標 QoQ 轉負、Ibiden/欣興下修指引</td>
+</tr>
+<tr style="background:rgba(198,40,40,.06)">
+    <td>PM2</td>
+    <td style="text-align:left;font-weight:400">法人大幅下調 2027 EPS 預估</td>
+    <td>估值</td>
+    <td>3</td><td>5</td><td style="font-weight:900;color:var(--bear)">15</td>
+    <td style="text-align:left;font-weight:400">Factset 共識連續 2 次下調、目標價調降</td>
+</tr>
+<tr>
+    <td>PM3</td>
+    <td style="text-align:left;font-weight:400">全球科技股估值修正（AI 泡沫疑慮）</td>
+    <td>宏觀</td>
+    <td>3</td><td>4</td><td style="font-weight:700">12</td>
+    <td style="text-align:left;font-weight:400">NASDAQ -15%+、半導體 ETF 跌破 MA200</td>
+</tr>
+<tr>
+    <td>PM4</td>
+    <td style="text-align:left;font-weight:400">AI 資本支出 2026H2 大幅低於預期</td>
+    <td>需求</td>
+    <td>2</td><td>5</td><td style="font-weight:700">10</td>
+    <td style="text-align:left;font-weight:400">NVIDIA 下修指引、CSP 縮減 CapEx 計畫</td>
+</tr>
+<tr>
+    <td>PM5</td>
+    <td style="text-align:left;font-weight:400">中國載板廠大幅降價搶單（BT+低階ABF）</td>
+    <td>競爭</td>
+    <td>3</td><td>3</td><td>9</td>
+    <td style="text-align:left;font-weight:400">BT 月營收 YoY 轉負、低階 ABF 報價跌 10%+</td>
+</tr>
+<tr>
+    <td>PM6</td>
+    <td style="text-align:left;font-weight:400">台幣升值至 29-30 壓縮毛利率</td>
+    <td>匯率</td>
+    <td>2</td><td>3</td><td>6</td>
+    <td style="text-align:left;font-weight:400">美元指數走弱、央行干預減少</td>
+</tr>
+<tr>
+    <td>PM7</td>
+    <td style="text-align:left;font-weight:400">CapEx 嚴重延遲（設備交期/良率問題）</td>
+    <td>執行</td>
+    <td>2</td><td>3</td><td>6</td>
+    <td style="text-align:left;font-weight:400">法說會承認進度延遲、實際 CapEx 遠低預算</td>
+</tr>
+<tr>
+    <td>PM8</td>
+    <td style="text-align:left;font-weight:400">大客戶轉單至競爭對手</td>
+    <td>客戶</td>
+    <td>1</td><td>5</td><td>5</td>
+    <td style="text-align:left;font-weight:400">NVIDIA/AMD 供應鏈名單異動、月營收驟降</td>
+</tr>
+<tr>
+    <td>PM9</td>
+    <td style="text-align:left;font-weight:400">晶碩成長停滯（營收 YoY < 3%）</td>
+    <td>子公司</td>
+    <td>1</td><td>3</td><td>3</td>
+    <td style="text-align:left;font-weight:400">晶碩季報營收/毛利率下滑、隱形眼鏡市場飽和</td>
+</tr>
+</table>
+
+<div class="tip danger">
+<b>風險分數 ≥ 15 的項目（必須有應對方案）</b>
+<strong>PM1（ABF 報價反轉）</strong>：設定「ABF 報價連續 2 季環比下跌」為止損觸發條件。一旦觸發，H3 機率升至 60%+，建議減碼 50%。<br>
+<strong>PM2（法人下調預估）</strong>：設定「Factset 共識 EPS 下調超過 15%」為警戒線。法人預估是股價的錨，錨一旦鬆動，估值修正將迅速而劇烈。
+</div>
+</div>
+</div>
+
+<!-- ===== D. 盲點聲明 ===== -->
+<div id="blind" class="section-title">D. 盲點聲明</div>
+<div class="section-sub">誠實列出本報告無法取得的關鍵資料</div>
+
+<div class="card">
+<h3>D1. 資料缺口與影響評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:30%;text-align:left">缺失資料</th><th style="width:15%">影響嚴重度</th><th style="width:50%;text-align:left">對結論的影響</th></tr>
+<tr>
+    <td>B1</td>
+    <td style="text-align:left;font-weight:400">2025 年母公司個體財報</td>
+    <td style="color:var(--bear);font-weight:700">高</td>
+    <td style="text-align:left;font-weight:400">無法精確拆分載板 vs 晶碩的獨立損益，SOTP 估值(S5)的晶碩 EPS 貢獻為推算值</td>
+</tr>
+<tr>
+    <td>B2</td>
+    <td style="text-align:left;font-weight:400">管理費用 33.81 億的精確組成</td>
+    <td style="color:var(--warn);font-weight:700">中</td>
+    <td style="text-align:left;font-weight:400">無法區分 K6 折舊 vs 其他費用，折舊收斂速度預測存在不確定性</td>
+</tr>
+<tr>
+    <td>B3</td>
+    <td style="text-align:left;font-weight:400">景碩 GPU 載板實際出貨量/市佔率</td>
+    <td style="color:var(--bear);font-weight:700">高</td>
+    <td style="text-align:left;font-weight:400">高盛 5%→10% 假設無法獨立驗證，H1 機率評估可能偏誤</td>
+</tr>
+<tr>
+    <td>B4</td>
+    <td style="text-align:left;font-weight:400">ABF 載板即時合約報價</td>
+    <td style="color:var(--warn);font-weight:700">中</td>
+    <td style="text-align:left;font-weight:400">法人預估 5-10%/季漲價，但無法確認實際談判結果</td>
+</tr>
+<tr>
+    <td>B5</td>
+    <td style="text-align:left;font-weight:400">景碩客戶集中度具體數字</td>
+    <td style="color:var(--warn);font-weight:700">中</td>
+    <td style="text-align:left;font-weight:400">前五大客戶佔比不明，大客戶轉單風險(PM8)難以量化</td>
+</tr>
+</table>
+
+<div class="tip info">
+<b>盲點對整體信心的影響</b>
+B1 和 B3 為高嚴重度缺口，直接影響 H1 機率和 SOTP 估值的可靠性。建議在第六步評審團中額外加權這兩項不確定性。整體而言，盲點使分析結論信心度從基準 100% 下調至約 <strong>75-80%</strong>。
+</div>
+</div>
+</div>
+
+<!-- ===== E. 風險情報驗證卡 ===== -->
+<div id="risk" class="section-title">E. 風險情報驗證卡</div>
+<div class="section-sub">對主要風險進行多管道情報交叉驗證</div>
+
+<div class="card">
+<h3>R1. ABF 載板週期反轉風險</h3>
+<div class="card-body">
+<table>
+<tr><td style="width:25%">情報來源</td><td style="text-align:left">管道 1: TrendForce 載板價格追蹤 <span class="fias-f">F</span> / 管道 2: Fortune AI CapEx 報導 <span class="fias-i">I</span></td></tr>
+<tr><td>前置條件</td><td style="text-align:left">AI 資本支出成長率降至 &lt;20% + 多家載板廠同步擴產到位</td></tr>
+<tr><td>加速因子</td><td style="text-align:left">DeepSeek 效應（低成本 AI）、科技巨頭估值修正引發 CapEx 縮減</td></tr>
+<tr><td>抑制因子</td><td style="text-align:left">T-Glass 瓶頸限制供給（缺口 10-20%），新產能 2027 年才到位</td></tr>
+<tr><td>發生機率</td><td style="text-align:left"><strong>中（25-40%）</strong>— 2026H1 機率低（T-Glass 限制），2027 後機率顯著上升</td></tr>
+<tr><td>影響幅度</td><td style="text-align:left">股價 <strong>-30~-50%</strong>，持續中期（6-18 個月），部分可恢復</td></tr>
+<tr><td>期望損失</td><td style="text-align:left">32.5% × 40% = <strong>-13%</strong></td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>R2. AI 資本支出放緩風險</h3>
+<div class="card-body">
+<table>
+<tr><td style="width:25%">情報來源</td><td style="text-align:left">管道 1: Fortune 報導 — 成長率 Q4 降至 25%，2027 僅 17% <span class="fias-i">I</span> / 管道 2: 高盛預估 $5390 億 +36% <span class="fias-i">I</span></td></tr>
+<tr><td>前置條件</td><td style="text-align:left">AI 應用變現不及預期、企業開始重新評估 AI 投資 ROI</td></tr>
+<tr><td>加速因子</td><td style="text-align:left">全球經濟衰退、利率維持高位、DeepSeek 證明低成本 AI 可行</td></tr>
+<tr><td>抑制因子</td><td style="text-align:left">過去兩年共識預估均偏低（原估 20%，實際超過 50%），AI 軍備競賽邏輯</td></tr>
+<tr><td>發生機率</td><td style="text-align:left"><strong>中低（20-30%）</strong>— 絕對金額仍創新高，但成長率確實趨緩</td></tr>
+<tr><td>影響幅度</td><td style="text-align:left">股價 <strong>-20~-35%</strong>，持續中期，部分可恢復</td></tr>
+<tr><td>期望損失</td><td style="text-align:left">25% × 27.5% = <strong>-6.9%</strong></td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>R3. 估值修正風險（PE 壓縮）</h3>
+<div class="card-body">
+<table>
+<tr><td style="width:25%">情報來源</td><td style="text-align:left">管道 1: 歷史 PE 區間分析 <span class="fias-f">F</span> / 管道 2: 板塊輪動報導 <span class="fias-i">I</span></td></tr>
+<tr><td>前置條件</td><td style="text-align:left">市場風格從成長股輪動至價值股，或半導體估值普遍修正</td></tr>
+<tr><td>加速因子</td><td style="text-align:left">升息、地緣風險升溫、科技巨頭財報不及預期</td></tr>
+<tr><td>抑制因子</td><td style="text-align:left">AI 題材持續發酵、台股資金充沛（國安基金/壽險）</td></tr>
+<tr><td>發生機率</td><td style="text-align:left"><strong>高（50-65%）</strong>— 前瞻 PE 47-60 倍在 12 個月內修正至 25-35 倍是高度合理的</td></tr>
+<tr><td>影響幅度</td><td style="text-align:left">若 PE 從 54 倍修正至 30 倍：380 × (30/54) = <strong>211 元（-44%）</strong></td></tr>
+<tr><td>期望損失</td><td style="text-align:left">57.5% × 44% = <strong>-25.3%</strong></td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== F. 催化劑驗證卡 ===== -->
+<div id="catalyst" class="section-title">F. 催化劑情報驗證卡</div>
+<div class="section-sub">對正面催化劑進行同等嚴格的驗證</div>
+
+<div class="card">
+<h3>C1. ABF 載板漲價循環</h3>
+<div class="card-body">
+<table>
+<tr><td style="width:25%">情報來源</td><td style="text-align:left">管道 1: TPCA — BT/ABF 自 Q4 起漲價 <span class="fias-f">F</span> / 管道 2: CMoney — 高階漲幅 30-40% <span class="fias-i">I</span></td></tr>
+<tr><td>必要條件</td><td style="text-align:left">T-Glass 持續短缺 + AI 需求維持強勁 + 供給擴產受限</td></tr>
+<tr><td>加速因子</td><td style="text-align:left">NVIDIA Rubin 平台推出、20 層以上 ABF 需求爆發</td></tr>
+<tr><td>阻礙因子</td><td style="text-align:left">Nittobo 新產能 2026H2 到位緩解瓶頸、客戶回推漲價</td></tr>
+<tr><td>實現機率</td><td style="text-align:left"><strong>高（60-70%）</strong>— 已在進行中，短期確定性高</td></tr>
+<tr><td>影響幅度</td><td style="text-align:left">毛利率每提升 1ppt → EPS +0.67 元。若漲價帶動毛利率至 25%+ → EPS 可達 6.5-7.5 元</td></tr>
+<tr><td>Price-in 程度</td><td style="text-align:left"><strong>70-80%</strong>（法人共識 25.7% 已假設漲價成功）</td></tr>
+<tr><td>潛在超額收益</td><td style="text-align:left">65% × (+10%) × (1-75%) = <strong>+1.6%</strong>（已大部分 price-in）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>C2. 235 億 CapEx 產能釋放</h3>
+<div class="card-body">
+<table>
+<tr><td style="width:25%">情報來源</td><td style="text-align:left">管道 1: 重大訊息公告 <span class="fias-f">F</span> / 管道 2: 法說會 — 2027 產能 +25% <span class="fias-i">I</span></td></tr>
+<tr><td>必要條件</td><td style="text-align:left">設備如期到位 + 良率達標 + 客戶訂單跟上產能</td></tr>
+<tr><td>阻礙因子</td><td style="text-align:left">T-Glass 瓶頸限制產能爬坡、設備交期延遲</td></tr>
+<tr><td>實現機率</td><td style="text-align:left"><strong>中（35-50%）</strong>— 資金已核准，但執行存在不確定性</td></tr>
+<tr><td>影響幅度</td><td style="text-align:left">若 2027 產能 +25%且滿載：營收可達 550-600 億，EPS 10-12 元</td></tr>
+<tr><td>Price-in 程度</td><td style="text-align:left"><strong>50-60%</strong>（法人已部分反映 2027 展望）</td></tr>
+<tr><td>潛在超額收益</td><td style="text-align:left">42.5% × (+30%) × (1-55%) = <strong>+5.7%</strong></td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== G. 第二次信心校準 ===== -->
+<div id="calibration" class="section-title">G. 第二次信心校準</div>
+<div class="section-sub">壓力測試後 vs ACH 初始信心的調整</div>
+
+<div class="card">
+<h3>G1. 信心校準結果</h3>
+<div class="card-body">
+
+<table>
+<tr><th>假說</th><th>ACH 初始</th><th>壓力測試後</th><th>變動</th><th>調整原因</th></tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H1 超級循環</td>
+    <td>10%</td>
+    <td style="font-weight:700;color:var(--bear)">5%</td>
+    <td style="color:var(--bear)">-5%</td>
+    <td style="text-align:left;font-weight:400">S2 揭示高盛假設 FIAS 品質極低（0 個 F 級），S5 載板隱含 PE 64.8 倍荒謬</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H2 穩健成長</td>
+    <td>30%</td>
+    <td style="font-weight:700;color:var(--accent)">25%</td>
+    <td style="color:var(--bear)">-5%</td>
+    <td style="text-align:left;font-weight:400">S1 顯示即使達共識 EPS，380 元 PE 仍達 54 倍；毛利率若僅 23% 則 PE 87 倍</td>
+</tr>
+<tr style="background:rgba(212,160,23,.08)">
+    <td style="font-weight:700;text-align:left">H3 估值過高</td>
+    <td>40%</td>
+    <td style="font-weight:900;color:var(--warn)">45%</td>
+    <td style="color:var(--bull)">+5%</td>
+    <td style="text-align:left;font-weight:400">S5 SOTP 分析確認載板隱含 PE 荒謬；R3 估值修正期望損失高達 -25%</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H4 週期反轉</td>
+    <td>20%</td>
+    <td style="font-weight:700;color:var(--bear)">25%</td>
+    <td style="color:var(--bull)">+5%</td>
+    <td style="text-align:left;font-weight:400">S3 雙殺情境下 EPS 僅 1.85 元；S6 折舊壓力使安全邊際僅 23%</td>
+</tr>
+</table>
+
+<div class="grid4">
+    <div class="mini-card bull-card">
+        <div class="title">H1 超級循環</div>
+        <div class="num" style="color:var(--bull)">5%</div>
+        <div class="desc">高盛假設無 F 級支撐</div>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--accent)">
+        <div class="title">H2 穩健成長</div>
+        <div class="num" style="color:var(--accent)">25%</div>
+        <div class="desc">基本面 OK，但 380 PE 過高</div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">H3 估值過高</div>
+        <div class="num" style="color:var(--warn);font-size:1.5em">45%</div>
+        <div class="desc">SOTP 分析強力確認</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">H4 週期反轉</div>
+        <div class="num" style="color:var(--bear)">25%</div>
+        <div class="desc">折舊+雙殺風險不可忽略</td>
+    </div>
+</div>
+
+<div class="tip danger">
+<b>壓力測試後的核心結論</b>
+<strong>H3+H4 合計 70%（上升自 ACH 的 60%）</strong>：壓力測試進一步強化了「380 元過貴」的判斷。<br>
+<strong>加權期望股價修正</strong>：<br>
+0.05 × 525 + 0.25 × 300 + 0.45 × 220 + 0.25 × 160 = 26.25 + 75 + 99 + 40 = <strong>240.25 元</strong>（較 ACH 的 262.5 元再下修 8.5%，較現價 380 元下行 37%）。<br>
+<strong>風險期望值合計</strong>：R1(-13%) + R2(-6.9%) + R3(-25.3%) = <strong>-45.2%</strong>（三大風險的合計期望損失）。<br>
+<strong>催化劑期望值合計</strong>：C1(+1.6%) + C2(+5.7%) = <strong>+7.3%</strong>（正面催化劑大多已 price-in）。<br>
+<strong>風險/報酬比</strong>：-45.2% vs +7.3% = <strong>6.2 : 1</strong>（每承受 6.2 元下行風險，僅獲得 1 元上行報酬）。
+</div>
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 第五步：假設壓力測試</p>
+    <p>報告日期：2026-03-23 | 資料截止：2026-03-23 | 股價基準：380 元</p>
+    <p>第二次信心校準：H3(45%) &gt; H2(25%) = H4(25%) &gt; H1(5%)</p>
+    <p>加權期望股價：240.25 元（較現價下行 37%）| 風險/報酬比 6.2:1</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

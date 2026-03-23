@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>景碩科技 (3189) — 第四步：ACH 競爭假說分析 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;font-size:.78em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center;font-size:.78em}
+td:first-child{text-align:left;font-weight:600}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.warn-card{border-left:4px solid var(--warn)}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.cc{color:#2e7d32;font-weight:700}.ii{color:#c62828;font-weight:700}.nn{color:#7a7268}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>景碩科技 (3189) — 第四步：ACH 競爭假說分析</h1>
+    <div class="sub">天機閣深度調查系統 v3.0</div>
+    <div class="desc">Analysis of Competing Hypotheses — 用 20 項關鍵證據對 4 組假說進行嚴格一致性矩陣評估<br>ACH 核心原則：聚焦「矛盾」而非「支持」，嘗試否證而非驗證</div>
+    <div class="tags">
+        <span class="tag">ACH 方法論</span>
+        <span class="tag">2026-03-23</span>
+        <span class="tag">v3.0 首次信心校準</span>
+        <span class="tag">股價 380 元</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#hypo">A. 四組競爭假說定義</a>
+    <a href="#evidence">B. 20 項關鍵證據清單</a>
+    <a href="#matrix">C. 證據一致性矩陣</a>
+    <a href="#scoring">D. 假說評分與排序</a>
+    <a href="#diagnostic">E. 關鍵鑑別證據</a>
+    <a href="#conclusion">F. ACH 結論與初始信心校準</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== A. 四組競爭假說 ===== -->
+<div id="hypo" class="section-title">A. 四組競爭假說定義</div>
+<div class="section-sub">覆蓋從極度看多到極度看空的完整光譜，針對景碩「雙引擎」特性設計</div>
+
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">H1：AI 載板超級循環</div>
+        <div class="num" style="color:var(--bull);font-size:1em">極度看多</div>
+        <div class="desc" style="text-align:left;margin-top:6px;line-height:1.5">
+            ABF 供需缺口持續擴大至 42%<br>
+            GPU 載板市佔 5%→10%（高盛假設）<br>
+            毛利率突破 28%+（產品組合改善）<br>
+            2026 EPS：10-14 元（高盛情境）<br>
+            合理股價：450-600 元<br>
+            <strong>核心邏輯</strong>：AI 驅動結構性升級，非單純週期反彈
+        </div>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--accent)">
+        <div class="title">H2：穩健成長</div>
+        <div class="num" style="color:var(--accent);font-size:1em">審慎看多</div>
+        <div class="desc" style="text-align:left;margin-top:6px;line-height:1.5">
+            ABF 需求穩健但漲價有限<br>
+            K6 折舊收斂 + BT 壓力持續<br>
+            毛利率 23-26%<br>
+            2026 EPS：6.3-8 元（市場共識）<br>
+            合理股價：250-350 元<br>
+            <strong>核心邏輯</strong>：基本面改善中，但有天花板
+        </div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">H3：估值過度反映</div>
+        <div class="num" style="color:var(--warn);font-size:1em">審慎看空</div>
+        <div class="desc" style="text-align:left;margin-top:6px;line-height:1.5">
+            基本面確實改善但股價已 price-in<br>
+            前瞻 PE 47-60 倍遠高於同業歷史<br>
+            匯率+BT 競爭+小規模制約獲利<br>
+            2026 EPS：5-7 元<br>
+            合理股價：160-280 元<br>
+            <strong>核心邏輯</strong>：好公司，但現價太貴
+        </div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">H4：週期反轉</div>
+        <div class="num" style="color:var(--bear);font-size:1em">極度看空</div>
+        <div class="desc" style="text-align:left;margin-top:6px;line-height:1.5">
+            AI 需求低於預期 / 產能過剩再現<br>
+            晶碩成長放緩失去獲利護盾<br>
+            載板毛利率再下滑 + 巨額折舊<br>
+            2026 EPS：3-5 元<br>
+            合理股價：120-200 元<br>
+            <strong>核心邏輯</strong>：週期終將反轉，小廠首當其衝
+        </div>
+    </div>
+</div>
+
+<div class="card">
+<h3>A1. 假說設計邏輯說明</h3>
+<div class="card-body">
+<p style="line-height:1.7">
+<strong>景碩特殊性</strong>：景碩是「雙引擎」公司（載板+晶碩光學），分析時須同時考慮兩個業務線的不同週期位置。<br>
+<strong>H1 vs H2 的區別</strong>：H1 假設高盛的極度樂觀假設成立（GPU 市佔翻倍、供需缺口 42%），H2 假設市場共識情境（穩健但非爆發性成長）。<br>
+<strong>H3 vs H4 的區別</strong>：H3 認為「基本面 OK 但股價已反映」（估值問題），H4 認為「基本面也會惡化」（週期問題）。<br>
+<strong>關鍵分野</strong>：H2+H3 = 70% 的可能性意味著「公司不差，但你買在哪個價位很重要」。
+</p>
+</div>
+</div>
+
+<!-- ===== B. 證據清單 ===== -->
+<div id="evidence" class="section-title">B. 20 項關鍵證據清單</div>
+<div class="section-sub">從第一步至第三步提取的關鍵事實與推論，每項標註 FIAS 等級</div>
+
+<div class="card">
+<h3>B1. 完整證據清單</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:42%">證據描述</th><th style="width:7%">FIAS</th><th style="width:46%">來源</th></tr>
+<tr><td>E1</td><td style="text-align:left">2025 全年營收 393.51 億，YoY +28.8%，Q4 營收 108.11 億為近 13 季最高</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 財報、月營收數據</td></tr>
+<tr><td>E2</td><td style="text-align:left">2025 EPS 3.51 元，較 2024 年 0.11 元成長 31.6 倍，Q4 單季 EPS 1.41</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 財報</td></tr>
+<tr><td>E3</td><td style="text-align:left">2026 年 1 月營收 39.61 億歷史新高，YoY +54.94%，累計 YoY +31.01%</td><td><span class="fias-f">F</span></td><td style="text-align:left">月營收公告</td></tr>
+<tr><td>E4</td><td style="text-align:left">高盛預測 ABF 供需缺口：10%（2026H2）→ 21%（2027）→ 42%（2028），NVIDIA CPU 載板市佔 →50%</td><td><span class="fias-i">I</span></td><td style="text-align:left">高盛研究報告（James Wang）</td></tr>
+<tr><td>E5</td><td style="text-align:left">董事會核准 235 億元新增資本支出（2026-01-30），2026 年 CapEx 預算 80 億</td><td><span class="fias-f">F</span></td><td style="text-align:left">重大訊息公告</td></tr>
+<tr><td>E6</td><td style="text-align:left">K6 幼獅廠總投資 250 億，管理費用 +98%（17.09→33.81 億），折舊攤提為主因</td><td><span class="fias-f">F</span>+<span class="fias-i">I</span></td><td style="text-align:left">年報 + 疑點求證分析</td></tr>
+<tr><td>E7</td><td style="text-align:left">合併毛利率 21.1%（5 年新低），但 Q4 回升至 22.1%（匯率穩定效果）</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 財報</td></tr>
+<tr><td>E8</td><td style="text-align:left">匯率為毛利率主因：營收 70-80% 美元計價，成本 50% 美元，淨曝險約 30%</td><td><span class="fias-f">F</span></td><td style="text-align:left">法說會、疑點求證</td></tr>
+<tr><td>E9</td><td style="text-align:left">載板本業利潤率僅 3-5%（推估），晶碩 36.81% 持股為主要獲利引擎（毛利率 54%）</td><td><span class="fias-i">I</span></td><td style="text-align:left">疑點求證（個體 vs 合併拆分推算）</td></tr>
+<tr><td>E10</td><td style="text-align:left">晶碩光學 2025 營收 67.89 億（+7.4%，連十年新高），毛利率 54.03%</td><td><span class="fias-f">F</span></td><td style="text-align:left">晶碩 6491 財報</td></tr>
+<tr><td>E11</td><td style="text-align:left">高盛 EPS 14.3（2026E）為 Factset 共識 7.54 的近 2 倍，目標價 370→400 元</td><td><span class="fias-f">F</span></td><td style="text-align:left">高盛報告 + Factset 共識</td></tr>
+<tr><td>E12</td><td style="text-align:left">Trailing PE 108.88 倍，前瞻 PE 47-60 倍（以共識 EPS 6.3-8 計算），PB 4.84 倍</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 價量數據</td></tr>
+<tr><td>E13</td><td style="text-align:left">每股淨值 71.66 元，股價 380 元，PB 5.3 倍（歷史均值約 1.5 倍）</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 財報</td></tr>
+<tr><td>E14</td><td style="text-align:left">全球 IC 載板市佔僅約 4%，台灣三雄中規模最小（vs 欣興 24%、南電 20%）</td><td><span class="fias-f">F</span></td><td style="text-align:left">產業報告、第三步競爭力分析</td></tr>
+<tr><td>E15</td><td style="text-align:left">台灣三雄毛利率：景碩 21.1% > 欣興 13.9% > 南電 9.08%，景碩產品組合較佳</td><td><span class="fias-f">F</span></td><td style="text-align:left">第三步同業比較</td></tr>
+<tr><td>E16</td><td style="text-align:left">BT 載板面臨中國競爭壓力，利潤率「仍然很低」，低階 ABF 亦供過於求</td><td><span class="fias-f">F</span></td><td style="text-align:left">法說會、第三步產業分析</td></tr>
+<tr><td>E17</td><td style="text-align:left">T-Glass 供應商僅日東紡（Nittobo），漲幅 30%，新供給 2026H2 才有</td><td><span class="fias-f">F</span></td><td style="text-align:left">產業報告、疑點求證</td></tr>
+<tr><td>E18</td><td style="text-align:left">投信積極買超 vs 外資/自營偏空，法人動向分歧；外資持股僅 9.53%</td><td><span class="fias-f">F</span></td><td style="text-align:left">finlab 籌碼數據</td></tr>
+<tr><td>E19</td><td style="text-align:left">股價偏離 MA60 達 +64.7%，技術面嚴重超漲，近 1 週 -8.55%（已開始修正）</td><td><span class="fias-f">F</span></td><td style="text-align:left">第三步籌碼分析</td></tr>
+<tr><td>E20</td><td style="text-align:left">ABF 載板市場 CAGR 10.6%（成長期），BT 載板處於成熟期（成長趨緩）</td><td><span class="fias-i">I</span></td><td style="text-align:left">第三步產業生命週期定位</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:6px">F 類 15 項（75%）、F+I 混合 1 項（5%）、I 類 4 項（20%）。證據基礎以硬事實為主，推論佔比適中。</p>
+</div>
+</div>
+
+<!-- ===== C. 證據一致性矩陣 ===== -->
+<div id="matrix" class="section-title">C. 證據一致性矩陣</div>
+<div class="section-sub">每項證據與每組假說的關係：<span class="cc">C = 一致</span> | <span class="ii">I = 矛盾</span> | <span class="nn">N = 中立</span></div>
+
+<div class="card">
+<h3>C1. 完整矩陣（20 x 4）</h3>
+<div class="card-body">
+
+<div class="tip info">
+<b>ACH 核心原則</b>
+不要數一組假說有多少「支持」證據，而要看有多少「矛盾」證據。矛盾越少的假說越難被否證，因此越可能成立。
+</div>
+
+<table>
+<tr>
+    <th style="width:5%">#</th>
+    <th style="width:38%;text-align:left">證據</th>
+    <th style="width:14%">H1 超級循環</th>
+    <th style="width:14%">H2 穩健成長</th>
+    <th style="width:14%">H3 估值過高</th>
+    <th style="width:14%">H4 週期反轉</th>
+</tr>
+<tr><td>E1</td><td style="text-align:left">營收 +28.8%，Q4 最高</td><td class="cc">C</td><td class="cc">C</td><td class="cc">C *</td><td class="nn">N</td></tr>
+<tr><td>E2</td><td style="text-align:left">EPS 31.6 倍成長</td><td class="cc">C</td><td class="cc">C</td><td class="cc">C *</td><td class="ii">I</td></tr>
+<tr><td>E3</td><td style="text-align:left">1 月營收歷史新高 +55%</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td><td class="ii">I</td></tr>
+<tr><td>E4</td><td style="text-align:left">ABF 供需缺口 10→42%</td><td class="cc">C</td><td class="cc">C</td><td class="ii">I</td><td class="ii">I</td></tr>
+<tr><td>E5</td><td style="text-align:left">235 億 CapEx 核准</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td><td class="nn">N</td></tr>
+<tr><td>E6</td><td style="text-align:left">K6 折舊管理費 +98%</td><td class="ii">I</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E7</td><td style="text-align:left">毛利率 5 年低 / Q4 回升</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td></tr>
+<tr><td>E8</td><td style="text-align:left">匯率 30% 淨美元曝險</td><td class="nn">N</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E9</td><td style="text-align:left">載板本業利潤率僅 3-5%</td><td class="ii">I</td><td class="ii">I</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E10</td><td style="text-align:left">晶碩 GM 54%、連十年新高</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td><td class="nn">N</td></tr>
+<tr><td>E11</td><td style="text-align:left">高盛 2x 共識 EPS 14.3</td><td class="cc">C</td><td class="nn">N</td><td class="ii">I</td><td class="ii">I</td></tr>
+<tr><td>E12</td><td style="text-align:left">前瞻 PE 47-60, trailing 109</td><td class="ii">I</td><td class="ii">I</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E13</td><td style="text-align:left">PB 5.3x（歷史均 1.5x）</td><td class="ii">I</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E14</td><td style="text-align:left">全球市佔僅 4%</td><td class="ii">I</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E15</td><td style="text-align:left">三雄毛利率最高 21.1%</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td><td class="ii">I</td></tr>
+<tr><td>E16</td><td style="text-align:left">BT 中國競爭 / 低階供過於求</td><td class="ii">I</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E17</td><td style="text-align:left">T-Glass 獨供漲 30%</td><td class="nn">N</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E18</td><td style="text-align:left">法人籌碼分歧 / 外資僅 9.53%</td><td class="ii">I</td><td class="nn">N</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E19</td><td style="text-align:left">MA60 偏離 +64.7% 超漲</td><td class="ii">I</td><td class="ii">I</td><td class="cc">C</td><td class="cc">C</td></tr>
+<tr><td>E20</td><td style="text-align:left">ABF 成長期 / BT 成熟期</td><td class="cc">C</td><td class="cc">C</td><td class="nn">N</td><td class="ii">I</td></tr>
+</table>
+
+<p style="font-size:.75em;color:var(--txt3);margin-top:4px">* E1/E2 對 H3 標註「C*」：營收和 EPS 成長既是基本面改善的事實，也正是「好消息已反映在股價中」的前提 — 好公司 ≠ 好股票。</p>
+</div>
+</div>
+
+<!-- ===== D. 假說評分與排序 ===== -->
+<div id="scoring" class="section-title">D. 假說評分與排序</div>
+<div class="section-sub">基於矛盾數量排序（ACH 核心：矛盾最少 = 最難否證 = 最可能成立）</div>
+
+<div class="card">
+<h3>D1. 矛盾計數排序</h3>
+<div class="card-body">
+
+<table>
+<tr><th>假說</th><th>一致(C)</th><th>矛盾(I)</th><th>中立(N)</th><th>一致率<br>C/(C+I)</th><th>矛盾數排名</th></tr>
+<tr style="background:rgba(212,160,23,.08)">
+    <td style="font-weight:700;text-align:left">H3 估值過度反映</td>
+    <td class="cc">13</td><td class="ii">2</td><td class="nn">5</td>
+    <td style="font-weight:900;color:var(--bull)">86.7%</td>
+    <td style="font-weight:900;color:var(--bull)">第 1 名（2 個矛盾）</td>
+</tr>
+<tr style="background:rgba(90,125,96,.05)">
+    <td style="font-weight:700;text-align:left">H2 穩健成長</td>
+    <td class="cc">10</td><td class="ii">3</td><td class="nn">7</td>
+    <td style="font-weight:900;color:var(--accent)">76.9%</td>
+    <td style="font-weight:700">第 2 名（3 個矛盾）</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H4 週期反轉</td>
+    <td class="cc">9</td><td class="ii">5</td><td class="nn">6</td>
+    <td style="font-weight:700;color:var(--warn)">64.3%</td>
+    <td>第 3 名（5 個矛盾）</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H1 超級循環</td>
+    <td class="cc">8</td><td class="ii">8</td><td class="nn">4</td>
+    <td style="font-weight:700;color:var(--bear)">50.0%</td>
+    <td>第 4 名（8 個矛盾）</td>
+</tr>
+</table>
+
+<div class="tip warn">
+<b>ACH 關鍵發現：H3「估值過度反映」僅 2 個矛盾</b>
+H3 只被 E4（供需缺口擴大）和 E11（高盛極度看多）兩項證據矛盾。其餘 13 項支持 + 5 項中立。<br>
+(1) 營運面改善（E1-E3）與 H3 相容 — 好公司不等於好股價<br>
+(2) 所有估值面證據（E12/E13/E19）強烈支持 H3 — 前瞻 PE 47-60 倍、PB 5.3 倍（歷史均值 3.5 倍）<br>
+(3) 結構性弱點（E9 載板薄利、E14 市佔 4%、E16 BT 競爭）與 H3 完全相容<br>
+<strong>核心洞見</strong>：景碩基本面確實在改善，但以 380 元買入意味著需要「超級循環」等級的成長才能獲得合理回報。
+</div>
+
+<div class="tip danger">
+<b>H1「超級循環」有 8 個矛盾 — 證據基礎最薄弱</b>
+E6(K6 折舊)、E9(載板薄利)、E12(PE 過高)、E13(PB 5.3x)、E14(市佔 4%)、E16(BT 競爭)、E18(法人分歧)、E19(技術超漲) — 矛盾集中在「估值合理性」「規模瓶頸」和「籌碼面」三大維度。<br>
+這意味著：即使 AI 需求真的爆發，景碩是否能充分受惠（vs 欣興/南電），以及目前股價是否已經反映了這個預期，都有重大疑問。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>D2. 加權反證分數</h3>
+<div class="card-body">
+
+<div class="tip info">
+<b>FIAS 加權規則</b>
+事實(F)=3 分、推論(I)=2 分、假設(A)=1 分、推測(S)=0.5 分。FIAS 等級越高的證據，其矛盾權重越大。
+</div>
+
+<table>
+<tr><th>假說</th><th>矛盾證據</th><th>加權反證分數</th><th>排名</th></tr>
+<tr style="background:rgba(212,160,23,.08)">
+    <td style="font-weight:700;text-align:left">H3 估值過度反映</td>
+    <td style="text-align:left;font-weight:400">E4(I:2分) + E11(F:3分)</td>
+    <td style="font-weight:900;color:var(--bull)">5 分</td>
+    <td style="font-weight:900;color:var(--bull)">第 1 名（最低）</td>
+</tr>
+<tr style="background:rgba(90,125,96,.05)">
+    <td style="font-weight:700;text-align:left">H2 穩健成長</td>
+    <td style="text-align:left;font-weight:400">E9(I:2分) + E12(F:3分) + E19(F:3分)</td>
+    <td style="font-weight:900;color:var(--accent)">8 分</td>
+    <td style="font-weight:700">第 2 名</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H4 週期反轉</td>
+    <td style="text-align:left;font-weight:400">E2(F:3) + E3(F:3) + E11(F:3) + E15(F:3) + E20(I:2)</td>
+    <td style="font-weight:700;color:var(--warn)">14 分</td>
+    <td>第 3 名</td>
+</tr>
+<tr>
+    <td style="font-weight:700;text-align:left">H1 超級循環</td>
+    <td style="text-align:left;font-weight:400">E6(F+I:2.5) + E9(I:2) + E12(F:3) + E13(F:3) + E14(F:3) + E16(F:3) + E18(F:3) + E19(F:3)</td>
+    <td style="font-weight:700;color:var(--bear)">22.5 分</td>
+    <td>第 4 名（最高）</td>
+</tr>
+</table>
+
+<p style="font-size:.82em;color:var(--txt2);margin-top:6px">加權後排序與矛盾計數排序一致，進一步確認 H3 為最難被否證的假說。H1 的加權反證分數高達 22.5 分（H3 的 4.5 倍），顯示超級循環假說面臨極大的證據挑戰。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>D3. 初始機率分配</h3>
+<div class="card-body">
+
+<div class="grid4">
+    <div class="mini-card bull-card">
+        <div class="title">H1 超級循環</div>
+        <div class="num" style="color:var(--bull)">10%</div>
+        <div class="desc">8 個矛盾（22.5 分），需多條件同時成立</div>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--accent)">
+        <div class="title">H2 穩健成長</div>
+        <div class="num" style="color:var(--accent)">30%</div>
+        <div class="desc">3 個矛盾（8 分），合理基本面情境</div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">H3 估值過高</div>
+        <div class="num" style="color:var(--warn);font-size:1.5em">40%</div>
+        <div class="desc">2 個矛盾（5 分），證據一致性最強</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">H4 週期反轉</div>
+        <div class="num" style="color:var(--bear)">20%</div>
+        <div class="desc">5 個矛盾（14 分），極端但不可排除</div>
+    </div>
+</div>
+
+<div class="tip info">
+<b>機率分配邏輯</b>
+H3 獲最高機率（40%）因僅 2 個矛盾且加權分數最低。H2（30%）因只有 3 個矛盾且與 H3 部分相容 — 公司確實在成長中（H2 觀點），只是股價已反映（H3 觀點）。<br>
+<strong>H2+H3 合計 70%</strong>：代表最可能的綜合判斷是「基本面改善中，但以 380 元計算已過度反映甚至透支」。<br>
+H1 僅 10% 因 8 個矛盾涵蓋估值/規模/籌碼三大維度。H4 給 20% 因週期性產業始終存在反轉風險，且景碩的載板本業利潤率極薄（3-5%），安全邊際不足。
+</div>
+</div>
+</div>
+
+<!-- ===== E. 關鍵鑑別證據 ===== -->
+<div id="diagnostic" class="section-title">E. 關鍵鑑別證據</div>
+<div class="section-sub">能區分不同假說的決定性證據，及其觸發時間</div>
+
+<div class="card">
+<h3>E1. 鑑別證據矩陣</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:5%">#</th><th style="width:28%;text-align:left">待觀察事件</th><th style="width:11%">預計時間</th><th style="width:14%">支持假說</th><th style="width:14%">否定假說</th><th style="width:28%;text-align:left">判斷標準</th></tr>
+<tr>
+    <td>D1</td>
+    <td style="text-align:left">2026Q1 毛利率</td>
+    <td>2026/05</td>
+    <td class="cc">H1: &gt;25%<br>H2: 22-25%</td>
+    <td class="ii">H4: &lt;20%</td>
+    <td style="text-align:left">毛利率是否持續回升？若 &gt;25% 則 H1 機率上調</td>
+</tr>
+<tr>
+    <td>D2</td>
+    <td style="text-align:left">235 億 CapEx 執行進度</td>
+    <td>2026Q2 法說會</td>
+    <td class="cc">H1: &gt;30 億<br>實際投入</td>
+    <td class="ii">H1/H2: &lt;10 億</td>
+    <td style="text-align:left">2026 預算 80 億是否如期執行？延遲則 H1 弱化</td>
+</tr>
+<tr>
+    <td>D3</td>
+    <td style="text-align:left">ABF 載板報價 Q2 走勢</td>
+    <td>2026/06</td>
+    <td class="cc">H1/H2: 持平或續漲</td>
+    <td class="ii">H3/H4: 環比下跌</td>
+    <td style="text-align:left">每季 3-5% 調漲是否持續？回落即確認週期轉折</td>
+</tr>
+<tr>
+    <td>D4</td>
+    <td style="text-align:left">高盛 GPU 市佔假設驗證</td>
+    <td>2026H2</td>
+    <td class="cc">H1: 市佔 &gt;7%</td>
+    <td class="ii">H1: 市佔 &lt;5%</td>
+    <td style="text-align:left">GPU 載板市佔能否從 5% 提升？是區分 H1 和 H2 的核心</td>
+</tr>
+<tr>
+    <td>D5</td>
+    <td style="text-align:left">匯率走勢（台幣兌美元）</td>
+    <td>持續監控</td>
+    <td class="cc">H1/H2: 台幣 &gt;32</td>
+    <td class="ii">H3/H4: 台幣 &lt;30</td>
+    <td style="text-align:left">台幣強勢直接壓縮毛利率，30% 淨曝險影響重大</td>
+</tr>
+<tr>
+    <td>D6</td>
+    <td style="text-align:left">晶碩 2026Q1 業績</td>
+    <td>2026/05</td>
+    <td class="cc">H2: 營收 YoY &gt;10%</td>
+    <td class="ii">H4: 營收 YoY &lt;3%</td>
+    <td style="text-align:left">晶碩是安全墊，若成長放緩則 H4 風險大增</td>
+</tr>
+<tr>
+    <td>D7</td>
+    <td style="text-align:left">外資持股比率變化</td>
+    <td>持續監控</td>
+    <td class="cc">H1/H2: &gt;12%</td>
+    <td class="ii">H3/H4: &lt;8%</td>
+    <td style="text-align:left">目前僅 9.53%，外資態度是機構信心的指標</td>
+</tr>
+<tr>
+    <td>D8</td>
+    <td style="text-align:left">BT 載板虧損是否收窄</td>
+    <td>2026Q2</td>
+    <td class="cc">H2: 虧損收窄</td>
+    <td class="ii">H4: 虧損擴大</td>
+    <td style="text-align:left">BT 佔營收 40%+，若無法止血將拖累整體</td>
+</tr>
+</table>
+
+<div class="tip good">
+<b>最具鑑別力的三項證據</b>
+<strong>D3（ABF 報價 Q2 走勢）</strong>：載板報價是區分 H2（穩健成長→報價持平）和 H3（估值過高→報價已見頂）的核心指標。若 Q2 報價開始鬆動，H3 將迅速上升至 50%+。<br>
+<strong>D4（GPU 市佔假設）</strong>：高盛 EPS 14.3 的核心假設是 GPU 載板市佔從 5% 翻倍至 10%。若 2026H2 仍停留在 5-6%，H1 可基本排除。<br>
+<strong>D1（2026Q1 毛利率）</strong>：毛利率趨勢直接決定 EPS 能否達到共識。Q3→Q4 已從 18.96%→22.1%，若 Q1 能續升至 24%+ 將強化 H2。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>E2. 敏感度分析：關鍵假設翻轉風險</h3>
+<div class="card-body">
+
+<table>
+<tr><th style="width:6%">KA#</th><th style="width:30%;text-align:left">關鍵假設</th><th style="width:15%">影響假說</th><th style="width:12%">翻轉程度</th><th style="width:37%;text-align:left">如果此假設錯誤</th></tr>
+<tr>
+    <td>KA1</td>
+    <td style="text-align:left;font-weight:400">AI/HPC 需求持續推動 ABF 載板量價齊揚</td>
+    <td>H1, H2</td>
+    <td style="color:var(--bear);font-weight:700">高</td>
+    <td style="text-align:left;font-weight:400">若 AI 資本支出放緩，ABF 需求可能不如預期 → H1 歸零，H2 降至 15%，H3/H4 合計升至 85%</td>
+</tr>
+<tr>
+    <td>KA2</td>
+    <td style="text-align:left;font-weight:400">晶碩光學維持穩定成長（7-10% CAGR）</td>
+    <td>H2, H4</td>
+    <td style="color:var(--warn);font-weight:700">中高</td>
+    <td style="text-align:left;font-weight:400">若隱形眼鏡市場飽和或競爭加劇 → 合併 EPS 減少 1.5-2 元，H4 機率倍增至 40%</td>
+</tr>
+<tr>
+    <td>KA3</td>
+    <td style="text-align:left;font-weight:400">台幣兌美元維持 31-32 區間</td>
+    <td>所有假說</td>
+    <td style="color:var(--warn);font-weight:700">中</td>
+    <td style="text-align:left;font-weight:400">台幣升值至 29-30 → 毛利率再降 2-3ppt → EPS 減少 0.5-1 元，H3/H4 機率合計升至 70%+</td>
+</tr>
+<tr>
+    <td>KA4</td>
+    <td style="text-align:left;font-weight:400">235 億 CapEx 能如期執行且產生回報</td>
+    <td>H1</td>
+    <td style="color:var(--bear);font-weight:700">高</td>
+    <td style="text-align:left;font-weight:400">若設備交期延遲或新產能良率不佳 → H1 直接歸零，固定成本加重反而壓低 EPS</td>
+</tr>
+<tr>
+    <td>KA5</td>
+    <td style="text-align:left;font-weight:400">低階 ABF 和 BT 不會進一步惡化</td>
+    <td>H2, H4</td>
+    <td style="color:var(--warn);font-weight:700">中</td>
+    <td style="text-align:left;font-weight:400">若中國載板廠更激進搶單 → BT 虧損擴大 + 低階 ABF 降價 → 合併營業利益率壓至 5% 以下</td>
+</tr>
+</table>
+
+<div class="tip danger">
+<b>最脆弱環節：KA1 + KA4 組合</b>
+如果 AI 需求放緩（KA1 失敗）且 CapEx 已大量投入（KA4 變成折舊壓力），景碩將面臨「需求不足 + 固定成本暴增」的雙殺困境。這正是週期股最典型的陷阱 — 在景氣高峰擴產，在需求反轉時承受巨額折舊。
+</div>
+</div>
+</div>
+
+<!-- ===== F. ACH 結論 ===== -->
+<div id="conclusion" class="section-title">F. ACH 結論與初始信心校準</div>
+<div class="section-sub">第一次信心校準（v3.0 四次校準之首）</div>
+
+<div class="card">
+<h3>F1. 主要假說判定</h3>
+<div class="card-body">
+
+<div class="grid2">
+    <div class="mini-card warn-card">
+        <div class="title">ACH 主要假說</div>
+        <div class="num" style="color:var(--warn)">H3：估值過度反映</div>
+        <div class="desc">機率 40% | 2 個矛盾 | 加權反證 5 分（最低）</div>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--accent)">
+        <div class="title">ACH 次要假說</div>
+        <div class="num" style="color:var(--accent)">H2：穩健成長</div>
+        <div class="desc">機率 30% | 3 個矛盾 | 與 H3 部分相容</div>
+    </div>
+</div>
+
+<div class="tip warn">
+<b>初始信心校準結果</b>
+<table style="margin:6px 0">
+<tr><th>指標</th><th>數值</th><th>說明</th></tr>
+<tr><td>ACH 初始信心</td><td style="font-weight:900;color:var(--warn)">0.40</td><td>對 H3（估值過度反映）的信心</td></tr>
+<tr><td>H2+H3 合計</td><td style="font-weight:900">0.70</td><td>「基本面 OK 但股價過度反映」的合計信心</td></tr>
+<tr><td>H1（極度看多）</td><td style="font-weight:700;color:var(--bull)">0.10</td><td>需 GPU 市佔翻倍 + 毛利率突破 28% 才能實現</td></tr>
+<tr><td>H4（極度看空）</td><td style="font-weight:700;color:var(--bear)">0.20</td><td>週期性產業 + 載板薄利 + 晶碩依賴 = 不可忽略</td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>F2. ACH 分析對投資決策的含義</h3>
+<div class="card-body">
+
+<p style="font-size:.85em;color:var(--txt2);line-height:1.7;margin-bottom:8px">
+<strong>核心結論</strong>：以 380 元買入的加權期望報酬為負。<br>
+四假說加權期望股價計算：<br>
+H1（10%）× 525 元（450-600 中位數）= 52.5<br>
+H2（30%）× 300 元（250-350 中位數）= 90.0<br>
+H3（40%）× 220 元（160-280 中位數）= 88.0<br>
+H4（20%）× 160 元（120-200 中位數）= 32.0<br>
+<strong>加權期望值 = 262.5 元</strong>（低於目前 380 元約 31%）。
+</p>
+
+<div class="tip danger">
+<b>週期股估值陷阱提醒（MEMORY.md 教訓）</b>
+Micron 2018 案例：EPS 高峰 $11.51 時 PE 僅 3x，看似超便宜，7 個月後股價從 $64 跌至 $29（-54%）。<br>
+景碩目前狀態：2024 年 EPS 0.11 元（谷底），2025 年 3.51 元（31.6 倍成長），2026E 6.3-8 元（再翻倍預期）。這種「EPS 即將爆發」的敘事與週期股陷阱高度吻合。<br>
+<strong>關鍵差異</strong>：景碩有晶碩光學作為非週期性獲利護盾，這是與純週期股的最大不同。但晶碩僅能貢獻 EPS 1.5-2 元，不足以支撐 380 元股價。
+</div>
+
+<div class="tip good">
+<b>景碩相對其他純載板股的優勢</b>
+1. 晶碩光學提供穩定現金流（毛利率 54%，連十年新高）<br>
+2. 三雄中毛利率最高（21.1%），產品組合相對較好<br>
+3. 235 億 CapEx 已獲核准，擴產決心明確<br>
+4. ABF 供需缺口若實現，景碩作為前三大 Flip Chip 供應商將直接受惠<br>
+<strong>但</strong>：上述優勢多數已反映在 380 元股價中，問題不在公司好不好，而在價格貴不貴。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>F3. 帶入第五步的假說與問題</h3>
+<div class="card-body">
+<ol style="font-size:.85em;color:var(--txt2);padding-left:20px;line-height:1.8">
+    <li><strong>H3 壓力測試</strong>：假設 2026 毛利率僅回升至 23%（未達法人預期 25.7%），EPS 會降至多少？380 元對應的前瞻 PE 是否已脫離合理區間？</li>
+    <li><strong>H1 壓力測試</strong>：假設高盛所有假設成立（GPU 市佔 10%、供需缺口 42%、EPS 14.3），380 元是否仍合理？對應 PE 僅 26.6 倍 — 這是唯一讓 380 元有安全邊際的情境。</li>
+    <li><strong>H4 極端情境</strong>：假設 AI 資本支出 2027 年放緩 30%，同時台幣升值至 29，景碩 EPS 會跌至什麼水準？</li>
+    <li><strong>匯率敏感度</strong>：台幣每升值 1 元，景碩 EPS 影響幅度（基於 30% 淨美元曝險推算）？</li>
+    <li><strong>晶碩估值分離</strong>：若將晶碩獨立估值（PE 25-30 倍），載板業務的隱含估值是多少？是否合理？</li>
+    <li><strong>CapEx 折舊壓力</strong>：235 億投入後，年增折舊約多少？對損益兩平點的影響？</li>
+    <li><strong>週期高點訊號</strong>：過去 ABF 週期高點的共同特徵（營收加速、法人上調、估值擴張）有哪些已在景碩身上出現？</li>
+</ol>
+</div>
+</div>
+
+<div class="card">
+<h3>F4. 監控指標與觸發條件</h3>
+<div class="card-body">
+
+<table>
+<tr><th>假說</th><th style="text-align:left">信心上調觸發</th><th style="text-align:left">信心下調觸發</th><th>檢查頻率</th></tr>
+<tr>
+    <td style="font-weight:700">H1 超級循環</td>
+    <td style="text-align:left;font-weight:400">毛利率連續 2 季 &gt;25%<br>GPU 市佔確認 &gt;7%<br>外資持股升至 &gt;15%</td>
+    <td style="text-align:left;font-weight:400">CapEx 執行 &lt;30 億<br>ABF 報價環比下跌<br>月營收 YoY 轉負</td>
+    <td>每季</td>
+</tr>
+<tr>
+    <td style="font-weight:700">H2 穩健成長</td>
+    <td style="text-align:left;font-weight:400">EPS 達共識 6.3-8 元<br>毛利率穩定 23-26%<br>BT 虧損收窄</td>
+    <td style="text-align:left;font-weight:400">毛利率 &lt;20%（2 季）<br>晶碩成長 &lt;5%<br>營業利益率 &lt;5%</td>
+    <td>每季</td>
+</tr>
+<tr>
+    <td style="font-weight:700">H3 估值過高</td>
+    <td style="text-align:left;font-weight:400">前瞻 PE &gt;50 倍持續<br>法人開始下調目標價<br>融資餘額大增</td>
+    <td style="text-align:left;font-weight:400">EPS 大幅超預期 &gt;10 元<br>前瞻 PE 降至 &lt;25 倍<br>ABF 報價連漲 4 季</td>
+    <td>每月</td>
+</tr>
+<tr>
+    <td style="font-weight:700">H4 週期反轉</td>
+    <td style="text-align:left;font-weight:400">ABF 報價環比下跌<br>月營收 YoY &lt;10%<br>外資持續減碼</td>
+    <td style="text-align:left;font-weight:400">供需缺口實際 &gt;15%<br>月營收 YoY &gt;30% 持續<br>毛利率 &gt;25% 持續</td>
+    <td>每月</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 第四步：ACH 競爭假說分析</p>
+    <p>報告日期：2026-03-23 | 資料截止：2026-03-23 | 股價基準：380 元</p>
+    <p>ACH 初始信心：H3(40%) &gt; H2(30%) &gt; H4(20%) &gt; H1(10%)</p>
+    <p>加權期望股價：262.5 元（較現價 380 元下行 31%）</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>景碩科技 (3189) — 第六步：評審團 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;font-size:.78em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center;font-size:.78em}
+td:first-child{text-align:left;font-weight:600}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(198,40,40,.1)}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}.warn-card{border-left:4px solid var(--warn)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.calc{font-family:'Fira Code',monospace;font-size:.78em;color:var(--txt2);background:rgba(0,0,0,.04);padding:8px 12px;border-radius:6px;margin:6px 0;line-height:1.8}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.score-box{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:.78em;color:#fff}
+.score-pass{background:var(--accent)}.score-warn{background:var(--warn)}.score-fail{background:var(--danger)}
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>景碩科技 (3189) — 第六步：評審團</h1>
+    <div class="sub">天機閣深度調查系統 v3.0</div>
+    <div class="desc">Iker 四層框架 23 項 + 豁達趨勢系統 12 項 + 12 項負面指標 + 風控官交叉驗證<br>v3.0 四次信心校準之第三次 — 原則：比壓力測試更嚴格更保守</div>
+    <div class="tags">
+        <span class="tag">評審團全員</span>
+        <span class="tag">2026-03-23</span>
+        <span class="tag">第三次信心校準</span>
+        <span class="tag">6 角色 / 35 維度</span>
+        <span class="tag">股價 380 元</span>
+    </div>
+</div>
+
+<!-- ===== Iker 四層總覽 ===== -->
+<div class="grid4" style="margin-bottom:12px">
+    <div class="mini-card warn-card">
+        <div class="title">第一層：產業面</div>
+        <div class="num" style="color:var(--warn)">2/7</div>
+        <div class="desc">2 綠 4 黃 1 紅</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">第二層：個股受惠</div>
+        <div class="num" style="color:var(--bear)">1/6</div>
+        <div class="desc">1 綠 2 黃 2 紅 1 N/A</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">第三層：籌碼面</div>
+        <div class="num" style="color:var(--bear)">1/5</div>
+        <div class="desc">1 綠 2 黃 2 紅</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">第四層：空間估算</div>
+        <div class="num" style="color:var(--bear)">0/5</div>
+        <div class="desc">0 綠 0 黃 5 紅</div>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構（評審團 6 角色）</strong>
+    <a href="#L1">A. 產業分析師 — Iker 第一層：產業面篩選（7 項）</a>
+    <a href="#L2">B. 個股研究員 — Iker 第二層：個股受惠程度（6 項）</a>
+    <a href="#L3">C. 籌碼分析師 — Iker 第三層：籌碼面驗證（5 項）</a>
+    <a href="#L4">D. 策略長 — Iker 第四層：空間估算（5 項）</a>
+    <a href="#huoda">E. 趨勢成長分析員 — 豁達系統（12 項 + 12 負面指標）</a>
+    <a href="#risk">F. 風控官 — 交叉驗證 + 偏誤檢查</a>
+    <a href="#calibration">G. 第三次信心校準</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ================================================================ -->
+<!-- A. Iker 第一層：產業面篩選 -->
+<!-- ================================================================ -->
+<div id="L1" class="section-title">A. 產業分析師 — Iker 第一層：產業面篩選</div>
+<div class="section-sub">判斷產業是否值得投入，7 個分析維度 | 結論：<span class="score-box score-warn">2/7 正面</span></div>
+
+<div class="card">
+<h3>A1. 第一層逐項評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:16%;text-align:left">維度</th><th style="width:8%">判定</th><th style="width:6%">FIAS</th><th style="width:65%;text-align:left">分析觀點</th></tr>
+<tr>
+    <td>1</td><td style="text-align:left">供需是否失衡</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">結構性分化。高階 ABF（16 層以上）確實供不應求，2026H2 缺口約 10%，但景碩產品線以 BT 載板（佔營收 40-45%）及低階 ABF 為主。<b>管理層自己承認「ABF 2026 嚴重供不應求的可能性不高」「低層數 ABF 不容易供不應求」</b>。真正缺的是高階 ABF，但那是欣興的戰場。景碩的「雙引擎」結構（ABF+BT+晶碩）讓它只有部分受惠。</td>
+</tr>
+<tr>
+    <td>2</td><td style="text-align:left">失衡原因是什麼</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">AI 晶片需求爆發驅動高階 ABF 需求（NVIDIA Blackwell/Rubin、AMD MI300X、自研 ASIC），但景碩的 ABF 主要服務高通、AMD、美光等中階客戶。BT 載板的失衡更多靠記憶體循環（DDR5 升級），而非結構性需求轉變。兩個引擎的驅動力本質不同。</td>
+</tr>
+<tr>
+    <td>3</td><td style="text-align:left">能持續多久</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-a">假設</span></td>
+    <td style="text-align:left;font-weight:400">存在重大不確定性。ABF 載板三雄各擴產 25-30%（景碩含 235 億元 CapEx），加上日系 Ibiden、Shinko 也在擴產。TrendForce 預估 2027 年供給缺口 21%，但這是基於 AI CapEx 持續高成長的假設。<b>DeepSeek 效應已引發市場質疑「是否需要那麼多 AI 算力」</b>。若 AI CapEx 成長率從 25% 降至 17%（壓力測試情境），缺口將大幅收窄。景碩管理層用語謹慎，未承諾嚴重缺貨。</td>
+</tr>
+<tr>
+    <td>4</td><td style="text-align:left">定價權在誰手上</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">高階 ABF 接近賣方市場（每季 3-5% 漲價），但景碩的產品組合中低階 ABF 和 BT 載板佔大頭，這兩塊定價權偏弱。<b>BT 載板供給過剩已持續多年</b>，景碩無法像欣興那樣享有全面的漲價空間。晶碩光學（隱形眼鏡）有品牌定價權，但佔比僅 15%。綜合定價權中等偏弱。</td>
+</tr>
+<tr>
+    <td>5</td><td style="text-align:left">合約報價趨勢</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-a">假設</span></td>
+    <td style="text-align:left;font-weight:400">高端 ABF 報價 2025Q4 起漲 30-40%（TrendForce），但這主要是 16 層以上高階產品。景碩 ABF 平均層數低於欣興，漲幅可能只有 10-20%。BT 載板報價平穩或微漲。<b>T-glass（低熱膨脹玻璃纖維布）短缺可能推升成本</b>，但能否轉嫁給客戶待觀察。合約價數據為 [需手動找] 級別，具體漲幅缺乏景碩自身的確認。</td>
+</tr>
+<tr>
+    <td>6</td><td style="text-align:left">是否主流題材</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">AI 載板毫無疑問是 2025-2026 年台股最熱門題材之一。三大法人 3/13 同步買超景碩近萬張即為市場資金關注的直接證據。但在三雄中景碩獲得的關注度最低——欣興是龍頭、南電受惠 800G 交換器，景碩定位相對模糊。</td>
+</tr>
+<tr>
+    <td>7</td><td style="text-align:left">法說會確認</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2025/8 法說會確認：ABF 受惠 AI 伺服器拉貨、BT 受惠記憶體、晶碩穩定成長，預期 2026 年整體優於 2025 年。但同時也坦承「低階 ABF 及 BT 載板可能維持供給過剩」「匯率是最大變數」，態度並不過度樂觀。法說會資訊已過 7 個月，最新情況可能有變。</td>
+</tr>
+</table>
+
+<div class="reviewer">
+    <span class="r-name">產業分析師結論</span><span class="r-layer">Iker L1</span>
+    <div class="r-verdict cond">有條件通過（2/7 綠燈）— 產業大方向正確（AI 載板確實缺），但景碩不在供需最緊繃的高階 ABF 甜蜜點。BT 載板和低階 ABF 供過於求的現實限制了景碩的受惠程度。產業趨勢 ≠ 個股趨勢。</div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- B. Iker 第二層：個股受惠程度 -->
+<!-- ================================================================ -->
+<div id="L2" class="section-title">B. 個股研究員 — Iker 第二層：個股受惠程度</div>
+<div class="section-sub">評估個股在產業中的受惠程度，6 個分析維度 | 結論：<span class="score-box score-fail">1/6 正面</span></div>
+
+<div class="card">
+<h3>B1. 第二層逐項評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:16%;text-align:left">維度</th><th style="width:8%">判定</th><th style="width:6%">FIAS</th><th style="width:65%;text-align:left">分析觀點</th></tr>
+<tr>
+    <td>1</td><td style="text-align:left">上下游誰更受惠</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">IC 載板處於供應鏈中游。這一波 AI 驅動的上行，上游（IC 設計 NVIDIA/AMD/博通）最先受惠且幅度最大。中游載板受惠有延遲且幅度較小。景碩在中游中又不是最受惠的——欣興高階 ABF 佔比 60% 直接綁定 NVIDIA，南電綁定 800G 交換器。景碩靠的是量而非價，受惠程度三雄中最末。</td>
+</tr>
+<tr>
+    <td>2</td><td style="text-align:left">稼動率多少</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400"><b>ABF 稼動率 90-95%（管理層預估 2026 年），已接近滿載。</b>稼動率高 = 營收已充分反映 = 進一步上行空間靠漲價而非量增。Iker 框架認為低稼動率才有空間，高稼動率代表利多已反映。這是明確的紅燈信號——與旺宏（稼動率不到 60%）完全相反。</td>
+</tr>
+<tr>
+    <td>3</td><td style="text-align:left">有低價庫存嗎</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">2025 全年毛利率僅 21.1%，Q3 甚至只有 18.96%（受匯率影響）。若有低價庫存，毛利率應該會在報價上漲時出現明顯跳升——但實際上 Q4 毛利率回升至 22.1% 僅溫和改善。<b>沒有觀察到「庫存紅利」效應</b>。景碩的毛利率提升主要靠產品組合改善和稼動率，而非低價庫存消化。</td>
+</tr>
+<tr>
+    <td>4</td><td style="text-align:left">月營收趨勢</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2026/1 月營收 39.61 億元（歷史新高，YoY +54.94%），累計前 2 月 YoY +31.01%。月營收連續 12 個月 YoY 正成長。但 2 月因農曆年僅 32.04 億元（MoM -19.1%），<b>需觀察 3 月是否能回復 1 月水準</b>。若 3 月營收 < 38 億元，可能是「營收高點放緩」的初期信號。目前仍處於營收加速階段，給綠燈。</td>
+</tr>
+<tr>
+    <td>5</td><td style="text-align:left">上游龍頭有動嗎</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">欣興 (3037) 股價從谷底反彈已超過 100%，南電 (8046) 也已大幅走升。但景碩漲幅在三雄中最小——<b>市場已經「挑」過了，景碩是最後才動的</b>。這可能意味著 (a) 景碩基本面確實較弱被市場看穿，或 (b) 景碩還有補漲空間。但 Iker 框架認為龍頭先動、小弟後動是常態，給黃燈不是綠燈，因為小弟的上漲幅度通常較小且持續時間較短。</td>
+</tr>
+<tr>
+    <td>6</td><td style="text-align:left">CB（可轉債）狀態</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-a">假設</span></td>
+    <td style="text-align:left;font-weight:400">景碩近期有新股申購（2026/3/11 抽籤，承銷價 145 元 vs 收盤 291.5 元），但未查到公開的可轉債資訊。<b>新股承銷價 145 元僅為當時股價的 50%</b>，代表稀釋效應，而非 CB 拉抬動機。無可轉債 = 缺少主力積極拉抬的制度性動機。標記為黃燈（資料不完整）。</td>
+</tr>
+</table>
+
+<div class="reviewer">
+    <span class="r-name">個股研究員結論</span><span class="r-layer">Iker L2</span>
+    <div class="r-verdict fail">不通過（1/6 綠燈）— 稼動率已滿載（營收上行空間有限）、無低價庫存紅利、在三雄中受惠程度最低。唯一的綠燈是月營收仍在創新高，但高基期壓力即將到來。景碩不具備 Iker 框架中「營收還沒反映」的爆發潛力。</div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- C. Iker 第三層：籌碼面驗證 -->
+<!-- ================================================================ -->
+<div id="L3" class="section-title">C. 籌碼分析師 — Iker 第三層：籌碼面驗證</div>
+<div class="section-sub">追蹤法人和主力動向，5 個分析維度 | 結論：<span class="score-box score-fail">1/5 正面</span></div>
+
+<div class="card">
+<h3>C1. 第三層逐項評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:16%;text-align:left">維度</th><th style="width:8%">判定</th><th style="width:6%">FIAS</th><th style="width:65%;text-align:left">分析觀點</th></tr>
+<tr>
+    <td>1</td><td style="text-align:left">法人在追嗎</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">3/13 三大法人同步買超 9,818 張（外資 5,495 + 投信 4,161 + 自營 162），這是強力信號。但 3/20 三大法人合計賣超 777 張（外資 -624、自營 -769、僅投信 +616）。<b>從「不計價追」到「開始賣」只用了 5 個交易日</b>，這不是 Iker 定義的「法人極度看好」行為模式。更像是事件驅動型交易（大摩喊進→衝一波→獲利了結）。</td>
+</tr>
+<tr>
+    <td>2</td><td style="text-align:left">主力分點有進嗎</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">3/20 主力券商整體偏賣：累計賣超 2,464 張 > 買超 1,624 張。主要買方（統一轉帳 +454、凱基大眾 +447）並非 Iker 強調的「不計價追」特徵分點。<b>主要賣方（元大 -358、台新 -336、永豐 -317、野村 -251）顯示法人/外資分點正在出貨。</b>沒有觀察到單一分點大量連續買入的積極追蹤模式。</td>
+</tr>
+<tr>
+    <td>3</td><td style="text-align:left">分點有換手嗎</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">未觀察到明顯的分點輪替買入模式。3/13 大買後隨即出現賣壓，而非由不同分點接力延續漲勢。<b>Iker 認為「不同分點輪買 = 漲勢延續」，目前景碩的模式更像「同一批人買完就跑」。</b>這是短線交易而非中長期佈局的特徵。</td>
+</tr>
+<tr>
+    <td>4</td><td style="text-align:left">融資比例健康嗎</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">融資使用率 21.72%，遠低於 Iker 的 50-60% 警戒線。融資餘額 28,608 張、融券僅 14 張、資券比 0.05%。<b>融資面是乾淨的</b>，沒有散戶過度槓桿的問題。借券餘額 16,071 張需留意，但整體籌碼面不存在融資斷頭風險。</td>
+</tr>
+<tr>
+    <td>5</td><td style="text-align:left">0050 入選可能</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-s">推測</span></td>
+    <td style="text-align:left;font-weight:400">景碩市值約 2,002 億元，接近 0050 成分股門檻（通常市值前 50 名）。但台股大型股眾多，景碩排名可能在 50-70 名之間，<b>入選 0050 並非確定性事件</b>。即使入選，指數效應通常是短期行情（1-2 週），不改變基本面。</td>
+</tr>
+</table>
+
+<div class="reviewer">
+    <span class="r-name">籌碼分析師結論</span><span class="r-layer">Iker L3</span>
+    <div class="r-verdict fail">不通過（1/5 綠燈）— 法人態度分歧且出手後迅速離場、主力分點整體偏賣、無分點輪替延續漲勢。唯一正面是融資比率健康。籌碼面顯示景碩更像「題材股短線炒作」而非「法人長期佈局」。</div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- D. Iker 第四層：空間估算 -->
+<!-- ================================================================ -->
+<div id="L4" class="section-title">D. 策略長 — Iker 第四層：空間估算</div>
+<div class="section-sub">估算上漲空間並決定部位，5 個分析維度 | 結論：<span class="score-box score-fail">0/5 正面</span></div>
+
+<div class="card">
+<h3>D1. 第四層逐項評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:16%;text-align:left">維度</th><th style="width:8%">判定</th><th style="width:6%">FIAS</th><th style="width:65%;text-align:left">分析觀點</th></tr>
+<tr>
+    <td>1</td><td style="text-align:left">歷史類比法</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">上一輪 ABF 循環（2020-2022），景碩從約 100 元漲到 470 元（4.7 倍），然後跌回 100 元。<b>目前 380 元已達上一輪高點的 81%。</b>若歷史重演（Iker 方法：折半估算），目標約 285 元（4.7x÷2+100÷2=285），目前股價已遠超此估算。即使樂觀用 0.7 倍計算，也僅 369 元，低於現價 380 元。歷史告訴我們：景碩在週期高點附近的股價撐不住。</td>
+</tr>
+<tr>
+    <td>2</td><td style="text-align:left">法人目標價定位</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">高盛目標價 370 元（Buy），Factset 共識 290 元。<b>景碩股價 380 元已超越所有法人目標價。</b>Iker 說「目標價只是地板」，但這是在產業上行初期的邏輯。當股價已超越所有目標價，代表市場可能已經充分反映甚至超前反映了樂觀預期。此外，高盛曾經在短期內將景碩目標價從 125.68 元調升 194% 至 370 元，這種劇烈調整本身就說明預測的不可靠性。</td>
+</tr>
+<tr>
+    <td>3</td><td style="text-align:left">估值無法算 = 最好時機</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">恰恰相反——景碩的估值不是「算不出來」，而是「算出來很貴」。Trailing PE 108x、Forward PE 47-60x、PB 4.84x、PS 5.09x、PFCF 117x，<b>每個估值指標都在說「已經很貴了」</b>。Iker 說「算不出目標價 = 不是最後一批」，但現在是「算得出來而且很貴 = 可能已經是最後幾批」。壓力測試的 SOTP 分析更顯示載板隱含 PE 高達 64.8x，對週期股而言荒謬。</td>
+</tr>
+<tr>
+    <td>4</td><td style="text-align:left">風險在哪</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">風險清單很長：(1) 低階 ABF/BT 供給過剩持續；(2) 匯率升值壓力（EPS 敏感度 -0.44/元台幣升值）；(3) 235 億元 CapEx 帶來年增折舊 23.5 億元，損益兩平營收 303.5 億元；(4) AI CapEx 成長放緩 → 需求不如預期；(5) T-glass 短缺限制產能釋放；(6) 三雄中市佔最低（4%）最容易被邊緣化。<b>風險報酬比 6.2:1（壓力測試結論），嚴重不利。</b></td>
+</tr>
+<tr>
+    <td>5</td><td style="text-align:left">部位大小決策</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">基於前四項評估：Iker L1~L4 通過率僅 4/23（17%），壓力測試風險報酬比 6.2:1，加權期望價 240.25 元（低於現價 37%）。<b>在此條件下建立任何部位都是高風險行為。</b>即使只是觀察性小部位，也需要等待：(a) 股價回落至合理區間（280 元以下），或 (b) 基本面出現超預期改善（如毛利率突破 28%）。目前部位建議：0%。</td>
+</tr>
+</table>
+
+<div class="reviewer">
+    <span class="r-name">策略長結論</span><span class="r-layer">Iker L4</span>
+    <div class="r-verdict fail">不通過（0/5 綠燈，全紅）— 股價已超越歷史類比目標和所有法人目標價，估值明確偏高，風險報酬比嚴重不利。Iker 框架的空間估算邏輯全面指向「不宜進場」。即使產業趨勢向好，在此估值水準買入景碩的勝率極低。</div>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- E. 豁達趨勢系統 -->
+<!-- ================================================================ -->
+<div id="huoda" class="section-title">E. 趨勢成長分析員 — 豁達趨勢系統</div>
+<div class="section-sub">營收趨勢 × 獲利品質 × 現金流 × 排名 = 12 項 + 12 負面指標扣分清單</div>
+
+<div class="card">
+<h3>E1. 豁達系統 12 項評估</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:20%;text-align:left">維度</th><th style="width:8%">判定</th><th style="width:6%">FIAS</th><th style="width:61%;text-align:left">分析觀點</th></tr>
+
+<!-- 營收趨勢 4 項 -->
+<tr style="background:rgba(90,125,96,.06)"><td colspan="5" style="text-align:left;font-weight:700;color:var(--accent);padding:6px 8px">營收趨勢（4 項）</td></tr>
+<tr>
+    <td>1</td><td style="text-align:left">營收成長趨勢穩定度</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">近 12 月 YoY 均為正成長（+10%~+55%），趨勢向上明確。但月增率波動大（2025/8 +2.18% → 2025/9 +4.82% → 2026/1 +7.38% → 2026/2 -19.1%）。營收成長趨勢尚未「老」，但穩定度欠佳，受季節性和工作天數影響明顯。</td>
+</tr>
+<tr>
+    <td>2</td><td style="text-align:left">營收是否創新高</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2026/1 月營收 39.61 億元，為歷史新高，創近 13 季月營收紀錄。2025Q4 季營收 108.11 億元也是近期高點。營收創新高是最強的基本面確認信號之一。</td>
+</tr>
+<tr>
+    <td>3</td><td style="text-align:left">月均價線走勢</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">MA5(361.5) > MA10(324.3) > MA20(312.3) > MA60(230.7) > MA120(182.1) > MA240(135.8)，完美多頭排列。但股價 380 元大幅偏離 MA60（乖離率 +64.7%），短期超漲風險明顯。</td>
+</tr>
+<tr>
+    <td>4</td><td style="text-align:left">股價反映程度 vs 營收</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2025 年營收 YoY +28.8%，但同期股價從約 125 元漲到 380 元（+204%）。<b>股價漲幅是營收漲幅的 7 倍</b>。豁達原則：近 6 月漲幅 > 100% = 嚴重超漲。近 1 年景碩雖然帳面只跌 11.68%，但從 2025/6 低點 125 算起，漲幅超過 200%，已嚴重超漲。</td>
+</tr>
+
+<!-- 獲利品質 4 項 -->
+<tr style="background:rgba(90,125,96,.06)"><td colspan="5" style="text-align:left;font-weight:700;color:var(--accent);padding:6px 8px">獲利品質（4 項）</td></tr>
+<tr>
+    <td>5</td><td style="text-align:left">獲利指標趨勢</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">EPS 從 2024 年 0.11 元 → 2025 年 3.51 元（32 倍成長），Q4 單季 EPS 1.41 元（QoQ +87%）。獲利指標「大幅上漲」，符合豁達最佳等級。但需注意基期極低（2024 年幾乎不賺錢），高成長率是基期效應。</td>
+</tr>
+<tr>
+    <td>6</td><td style="text-align:left">營益率水準與潛力</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2025 年營益率 8.52%，歷史高點約 15-18%（2021-2022 年）。目前仍在低位回升中，理論上還有 6-10 個百分點的提升空間。法人預估 2026E 毛利率 25.7%（vs 2025 年 21.1%），若成立則營益率可能達 13-15%。空間確實還有。</td>
+</tr>
+<tr>
+    <td>7</td><td style="text-align:left">營收成長帶動獲利</td>
+    <td><span class="light green"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">2025 年營收 +28.8% → EPS 從 0.11 到 3.51（+3091%），營運槓桿效應明顯。Q4 營收 QoQ +4.4% 帶動 EPS QoQ +87%，顯示毛利率改善具有放大盈餘的效果。營收確實在帶動獲利。</td>
+</tr>
+<tr>
+    <td>8</td><td style="text-align:left">本益比合理性</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">Trailing PE 108.88x（極高）。Forward PE 47-60x（以 2026E EPS 6.3-8 元計算）。<b>即使用最樂觀的 EPS 8 元計算，PE 仍高達 47.5 倍</b>，遠超同業平均（欣興約 30-35x、南電約 25-30x）。豁達標準：PE > 50 = 高風險。景碩 trailing PE 超過 50 兩倍以上。</td>
+</tr>
+
+<!-- 現金流品質 2 項 -->
+<tr style="background:rgba(90,125,96,.06)"><td colspan="5" style="text-align:left;font-weight:700;color:var(--accent);padding:6px 8px">現金流品質（2 項）</td></tr>
+<tr>
+    <td>9</td><td style="text-align:left">自由現金流量比重</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">PFCF 117.05 倍，每股自由現金流僅 3.75 元。景碩過去 8 年歷經景氣大幅波動（2024 年幾乎不賺錢），加上 235 億元資本支出將大幅吃掉未來現金流。推估 8 年平均自由現金流量比重 < 60%（豁達及格線）。<b>重資本支出型企業的自由現金流天然較差。</b></td>
+</tr>
+<tr>
+    <td>10</td><td style="text-align:left">配息率與現金回饋</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-f">事實</span></td>
+    <td style="text-align:left;font-weight:400">近 5 年平均現金股利 2.8 元，平均殖利率 2.31%。2025 年配息 1.0 元（殖利率 1.19%），2026Q1 配息 1.75 元。連續 23 年配息。但配息率受 EPS 波動影響大——景氣好年大方（2022 年配 10 元），谷底幾乎不配。<b>5 年平均配息率推估約 50-55%（< 60% 及格線）。</b></td>
+</tr>
+
+<!-- 比較排名 2 項 -->
+<tr style="background:rgba(90,125,96,.06)"><td colspan="5" style="text-align:left;font-weight:700;color:var(--accent);padding:6px 8px">比較排名（2 項）</td></tr>
+<tr>
+    <td>11</td><td style="text-align:left">同類型排名</td>
+    <td><span class="light red"></span></td>
+    <td><span class="fias-i">推論</span></td>
+    <td style="text-align:left;font-weight:400">在 ABF 載板三雄中排名最末：全球市佔欣興 24% > 南電 20% >> 景碩 4%。投資建議配置比例欣興 50% : 南電 30% : 景碩 20%（方格子分析）。<b>景碩技術力（高階 ABF 層數）、客戶集中度、產品組合均不如前兩者。</b>在分析師推薦排名中也是三雄最末。</td>
+</tr>
+<tr>
+    <td>12</td><td style="text-align:left">與現有持股比較</td>
+    <td><span class="light yellow"></span></td>
+    <td><span class="fias-s">推測</span></td>
+    <td style="text-align:left;font-weight:400">無閣主持股清單資訊，無法進行比較。但若要配置 IC 載板部位，欣興和南電在營收趨勢、月均價線、獲利潛力三方面均優於景碩。除非看好景碩獨有的「晶碩光學」加值，否則同產業中有更好的選擇。</td>
+</tr>
+</table>
+
+<div class="reviewer">
+    <span class="r-name">趨勢成長分析員結論</span><span class="r-layer">豁達系統</span>
+    <div class="r-verdict cond">有條件通過 — 營收趨勢（5/12 綠燈）和獲利品質改善是明確正面信號，但估值極高（PE>50 高風險）、自由現金流不足、同類型排名末位。豁達分類歸屬：<b>短期強勢型</b>（營收上升+股價走強，但週期較短風險較高）。不符合穩定型或長期強勢型標準。</div>
+</div>
+</div>
+</div>
+
+<!-- 負面指標 12 項 -->
+<div class="card">
+<h3>E2. 豁達負面指標扣分清單（12 項）</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:35%;text-align:left">負面指標</th><th style="width:10%">觸發?</th><th style="width:10%">風險</th><th style="width:40%;text-align:left">說明</th></tr>
+<tr><td>1</td><td style="text-align:left">近 1 季年化 PE > 50</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-fail">高</span></td><td style="text-align:left;font-weight:400">Trailing PE 108.88x，超過門檻 2 倍以上</td></tr>
+<tr><td>2</td><td style="text-align:left">近 1 季年化 PE 30~50</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">Forward PE 47-60x 仍在 30-50 區間上方</td></tr>
+<tr><td>3</td><td style="text-align:left">近 3 月漲幅 > 100%</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">近 3 月約 +26.7%（從 300→380）</td></tr>
+<tr><td>4</td><td style="text-align:left">近 6 月漲幅 > 100%</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">2025/9 約 180→380 = +111%，觸發</td></tr>
+<tr><td>5</td><td style="text-align:left">8 年 FCF 比重 < 60%</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">重資本支出型，推估 FCF 比重 < 60%</td></tr>
+<tr><td>6</td><td style="text-align:left">5 年平均配息率 < 60%</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">推估約 50-55%，低於 60% 及格線</td></tr>
+<tr><td>7</td><td style="text-align:left">營收成長趨勢「老」</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">仍在高速成長期（YoY +31%~+55%）</td></tr>
+<tr><td>8</td><td style="text-align:left">獲利指標無上升趨勢</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">EPS 大幅上升中（Q4 EPS 1.41，QoQ +87%）</td></tr>
+<tr><td>9</td><td style="text-align:left">月均價線非多頭</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">完美多頭排列</td></tr>
+<tr><td>10</td><td style="text-align:left">營收成長但營益率到頂</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">營益率 8.52%，遠未達歷史高點 15-18%</td></tr>
+<tr><td>11</td><td style="text-align:left">營收年增率連續下滑 2 月</td><td style="color:var(--accent)">未觸發</td><td>—</td><td style="text-align:left;font-weight:400">2026/1 YoY +54.94%，仍在加速</td></tr>
+<tr><td>12</td><td style="text-align:left">純益率不穩定</td><td style="color:var(--bear);font-weight:700">觸發</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">Q3 淨利率 5.92%→Q4 升至約 8.7%，歷史波動 0%~15%</td></tr>
+</table>
+
+<div class="tip danger">
+    <b>負面指標觸發統計：高風險 1 項 + 中風險 5 項 = 6/12 觸發（50%）</b>
+    <p>觸發率過半。豁達系統對於中風險超過 3 項的標的會建議「謹慎」，加上 1 項高風險（PE>50），整體風險評級為「高風險」。景碩的營收趨勢和獲利改善是正面的，但估值和股價漲幅已經反映了太多樂觀預期。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- F. 風控官 -->
+<!-- ================================================================ -->
+<div id="risk" class="section-title">F. 風控官 — 橫跨所有層</div>
+<div class="section-sub">資料缺口盤點 + 認知偏誤檢查 + 反面觀點 + Iker × 豁達交叉驗證</div>
+
+<!-- F1. 交叉驗證矩陣 -->
+<div class="card">
+<h3>F1. Iker × 豁達交叉驗證矩陣</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:20%;text-align:left">比較面向</th><th style="width:30%;text-align:left">Iker 觀點</th><th style="width:30%;text-align:left">豁達觀點</th><th style="width:20%">判定</th></tr>
+<tr>
+    <td style="text-align:left;font-weight:700">產業 / 營收面</td>
+    <td style="text-align:left;font-weight:400">L1: 產業有機會但景碩不在甜蜜點（2/7）。高階 ABF 缺但景碩以 BT 和低階 ABF 為主。</td>
+    <td style="text-align:left;font-weight:400">豁達 #1-4: 營收創新高、趨勢向上（3/4 正面）。營收數據不騙人。</td>
+    <td style="color:var(--warn);font-weight:700">部分矛盾</td>
+</tr>
+<tr>
+    <td style="text-align:left;font-weight:700">個股基本面</td>
+    <td style="text-align:left;font-weight:400">L2: 稼動率滿載、無庫存紅利、三雄最弱（1/6）。營收上行空間有限。</td>
+    <td style="text-align:left;font-weight:400">豁達 #5-8: 獲利大幅改善、營益率有空間（3/4 正面，唯 PE 紅燈）。</td>
+    <td style="color:var(--warn);font-weight:700">部分矛盾</td>
+</tr>
+<tr>
+    <td style="text-align:left;font-weight:700">籌碼 / 資金面</td>
+    <td style="text-align:left;font-weight:400">L3: 法人短打、分點偏賣、非長期佈局（1/5）。</td>
+    <td style="text-align:left;font-weight:400">豁達 #4: 股價反映程度已超前營收 7 倍。近 6 月漲幅 >100%。</td>
+    <td style="color:var(--bull);font-weight:700">一致（負面）</td>
+</tr>
+<tr>
+    <td style="text-align:left;font-weight:700">估值 / 空間面</td>
+    <td style="text-align:left;font-weight:400">L4: 超越歷史類比、超越法人目標價、全紅（0/5）。</td>
+    <td style="text-align:left;font-weight:400">豁達負面指標: PE>50 高風險 + 6/12 觸發。</td>
+    <td style="color:var(--bull);font-weight:700">一致（負面）</td>
+</tr>
+</table>
+
+<div class="tip warn">
+    <b>交叉驗證結論</b>
+    <p><b>一致區（高確信度）</b>：籌碼面和估值面兩套系統一致看負面 — 法人短打非佈局、股價超漲、估值過高。這是最確定的結論。</p>
+    <p><b>矛盾區（需深究）</b>：產業面和基本面存在矛盾 — Iker 認為景碩不在甜蜜點，但豁達看到營收和獲利確實在改善。<b>矛盾的根源是：營收改善是事實，但改善的幅度是否足以支撐當前估值？答案是否定的。</b>營收 YoY +28.8% 對應股價 +204%，估值擴張遠超基本面改善。</p>
+</div>
+</div>
+</div>
+
+<!-- F2. 認知偏誤檢查 -->
+<div class="card">
+<h3>F2. 認知偏誤檢查（強制 5 項）</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:18%;text-align:left">偏誤類型</th><th style="width:60%;text-align:left">在景碩分析中的具體表現</th><th style="width:22%;text-align:left">防範措施</th></tr>
+<tr>
+    <td style="text-align:left">確認偏誤</td>
+    <td style="text-align:left;font-weight:400">「AI 載板」四個字就讓人想買。市場敘事太完美（AI 需求爆發 → 載板缺貨 → 漲價 → 盈餘爆發），容易只看到支持多頭的證據。<b>但景碩管理層自己都不敢說嚴重缺貨</b>。</td>
+    <td style="text-align:left;font-weight:400">強制檢視管理層用語（謹慎 vs 樂觀），重視反面證據。</td>
+</tr>
+<tr>
+    <td style="text-align:left">錨定效應</td>
+    <td style="text-align:left;font-weight:400">高盛目標價 370 元成為錨點，讓人覺得 380 元「只是剛超過目標價」。但高盛 3 個月前目標價才 125.68 元。<b>目標價本身就不穩定，不應作為錨點。</b>更危險的錨定：2021-2022 年高點 470 元，讓人覺得「還有 90 元空間」。</td>
+    <td style="text-align:left;font-weight:400">忽略外部目標價，用自身估值框架（SOTP/DCF）。</td>
+</tr>
+<tr>
+    <td style="text-align:left">近因偏誤</td>
+    <td style="text-align:left;font-weight:400">2025Q4 EPS 1.41 元（QoQ +87%）和 2026/1 月營收歷史新高讓人產生「好還會更好」的預期。但 2024 年 EPS 才 0.11 元——這家公司 1 年前幾乎不賺錢。<b>週期股的特性就是「好的時候很好、差的時候很差」</b>。</td>
+    <td style="text-align:left;font-weight:400">拉長觀察期，檢視完整景氣循環（2020-2026）。</td>
+</tr>
+<tr>
+    <td style="text-align:left">倖存者偏誤</td>
+    <td style="text-align:left;font-weight:400">看三雄的故事，只看到成功的案例（欣興從底部漲 5 倍）。但忽略了同期間有多少 IC 載板公司被淘汰或邊緣化。景碩市佔 4%，在全球排名中其實很邊緣。</td>
+    <td style="text-align:left;font-weight:400">關注景碩的絕對競爭力而非相對題材熱度。</td>
+</tr>
+<tr>
+    <td style="text-align:left">光環效應</td>
+    <td style="text-align:left;font-weight:400"><b>晶碩光學的光環效應</b>是景碩分析中最隱蔽的偏誤。晶碩營收 67.89 億元、毛利率 54%、連續十年新高——這讓景碩的合併報表看起來比純載板業務好很多。但晶碩佔比僅 15%，載板業務的 21% 毛利率才是主體。</td>
+    <td style="text-align:left;font-weight:400">用 SOTP 剝離晶碩後單獨評估載板業務。</td>
+</tr>
+</table>
+
+<div class="tip danger">
+    <b>偏誤檢查結論：發現 5 項偏誤全部存在風險</b>
+    <p>最危險的是「確認偏誤 × 光環效應」組合 — AI 載板題材 + 晶碩光學好報表，讓市場願意給景碩遠高於載板同業的估值。壓力測試的 SOTP 已揭露載板隱含 PE 64.8x 的荒謬性。</p>
+</div>
+</div>
+</div>
+
+<!-- F3. 反面觀點 -->
+<div class="card">
+<h3>F3. 反面觀點（強制 ≥3 個）</h3>
+<div class="card-body">
+
+<div class="reviewer" style="border-color:var(--bear)">
+    <span class="r-name" style="color:var(--bear)">反面觀點 1：景碩可能是「偽 AI 股」</span>
+    <div style="font-size:.84em;color:var(--txt2);margin-top:4px">
+        <p><b>論點</b>：景碩的 AI 含量可能被嚴重高估。ABF 佔營收僅 40%，其中高階 ABF（直接服務 AI 晶片）的佔比更低。BT 載板（40-45%）主要服務記憶體和手機，與 AI 無直接關係。晶碩（15%）是隱形眼鏡，跟 AI 毫無關係。<b>真正的 AI 營收可能不到 20%</b>。但市場給予的估值溢價（forward PE 47-60x）像是在為 100% AI 公司定價。</p>
+        <p><b>隱含結論</b>：如果市場發現景碩的 AI 含量不如想像，估值修正可能非常劇烈（PE 從 50x 回到 25x = 股價腰斬）。</p>
+    </div>
+</div>
+
+<div class="reviewer" style="border-color:var(--bear)">
+    <span class="r-name" style="color:var(--bear)">反面觀點 2：235 億元 CapEx 是賭注而非成長引擎</span>
+    <div style="font-size:.84em;color:var(--txt2);margin-top:4px">
+        <p><b>論點</b>：景碩 2025 年全年稅後純益僅 15.95 億元，但計畫 3 年投入 235 億元資本支出。<b>資本支出是稅後純益的 14.7 倍</b>。即使 2026-2028 年盈利持續成長，累計盈餘也很難覆蓋如此龐大的投資。這不是「有錢擴產」，而是「賭身家擴產」。年增折舊 23.5 億元（假設 10 年攤銷）將吃掉大量盈餘改善空間。如果 AI 需求不如預期或產業提前進入下行循環，這筆投資將成為沉重負擔。</p>
+        <p><b>隱含結論</b>：高資本支出 + 週期性產業 = 高風險組合。歷史上 ABF 產業大規模擴產後往往迎來供過於求（2022-2024 年即為前車之鑑）。</p>
+    </div>
+</div>
+
+<div class="reviewer" style="border-color:var(--bear)">
+    <span class="r-name" style="color:var(--bear)">反面觀點 3：新股申購承銷價揭露的「真實價值」</span>
+    <div style="font-size:.84em;color:var(--txt2);margin-top:4px">
+        <p><b>論點</b>：2026/3/11 新股申購承銷價 145 元，當時收盤價 291.5 元。承銷價通常參考淨值和合理估值。<b>承銷價僅為市價的 50%</b>，暗示專業定價者認為景碩的合理價值遠低於市場價格。承銷 5,950 張 × 每張潛在獲利 14.65 萬元 = 籌碼釋放壓力 8.7 億元。這些得到「半價股票」的人，在解除閉鎖期後有強烈賣出動機。</p>
+        <p><b>隱含結論</b>：連發行公司自己都認為 145 元是可以接受的價格，市場卻交易在 380 元。價格與價值的鴻溝巨大。</p>
+    </div>
+</div>
+
+<div class="reviewer" style="border-color:var(--bear)">
+    <span class="r-name" style="color:var(--bear)">反面觀點 4：大摩喊進的利益衝突</span>
+    <div style="font-size:.84em;color:var(--txt2);margin-top:4px">
+        <p><b>論點</b>：2026 年初大摩調升三雄目標價引發漲停。但大型外資機構的「喊進」往往伴隨利益衝突——他們可能已經提前佈局，喊進是為了創造流動性出貨。3/13 外資大買 5,495 張後，3/20 已轉為賣超 624 張。<b>從「喊進」到「賣出」僅隔數日</b>。散戶追高買進的股票，可能正是外資在出的籌碼。</p>
+        <p><b>隱含結論</b>：不要因為大型機構喊進就認為安全。法人是賣方，他們的推薦報告是營銷工具。</p>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- F4. 資料缺口 -->
+<div class="card">
+<h3>F4. 資料缺口清單</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:5%">#</th><th style="width:20%;text-align:left">缺口項目</th><th style="width:12%">來源系統</th><th style="width:12%">嚴重度</th><th style="width:51%;text-align:left">對結論的影響</th></tr>
+<tr><td>1</td><td style="text-align:left">個體（母公司）財報</td><td>Iker L2</td><td><span class="score-box score-fail">高</span></td><td style="text-align:left;font-weight:400">無法準確拆分載板 vs 晶碩的獲利貢獻。SOTP 分析為間接推估。</td></tr>
+<tr><td>2</td><td style="text-align:left">景碩自身合約報價</td><td>Iker L1 #5</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">ABF 漲價幅度用產業平均替代，景碩實際漲幅可能更低（低階為主）。</td></tr>
+<tr><td>3</td><td style="text-align:left">高階 ABF 佔景碩 ABF 比例</td><td>Iker L1 #1</td><td><span class="score-box score-fail">高</span></td><td style="text-align:left;font-weight:400">不知高階/低階 ABF 的佔比，直接影響「受惠程度」判斷。</td></tr>
+<tr><td>4</td><td style="text-align:left">GPU/AI 載板具體客戶訂單</td><td>Iker L2</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">景碩服務哪些 AI 晶片客戶、佔比多少，直接決定 AI 含量。</td></tr>
+<tr><td>5</td><td style="text-align:left">8 年完整自由現金流數據</td><td>豁達 #9</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">FCF 比重為推估值，可能高估或低估。</td></tr>
+<tr><td>6</td><td style="text-align:left">2026Q1 實際業績</td><td>全系統</td><td><span class="score-box score-warn">中</span></td><td style="text-align:left;font-weight:400">僅有 1-2 月營收，Q1 季報尚未公布，毛利率改善幅度不確定。</td></tr>
+<tr><td>7</td><td style="text-align:left">CB/可轉債詳細資訊</td><td>Iker L2 #6</td><td><span class="score-box score-warn">低</span></td><td style="text-align:left;font-weight:400">影響較小，不影響整體結論方向。</td></tr>
+</table>
+
+<div class="tip info">
+    <b>資料缺口影響評估</b>
+    <p>7 項缺口中 2 項高嚴重度（個體財報、高階 ABF 佔比），這兩項直接影響「景碩 AI 含量到底有多少」的核心判斷。如果未來補齊資料發現：(a) 高階 ABF 佔比 > 60%，或 (b) 載板部門毛利率 > 25%，則 H2（穩健成長）的信心可能需要上修。但在資料補齊之前，保守處理是正確的。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- G. 第三次信心校準 -->
+<!-- ================================================================ -->
+<div id="calibration" class="section-title">G. 第三次信心校準</div>
+<div class="section-sub">原則：只能比壓力測試更保守，不可更樂觀 | 輸入：第二次校準 + 評審團結論</div>
+
+<div class="card">
+<h3>G1. 三次校準進程對比表</h3>
+<div class="card-body">
+<table>
+<tr><th style="text-align:left">假說</th><th>第一次<br>ACH</th><th>第二次<br>壓力測試</th><th>第三次<br>評審團</th><th style="text-align:left">評審團調整理由</th></tr>
+<tr>
+    <td style="text-align:left">H1: 超級循環<br><span style="font-size:.72em;color:var(--txt3)">目標 550-650 元</span></td>
+    <td style="color:var(--bull)">10%</td>
+    <td style="color:var(--bull)">5%</td>
+    <td style="color:var(--bull);font-weight:700">3%</td>
+    <td style="text-align:left;font-weight:400">Iker L4 全紅（0/5），歷史類比法顯示 380 元已達上輪高點 81%。管理層自己都不認為會嚴重缺貨。超級循環假說幾乎無事實支撐。</td>
+</tr>
+<tr>
+    <td style="text-align:left">H2: 穩健成長<br><span style="font-size:.72em;color:var(--txt3)">目標 350-450 元</span></td>
+    <td style="color:var(--neutral)">30%</td>
+    <td style="color:var(--neutral)">25%</td>
+    <td style="color:var(--neutral);font-weight:700">20%</td>
+    <td style="text-align:left;font-weight:400">豁達營收趨勢正面（5/12 綠燈），但 Iker L2 顯示稼動率已滿載、無庫存紅利。交叉驗證產業面/基本面存在矛盾。營收改善是事實但不足以支撐當前估值。</td>
+</tr>
+<tr>
+    <td style="text-align:left">H3: 估值過高<br><span style="font-size:.72em;color:var(--txt3)">目標 200-280 元</span></td>
+    <td style="color:var(--bear)">40%</td>
+    <td style="color:var(--bear)">45%</td>
+    <td style="color:var(--bear);font-weight:700">50%</td>
+    <td style="text-align:left;font-weight:400">Iker × 豁達在估值面完全一致（負面）。PE>50 高風險、股價超越所有法人目標、SOTP 載板隱含 PE 64.8x。豁達負面指標 6/12 觸發。5 項認知偏誤全部存在風險。</td>
+</tr>
+<tr>
+    <td style="text-align:left">H4: 週期反轉<br><span style="font-size:.72em;color:var(--txt3)">目標 120-180 元</span></td>
+    <td style="color:var(--bear)">20%</td>
+    <td style="color:var(--bear)">25%</td>
+    <td style="color:var(--bear);font-weight:700">27%</td>
+    <td style="text-align:left;font-weight:400">235 億元 CapEx 在週期反轉時將成為沉重負擔。Iker L1 #3 顯示缺口持續性存疑（DeepSeek 效應）。大摩喊進後法人快速離場的行為模式暗示聰明錢已在出場。</td>
+</tr>
+</table>
+
+<div class="tip danger">
+    <b>第三次校準結論：H3（估值過高）50% 為主導假說</b>
+    <p>H3 + H4 合計 77%（第二次為 70%），看空機率持續上升。評審團 Iker 四層通過率僅 4/23（17.4%），豁達負面指標 6/12（50%），兩系統在估值和籌碼面完全一致看負面。唯一正面是營收趨勢和獲利改善，但不足以扭轉整體負面判斷。</p>
+</div>
+</div>
+</div>
+
+<!-- G2. 加權期望值 -->
+<div class="card">
+<h3>G2. 加權期望值與安全邊際</h3>
+<div class="card-body">
+<div class="calc">
+加權期望價 = H1×600×3% + H2×400×20% + H3×240×50% + H4×150×27%<br>
+         = 18 + 80 + 120 + 40.5<br>
+         = <b>258.5 元</b>（第二次：240.25 元 → 第三次微幅上修，因調整了各假說中位數）<br>
+<br>
+修正：更精確計算（取中位數）<br>
+H1 中位數 = (550+650)/2 = 600 | H2 中位數 = (350+450)/2 = 400<br>
+H3 中位數 = (200+280)/2 = 240 | H4 中位數 = (120+180)/2 = 150<br>
+<br>
+加權期望價 = 600×0.03 + 400×0.20 + 240×0.50 + 150×0.27 = 18 + 80 + 120 + 40.5 = <b>258.5 元</b><br>
+<br>
+vs 現價 380 元 → <b>隱含下行空間 -32%</b><br>
+<br>
+安全邊際買入價 = 258.5 × 75% = <b>193.9 元</b>（需打 75 折才值得進場）<br>
+風險報酬比 = (380-258.5) / (258.5-193.9) = 121.5 / 64.6 = <b>1.88:1（下行:上行）</b>
+</div>
+
+<div class="grid3">
+    <div class="mini-card bear-card">
+        <div class="title">加權期望價</div>
+        <div class="num" style="color:var(--bear)">258.5 元</div>
+        <div class="desc">vs 現價 380 元（-32%）</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">安全邊際買入價</div>
+        <div class="num" style="color:var(--bear)">193.9 元</div>
+        <div class="desc">加權期望價 × 75%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">H3+H4 合計</div>
+        <div class="num" style="color:var(--bear)">77%</div>
+        <div class="desc">看空機率持續攀升</div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- G3. 策略長整合結論 -->
+<div class="card">
+<h3>G3. 策略長整合結論 — 帶入第七步的 5 個關鍵問題</h3>
+<div class="card-body">
+
+<div class="tip danger">
+    <b>整合判定：迴避 — 不宜在當前價位建立部位</b>
+    <p>Iker 通過率 4/23（17.4%）、豁達負面指標 6/12（50%）、交叉驗證估值面完全一致（負面）、5 項認知偏誤全部存在。三次校準一致趨向保守（H3 從 40%→45%→50%）。股價 380 元遠超加權期望價 258.5 元。</p>
+</div>
+
+<p style="font-size:.85em;font-weight:700;margin:10px 0 6px">豁達分類歸屬：<span style="color:var(--warn)">短期強勢型</span>（營收上升+股價走強，但週期較短風險較高）</p>
+
+<p style="font-size:.85em;font-weight:700;margin:10px 0 6px">帶入第七步的 5 個關鍵問題：</p>
+<table>
+<tr><th style="width:5%">#</th><th style="width:95%;text-align:left">問題</th></tr>
+<tr><td>Q1</td><td style="text-align:left;font-weight:400">景碩的「AI 含量」到底有多少？高階 ABF 佔比不明是最大資料缺口。若 AI 營收 < 20%，當前估值完全無法支撐。</td></tr>
+<tr><td>Q2</td><td style="text-align:left;font-weight:400">235 億元 CapEx 在什麼營收水準下才能回本？損益兩平營收 303.5 億元，安全邊際僅 23%。週期反轉時這筆投資的風險有多大？</td></tr>
+<tr><td>Q3</td><td style="text-align:left;font-weight:400">管理層為什麼不敢承諾「嚴重缺貨」？「ABF 2026 嚴重供不應求的可能性不高」這句話與市場的狂熱敘事形成鮮明對比。誰在說真話？</td></tr>
+<tr><td>Q4</td><td style="text-align:left;font-weight:400">3/13 法人大買後迅速離場的行為是否暗示「聰明錢」已經判斷目前不值得追？外資從 +5,495 張到 -624 張只用了 5 天。</td></tr>
+<tr><td>Q5</td><td style="text-align:left;font-weight:400">晶碩光學是否正在被用作「估值掩護」？合併報表讓景碩看起來比純載板公司好，但 SOTP 剝離後載板隱含 PE 64.8x 是荒謬的。</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 頁尾 -->
+<!-- ================================================================ -->
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 評審團 v3.0</p>
+    <p>報告日期：2026-03-23 | 景碩科技 (3189) | 收盤價 380 元</p>
+    <p>Iker 四層 23 項（通過 4/23 = 17.4%）| 豁達 12 項 + 負面指標 6/12 觸發</p>
+    <p>第三次信心校準：H1(3%) H2(20%) H3(50%) H4(27%) | 加權期望價 258.5 元</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){ this.parentElement.classList.toggle('collapsed'); });
+});
+</script>
+</body>
+</html>
