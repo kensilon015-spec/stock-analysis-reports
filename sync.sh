@@ -163,15 +163,15 @@ for f in $(find "$TARGET_DIR/天機錄" -name "*.html" -type f -printf '%T@ %p\n
 
     # 解析標籤
     case "$FNAME" in
-        *投資分析*完整版*) TAG_TEXT="投資分析" ;;
-        *投資分析*推衍版*) TAG_TEXT="推衍版" ;;
+        *完整版*)          TAG_TEXT="完整版" ;;
+        *推衍版*)          TAG_TEXT="推衍版" ;;
         *供應鏈*)          TAG_TEXT="供應鏈" ;;
         *同業比較*)        TAG_TEXT="同業比較" ;;
         *主題掃描*)        TAG_TEXT="主題掃描" ;;
         *全面產業分析*)    TAG_TEXT="產業分析" ;;
         *推衍*總結*)       TAG_TEXT="推衍" ;;
         *推衍命中率*)      TAG_TEXT="系統" ;;
-        *推衍推演*)        TAG_TEXT="推衍版" ;;
+        *推衍天下*)        TAG_TEXT="推衍天下" ;;
         *)                 TAG_TEXT="報告" ;;
     esac
 

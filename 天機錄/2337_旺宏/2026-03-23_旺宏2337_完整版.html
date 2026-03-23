@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>旺宏電子 (2337) — 第七步：質化分析報告 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:.95em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.84em;color:var(--txt2);margin-bottom:4px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:left;font-weight:600;font-size:.78em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);font-size:.78em}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.88em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.1em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.8em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--base)}
+.mini-card .desc{font-size:.7em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.warn-card{border-left:4px solid var(--warn)}
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0}
+.ev .ev-t{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.ev .ev-d{font-size:.82em;color:var(--txt2);line-height:1.6;margin-bottom:4px}
+.ev .ev-s{font-size:.72em;color:var(--txt3);font-style:italic}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.82em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.bull{background:var(--bull)}.badge.bear{background:var(--bear)}.badge.warn{background:var(--warn)}.badge.neutral{background:var(--neutral)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>旺宏電子 (2337) — 質化分析報告</h1>
+    <div class="sub">天機閣深度調查系統 v3.0 / 第七步：決策輸出</div>
+    <div class="desc">本報告以質化分析為核心 — 這家公司有什麼優勢？有沒有值得買進的理由？目前股價有什麼風險？<br>所有分析攤開呈現，最終決策由閣主自行判斷。</div>
+    <div class="tags">
+        <span class="tag">2026-03-23</span>
+        <span class="tag">收盤 160 元</span>
+        <span class="tag">NOR Flash / MLC NAND</span>
+        <span class="tag">事實:14 推論:6 假設:4 推測:2</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.86em;color:var(--base)">報告結構（13 大章節）</strong>
+    <a href="#ch1">一、公司概覽 — 你在看的是什麼公司？</a>
+    <a href="#ch2">二、近期催化劑 — 有什麼題材在炒？</a>
+    <a href="#ch3">三、為什麼在漲？ — 市場為什麼買單？</a>
+    <a href="#ch4">四、潛在風險偵測 — 市場還沒看到什麼？</a>
+    <a href="#ch5">五、隱藏優勢挖掘 — 市場錯過了什麼？</a>
+    <a href="#ch6">六、六步分析彙整 — 關鍵決策因素</a>
+    <a href="#ch7">七、風險清單與壓力測試</a>
+    <a href="#ch8">八、監控儀表板</a>
+    <a href="#ch9">九、推衍預測 — 接下來可能怎麼走？</a>
+    <a href="#ch10">十、股價合理性分析 — 目前股價貴不貴？</a>
+    <a href="#ch12">十二、貓膩探索與求證 — 這故事太完美了嗎？</a>
+    <a href="#ch13">十三、投資結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 一、公司概覽 ===== -->
+<div id="ch1" class="section-title">一、公司概覽 — 你在看的是什麼公司？</div>
+<div class="section-sub">旺宏是台灣本土唯一的記憶體 IDM 廠，從晶圓製造到成品測試全部自己來</div>
+
+<div class="card collapsed"><h3>1-1. 基本資料</h3><div class="card-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>股票代號</td><td>2337.TW（上市）</td></tr>
+<tr><td>成立年份</td><td>1989 年</td></tr>
+<tr><td>董事長</td><td>吳敏求</td></tr>
+<tr><td>上市時間</td><td>1995 年</td></tr>
+<tr><td>員工人數</td><td>約 4,000 人</td></tr>
+<tr><td>市值</td><td>約 2,785 億元（160 元 × 17.41 億股）</td></tr>
+<tr><td>股本</td><td>約 174.1 億元</td></tr>
+<tr><td>每股淨值</td><td>27.89 元</td></tr>
+<tr><td>最大股東</td><td>吳敏求家族（約 6-8%）</td></tr>
+<tr><td>產業分類</td><td>非揮發性記憶體 IDM（Integrated Device Manufacturer）</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed"><h3>1-2. 營收結構與產品組合</h3><div class="card-body">
+<table>
+<tr><th>產品線</th><th>2025 佔比</th><th>全球定位</th><th>主要應用</th></tr>
+<tr><td style="font-weight:700">NOR Flash</td><td>約 80%</td><td>全球前三（與華邦電、兆易創新競爭）</td><td>AI 伺服器啟動碼、車用 ADAS、工控、IoT</td></tr>
+<tr><td style="font-weight:700">ROM</td><td>約 17%</td><td>全球獨佔（任天堂 Mask ROM）</td><td>任天堂 Switch 2 遊戲卡匣</td></tr>
+<tr><td style="font-weight:700">eMMC/MLC NAND</td><td>約 3%→21%(Q4)</td><td>全球最後一家 MLC eMMC 供應商</td><td>電視、機上盒、車用、伺服器 BMC</td></tr>
+</table>
+<div class="tip info"><b>白話說</b>
+旺宏是一家做「老技術」的公司，但這些老技術恰好在產業結構變化下變成了「獨門生意」。NOR Flash 是伺服器和車子的啟動碼必備；ROM 只有任天堂用，旺宏獨家；MLC eMMC 因為大廠全部退出，旺宏變成全球唯一。</div>
+</div></div>
+
+<div class="card collapsed"><h3>1-3. 製造能力與產能</h3><div class="card-body">
+<table>
+<tr><th>廠區</th><th>製程</th><th>月產能</th><th>稼動率</th><th>擴產計畫</th></tr>
+<tr><td>8 吋廠（竹科）</td><td>NOR Flash 為主</td><td>4.5 萬片</td><td>接近滿載</td><td>維持現有</td></tr>
+<tr><td>12 吋廠（竹科）</td><td>NOR + NAND</td><td>2 萬片→3 萬片</td><td>接近滿載</td><td>220 億元擴至 3 萬片</td></tr>
+<tr><td>12 吋研發線</td><td>3D NAND</td><td>~5,000 片</td><td>研發用</td><td>196/312 層試產</td></tr>
+</table>
+<div class="tip warn"><b>產能瓶頸是核心風險</b>
+12 吋廠擴產高度依賴 ASML DUV 浸潤式微影設備（全球獨佔），交期約 18 個月，無替代供應商。計畫 220 億元擴產，但 2025 年實際資本支出僅 18.41 億元，落差 12 倍。</div>
+</div></div>
+
+<div class="card collapsed"><h3>1-4. 財務體質卡片</h3><div class="card-body">
+<div class="grid4">
+<div class="mini-card bear-card"><div class="title">2025 EPS</div><div class="num" style="color:var(--bear)">-1.77</div><div class="desc">連續虧損中</div></div>
+<div class="mini-card bull-card"><div class="title">Q4 FCF</div><div class="num" style="color:var(--bull)">+24.5億</div><div class="desc">首次轉正</div></div>
+<div class="mini-card warn-card"><div class="title">負債比</div><div class="num" style="color:var(--warn)">41.6%</div><div class="desc">尚屬安全</div></div>
+<div class="mini-card neutral-card"><div class="title">流動比</div><div class="num" style="color:var(--neutral)">237%</div><div class="desc">短期無虞</div></div>
+</div>
+<table>
+<tr><th>項目</th><th>數值</th><th>評價</th></tr>
+<tr><td>營業現金流（Q4）</td><td>+25.58 億元</td><td style="color:var(--bull)">大幅轉正</td></tr>
+<tr><td>CB 餘額</td><td>30 億元（轉換價 23 元）</td><td style="color:var(--bear)">潛在稀釋 6.8%</td></tr>
+<tr><td>殖利率</td><td>0%（不配息）</td><td style="color:var(--bear)">無股利保護</td></tr>
+<tr><td>PBR</td><td>6.74 倍</td><td style="color:var(--bear)">遠超歷史均值</td></tr>
+<tr><td>毛利率趨勢</td><td>13.54%→24.17%（Q3→Q4）</td><td style="color:var(--bull)">改善中</td></tr>
+</table>
+</div></div>
+
+<!-- ===== 二、近期催化劑 ===== -->
+<div id="ch2" class="section-title">二、近期催化劑 — 有什麼題材在炒？</div>
+<div class="section-sub">按預估時間排序，每個催化劑附驗證條件與影響程度</div>
+
+<div class="card collapsed"><h3>催化劑 1：MLC eMMC Q2 再翻倍漲價</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> Q2 SLC/MLC NAND 報價預期翻倍，急單最高 5 倍</div>
+    <div class="ev-d">根據 TechNews 報導（2026/3/17），法人預期 Q2 eMMC 各容量漲幅約 60-100%，全年 SLC/MLC NAND 報價可翻漲 2 倍，部分急單甚至高達 5 倍。Q1 已實現 8GB +183%、4GB +165%、16GB +147% 的驚人漲幅。2025-2027 年 MLC/TLC 位元出貨預期成長 36 倍，ASP/Gb 成長 7.5 倍。</div>
+    <div class="ev-s">來源：TechNews 科技新報 2026/03/17 &amp; 管道C 國際市場資料</div>
+</div>
+<table>
+<tr><th>評估面向</th><th>判斷</th></tr>
+<tr><td>實現機率</td><td style="font-weight:700;color:var(--bull)">80%（高）— 供給缺口已確認</td></tr>
+<tr><td>影響幅度</td><td>EPS +3~8 元（取決於出貨量）</td></tr>
+<tr><td>市場預期程度</td><td style="color:var(--bear)">已大幅反映（90日漲314%）</td></tr>
+<tr><td>超額收益潛力</td><td style="color:var(--warn)">低 — 漲幅已 Price-in</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed"><h3>催化劑 2：2026Q1 季報轉盈（5 月公布）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> Q1 EPS 預估 0.73 元，終結連虧</div>
+    <div class="ev-d">今周刊報導旺宏 Q1 預估首次轉盈。營收 3 月 YoY +60% 加上 NOR+eMMC 雙漲價支撐，轉盈幾乎確定。但市場已充分預期。</div>
+    <div class="ev-s">來源：今周刊 &amp; finlab 營收數據</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>催化劑 3：任天堂 Switch 2 上市</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> Switch 2 已導入旺宏 ROM，出貨高峰預計 2028-2030 年</div>
+    <div class="ev-d">旺宏為全球 Mask ROM 技術領先者。但 ROM 僅佔營收 17%，且出貨高峰要到 2028 年以後，短期影響有限。</div>
+    <div class="ev-s">來源：管道C 產業上下游</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>催化劑 4：32GB eMMC 量產（2026Q2 底）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 管理層承諾 2026Q2 底量產</div>
+    <div class="ev-d">16GB 已量產，32GB 是下一里程碑。但管理層過去 3D NOR 曾延遲兩年。</div>
+    <div class="ev-s">來源：2025Q3 法說會</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>催化劑 5：凱基目標價 300 元</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-s">推測</span> 凱基預估 2026 EPS 25-30 元、毛利率 62.5%</div>
+    <div class="ev-d">建立在極度樂觀假設上。閣主已指示不參考分析師報價，此處僅記錄作為理解市場行為的背景。</div>
+    <div class="ev-s">來源：凱基投顧 2026/03/12 &amp; 蕃新聞</div>
+</div>
+<div class="tip danger"><b>法人預估差異極大</b>
+2026 年 EPS 預估範圍：0.73 元～30.04 元，差距 41 倍。極端分歧本身就是高不確定性的信號。</div>
+</div></div>
+
+<!-- ===== 三、為什麼在漲？ ===== -->
+<div id="ch3" class="section-title">三、為什麼在漲？ — 市場為什麼買單？</div>
+<div class="section-sub">拆解推動股價從 17 元到 160 元的核心驅動力</div>
+
+<div class="card collapsed"><h3>驅動力 1：MLC eMMC 全球獨佔地位</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> Samsung/SK Hynix/Kioxia/Micron 四大廠陸續退出 MLC NAND</div>
+    <div class="ev-d">三星 2026 年 3 月關閉華城 Line 12 的 2D NAND 產線轉為 1C DRAM 生產。全球 MLC NAND 產能 2026 年預計年減 41.7%。旺宏成為全球最後一家 MLC eMMC 供應商，掌握定價權。供給缺口達 51%。</div>
+    <div class="ev-s">來源：TrendForce 2026/01/07 &amp; 2026/02/26、THE ELEC、Digitimes、管道C</div>
+</div>
+<div class="tip good"><b>這是真實的結構性變化</b>
+大廠退出 MLC 不是「週期性」減產（可隨時恢復），而是「結構性」轉移（產線改做 DRAM/HBM，重新轉回需要 2-3 年 + 數十億美元投資）。旺宏的獨佔窗口至少有 2-3 年。</div>
+</div></div>
+
+<div class="card collapsed"><h3>驅動力 2：eMMC 漲價幅度歷史罕見</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> Q1 eMMC 合約價漲幅 147-183%，NOR Flash 漲 30-100%</div>
+    <div class="ev-d">8GB eMMC 漲 183%、4GB 漲 165%、16GB 漲 147%。NOR Flash 也同步漲 30%，部分規格達 100%。雙引擎同步漲價帶動毛利率從 Q3 的 13.54% 回升至 Q4 的 24.17%。</div>
+    <div class="ev-s">來源：TechNews 2026/03/17、TrendForce、finlab</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>驅動力 3：營收加速成長</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> 月營收 YoY 加速：44.93%→51.4%→59.97%（2026 年 1-3 月）</div>
+    <div class="ev-d">不只在成長，而且在「加速」成長。3 月營收 30.3 億元為近年新高。累計營收 YoY +55.58%。</div>
+    <div class="ev-s">來源：finlab 量化數據</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>驅動力 4：AI 伺服器帶動 NOR Flash 需求</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 每台 AI 伺服器 NOR Flash 搭載量從 1-2 顆增至 4-8 顆</div>
+    <div class="ev-d">GPU/DPU 為 SPI NOR Flash 最快速成長應用，容量從 128Mb 升至 512Mb-1Gb。旺宏 55nm 高密度 NOR Flash 2Gb 產品在伺服器市場需求強勁。</div>
+    <div class="ev-s">來源：管道C 技術發展 &amp; vocus 法說會分析</div>
+</div>
+</div></div>
+
+<!-- ===== 四、潛在風險偵測 ===== -->
+<div id="ch4" class="section-title">四、潛在風險偵測與求證 — 市場還沒看到什麼？</div>
+<div class="section-sub">從已知風險推導二階/三階連鎖問題，並即時求證</div>
+
+<div class="card collapsed"><h3>風險 1：反身性風險 — 漲價加速替代（最被低估的威脅）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> eMMC 極端漲價 → 下游加速驗證 TLC/UFS 替代方案</div>
+    <div class="ev-d">根據 Digitimes（2026/03/20）報導：「低密度 eMMC 正在消失，MLC 生產幾乎歸零，處理器廠商正在淘汰 eMMC 支援，UFS 的容量、效能和生態系持續成長」。64GB 和 128GB 的 TLC eMMC 將成為主流替代品。旺宏目前只做低容量（4-16GB），正好是被替代的靶心。</div>
+    <div class="ev-s">來源：Digitimes 2026/03/20 &amp; Electronic Design (Kioxia)</div>
+</div>
+<div class="tip danger"><b>連鎖影響路徑</b>
+eMMC 漲價 200% → 下游被迫重新評估架構 → TLC eMMC 64/128GB 開始被驗證 → 設計導入期 12-18 個月 → 2027-2028 年 TLC 替代品量產 → 旺宏 MLC eMMC 獨佔窗口可能比預期短</div>
+<p><strong>求證結果</strong>：<span class="badge warn">⚠️ 確認風險存在但時程不確定</span> — 車用驗證需 2-3 年，消費電子替代更快</p>
+</div></div>
+
+<div class="card collapsed"><h3>風險 2：220 億 CapEx 折舊時差陷阱</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 折舊先到、營收後到，2027-2028 年存在 EPS 空窗壓力</div>
+    <div class="ev-d">220 億元若 5 年折舊，年增折舊 44 億元。但新產能需設備到位後 12-18 個月才能貢獻營收。每股多負擔折舊約 2.5 元/年，可能導致「擴產期反而虧損加深」。</div>
+    <div class="ev-s">來源：第五步壓力測試 S5</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>風險 3：CB 30 億 + 融資 172,329 張 連鎖風險</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> CB 轉換價 23 元，目前股價 160 元，轉換利潤 596%</div>
+    <div class="ev-d">CB 持有者隨時可轉換為股票並賣出。30 億全部轉換 = 增加約 1.3 億股（稀釋 6.8%）。加上融資餘額 172,329 張，兩股賣壓在股價反轉時會加速下跌。</div>
+    <div class="ev-s">來源：法說會資料 &amp; finlab 籌碼數據</div>
+</div>
+<div class="tip danger"><b>斷頭線估算</b>
+融資維持率 130%，若融資均價約 120 元，斷頭線約 78 元。一旦股價跌破 100 元，融資追繳壓力將引發連鎖效應。</div>
+</div></div>
+
+<div class="card collapsed"><h3>風險 4：處置股流動性限制（3/19-4/1）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> 90 日漲 314%，每 5 分鐘人工撮合</div>
+    <div class="ev-d">處置結束後（4/2 起），被壓抑的賣壓可能一次性釋放。</div>
+    <div class="ev-s">來源：證交所公告 &amp; TechNews 2026/03/19</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>風險 5：CapEx 執行落差 — 220 億 vs 18.41 億</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> 2025 全年資本支出僅 18.41 億 vs 計畫 220 億</div>
+    <div class="ev-d">執行率僅 8.4%。如果設備訂單已下但尚未交貨是合理的，但如果連訂單都還沒下，那 220 億可能只是「宣示性」承諾。這是 H1 和 H3 的核心分野。</div>
+    <div class="ev-s">來源：finlab 自由現金流回推 &amp; 第四步 ACH E8</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>潛在風險總覽表</h3><div class="card-body">
+<table>
+<tr><th>風險</th><th>嚴重度</th><th>觸發距離</th><th>有無解法</th><th>求證結果</th></tr>
+<tr><td>反身性替代風險</td><td style="color:var(--bear)">致命</td><td>初期跡象</td><td>部分</td><td>⚠️ 確認存在</td></tr>
+<tr><td>折舊時差陷阱</td><td style="color:var(--warn)">中度</td><td>2027-2028</td><td>可延遲</td><td>⚠️ 結構性</td></tr>
+<tr><td>CB+融資連鎖</td><td style="color:var(--bear)">致命</td><td>股價＜100元</td><td>無</td><td>✅ 確認</td></tr>
+<tr><td>處置股結束賣壓</td><td style="color:var(--warn)">中度</td><td>2026/4/2</td><td>市場消化</td><td>✅ 已確認</td></tr>
+<tr><td>CapEx 執行落差</td><td style="color:var(--warn)">中度</td><td>Q2 法說會</td><td>取決管理層</td><td>⚠️ 待驗證</td></tr>
+</table>
+</div></div>
+
+<!-- ===== 五、隱藏優勢 ===== -->
+<div id="ch5" class="section-title">五、隱藏優勢挖掘 — 市場錯過了什麼？</div>
+<div class="section-sub">被短期 eMMC 題材蓋過的長期結構性優勢</div>
+
+<div class="card collapsed"><h3>優勢 1：車用 ASIL D 認證先發優勢</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> MXSMIO 系列全球最早通過 ISO 26262 ASIL D 最高安全認證</div>
+    <div class="ev-d">ASIL D 認證需 2-3 年，旺宏比競爭對手更早取得。車用客戶導入設計後轉換成本極高。市場聚焦 eMMC 漲價，反而忽略了這個長期護城河。</div>
+    <div class="ev-s">來源：Storage Newsletter 2026/01/09 &amp; 管道C</div>
+</div>
+<p><strong>求證</strong>：<span class="badge bull">✅ 確認優勢存在</span> | 實現時間：長期 | 利益分級：中度（NOR 營收 5-10% 提升）</p>
+</div></div>
+
+<div class="card collapsed"><h3>優勢 2：管理層高誠信度（78/100）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 承諾兌現率 100%、保守表述風格</div>
+    <div class="ev-d">當管理層正面談論 eMMC 前景時，可信度高於一般公司。但市場更容易被凱基 EPS 30 元這種數字吸引。</div>
+    <div class="ev-s">來源：第二步 FIAS 分級 &amp; 承諾追蹤表</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>優勢 3：ArmorFlash 安全記憶體生態系</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> ArmorBoot MX76 已開始送樣，整合辨識/驗證/加密功能</div>
+    <div class="ev-d">AI/IoT 裝置對安全啟動需求爆增。目前營收貢獻微小，但長期可能開闢新利基市場。</div>
+    <div class="ev-s">來源：Storage Newsletter 2025/08/07</div>
+</div>
+<p><strong>求證</strong>：<span class="badge warn">⚠️ 存在但營收貢獻尚不明</span></p>
+</div></div>
+
+<!-- ===== 六、六步分析彙整 ===== -->
+<div id="ch6" class="section-title">六、六步分析關鍵決策因素彙整</div>
+<div class="section-sub">從第一步到第六步的核心發現，正反對照</div>
+
+<div class="card collapsed"><h3>6-1. 買進因素 vs 風險因素</h3><div class="card-body">
+<div class="grid2">
+<div style="border-left:4px solid var(--bull);padding-left:12px">
+<p style="font-weight:900;color:var(--bull);font-size:.88em">買進因素（Bull Case）</p>
+<ol style="font-size:.8em;padding-left:16px;line-height:1.8">
+<li><span class="fias-f">事實</span> 全球 MLC eMMC 獨佔，供給缺口 51%</li>
+<li><span class="fias-f">事實</span> Q1 eMMC 價格翻倍，Q2 預期再翻倍</li>
+<li><span class="fias-f">事實</span> 營收 YoY 加速至 +60%</li>
+<li><span class="fias-f">事實</span> 自由現金流 Q4 轉正 +24.46 億</li>
+<li><span class="fias-f">事實</span> ISO 26262 ASIL D 認證先發</li>
+<li><span class="fias-i">推論</span> Q1 首次轉盈（EPS 0.73 元）</li>
+<li><span class="fias-i">推論</span> UFS 車用替代率僅 5-8%</li>
+</ol>
+</div>
+<div style="border-left:4px solid var(--bear);padding-left:12px">
+<p style="font-weight:900;color:var(--bear);font-size:.88em">風險因素（Bear Case）</p>
+<ol style="font-size:.8em;padding-left:16px;line-height:1.8">
+<li><span class="fias-f">事實</span> PB 6.74x，90日漲 314%，處置股</li>
+<li><span class="fias-f">事實</span> 2025 全年 EPS -1.77 元</li>
+<li><span class="fias-f">事實</span> CapEx 220億 vs 實際 18.41億（12x 落差）</li>
+<li><span class="fias-f">事實</span> 投信 3 月轉賣超 278 萬股</li>
+<li><span class="fias-f">事實</span> 融資 172,329 張（散戶追漲）</li>
+<li><span class="fias-f">事實</span> CB 30億 轉換價 23 元（稀釋 6.8%）</li>
+<li><span class="fias-i">推論</span> 反身性風險：漲價加速替代</li>
+</ol>
+</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>6-2. ACH 信心校準歷程（三次）</h3><div class="card-body">
+<table>
+<tr><th>假說</th><th>ACH（1st）</th><th>壓力測試（2nd）</th><th>評審團（3rd）</th><th>趨勢</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">H1 超級週期</td><td>15%</td><td>10%</td><td style="font-weight:900">8%</td><td style="color:var(--bear)">▼</td></tr>
+<tr><td style="color:var(--accent);font-weight:700">H2 溫和成長</td><td>30%</td><td>25%</td><td style="font-weight:900">22%</td><td style="color:var(--bear)">▼</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td style="color:var(--warn);font-weight:700">H3 週期高點</td><td>40%</td><td>45%</td><td style="font-weight:900;font-size:1.1em">47%</td><td style="color:var(--bull)">▲</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">H4 泡沫破裂</td><td>15%</td><td>20%</td><td style="font-weight:900">23%</td><td style="color:var(--bear)">▲</td></tr>
+</table>
+<div class="tip warn"><b>看空機率持續攀升</b>
+H3+H4：55% → 65% → 70%。每次校準都更保守，且方向一致。</div>
+</div></div>
+
+<!-- ===== 七、風險清單 ===== -->
+<div id="ch7" class="section-title">七、風險清單與壓力測試</div>
+<div class="section-sub">依致命性排序</div>
+
+<div class="card collapsed"><h3>致命因子排序</h3><div class="card-body">
+<table>
+<tr><th>#</th><th>致命因子</th><th>EPS 衝擊</th><th>觸發時點</th><th>可控</th></tr>
+<tr style="background:rgba(198,40,40,.06)"><td>1</td><td>大廠重返 MLC NAND</td><td style="color:var(--bear)">歸零</td><td>持續監控</td><td style="color:var(--bear)">否</td></tr>
+<tr style="background:rgba(198,40,40,.06)"><td>2</td><td>eMMC 價格 Q3 反轉</td><td style="color:var(--bear)">-30~50%</td><td>2026Q3</td><td style="color:var(--bear)">否</td></tr>
+<tr><td>3</td><td>UFS 車用滲透率 >15%</td><td style="color:var(--warn)">-10~20%</td><td>2026H2-2027</td><td style="color:var(--warn)">部分</td></tr>
+<tr><td>4</td><td>折舊壓力（220 億）</td><td style="color:var(--warn)">-2.5 元/年</td><td>2027-2028</td><td>可延遲</td></tr>
+<tr><td>5</td><td>CB+融資連鎖斷頭</td><td style="color:var(--warn)">股價加速下跌</td><td>股價＜100</td><td style="color:var(--bear)">否</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed"><h3>盲點清單</h3><div class="card-body">
+<table>
+<tr><th>盲點</th><th>影響判斷</th><th>補齊方式</th></tr>
+<tr><td>ASML 訂單是否已下達</td><td>CapEx 真實性</td><td>Q2 法說會</td></tr>
+<tr><td>CB 實際轉換進度</td><td>賣壓規模</td><td>月報追蹤</td></tr>
+<tr><td>TLC eMMC 替代驗證進度</td><td>獨佔窗口</td><td>客戶端調查</td></tr>
+<tr><td>管理層持股變化</td><td>內部人信心</td><td>公開資訊觀測站</td></tr>
+<tr><td>Q1 實際毛利率</td><td>H1 vs H3 驗證</td><td>5 月季報</td></tr>
+</table>
+</div></div>
+
+<!-- ===== 八、監控儀表板 ===== -->
+<div id="ch8" class="section-title">八、監控儀表板</div>
+<div class="section-sub">關鍵指標燈號與時間節點</div>
+
+<div class="card collapsed"><h3>燈號系統</h3><div class="card-body">
+<table>
+<tr><th>指標</th><th>狀態</th><th>燈號</th><th>轉號條件</th></tr>
+<tr><td>eMMC 合約價</td><td>Q1 翻倍</td><td><span class="light green"></span></td><td>Q3 環比跌→黃；連跌兩季→紅</td></tr>
+<tr><td>月營收 YoY</td><td>+60%</td><td><span class="light green"></span></td><td>＜20%→黃；＜0%→紅</td></tr>
+<tr><td>毛利率</td><td>24.17%</td><td><span class="light yellow"></span></td><td>＞35%→綠(H1)；＜22%→紅(H4)</td></tr>
+<tr><td>投信買賣超</td><td>3 月淨賣超</td><td><span class="light red"></span></td><td>連續 2 周買超→黃</td></tr>
+<tr><td>融資餘額</td><td>172,329 張</td><td><span class="light red"></span></td><td>＜10 萬張→黃</td></tr>
+<tr><td>CapEx 執行率</td><td>8.4%</td><td><span class="light red"></span></td><td>Q2 累計＞50 億→黃</td></tr>
+</table>
+<div class="tip info"><b>儀表板解讀</b>
+營運面（eMMC 價格、營收）亮綠燈，但籌碼面（投信、融資）和執行面（CapEx）亮紅燈。這正是 H3「週期高點」的典型模式 — 基本面看起來很好，但聰明錢已在退場。</div>
+</div></div>
+
+<div class="card collapsed"><h3>關鍵時間節點</h3><div class="card-body">
+<table>
+<tr><th>日期</th><th>事件</th><th>影響</th></tr>
+<tr><td style="font-weight:700">2026/04/02</td><td>處置股結束</td><td>流動性恢復，賣壓可能釋放</td></tr>
+<tr><td>2026/05 中旬</td><td>Q1 季報公布</td><td>毛利率驗證 H1 vs H3</td></tr>
+<tr><td>2026/06 底</td><td>32GB eMMC 量產承諾</td><td>管理層誠信度驗證</td></tr>
+<tr><td>2026/08</td><td>Q2 法說會</td><td>CapEx 執行進度關鍵</td></tr>
+<tr><td>2026Q3</td><td>eMMC 合約價走勢</td><td>週期反轉決定性訊號</td></tr>
+<tr><td>持續</td><td>大廠重返 MLC</td><td>紅線事件 — 致命</td></tr>
+</table>
+</div></div>
+
+<!-- ===== 九、推衍預測 ===== -->
+<div id="ch9" class="section-title">九、推衍預測 — 接下來可能怎麼走？</div>
+<div class="section-sub">結合最新 OSINT 情報的短/中/長期推衍鏈</div>
+
+<div class="card collapsed"><h3>9-1. 最新情報更新（2026/03/23 OSINT）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> Q2 SLC/MLC NAND 報價預期翻倍（TechNews 2026/03/17）</div>
+    <div class="ev-d">法人預期 Q2 漲幅 60-100%，急單最高 5 倍。全年走勢：Q2 60-100% / Q3 30-50% / Q4 20-30%。注意 Q3 起漲幅明顯趨緩。</div>
+    <div class="ev-s">來源：TechNews 科技新報 2026/03/17</div>
+</div>
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> TLC eMMC 64/128GB 正成為主流替代路徑</div>
+    <div class="ev-d">Digitimes 2026/03/20 確認：「處理器廠商正在淘汰 eMMC 支援，UFS 生態系持續成長」。旺宏的 4-16GB MLC eMMC 面臨長期替代壓力。</div>
+    <div class="ev-s">來源：Digitimes 2026/03/20</div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>9-2. 短期（1-3 個月）</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+<strong>最可能（55%）</strong>：Q1 季報確認轉盈（EPS 0.5-1.5 元），毛利率 28-35%。處置結束後 10-20% 回調，Q1 季報前重新拉高。區間 120-180 元。<br>
+<strong>樂觀（20%）</strong>：毛利率＞38%，eMMC 佔比＞25%，股價挑戰 200 元。<br>
+<strong>悲觀（25%）</strong>：處置結束融資斷頭，跌至 100-120 元。
+</p>
+</div></div>
+
+<div class="card collapsed"><h3>9-3. 中期（3-6 個月）</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+<strong>最可能（50%）</strong>：eMMC 漲價持續但 Q3 環比漲幅趨緩（30-50%）。EPS 2026H1 累計 3-6 元。股價 120-160 元整理，等 Q2 法說會確認擴產。<br>
+<strong>核心觀察</strong>：Q2 法說會的 CapEx 執行進度和 32GB eMMC 量產時程。
+</p>
+</div></div>
+
+<div class="card collapsed"><h3>9-4. 長期（6-12 個月）</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+<strong>H3 路徑（47%）</strong>：eMMC 漲價動能 2026H2 趨緩，TLC 替代品進入驗證期。折舊壓力顯現。股價回歸 80-100 元。<br>
+<strong>H1+H2（30%）</strong>：CapEx 落地 + eMMC 漲價持續超預期 → 股價 120-200 元。<br>
+<strong>H4（23%）</strong>：大廠重返或 UFS 加速 + 折舊 + CB 轉換 → 股價 40-60 元。
+</p>
+</div></div>
+
+<!-- ===== 十、股價合理性分析 ===== -->
+<div id="ch10" class="section-title">十、股價合理性分析 — 目前股價貴不貴？</div>
+<div class="section-sub">五種估值方法交叉比對（不引用分析師報價）</div>
+
+<div class="card collapsed"><h3>方法一：前瞻本益比法</h3><div class="card-body">
+<table>
+<tr><th>情境</th><th>2026 EPS</th><th>PE</th><th>合理價</th><th>vs 160元</th></tr>
+<tr><td style="color:var(--bull)">H1</td><td>15-20 元</td><td>12-15x</td><td>180-300</td><td style="color:var(--bull)">+13~88%</td></tr>
+<tr><td style="color:var(--accent)">H2</td><td>5-10 元</td><td>12-15x</td><td>60-150</td><td style="color:var(--warn)">-63~-6%</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td style="color:var(--warn)">H3</td><td>3-6 元</td><td>8-12x</td><td>24-72</td><td style="color:var(--bear)">-85~-55%</td></tr>
+<tr><td style="color:var(--bear)">H4</td><td>＜2 元</td><td>15-20x</td><td>15-40</td><td style="color:var(--bear)">-91~-75%</td></tr>
+</table>
+<div class="tip warn"><b>週期股估值陷阱</b>
+Micron 2018：EPS $11.51 時 PE 僅 3x，7 個月後腰斬。週期股盈餘高峰時估值看起來最便宜，恰恰是最危險時刻。</div>
+</div></div>
+
+<div class="card collapsed"><h3>方法二：股價淨值比法（PB）</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+PB = 160 / 27.89 = <strong>6.74 倍</strong>。歷史 PB 區間 0.5-3.0 倍。<br>
+即使用最樂觀假設（ROE 30%+），合理 PB 不超過 4-5 倍 → 合理價 111-139 元，仍低於 160 元。
+</p>
+</div></div>
+
+<div class="card collapsed"><h3>方法三：分部估值法</h3><div class="card-body">
+<table>
+<tr><th>業務</th><th>2026 營收</th><th>毛利率</th><th>估值倍數</th><th>估值</th></tr>
+<tr><td>NOR Flash</td><td>~150 億</td><td>30-35%</td><td>營收 2.5-3x</td><td>375-450 億</td></tr>
+<tr><td>eMMC/MLC</td><td>~120 億</td><td>40-50%</td><td>營收 3-4x</td><td>360-480 億</td></tr>
+<tr><td>ROM</td><td>~30 億</td><td>35-40%</td><td>營收 2-2.5x</td><td>60-75 億</td></tr>
+<tr style="font-weight:700;background:rgba(90,125,96,.06)"><td>合計</td><td>~300 億</td><td>—</td><td>—</td><td>795-1,005 億</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:4px">合計 795-1,005 億 ÷ 17.41 億股 = <strong>每股 46-58 元</strong>。目前市值 2,785 億遠超。</p>
+</div></div>
+
+<div class="card collapsed"><h3>方法四：隱含預期反推法</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+市值 2,785 億元。PE 15x → 隱含 EPS = <strong>10.7 元</strong>；PE 12x → <strong>13.3 元</strong>。<br>
+以目前毛利率 24% 和營收 300 億計算，EPS 約 3-4 元。要達 10 元，需毛利率 40%+ 或營收 400 億+。<br>
+<strong>市場在賭</strong>：eMMC 漲價全年持續 + 毛利率升至 40%+ + CapEx 順利落地。三個條件需「同時」成立。
+</p>
+</div></div>
+
+<div class="card collapsed"><h3>方法五：歷史循環比較法</h3><div class="card-body">
+<p style="font-size:.84em;line-height:1.7">
+上一輪（2020-2021）：15→65 元（4.3x）。本輪：17→160 元（9.4x）。<br>
+華邦電類比：低點至高點約 5-6 倍。Micron 2017-2018：底部漲 5 倍後 7 月跌 54%。<br>
+旺宏 9.4 倍已超過歷史可比上限（4-6 倍）。即使考慮 MLC 獨佔的獨特性，仍難以解釋額外 60-130% 溢價。
+</p>
+</div></div>
+
+<div class="card collapsed"><h3>五種估值交叉比對</h3><div class="card-body">
+<div class="grid3">
+<div class="mini-card bear-card"><div class="title">前瞻 PE（H3）</div><div class="num" style="color:var(--bear)">24-72 元</div></div>
+<div class="mini-card bear-card"><div class="title">PB（歷史均值）</div><div class="num" style="color:var(--bear)">56-84 元</div><div class="desc">PB 2-3x × 27.89</div></div>
+<div class="mini-card bear-card"><div class="title">分部估值</div><div class="num" style="color:var(--bear)">46-78 元</div></div>
+</div>
+<div class="grid2">
+<div class="mini-card warn-card"><div class="title">評審團校準加權期望值</div><div class="num" style="color:var(--warn)">116.8 元</div><div class="desc">6M | 12M: 121.3 元 | vs 160: -27%</div></div>
+<div class="mini-card bear-card"><div class="title">建議安全邊際</div><div class="num" style="color:var(--bear)">80-100 元</div><div class="desc">加權期望值打 75 折</div></div>
+</div>
+<div class="tip danger"><b>五種方法一致結論</b>
+合理價中位數約 50-120 元區間。160 元比大部分估值方法上限高出 30-70%+。唯一能支撐的是 H1（12% 機率）。評審團三系統 47 維度交叉驗證：產業正面高信度，估值負面高信度。</div>
+</div></div>
+
+<!-- ===== 十二、貓膩探索與求證 ===== -->
+<div id="ch12" class="section-title">十二、貓膩探索與求證 — 這故事太完美了嗎？</div>
+<div class="section-sub">反共識偵測引擎六步框架 — 像檢察官一樣質疑市場共識</div>
+
+<div class="card collapsed"><h3>D-1. 敘事解剖（Narrative Forensics）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 主流敘事：「MLC 獨佔 → 價格翻倍 → EPS 爆發 → 超級週期轉型」</div>
+    <div class="ev-d">
+    <strong>誰在說？</strong> 凱基投顧（目標價 300 元）、財經媒體（蕃新聞「史詩級缺貨」標題）、散戶論壇<br>
+    <strong>誰受益？</strong> 持有部位的法人/散戶（越多人追價 → 部位增值）；CB 持有者（股價越高 → 轉換利潤越大）<br>
+    <strong>什麼支撐？</strong> eMMC 漲價 183%（事實）、四大廠退出（事實）、供給缺口 51%（事實）<br>
+    <strong>什麼被忽略？</strong> TLC eMMC 替代品正在成形（Digitimes）、CapEx 執行率僅 8.4%、處理器廠商正在淘汰 eMMC 支援
+    </div>
+    <div class="ev-s">來源：凱基報告、蕃新聞、TechNews、Digitimes、Electronic Design</div>
+</div>
+<div class="tip warn"><b>敘事品質</b>
+供給面的敘事非常強（大廠退出是事實），但需求面有盲點 — 忽略了「漲價會加速替代」的反身性效應和「產業從 eMMC 過渡到 UFS」的長期趨勢。</div>
+</div></div>
+
+<div class="card collapsed"><h3>D-2. 歷史前科搜查</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> NOR Flash/eMMC 市場無反壟斷前科記錄</div>
+    <div class="ev-d">
+    NOR Flash 市場 CR3 約 65-70%，HHI 約 2,000-2,500。MLC eMMC 由旺宏獨佔（HHI → 10,000）。但旺宏的獨佔不是靠聯合操控，而是大廠自願退出的結構性結果（不同於 DRAM 2002 年卡特爾）。操控嫌疑低。
+    </div>
+    <div class="ev-s">來源：MEMORY.md 記憶體產業情報 &amp; WebSearch</div>
+</div>
+<p><strong>前科評級</strong>：<span class="badge bull">🟢 無前科 — 結構性獨佔</span></p>
+</div></div>
+
+<div class="card collapsed"><h3>D-3. 巧合偵測（Coincidence Detector）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-i">推論</span> 四大廠「同步」退出 MLC — 產業結構轉型的自然結果</div>
+    <div class="ev-d">
+    退出時間軸分散在 2025-2027 年（Samsung Q1 2026、Kioxia 2027/03、SK Hynix 漸進、Micron 已完成），非「同一天宣布」的協調行為。先進 3D NAND/HBM 利潤遠高於 2D MLC，理性選擇就是退出。
+    </div>
+    <div class="ev-s">來源：TrendForce 2026/01/19、THE ELEC</div>
+</div>
+<p><strong>巧合評級</strong>：<span class="badge bull">🟢 結構性退出 — 非協調</span></p>
+</div></div>
+
+<div class="card collapsed"><h3>D-4. 反轉假說與即時求證</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-a">假設</span> 如果主流敘事錯了 — MLC 獨佔窗口可能比預期短得多</div>
+    <div class="ev-d">
+    <strong>反轉假說</strong>：eMMC 極端漲價在 12-18 月內驅動 TLC eMMC（64/128GB）成為替代品，獨佔窗口不是 3-4 年而是 1.5-2 年。<br><br>
+    <strong>即時求證</strong>：<br>
+    ✅ Digitimes 2026/03/20 確認：「64/128GB TLC eMMC 將成為主流」<br>
+    ✅ Kioxia 報告確認：「處理器廠商正在淘汰 eMMC 支援」<br>
+    ⚠️ 但車用/工控轉換需 2-3 年驗證期<br>
+    ⚠️ 旺宏做 4-16GB 低容量，TLC 替代品是 64/128GB，容量重疊度低<br><br>
+    <strong>結論</strong>：反轉假說「部分成立」。消費電子替代 12-18 月，車用/工控 2-3 年。獨佔窗口取決於客戶結構。
+    </div>
+    <div class="ev-s">來源：Digitimes 2026/03/20、Electronic Design (Kioxia)、Flexxon</div>
+</div>
+<div class="tip warn"><b>關鍵盲點</b>
+旺宏 eMMC 客戶別營收拆分未公開。如果車用/工控佔 50%+，窗口 2-3 年（足夠）；如果消費電子佔比高，窗口可能只有 1-1.5 年。</div>
+</div></div>
+
+<div class="card collapsed"><h3>D-5. 利益追蹤（Follow the Money）</h3><div class="card-body">
+<div class="ev">
+    <div class="ev-t"><span class="fias-f">事實</span> 投信 3 月轉賣超、CB 持有者享 596% 轉換利潤</div>
+    <div class="ev-d">
+    <strong>投信</strong>：1 月大量買入（1/6-1/9 買超 3 萬張+），2-3 月轉賣超。投信通常在市場情緒最亢奮時反向操作。<br>
+    <strong>外資</strong>：3 月買賣交替偏賣。3/3 賣超 4,900 萬股、3/10 賣超 2,881 萬股。<br>
+    <strong>CB 持有者</strong>：轉換價 23 元 vs 160 元 = 596%，確定性賣壓來源。<br>
+    <strong>融資散戶</strong>：172,329 張，最後離場者。
+    </div>
+    <div class="ev-s">來源：finlab 三大法人數據</div>
+</div>
+<div class="tip danger"><b>資金流向矛盾</b>
+聰明錢（投信）退場，散戶（融資）追進。CB 持有者隨時賣出。三股力量同方向 — 股價越高，專業投資者越傾向了結。</div>
+</div></div>
+
+<div class="card collapsed"><h3>D-6. 貓膩總評</h3><div class="card-body">
+<div class="grid3">
+<div class="mini-card" style="border-left:4px solid #4caf50"><div class="title">操控嫌疑</div><div class="num" style="color:#4caf50;font-size:1em">🟢 低</div><div class="desc">結構性退出，非操控</div></div>
+<div class="mini-card" style="border-left:4px solid #ffc107"><div class="title">敘事泡沫</div><div class="num" style="color:#ffc107;font-size:1em">🟡 中度</div><div class="desc">供給真實，需求被高估</div></div>
+<div class="mini-card" style="border-left:4px solid #f44336"><div class="title">資金面風險</div><div class="num" style="color:#f44336;font-size:1em">🔴 高</div><div class="desc">聰明錢退場+CB賣壓</div></div>
+</div>
+
+<table>
+<tr><th>貓膩假說</th><th>支持證據</th><th>反對證據</th><th>機率</th><th>FIAS</th></tr>
+<tr><td style="text-align:left;font-weight:700">市場高估獨佔窗口</td><td style="text-align:left">TLC 替代成型；處理器廠淘汰 eMMC</td><td style="text-align:left">車用驗證需 2-3 年；容量重疊低</td><td style="font-weight:700;color:var(--warn)">40%</td><td><span class="fias-a">假設</span></td></tr>
+<tr><td style="text-align:left;font-weight:700">凱基 EPS 30 元過度樂觀</td><td style="text-align:left">需毛利率 62.5%（歷史從未達成）</td><td style="text-align:left">eMMC 佔比若達 75%...</td><td style="font-weight:700;color:var(--warn)">70%</td><td><span class="fias-i">推論</span></td></tr>
+<tr><td style="text-align:left;font-weight:700">220 億 CapEx 宣示性承諾</td><td style="text-align:left">執行率 8.4%；ASML 交期 18 月</td><td style="text-align:left">設備可能已訂未交</td><td style="font-weight:700;color:var(--warn)">35%</td><td><span class="fias-a">假設</span></td></tr>
+</table>
+
+<div class="tip warn"><b>貓膩探索結論</b>
+旺宏的 MLC 獨佔故事不是「假的」— 供給面的結構性變化是真實的。但市場可能在三方面過度樂觀：(1) 獨佔窗口長度被高估（TLC 替代成形）；(2) EPS 爆發力被高估（凱基 30 元需幾乎不可能的毛利率）；(3) 擴產能力被高估（CapEx 執行率極低）。<br><br>
+<strong>不是陰謀，而是過度期待。</strong>市場沒有被騙，但可能被自己的樂觀蒙蔽。</div>
+</div></div>
+
+<!-- ===== 十三、投資結論 ===== -->
+<div id="ch13" class="section-title">十三、投資結論（僅供參考）</div>
+<div class="section-sub">三次信心校準 + 五種估值交叉比對的綜合判斷</div>
+
+<div class="card"><h3>一句話總結</h3><div class="card-body">
+<div class="tip danger"><b>旺宏（2337）以 160 元買入：不建議</b>
+產業面的故事是真實的（MLC 獨佔、漲價翻倍），但以目前股價計算的期望報酬為負。評審團（7 角色 × 3 系統 × 47 維度）加權期望值 6M=116.8 元、12M=121.3 元，均低於現價 160 元。信心度三次校準：ACH 65% → 壓力測試 55% → 評審團 48%。建議等待回調至 80-100 元安全邊際區間再考慮。</div>
+</div></div>
+
+<div class="card collapsed"><h3>綜合評估表</h3><div class="card-body">
+<table>
+<tr><th>面向</th><th>評估</th></tr>
+<tr><td>核心優勢</td><td>MLC eMMC 全球獨佔 + NOR Flash 車用 ASIL D + 管理層高誠信度</td></tr>
+<tr><td>核心風險</td><td>PBR 6.74x 歷史極端 + 反身性替代 + CB+融資連鎖 + CapEx 僅 8.4% 執行率</td></tr>
+<tr><td>值得買進的理由</td><td>若 (1) 毛利率達 40%+ (2) CapEx 如期落地 (3) eMMC 漲價持續 3 年+ → H1 成立（機率 12%）</td></tr>
+<tr><td>應該迴避的理由</td><td>H3+H4+H5 = 50%；三次校準一致下修（65→55→48%）；聰明錢退場；PBR/漲幅超歷史極限</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed"><h3>三情境估值</h3><div class="card-body">
+<div class="grid3">
+<div class="mini-card bull-card"><div class="title">樂觀版（H1+H2）</div><div class="num" style="color:var(--bull)">120-240</div><div class="desc">機率 50% | 需漲價+轉盈+擴產</div></div>
+<div class="mini-card warn-card"><div class="title">期望值版（6M/12M）</div><div class="num" style="color:var(--warn)">116.8/121.3</div><div class="desc">vs 160 元 = -27%/-24%</div></div>
+<div class="mini-card bear-card"><div class="title">悲觀版（H3+H4+H5）</div><div class="num" style="color:var(--bear)">40-100</div><div class="desc">機率 50% | 利多出盡+週期反轉</div></div>
+</div>
+</div></div>
+
+<div class="card collapsed"><h3>安全邊際分析</h3><div class="card-body">
+<table>
+<tr><th>指標</th><th>數值</th><th>說明</th></tr>
+<tr><td>評審團加權期望值（6M）</td><td style="font-weight:900;color:var(--warn)">116.8 元</td><td>H1:12% + H2:38% + H3:30% + H4:5% + H5:15%</td></tr>
+<tr><td>評審團加權期望值（12M）</td><td style="font-weight:900;color:var(--warn)">121.3 元</td><td>同上假說機率分配</td></tr>
+<tr><td>信心度（三次校準）</td><td style="font-weight:900;color:var(--bear)">48%</td><td>ACH 65% → 壓力測試 55% → 評審團 48%</td></tr>
+<tr><td>建議買進安全邊際</td><td style="font-weight:900;color:var(--accent)">80-100 元</td><td>加權期望值打 75 折 ≈ 88 元</td></tr>
+<tr><td>現價 vs 安全邊際</td><td style="font-weight:900;color:var(--bear)">高出 60-100%</td><td>偏離安全邊際，觀望為宜</td></tr>
+</table>
+</div></div>
+
+<div class="tip info" style="margin-top:12px">
+<b>給閣主的白話說</b>
+旺宏的故事很精彩 — MLC 獨佔、漲價翻倍、營收爆發，這些都是真的。但精彩的故事已經反映在 9 倍的漲幅中了。以 160 元買入，你需要所有好事同時發生，而且不能有任何一件壞事。這種「全對才贏、一錯就輸」的賠率，不是好的投資。
+</div>
+
+<div class="footer">
+    <p>天機閣 — 深度調查系統 v3.0 / 第七步：質化分析報告</p>
+    <p>報告日期：2026-03-23 | 資料截止：2026-03-23 | 收盤價：160 元</p>
+    <p>信心校準：ACH 65% → 壓力測試 55% → 評審團 48% → 推衍 43%（最終）</p>
+    <p>加權期望值：6M=116.8元 / 12M=121.3元 | 安全邊際：80-100 元</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，請自行判斷。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

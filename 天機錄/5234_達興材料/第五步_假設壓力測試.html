@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>5234 達興材料 — 第五步：假設壓力測試</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.bull{border-color:var(--bull);color:var(--bull);background:rgba(46,125,50,.08)}
+.tag.bear{border-color:var(--bear);color:var(--bear);background:rgba(198,40,40,.08)}
+.tag.warn{border-color:var(--warn);color:var(--warn);background:rgba(212,160,23,.08)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p,.card li{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+.card ul{padding-left:18px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+td:first-child{text-align:left}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details summary:hover{color:var(--accent)}details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#ef6c00;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(239,108,0,.1)}
+.risk-card{background:var(--panel);border:1px solid var(--danger);border-radius:8px;padding:12px 16px;margin:8px 0}
+.risk-card h4{color:var(--bear);font-size:.92em;margin-bottom:4px}
+.cat-card{background:var(--panel);border:1px solid var(--bull);border-radius:8px;padding:12px 16px;margin:8px 0}
+.cat-card h4{color:var(--bull);font-size:.92em;margin-bottom:4px}
+.bucket{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:700}
+.bucket-green{background:rgba(46,125,50,.12);color:var(--bull);border:1px solid var(--bull)}
+.bucket-yellow{background:rgba(212,160,23,.12);color:var(--warn);border:1px solid var(--warn)}
+.bucket-red{background:rgba(198,40,40,.12);color:var(--bear);border:1px solid var(--bear)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:10px 0}
+.toc a{display:block;color:var(--link);text-decoration:none;font-size:.85em;padding:2px 0}
+footer{text-align:center;padding:16px 0;margin-top:16px;border-top:1px solid var(--border);font-size:.78em;color:var(--txt3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>5234 達興材料 — 假設壓力測試</h1>
+  <div class="sub">第五步：Stress Test / Pre-Mortem / Sensitivity Analysis</div>
+  <div class="desc">對所有關鍵假設進行壓力測試，執行事前驗屍法，識別致命因子，驗證每個風險與催化劑</div>
+  <div class="tags">
+    <span class="tag bull">催化劑期望 +23.8%</span>
+    <span class="tag bear">風險期望 -20.7%</span>
+    <span class="tag warn">淨期望 +3.1%</span>
+    <span class="tag">7 假設 | 9 原因 | 5 風險 | 6 催化劑</span>
+  </div>
+</div>
+
+<div class="toc"><strong>目錄</strong>
+  <a href="#a">A. 關鍵假設檢查（7項 × 5問 + 三桶分類）</a>
+  <a href="#b">B. 事前驗屍法（假設虧損40%的9個原因）</a>
+  <a href="#c">C. 敏感度分析（各假設對EPS的影響）</a>
+  <a href="#d">D. 盲點聲明</a>
+  <a href="#e">E. 風險情報驗證卡（5張）</a>
+  <a href="#f">F. 催化劑情報驗證卡（6張）</a>
+  <a href="#sum">綜合結論：催化劑 vs 風險</a>
+</div>
+
+<!-- A 關鍵假設 -->
+<h2 id="a" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">A. 關鍵假設檢查</h2>
+
+<div class="card">
+  <h3>7 項關鍵假設 × 三桶分類</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>假設</th><th>類別</th><th>分類</th><th>Q4影響</th><th>Q5慣性?</th></tr>
+      <tr><td style="text-align:left">KA1</td><td style="text-align:left">台積電國產化持續加速</td><td>市場</td><td><span class="bucket bucket-green">有支撐</span></td><td style="color:var(--bear);font-weight:700">5/5</td><td>否</td></tr>
+      <tr><td style="text-align:left">KA2</td><td style="text-align:left">CoWoS產能CAGR 80%</td><td>市場</td><td><span class="bucket bucket-green">有支撐</span></td><td style="color:var(--bear);font-weight:700">5/5</td><td>部分</td></tr>
+      <tr style="background:rgba(212,160,23,.06)"><td style="text-align:left">KA3</td><td style="text-align:left;font-weight:700">友達基本盤穩定(&lt;10%衰退)</td><td>公司</td><td><span class="bucket bucket-yellow">需附註</span></td><td style="color:var(--bear);font-weight:700">5/5</td><td style="color:var(--bear)">是</td></tr>
+      <tr><td style="text-align:left">KA4</td><td style="text-align:left">新品POR認證如期量產</td><td>公司</td><td><span class="bucket bucket-yellow">需附註</span></td><td>4/5</td><td>否</td></tr>
+      <tr><td style="text-align:left">KA5</td><td style="text-align:left">毛利率維持40%+</td><td>公司</td><td><span class="bucket bucket-green">有支撐</span></td><td>4/5</td><td>部分</td></tr>
+      <tr style="background:rgba(212,160,23,.06)"><td style="text-align:left">KA6</td><td style="text-align:left">PE維持40-55倍</td><td>估值</td><td><span class="bucket bucket-yellow">需附註</span></td><td>4/5</td><td style="color:var(--bear)">是</td></tr>
+      <tr><td style="text-align:left">KA7</td><td style="text-align:left">管理層指引可信</td><td>品質</td><td><span class="bucket bucket-green">有支撐</span></td><td>3/5</td><td>否</td></tr>
+    </table>
+    <div class="tip warn"><b>注意：3項「需附註」假設（KA3/KA4/KA6）</b>
+    友達穩定(KA3)與PE估值(KA6)均屬慣性假設 — 容易因「一直以來都是這樣」而放鬆警惕。友達前2月已出現-7%衰退跡象。</div>
+    <div class="tip good"><b>無「無支撐」假設</b>
+    所有7項假設至少有部分數據支撐，無純推測項目。整體假設基礎品質尚佳。</div>
+  </div>
+</div>
+
+<div class="card collapsed">
+  <h3>各假設詳細 5 問分析（點擊展開）</h3>
+  <div class="card-body">
+    <details open><summary>KA1 台積電國產化</summary>
+      <p><strong>Q1不成立：</strong>台積電因成本或品質放慢國產化；國際供應商降價消除替代動機</p>
+      <p><strong>Q2反例：</strong>無直接反例。2019-2020部分企業國產替代因技術障礙延遲</p>
+      <p><strong>Q3驗證：</strong>台積電ESG年報在地採購比例（可追蹤）</p>
+      <p><strong>Q4影響：</strong>5/5 — 達興半導體業務的根基</p>
+      <p><strong>Q5慣性：</strong>否。白紙黑字公布的量化目標</p>
+    </details>
+    <details open><summary>KA3 友達基本盤（最脆弱）</summary>
+      <p><strong>Q1不成立：</strong>中國面板廠擴產壓價、友達轉型減少配向膜採購</p>
+      <p><strong>Q2反例：</strong>有！2022年面板崩跌友達虧損。但達興當年營收僅微降，面板價≠達興營收</p>
+      <p><strong>Q3驗證：</strong>友達月營收（每月10日前，即時追蹤）</p>
+      <p><strong>Q4影響：</strong>5/5 — 佔營收49%的單點故障</p>
+      <p><strong>Q5慣性：</strong><span style="color:var(--bear);font-weight:700">是！</span>「友達是股東不會轉單」是慣性假設</p>
+    </details>
+    <details open><summary>KA6 PE估值維持</summary>
+      <p><strong>Q1不成立：</strong>全球升息壓估值、台股系統性回調、成長放緩導致降級</p>
+      <p><strong>Q2反例：</strong>有！2022年PE從33跌至22（-33%）。2025年PE從66跌至44（-33%）</p>
+      <p><strong>Q3驗證：</strong>台股大盤PE、美國利率政策（即時）</p>
+      <p><strong>Q4影響：</strong>4/5 — 純估值壓縮可導致-21%跌幅</p>
+      <p><strong>Q5慣性：</strong><span style="color:var(--bear);font-weight:700">是！</span>PE 51倍位於歷史上緣，歷史波動22-66倍極大</p>
+    </details>
+  </div>
+</div>
+
+<!-- B 事前驗屍 -->
+<h2 id="b" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">B. 事前驗屍法</h2>
+
+<div class="card">
+  <h3>「12個月後虧損40%」的9個可能原因</h3>
+  <div class="card-body">
+    <p style="font-size:.84em;color:var(--txt3);margin-bottom:8px">核心提問：假設2027年3月股價從378.5元跌至227元，回頭看原因是什麼？<br>風險分數 = 發生機率(1-5) × 衝擊程度(1-5)，≥15分需強制制定應對方案</p>
+    <table>
+      <tr><th>#</th><th>原因</th><th>類別</th><th>機率</th><th>衝擊</th><th style="white-space:nowrap">分數</th><th>預警信號</th></tr>
+      <tr style="background:rgba(198,40,40,.05)"><td>PM1</td><td style="text-align:left;font-weight:700">友達大幅衰退(-15%+)</td><td>公司</td><td>3</td><td>4</td><td style="color:var(--bear);font-weight:700">12</td><td style="text-align:left;font-size:.78em">友達月營收連3月YoY<-10%</td></tr>
+      <tr><td>PM2</td><td style="text-align:left">半導體營收不及預期</td><td>公司</td><td>2</td><td>5</td><td style="color:var(--warn);font-weight:700">10</td><td style="text-align:left;font-size:.78em">半導體季營收<2.5億</td></tr>
+      <tr><td>PM3</td><td style="text-align:left">台股系統性殺估值</td><td>宏觀</td><td>2</td><td>5</td><td style="color:var(--warn);font-weight:700">10</td><td style="text-align:left;font-size:.78em">大盤PE<12x、殖利率>2.5%</td></tr>
+      <tr><td>PM5</td><td style="text-align:left">日系降價搶市</td><td>產業</td><td>2</td><td>3</td><td>6</td><td style="text-align:left;font-size:.78em">毛利率連2季下降</td></tr>
+      <tr><td>PM9</td><td style="text-align:left">原材料成本暴漲</td><td>宏觀</td><td>2</td><td>3</td><td>6</td><td style="text-align:left;font-size:.78em">日圓升值>15%、原油>100美元</td></tr>
+      <tr><td>PM4</td><td style="text-align:left">台積電國產化轉向</td><td>產業</td><td>1</td><td>5</td><td>5</td><td style="text-align:left;font-size:.78em">ESG報告下修目標</td></tr>
+      <tr><td>PM6</td><td style="text-align:left">台海地緣政治</td><td>地緣</td><td>1</td><td>5</td><td>5</td><td style="text-align:left;font-size:.78em">軍演規模擴大</td></tr>
+      <tr><td>PM8</td><td style="text-align:left">內部治理問題</td><td>公司</td><td>1</td><td>5</td><td>5</td><td style="text-align:left;font-size:.78em">獨董辭職、保留意見</td></tr>
+      <tr><td>PM7</td><td style="text-align:left">封裝技術路線突變</td><td>產業</td><td>1</td><td>4</td><td>4</td><td style="text-align:left;font-size:.78em">CoWoS訂單減少</td></tr>
+    </table>
+    <div class="tip info"><b>事前驗屍結論</b>
+    無任何原因風險分數≥15。最高為PM1（友達衰退=12分），接近警戒線。前3大風險合計佔總風險的55%，集中在「友達+半導體成長+估值」三角。</div>
+  </div>
+</div>
+
+<!-- C 敏感度 -->
+<h2 id="c" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">C. 敏感度分析</h2>
+
+<div class="card">
+  <h3>各假設錯誤對 EPS / 股價的影響</h3>
+  <div class="card-body">
+    <p style="font-size:.82em;color:var(--txt3)">基準：2026E EPS 8.54元（群益）, PE 44倍, 基準股價 376元</p>
+    <table>
+      <tr><th>假設錯誤</th><th>EPS影響</th><th>PE影響</th><th>股價影響</th><th>致命度</th></tr>
+      <tr style="background:rgba(198,40,40,.05)"><td style="text-align:left;font-weight:700">KA5 毛利率降至37%</td><td>-20% (→6.83)</td><td>→35x</td><td style="color:var(--bear);font-weight:700">→239 (-36%)</td><td style="color:var(--bear);font-weight:700">極高</td></tr>
+      <tr><td style="text-align:left">KA3 友達衰退15%</td><td>-15% (→7.26)</td><td>→44x</td><td style="color:var(--bear)">→319 (-15%)</td><td style="color:var(--bear);font-weight:700">高</td></tr>
+      <tr><td style="text-align:left">KA6 PE回歸35倍</td><td>不變(8.54)</td><td>→35x</td><td style="color:var(--bear)">→299 (-21%)</td><td style="color:var(--bear);font-weight:700">高</td></tr>
+      <tr><td style="text-align:left">KA2 CoWoS減速50%</td><td>-8% (→7.86)</td><td>→38x</td><td style="color:var(--bear)">→299 (-20%)</td><td style="color:var(--bear);font-weight:700">高</td></tr>
+      <tr><td style="text-align:left">KA4 新品僅增1項</td><td>-5% (→8.11)</td><td>→44x</td><td>→357 (-5%)</td><td>中</td></tr>
+    </table>
+    <div class="tip danger"><b>致命因子：KA5 毛利率崩跌</b>
+    若毛利率從40.6%降至37%（-3.6pp），疊加估值壓縮（PE從44→35倍），股價可能跌至239元（-36%）。但連續8季上升的趨勢使此情境機率極低。</div>
+    <div class="tip warn"><b>最可能出錯：KA3 友達衰退</b>
+    友達2026前2月已出現-7%跡象，是唯一出現負面實際數據的假設。若持續衰退至-15%，EPS下修至7.26元、股價-15%。</div>
+  </div>
+</div>
+
+<!-- D 盲點 -->
+<h2 id="d" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">D. 盲點聲明</h2>
+
+<div class="card">
+  <h3>本報告無法取得的 7 項關鍵資料</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>缺失資料</th><th>影響</th><th>信心衝擊</th></tr>
+      <tr><td style="text-align:left">2025年度年報（未公布）</td><td style="text-align:left">無法驗證全年詳細數據</td><td>中</td></tr>
+      <tr style="background:rgba(212,160,23,.06)"><td style="text-align:left;font-weight:700">半導體事業群獨立毛利率</td><td style="text-align:left">無法量化半導體vs顯示器獲利差</td><td style="color:var(--warn);font-weight:700">中</td></tr>
+      <tr style="background:rgba(212,160,23,.06)"><td style="text-align:left;font-weight:700">台積電對達興具體採購金額</td><td style="text-align:left">無法量化台積電貢獻度</td><td style="color:var(--warn);font-weight:700">中高</td></tr>
+      <tr style="background:rgba(212,160,23,.06)"><td style="text-align:left;font-weight:700">日系競爭對手產品策略與價格</td><td style="text-align:left">無法評估日系反撲緊迫性</td><td style="color:var(--warn);font-weight:700">中高</td></tr>
+      <tr><td style="text-align:left">外資/投信最新持股明細</td><td style="text-align:left">不知哪些外資在買</td><td>低</td></tr>
+      <tr><td style="text-align:left">2026年2月具體EPS</td><td style="text-align:left">finlab有營收但無EPS</td><td>低</td></tr>
+      <tr><td style="text-align:left">各國際大廠合作具體產品</td><td style="text-align:left">無法精確預測貢獻時程</td><td>中</td></tr>
+    </table>
+    <div class="tip info"><b>盲點影響評估</b>
+    2項「中高」影響（台積電採購額+日系策略）增加預測不確定性，但不改變偏多結論的方向性。</div>
+  </div>
+</div>
+
+<!-- E 風險驗證卡 -->
+<h2 id="e" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">E. 風險情報驗證卡（5張）</h2>
+
+<div class="risk-card">
+  <h4>R1 友達營收集中度風險</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">2024年報客戶章節<span class="fias-f">F</span> ／ 友達月營收<span class="fias-f">F</span> ／ 市場調查管道C<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">前置條件</td><td style="text-align:left">中國面板廠擴產壓價、全球消費電子萎縮</td></tr>
+    <tr><td style="text-align:left;font-weight:600">加速因子</td><td style="text-align:left">京東方/華星光電釋產能、面板價格戰、友達轉型非面板</td></tr>
+    <tr><td style="text-align:left;font-weight:600">抑制因子</td><td style="text-align:left">友達=達興股東（利益綁定）、配向膜為剛需消耗品、友達2030仍含顯示科技</td></tr>
+    <tr><td style="text-align:left;font-weight:600">機率</td><td style="text-align:left"><strong>中 25-50%</strong>（依據：友達前2月-7%事實+面板產業趨穩but中國產能壓力）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">營收-7~15% / EPS-1.0~1.3元 / 股價-10~20% / 中期3-12月 / 部分可恢復</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bear)">期望損失</td><td style="text-align:left;color:var(--bear);font-weight:700">37.5% × (-15%) = -5.6%</td></tr>
+  </table>
+</div>
+
+<div class="risk-card">
+  <h4>R2 估值泡沫修正風險</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">finlab PE歷史22-66倍<span class="fias-f">F</span> ／ 台股估值<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">機率</td><td style="text-align:left"><strong>中 25-50%</strong>（PE 51倍位於歷史上緣、2025年9月曾66→44回落33%）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">股價-20~35% / 中期6-12月 / 完全可恢復（EPS成長可消化）</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bear)">期望損失</td><td style="text-align:left;color:var(--bear);font-weight:700">37.5% × (-27.5%) = -10.3%</td></tr>
+  </table>
+</div>
+
+<div class="risk-card">
+  <h4>R3 日系競爭對手反撲</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">市場調查日系市佔72-90%<span class="fias-f">F</span> ／ 年報競爭章節<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">機率</td><td style="text-align:left"><strong>低 10-25%</strong>（日系產能滿載(I)、JSR國有化後更可能限縮(A)、台積電傾向國產(F)）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">毛利率-2~4pp / EPS-0.5~1.0元 / 長期結構性 / 部分可恢復</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bear)">期望損失</td><td style="text-align:left">17.5% × (-10%) = -1.75%</td></tr>
+  </table>
+</div>
+
+<div class="risk-card">
+  <h4>R4 地緣政治/台海風險</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">年報90%台灣營收<span class="fias-f">F</span> ／ 國際政經新聞<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">機率</td><td style="text-align:left"><strong>極低 &lt;10%</strong>（歷史上均未演變為實質衝突、經濟互賴極高）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">股價-50%+（極端）/ 不確定持續時間 / 不可逆</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bear)">期望損失</td><td style="text-align:left">5% × (-50%) = -2.5%</td></tr>
+  </table>
+</div>
+
+<div class="risk-card">
+  <h4>R5 人才流失/薪資競爭力</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">PTT評價<span class="fias-a">A</span> ／ 比薪水月薪45.7K<span class="fias-a">A</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">機率</td><td style="text-align:left"><strong>低 10-25%</strong>（未見大量離職報導、公司持續招募中）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">研發延遲3-6月 / 長期 / 完全可恢復（提薪即可）</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bear)">期望損失</td><td style="text-align:left">17.5% × (-3%) = -0.53%</td></tr>
+  </table>
+</div>
+
+<!-- F 催化劑驗證卡 -->
+<h2 id="f" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">F. 催化劑情報驗證卡（6張）</h2>
+
+<div class="cat-card">
+  <h4>C1 台積電在地採購加速</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">台積電ESG報告<span class="fias-f">F</span> ／ 工商時報<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left;color:var(--bull)"><strong>高 50-75%</strong>（白紙黑字目標+政策不可逆）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">半導體營收+10-20% / 結構性 / Price-in ~50%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull);font-weight:700">62.5% × 12.5% × 50% = +3.9%</td></tr>
+  </table>
+</div>
+
+<div class="cat-card">
+  <h4>C2 CoWoS產能倍增帶動材料需求</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">台積電法說會<span class="fias-f">F</span> ／ GII報告<span class="fias-f">F</span> ／ 市場調查<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left;color:var(--bull)"><strong>極高 &gt;75%</strong>（訂單爆滿、多大廠搶產能）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">先進封裝營收+50-100% / 持續數季 / Price-in ~60%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull)">80% × 7.5% × 40% = +2.4%</td></tr>
+  </table>
+</div>
+
+<div class="cat-card">
+  <h4>C3 新產品POR認證通過（2奈米+國際大廠）</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">法說會2項進2奈米<span class="fias-f">F</span> ／ 新增1-2家大廠<span class="fias-i">I</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left;color:var(--bull)"><strong>高 50-75%</strong>（兌現率92%+已有基礎）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">半導體+15-25% / 結構性 / Price-in ~40%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull);font-weight:700">62.5% × 20% × 60% = +7.5%（最高）</td></tr>
+  </table>
+</div>
+
+<div class="cat-card">
+  <h4>C4 PSPI日系缺貨替代商機</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">法說會<span class="fias-i">I</span> ／ Yahoo股市<span class="fias-i">I</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left"><strong>中 25-50%</strong>（已開始小量出貨but規模待觀察）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">營收+1-3億 / 一次性~持續 / Price-in ~10%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull)">37.5% × 5% × 90% = +1.7%</td></tr>
+  </table>
+</div>
+
+<div class="cat-card">
+  <h4>C5 橋頭新廠動土</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">法說會已取得土地<span class="fias-f">F</span> ／ Capex已編列<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left;color:var(--bull)"><strong>極高 &gt;75%</strong></td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">股價+5-10%（長期產能故事）/ 結構性 / Price-in ~50%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull)">80% × 7.5% × 50% = +3.0%</td></tr>
+  </table>
+</div>
+
+<div class="cat-card">
+  <h4>C6 美國亞利桑那廠供貨（台積電海外）</h4>
+  <table>
+    <tr><td style="text-align:left;width:120px;font-weight:600">情報來源</td><td style="text-align:left">法說會已供應1項<span class="fias-f">F</span> ／ 台積電Arizona進度<span class="fias-f">F</span></td></tr>
+    <tr><td style="text-align:left;font-weight:600">實現機率</td><td style="text-align:left;color:var(--bull)"><strong>高 50-75%</strong>（已開始供應）</td></tr>
+    <tr><td style="text-align:left;font-weight:600">影響</td><td style="text-align:left">長期營收+5-15% / 結構性 / Price-in ~15%</td></tr>
+    <tr><td style="text-align:left;font-weight:600;color:var(--bull)">期望收益</td><td style="text-align:left;color:var(--bull);font-weight:700">62.5% × 10% × 85% = +5.3%（第二高）</td></tr>
+  </table>
+</div>
+
+<!-- 綜合 -->
+<h2 id="sum" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">綜合結論：催化劑 vs 風險</h2>
+
+<div class="card">
+  <h3>期望值對比</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>期望值</th><th>組成</th></tr>
+      <tr><td style="text-align:left;color:var(--bull);font-weight:700">催化劑合計</td><td style="color:var(--bull);font-weight:700">+23.8%</td><td style="text-align:left;font-size:.78em">C3(+7.5%) + C6(+5.3%) + C1(+3.9%) + C5(+3.0%) + C2(+2.4%) + C4(+1.7%)</td></tr>
+      <tr><td style="text-align:left;color:var(--bear);font-weight:700">風險合計</td><td style="color:var(--bear);font-weight:700">-20.7%</td><td style="text-align:left;font-size:.78em">R2(-10.3%) + R1(-5.6%) + R4(-2.5%) + R3(-1.75%) + R5(-0.53%)</td></tr>
+      <tr style="background:rgba(90,125,96,.08)"><td style="text-align:left;font-weight:700">淨期望值</td><td style="font-weight:700">+3.1%</td><td style="text-align:left;font-size:.78em">催化劑略大於風險，安全邊際薄</td></tr>
+    </table>
+
+    <div class="tip warn"><b>壓力測試核心結論</b>
+    ・催化劑期望(+23.8%) 略大於風險期望(-20.7%)，淨期望 +3.1% — <strong>安全邊際薄弱</strong><br>
+    ・最大風險來源：估值修正(-10.3%)＋友達衰退(-5.6%) 合計佔風險的77%<br>
+    ・最大催化劑：新品POR認證(+7.5%)＋美國廠供貨(+5.3%) — 兩者Price-in程度低，超額收益空間大<br>
+    ・致命因子：毛利率崩跌(KA5)可致股價-36%，但機率極低<br>
+    ・最脆弱環節：友達基本盤(KA3)，已出現-7%實際衰退跡象</div>
+
+    <div class="tip good"><b>壓力測試通過條件</b>
+    整體偏多判斷在壓力測試下維持，但需注意：<br>
+    1. 淨期望+3.1%意味著「不便宜」— 需要催化劑兌現才能獲利<br>
+    2. 若估值回歸（R2）和友達衰退（R1）同時發生，股價可能跌25-30%<br>
+    3. 建議分批佈局、設定停損，而非一次重壓</div>
+  </div>
+</div>
+
+<footer>
+  天機閣深度調查系統 v1.7 — 第五步 假設壓力測試<br>
+  分析日期：2026-03-22 ｜ 標的：5234 達興材料 ｜ 股價基準：378.5 元 (2026/3/20)<br>
+  資料來源：第二~四步分析結果 + 全部原始資料（finlab/web_search/市場調查/法說會/年報）<br>
+  方法論：Pre-Mortem Analysis + Sensitivity Analysis + Risk/Catalyst Intelligence Verification
+</footer>
+
+</div>
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>

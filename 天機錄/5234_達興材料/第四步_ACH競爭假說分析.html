@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>5234 達興材料 — 第四步：ACH競爭假說分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.bull{border-color:var(--bull);color:var(--bull);background:rgba(46,125,50,.08)}
+.tag.bear{border-color:var(--bear);color:var(--bear);background:rgba(198,40,40,.08)}
+.tag.warn{border-color:var(--warn);color:var(--warn);background:rgba(212,160,23,.08)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p,.card li{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+.card ul{padding-left:18px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:center;font-weight:600;white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+td:first-child,td:nth-child(2){text-align:left}
+tr:hover td{background:var(--hover)}
+.c-cell{color:var(--bull);font-weight:700}
+.i-cell{color:var(--bear);font-weight:700}
+.n-cell{color:var(--txt3)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#ef6c00;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(239,108,0,.1)}
+.fias-s{color:#7b1fa2;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(123,31,162,.1)}
+.conf-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:8px 0;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.conf-bar div{display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:700;color:#fff;transition:width .3s}
+.score-bar{height:10px;border-radius:5px;background:var(--border);margin:3px 0;position:relative}
+.score-fill{height:100%;border-radius:5px;position:absolute;top:0;left:0}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:10px 0}
+.toc a{display:block;color:var(--link);text-decoration:none;font-size:.85em;padding:2px 0}
+.toc a:hover{color:var(--accent)}
+.matrix-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hypo-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:6px 0}
+.hypo-card h4{font-size:.92em;font-weight:700;margin-bottom:4px}
+.hypo-card .hypo-type{font-size:.75em;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.hypo-bull{background:rgba(46,125,50,.12);color:var(--bull);border:1px solid var(--bull)}
+.hypo-bear{background:rgba(198,40,40,.1);color:var(--bear);border:1px solid var(--bear)}
+.hypo-struct{background:rgba(90,125,140,.12);color:var(--link);border:1px solid var(--link)}
+.hypo-swan{background:rgba(123,31,162,.1);color:#7b1fa2;border:1px solid #7b1fa2}
+.hypo-neutral{background:rgba(122,114,104,.12);color:var(--txt3);border:1px solid var(--txt3)}
+footer{text-align:center;padding:16px 0;margin-top:16px;border-top:1px solid var(--border);font-size:.78em;color:var(--txt3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>5234 達興材料 — ACH 競爭假說分析</h1>
+  <div class="sub">第四步：Analysis of Competing Hypotheses</div>
+  <div class="desc">基於 CIA 情報分析方法論 ACH，系統化比較 5 個競爭假說，找出「最少被反證」的假說，降低確認偏誤</div>
+  <div class="tags">
+    <span class="tag bull">看多合計 63%</span>
+    <span class="tag">中性 22%</span>
+    <span class="tag bear">看空 7%</span>
+    <span class="tag warn">黑天鵝 8%</span>
+    <span class="tag">證據 29 條</span>
+    <span class="tag">2026-03-22</span>
+  </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+  <strong>目錄</strong>
+  <a href="#sec1">一、5 個競爭假說</a>
+  <a href="#sec2">二、證據矩陣（29 條證據 × 5 假說）</a>
+  <a href="#sec3">三、診斷力排序與關鍵證據</a>
+  <a href="#sec4">四、信心水準分配</a>
+  <a href="#sec5">五、敏感度分析與關鍵假設</a>
+  <a href="#sec6">六、監控儀表板</a>
+  <a href="#sec7">七、ACH 投資結論</a>
+</div>
+
+<!-- ============ 一、假說清單 ============ -->
+<h2 id="sec1" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">一、5 個競爭假說</h2>
+
+<div class="hypo-card">
+  <span class="hypo-type hypo-bull">H1 看多</span>
+  <h4>半導體轉型加速，12 個月目標 450-550 元</h4>
+  <p style="font-size:.84em;color:var(--txt2)">台積電國產替代 + CoWoS 爆發 → 半導體佔比 16.7% → 25%+ → 2026E EPS 8.5-9.5 元 → PE 維持 40-55x → 股價上行 19-45%</p>
+  <details open><summary>必要條件與支撐</summary>
+    <ul>
+      <li>台積電在地採購比例持續提升（>15%）<span class="fias-f">F</span></li>
+      <li>CoWoS 月產能如期擴至 12.5 萬片+ <span class="fias-f">F</span></li>
+      <li>新產品認證 3-5 項如期量產 <span class="fias-i">I</span></li>
+      <li>友達基本盤營收降幅 <10% <span class="fias-i">I</span></li>
+    </ul>
+  </details>
+</div>
+
+<div class="hypo-card">
+  <span class="hypo-type hypo-bear">H2 看空</span>
+  <h4>估值修正 + 友達拖累，目標 280-320 元</h4>
+  <p style="font-size:.84em;color:var(--txt2)">PE 51x 已充分反映成長 → 半導體不及預期或友達大衰退 → 估值回歸 35-40x → 股價修正 -15% ~ -26%</p>
+  <details open><summary>必要條件與支撐</summary>
+    <ul>
+      <li>半導體營收年增 <30%（遠低於「高二位數」指引）<span class="fias-a">A</span></li>
+      <li>友達營收年減 >10% 或轉單/減少採購 <span class="fias-i">I</span></li>
+      <li>PE 從 51x 回歸至 35-40x <span class="fias-a">A</span></li>
+      <li>台股整體估值因外部因素收縮 <span class="fias-s">S</span></li>
+    </ul>
+  </details>
+</div>
+
+<div class="hypo-card">
+  <span class="hypo-type hypo-struct">H3 結構性轉變</span>
+  <h4>半導體取代顯示器成為營收主體，估值重定位</h4>
+  <p style="font-size:.84em;color:var(--txt2)">2027-2029 年半導體佔比 >50% → 公司從「化工股」轉為「半導體材料股」→ EPS 路徑 8.5→11→14 元 → 長期目標 600-800 元</p>
+  <details open><summary>轉變條件與時間</summary>
+    <ul>
+      <li>半導體營收佔比從 16.7% 突破 50%（需 2-3 年）</li>
+      <li>橋頭新廠 2028+ 量產提供產能支撐</li>
+      <li>POR 認證持續通過、客戶群從 4 家擴至 8-10 家</li>
+      <li>估值從化工 PE 15-25x 重定位為半導體材料 PE 30-50x</li>
+    </ul>
+  </details>
+</div>
+
+<div class="hypo-card">
+  <span class="hypo-type hypo-swan">H4 黑天鵝</span>
+  <h4>台海危機 / 友達斷供 / 技術路線突變</h4>
+  <p style="font-size:.84em;color:var(--txt2)">低機率高衝擊的極端事件 → 股價跌 40-60%</p>
+  <details open><summary>三大黑天鵝情境</summary>
+    <table>
+      <tr><th>情境</th><th>機率</th><th>衝擊</th></tr>
+      <tr><td style="text-align:left">台海地緣政治危機</td><td><8%</td><td>股價 -50%+</td></tr>
+      <tr><td style="text-align:left">友達突然轉單/斷供</td><td><5%</td><td>營收 -49%</td></tr>
+      <tr><td style="text-align:left">先進封裝技術路線被取代</td><td><3%</td><td>成長故事瓦解</td></tr>
+    </table>
+  </details>
+</div>
+
+<div class="hypo-card">
+  <span class="hypo-type hypo-neutral">H5 中性震盪</span>
+  <h4>基本面如預期但已 Price-in，區間 350-450 元</h4>
+  <p style="font-size:.84em;color:var(--txt2)">營收獲利達標但未超預期 → PE 緩步回歸 45x → 股價區間震盪 ±15% → 等待新催化劑</p>
+</div>
+
+<!-- ============ 二、證據矩陣 ============ -->
+<h2 id="sec2" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">二、證據矩陣（29 條 × 5 假說）</h2>
+
+<div class="tip info"><b>閱讀指引</b>
+<span class="c-cell">C</span> = 一致（支持該假說） | <span class="i-cell">I</span> = 不一致（反對該假說） | <span class="n-cell">N</span> = 不相關<br>
+FIAS 權重：<span class="fias-f">F=3</span> <span class="fias-i">I=2</span> <span class="fias-a">A=1</span> <span class="fias-s">S=0.5</span> — I 標記的加權反證越高，假說越不可能
+</div>
+
+<div class="card">
+  <h3>完整 ACH 矩陣表（點擊展開）</h3>
+  <div class="card-body">
+    <div class="matrix-scroll">
+      <table>
+        <tr>
+          <th>#</th><th>證據描述</th><th>FIAS</th><th>來源</th>
+          <th style="background:var(--bull);color:#fff">H1 看多</th>
+          <th style="background:var(--bear);color:#fff">H2 看空</th>
+          <th style="background:var(--link);color:#fff">H3 轉變</th>
+          <th style="background:#7b1fa2;color:#fff">H4 黑天鵝</th>
+          <th style="background:var(--txt3);color:#fff">H5 中性</th>
+        </tr>
+        <tr><td>E1</td><td style="text-align:left">EPS 7.37元(+32.55%)</td><td><span class="fias-f">F</span></td><td>法說會+finlab</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E2</td><td style="text-align:left">半導體營收+107.8%，佔比16.7%</td><td><span class="fias-f">F</span></td><td>法說會</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E3</td><td style="text-align:left">毛利率40.6%首次站上40%</td><td><span class="fias-f">F</span></td><td>finlab</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr style="background:rgba(198,40,40,.05)"><td>E4</td><td style="text-align:left"><strong>友達佔營收48.88%</strong></td><td><span class="fias-f">F</span></td><td>2024年報</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="i-cell">I</td></tr>
+        <tr style="background:rgba(198,40,40,.05)"><td>E5</td><td style="text-align:left"><strong>PE 51.4倍，PBR 11.02倍</strong></td><td><span class="fias-f">F</span></td><td>finlab</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E6</td><td style="text-align:left">CoWoS月產能CAGR 80%</td><td><span class="fias-f">F</span></td><td>市場調查</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E7</td><td style="text-align:left">台積電在地採購10%→50%</td><td><span class="fias-f">F</span></td><td>市場調查</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E8</td><td style="text-align:left">量產12項，驗證中13項</td><td><span class="fias-f">F</span></td><td>法說會</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E9</td><td style="text-align:left">2026/1月 EPS+34%</td><td><span class="fias-f">F</span></td><td>web_search</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E10</td><td style="text-align:left">自由現金流8.04億</td><td><span class="fias-f">F</span></td><td>finlab</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E11</td><td style="text-align:left">管理層誠信度89/A-</td><td><span class="fias-f">F</span></td><td>FIAS分析</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td></tr>
+        <tr><td>E12</td><td style="text-align:left">管理層「非常可以期待」</td><td><span class="fias-i">I</span></td><td>法說會</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="n-cell">N</td></tr>
+        <tr><td>E13</td><td style="text-align:left">群益目標價512元(看多)</td><td><span class="fias-i">I</span></td><td>web_search</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="n-cell">N</td></tr>
+        <tr><td>E14</td><td style="text-align:left">外資買入+借券降60%</td><td><span class="fias-f">F</span></td><td>finlab</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr style="background:rgba(198,40,40,.05)"><td>E15</td><td style="text-align:left"><strong>日系大廠市佔72-90%</strong></td><td><span class="fias-f">F</span></td><td>市場調查</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="n-cell">N</td><td class="n-cell">N</td></tr>
+        <tr><td>E16</td><td style="text-align:left">POR認證1-2年，轉換成本高</td><td><span class="fias-f">F</span></td><td>年報</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr style="background:rgba(198,40,40,.05)"><td>E17</td><td style="text-align:left"><strong>友達2026前2月營收-7%</strong></td><td><span class="fias-f">F</span></td><td>市場調查</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="i-cell">I</td></tr>
+        <tr><td>E18</td><td style="text-align:left">配息6.5元(配息率88%)</td><td><span class="fias-f">F</span></td><td>法說會</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E19</td><td style="text-align:left">半導體佔比目標25-26%</td><td><span class="fias-i">I</span></td><td>法說會</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E20</td><td style="text-align:left">橋頭新廠2026底動土</td><td><span class="fias-f">F</span></td><td>法說會</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E21</td><td style="text-align:left">PSPI日系缺貨商機</td><td><span class="fias-a">A</span></td><td>法說會+web</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr style="background:rgba(198,40,40,.05)"><td>E22</td><td style="text-align:left"><strong>90%+營收來自台灣</strong></td><td><span class="fias-f">F</span></td><td>年報</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="i-cell">I</td></tr>
+        <tr><td>E23</td><td style="text-align:left">護城河評級：窄</td><td><span class="fias-i">I</span></td><td>第三步</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="n-cell">N</td></tr>
+        <tr><td>E24</td><td style="text-align:left">負債比31%，流動比251.6%</td><td><span class="fias-f">F</span></td><td>finlab</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td></tr>
+        <tr><td>E25</td><td style="text-align:left">2項產品進2奈米製程</td><td><span class="fias-f">F</span></td><td>法說會</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E26</td><td style="text-align:left">薪資競爭力不足(月薪45.7K)</td><td><span class="fias-a">A</span></td><td>市場調查</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="n-cell">N</td><td class="n-cell">N</td></tr>
+        <tr><td>E27</td><td style="text-align:left">CBDA專利+AI逆推配方</td><td><span class="fias-f">F</span></td><td>年報</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+        <tr><td>E28</td><td style="text-align:left">先進封裝CAGR 11.53%至2031</td><td><span class="fias-f">F</span></td><td>市場調查</td><td class="c-cell">C</td><td class="i-cell">I</td><td class="c-cell">C</td><td class="n-cell">N</td><td class="c-cell">C</td></tr>
+      </table>
+    </div>
+    <p style="font-size:.78em;color:var(--txt3);margin-top:6px">* 紅底列為高診斷力證據（能區分多空假說的關鍵證據）</p>
+  </div>
+</div>
+
+<!-- ============ 三、診斷力排序 ============ -->
+<h2 id="sec3" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">三、診斷力排序與關鍵證據</h2>
+
+<div class="card">
+  <h3>加權反證排序（低 → 高 = 最不可能被排除 → 最可能被排除）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>排序</th><th>假說</th><th>C數</th><th>I數</th><th>N數</th><th>加權反證</th><th>判讀</th></tr>
+      <tr><td>1</td><td style="text-align:left;font-weight:700;color:var(--link)">H3 結構轉變</td><td>20</td><td>2</td><td>7</td><td style="color:var(--bull);font-weight:700">6</td><td style="text-align:left">最少反證，轉型趨勢壓倒性支持</td></tr>
+      <tr><td>2</td><td style="text-align:left">H4 黑天鵝</td><td>3</td><td>2</td><td>24</td><td>6</td><td style="text-align:left">大量N，現有證據無法證偽</td></tr>
+      <tr><td>3</td><td style="text-align:left">H5 中性</td><td>20</td><td>3</td><td>6</td><td>9</td><td style="text-align:left">友達+地理集中構成中等反證</td></tr>
+      <tr><td>4</td><td style="text-align:left">H1 看多</td><td>21</td><td>6</td><td>2</td><td style="color:var(--warn);font-weight:700">16</td><td style="text-align:left">C最多但I也不少（估值+集中度）</td></tr>
+      <tr><td>5</td><td style="text-align:left;color:var(--bear)">H2 看空</td><td>7</td><td>12</td><td>10</td><td style="color:var(--bear);font-weight:700">33</td><td style="text-align:left">反證最多，被有效排除</td></tr>
+    </table>
+
+    <div class="tip good"><b>ACH 核心發現</b>
+    H3（結構性轉變）是「最少被反證」的假說 — 達興從面板材料轉向半導體材料的趨勢，獲得 20 項證據支持、僅 2 項反證（友達集中度+日系競爭）。<br>
+    H2（看空）是「最多被反證」的假說 — 12 項高權重事實直接矛盾，被有效排除。</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>前 5 大診斷力證據（最能區分假說的關鍵證據）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>證據</th><th>FIAS</th><th>診斷力</th><th>說明</th></tr>
+      <tr><td>E2</td><td style="text-align:left">半導體營收+107.8%</td><td><span class="fias-f">F</span></td><td style="color:var(--bull);font-weight:700">極高</td><td style="text-align:left">H1/H3/H5=C, H2=I — 明確區分多空</td></tr>
+      <tr><td>E4</td><td style="text-align:left">友達佔營收49%</td><td><span class="fias-f">F</span></td><td style="color:var(--bear);font-weight:700">極高</td><td style="text-align:left">H2/H4=C, H1/H3/H5=I — 最強反面證據</td></tr>
+      <tr><td>E5</td><td style="text-align:left">PE 51.4倍</td><td><span class="fias-f">F</span></td><td style="color:var(--warn);font-weight:700">高</td><td style="text-align:left">H2/H5=C, H1=I — 區分估值觀點</td></tr>
+      <tr><td>E3</td><td style="text-align:left">毛利率40.6%</td><td><span class="fias-f">F</span></td><td style="color:var(--bull);font-weight:700">高</td><td style="text-align:left">H1/H3/H5=C, H2=I — 獲利品質證據</td></tr>
+      <tr><td>E17</td><td style="text-align:left">友達2026前2月-7%</td><td><span class="fias-f">F</span></td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left">H2/H4=C, H1/H5=I — 近期基本盤風險</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 四、信心水準 ============ -->
+<h2 id="sec4" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">四、信心水準分配</h2>
+
+<div class="conf-bar">
+  <div style="width:35%;background:var(--bull)">H1 看多 35%</div>
+  <div style="width:28%;background:var(--link)">H3 轉變 28%</div>
+  <div style="width:22%;background:var(--txt3)">H5 中性 22%</div>
+  <div style="width:8%;background:#7b1fa2">H4 8%</div>
+  <div style="width:7%;background:var(--bear)">H2 7%</div>
+</div>
+
+<div class="card">
+  <h3>各假說信心水準說明</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>假說</th><th>信心</th><th>區間</th><th>理由</th></tr>
+      <tr><td style="color:var(--bull);font-weight:700">H1 看多</td><td style="font-weight:700">35%</td><td style="text-align:left">20-39%→低度傾向但不可忽略</td><td style="text-align:left">21項C（14項F級）基本面極強，但6項I（5項F級：PE+友達+日系+地理+薪資）壓制短期確信度</td></tr>
+      <tr><td style="color:var(--link);font-weight:700">H3 轉變</td><td style="font-weight:700">28%</td><td style="text-align:left">20-39%→低度傾向，長期核心故事</td><td style="text-align:left">加權反證最低(6)、C最多(20)。轉型軌跡（9%→16.7%→25%）清晰可驗證，但需2-3年執行期</td></tr>
+      <tr><td style="color:var(--txt3);font-weight:700">H5 中性</td><td style="font-weight:700">22%</td><td style="text-align:left">20-39%→市場可能已Price-in</td><td style="text-align:left">PE 51x意味大量利多已反映。若成長符合預期但未超預期，股價可能區間整理</td></tr>
+      <tr><td style="color:#7b1fa2;font-weight:700">H4 黑天鵝</td><td style="font-weight:700">8%</td><td style="text-align:left">5-19%→小機率大影響</td><td style="text-align:left">90%台灣+友達49% = 雙重集中度放大尾部風險</td></tr>
+      <tr><td style="color:var(--bear);font-weight:700">H2 看空</td><td style="font-weight:700">7%</td><td style="text-align:left">5-19%→反證最多，基本排除</td><td style="text-align:left">12項高權重反證(加權33)直接矛盾。保留殘餘可能：系統性殺估值或友達突發衰退</td></tr>
+    </table>
+
+    <div class="tip good"><b>看多合計 = H1(35%) + H3(28%) = 63%</b>
+    ACH 分析結論偏多，但並非高度確信。估值偏高(PE 51x)與友達集中度(49%)是壓制信心的兩大主因。若半導體佔比如期升至25%且友達穩定，信心可上修至70%+。</div>
+
+    <div class="tip warn"><b>警示：H1+H3 合計未達 70%</b>
+    未達「高度傾向」門檻，意味著投資需分批佈局而非全押。H5(22%) 的中性情境機率不低，可能導致持有期間報酬低於預期。</div>
+  </div>
+</div>
+
+<!-- ============ 五、敏感度分析 ============ -->
+<h2 id="sec5" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">五、敏感度分析與關鍵假設</h2>
+
+<div class="card">
+  <h3>5 大關鍵假設（KA1-KA5）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>編號</th><th>關鍵假設</th><th>FIAS</th><th>翻轉</th><th>若錯誤的影響</th><th>驗證方式</th></tr>
+      <tr><td>KA1</td><td style="text-align:left">台積電在地採購持續加速</td><td><span class="fias-f">F</span></td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left">H1: 35%→15%, H5: 22%→40%</td><td style="text-align:left">台積電ESG報告/法說會</td></tr>
+      <tr><td>KA2</td><td style="text-align:left">CoWoS/先進封裝不減速</td><td><span class="fias-f">F</span></td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left">H1: 35%→20%, H3: 28%→10%</td><td style="text-align:left">台積電Capex指引/月產能</td></tr>
+      <tr style="background:rgba(198,40,40,.06)"><td style="font-weight:700">KA3</td><td style="text-align:left;font-weight:700">友達基本盤不大衰退(&lt;10%)</td><td><span class="fias-i">I</span></td><td style="color:var(--bear);font-weight:700">高</td><td style="text-align:left;font-weight:700">H2: 7%→25%, H1: 35%→20%</td><td style="text-align:left">友達月營收（每月10日前）</td></tr>
+      <tr><td>KA4</td><td style="text-align:left">新產品POR如期通過量產</td><td><span class="fias-i">I</span></td><td style="color:var(--warn)">中高</td><td style="text-align:left">H1: 35%→25%, H3: 28%→15%</td><td style="text-align:left">達興法說會/重大訊息</td></tr>
+      <tr><td>KA5</td><td style="text-align:left">日系大廠不降價搶市</td><td><span class="fias-a">A</span></td><td style="color:var(--txt3)">中</td><td style="text-align:left">H1: 35%→28%, 毛利率受壓</td><td style="text-align:left">產業新聞/毛利率變化</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>情境切換矩陣</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>若此假設錯誤…</th><th>H1 看多</th><th>H2 看空</th><th>H3 轉變</th><th>H5 中性</th></tr>
+      <tr><td style="text-align:left">KA1（國產化放緩）</td><td>35→15%</td><td>7→15%</td><td>28→12%</td><td>22→40%</td></tr>
+      <tr><td style="text-align:left">KA3（友達大衰退）</td><td>35→20%</td><td>7→25%</td><td>28→20%</td><td>22→35%</td></tr>
+      <tr><td style="text-align:left;color:var(--bear);font-weight:700">KA1+KA3 同時錯誤</td><td style="color:var(--bear)">35→10%</td><td style="color:var(--bear);font-weight:700">7→40%</td><td>28→8%</td><td>22→30%</td></tr>
+      <tr><td style="text-align:left">KA2（封裝減速）</td><td>35→20%</td><td>7→12%</td><td>28→10%</td><td>22→45%</td></tr>
+      <tr><td style="text-align:left;color:var(--bull)">所有假設成立且超預期</td><td style="color:var(--bull);font-weight:700">35→50%</td><td>7→3%</td><td style="color:var(--bull)">28→35%</td><td>22→8%</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>最脆弱環節</h3>
+  <div class="card-body">
+    <div class="tip danger"><b>KA3：友達基本盤穩定性 — 整個分析鏈的最脆弱環節</b>
+    <ul>
+      <li>友達佔營收 <strong>48.88%</strong>，是整個分析中最大的單點故障風險</li>
+      <li>友達 2026 前 2 月營收已出現 <strong>年減 7%</strong> 跡象（FIAS 等級：F 事實）</li>
+      <li>即使半導體材料高速成長（+108%），目前佔比僅 16.7%，尚不足以彌補友達若衰退 15%+ 的衝擊</li>
+      <li>友達業務受全球面板市場影響，達興<strong>完全無法控制</strong></li>
+      <li>KA3 的 FIAS 等級僅 I（推論），驗證時間為每月（友達月營收）</li>
+    </ul>
+    <strong>建議：</strong>將友達月營收設為第一優先追蹤指標。若連續 3 月 YoY < -10%，需立即重新評估 H1 信心水準。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>敏感度檢查：移除前 3 條關鍵證據</h3>
+  <div class="card-body">
+    <p>依 ACH 方法論第 6 步，移除診斷力最高的 3 條證據（E2 半導體+108%、E4 友達49%、E5 PE51x），檢查結論是否翻轉：</p>
+    <table>
+      <tr><th>假說</th><th>原加權反證</th><th>移除後加權反證</th><th>排序變化</th></tr>
+      <tr><td style="text-align:left">H1 看多</td><td>16</td><td>10（少了E4:3, E5:3）</td><td>16→10, <strong>更強</strong></td></tr>
+      <tr><td style="text-align:left">H2 看空</td><td>33</td><td>27（少了E2:3, 但保留其他）</td><td>33→27, 仍最高</td></tr>
+      <tr><td style="text-align:left">H3 轉變</td><td>6</td><td>3（少了E4:3）</td><td>6→3, <strong>更強</strong></td></tr>
+    </table>
+    <div class="tip good"><b>敏感度結論：結論不翻轉</b>
+    移除前3條關鍵證據後，H3仍最優、H2仍最差。整體偏多結論穩健。</div>
+  </div>
+</div>
+
+<!-- ============ 六、監控儀表板 ============ -->
+<h2 id="sec6" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">六、監控儀表板</h2>
+
+<div class="card">
+  <h3>H1 看多 — 觸發/失效條件</h3>
+  <div class="card-body">
+    <table>
+      <tr><th colspan="2" style="background:var(--bull)">觸發條件（強化信號）</th></tr>
+      <tr><td style="text-align:left">月營收連續 3 月 YoY > 15%</td><td>每月檢查</td></tr>
+      <tr><td style="text-align:left">半導體材料單季營收突破 3 億元</td><td>每季檢查</td></tr>
+      <tr><td style="text-align:left">毛利率單季 > 42%</td><td>每季檢查</td></tr>
+      <tr><td style="text-align:left">新增 POR 認證通過公告</td><td>即時監控</td></tr>
+      <tr><td style="text-align:left">外資連續 20 日淨買超</td><td>每日檢查</td></tr>
+      <tr><th colspan="2" style="background:var(--bear)">失效條件（否決信號）</th></tr>
+      <tr><td style="text-align:left">月營收 YoY 轉負且連續 2 月</td><td>每月檢查</td></tr>
+      <tr><td style="text-align:left">毛利率單季跌破 38%</td><td>每季檢查</td></tr>
+      <tr><td style="text-align:left">友達宣布減資/大幅裁員/轉單</td><td>即時監控</td></tr>
+      <tr><td style="text-align:left">台積電國產化政策轉向</td><td>即時監控</td></tr>
+      <tr><td style="text-align:left">PE 突破 70 倍（泡沫化）</td><td>每日檢查</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card collapsed">
+  <h3>H2 看空 / H3 轉變 / H4 黑天鵝 / H5 中性 — 觸發/失效條件</h3>
+  <div class="card-body">
+    <details open><summary>H2 看空 觸發條件</summary>
+      <ul>
+        <li>半導體營收季增率連續 2 季 < 10%</li>
+        <li>友達營收連續 6 月 YoY < -10%</li>
+        <li>管理層下修展望指引</li>
+        <li>大盤系統性殺估值</li>
+      </ul>
+    </details>
+    <details open><summary>H3 結構轉變 觸發條件</summary>
+      <ul>
+        <li>半導體營收佔比突破 30%</li>
+        <li>橋頭新廠如期動土</li>
+        <li>EUV 相關產品取得認證</li>
+        <li>國際大廠合作數達 6 家+</li>
+      </ul>
+    </details>
+    <details open><summary>H4 黑天鵝 監控</summary>
+      <ul>
+        <li>台海軍事演習升級</li>
+        <li>友達發布重大營運變更公告</li>
+        <li>先進封裝出現革命性替代技術</li>
+        <li>內部人大量轉讓持股</li>
+      </ul>
+    </details>
+    <details open><summary>H5 中性 轉向信號</summary>
+      <ul>
+        <li>股價在 350-450 區間橫盤超過 3 個月</li>
+        <li>營收/獲利達標但股價無反應</li>
+        <li>法人報告增加但目標價收斂</li>
+      </ul>
+    </details>
+  </div>
+</div>
+
+<!-- ============ 七、結論 ============ -->
+<h2 id="sec7" style="font-size:1.15em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent)">七、ACH 投資結論</h2>
+
+<div class="card">
+  <h3>結論總覽</h3>
+  <div class="card-body">
+    <div class="tip good"><b>主要假說：看多 63%（H1 35% + H3 28%）</b>
+    達興材料正處於從面板材料商轉型為半導體特化材料商的關鍵轉折期。ACH 分析顯示：<br>
+    ・轉型方向（台積電國產替代 + 先進封裝 + CoWoS）獲 20 項 F/I 級事實支持<br>
+    ・看空假說(H2) 反證最多（加權反證 33），被有效排除<br>
+    ・結構轉變假說(H3) 加權反證最低（6），是最穩健的長期故事</div>
+
+    <div class="tip warn"><b>關鍵風險：估值偏高 + 友達集中度</b>
+    ・PE 51 倍在台股化工/材料類股中屬極高水準，需持續成長數據支撐<br>
+    ・友達佔營收 49% 是最脆弱環節，友達 2026 前 2 月已出現 -7% 衰退跡象<br>
+    ・看多合計 63% 未達 70% 高度確信門檻，建議分批佈局而非全押</div>
+
+    <div class="tip info"><b>操作建議</b>
+    偏多操作，分批佈局。<br>
+    <strong>加碼催化劑：</strong>毛利率 >42% / 半導體季營收 >3 億 / 新 POR 認證通過<br>
+    <strong>停損信號：</strong>月營收連續 2 月 YoY <0% / 毛利率跌破 38% / 友達轉單公告<br>
+    <strong>第一優先追蹤：</strong>友達月營收 + 達興半導體季營收佔比</div>
+  </div>
+</div>
+
+<footer>
+  天機閣深度調查系統 v1.7 — 第四步 ACH 競爭假說分析<br>
+  分析日期：2026-03-22 ｜ 標的：5234 達興材料 ｜ 股價基準：378.5 元 (2026/3/20)<br>
+  資料來源：finlab_data / web_search / 市場調查_管道C / 法說會_20260226 / FIAS分析結果 / 競爭力分析結果<br>
+  方法論：Richards J. Heuer Jr.《Psychology of Intelligence Analysis》ACH Framework
+</footer>
+
+</div>
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>
