@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>3105 穩懋半導體 — 第七步 完整版（天機錄）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ========== Hero ========== -->
+<div class="hero">
+  <h1>3105 穩懋半導體 — 天機錄完整版</h1>
+  <div class="sub">第七步：13 章完整報告 | 三次信心校準（理性判斷版）| 投資決策輸出</div>
+  <div class="desc">天機閣深度調查系統 v3.0 | 分析日期：2026-03-26 | 股價：344.5 元 | PE：86.13x<br>
+  資料來源：管道B/C/D/E/F + 2024 年報 + Step2~6 全文分析</div>
+  <div class="tags">
+    <span class="tag">全球 GaAs 代工龍頭</span>
+    <span class="tag">OTC 3105.TWO</span>
+    <span class="tag">市佔 65-77%</span>
+    <span class="tag">2025 EPS 4.00</span>
+    <span class="tag">看多 32% / 看空 43%</span>
+    <span class="tag">好公司壞價格</span>
+  </div>
+</div>
+
+<!-- ==================== 第一章：公司概覽 ==================== -->
+<div class="section-title">第一章：公司概覽</div>
+<div class="section-sub">一句話：全球最大砷化鎵純代工廠，市佔 65-77%，正從手機轉型至 AI 光通訊 + 低軌衛星雙引擎</div>
+
+<details open>
+<summary>基本面快照</summary>
+
+<div class="grid3">
+  <div class="mini-card bull-card"><div class="title">全球 GaAs 代工市佔</div><div class="num" style="color:var(--bull)">65-77%</div><div class="desc">第二名三安光電 10.5-15%</div></div>
+  <div class="mini-card neutral-card"><div class="title">2025 全年 EPS</div><div class="num">4.00 元</div><div class="desc">年增 121%（前年 1.81）</div></div>
+  <div class="mini-card bear-card"><div class="title">Trailing PE</div><div class="num" style="color:var(--bear)">86.13x</div><div class="desc">Forward PE 59.5x（EPS 5.79）</div></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t">公司定位與核心事實</div>
+  <div class="ev-d">
+    <span class="fias-f">F</span> 穩懋成立於 1999 年，為全球首家純粹專業 6 吋砷化鎵（GaAs）晶圓代工廠。業界唯一提供從磊晶（Epitaxy）到晶圓代工到測試完整 Turnkey Solution 的代工廠。三廠（A/B/C）月產能約 4.3 萬片六吋晶圓，年產量 40 億顆。自研研磨技術將破片率從 20% 降至 0.5% 以下。<br><br>
+    <span class="fias-f">F</span> 8 類製程、超過 20 種技術進入量產，涵蓋 HBT（1/2 微米）+ pHEMT（0.5/0.25/0.15/0.1 微米）+ BiFET，頻率覆蓋 5MHz ~ 130GHz。三五族化合物技術完整度 99%。GaN on SiC 代工已穩定量產（月產能約 500 片）。<br><br>
+    <span class="fias-f">F</span> 經營團隊：董事長陳進財（會計出身，KPMG 查帳員，2003 年入主虧損超 8 億的穩懋並逆轉為盈）、副董事長王郁琦（創始成員，7 項美國發明專利）、總經理陳國樺。連續十年公司治理評鑑前 5%，DJSI 成分股，KPMG 審計。<br><br>
+    <span class="fias-f">F</span> 營收結構轉型：手機佔比已從 50%+ 降至 25-30%，基礎設施（含衛星/航太）30-35%、WiFi 15-20%、光學（含 AI 光通訊）11-17%。Broadcom 為最大客戶（約 20% 營收），同時持股 4.73% 為第二大股東。<br><br>
+    <span class="fias-f">F</span> 2025 全年營收 166.39 億元（年減 5%），Q4 營收 47.94 億元（季增 7%、年增 29%），Q4 毛利率 31.8%（季增 4.9 個百分點），全年 EPS 4.00 元（年增 121%）。產能利用率從谷底 35% 回升至 50-60%。2026 年 1-2 月累計營收年增 25.29%。
+  </div>
+  <div class="ev-s">來源：年報壹致股東報告書 + 管道B/C/F + finlab 量化</div>
+</div>
+</details>
+
+<div class="tip info">
+<b>第一章整合結論</b><br>
+穩懋是化合物半導體代工領域的「台積電」——在一個相對小的池塘裡（GaAs 代工 TAM 約 13 億美元）佔據絕對壟斷地位。管理層經驗豐富、治理優秀，技術完整度業界最高。營收正從手機依賴轉型至多引擎驅動，方向正確且已有初步成果。核心風險不在公司本身，而在估值是否合理。
+</div>
+
+<!-- ==================== 第二章：催化劑 ==================== -->
+<div class="section-title">第二章：催化劑清單</div>
+<div class="section-sub">五大催化劑的兌現機率、EPS 影響與時程</div>
+
+<details open>
+<summary>催化劑全景表</summary>
+<table>
+<tr><th>催化劑</th><th>信心</th><th>EPS 影響</th><th>兌現時程</th><th>狀態</th></tr>
+<tr>
+  <td><b>C1 光通訊 1.6T Driver IC 放量</b></td>
+  <td>70%</td><td>+0.3~0.8 元</td><td>2026H2~2027H1</td>
+  <td><span class="light yellow"></span>驗證中</td>
+</tr>
+<tr>
+  <td><b>C2 NXP 退出 5G PA 轉單</b></td>
+  <td>75%</td><td>+0.2~0.5 元</td><td>2026~2027</td>
+  <td><span class="light green"></span>已確認</td>
+</tr>
+<tr>
+  <td><b>C3 WiFi 7 升級週期</b></td>
+  <td>80%</td><td>+0.3~0.6 元/年</td><td>2026~2028</td>
+  <td><span class="light green"></span>進行中</td>
+</tr>
+<tr>
+  <td><b>C4 低軌衛星需求持續成長</b></td>
+  <td>80%</td><td>+0.5~1.0 元</td><td>持續性</td>
+  <td><span class="light green"></span>已貢獻</td>
+</tr>
+<tr>
+  <td><b>C5 折舊下降帶動毛利率擴張</b></td>
+  <td>85%</td><td>+0.3~0.5 元</td><td>2026 全年</td>
+  <td><span class="light green"></span>機械性</td>
+</tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t">催化劑加權 EPS 增量：+1.26~2.65 元（中位 1.95 元）</div>
+  <div class="ev-d">
+    基期 EPS 4.00 元 + 機率加權增量 1.95 元 = <b>2026 預估 EPS 中位 5.95 元</b>。高端情境（全部兌現）可觸及 6.65 元。FactSet 中位數 5.79 元與此接近。<br><br>
+    <b>口語化提示</b>：簡單說，穩懋有五顆子彈——光通訊、NXP 轉單、WiFi7、衛星、折舊下降。折舊那顆最穩（85%），光通訊那顆最看不準（70%）。就算五顆全中，EPS 頂多 6.5 元左右，乘以歷史中位數 PE 50 倍也就 325 元，比現在的 344.5 元還低。
+  </div>
+  <div class="ev-s">來源：Step5 催化劑驗證卡 C1~C5 + 管道F法說會 + 管道C市場調查</div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>第二章整合結論</b><br>
+<b>資料 → 觀察</b>：五大催化劑中，C4（衛星）和 C5（折舊下降）最可靠（信心 80-85%），C1（光通訊）最不確定但也是市場最期待的（信心 70%）。<br>
+<b>觀察 → 推論</b>：即使五大催化劑全部兌現，EPS 最高約 6.65 元 x PE 50x = 332 元，仍低於現價 344.5 元。這意味著市場已 priced in 了所有催化劑同時如期兌現的情境。<br>
+<b>推論 → 結論</b>：催化劑是真實的（非空中畫餅），但當前股價已無安全邊際。上行空間幾乎為零（最樂觀 +4%），下行空間顯著（-35% 至 -54%）。
+</div>
+
+<!-- ==================== 第三章：為什麼漲 ==================== -->
+<div class="section-title">第三章：為什麼漲——從 96 元到 344.5 元的 222% 行情</div>
+<div class="section-sub">還原一年三倍漲幅的邏輯與推力</div>
+
+<details open>
+<summary>股價行情拆解</summary>
+
+<div class="ev">
+  <div class="ev-t">四階段漲幅拆解</div>
+  <div class="ev-d">
+    <table>
+    <tr><th>階段</th><th>時間</th><th>股價區間</th><th>驅動因素</th></tr>
+    <tr><td><b>1. 谷底磨底</b></td><td>2024/11~2025/01</td><td>96~115 元</td><td>連三季虧損（2025Q1 EPS -0.83、Q2 EPS -0.99），產能利用率 35%，市場極度悲觀。大摩目標價 115 元 Underperform。</td></tr>
+    <tr><td><b>2. 季報翻盈反彈</b></td><td>2025/02~2025/05</td><td>100~200 元</td><td>2025Q3 由虧轉盈、EPS 0.54 元終結連三季虧損。月營收年增率自 2025/09 起轉正。WiFi7 產品線年增 50%。</td></tr>
+    <tr><td><b>3. 敘事疊加飆漲</b></td><td>2025/06~2025/12</td><td>200~493 元</td><td>NXP 退出 5G PA 轉單消息 + AI 光通訊敘事爆發 + Q4 營收季增 7%/年增 29% + 毛利率跳升至 31.8% + 日月光 65 億購廠處分利益。週漲幅一度達 37.4%。</td></tr>
+    <tr><td><b>4. 高位震盪</b></td><td>2026/01~至今</td><td>300~456 元</td><td>法人預估分歧加大（EPS 2.69~6 元），近期從 456 元高點回落至 344.5 元（-25%）。2026Q1 展望營收季減高個位數、毛利率回落至 25%。</td></tr>
+    </table>
+  </div>
+  <div class="ev-s">來源：finlab 收盤價序列（96 元 2025/01/13 → 344.5 元 2026/03/25）+ 管道B/E 搜尋結果</div>
+</div>
+</details>
+
+<div class="tip info">
+<b>第三章整合結論</b><br>
+<b>資料 → 觀察</b>：穩懋從谷底反彈有真實的基本面支撐——營收復甦（月增 25%+）、毛利率大幅回升（31.8%）、新業務方向明確。<br>
+<b>觀察 → 推論</b>：但第三階段（200→493 元）的漲幅主要由「敘事驅動」而非「獲利驅動」。PE 從 30x 飆至 245x 再回到 86x，價格跑在基本面前面。這種「先給估值後等獲利追上」的模式，一旦獲利不如預期，修正速度會非常快。<br>
+<b>推論 → 結論</b>：漲幅的前半段（96→200 元）是合理的估值修復；後半段（200→344 元）是預期溢價。投資人需要問的是：你買的是已經發生的復甦，還是尚未兌現的預期？
+</div>
+
+<!-- ==================== 第四章：風險偵測與求證 ==================== -->
+<div class="section-title">第四章：風險偵測與求證</div>
+<div class="section-sub">六大風險因子 + 壓力測試事前驗屍法結果</div>
+
+<details open>
+<summary>風險矩陣（Step5 事前驗屍法）</summary>
+<table>
+<tr><th>風險</th><th>分數</th><th>FIAS</th><th>說明</th></tr>
+<tr style="background:rgba(198,40,40,.08)">
+  <td><b>PM1 PE 均值回歸</b></td>
+  <td style="color:var(--bear);font-weight:900">20/25</td>
+  <td><span class="fias-f">F</span></td>
+  <td>PE 86x 為歷史高位（歷史中位數 50x）。回歸 50x 時股價 = EPS 4 x 50 = 200 元（-42%）。不需要壞消息即可觸發——只要市場情緒退潮或資金轉向。致命級。</td>
+</tr>
+<tr>
+  <td><b>PM2 手機 RF 需求結構性放緩</b></td>
+  <td>12/25</td>
+  <td><span class="fias-f">F</span></td>
+  <td>手機出貨成長僅低個位數%，中國安卓衰退超預期（管理層多次承認）。佔營收 25-30%，結構性下滑非週期性。</td>
+</tr>
+<tr>
+  <td><b>PM3 產能利用率停滯</b></td>
+  <td>10/25</td>
+  <td><span class="fias-f">F</span></td>
+  <td>目前 50-60%（部分產線 60-70%），距 2018-19 年 85-100% 高峰差距巨大。70%+ 的稼動率目標可能需到 2027 年。</td>
+</tr>
+<tr>
+  <td><b>PM4 關稅戰衝擊客戶中國營收</b></td>
+  <td>9/25</td>
+  <td><span class="fias-i">I</span></td>
+  <td>Skyworks-Qorvo 宣布退出 Android 減少逾 2 億美元營收。中國品牌加速導入本土 PA 供應商（銳迪科、卓勝微）。</td>
+</tr>
+<tr>
+  <td><b>PM5 Skyworks-Qorvo 合併後內部化</b></td>
+  <td>8/25</td>
+  <td><span class="fias-i">I</span></td>
+  <td>220 億美元合併案已獲股東 99% 通過，FTC 審查中。合併實體擁有 Qorvo 自有 GaAs 產能，「美國製造優先」可能減少台灣外包。信心 55%，方向不確定。</td>
+</tr>
+<tr>
+  <td><b>PM6 三安光電突破高階製程</b></td>
+  <td>8/25</td>
+  <td><span class="fias-i">I</span></td>
+  <td>HP36/56 工藝小批量出貨，客戶超 90 家，市佔從 &lt;5% 升至 10.5-15%。但數據來源為中國媒體（C 級信心），可能誇大。</td>
+</tr>
+<tr style="background:rgba(184,150,12,.08)">
+  <td colspan="2"><b>總風險分數</b></td>
+  <td colspan="2"><b>67/150（44.7%）</b>——PM1 單一因子貢獻 30% 風險暴露</td>
+</tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>第四章整合結論</b><br>
+<b>資料 → 觀察</b>：風險矩陣中，PM1（PE 均值回歸）以 20/25 分遙遙領先，是致命級風險。其餘五個風險分數 8-12 分，屬中等級別。<br>
+<b>觀察 → 推論</b>：穩懋最大的風險不是「公司變差」（護城河寬、營收復甦中），而是「估值太貴」。PE 回歸是一種「不需要壞消息就能發生」的風險——只要市場情緒轉向、或其他標的更有吸引力，資金就會撤離高 PE 股票。<br>
+<b>推論 → 結論</b>：六大風險中只有 PM1 是致命級的。但 PM1 恰恰是最有可能發生的風險（歷史 PE 中位數 50x vs 當前 86x），且影響幅度最大（股價可跌 -42%）。這決定了整體投資建議的基調。
+</div>
+
+<!-- ==================== 第五章：隱藏優勢求證 ==================== -->
+<div class="section-title">第五章：隱藏優勢求證</div>
+<div class="section-sub">護城河驗證 + 不為市場充分認知的結構性優勢</div>
+
+<details open>
+<summary>護城河評分（Step3 Morningstar 五大來源）</summary>
+<table>
+<tr><th>來源</th><th>評分</th><th>核心證據</th></tr>
+<tr><td><b>轉換成本</b></td><td style="color:var(--bull);font-weight:700">5/5 強</td><td>客戶認證 12-18 個月，NRE 數百萬美元，BOM 佔比 &lt;5% 但不可替代。Broadcom 持股 4.73% 進一步綁定。</td></tr>
+<tr><td><b>有效規模</b></td><td style="color:var(--bull);font-weight:700">4/5 強</td><td>TAM 13 億美元，穩懋年營收約 5.3 億美元佔 40%+。市場規模有限（僅矽晶圓代工 1/100），難容第二個同規模玩家。</td></tr>
+<tr><td><b>成本優勢</b></td><td style="color:var(--warn);font-weight:700">3/5 中</td><td>破片率 0.5%（業界最低）、基板採購量全球最大。但稼動率僅 50-60% 削弱規模效應。</td></tr>
+<tr><td><b>無形資產</b></td><td style="color:var(--warn);font-weight:700">3/5 中</td><td>數十年製程 know-how，但無 blocking patent。B2B 市場品牌效應有限。</td></tr>
+<tr><td><b>網路效應</b></td><td>1/5 弱</td><td>微弱 PDK 生態系鎖定效應。</td></tr>
+<tr style="background:rgba(90,125,96,.08)"><td colspan="2"><b>總分 16/25 = 寬護城河</b></td><td>門檻：寬 &ge; 60%（穩懋 64%）。預估持久性 5-7 年。</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>四個可能被低估的隱藏優勢</summary>
+<div class="ev">
+  <div class="ev-t">市場尚未充分定價的結構性優勢</div>
+  <div class="ev-d">
+    <b>1. Broadcom 綁定效應</b> <span class="fias-f">F</span>：Broadcom 身兼最大客戶（20% 營收）+ 第二大股東（4.73%），這種雙重關係在全球代工廠中極為罕見，等同於一種隱性的長期訂單保障。<br><br>
+    <b>2. 折舊紅利的持續性</b> <span class="fias-i">I</span>：2024-2025 低資本支出 → 2026-2027 折舊持續下降（每年 -10~20%），每年提供毛利率 1-2 個百分點安全墊。這是「已鎖定的獲利改善」，不受需求波動影響。<br><br>
+    <b>3. InP 新材料佈局</b> <span class="fias-a">A</span>：2026 年投資 6 吋磷化銦（InP）產能，跨出 GaAs 單一材料限制。成功則打開矽光子用雷射源新市場，但尚在早期投入階段。<br><br>
+    <b>4. 衛星高頻段獨佔地位</b> <span class="fias-f">F</span>：穩懋開發 0.12um/0.1um GaN HEMT 用於 V-band/E-band（30-80GHz），是年報明確提及的研發方向。高頻段技術壁壘極高，競爭對手難以跟進。
+  </div>
+</div>
+</details>
+
+<div class="tip good">
+<b>第五章整合結論</b><br>
+<b>資料 → 觀察</b>：護城河經 Morningstar 框架驗證為「寬」（16/25），核心支撐是轉換成本（5/5）和有效規模（4/5）。<br>
+<b>觀察 → 推論</b>：Broadcom 綁定效應和折舊紅利是兩個可能被市場低估的隱藏優勢——前者提供需求穩定性，後者提供獲利可預測性。<br>
+<b>推論 → 結論</b>：護城河的持久性（預計 5-7 年）支撐穩懋的長期投資價值，但不足以支撐 PE 86x。寬護城河值得溢價（PE 40-55x），86x 是過度溢價。兩個需持續監控的侵蝕點：三安光電向高階製程滲透的速度、GaN 在 PA 應用逐步取代 GaAs 的時間表。
+</div>
+
+<!-- ==================== 第六章：六步彙整 ==================== -->
+<div class="section-title">第六章：六步彙整——前六步核心發現總覽</div>
+<div class="section-sub">將 Step2~6 的核心結論整合為統一視圖</div>
+
+<details open>
+<summary>六步彙整表</summary>
+<table>
+<tr><th>步驟</th><th>核心結論</th><th>對投資決策的影響</th></tr>
+<tr>
+  <td><b>Step2 FIAS 分級</b></td>
+  <td>52% F 級事實基礎、4 項未解矛盾、加權信心 72%。最嚴重矛盾：股價超越所有分析師目標價。管理層誠信度 B+。</td>
+  <td style="color:var(--warn)">高度謹慎——資料品質良好但估值斷裂級矛盾存在</td>
+</tr>
+<tr>
+  <td><b>Step3 競爭力</b></td>
+  <td>護城河寬（16/25）、Porter 五力對龍頭有利（11/25 威脅分）、產業 CAGR 11.4%。角色定位 4/5（瓶頸型壟斷者）、定價能力 9/14。TAM 天花板 23 億美元。</td>
+  <td style="color:var(--bull)">正面——龍頭地位穩固，但成長有上限（精品壟斷者）</td>
+</tr>
+<tr>
+  <td><b>Step4 ACH 矩陣</b></td>
+  <td>H2 溫和看多淨分最高（+10.55），但 E7（股價超越目標價）對所有看多假說構成挑戰。「好公司壞價格」困境浮現。<b>第一次校準：看多 35% / 看空 40%</b>。</td>
+  <td style="color:var(--warn)">分歧——基本面看多但估值看空，兩組證據並不矛盾</td>
+</tr>
+<tr>
+  <td><b>Step5 壓力測試</b></td>
+  <td>PE 均值回歸為致命級風險（20/25）。風險/報酬不對稱：上行 +7% vs 下行 -35%~-54%。PE 86x 和 EPS 6+ 被歸入「無支撐」假設。<b>第二次校準：看多 29% / 看空 45%</b>。</td>
+  <td style="color:var(--bear)">負面——風險/報酬嚴重不對稱，壓力測試強化看空</td>
+</tr>
+<tr>
+  <td><b>Step6 評審團（理性版）</b></td>
+  <td>8 人評審團修正壓力測試的反向偏誤——營運復甦有大量 F 級事實支撐不應被完全壓制。H2 從 22%→24%、H4 從 33%→31%。<b>第三次校準：看多 32% / 看空 43%</b>。差距收斂至 11%。</td>
+  <td style="color:var(--warn)">偏空但非壓倒性——好公司壞價格結論不變</td>
+</tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第六章整合結論</b><br>
+六步分析高度收斂於一個核心訊息：穩懋是一家技術領先、護城河寬、營運復甦中的好公司。但 344.5 元（PE 86x）的股價已經把所有利多 priced in，風險/報酬嚴重不對稱。三次校準的看空陣營始終大於看多（40%→45%→43% vs 35%→29%→32%），H4 溫和看空始終是最高信心假說（30%→33%→31%）。
+</div>
+
+<!-- ==================== 第七章：風險壓力測試 ==================== -->
+<div class="section-title">第七章：風險壓力測試——三桶分類摘要</div>
+<div class="section-sub">關鍵假設的支撐力分類 + 敏感度分析</div>
+
+<details open>
+<summary>三桶分類</summary>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="light green"></span> 綠燈（有支撐）——3 項</div>
+  <div class="ev-d">
+    <b>A1. GaAs 代工市佔 65-77% 穩定</b>：多源 F 級事實確認，護城河寬度 16/25。三安光電蠶食主要在中低階，穩懋高階市佔未被明顯侵蝕。<br>
+    <b>A2. 月營收年增 25%+ 復甦趨勢確立</b>：F 級 finlab 數據驗證連續 6 個月正成長，谷底（2025/04 的 11.65 億）已確認過去。但含低基期成分，2026H2 增速將自然放緩。<br>
+    <b>A3. 護城河寬（轉換成本 + 有效規模）</b>：結構性支撐，短中期不會被突破。客戶認證週期 12-18 個月 + 99% 製程完整度 + 唯一 Turnkey Solution。
+  </div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="light yellow"></span> 黃燈（需附註）——3 項</div>
+  <div class="ev-d">
+    <b>B1. 光通訊 1.6T 放量時程</b>：方向正確（Broadcom/Lumentum 實單佐證）但基期極低，「數倍增幅」的絕對金額可能僅 3-5 億元（佔 166 億營收的 2-3%）。信心 70%。<br>
+    <b>B2. 產能利用率提升至 70%+</b>：復甦方向正確但速度慢（35→45→65→50→60%），70%+ 可能需到 2027 年。稼動率每 +10% = 毛利率 +3-5 個百分點。<br>
+    <b>B3. NXP 轉單全歸穩懋</b>：NXP 關閉亞利桑那 GaN 廠為 F 級事實，但穩懋具體承接量未公布，需與宏捷科（2026/02 營收年增 43.28%）和全新分食。
+  </div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bear)">
+  <div class="ev-t"><span class="light red"></span> 紅燈（無支撐）——2 項</div>
+  <div class="ev-d">
+    <b>C1. PE 86x 可持續</b>：穩懋歷史 PE 區間 40-80x（稼動率 85%+ 好年份才穩定 50-60x），86x 已超出歷史高點。無任何分析師報告支撐此估值水準，10 位分析師中最高目標價僅 300 元。<br>
+    <b>C2. 2026 EPS 達 6 元以上</b>：FactSet 中位數 5.79 元，管理層僅承諾光通訊佔比從「低個位數」升至「中個位數」（而非市場期待的 20%+）。Q4 毛利率 31.8% 含一次性因素（管理層自己指引 Q1 回落至 25%）。
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>ACH 敏感度分析摘要</summary>
+<div class="ev">
+  <div class="ev-d">
+    <b>E7（股價超越所有目標價）敏感度：極高</b>——移除後看空假說 H4 淨分跌為負值，結論大幅偏向看多。這反向驗證了 E7 的極高診斷力。<br>
+    <b>E5（PE 86x）敏感度：中</b>——移除後有偏移但不逆轉。PE 是看空的重要彈藥但非唯一。<br>
+    <b>E4（股價漲 222%）敏感度：低</b>——移除後結論不變。<br><br>
+    <b>核心洞察</b>：ACH 框架告訴我們——如果不看「股價已超越所有目標價」這個事實，純從基本面來看穩懋確實值得看多。但這個事實存在，且無法被忽略。
+  </div>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第七章整合結論</b><br>
+三桶分類清晰呈現：穩懋的基本面假設（綠燈）堅實，成長假設（黃燈）有條件成立，但估值假設（紅燈）完全無支撐。市場在定價一個「PE 86x 可持續 + EPS 6 元+」的情境，而這個情境被壓力測試歸類為紅燈。敏感度分析確認估值面是整個分析的支點。
+</div>
+
+<!-- ==================== 第八章：監控儀表板 ==================== -->
+<div class="section-title">第八章：監控儀表板</div>
+<div class="section-sub">8 個關鍵監測指標 + 假說切換觸發條件 + 事件時程</div>
+
+<details open>
+<summary>監測指標與觸發門檻</summary>
+<table>
+<tr><th>#</th><th>指標</th><th>看多觸發（→H1/H2）</th><th>看空觸發（→H4/H5）</th><th>來源</th></tr>
+<tr><td>M1</td><td><b>產能利用率</b></td><td>連兩季 &ge; 70%</td><td>回落至 &lt; 50%</td><td>季度法說會</td></tr>
+<tr><td>M2</td><td><b>光通訊營收佔比</b></td><td>單季 &ge; 15%</td><td>連兩季 &lt; 10%</td><td>法說會產品線佔比</td></tr>
+<tr><td>M3</td><td><b>月營收年增率</b></td><td>連 3 月 &ge; 30%（排除低基期）</td><td>轉負或連 3 月 &lt; 10%</td><td>MOPS / finlab</td></tr>
+<tr><td>M4</td><td><b>毛利率</b></td><td>連兩季 &ge; 32%</td><td>跌破 20%</td><td>季報公告</td></tr>
+<tr><td>M5</td><td><b>三安市佔</b></td><td>停滯或衰退 &lt; 10%</td><td>突破 20%</td><td>產業報告</td></tr>
+<tr><td>M6</td><td><b>Skyworks-Qorvo 合併</b></td><td>FTC 通過 + 穩懋訂單確認增加</td><td>合併後大幅減少外包</td><td>FTC 公告 / 法說會</td></tr>
+<tr><td>M7</td><td><b>PE 倍數</b></td><td>隨 EPS 改善降至 &lt; 40x</td><td>EPS 不如預期 PE 升至 &gt; 100x</td><td>finlab / 公開資訊</td></tr>
+<tr><td>M8</td><td><b>分析師目標價</b></td><td>中位數上修至 &ge; 350 元</td><td>大摩以外更多券商降評</td><td>FactSet</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>最優先事件時程</summary>
+<table>
+<tr><th>時間</th><th>事件</th><th>影響假說</th><th>重要性</th></tr>
+<tr><td><b>2026/04</b></td><td>2026Q1 法說會——營收/毛利率/稼動率</td><td>H2/H3/H4 分歧決勝點</td><td><span class="light red"></span> 極高</td></tr>
+<tr><td>2026/05-06</td><td>Skyworks-Qorvo 合併 FTC 裁決</td><td>H2/H4 客戶結構變化</td><td><span class="light yellow"></span> 高</td></tr>
+<tr><td><b>2026/07</b></td><td>2026Q2 法說會——光通訊放量驗證</td><td>H1/H2 核心催化劑</td><td><span class="light red"></span> 極高</td></tr>
+<tr><td>2026/10</td><td>2026Q3 法說會——基期墊高後增速</td><td>H2/H3 增速持續性</td><td><span class="light yellow"></span> 高</td></tr>
+<tr><td>2026/12</td><td>年度策略報告/Yole 年度市佔更新</td><td>H5 三安威脅評估</td><td><span class="light yellow"></span> 中</td></tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>第八章整合結論</b><br>
+最關鍵的監測指標是 M7（PE 倍數）和 M2（光通訊營收佔比）。前者決定估值風險何時兌現，後者決定成長敘事能否兌現。2026Q1 法說會（約 4 月）是第一個決勝點——如果 Q1 營收如管理層預期季減高個位數且毛利率回落至 25%，市場將重新評估 2026 全年 EPS 能否達到 5.79 元。2026Q2 法說會（約 7 月）則是光通訊放量的首個驗證窗口。
+</div>
+
+<!-- ==================== 第九章：推衍預測 ==================== -->
+<div class="section-title">第九章：推衍預測——五假說情境對照</div>
+<div class="section-sub">三次校準最終結果 + 各情境對應股價區間</div>
+
+<details open>
+<summary>三次信心校準進程表（理性判斷版）</summary>
+<table>
+<tr><th>假說</th><th>方向</th><th>ACH 1st</th><th>壓力 2nd</th><th>評審 3rd</th><th>趨勢</th></tr>
+<tr>
+  <td><b>H1 強烈看多</b></td><td style="color:var(--bull)">看多</td>
+  <td>10%</td><td>7%</td><td><b>8%</b></td><td>壓低後因催化劑加權微調回</td>
+</tr>
+<tr>
+  <td><b>H2 溫和看多</b></td><td style="color:var(--bull)">看多</td>
+  <td>25%</td><td>22%</td><td><b>24%</b></td><td>修正反向偏誤回調（4/8 評審主張上調）</td>
+</tr>
+<tr>
+  <td><b>H3 中性</b></td><td style="color:var(--neutral)">中性</td>
+  <td>25%</td><td>26%</td><td><b>25%</b></td><td>三次穩定，法人預估 181-192 億比假設更有據</td>
+</tr>
+<tr>
+  <td><b>H4 溫和看空</b></td><td style="color:var(--bear)">看空</td>
+  <td>30%</td><td>33%</td><td><b>31%</b></td><td>始終最高信心假說。E7 診斷力下修後微調回。</td>
+</tr>
+<tr>
+  <td><b>H5 強烈看空</b></td><td style="color:var(--bear)">看空</td>
+  <td>10%</td><td>12%</td><td><b>12%</b></td><td>關稅戰+合併內部化風險維持上調</td>
+</tr>
+<tr style="background:rgba(90,125,96,.08)">
+  <td colspan="2"><b>看多合計</b></td>
+  <td><b>35%</b></td><td><b>29%</b></td><td style="font-weight:900"><b>32%</b></td>
+  <td>壓力測試壓低後回調，仍低於 ACH 初始值</td>
+</tr>
+<tr style="background:rgba(198,40,40,.08)">
+  <td colspan="2"><b>看空合計</b></td>
+  <td><b>40%</b></td><td><b>45%</b></td><td style="font-weight:900"><b>43%</b></td>
+  <td>三次均為最大陣營，差距收斂至 11%</td>
+</tr>
+</table>
+</details>
+
+<details open>
+<summary>五假說股價情境</summary>
+<table>
+<tr><th>假說</th><th>信心</th><th>EPS 假設</th><th>PE 假設</th><th>對應股價</th><th>vs 344.5 元</th></tr>
+<tr>
+  <td><b>H1 強烈看多</b></td><td>8%</td><td>6.5 元</td><td>55x</td><td><b>358 元</b></td>
+  <td style="color:var(--bull)">+4%</td>
+</tr>
+<tr>
+  <td><b>H2 溫和看多</b></td><td>24%</td><td>5.8 元</td><td>50x</td><td><b>290 元</b></td>
+  <td style="color:var(--bear)">-16%</td>
+</tr>
+<tr>
+  <td><b>H3 中性</b></td><td>25%</td><td>4.5 元</td><td>45x</td><td><b>203 元</b></td>
+  <td style="color:var(--bear)">-41%</td>
+</tr>
+<tr>
+  <td><b>H4 溫和看空</b></td><td>31%</td><td>4.0 元</td><td>40x</td><td><b>160 元</b></td>
+  <td style="color:var(--bear)">-54%</td>
+</tr>
+<tr>
+  <td><b>H5 強烈看空</b></td><td>12%</td><td>3.0 元</td><td>25x</td><td><b>75 元</b></td>
+  <td style="color:var(--bear)">-78%</td>
+</tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第九章整合結論</b><br>
+<b>加權期望股價</b> = 8% x 358 + 24% x 290 + 25% x 203 + 31% x 160 + 12% x 75 = <b>198 元</b><br>
+vs 現價 344.5 元 = <b>溢價 74%</b>。<br><br>
+<b>口語化提示</b>：把五種可能的未來用機率加權，穩懋的「公允價值」大約是 198 元。現在市場卻掛 344.5 元，等於你多付了七成四的溢價。即使只看最樂觀的 H1（所有催化劑全中 + PE 維持 55 倍），你也只能賺 4%。但有 68% 的機率（H3+H4+H5）你會虧 41% 到 78%。這個賭局的賠率對買家極度不利。
+</div>
+
+<!-- ==================== 第十章：股價合理性 ==================== -->
+<div class="section-title">第十章：股價合理性——五法估值交叉比對</div>
+<div class="section-sub">自行計算。分析師目標價 FIAS = A 級假設（權重 0.30），不作為估值依據</div>
+
+<details open>
+<summary>五法估值</summary>
+<table>
+<tr><th>估值方法</th><th>假設</th><th>合理價</th><th>vs 344.5</th></tr>
+<tr>
+  <td><b>1. 歷史 PE 均值法</b></td>
+  <td>2025 EPS 4.00 x PE 50x（歷史中位數）</td>
+  <td><b>200 元</b></td>
+  <td style="color:var(--bear)">-42%</td>
+</tr>
+<tr>
+  <td><b>2. Forward PE 法</b></td>
+  <td>2026E EPS 5.79 x PE 50x</td>
+  <td><b>290 元</b></td>
+  <td style="color:var(--bear)">-16%</td>
+</tr>
+<tr>
+  <td><b>3. 催化劑加權法</b></td>
+  <td>機率加權 EPS 5.95 x PE 50x</td>
+  <td><b>298 元</b></td>
+  <td style="color:var(--bear)">-13%</td>
+</tr>
+<tr>
+  <td><b>4. 壟斷溢價法</b></td>
+  <td>EPS 5.79 x PE 60x（壟斷龍頭溢價）</td>
+  <td><b>347 元</b></td>
+  <td style="color:var(--bull)">+1%</td>
+</tr>
+<tr>
+  <td><b>5. 情境加權法</b></td>
+  <td>H1~H5 信心加權</td>
+  <td><b>198 元</b></td>
+  <td style="color:var(--bear)">-43%</td>
+</tr>
+<tr style="background:rgba(184,150,12,.08)">
+  <td colspan="2"><b>五法中位數</b></td>
+  <td><b>290 元</b></td>
+  <td style="color:var(--bear)"><b>-16%</b></td>
+</tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t">估值解讀</div>
+  <div class="ev-d">
+    五法估值範圍 198-347 元，中位數 290 元。只有在最寬鬆的壟斷溢價法（PE 60x）下才勉強觸及現價。<br><br>
+    344.5 元隱含的假設是：市場同時相信 (1) 2026 EPS 達到 5.79 元且 (2) 願意給 PE 60x 以上。歷史上穩懋只有在稼動率接近 100% 的好年份（2018-2019）PE 才穩定在 50-60x。現在稼動率只有 50-60%，就給了 86x 的 PE，這非常脆弱。<br><br>
+    <b>口語化提示</b>：五種算法的答案，四種都說「太貴」，只有一種（給到 60 倍本益比的壟斷溢價法）勉強打平。要讓現在的價格合理，你得同時相信穩懋值得全世界最貴的估值、而且今年賺的錢要比法人預期更多。這不是不可能，但機率不高。
+  </div>
+  <div class="ev-s">分析師目標價參考：FactSet 中位數 196 元 / 最高 300 元 / Investing.com 平均 204.64 元 / 大摩 115 元 Underperform。10 位分析師目標價全部低於現價。</div>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第十章整合結論</b><br>
+<b>資料 → 觀察</b>：五法估值中位數 290 元，vs 現價 344.5 元溢價 16%。只有壟斷溢價法（347 元）接近現價，其餘四法均指向低於現價。<br>
+<b>觀察 → 推論</b>：目前的市場定價需要兩個前提同時成立——EPS 5.79 元兌現 + PE 維持 60x 以上。但歷史告訴我們，穩懋在稼動率 50-60% 的環境下 PE 通常 30-50x。86x 是動能交易推升的結果。<br>
+<b>推論 → 結論</b>：<b>安全邊際區間 = 五法中位數 290 元 x 0.7~0.85 = 200-250 元</b>。在此區間以下才具備合理的風險/報酬比（Forward PE 35-43x）。
+</div>
+
+<!-- ==================== 第十一章：保留 ==================== -->
+<div class="section-title">第十一章：保留——資料盲點與不確定性聲明</div>
+<div class="section-sub">分析中已識別但無法驗證的缺口</div>
+
+<details open>
+<summary>五大資料盲點</summary>
+<table>
+<tr><th>#</th><th>盲點</th><th>影響程度</th><th>補救方法</th></tr>
+<tr>
+  <td>D1</td><td><b>finlab 多項指標擷取失敗</b></td>
+  <td>中——EPS/毛利率季度序列、ROE、負債比率均缺失</td>
+  <td>手動從 Goodinfo/公開資訊觀測站取得</td>
+</tr>
+<tr>
+  <td>D2</td><td><b>三大法人買賣超數據缺失</b></td>
+  <td>高——無法判斷機構是否在高位出貨，籌碼面有盲區</td>
+  <td>追蹤 Goodinfo 每日法人買賣超</td>
+</tr>
+<tr>
+  <td>D3</td><td><b>三安光電數據來源為中國媒體</b></td>
+  <td>中——市佔/產能數據可能被誇大</td>
+  <td>等待 Strategy Analytics 年度報告</td>
+</tr>
+<tr>
+  <td>D4</td><td><b>董監持股質押資料不完整</b></td>
+  <td>低——已知 Broadcom 持股 4.73%（穩定因子）</td>
+  <td>查詢公開資訊觀測站</td>
+</tr>
+<tr>
+  <td>D5</td><td><b>光通訊具體訂單 backlog 不公開</b></td>
+  <td>高——無法獨立驗證管理層「數倍增幅」的承諾</td>
+  <td>追蹤 Broadcom/Lumentum 財報提及穩懋</td>
+</tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>第十一章整合結論</b><br>
+五大盲點中，D5（光通訊 backlog）和 D2（法人買賣超）對投資決策影響最大。D5 是支撐 H1/H2 看多論點的核心假設但無法獨立驗證；D2 則影響短期風險判斷——一年漲 222% 後的籌碼結構是否已在機構出貨。分析結論已在這些盲點存在的前提下做出，如果新資料出現，結論可能需要修正。
+</div>
+
+<!-- ==================== 第十二章：貓膩探索求證 ==================== -->
+<div class="section-title">第十二章：貓膩探索與求證——反共識偵測引擎</div>
+<div class="section-sub">尋找市場共識中可能被忽略的異常訊號</div>
+
+<details open>
+<summary>反共識偵測：3 個潛在貓膩</summary>
+
+<div class="ev" style="border-left:4px solid var(--danger)">
+  <div class="ev-t">貓膩 1：「數倍增幅」的基數陷阱</div>
+  <div class="ev-d">
+    <b>異常訊號</b>：管理層強調光通訊營收「數倍增幅」，市場解讀為重大利多。<br>
+    <b>求證</b>：<span class="fias-i">I</span> 管理層法說會原文僅說「低個位數升至中個位數」，未提供具體金額。光通訊佔比從 3% 翻三倍到 9%，以 180 億營收計算增量約 10.8 億。聽起來「數倍」很厲害，但增量只佔總營收 6%。<br>
+    <b>結論</b>：<span class="light red"></span><b>反共識有理</b>。市場過度定價了一個「聽起來厲害但絕對金額有限」的催化劑。
+  </div>
+  <div class="ev-s">影響：如果市場發現光通訊的實際營收增量有限（全年可能僅 10-15 億），AI 光通訊敘事可能降溫，PE 面臨壓縮。</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t">貓膩 2：低基期效應的隱性膨脹</div>
+  <div class="ev-d">
+    <b>異常訊號</b>：月營收年增 25%+ 聽起來非常強勁。<br>
+    <b>求證</b>：<span class="fias-f">F</span> finlab 月營收數據驗證——2026 年 1-3 月月營收在 14.6-16.2 億之間，而 2023 年 3-7 月月營收也在 14.0-16.7 億。穩懋的月營收水準只是回到兩年前，並非創新高。2024/10-2025/04 的衰退谷底（年減 10-29%）製造了一個極低的比較基期。<br>
+    <b>結論</b>：<span class="light yellow"></span><b>低基期效應確實存在</b>。2026Q3-Q4 基期墊高後，年增率將自然降至個位數。
+  </div>
+  <div class="ev-s">影響：市場若將低基期反彈誤判為高成長，當增速放緩時可能引發失望性賣壓。</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t">貓膩 3：Q4 毛利率 31.8% 含一次性因素</div>
+  <div class="ev-d">
+    <b>異常訊號</b>：Q4 毛利率從 Q3 的 21.6% 跳升至 31.8%（+10.2 個百分點），異常巨大。<br>
+    <b>求證</b>：<span class="fias-f">F</span> 日月光以 65 億元購買穩懋南科廠房（2025/08），處分利益可能部分反映在 Q4 數字中。<span class="fias-f">F</span> 管理層法說會給出 Q1 毛利率 25% 的指引（mid-twenties），等於承認 Q4 水準不可持續。產品組合改善（高毛利光通訊/衛星佔比提升）提供了一部分改善，但 10.2 個百分點的跳升幅度超出正常範圍。<br>
+    <b>結論</b>：<span class="light yellow"></span><b>Q4 毛利率有水分</b>。以 25-28% 作為 2026 年常態毛利率更合理。
+  </div>
+  <div class="ev-s">影響：投資人若以 Q4 的 31.8% 毛利率外推全年獲利，將嚴重高估 2026 EPS。以 26% 毛利率估算 EPS 約 4.5-5 元，PE 69-77x。</div>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第十二章整合結論</b><br>
+<b>資料 → 觀察</b>：三個貓膩分別指向三個市場預期的脆弱點——光通訊增量有限（基數陷阱）、月營收高增速含低基期水分、Q4 毛利率含一次性因素。<br>
+<b>觀察 → 推論</b>：市場正在用「最好的那一季」的毛利率 + 「最會騙人的低基期年增率」+ 「聽起來很厲害但絕對金額很小的光通訊」來定價穩懋。三個膨脹因素疊加，製造出一個比實際更光鮮的投資敘事。<br>
+<b>推論 → 結論</b>：穩懋沒有在造假——公司治理良好，數據都是真實的。但市場在「包裝」這些數據的方式上存在系統性樂觀。三個貓膩如果在 2026Q1-Q2 被市場認知（增速放緩 + 毛利率回落 + 光通訊增量有限），敘事降溫的估值修正會來得很快。
+</div>
+
+<!-- ==================== 第十三章：投資結論 ==================== -->
+<div class="section-title">第十三章：投資結論</div>
+<div class="section-sub">綜合 13 章分析，輸出最終投資判斷</div>
+
+<details open>
+<summary>結論儀表板</summary>
+
+<div class="grid3" style="margin-bottom:12px">
+  <div class="mini-card bear-card">
+    <div class="title">三次校準最終</div>
+    <div class="num" style="color:var(--bear)">看空 43%</div>
+    <div class="desc">vs 看多 32% / 中性 25%</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">加權期望價</div>
+    <div class="num" style="color:var(--bear)">198 元</div>
+    <div class="desc">vs 現價 344.5 = -43%</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">安全邊際</div>
+    <div class="num" style="color:var(--bear)">200-250 元</div>
+    <div class="desc">五法中位數 290 x 0.7~0.85</div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="mini-card bull-card">
+    <div class="title">上行空間（H1 最樂觀）</div>
+    <div class="num" style="color:var(--bull)">+4%</div>
+    <div class="desc">358 元（EPS 6.5 x PE 55x）</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">下行空間（H3/H4 中位）</div>
+    <div class="num" style="color:var(--bear)">-41% ~ -54%</div>
+    <div class="desc">160-203 元（機率合計 56%）</div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>最終投資建議</summary>
+
+<div class="tip danger">
+<b>結論：好公司、壞價格——不追高、等待回落</b><br><br>
+
+<b>穩懋是好公司嗎？</b> 毫無疑問。全球 GaAs 代工壟斷者（市佔 65-77%），護城河寬（16/25 分），經營團隊優秀（連十年治理前 5%、DJSI 成分股），營收從谷底穩健復甦中（月增 25%+），新業務方向正確且有實單佐證（光通訊/衛星/WiFi7）。EPS 從 1.81 元大幅回升至 4.00 元。<br><br>
+
+<b>344.5 元是好價格嗎？</b> 絕對不是。PE 86x 為歷史高位，超越所有 10 位分析師目標價（含最高 300 元）。五法估值中位數 290 元，加權期望價 198 元。風險/報酬嚴重不對稱：上行 +4% vs 下行 -41%~-54%。三個貓膩（基數陷阱/低基期水分/Q4 毛利率一次性）暗示市場定價過度樂觀。<br><br>
+
+<b>具體行動建議</b>：<br>
+(1) <b>當前價位（344.5 元）</b>：不建議買入。即使最樂觀情境也僅 +4% 上行空間，而有 68% 機率面臨 -41%~-78% 下行。<br>
+(2) <b>安全邊際區間（200-250 元）</b>：可開始分批建倉。此區間對應 Forward PE 35-43x（以 EPS 5.79 計），為穩懋歷史中低位估值，具備合理的風險/報酬比。<br>
+(3) <b>觀察清單</b>：穩懋絕對值得長期追蹤。等待 2026Q1 法說會（約 4 月）驗證 EPS 趨勢，或等待 PE 回歸至合理區間。<br>
+(4) <b>如果已持有</b>：考慮在 300+ 區間分批減碼，鎖定利潤。保留部分部位等待光通訊/衛星催化劑驗證結果。<br><br>
+
+<b>口語化提示</b>：穩懋就像一輛頂級名車——品質沒問題，引擎強勁（護城河寬），而且正在換裝更好的零件（光通訊/衛星）。但現在的標價比市場行情貴了四到七成。你不需要懷疑車子好不好，但你應該等打折再買。200-250 元就是那個「合理價位帶」。現在衝進去買，等於是以頂配價格買一輛只跑了一半油的車——稼動率才 50-60%，表示這輛車連一半的性能都還沒發揮出來，卻已經賣到了全速運轉時的價格。
+</div>
+
+<div class="ev">
+  <div class="ev-t">一句話結論</div>
+  <div class="ev-d" style="font-size:1em;font-weight:700;text-align:center;padding:8px 0">
+    穩懋 3105：壟斷級好公司，PE 86x 壞價格。<br>
+    三次校準看多 32% / 看空 43%。加權期望價 198 元 vs 現價 344.5 = 溢價 74%。<br>
+    安全邊際 200-250 元。不追高，等回落。
+  </div>
+</div>
+</details>
+
+<div style="text-align:center;font-size:.75em;color:var(--txt3);margin-top:20px;padding-top:10px;border-top:1px solid var(--border)">
+天機閣深度調查系統 v3.0 | 第七步 完整版（13 章）| 3105 穩懋半導體 | 2026-03-26<br>
+三次信心校準（理性判斷版）：ACH 35/40% → 壓力 29/45% → 評審團 32/43%<br>
+資料來源：管道B/C/D/E/F + 2024年報 + Step2~6 全文
+</div>
+
+</div>
+</body>
+</html>
