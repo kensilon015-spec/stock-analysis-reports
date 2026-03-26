@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>德宏(5475) 第八步：推演版 — 天機閣</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 暖棕慢活風 暗色系 === */
+:root{
+  --bg:#1a1410;--panel:#2a2420;--hover:#35302a;--border:#4a4035;
+  --txt:#e8dcc8;--txt2:#c9b8a0;--txt3:#8a7e6e;
+  --accent:#c9a96e;--danger:#d4756a;--safe:#7aad6e;
+  --base:#e8dcc8;--link:#8ab4c4;--table-header:#3d3530;
+  --code-bg:#151210;--gold:#c9a96e;--warn:#d4a860;
+  --bull:#6aad6e;--bear:#d4756a;--neutral:#8ab4c4
+}
+
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:880px;margin:0 auto;padding:24px 20px 40px}
+
+/* === 右上角日期 === */
+.date-badge{position:fixed;top:14px;right:18px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px 14px;font-size:.78em;color:var(--accent);font-weight:700;z-index:999;letter-spacing:.03em}
+
+/* === Hero === */
+.hero{text-align:center;padding:22px 16px 18px;margin-bottom:16px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--accent);letter-spacing:.03em}
+.hero .sub{font-size:.95em;color:var(--txt);font-weight:600;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.6}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:3px 12px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.danger{border-color:var(--danger);color:var(--danger)}
+.tag.warn{border-color:var(--warn);color:var(--warn)}
+
+/* === 章節標題 === */
+.section-title{font-size:1.2em;font-weight:900;color:var(--accent);margin:24px 0 6px;padding-top:16px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:10px}
+
+/* === details/summary === */
+details{margin:8px 0;background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+details summary{cursor:pointer;font-weight:700;color:var(--base);padding:10px 16px;font-size:.92em;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
+details summary::before{content:'▸';color:var(--accent);font-size:.85em;transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details summary:hover{background:var(--hover)}
+details[open] summary{border-bottom:1px solid var(--border)}
+details .detail-body{padding:12px 16px}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:4px solid;font-size:.85em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(212,117,106,.08)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--safe);background:rgba(122,173,110,.08)}
+.tip.good b{color:var(--safe);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,168,96,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(138,180,196,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:var(--accent);padding:8px 12px;text-align:left;font-weight:700}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 推衍鏈 === */
+.chain{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0}
+.chain-title{font-weight:800;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.chain-flow{font-size:.84em;color:var(--txt2);line-height:1.8;padding-left:8px;border-left:3px solid var(--border)}
+.chain-flow .arrow{color:var(--accent);font-weight:700}
+.chain-risk{margin-top:8px;padding:6px 10px;background:rgba(212,117,106,.06);border-radius:5px;font-size:.82em;color:var(--danger);border-left:3px solid var(--danger)}
+.chain-block{margin-top:6px;padding:6px 10px;background:rgba(212,168,96,.06);border-radius:5px;font-size:.82em;color:var(--warn);border-left:3px solid var(--warn)}
+
+/* === 情境卡片 === */
+.scenario{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;border-left:4px solid}
+.scenario.bull{border-left-color:var(--bull)}
+.scenario.base{border-left-color:var(--neutral)}
+.scenario.bear{border-left-color:var(--bear)}
+.scenario.extreme{border-left-color:#9b4dca}
+.scenario-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.scenario-name{font-weight:800;font-size:.95em}
+.scenario-prob{font-weight:700;font-size:.85em;padding:2px 10px;border-radius:12px}
+.scenario.bull .scenario-prob{background:rgba(106,173,110,.15);color:var(--bull)}
+.scenario.base .scenario-prob{background:rgba(138,180,196,.15);color:var(--neutral)}
+.scenario.bear .scenario-prob{background:rgba(212,117,106,.15);color:var(--bear)}
+.scenario.extreme .scenario-prob{background:rgba(155,77,202,.15);color:#b86fdf}
+.scenario-detail{font-size:.84em;color:var(--txt2);line-height:1.7}
+.scenario-target{margin-top:6px;font-weight:700;font-size:.88em}
+
+/* === 信心校準 === */
+.calibration{margin:10px 0}
+.cal-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.84em}
+.cal-row:last-child{border-bottom:none}
+.cal-label{flex:0 0 140px;font-weight:600;color:var(--txt)}
+.cal-bar{flex:1;background:var(--border);border-radius:5px;height:16px;overflow:hidden;position:relative}
+.cal-fill{height:100%;border-radius:5px;transition:width .3s}
+.cal-val{flex:0 0 50px;text-align:right;font-weight:700;font-size:.9em}
+
+/* === 行動區塊 === */
+.action-box{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px 20px;margin:12px 0}
+.action-box h4{color:var(--accent);font-size:1em;margin-bottom:10px;font-weight:800}
+.action-item{display:flex;gap:10px;align-items:baseline;padding:6px 0;font-size:.88em;border-bottom:1px dashed var(--border)}
+.action-item:last-child{border-bottom:none}
+.action-icon{font-size:1em;flex-shrink:0}
+.action-text{color:var(--txt2)}
+.action-text b{color:var(--txt)}
+
+/* === 監控清單 === */
+.watch-item{display:flex;gap:10px;align-items:center;padding:6px 0;font-size:.85em;border-bottom:1px dashed var(--border)}
+.watch-item:last-child{border-bottom:none}
+.watch-trigger{font-weight:700;color:var(--accent);flex:0 0 220px}
+.watch-meaning{color:var(--txt2);flex:1}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:24px}
+
+/* === 網格 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+
+/* === 迷你統計卡 === */
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat-card .num{font-size:1.5em;font-weight:900;color:var(--accent)}
+.stat-card .label{font-size:.78em;color:var(--txt3);margin-top:2px}
+.stat-card.red .num{color:var(--danger)}
+.stat-card.green .num{color:var(--safe)}
+
+@media print{body{background:#fff;color:#222}.wrap{max-width:100%}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+
+<div class="date-badge">2026-03-26</div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>德宏 (5475) — 第八步：推演版</h1>
+    <div class="sub">天機閣 推衍引擎 v2.0 | 多情境推演分析</div>
+    <div class="desc">基於第一步至第七步完整分析，進行前瞻性推演預測。<br>以因果鏈拆解、概率樹分岔、四次信心校準為核心方法論。</div>
+    <div class="tags">
+        <span class="tag danger">強烈迴避</span>
+        <span class="tag warn">估值泡沫</span>
+        <span class="tag">玻纖布</span>
+        <span class="tag">石英纖維</span>
+        <span class="tag">市佔 1%</span>
+    </div>
+</div>
+
+<!-- ===== 8a 推衍基礎確認 ===== -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">推演起點 — 確認關鍵事實與基準狀態</div>
+
+<div class="grid2">
+    <div class="stat-card red"><div class="num">214 元</div><div class="label">目前股價（2026/3/26）</div></div>
+    <div class="stat-card red"><div class="num">+2,270%</div><div class="label">從 9.45 元起漲幅度</div></div>
+    <div class="stat-card red"><div class="num">-0.16 元</div><div class="label">2024 EPS（仍虧損）</div></div>
+    <div class="stat-card"><div class="num">23.2%</div><div class="label">毛利率</div></div>
+</div>
+
+<details open>
+<summary>關鍵事實清單</summary>
+<div class="detail-body">
+<table>
+<tr><th>項目</th><th>數據</th><th>意涵</th></tr>
+<tr><td>全球市佔率</td><td>約 1%</td><td>極小廠，無定價權</td></tr>
+<tr><td>營收地理分佈</td><td>97% 來自大陸</td><td>高度仰賴單一市場</td></tr>
+<tr><td>2024 全年 EPS</td><td>-0.16 元</td><td>本業尚未轉盈</td></tr>
+<tr><td>毛利率</td><td>23.2%</td><td>尚可但無護城河</td></tr>
+<tr><td>石英纖維月產能</td><td>約 3 噸</td><td>極早期，尚無法貢獻營收</td></tr>
+<tr><td>股價位置</td><td>214 元（從 9.45 漲）</td><td>漲幅 2,270%，已計入大量預期</td></tr>
+<tr><td>護城河</td><td>無</td><td>無專利/無自有原料/無規模優勢</td></tr>
+<tr><td>外資態度</td><td>持續賣超</td><td>機構不認同目前估值</td></tr>
+</table>
+
+<div class="tip danger">
+<b>8a 整合結論</b>
+推衍基礎極為脆弱：一家市佔 1%、EPS 仍為負、無護城河的小型玻纖布廠，股價卻已反映「雙引擎全面爆發」的最樂觀情境。推演的核心任務是驗證：有多少機率能支撐這個定價？初步判斷：幾乎沒有。
+</div>
+</div>
+</details>
+
+<!-- ===== 8b OSINT 情報更新 ===== -->
+<div class="section-title" id="s8b">8b. OSINT 情報更新</div>
+<div class="section-sub">2026 年 3 月最新市場情報與變化</div>
+
+<details open>
+<summary>最新情報摘要</summary>
+<div class="detail-body">
+<table>
+<tr><th>情報來源</th><th>內容</th><th>影響評估</th></tr>
+<tr><td>產業動態</td><td>玻纖布族群 2026 年 3 月仍維持熱度，大陸漲價持續</td><td>短期利多，但已反映在股價</td></tr>
+<tr><td>股價走勢</td><td>從 224 元高點回落至 214 元，跌幅 -4.5%</td><td>可能是回檔起點</td></tr>
+<tr><td>法人動態</td><td>外資持續賣超</td><td>機構資金持續退出</td></tr>
+<tr><td>大陸政策</td><td>反內捲政策推動行業漲價</td><td>政策面正向但可持續性存疑</td></tr>
+<tr><td>競爭者動態</td><td>日東紡、泰山石英等大廠維持高產能利用率</td><td>產業需求確實回溫</td></tr>
+</table>
+
+<div class="tip info">
+<b>8b 整合結論</b>
+OSINT 情報確認產業面確實好轉，但股價已從高點回落 4.5%，且外資持續出貨。情報面與資金面出現背離：產業好但聰明錢在跑。這種背離通常是股價見頂的前兆特徵。
+</div>
+</div>
+</details>
+
+<!-- ===== 8c 影響鏈分析 ===== -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">三大推衍鏈 — 追蹤因果傳導路徑</div>
+
+<div class="chain">
+    <div class="chain-title">推衍鏈 1：大陸漲價效應</div>
+    <div class="chain-flow">
+        大陸反內捲政策啟動 <span class="arrow">→</span> 玻纖布月漲 10-15% <span class="arrow">→</span> 台廠跟漲受惠 <span class="arrow">→</span> 德宏蘇州廠直接受惠 <span class="arrow">→</span> 營收成長 + 毛利率提升預期
+    </div>
+    <div class="chain-block">阻礙因子：漲價同時推升原料成本。德宏無垂直整合（無自有玻纖紗），毛利率改善幅度受限於原料漲幅。若原料漲 8%、產品漲 12%，實際毛利率僅改善 2-3 個百分點。</div>
+    <div class="chain-risk">風險觸發點：漲價見頂信號出現 → 市場預期反轉 → 毛利率預期下修 → 股價急跌。歷史經驗：玻纖布漲價週期通常 6-12 個月，目前已進行約 4 個月。</div>
+</div>
+
+<div class="chain">
+    <div class="chain-title">推衍鏈 2：石英纖維放量</div>
+    <div class="chain-flow">
+        M9/Q 布需求爆發（高頻高速基板材料）<span class="arrow">→</span> 德宏為台廠唯一石英纖維供應商 <span class="arrow">→</span> 客戶認證 + 逐步量產 <span class="arrow">→</span> 第二成長引擎啟動
+    </div>
+    <div class="chain-block">阻礙因子：目前月產能僅 3 噸，要到月 50 噸（有意義規模）需 18-24 個月。短期內（2026 年）石英纖維無法實質改變財報數字。此外，品質穩定性仍在驗證、產能擴充需資本支出、國際大廠可能追趕。</div>
+    <div class="chain-risk">風險觸發點：石英纖維良率不穩 or 客戶認證延遲 → 第二引擎「雷聲大雨點小」→ 市場對題材失望。</div>
+</div>
+
+<div class="chain">
+    <div class="chain-title">推衍鏈 3：估值修正（最高機率路徑）</div>
+    <div class="chain-flow">
+        散戶追漲「AI + 石英 + 缺貨」三重題材 <span class="arrow">→</span> 估值泡沫形成 <span class="arrow">→</span> 外資持續出貨 <span class="arrow">→</span> 獲利了結潮湧現 <span class="arrow">→</span> 股價回歸基本面
+    </div>
+    <div class="chain-risk">觸發點：Q1 季報不如預期 or 族群熱度退潮 or 大陸漲價止步。目標回歸區間：80-120 元（以合理 PE 20-30x 乘以樂觀 EPS 0.3-0.5 元估算）。目前 214 元隱含 PE 超過 400x（若以 2024 營業利益推算），泡沫特徵明顯。</div>
+</div>
+
+<div class="tip danger">
+<b>8c 整合結論</b>
+三條推衍鏈的結論高度一致：即使產業面正向（鏈1）且題材真實（鏈2），目前股價已透支至少 2-3 年的樂觀預期。鏈3（估值修正）是機率最高的路徑。關鍵邏輯：「故事是真的」不等於「股價是合理的」。德宏的石英纖維故事可能成真，但即使成真，合理估值也遠低於 214 元。
+</div>
+
+<!-- ===== 8d 情境模擬 ===== -->
+<div class="section-title" id="s8d">8d. 情境模擬（概率樹）</div>
+<div class="section-sub">四大情境 × 概率加權 → 期望價值計算</div>
+
+<div class="scenario bull">
+    <div class="scenario-header">
+        <span class="scenario-name">情境 A：樂觀路徑</span>
+        <span class="scenario-prob">15% 機率</span>
+    </div>
+    <div class="scenario-detail">
+        <b>假設條件：</b>漲價持續全年不回頭 + 石英纖維月出貨突破 10 噸 + 新客戶認證順利<br>
+        <b>財務推估：</b>2026 EPS 0.5～1.0 元<br>
+        <b>估值推算：</b>PE 30x × EPS 1.0 = 30 元；PE 50x（給題材溢價）× EPS 1.0 = 50 元；最樂觀 PE 100x × EPS 1.0 = 100-150 元
+    </div>
+    <div class="scenario-target" style="color:var(--bull)">目標價：100～150 元 — 即使最樂觀仍低於目前 214 元</div>
+</div>
+
+<div class="scenario base">
+    <div class="scenario-header">
+        <span class="scenario-name">情境 B：基準路徑</span>
+        <span class="scenario-prob">45% 機率</span>
+    </div>
+    <div class="scenario-detail">
+        <b>假設條件：</b>漲價延續至 Q2～Q3 後趨緩 + 石英纖維月出貨約 5 噸 + 營運小幅轉盈<br>
+        <b>財務推估：</b>2026 EPS 0.2～0.4 元<br>
+        <b>估值推算：</b>PE 25x × EPS 0.3 = 7.5 元；給較高倍數 PE 80-200x = 16-80 元
+    </div>
+    <div class="scenario-target" style="color:var(--neutral)">目標價：50～80 元 — 較目前下跌 63%～77%</div>
+</div>
+
+<div class="scenario bear">
+    <div class="scenario-header">
+        <span class="scenario-name">情境 C：悲觀路徑</span>
+        <span class="scenario-prob">30% 機率</span>
+    </div>
+    <div class="scenario-detail">
+        <b>假設條件：</b>漲價 Q3 反轉 + 石英纖維停滯在月 3 噸 + 營運持續小虧或損平<br>
+        <b>財務推估：</b>2026 EPS 0～0.1 元<br>
+        <b>估值推算：</b>回歸營收比或淨值比估值
+    </div>
+    <div class="scenario-target" style="color:var(--bear)">目標價：20～40 元 — 較目前下跌 81%～91%</div>
+</div>
+
+<div class="scenario extreme">
+    <div class="scenario-header">
+        <span class="scenario-name">情境 D：極端路徑</span>
+        <span class="scenario-prob">10% 機率</span>
+    </div>
+    <div class="scenario-detail">
+        <b>假設條件：</b>中美關稅戰升級衝擊大陸營收 + 大陸產能過剩壓垮報價 + 2026 重返虧損<br>
+        <b>財務推估：</b>2026 EPS 為負，回到 2024 水準<br>
+        <b>估值推算：</b>回歸歷史低檔區間
+    </div>
+    <div class="scenario-target" style="color:#b86fdf">目標價：10～20 元 — 較目前下跌 91%～95%</div>
+</div>
+
+<details open>
+<summary>概率加權期望值計算</summary>
+<div class="detail-body">
+<table>
+<tr><th>情境</th><th>機率</th><th>目標中位數</th><th>加權貢獻</th></tr>
+<tr><td>A 樂觀</td><td>15%</td><td>125 元</td><td>18.8 元</td></tr>
+<tr><td>B 基準</td><td>45%</td><td>65 元</td><td>29.3 元</td></tr>
+<tr><td>C 悲觀</td><td>30%</td><td>30 元</td><td>9.0 元</td></tr>
+<tr><td>D 極端</td><td>10%</td><td>15 元</td><td>1.5 元</td></tr>
+<tr style="font-weight:900;"><td colspan="3">概率加權期望價值</td><td style="color:var(--danger);font-size:1.1em">58.6 元</td></tr>
+</table>
+
+<div class="tip danger">
+<b>8d 整合結論</b>
+概率加權期望值為 <b>58.6 元</b>，相對目前股價 214 元，隱含 <b>下跌空間 -72.6%</b>。即使只取樂觀情境（15% 機率），目標價 100-150 元仍低於現價。這意味著：在任何合理情境下，214 元都是高估的。期望報酬為大幅負值，風險報酬比極差。
+</div>
+</div>
+</details>
+
+<!-- ===== 8e 個人化推衍 ===== -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">依閣主投資風格量身分析</div>
+
+<details open>
+<summary>投資人適配評估</summary>
+<div class="detail-body">
+<table>
+<tr><th>面向</th><th>閣主特質</th><th>德宏匹配度</th></tr>
+<tr><td>風險偏好</td><td>穩健型</td><td style="color:var(--danger);font-weight:700">極不匹配 — 此標的波動極大、無安全邊際</td></tr>
+<tr><td>投資週期</td><td>中長期</td><td style="color:var(--danger);font-weight:700">不匹配 — 中長期回歸基本面後股價將大幅修正</td></tr>
+<tr><td>估值要求</td><td>重視安全邊際</td><td style="color:var(--danger);font-weight:700">完全不匹配 — 目前溢價超過 265%</td></tr>
+<tr><td>護城河要求</td><td>偏好有護城河的企業</td><td style="color:var(--danger);font-weight:700">不匹配 — 無護城河</td></tr>
+</table>
+
+<div class="tip danger">
+<b>8e 整合結論</b>
+以閣主的穩健型投資風格，德宏在 214 元完全不適合建倉。即使看好石英纖維長期題材，也應等待股價大幅修正至合理區間（80-100 元觀察、50-60 元考慮建倉）後再行動。目前風險報酬比對穩健型投資者而言是不可接受的。
+</div>
+</div>
+</details>
+
+<!-- ===== 8f 催化劑時間表 ===== -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月關鍵事件追蹤</div>
+
+<details open>
+<summary>催化劑時程（2026/4 ~ 2026/10）</summary>
+<div class="detail-body">
+<table>
+<tr><th>時間</th><th>事件</th><th>觀察重點</th><th>影響方向</th></tr>
+<tr><td>2026/4 月</td><td>Q1 季報公布</td><td>EPS 是否 > 0.1 元？首季轉盈？</td><td>若轉盈 → 短期利多；若仍虧 → 利空</td></tr>
+<tr><td>2026/5 月</td><td>4 月營收公布</td><td>月營收年增率是否維持 20%+</td><td>趨勢確認 or 動能衰減</td></tr>
+<tr><td>2026/6 月</td><td>法說會（預估）</td><td>石英纖維最新出貨量、客戶認證進度</td><td>題材能見度驗證</td></tr>
+<tr><td>2026/7-8 月</td><td>大陸漲價持續性觀察</td><td>報價是否持平/繼續漲/反轉下跌</td><td>週期見頂 or 延續</td></tr>
+<tr><td>2026/9 月</td><td>半年報公布</td><td>2026 H1 完整數據 — EPS/毛利率/營收</td><td>基本面全面體檢</td></tr>
+<tr><td>2026/10 月</td><td>日東紡業績觀察</td><td>全球玻纖布龍頭業績 = 產業風向標</td><td>產業景氣方向確認</td></tr>
+</table>
+
+<div class="tip info">
+<b>8f 整合結論</b>
+最關鍵的兩個時間點：(1) 4 月 Q1 季報 — 驗證轉盈是否成真；(2) 7-8 月大陸報價觀察 — 確認漲價週期是否見頂。如果 Q1 仍虧損 + Q3 報價見頂，股價修正的觸發條件就完全成立。建議閣主在這兩個時間點特別關注，作為是否將德宏放入觀察名單的判斷依據。
+</div>
+</div>
+</details>
+
+<!-- ===== 8g 第四次信心校準 ===== -->
+<div class="section-title" id="s8g">8g. 第四次信心校準</div>
+<div class="section-sub">四次校準歷程追蹤 — 推演後最終評估</div>
+
+<details open>
+<summary>假說信心度演變</summary>
+<div class="detail-body">
+<table>
+<tr><th>假說</th><th>第 1 次<br>(ACH)</th><th>第 2 次<br>(壓力測試)</th><th>第 3 次<br>(評審團)</th><th>第 4 次<br>(推演後)</th><th>變化</th></tr>
+<tr><td><b>H3 見頂回落</b></td><td>40%</td><td>45%</td><td>50%</td><td style="color:var(--danger);font-weight:900">52%</td><td style="color:var(--danger)">+12pp 持續升高</td></tr>
+<tr><td>H2 溫和成長</td><td>30%</td><td>30%</td><td>28%</td><td style="font-weight:700">26%</td><td>-4pp 持續降低</td></tr>
+<tr><td>H1 雙引擎爆發</td><td>15%</td><td>12%</td><td>10%</td><td style="font-weight:700">10%</td><td>-5pp 維持低檔</td></tr>
+<tr><td>H4 政策風險</td><td>10%</td><td>8%</td><td>7%</td><td style="font-weight:700">7%</td><td>-3pp 略降</td></tr>
+<tr><td>H5 石英爆發</td><td>5%</td><td>5%</td><td>5%</td><td style="font-weight:700">5%</td><td>0pp 無變化</td></tr>
+</table>
+
+<div class="calibration" style="margin-top:12px">
+    <div class="cal-row">
+        <span class="cal-label">H3 見頂回落</span>
+        <div class="cal-bar"><div class="cal-fill" style="width:52%;background:var(--danger)"></div></div>
+        <span class="cal-val" style="color:var(--danger)">52%</span>
+    </div>
+    <div class="cal-row">
+        <span class="cal-label">H2 溫和成長</span>
+        <div class="cal-bar"><div class="cal-fill" style="width:26%;background:var(--neutral)"></div></div>
+        <span class="cal-val">26%</span>
+    </div>
+    <div class="cal-row">
+        <span class="cal-label">H1 雙引擎爆發</span>
+        <div class="cal-bar"><div class="cal-fill" style="width:10%;background:var(--safe)"></div></div>
+        <span class="cal-val">10%</span>
+    </div>
+    <div class="cal-row">
+        <span class="cal-label">H4 政策風險</span>
+        <div class="cal-bar"><div class="cal-fill" style="width:7%;background:var(--warn)"></div></div>
+        <span class="cal-val">7%</span>
+    </div>
+    <div class="cal-row">
+        <span class="cal-label">H5 石英爆發</span>
+        <div class="cal-bar"><div class="cal-fill" style="width:5%;background:#b86fdf"></div></div>
+        <span class="cal-val">5%</span>
+    </div>
+</div>
+
+<div class="tip warn">
+<b>8g 整合結論</b>
+四次校準的趨勢非常一致：H3（見頂回落）的信心度從 40% 一路升至 52%，成為最高機率假說。H1（雙引擎爆發）則從 15% 降至 10%。這代表每一輪更深入的分析，都讓「股價已見頂」的判斷更加堅定。值得注意的是，H3 + H4 合計 59%（偏空），H1 + H2 + H5 合計 41%（偏多），空方假說已取得優勢。
+</div>
+</div>
+</details>
+
+<!-- ===== 8h 貓膩推衍 ===== -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">反向思考 — 市場敘事中的陷阱與盲點</div>
+
+<details open>
+<summary>三重完美敘事陷阱</summary>
+<div class="detail-body">
+
+<div class="tip danger">
+<b>陷阱一：AI + 石英 + 缺貨的三重敘事</b>
+市場同時疊加三個熱門題材（AI 運算需求 → 高頻基板 → 石英纖維 + 大陸缺貨漲價），形成「完美風暴」般的投資故事。但歷史經驗告訴我們：當故事太完美時，通常意味著所有利多都已計入股價。散戶追的是「故事」，機構賣的是「估值」。
+</div>
+
+<div class="tip danger">
+<b>陷阱二：2021 年前車之鑑</b>
+德宏 2021 年曾有一波行情：EPS 達到 3.73 元（歷史高點），股價衝至 20 元附近高點，隨後跌至 9 元。當年的 EPS 3.73 元都只能撐住 20 元的股價，現在 EPS -0.16 元卻撐著 214 元？這個對比本身就是最強的警告信號。
+</div>
+
+<div class="tip danger">
+<b>陷阱三：散戶追進 vs 外資出貨</b>
+典型的散戶陷阱結構：外資持續賣超（有資訊優勢的一方在出貨），散戶持續買進（被題材吸引的一方在接盤）。歷史上，這種結構的結局幾乎一致 — 散戶最終套在高點。
+</div>
+
+<div class="tip warn">
+<b>8h 整合結論</b>
+貓膩分析揭示三個重大警告：(1) 三重題材疊加 = 過度計價風險；(2) 歷史上 EPS 3.73 只值 20 元，目前 EPS -0.16 卻值 214 元，邏輯不通；(3) 外資出貨散戶接盤是經典頂部結構。這三點加總，強化了 H3（見頂回落）假說的可信度。市場的共識不等於正確，「所有人都看好」恰恰是最危險的時刻。
+</div>
+</div>
+</details>
+
+<!-- ===== 8i 推衍結論 ===== -->
+<div class="section-title" id="s8i">8i. 推衍結論</div>
+<div class="section-sub">最終行動建議與監控清單</div>
+
+<div class="action-box">
+    <h4>行動建議</h4>
+    <div class="action-item">
+        <span class="action-icon" style="color:var(--danger)">&#10008;</span>
+        <span class="action-text"><b>不建議在 214 元買入</b> — 即使最樂觀情境（15% 機率）的目標價 100-150 元，仍低於現價。概率加權期望值僅 58.6 元，隱含下跌 72.6%。</span>
+    </div>
+    <div class="action-item">
+        <span class="action-icon" style="color:var(--warn)">&#9201;</span>
+        <span class="action-text"><b>觀察等待區間：80～100 元</b> — 進入此區間後開始追蹤基本面變化，評估是否值得建立觀察部位。需同時確認石英纖維月出貨 > 10 噸 + 季度 EPS 轉正。</span>
+    </div>
+    <div class="action-item">
+        <span class="action-icon" style="color:var(--safe)">&#127919;</span>
+        <span class="action-text"><b>強力買進區間：50～60 元</b> — 在此區間具有 30%+ 安全邊際（相對期望值 58.6 元），風險報酬比合理。前提是基本面未進一步惡化。</span>
+    </div>
+    <div class="action-item">
+        <span class="action-icon" style="color:var(--neutral)">&#128202;</span>
+        <span class="action-text"><b>持續監控</b> — 將德宏列入監控清單，追蹤以下四大指標。</span>
+    </div>
+</div>
+
+<details open>
+<summary>監控清單 — 四大觀察指標</summary>
+<div class="detail-body">
+<div class="watch-item">
+    <span class="watch-trigger">2026 Q1 EPS > 0.15 元</span>
+    <span class="watch-meaning">轉盈軌道確認 — 若達標，基準情境上修至「溫和成長」，但仍不改變目前高估結論</span>
+</div>
+<div class="watch-item">
+    <span class="watch-trigger">石英纖維月出貨 > 10 噸</span>
+    <span class="watch-meaning">第二成長引擎啟動信號 — 若達標，H5（石英爆發）機率上修至 15%+，可重新評估</span>
+</div>
+<div class="watch-item">
+    <span class="watch-trigger">大陸玻纖布報價止漲</span>
+    <span class="watch-meaning">週期見頂確認信號 — 一旦出現，H3（見頂回落）將上修至 60%+，加速迴避</span>
+</div>
+<div class="watch-item">
+    <span class="watch-trigger">外資轉為連續買超</span>
+    <span class="watch-meaning">機構認同度改善 — 若出現，代表資訊面轉向，需重新評估基本面是否有新變化</span>
+</div>
+</div>
+</details>
+
+<div class="tip danger" style="margin-top:16px;border-width:3px;padding:14px 18px">
+<b>8i 最終整合結論：強烈迴避</b>
+德宏（5475）在 214 元的位置，呈現典型的「好故事、壞價格」格局。石英纖維題材可能為真，大陸漲價也確實發生，但這些都不足以支撐一家 EPS -0.16、市佔 1%、無護城河的公司站上 214 元。<br><br>
+<b>核心數據：</b>概率加權期望值 58.6 元 vs 現價 214 元 = 期望報酬 -72.6%。<br>
+<b>四次校準：</b>見頂回落假說（H3）信心度 52%，偏空假說合計 59%。<br>
+<b>歷史對照：</b>EPS 3.73 元只撐住 20 元股價，EPS -0.16 元撐 214 元毫無邏輯。<br>
+<b>資金結構：</b>外資出貨 + 散戶追進 = 經典頂部散戶陷阱。<br><br>
+<b>結論：不買、不追、等待修正。觀察區 80-100 元，強力買進區 50-60 元。</b>
+</div>
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+    天機閣 — 推衍引擎 v2.0 | 第八步推演版 | 德宏 (5475)<br>
+    產出時間：2026-03-26 | 此報告為投資研究參考，不構成買賣建議
+</div>
+
+</div><!-- .wrap -->
+</body>
+</html>
