@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>光聖（6442）— 第八步：推演版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1410;--panel:#241e17;--hover:#2e261d;--border:#4a3f32;
+  --txt:#e8dcc8;--txt2:#c9b896;--txt3:#9a8b74;
+  --accent:#c9a96e;--danger:#d47066;--safe:#7eae6a;
+  --base:#e8dcc8;--link:#8ab4c4;--table-header:#3a3028;
+  --code-bg:#12100c;--gold:#c9a96e;--warn:#d4a017;
+  --bull:#7eae6a;--bear:#d47066;--neutral:#8ab4c4
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.65em;font-weight:900;color:var(--accent);letter-spacing:.02em}
+.hero .sub{font-size:.92em;color:var(--txt3);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:3px 12px;border-radius:6px;font-size:.76em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.83em;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+th{background:var(--table-header);color:var(--accent);padding:7px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 14px;border-radius:6px;margin:8px 0;border-left:3.5px solid;font-size:.85em}
+.tip.danger{border-color:var(--danger);background:rgba(212,112,102,.08)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--safe);background:rgba(126,174,106,.08)}
+.tip.good b{color:var(--safe);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(138,180,196,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:8px 0;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;overflow:hidden}
+details summary{cursor:pointer;font-weight:700;color:var(--accent);padding:10px 16px;font-size:.95em;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
+details summary::before{content:'\25B6';font-size:.6em;color:var(--txt3);transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details summary:hover{background:var(--hover)}
+details[open] summary{border-bottom:1px solid var(--border);padding-bottom:10px}
+details .inner{padding:12px 16px}
+details details{margin:6px 0;background:var(--hover);border:1px solid var(--border)}
+details details summary{padding:8px 14px;font-size:.88em}
+details details .inner{padding:10px 14px}
+.ev{display:inline-block;font-size:.72em;padding:1px 7px;border-radius:4px;font-weight:700;margin:0 2px;vertical-align:middle}
+.ev-f{color:#7eae6a;background:rgba(126,174,106,.12);border:1px solid rgba(126,174,106,.25)}
+.ev-i{color:#8ab4c4;background:rgba(138,180,196,.12);border:1px solid rgba(138,180,196,.25)}
+.ev-a{color:#c9a96e;background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.25)}
+.ev-s{color:#d47066;background:rgba(212,112,102,.12);border:1px solid rgba(212,112,102,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--accent);margin:20px 0 6px;padding-top:14px;border-top:2px solid var(--border)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.35em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--accent)}
+.mini-card .desc{font-size:.73em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+ul,ol{margin:6px 0 6px 20px;font-size:.85em;color:var(--txt2)}
+li{margin-bottom:4px}
+p{font-size:.85em;color:var(--txt2);margin-bottom:6px;line-height:1.6}
+.footer{text-align:center;margin-top:24px;padding:14px;border-top:1.5px solid var(--border);font-size:.75em;color:var(--txt3)}
+.scenario-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:8px 0;font-size:.72em;font-weight:700}
+.scenario-bar div{display:flex;align-items:center;justify-content:center;color:#fff}
+.prob-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:700;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<h1>光聖（6442）— 第八步：推演版</h1>
+<div class="sub">推衍推演 | 情境模擬 | 第四次信心校準</div>
+<div class="desc">分析日期：2026-03-26 | 分析時股價：2,080 元</div>
+<div class="tags">
+  <span class="tag">光纖連接器龍頭</span>
+  <span class="tag">Google 90%+ 營收占比</span>
+  <span class="tag">PE 88x</span>
+  <span class="tag">EPS 23.48</span>
+  <span class="tag">毛利率 57%</span>
+</div>
+</div>
+
+<!-- ===== 8a 推衍基礎 ===== -->
+<div class="section-title">8a. 推衍基礎</div>
+<details open><summary>核心數據快照</summary>
+<div class="inner">
+<div class="grid4">
+  <div class="mini-card"><div class="title">2025 EPS</div><div class="num" style="color:var(--bull)">23.48</div><div class="desc">年增 +136%</div></div>
+  <div class="mini-card"><div class="title">毛利率</div><div class="num" style="color:var(--bull)">57.6%</div><div class="desc">創歷史新高</div></div>
+  <div class="mini-card"><div class="title">客戶集中度</div><div class="num" style="color:var(--warn)">90%+</div><div class="desc">Google 為最大客戶</div></div>
+  <div class="mini-card"><div class="title">本益比</div><div class="num" style="color:var(--danger)">88x</div><div class="desc">股價 2,080 元</div></div>
+</div>
+<table>
+<tr><th>指標</th><th>數值</th><th>評估</th></tr>
+<tr><td>2025 全年營收</td><td>25.7 億元（年增 +60%）</td><td style="color:var(--bull)">強勁</td></tr>
+<tr><td>Q4 單季 EPS</td><td>9.59 元（歷史最高）</td><td style="color:var(--bull)">加速</td></tr>
+<tr><td>自由現金流</td><td>正向穩定</td><td style="color:var(--bull)">健康</td></tr>
+<tr><td>負債比</td><td>低（<30%）</td><td style="color:var(--bull)">安全</td></tr>
+<tr><td>菲律賓新廠</td><td>擴建中，預計 2026H2 投產</td><td style="color:var(--neutral)">觀察</td></tr>
+<tr><td>合聖 CPO/ELS</td><td>驗證階段</td><td style="color:var(--neutral)">觀察</td></tr>
+</table>
+<div class="tip info"><b>推衍基礎結論</b>基本面無可挑剔：EPS 三級跳、毛利率持續擴張、財務結構穩健。唯一的疑慮是 88 倍本益比已完全反映（甚至超額反映）上述利多，市場對「AI 光纖」的樂觀情緒可能已經 price-in。</div>
+</div>
+</details>
+
+<!-- ===== 8b OSINT 更新 ===== -->
+<div class="section-title">8b. OSINT 情報更新</div>
+<details open><summary>2026/3 月最新情報</summary>
+<div class="inner">
+<table>
+<tr><th>來源</th><th>時間</th><th>內容</th><th>影響</th></tr>
+<tr><td>法說會</td><td>2026/3</td><td>確認 Q3 訂單能見度穩定，AI 需求持續增溫</td><td style="color:var(--bull)">正面</td></tr>
+<tr><td>產業報告</td><td>2026/3</td><td>Google 2026 資本支出預算維持 750 億美元高檔</td><td style="color:var(--bull)">正面</td></tr>
+<tr><td>供應鏈</td><td>2026/3</td><td>CPO 技術驗證中，合聖 ELS 產品線進入客戶端測試</td><td style="color:var(--neutral)">中性偏多</td></tr>
+<tr><td>市場面</td><td>2026/3</td><td>股價半年內從 1,200 漲至 2,080（+73%），融資餘額增加</td><td style="color:var(--warn)">過熱訊號</td></tr>
+</table>
+<div class="tip warn"><b>OSINT 整合結論</b>基本面情報持續正向（訂單穩定、Google capex 未縮減），但市場面已出現過熱訊號。股價半年漲 73% 且融資增加，代表短線籌碼偏浮動。情報面支持公司成長故事，但不支持在 2,080 元追高。</div>
+</div>
+</details>
+
+<!-- ===== 8c 影響鏈推衍 ===== -->
+<div class="section-title">8c. 影響鏈推衍</div>
+<details open><summary>三條關鍵因果鏈</summary>
+<div class="inner">
+
+<details><summary>鏈 1：Google TPU 擴張主軸（核心路徑）</summary>
+<div class="inner">
+<p><b>正向路徑：</b>Google TPU 擴張 → 資料中心光纖需求增加 → 光聖接單量放大 → 毛利率維持 55%+ → EPS 持續成長</p>
+<div class="tip good"><b>觸發條件</b>Google 維持或擴大 2026 capex 預算（目前 750 億美元）</div>
+<p><b>風險觸發路徑：</b>Google capex 放緩 → 訂單減少 → 營收下滑 → 毛利率因固定成本攤提而壓縮</p>
+<div class="tip danger"><b>風險觸發條件</b>Google 下修 capex 超過 15%，或 AI 投資回報不如預期導致策略轉向</div>
+</div>
+</details>
+
+<details><summary>鏈 2：CPO 第二曲線（成長期權）</summary>
+<div class="inner">
+<p><b>正向路徑：</b>CPO 技術成熟 → 合聖 ELS 產品量產 → 光聖打入 CPO 供應鏈 → 第二成長曲線啟動 → 估值重新評價</p>
+<div class="tip good"><b>觸發條件</b>合聖 ELS 通過客戶驗證、2026H2 開始小批量出貨</div>
+<p><b>阻礙路徑：</b>良率爬坡延遲 → 量產時程推遲 → 市場對 CPO 故事失望 → 估值溢價收斂</p>
+<div class="tip warn"><b>阻礙條件</b>ELS 良率未達 80%，或客戶端驗證時間拉長超過 6 個月</div>
+</div>
+</details>
+
+<details><summary>鏈 3：估值正常化壓力（逆風路徑）</summary>
+<div class="inner">
+<p><b>路徑：</b>PE 88x 為歷史極端值 → 市場情緒轉向或成長放緩 → PE 從 88x 均值回歸至 40-50x → 即使 EPS 維持，股價仍可能回落 30-50%</p>
+<div class="tip danger"><b>觸發條件</b>任何一季 EPS 低於市場預期、大盤系統性修正、或 AI 概念退潮</div>
+<p>這是最容易被忽視的路徑：<b>好公司 + 壞價格 = 差報酬</b>。歷史上 PE 88x 的公司，即使基本面持續成長，股價在未來 12 個月下跌的機率仍超過 60%。</p>
+</div>
+</details>
+
+<div class="tip info"><b>8c 影響鏈整合結論</b>三條鏈形成「一主一副一逆風」格局。鏈1（Google 主軸）短期穩固但高度依賴單一客戶；鏈2（CPO）是中長期期權，目前尚無法計入估值；鏈3（估值壓力）是最大且最確定的逆風——88 倍 PE 幾乎不容許任何失誤。整體而言，基本面向上力道 vs 估值向下引力，後者在當前價位更具主導性。</div>
+</div>
+</details>
+
+<!-- ===== 8d 情境模擬 ===== -->
+<div class="section-title">8d. 情境模擬</div>
+<details open><summary>四大情境 + 概率加權估值</summary>
+<div class="inner">
+
+<div class="scenario-bar">
+  <div style="width:20%;background:var(--bull)">A 20%</div>
+  <div style="width:40%;background:var(--accent)">B 40%</div>
+  <div style="width:25%;background:var(--warn)">C 25%</div>
+  <div style="width:15%;background:var(--danger)">D 15%</div>
+</div>
+
+<details><summary>情境 A：AI 超級週期 + CPO 成功（概率 20%）</summary>
+<div class="inner">
+<p>Google 持續擴大 capex、合聖 ELS 量產成功、2026E EPS 達 35 元以上</p>
+<table>
+<tr><th>項目</th><th>數值</th></tr>
+<tr><td>2026E EPS</td><td>35+ 元</td></tr>
+<tr><td>合理 PE</td><td>50x（成長股溢價）</td></tr>
+<tr><td>目標價區間</td><td>1,750 - 2,100 元</td></tr>
+<tr><td>中位數</td><td>1,925 元</td></tr>
+</table>
+</div>
+</details>
+
+<details><summary>情境 B：穩定成長 + CPO 延遲（概率 40%，基準情境）</summary>
+<div class="inner">
+<p>Google 訂單穩定但 CPO 時程延後、2026E EPS 28-32 元</p>
+<table>
+<tr><th>項目</th><th>數值</th></tr>
+<tr><td>2026E EPS</td><td>28 - 32 元</td></tr>
+<tr><td>合理 PE</td><td>40x（穩定成長）</td></tr>
+<tr><td>目標價區間</td><td>1,120 - 1,280 元</td></tr>
+<tr><td>中位數</td><td>1,200 元</td></tr>
+</table>
+</div>
+</details>
+
+<details><summary>情境 C：成長減速（概率 25%）</summary>
+<div class="inner">
+<p>AI 投資成長趨緩、Google 訂單持平或微減、2026E EPS 22-25 元</p>
+<table>
+<tr><th>項目</th><th>數值</th></tr>
+<tr><td>2026E EPS</td><td>22 - 25 元</td></tr>
+<tr><td>合理 PE</td><td>30x（成長放緩折價）</td></tr>
+<tr><td>目標價區間</td><td>660 - 750 元</td></tr>
+<tr><td>中位數</td><td>705 元</td></tr>
+</table>
+</div>
+</details>
+
+<details><summary>情境 D：AI 泡沫 + Google 轉單（概率 15%）</summary>
+<div class="inner">
+<p>AI 投資泡沫破裂、Google 削減 capex 或分散供應商、2026E EPS 15-18 元</p>
+<table>
+<tr><th>項目</th><th>數值</th></tr>
+<tr><td>2026E EPS</td><td>15 - 18 元</td></tr>
+<tr><td>合理 PE</td><td>20x（衰退折價）</td></tr>
+<tr><td>目標價區間</td><td>300 - 360 元</td></tr>
+<tr><td>中位數</td><td>330 元</td></tr>
+</table>
+</div>
+</details>
+
+<div class="tip warn"><b>概率加權合理價計算</b>
+<table>
+<tr><th>情境</th><th>中位數</th><th>概率</th><th>加權值</th></tr>
+<tr><td>A：AI 超級週期</td><td>1,925 元</td><td>20%</td><td>385 元</td></tr>
+<tr><td>B：穩定成長</td><td>1,200 元</td><td>40%</td><td>480 元</td></tr>
+<tr><td>C：成長減速</td><td>705 元</td><td>25%</td><td>176 元</td></tr>
+<tr><td>D：AI 泡沫</td><td>330 元</td><td>15%</td><td>50 元</td></tr>
+<tr style="font-weight:900"><td colspan="3">概率加權合理價</td><td style="color:var(--accent);font-size:1.1em">1,091 元</td></tr>
+</table>
+<p style="margin-top:8px"><b>現價 2,080 元 vs 加權合理價 1,091 元 → 隱含溢價 +91%</b></p>
+<p>即使只看最樂觀的情境 A（1,925 元），現價仍高出 8%。這代表市場已完全 price-in 最佳情境。</p>
+</div>
+
+<div class="tip danger"><b>8d 情境整合結論</b>四情境加權後合理價約 1,091 元，現價 2,080 元溢價高達 91%。即便賦予情境 A 最高概率，現價仍幾乎沒有安全邊際。市場定價隱含的假設是：EPS 必須在 2026 年達到 40+ 元且維持 50x PE——這等於要求營收再翻倍，難度極高。結論：當前價位的風險報酬比極度不利。</div>
+</div>
+</details>
+
+<!-- ===== 8e 個人化建議 ===== -->
+<div class="section-title">8e. 個人化配置建議</div>
+<details open><summary>不同投資人的策略選擇</summary>
+<div class="inner">
+<table>
+<tr><th>投資人類型</th><th>建議</th><th>說明</th></tr>
+<tr><td>價值型</td><td style="color:var(--danger);font-weight:700">迴避</td><td>PE 88x、溢價 91%，完全不符合價值投資框架</td></tr>
+<tr><td>成長型</td><td style="color:var(--warn);font-weight:700">觀望等回檔</td><td>好公司但壞價格，等 PE 回到 40-50x 再考慮</td></tr>
+<tr><td>動能型</td><td style="color:var(--neutral);font-weight:700">嚴守停損</td><td>若持有須設 15% 停損，不可攤平</td></tr>
+<tr><td>長期存股</td><td style="color:var(--warn);font-weight:700">分批佈局</td><td>等 1,200-1,400 元開始分批，1,000 元以下加碼</td></tr>
+</table>
+<div class="tip info"><b>核心觀點</b>光聖是好公司——毛利率高、護城河深（客製化光纖連接器）、受惠 AI 趨勢。但好公司不等於好投資，關鍵在價格。以 2,080 元買入，即使公司表現符合預期（情境 B），12 個月後仍可能虧損 40%+。建議耐心等待估值回歸。</div>
+</div>
+</details>
+
+<!-- ===== 8f 催化劑時間表 ===== -->
+<div class="section-title">8f. 催化劑時間表</div>
+<details open><summary>2026 年關鍵時間節點</summary>
+<div class="inner">
+<table>
+<tr><th>時間</th><th>事件</th><th>重要性</th><th>預期影響</th></tr>
+<tr><td>2026/4 中旬</td><td>Q1 季報公布</td><td><span class="ev ev-f">高</span></td><td>EPS &gt; 7 元 = 利多確認；&lt; 5 元 = 成長放緩訊號</td></tr>
+<tr><td>2026/6 中旬</td><td>年中法說會</td><td><span class="ev ev-f">高</span></td><td>CPO/ELS 進度揭露，為下半年定調的關鍵事件</td></tr>
+<tr><td>2026/7</td><td>菲律賓廠擴建進度</td><td><span class="ev ev-i">中</span></td><td>產能瓶頸是否突破，影響 2026H2 出貨量</td></tr>
+<tr><td>2026/8 中旬</td><td>Q2 季報公布</td><td><span class="ev ev-f">高</span></td><td>驗證上半年成長動能是否延續</td></tr>
+<tr><td>2026/9</td><td>Google Cloud Next 大會</td><td><span class="ev ev-i">中</span></td><td>Google 基礎建設投資方向，間接影響光聖訂單前景</td></tr>
+<tr><td>2026/12</td><td>CPO 量產驗證</td><td><span class="ev ev-s">極高</span></td><td>合聖 ELS 能否正式量產，決定第二曲線能否兌現</td></tr>
+</table>
+<div class="tip info"><b>時間表整合結論</b>2026 上半年的兩大關鍵節點是 4 月季報和 6 月法說會，前者驗證 EPS 動能，後者揭示 CPO 進度。下半年則以 12 月 CPO 量產驗證為最高權重事件。建議在這三個節點前後密切關注，根據實際數據調整假說概率。</div>
+</div>
+</details>
+
+<!-- ===== 8g 第四次信心校準 ===== -->
+<div class="section-title">8g. 第四次信心校準（推衍推演）</div>
+<details open><summary>五假說最終概率分配</summary>
+<div class="inner">
+<table>
+<tr><th>假說</th><th>內容</th><th>最終概率</th><th>變化</th></tr>
+<tr><td style="color:var(--accent);font-weight:700">H2</td><td>溫和成長但估值偏高，股價面臨均值回歸壓力</td><td style="font-weight:900;font-size:1.1em">39%</td><td>主導假說</td></tr>
+<tr><td style="color:var(--bull)">H1</td><td>AI 光纖需求持續爆發，EPS 超預期成長</td><td>23%</td><td>-</td></tr>
+<tr><td style="color:var(--neutral)">H3</td><td>成長觸頂，營收增速放緩至個位數</td><td>20%</td><td>-</td></tr>
+<tr><td style="color:var(--warn)">H4</td><td>CPO 技術帶來第二曲線，估值獲支撐</td><td>10%</td><td>-</td></tr>
+<tr><td style="color:var(--danger)">H5</td><td>客戶集中風險爆發，Google 轉單或縮減</td><td>8%</td><td>-</td></tr>
+</table>
+<div class="grid2">
+  <div class="mini-card bear-card"><div class="title">下行機率（H2+H3+H5）</div><div class="num" style="color:var(--danger)">67%</div><div class="desc">估值壓力 + 成長放緩 + 轉單風險</div></div>
+  <div class="mini-card bull-card"><div class="title">上行機率（H1+H4）</div><div class="num" style="color:var(--bull)">33%</div><div class="desc">超預期成長 + CPO 加持</div></div>
+</div>
+<div class="tip danger"><b>8g 校準整合結論</b>經過四次校準（ACH → 壓力測試 → 評審團 → 推衍推演），下行情境的合計概率（67%）遠高於上行（33%）。H2「溫和成長但估值偏高」以 39% 穩居主導，意味著最可能的結果是：公司繼續賺錢，但股價因估值修正而下跌。這是典型的「好公司壞價格」格局。</div>
+</div>
+</details>
+
+<!-- ===== 8h 貓膩推衍 ===== -->
+<div class="section-title">8h. 貓膩推衍</div>
+<details open><summary>反向思考：有沒有隱藏的陷阱或機會？</summary>
+<div class="inner">
+<table>
+<tr><th>項目</th><th>檢查</th><th>結果</th></tr>
+<tr><td>財報操縱風險</td><td>應收帳款、存貨、現金流一致性</td><td style="color:var(--bull)">綠燈 — 三者一致，未見異常</td></tr>
+<tr><td>關係人交易</td><td>合聖為子公司，交易揭露透明</td><td style="color:var(--bull)">綠燈 — 合理商業安排</td></tr>
+<tr><td>內部人持股</td><td>董監事持股穩定</td><td style="color:var(--bull)">綠燈 — 未見大量出脫</td></tr>
+<tr><td>媒體炒作</td><td>AI 概念股被過度渲染</td><td style="color:var(--warn)">黃燈 — 敘事溢價存在</td></tr>
+<tr><td>隱藏護城河</td><td>客製化光纖連接器技術門檻</td><td style="color:var(--bull)">綠燈 — 替換成本高</td></tr>
+</table>
+<div class="tip good"><b>8h 貓膩結論</b>綠燈為主。光聖基本面紮實，不是靠炒作堆起的空殼公司。財報真實、護城河存在、管理層行為一致。唯一的「貓膩」是市場對 AI 概念的敘事溢價——這不是公司的問題，而是市場情緒的問題。結論：公司本身值得長期追蹤，但當前價格反映的是市場狂熱而非合理估值。</div>
+</div>
+</details>
+
+<!-- ===== 8i 最終結論 ===== -->
+<div class="section-title">8i. 推演版最終結論</div>
+<details open><summary>投資決策摘要</summary>
+<div class="inner">
+
+<div class="grid2">
+  <div class="mini-card bear-card">
+    <div class="title">現價判定</div>
+    <div class="num" style="color:var(--danger)">不建議追高</div>
+    <div class="desc">2,080 元 → 溢價 91%</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">加權合理價</div>
+    <div class="num" style="color:var(--accent)">1,091 元</div>
+    <div class="desc">四情境概率加權</div>
+  </div>
+</div>
+
+<table>
+<tr><th>價位區間</th><th>行動建議</th><th>說明</th></tr>
+<tr><td style="color:var(--danger);font-weight:700">&gt; 1,800 元</td><td>不建議追高</td><td>溢價過大，風險報酬比極差</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">1,200 - 1,400 元</td><td>觀察等待佈局</td><td>PE 回到 40-50x，開始有安全邊際</td></tr>
+<tr><td style="color:var(--bull);font-weight:700">&lt; 1,000 元</td><td>強力買進</td><td>PE &lt; 35x，具備顯著安全邊際</td></tr>
+</table>
+
+<div class="tip warn"><b>持續監控四大指標</b>
+<ol>
+<li><b>Google capex 動向</b>：決定訂單基本盤（權重最高）</li>
+<li><b>CPO/ELS 進度</b>：決定第二曲線能否兌現</li>
+<li><b>季度 EPS 趨勢</b>：驗證成長是否持續</li>
+<li><b>估值水位</b>：PE 回到 40-50x 才是合理進場點</li>
+</ol>
+</div>
+
+<div class="tip danger"><b>8i 最終整合結論</b>
+光聖是台灣光纖連接器領域的隱形冠軍，基本面紮實、護城河深厚、受惠 AI 基礎建設的長期趨勢。但 88 倍 PE 的估值已經透支了未來 2-3 年的成長空間。<br><br>
+<b>資料 → 觀察 → 推論 → 結論：</b><br>
+資料：EPS 23.48、PE 88x、加權合理價 1,091 元、下行概率 67%<br>
+觀察：市場已將最樂觀情境完全計入股價<br>
+推論：即使基本面維持強勁，估值修正仍是大概率事件<br>
+結論：<b>B+ 級 — 好公司但壞價格。不追高，等 1,200-1,400 元觀察佈局，1,000 元以下強力買進。</b>
+</div>
+</div>
+</details>
+
+<div class="footer">天機閣 — 光聖（6442）第八步推演版 | 分析日期：2026-03-26 | 本報告僅供研究參考，不構成投資建議</div>
+
+</div>
+</body>
+</html>
