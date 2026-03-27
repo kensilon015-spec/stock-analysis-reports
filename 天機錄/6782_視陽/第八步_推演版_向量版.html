@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>6782 視陽光學 — 第八步 推演版（向量增強版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--warn:#b08840;--info:#4a7a9b}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:800px;margin:0 auto;padding:32px 24px}
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
+.tip{padding:12px 16px;border-radius:8px;margin:10px 0;border-left:3px solid;font-size:.88em;line-height:1.7}
+.tip.danger{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.danger b{color:var(--food);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(176,136,64,.08);color:var(--txt)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--info);background:rgba(74,122,155,.08);color:var(--txt)}
+.tip.info b{color:var(--info);display:block;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.88em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600;color:var(--base);padding:6px 0}
+h2{font-size:1.4em;font-weight:900;color:var(--base);margin:30px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+.prob-bar{height:24px;border-radius:6px;margin:6px 0;position:relative;overflow:hidden;background:rgba(0,0,0,.05)}
+.prob-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:.75em;font-weight:700;color:#fff}
+.prob-fill.high{background:var(--accent)}
+.prob-fill.mid{background:var(--warn)}
+.prob-fill.low{background:var(--food)}
+.diff-summary{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:22px 24px;margin:24px 0}
+.diff-summary h3{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>6782 視陽光學</h1>
+    <div class="sub">第八步 — 推演版（向量搜尋增強版）</div>
+    <div class="desc">基於向量搜尋新發現，評估是否改變推演路徑與機率</div>
+    <div class="tags">
+        <span class="tag">向量增強</span>
+        <span class="tag">推演 8a~8i</span>
+        <span class="tag">2026-03-27</span>
+    </div>
+</div>
+
+<!-- ====== 8a：基本面推演 ====== -->
+<h2>8a：基本面推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>營收持續成長（矽水膠滲透+日本市場擴張），毛利率45%已接近隱形眼鏡代工天花板。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>產能具體化</b>：月產能4,900萬片，年化5.88億片。若ASP為3~5元台幣/片，理論年營收上限為17.6~29.4億元。2024年營收約36億（含非日拋），產能仍有餘裕。（來源：法說會2025Q3）</li>
+        <li><b>規模經濟有年報佐證</b>：年報2022明確承認「規模經濟效益顯現」，這支持毛利率在產能擴張期持續改善的推演。</li>
+        <li><b>老花+散光矽水膠</b>：這是高ASP高毛利產品，若成功導入歐美日市場，有助於突破毛利率天花板。</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    <table>
+        <tr><th>情境</th><th>原版機率</th><th>向量版修正</th><th>理由</th></tr>
+        <tr><td>樂觀（營收+20%、毛利率維持45%+）</td><td>—</td><td>略微上調</td><td>產能4,900萬+老花散光高ASP佐證</td></tr>
+        <tr><td>基準（營收+10~15%、毛利率持平）</td><td>—</td><td>維持</td><td>規模經濟佐證支持</td></tr>
+        <tr><td>悲觀（營收持平或衰退）</td><td>—</td><td>略微下調</td><td>中國保守但日本/美洲成長可補</td></tr>
+    </table>
+</div>
+
+<!-- ====== 8b：市場結構推演 ====== -->
+<h2>8b：市場結構推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>日本市場約50%營收，市場集中度為主要風險。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>日本雙通路模式降低集中風險</b>：直接銷售+透過From-eyes子公司兩線並行，市場覆蓋更全面。若其中一個通路出問題，另一個仍可運作。</li>
+        <li><b>自有品牌Refrear</b>：雖然目前規模小，但代表視陽在日本有品牌建設的企圖。品牌成功=估值從代工PE切換到品牌PE。</li>
+        <li><b>美洲市場突破</b>：112年北美新客戶取得訂單，營收顯著提升。美洲佔比從7%若提升到10%+，將有效分散日本集中度。</li>
+        <li><b>歐洲庫存消化中</b>：短期壓力但非結構性問題，113年下半年已追加訂單。</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    市場結構推演方向不變。向量搜尋補充了「日本雙通路」的防禦機制，以及「北美新客戶突破」的分散化進展。<b>日本集中度風險維持，但實際風險程度因雙通路而略低於表面數字所示。</b>
+</div>
+
+<!-- ====== 8c：競爭格局推演 ====== -->
+<h2>8c：競爭格局推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>矽水膠技術門檻保護視陽地位，但需關注後進者動態。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>後進者壁壘比原版認知更高</b>：年報反覆（2019-2022連續4年）強調三重壁壘：(1)認證門檻（臨床試驗+各國審核）、(2)產品品質差距（配戴體驗+客訴）、(3)客戶關係壁壘（一站式購足）。這不是一次性陳述，而是公司策略核心。</li>
+        <li><b>「高低階矽水膠雙區間」是天然護城河</b>：低端矽水膠即使出現，也無法與高端產品競爭。視陽定位高端，與四大品牌直接競爭。</li>
+        <li><b>「產品評比超越四大品牌」</b>：若屬實，意味著視陽的技術優勢不僅是「有」矽水膠，而是「比四大做得更好」。（來源：年報2023）</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    <b>競爭壁壘推演顯著上調。</b>原版可能僅以專利數量（28個）評估護城河，但年報原文揭露的壁壘是多維度的、系統性的。後進者要同時突破認證+品質+客戶關係三道防線，難度極高。
+    <div class="prob-bar"><div class="prob-fill high" style="width:75%">高壁壘維持 75%</div></div>
+    <div class="prob-bar"><div class="prob-fill mid" style="width:20%">壁壘被侵蝕 20%</div></div>
+    <div class="prob-bar"><div class="prob-fill low" style="width:5%">壁壘崩潰 5%</div></div>
+</div>
+
+<!-- ====== 8d：供應鏈推演 ====== -->
+<h2>8d：供應鏈推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>明基材料進貨佔比21.16%為關係人交易，供應端有一定集中度。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>明基材料角色演變</b>：2019年明基材料同時是最大客戶（銷貨21.87%）和大供應商，2024年銷貨佔比降至11.97%但供應佔比維持21.16%。雙向依賴→單向依賴（供應端）的轉變，是風險降低還是議價力下降？</li>
+        <li><b>原物料清單</b>：年報2024揭露「主要原物料包含HEMA、矽氧烷壓克力、聚丙烯塑膠料、鋁箔及包材等。各原物料供應狀況良好」。HEMA是隱形眼鏡核心原料，若明基材料是HEMA主要供應商，則21%的集中度有其產業合理性。（來源：年報2024）</li>
+        <li><b>VVM對母公司銷貨100%</b>：馬來西亞子公司VVM幾乎100%銷貨給母公司，這是典型的「生產在海外、銷售在台灣」的結構，本身不是風險但需理解財報結構。（來源：年報2022）</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    供應鏈風險維持。明基材料關係人交易需持續監控，但年報原文顯示「各原物料供應狀況良好」且公司年報中聲明進貨來源分散。<b>推演不變，風險中性。</b>
+</div>
+
+<!-- ====== 8e：財務推演 ====== -->
+<h2>8e：財務推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>毛利率36%→39%→45%趨勢向上，營業活動現金流改善。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>113年度營業活動淨現金流入11.16億</b>：較112年度3.53億大增216%，主因稅前淨利增加。自由現金流顯著改善。（來源：年報2024）</li>
+        <li><b>員工薪資異常波動</b>：112年度平均薪資調整-21.94%，母公司僅124人但薪資大降，可能影響人才留任。若關鍵研發人員流失，長期影響甚大。（來源：年報2023）</li>
+        <li><b>太陽能投資回報</b>：合計投資5,560萬台幣太陽能系統，年發電量412萬度。以馬來西亞電費估算，年節省電費約120~160萬台幣，投報率約2~3%。對營運影響甚微但對ESG形象正面。（來源：年報2024）</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    營業活動現金流大增是正面訊號。員工薪資驟降-21.94%需要追蹤原因（可能是員工結構調整、獎金計算方式改變等）。<b>財務推演維持正面，但加入「人才風險」作為觀察項目。</b>
+</div>
+
+<!-- ====== 8f：匯率推演 ====== -->
+<h2>8f：匯率推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>匯損佔營收1.07%，匯率風險中等。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>日幣曝險具體量化</b>：112年底持有日幣金融資產8.04億日圓（約1.75億台幣），為淨多頭。日幣每貶值1%，稅前損失約175萬台幣。（來源：年報2023，第175頁）</li>
+        <li><b>美金淨多頭</b>：美金金融資產2,247萬 vs 負債1,805萬，淨多頭442萬美元（約1.36億台幣）。美元走強對公司有利。（來源：年報2023）</li>
+        <li><b>馬幣非貨幣性資產</b>：持有馬幣3.12億（約21.80億台幣），主要為固定資產。馬幣長期貶值趨勢會影響換算價值但不影響營運。（來源：年報2022）</li>
+        <li><b>歷年匯率敏感度</b>：向量搜尋找到2019~2023年的完整匯率敏感度表，各幣別1%波動影響可精確計算。</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    匯率推演更加精確：
+    <ul>
+        <li>日幣走強 → 對視陽有利（日幣資產升值+日本客戶購買力增加）</li>
+        <li>美元走強 → 對視陽有利（美元淨多頭）</li>
+        <li>馬幣走弱 → 對視陽有利（降低生產成本的台幣換算值）</li>
+    </ul>
+    <b>當前全球利率環境（美元強勢、日幣弱勢）對視陽的匯率影響為偏中性，但日幣若反轉升值將是正面催化劑。</b>
+</div>
+
+<!-- ====== 8g：ESG 推演 ====== -->
+<h2>8g：ESG 推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>ESG 基本合規，太陽能系統已啟用。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>溫室氣體三範疇完整數據</b>：
+            <br>- 範疇一（直接排放）：14公噸 CO2e
+            <br>- 範疇二（間接排放-電力）：21,095公噸 CO2e
+            <br>- 範疇三（價值鏈排放）：4,176公噸（113年首次揭露）
+            <br>- 排放密集度：6.9公噸/百萬元營收
+            <br>113年數據已通過第三方查證（安侯建業，ISAE3410準則）。（來源：年報2024）</li>
+        <li><b>太陽能持續擴張</b>：合計投資5,560萬 → 114年再投入2,000萬，新增發電量215萬度/年（+52%），整體減碳量可達4,800公噸。（來源：年報2024）</li>
+        <li><b>範疇二主導</b>：範疇二（電力）佔排放量83%，太陽能投資直接降低範疇二排放，策略正確。</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    ESG推演更加正面。公司已完成範疇三首次揭露並通過第三方查證，這在台股上市櫃公司中屬於前段班。持續的太陽能投資顯示管理層對ESG有實際承諾。<b>ESG不會成為投資障礙，反而可能吸引ESG基金買入。</b>
+</div>
+
+<!-- ====== 8h：管理層推演 ====== -->
+<h2>8h：管理層推演</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>管理層穩定，董事長許金隆為創辦人。</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋新發現對推演的影響</b>
+    <ul>
+        <li><b>董事進修記錄</b>：年報2023揭露獨立董事進修主題包括「ChatGPT技術發展與應用商機」、「氣候變遷與能源政策」、「民刑事訴訟董事忠實義務」，顯示董事會有在進修但偏通才而非產業專精。（來源：年報2023）</li>
+        <li><b>薪酬委員會運作</b>：112年開會2次，出席率100%。薪酬政策「連結職責與績效成果，提供具市場競爭力的薪酬」。（來源：年報2022/2023）</li>
+        <li><b>強化營業秘密管理</b>：年報2022提到「強化營業秘密管理，避免機密外洩，影響公司長遠佈局」，顯示對技術保密有意識。（來源：年報2022）</li>
+    </ul>
+</div>
+
+<div class="tip warn">
+    <b>推演路徑修正</b>
+    此章節向量搜尋發現為正面但影響有限。管理層穩定性和治理架構符合上市公司標準。<b>推演維持，不改變結論。</b>
+</div>
+
+<!-- ====== 8i：綜合推演與信心校準 ====== -->
+<h2>8i：綜合推演與信心校準</h2>
+<div class="card">
+    <h3>原版推演</h3>
+    <p>（依原版綜合推演結論）</p>
+</div>
+
+<div class="tip info">
+    <b>向量搜尋對推演路徑的整體影響</b>
+    <table>
+        <tr><th>推演面向</th><th>原版方向</th><th>向量版修正</th></tr>
+        <tr><td>8a 基本面</td><td>正面</td><td style="color:var(--accent);font-weight:700">略微上調（產能+規模經濟佐證）</td></tr>
+        <tr><td>8b 市場結構</td><td>中性偏正</td><td style="color:var(--accent);font-weight:700">維持（雙通路降低集中風險）</td></tr>
+        <tr><td>8c 競爭格局</td><td>正面</td><td style="color:var(--accent);font-weight:700">顯著上調（三重壁壘+雙區間）</td></tr>
+        <tr><td>8d 供應鏈</td><td>中性</td><td>維持（明基材料角色演變可追蹤）</td></tr>
+        <tr><td>8e 財務</td><td>正面</td><td style="color:var(--warn);font-weight:700">維持正面，加入人才風險觀察</td></tr>
+        <tr><td>8f 匯率</td><td>中性</td><td>維持（量化佐證更清晰）</td></tr>
+        <tr><td>8g ESG</td><td>中性</td><td style="color:var(--accent);font-weight:700">略微上調（範疇三+第三方查證）</td></tr>
+        <tr><td>8h 管理層</td><td>正面</td><td>維持</td></tr>
+    </table>
+</div>
+
+<div class="diff-summary">
+    <h3>向量版推演 vs 原版推演 — 機率修正</h3>
+
+    <p style="margin:12px 0;font-weight:600">樂觀情境（營收持續高成長+毛利率擴張）</p>
+    <div class="prob-bar"><div class="prob-fill high" style="width:40%">向量版：略微上調</div></div>
+    <p style="font-size:.85em;color:var(--txt2)">理由：護城河更深、產能具體、老花散光高ASP品項加入。三重壁壘確保競爭優勢期更長。</p>
+
+    <p style="margin:12px 0;font-weight:600">基準情境（穩健成長+毛利率持平）</p>
+    <div class="prob-bar"><div class="prob-fill mid" style="width:45%">向量版：維持</div></div>
+    <p style="font-size:.85em;color:var(--txt2)">理由：規模經濟有年報佐證、日本市場穩定、歐洲庫存消化後可回升。</p>
+
+    <p style="margin:12px 0;font-weight:600">悲觀情境（營收衰退或毛利率回落）</p>
+    <div class="prob-bar"><div class="prob-fill low" style="width:15%">向量版：略微下調</div></div>
+    <p style="font-size:.85em;color:var(--txt2)">理由：日本雙通路+北美新客戶+三重壁壘，使悲觀情境發生條件更嚴苛。但員工薪資異常和視康虧損為新增風險。</p>
+
+    <div class="tip good" style="margin-top:20px">
+        <b>向量版推演總結</b>
+        向量搜尋對推演的整體影響為<b>「中性偏正面」</b>：
+        <ul>
+            <li>最大正面影響：競爭格局推演（8c）— 護城河比原版認知深得多</li>
+            <li>最大新增風險：員工薪資驟降-21.94% + 子公司視康虧損擴大</li>
+            <li>推演路徑不改變方向，但正面情境的信心度提升</li>
+            <li>總計 23 項新發現中，11 項正面、5 項中性、4 項負面、3 項無新發現</li>
+        </ul>
+        <b>建議：原版投資結論方向維持，但「護城河評分」和「競爭壁壘持續性」的評估應向上修正。同時將「員工薪資異常」和「視康虧損」列入季度追蹤清單。</b>
+    </div>
+</div>
+
+<div class="footer">
+    天機閣 — 6782 視陽光學 向量增強版 推演分析 | 2026-03-27 | 12 主題語意搜尋 × 8 推演面向
+</div>
+
+</div>
+</body>
+</html>
