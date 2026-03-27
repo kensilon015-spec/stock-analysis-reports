@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>3211 順達科技 — 第七步 完整版報告（向量增強版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.highlight{background:var(--link);color:#fff;border-color:var(--link)}
+.tag.neg{background:var(--danger);color:#fff;border-color:var(--danger)}
+.tag.pos{background:var(--accent);color:#fff;border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.8em;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:5px 8px;text-align:left;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3,.grid4,.grid6{grid-template-columns:1fr 1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}.warn-card{border-left:4px solid var(--warn)}.info-card{border-left:4px solid var(--link)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}.ev .ev-d{color:var(--txt2);font-size:.88em}.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.orig-card{background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin:6px 0;font-size:.84em}
+.orig-card .orig-label{font-weight:700;color:var(--txt3);font-size:.78em;margin-bottom:4px}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.finding-num{display:inline-block;background:var(--link);color:#fff;font-size:.72em;font-weight:700;padding:1px 7px;border-radius:4px;margin-right:4px}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>3211 順達科技 — 完整版報告（向量增強版）</h1>
+  <div class="sub">天機閣向量搜尋增強系統 ｜ 第七步（完整版）｜ 向量索引 3,046 段 × BGE-M3 1024 維</div>
+  <div class="desc">向量分析日期：2026-03-27 ｜ 原版基準：v1.1（2026-03-26）｜ 12 主題搜尋 × 60 筆最佳匹配</div>
+  <div class="tags">
+    <span class="tag highlight">新發現 7 項</span>
+    <span class="tag pos">正面 2</span>
+    <span class="tag">中性 3</span>
+    <span class="tag neg">負面 2</span>
+    <span class="tag">結論：維持觀望</span>
+  </div>
+</div>
+
+<!-- Mini-cards -->
+<div class="grid6">
+  <div class="mini-card info-card"><div class="title">向量段落</div><div class="num">3,046</div><div class="desc">BGE-M3 1024d</div></div>
+  <div class="mini-card info-card"><div class="title">搜尋主題</div><div class="num">12</div><div class="desc">涵蓋全面向</div></div>
+  <div class="mini-card info-card"><div class="title">新發現</div><div class="num">7</div><div class="desc">原版未覆蓋</div></div>
+  <div class="mini-card bull-card"><div class="title">正面</div><div class="num">2</div><div class="desc">轉型歷史佐證</div></div>
+  <div class="mini-card neutral-card"><div class="title">中性</div><div class="num">3</div><div class="desc">補充細節</div></div>
+  <div class="mini-card bear-card"><div class="title">負面</div><div class="num">2</div><div class="desc">集中度風險</div></div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+<strong style="font-size:.88em;color:var(--base)">報告結構（13 章 + 差異摘要）</strong>
+<a href="#ch1">一、公司概覽</a>
+<a href="#ch2">二、催化劑</a>
+<a href="#ch3">三、為什麼漲</a>
+<a href="#ch4">四、風險偵測求證</a>
+<a href="#ch5">五、隱藏優勢求證</a>
+<a href="#ch6">六、六步彙整</a>
+<a href="#ch7">七、風險壓力測試</a>
+<a href="#ch8">八、監控儀表板</a>
+<a href="#ch9">九、推衍預測</a>
+<a href="#ch10">十、股價合理性</a>
+<a href="#ch11">十一、保留清單</a>
+<a href="#ch12">十二、貓膩探索求證</a>
+<a href="#ch13">十三、投資結論</a>
+<a href="#summary">向量版 vs 原版 總體差異摘要表</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- 第一章 公司概覽 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch1">一、公司概覽</div>
+<div class="section-sub">向量搜尋增強：年報歷史資料補充</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+順達是從筆電電池代工廠轉型 AI 伺服器 BBU 供應商的台灣中型廠。2025 全年營收 132.18 億（YoY -5%），毛利率從 8.81% 大幅改善至 16.6%（BBU 高毛利驅動）。BBU 客戶包含 Meta（主力）、AWS（已驗證量產）、Google（已切入）。與台達電深度合作是關鍵護城河。股本 15.42 億，市值約 500 億。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info">
+<b><span class="finding-num">#1</span> 轉型藍圖早在 2019 年就已寫入年報（正面）</b>
+2019 年度年報（108 年度）短期業務發展計畫明確寫到：「深耕現有客戶關係、提升 IT 以外產品營收比重」、「增設台灣組裝線，提升動、儲能電池模組等產品業務彈性」、「開發 AI 檢測應用，提高自動化製程比重」。這代表 Non-IT 轉型不是 2024 年才想到的臨時決定，而是至少規劃了 7 年的長期戰略。管理層的轉型意圖是有歷史根據的。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2019年度.txt（第 61/226 頁）<br>
+<strong>分類</strong>：正面 — 強化管理層戰略一致性的判斷
+</div>
+
+<div class="tip info">
+<b><span class="finding-num">#2</span> 歷史毛利率極低：2019 年僅 5.4%（中性）</b>
+2019 年度個體損益表顯示：營收 163.87 億，銷貨成本 154.98 億，毛利僅 8.89 億，毛利率 <strong>5.4%</strong>。對比 2025 年的 16.6%，毛利率在 6 年內翻了 3 倍。這提供了一個歷史錨點：順達曾經是毛利率極薄的純代工廠，目前的毛利改善幅度確實驚人，但也代表一旦 BBU 題材退潮，有可能回落至歷史均值區間（8-12%）。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2019年度.txt（第 166/226 頁）<br>
+<strong>分類</strong>：中性 — 歷史參照，同時是正面（轉型成果驚人）也是負面（歷史均值很低）
+</div>
+
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第一章差異判定</b>
+原版已充分覆蓋公司現況和 BBU 轉型故事。向量搜尋新增兩項歷史佐證：(1) 2019 年報已有 Non-IT 轉型藍圖，強化管理層「說到做到」的判斷，(2) 2019 年毛利率僅 5.4% 的歷史錨點，提醒轉型前的「原始面貌」。兩項發現不改變原版結論方向，但增加了分析深度。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第二章 催化劑 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch2">二、催化劑</div>
+<div class="section-sub">向量搜尋增強：催化劑驗證補充</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+5 大催化劑（BBU 產能倍增 / ASIC 新客 / HVDC 量產 / A7 土地 / Q1 EPS），淨催化力 +20.9%。但 Price-in 程度很高：C1（BBU 倍增）已被 70% 反映。催化劑只有在「超預期」時才有正面效果。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。所有催化劑相關搜尋結果均與原版已使用的管道 B/E/F 資料重疊。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第二章差異判定</b>
+無新發現。原版已充分覆蓋催化劑評估。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第三章 為什麼漲 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch3">三、為什麼漲</div>
+<div class="section-sub">向量搜尋增強：歷史營運基底補充</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+股價從 89→325 元（+265%），24 個月漲幅中，估值膨脹佔 ~114%，獲利改善佔 ~40%。這是一檔「估值膨脹 > 基本面改善」的股票。PE 從 ~12x 膨脹至 35.91x（v1.1 更新為 40.3x）。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info">
+<b><span class="finding-num">#3</span> 2019 年營收地理集中度：新加坡佔 34.1%（中性）</b>
+2019 年度年報揭露銷售地區分布，新加坡為最大銷售地區（佔 34.1%，金額 60.97 億元）。這是轉運中心（hub）效應 — 透過新加坡出口至 HP/Dell 全球工廠。原版報告未提及地理營收分布。此數據佐證順達的出貨以東南亞轉運為主，泰國設廠有地理邏輯。不過這是 2019 年數據，2024-2025 年的地理分布可能已因 BBU 客戶結構變化而改變。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2019年度.txt（銷售地區表）<br>
+<strong>分類</strong>：中性 — 補充背景知識，不影響投資判斷
+</div>
+
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第三章差異判定</b>
+新增一項地理營收分布的歷史數據，提供背景脈絡但不改變「估值膨脹主導漲幅」的核心結論。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第四章 風險偵測求證 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch4">四、風險偵測求證</div>
+<div class="section-sub">向量搜尋增強：年報風險揭露補充</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+8 項風險 + v1.1 新增 R9（關稅）。R1（PE 回歸，分數 16）和 R2（BBU 落差，分數 15）是最高風險。PE 40.3x 偏離均值 60%。外資 60 日賣超 5,304 張。v1.1 新增原物料三高風險（鋰暴漲 78%、鎳印尼減產 33%、鈷剛果吃緊）。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info">
+<b><span class="finding-num">#4</span> 年報揭露流動性風險管理結構（中性）</b>
+2019 年報附註揭露順達的金融負債結構：浮動利率借款 24 億元（1-5 年期）+ 3.76 億元（5 年以上）。流動性來源充足，銀行融資額度足以支應營運。2020 年報顯示年底現金 24.87 億元。這佐證原版 FCF 品質分析的結論 — 順達的資金面確實穩健。但也揭示一個原版未提及的面向：浮動利率借款在升息環境下的利息成本增加，2019 年利息支出約 7,600 萬。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2019年度.txt（第 213/226 頁）<br>
+<strong>分類</strong>：中性 — 資金面穩健已被原版覆蓋，浮動利率風險影響小
+</div>
+
+<div class="tip info">
+<b><span class="finding-num">#5</span> 供應商集中度量化：A 公司佔採購 22-26.5%（負面）</b>
+2024 年度年報揭露進貨供應商數據：<br>
+- 112 年度（2023）：A 公司佔 23.6%（32.39 億元）<br>
+- 113 年度（2024）：A 公司佔 22.0%（23.44 億元）<br>
+- 114 年第 1 季（2025Q1）：A 公司佔 26.5%（6.43 億元）<br>
+A 公司很可能是 LG Chem 或 Samsung SDI（主要電芯供應商之一）。單一供應商佔比 22-26.5% 代表中度集中風險。原版提到「電芯由 LG/Panasonic/SONY 供應 >50%」但未量化單一供應商佔比。2025Q1 的 26.5% 佔比反而上升，可能反映 BBU 需求增加導致特定電芯規格依賴加深。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2024年度.txt（第 68/84 頁）<br>
+<strong>分類</strong>：負面 — 單一供應商集中度上升，在原物料三高環境下增加議價劣勢
+</div>
+
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第四章差異判定</b>
+新發現 #5（供應商 A 公司佔 26.5%）是一個值得注意的風險細節。原版只定性提到電芯供應商，向量搜尋從年報中挖出了量化數據。在原物料價格飆漲的 2026 年，單一電芯供應商佔比 26.5% 意味著順達在價格談判中的籌碼有限。這強化了原版 R4（毛利率被壓）的風險判斷，但不改變整體風險排序。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第五章 隱藏優勢求證 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch5">五、隱藏優勢求證</div>
+<div class="section-sub">向量搜尋增強：年報歷史驗證</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+4 項隱藏優勢：(1) A7 土地帝國 80 億增值、(2) HVDC 技術壁壘、(3) 管理層兌現率 100%、(4) FCF/淨利 122%。v1.1 新增：(5) GB300 LIC+BBU 互補確認 BBU 不被替代、(6) 泰國二廠規劃。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info">
+<b><span class="finding-num">#6</span> A7 土地合作歷史：致禾順開發公司（30% 持股）（正面）</b>
+2019 年報揭露順達持有「致禾順開發股份有限公司」30% 股權，帳面值 1,510.5 萬元。該公司是為「機場捷運 A7 站開發區產業專用區（A 標）招標投資案」而設立，與致茂電子等合作。這補充了原版對 A7 土地開發的描述 — 順達不是獨自開發，而是透過合資公司運作。30% 持股意味順達在開發決策中有影響力但非主導，開發時程可能受合資夥伴意見影響。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2019年度.txt（第 190/226 頁）<br>
+<strong>分類</strong>：正面 — 合資模式降低開發風險，且有實體公司運作
+</div>
+
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第五章差異判定</b>
+新發現 #6 補充了 A7 土地開發的合資架構細節。原版只提到處分利益 19.5 億和未開發面積，向量搜尋從年報挖出合資公司「致禾順」的具體持股和設立背景。這強化了 A7 土地作為「下檔保護」的可信度（有實體法律架構運作），但也暗示開發決策需要與合資方協調，時程可能不完全由順達掌控。不改變原版結論方向。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第六章 六步彙整 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch6">六、六步彙整</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+Step1~6 的彙整：102 筆資料 53F/29I/14A/6S、NARROW 護城河、ACH H2 看空最少被反駁、壓力測試附條件通過、評審團 Iker 9/23。第三次校準看空合計 80%。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。六步彙整為原版各步驟的總結，向量搜尋無法新增彙整層面的發現。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第六章差異判定</b>
+無新發現。彙整章節的結論完全依賴前六步的分析結果。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第七章 風險壓力測試 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch7">七、風險壓力測試</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+4 種情境矩陣：大牛 405（+25%）、基本 294（-10%）、溫和看空 209（-36%）、黑天鵝 140（-57%）。風險報酬嚴重不對稱：即使符合預期也虧 10%。期望值加權 279 元。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。壓力測試的情境假設和計算方法無需向量補充。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第七章差異判定</b>
+無新發現。但第四章新發現 #5（供應商集中度）若納入壓力測試，可能使 R4（毛利率被壓）的影響從 EPS -17% 微幅上修至 EPS -19~20%。影響不大，不改變情境矩陣。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第八章 監控儀表板 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch8">八、監控儀表板</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+10 個核心監控指標，涵蓋月營收 YoY、毛利率、Non-IT 佔比、外資持股、融資使用率、Meta CapEx、AES-KY 動態、台達電法說會、券商目標價、400VDC 進度。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。監控指標的設定是基於風險分析的推導結果，非資料面的發現。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第八章差異判定</b>
+無新發現。但建議新增一項監控指標：<strong>M11 — 電芯 A 公司採購佔比</strong>（來自新發現 #5），若季報揭露 A 公司佔比突破 30%，代表供應商集中度風險升高。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第九章 推衍預測 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch9">九、推衍預測</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+2026E 基本情境：營收 178 億（+35%）、毛利率 19%、EPS 10.5 元。樂觀 198 億 / 13.5 元。保守 165 億 / 9.5 元。Non-IT 佔比 40-45%。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。財務預測依賴的是管道 D/F 的即時數據和管理層指引，不在年報向量索引範圍內。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第九章差異判定</b>
+無新發現。預測數據不受歷史年報向量搜尋影響。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第十章 股價合理性 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch10">十、股價合理性</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+5 種估值方法交叉驗證，中位數 280 元（低於現價 325 元 14%）。安全邊際買入 220-250 元。要讓 325 元合理，需要 EPS 13+ 元。v1.1 更新後 PE 40.3x，距安全邊際更遠。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第十章差異判定</b>
+無新發現。估值方法論和數據來源均在原版涵蓋範圍內。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第十一章 保留 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch11">十一、保留清單</div>
+<div class="section-sub">向量搜尋增強：年報資料部分回答保留問題</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+5 項保留待決：P1（年報紅旗 CID 問題）、P2（BBU 市佔率）、P3（Meta/AWS 營收拆分）、P4（台達電合約性質）、P5（Q1 毛利率）。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info">
+<b><span class="finding-num">#7</span> 年報 2024 客戶/供應商表格：代號制且「契約約定不得揭露」（負面）</b>
+2024 年報明確寫道：「因契約約定不得揭露客戶名稱或交易對象如為個人且非關係人者，得以代號為之」。供應商以 A/B/C 公司代號表示，客戶端也同樣使用代號。這直接回答了原版 P3（Meta/AWS 營收拆分）的保留問題 — <strong>公司的契約義務限制了客戶別營收的公開揭露</strong>。這意味著 P3 在半年報中也很可能無法被解答，除非法說會 QA 中管理層主動提供比例範圍。BBU 客戶集中度（Meta 佔比）可能永遠是一個「已知的未知」。<br>
+<strong>來源</strong>：vector_search_results.json → 年報/3211_順達_年報_2024年度.txt（第 68/84 頁）<br>
+<strong>分類</strong>：負面 — P3 保留問題的解決難度上升，客戶集中度風險更難量化
+</div>
+
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第十一章差異判定</b>
+新發現 #7 是一個重要的資訊。原版 P3 假設可以在半年報看到客戶別營收，但年報明確寫了「契約約定不得揭露」。這意味著 Meta 佔 BBU 營收的比例可能長期處於模糊狀態，投資人需要從側面（如每月營收波動與 Meta CapEx 的相關性）推算，而非直接從財報取得。這提高了投資決策的不確定性。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第十二章 貓膩探索求證 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch12">十二、貓膩探索求證</div>
+<div class="section-sub">向量搜尋增強</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+市場共識可能過度樂觀。28+19 篇零負面報告，確認偏誤中高。BBU 轉型成功被 price-in 70%+，但達成率僅 55%。反共識觀點有 40% 概率正確，對應 209 元。v1.1 新增：關稅尾部風險、AES-KY 競爭加劇、PE 泡沫升級。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+<p style="font-size:.84em;color:var(--txt3);margin:6px 0">此章節向量搜尋未發現額外資訊。貓膩分析的方法論是基於反共識框架，非資料層面的補充。但新發現 #1（轉型藍圖 7 年歷史）略微削弱了「反共識 1（順達只是代工廠）」的論述 — 如果管理層 7 年前就在規劃，這不是臨時跟風。反共識 1 的概率從 40% 微降至 35%。</p>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>第十二章差異判定</b>
+無直接新發現，但新發現 #1 的間接效果使反共識 1 的概率微降 5%。整體貓膩結論不變。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第十三章 投資結論 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch13">十三、投資結論</div>
+<div class="section-sub">向量增強後的最終判斷</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-card">
+<div class="orig-label">原版 v1.1 結論</div>
+<strong>操作建議：觀望</strong>。好公司壞價格。加權期望價 275 元 vs 現價 325（v1.1 為 364.5），安全邊際買入 220-250 元（v1.1 微調至 250-280）。PE 40.3x 偏離均值 60%。四次校準看空合計 82%。
+</div>
+</details>
+
+<details open>
+<summary>向量增強判定</summary>
+<div class="tip danger">
+<b>向量增強後結論：維持觀望，結論不變</b>
+向量搜尋 12 個主題 × 60 筆最佳匹配，從 3,046 段年報/分析資料中挖掘出 <strong>7 項新發現</strong>（2 正面 / 3 中性 / 2 負面）。<br><br>
+
+<strong>正面新發現</strong>：<br>
+- #1 轉型藍圖 7 年歷史 → 強化管理層戰略一致性<br>
+- #6 A7 合資架構（致禾順）→ 土地開發有實體法律保障<br><br>
+
+<strong>負面新發現</strong>：<br>
+- #5 電芯供應商 A 公司佔 26.5%（上升趨勢）→ 原物料三高環境下議價劣勢加深<br>
+- #7 年報契約限制客戶揭露 → BBU 客戶集中度永遠是「已知的未知」<br><br>
+
+<strong>中性新發現</strong>：<br>
+- #2 歷史毛利率 5.4%（2019）→ 提供轉型前的歷史錨點<br>
+- #3 營收地理分布新加坡 34.1%（2019）→ 背景補充<br>
+- #4 流動性風險穩健 → 佐證 FCF 品質<br><br>
+
+<strong>淨影響</strong>：正面和負面大致抵消。正面（管理層長期規劃可信度↑、土地有法律架構↑）與負面（供應商集中度↑、客戶揭露不透明↑）互相平衡。<strong>不改變原版「觀望，等 220-250 元」的核心結論</strong>。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 總體差異摘要表 -->
+<!-- ============================================================ -->
+<div class="section-title" id="summary">向量版 vs 原版 總體差異摘要表</div>
+<div class="section-sub">12 主題搜尋 × 7 項新發現 × 結論影響評估</div>
+
+<details open>
+<summary>完整差異對照表</summary>
+<table>
+<tr><th>#</th><th>新發現</th><th>來源</th><th>分類</th><th>影響章節</th><th>對結論影響</th></tr>
+<tr style="background:rgba(90,125,96,.05)">
+  <td><strong>1</strong></td>
+  <td>轉型藍圖 2019 年報已記載（7 年規劃）</td>
+  <td>年報 2019，p.61</td>
+  <td style="color:var(--bull)">正面</td>
+  <td>第一章</td>
+  <td>管理層一致性↑，反共識 1 概率-5%</td>
+</tr>
+<tr>
+  <td><strong>2</strong></td>
+  <td>2019 毛利率僅 5.4%（歷史最低錨點）</td>
+  <td>年報 2019，p.166</td>
+  <td style="color:var(--neutral)">中性</td>
+  <td>第一章</td>
+  <td>提供歷史對比，不改結論</td>
+</tr>
+<tr>
+  <td><strong>3</strong></td>
+  <td>2019 營收新加坡佔 34.1%（轉運中心效應）</td>
+  <td>年報 2019，銷售地區表</td>
+  <td style="color:var(--neutral)">中性</td>
+  <td>第三章</td>
+  <td>背景補充，不改結論</td>
+</tr>
+<tr>
+  <td><strong>4</strong></td>
+  <td>流動性風險管理穩健（浮動利率 24 億）</td>
+  <td>年報 2019，p.213</td>
+  <td style="color:var(--neutral)">中性</td>
+  <td>第四章</td>
+  <td>佐證 FCF 品質，不改結論</td>
+</tr>
+<tr style="background:rgba(194,124,110,.05)">
+  <td><strong>5</strong></td>
+  <td>電芯 A 公司佔採購 26.5%（2025Q1，上升）</td>
+  <td>年報 2024，p.68</td>
+  <td style="color:var(--bear)">負面</td>
+  <td>第四章</td>
+  <td>R4 風險佐證，供應商議價劣勢加深</td>
+</tr>
+<tr style="background:rgba(90,125,96,.05)">
+  <td><strong>6</strong></td>
+  <td>A7 合資「致禾順開發」30% 持股</td>
+  <td>年報 2019，p.190</td>
+  <td style="color:var(--bull)">正面</td>
+  <td>第五章</td>
+  <td>土地開發有法律架構，下檔保護↑</td>
+</tr>
+<tr style="background:rgba(194,124,110,.05)">
+  <td><strong>7</strong></td>
+  <td>年報契約限制客戶名稱揭露</td>
+  <td>年報 2024，p.68</td>
+  <td style="color:var(--bear)">負面</td>
+  <td>第十一章</td>
+  <td>P3 保留問題解決難度↑，不確定性↑</td>
+</tr>
+</table>
+</details>
+
+<details open>
+<summary>總結論</summary>
+<div class="tip danger">
+<b>向量增強版最終評估</b>
+<strong>結論不變：觀望，等 220-250 元。</strong><br><br>
+向量搜尋從 3,046 段年報/分析資料中找到 7 項原版未覆蓋的細節，但正面（2 項）與負面（2 項）相互抵消，3 項中性純屬背景補充。原版 v1.1 的分析深度已經非常充分（13 章 + 6 項西碧拉新發現 + 四次信心校準），向量搜尋的增量價值主要在於：<br>
+(1) <strong>歷史佐證</strong>：確認管理層的 Non-IT 轉型是 7 年長期規劃而非臨時跟風<br>
+(2) <strong>供應商量化</strong>：首次量化電芯供應商集中度（A 公司 26.5%），強化成本面風險<br>
+(3) <strong>資訊透明度</strong>：確認客戶名稱受契約保密限制，BBU 客戶集中度將長期模糊<br><br>
+這些發現為原版結論提供了更厚實的證據基礎，但不足以翻轉「好公司壞價格」的核心判斷。
+</div>
+</details>
+
+<div class="footer">
+天機閣向量搜尋增強系統 ｜ BGE-M3 1024d ｜ 3,046 段索引 ｜ 12 主題搜尋<br>
+生成時間：2026-03-27 ｜ 原版基準：第七步_完整版報告_v1.1.html
+</div>
+
+</div>
+</body>
+</html>
