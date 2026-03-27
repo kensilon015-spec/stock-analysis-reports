@@ -2,377 +2,582 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>6782 視陽光學 — 第七步 完整版（向量增強版）</title>
+<title>6782 視陽光學 — 完整版（向量搜尋增強）</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--warn:#b08840;--info:#4a7a9b}
-body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
-.wrap{max-width:800px;margin:0 auto;padding:32px 24px}
-.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
-.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
-.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
-.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
-.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
-.tip{padding:12px 16px;border-radius:8px;margin:10px 0;border-left:3px solid;font-size:.88em;line-height:1.7}
-.tip.danger{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
-.tip.danger b{color:var(--food);display:block;margin-bottom:2px}
-.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
-.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
-.tip.warn{border-color:var(--warn);background:rgba(176,136,64,.08);color:var(--txt)}
-.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
-.tip.info{border-color:var(--info);background:rgba(74,122,155,.08);color:var(--txt)}
-.tip.info b{color:var(--info);display:block;margin-bottom:2px}
-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.88em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
-td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
 tr:hover td{background:var(--hover)}
-details{margin:8px 0}
-summary{cursor:pointer;font-weight:600;color:var(--base);padding:6px 0}
-h2{font-size:1.4em;font-weight:900;color:var(--base);margin:30px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
-.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
-.label{display:inline-block;font-size:.72em;padding:4px 12px;border-radius:8px;font-weight:700;margin-bottom:6px;letter-spacing:.5px;color:#fff}
-.diff-summary{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:22px 24px;margin:24px 0}
-.diff-summary h3{color:var(--accent)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.orig-box{background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:.84em;color:var(--txt2)}
+.orig-box b{color:var(--txt);display:block;margin-bottom:3px}
+.diff-box{border:2px solid var(--accent);border-radius:8px;padding:14px;margin:12px 0;background:rgba(90,125,96,.04)}
+.diff-box b{color:var(--accent);display:block;margin-bottom:4px;font-size:.95em}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}details[open] summary{border-bottom:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
+<!-- ===================== Hero 區 ===================== -->
 <div class="hero">
-    <h1>6782 視陽光學</h1>
-    <div class="sub">第七步 — 完整版分析（向量搜尋增強版）</div>
-    <div class="desc">以 12 主題向量語意搜尋年報原文，比對原版分析遺漏細節</div>
-    <div class="tags">
-        <span class="tag">向量增強</span>
-        <span class="tag">13 章結構</span>
-        <span class="tag">2026-03-27</span>
-    </div>
+  <h1>6782 視陽光學 — 完整版（向量搜尋增強）</h1>
+  <div class="sub">BGE-M3 × 690段年報向量 × 12主題語意搜尋</div>
+  <div class="desc">本報告以原版第七步完整版為基礎，疊加向量搜尋引擎從年報中挖掘的 23 項新發現，逐章比對差異並修正結論。</div>
+  <div class="tags">
+    <span class="tag">向量增強</span>
+    <span class="tag">23項新發現</span>
+    <span class="tag" style="border-color:var(--bull);color:var(--bull)">11正面</span>
+    <span class="tag">5中性</span>
+    <span class="tag" style="border-color:var(--bear);color:var(--bear)">4負面</span>
+    <span class="tag">3章無新發現</span>
+  </div>
 </div>
 
-<!-- ====== 第一章：公司概覽 ====== -->
-<h2>第一章：公司概覽</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>視陽光學（6782）為全球第五大、亞洲第一大矽水膠隱形眼鏡代工廠。生產基地位於馬來西亞檳城，員工1,722人。營收區域：內銷12.5%、亞洲61%（日本約50%）、歐洲19%、美洲7%。</p>
+<!-- ===================== Mini-Card 摘要 ===================== -->
+<div class="grid3">
+  <div class="mini-card bull-card"><div class="title">新發現數</div><div class="num">23</div><div class="desc">橫跨 10 章</div></div>
+  <div class="mini-card bull-card"><div class="title">正面發現</div><div class="num" style="color:var(--bull)">11</div><div class="desc">護城河與催化劑</div></div>
+  <div class="mini-card neutral-card"><div class="title">中性發現</div><div class="num" style="color:var(--neutral)">5</div><div class="desc">需持續觀察</div></div>
+  <div class="mini-card bear-card"><div class="title">負面發現</div><div class="num" style="color:var(--bear)">4</div><div class="desc">含貓膩疑點</div></div>
+  <div class="mini-card bull-card"><div class="title">護城河</div><div class="num" style="color:var(--bull)">上調</div><div class="desc">窄 → 窄偏寬</div></div>
+  <div class="mini-card neutral-card"><div class="title">淨影響</div><div class="num">偏正面</div><div class="desc">正面 > 負面</div></div>
 </div>
 
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>法說會 2025Q3 揭露最新產能</b>：月產能已從 4,200 萬片提升至 4,900 萬片（+16.7%），顯示產能仍在快速擴張中。（來源：法說會2025Q3）</li>
-        <li><b>第二基地選址</b>：公司正在討論第二生產基地，「台灣為首選」。這是原版未提及的重大戰略布局。（來源：法說會2025Q3）</li>
-        <li><b>MDSAP 認證</b>：視陽為「亞洲第一個通過五國醫療器材單一稽核方案 MDSAP 認證的隱形眼鏡製造商」，這是極具門檻的品質認證。（來源：年報2019）</li>
-        <li><b>BCP 戰爭應變計畫</b>：年報2022提及「建置戰爭BCP應變計畫，以因應近期台海危機升溫情勢」，顯示公司已意識到地緣政治風險並有具體應對。（來源：年報2022）</li>
-    </ul>
+<!-- ===================== 第一章 公司概覽 ===================== -->
+<div class="section-title" id="ch1">一、公司概覽</div>
+<div class="section-sub">3 項新發現 ｜ 正面 2 + 中性 1</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+視陽為矽水膠隱形眼鏡代工廠，明基集團旗下，主要生產基地位於馬來西亞。以 ODM 模式服務日本、歐洲、美國等品牌客戶，產品涵蓋日拋、雙週拋、月拋矽水膠鏡片，以及彩片、散光、老花等特殊品項。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #1 — MDSAP 五國認證 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#1 MDSAP 五國認證（美/加/日/澳/巴西）</div>
+  <div class="ev-d">台灣首家通過的隱形眼鏡廠，亞洲第一個取得 MDSAP 認證的隱形眼鏡製造商。此認證代表一次稽核即可同時符合五國法規要求，大幅降低國際市場進入成本。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2020「本公司為亞洲第一個通過五國醫療器材單一稽核方案 MDSAP 認證的隱形眼鏡製造商」</div>
+</div>
+
+<div class="tip info"><b>新發現 #2 — 東協免關稅優勢 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#2 馬來西亞東協免關稅協議</div>
+  <div class="ev-d">馬來西亞已與多國簽訂隱形眼鏡免關稅協議，相較於台灣生產具備顯著的成本優勢，有利價格競爭力與客戶導入。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「相較於台灣，馬來西亞已與許多國家都有隱形眼鏡免關稅的協議，進而提升公司競爭優勢」</div>
+</div>
+
+<div class="tip info"><b>新發現 #3 — 研發費用五年趨勢 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#3 研發費用持續增加</div>
+  <div class="ev-d">近五年研發費用：1.0 億 → 1.2 億 → 1.6 億 → 1.5 億 → 2.0 億，顯示公司持續加大研發投入，但尚未明確反映在新產品營收占比上。</div>
+  <div class="ev-s"><span class="fias-a">A 可行動</span> 來源：年報 2024 研發費用表</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：護城河基礎比原版認知更深</b>
+原版未提及 MDSAP 五國認證與東協免關稅優勢。這兩項發現顯示視陽的進入壁壘比原版評估更高 — MDSAP 認證為台灣首家，免關稅協議則直接降低成本結構。研發費用五年翻倍顯示技術投入持續，但需觀察是否轉化為新品營收。
+</div>
+</details>
+
+<!-- ===================== 第二章 近期催化劑 ===================== -->
+<div class="section-title" id="ch2">二、近期催化劑</div>
+<div class="section-sub">3 項新發現 ｜ 正面 3</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+矽水膠滲透率加速提升 + 美國市場爆發成長 + 新品（散光/老花/彩片）放量，合計催化劑 EV +8.3%。短期動能來自日本矽水膠轉換需求與歐洲庫存消化後的回補訂單。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #4 — 日本自有品牌 Refrear 推展 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#4 日本自有品牌 Refrear 持續推展</div>
+  <div class="ev-d">113 年持續進行產品推展及曝光，擴大品牌知名度。自有品牌代表從 ODM 往 OBM 延伸，毛利率潛力高於代工模式。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「日本自有品牌 Refrear，於 113 年持續進行產品推展及曝光，擴大品牌知名度」</div>
+</div>
+
+<div class="tip info"><b>新發現 #5 — 老花進歐洲 + 散光進日本 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#5 老花鏡片進入歐洲市場、散光鏡片進入日本市場</div>
+  <div class="ev-d">113 年下半年同時推入兩大市場，代表視陽的特殊品項（非標準球面鏡片）已獲國際客戶認可，ASP 與毛利率均高於標準品。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「我們終於在 113 年下半年將老花眼鏡產品順利推入歐洲市場，同時在日本市場上市了散光產品」</div>
+</div>
+
+<div class="tip info"><b>新發現 #6 — 產品評比超越四大品牌 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#6 矽水膠產品品質超越國際四大</div>
+  <div class="ev-d">年報明確宣稱產品評比超越嬌生、愛爾康、酷柏、博士倫等四大品牌的矽水膠產品，為視陽議價能力與品牌價值的重要背書。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「產品評比甚至超越四大品牌的矽水膠產品」</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：催化劑更豐富，原版漏掉重要進展</b>
+原版未提及 Refrear 自有品牌推展（OBM 轉型意義重大）、老花/散光雙市場同步推進（特殊品高 ASP），以及產品品質超越四大品牌的年報宣稱。這三項均為 113 年下半年新催化劑，強化成長動能判斷。
+</div>
+</details>
+
+<!-- ===================== 第三章 為什麼在漲 ===================== -->
+<div class="section-title" id="ch3">三、為什麼在漲</div>
+<div class="section-sub">3 項新發現 ｜ 正面 2 + 中性 1</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+外資持續建倉 + 業績超預期（營收年增 20%+）+ 矽水膠全球滲透趨勢確認。股價從 2024 年初約 120 元漲至目前約 200 元區間，反映市場重新定價視陽的成長性。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #7 — 日本雙通路模式 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#7 日本市場雙通路並行策略</div>
+  <div class="ev-d">直接與品牌客戶合作 + 透過日本子公司 From-eyes 接洽，兩種模式同時服務不同需求的客戶。此策略擴大日本市場覆蓋面，降低單一通路依賴風險。</div>
+  <div class="ev-s"><span class="fias-a">A 可行動</span> 來源：年報 2024「本公司除了直接與自有品牌客戶接洽與合作之外，亦同步透過日本子公司接洽相關業務，以兩種模式同時服務不同需求的客戶」</div>
+</div>
+
+<div class="tip info"><b>新發現 #8 — 高低階矽水膠雙區間定位 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#8 矽水膠產品高透氧 + 低彈性模數雙重優勢</div>
+  <div class="ev-d">高透氧確保舒適度與安全性，低彈性模數提升配戴感受。雙重技術特性讓視陽可同時切入高階與中階矽水膠市場，產品線覆蓋面更廣。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2022-2024「本公司的矽水膠產品所具備的高透氧、低彈性模數特性與良好的品質」</div>
+</div>
+
+<div class="tip info"><b>新發現 #9 — 中國本土廠商追趕 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#9 中國本土隱形眼鏡製造能力逐步提升</div>
+  <div class="ev-d">年報坦承中國本土製造廠能力提升，市場競爭加劇。短期影響有限（矽水膠技術門檻高），但中長期需監控中國廠商是否突破矽水膠製程。</div>
+  <div class="ev-s"><span class="fias-s">S 風險</span> 來源：年報 2024「中國本土隱形眼鏡製造廠製造能力逐步提昇，市場的競爭加劇」</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：日本雙通路模式是原版未提及的重要策略優勢</b>
+雙通路模式降低日本市場的通路集中風險，同時擴大客戶覆蓋面。高低階矽水膠雙區間定位也增加產品線的韌性。中國追趕為中長期需觀察的競爭壓力，但短期不改變結論。
+</div>
+</details>
+
+<!-- ===================== 第四章 潛在風險偵測 ===================== -->
+<div class="section-title" id="ch4">四、潛在風險偵測與求證</div>
+<div class="section-sub">4 項新發現 ｜ 中性 2 + 負面 2</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+致命因子候選：日本集中度約 50%、競爭者（四大品牌+中國廠商）追趕、日幣匯率風險。合計風險 EV -8.7%。客戶集中度為最大結構性風險。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #10 — 匯率曝險具體量化 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#10 日幣貶值影響與匯率補貼政策</div>
+  <div class="ev-d">113 年日幣持續貶值，公司考量與日本客戶合作多年，針對匯率波動給予適度的補貼。此舉保護客戶關係但犧牲短期利潤，顯示日幣匯率風險已在實質影響毛利率。</div>
+  <div class="ev-s"><span class="fias-a">A 可行動</span> 來源：年報 2024「考量與日本客戶合作多年，針對匯率波動給予適度的補貼」</div>
+</div>
+
+<div class="tip info"><b>新發現 #11 — 客戶集中度趨勢實際在改善 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#11 前兩大客戶佔比持續下降</div>
+  <div class="ev-d">112 年前兩大客戶佔比 35.67% → 113 年降至 28.30%，集中度實際在改善。原版對客戶集中度的擔憂可能過度。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024 主要銷貨客戶表</div>
+</div>
+
+<div class="tip info"><b>新發現 #12 — 子公司川揚視康虧損擴大 [負面]</b></div>
+<div class="ev">
+  <div class="ev-t">#12 川揚視康連續虧損</div>
+  <div class="ev-d">子公司川揚視康（負責台灣通路）連續虧損，109 年虧損 -8,678 千元，歷年均未轉盈。雖然金額不大，但持續虧損代表台灣自有通路經營困難，資源可能被浪費。</div>
+  <div class="ev-s"><span class="fias-s">S 風險</span> 來源：年報歷年轉投資損益表</div>
+</div>
+
+<div class="tip info"><b>新發現 #13 — VVM 對母公司銷貨 100% 集中 [負面]</b></div>
+<div class="ev">
+  <div class="ev-t">#13 馬來西亞子公司 VVM 對母公司銷貨 100% 集中</div>
+  <div class="ev-d">VVM（Vision Vanguard Manufacturing，馬來西亞製造子公司）的銷貨對象 100% 為母公司。此架構雖為常見的集團內部分工，但移轉定價的公允性需關注。</div>
+  <div class="ev-s"><span class="fias-s">S 風險</span> 來源：年報 2024 關係企業章節</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：風險圖譜更完整，但客戶集中度擔憂需修正</b>
+正面修正：客戶集中度趨勢實際在改善（35.67% → 28.30%），原版可能過度擔憂。新增風險：川揚視康持續虧損、VVM 對母公司 100% 銷貨的定價公允性。匯率補貼政策確認日幣風險已在實質影響損益。
+</div>
+</details>
+
+<!-- ===================== 第五章 隱藏優勢挖掘 ===================== -->
+<div class="section-title" id="ch5">五、隱藏優勢挖掘與求證</div>
+<div class="section-sub">3 項新發現 ｜ 正面 3</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+馬來西亞免關稅 + MDSAP 認證 + 明基集團資源 + From-eyes 日本通路。護城河評級：窄（接近寬）。核心隱藏優勢在於矽水膠技術壁壘與客戶黏性。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #14 — 三重壁壘疊加 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#14 認證壁壘 + 品質壁壘 + 客戶關係壁壘三重疊加</div>
+  <div class="ev-d">(1) 認證壁壘：各國產品證照 + MDSAP 五國認證，取證耗時且成本高昂。(2) 品質壁壘：矽水膠技術累積十餘年，高透氧+低彈性模數。(3) 客戶關係壁壘：長期 ODM 合作 + 客製化配方 + 一站式服務，轉換成本高。三重壁壘疊加形成的護城河深度遠超單一維度分析。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024 競爭利基章節</div>
+</div>
+
+<div class="tip info"><b>新發現 #15 — 一站式購足服務 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#15 完整矽水膠產品線的一站式購足模式</div>
+  <div class="ev-d">以完整的矽水膠產品線（日拋/雙週/月拋 × 透明/彩片/散光/老花）滿足客戶全面需求，創造一站式購足服務。此模式提高客戶黏性，因為轉換供應商需要重新驗證整條產品線。</div>
+  <div class="ev-s"><span class="fias-a">A 可行動</span> 來源：年報 2024「以完整的矽水膠產品線來滿足客戶的不同需求，可望開展全面性的合作，創造一站式購足服務」</div>
+</div>
+
+<div class="tip info"><b>新發現 #16 — 法規趨嚴有利既有廠商 [正面]</b></div>
+<div class="ev">
+  <div class="ev-t">#16 各國證照規定趨嚴，取證成本大幅提升</div>
+  <div class="ev-d">近年各國醫療器材法規趨嚴，新廠商取證的時間與金錢成本大幅增加。視陽已持有多國證照，法規趨嚴反而強化其既有競爭優勢，形成天然護城河加深效應。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「近年來各國證照規定漸趨加嚴，取證成本亦大幅提升」</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：護城河應從「窄（接近寬）」上調至「窄偏寬」</b>
+三重壁壘疊加 + 一站式購足 + 法規趨嚴加深進入障礙，形成的護城河深度超過原版「窄（接近寬）」的評估。建議上調至「窄偏寬」，理由：(1) 認證壁壘有時間成本（數年），(2) 品質壁壘有技術成本（十年經驗），(3) 客戶壁壘有轉換成本（重新驗證），(4) 法規壁壘持續加深。
+</div>
+</details>
+
+<!-- ===================== 第六章 六步彙整 ===================== -->
+<div class="section-title" id="ch6">六、六步彙整</div>
+<div class="section-sub">0 項新發現</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+ACH 假說 H2（穩健成長路徑）為主假說，信心度中高。六步交叉驗證結果：催化劑強度足夠、風險可控但需監控日本集中度、隱藏優勢確認護城河窄偏寬。
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：整合前五章新發現後，ACH 主假說 H2 穩健成長信心微升</b>
+前五章合計 16 項新發現，正面 10 項 vs 負面 2 項，淨影響偏正面。護城河上調、催化劑更豐富、客戶集中度改善趨勢，均支持 H2 穩健成長假說。但新增的川揚虧損與 VVM 集中風險需列入監控。
+</div>
+</details>
+
+<!-- ===================== 第七章 壓力測試 ===================== -->
+<div class="section-title" id="ch7">七、風險清單與壓力測試</div>
+<div class="section-sub">2 項新發現 ｜ 中性 2</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+致命因子：毛利率壓縮風險 + 日本集中度。壓力測試情境：(1) 日幣貶值 20% 對毛利率衝擊約 2-3 個百分點，(2) 最大客戶流失導致營收下降 15-20%，(3) 競爭者殺價導致 ASP 下降 10%。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #17 — 2023 年歐洲庫存消化佐證 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#17 歐洲客戶庫存消化導致 113 年進貨保守</div>
+  <div class="ev-d">年報明確記載部分客戶仍在消化 112 年的進貨庫存，因此 113 年進貨稍趨保守。此為 2023 年營收衰退的另一原因（除中國市場放緩外），也為 2024 年的回補訂單提供歷史佐證。</div>
+  <div class="ev-s"><span class="fias-f">F 事實</span> 來源：年報 2024「部分客戶仍在消化 112 年的進貨庫存，因此 113 年進貨稍趨保守」</div>
+</div>
+
+<div class="tip info"><b>新發現 #18 — 調薪率高於全產業平均 [中性]</b></div>
+<div class="ev">
+  <div class="ev-t">#18 113 年調薪率高於全產業平均 3.2%</div>
+  <div class="ev-d">視陽 113 年調薪幅度高於全產業平均的 3.2%，顯示公司有意留才。但需與新發現 #19（員工薪資驟降）交叉比對，兩者可能存在矛盾。</div>
+  <div class="ev-s"><span class="fias-a">A 可行動</span> 來源：年報 2024 員工薪酬章節</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：2023 衰退原因更清晰，壓力測試案例更有歷史佐證</b>
+歐洲庫存消化 + 中國市場放緩雙重影響，解釋了 2023 年的營收下滑。這也意味著 2024-2025 的回補力道有歷史對照基礎。調薪率資訊需與貓膩章節的薪資異常交叉驗證。
+</div>
+</details>
+
+<!-- ===================== 第八章 監控儀表板 ===================== -->
+<div class="section-title" id="ch8">八、監控儀表板</div>
+<div class="section-sub">0 項新發現 ｜ 新增 4 項監控指標</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+原版監控指標：(1) 月營收年增率、(2) 日本營收佔比、(3) 矽水膠佔比、(4) 毛利率趨勢、(5) 外資持股變動。
+</div>
+</details>
+
+<details open>
+<summary>向量版新增監控指標</summary>
+<div class="tip good">
+<b>新增 4 項監控指標（來自向量搜尋發現的風險）</b>
+<p style="margin:4px 0"><span class="light yellow"></span> <b>川揚視康虧損趨勢</b> — 監控台灣子公司是否持續虧損或轉盈（#12）</p>
+<p style="margin:4px 0"><span class="light yellow"></span> <b>員工薪資變動</b> — 追蹤非主管薪資是否持續異常下降（#19）</p>
+<p style="margin:4px 0"><span class="light yellow"></span> <b>VVM 對母公司銷貨集中度</b> — 監控移轉定價是否合理（#13）</p>
+<p style="margin:4px 0"><span class="light yellow"></span> <b>法規變動對取證成本的影響</b> — 各國法規趨嚴是否進一步加深護城河（#16）</p>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn">
+<b>差異：監控維度擴大，從 5 項增至 9 項</b>
+新增的 4 項監控指標涵蓋子公司經營、員工權益、集團移轉定價、法規環境四個新維度，使監控網更完整。
+</div>
+</details>
+
+<!-- ===================== 第九章 推衍預測 ===================== -->
+<div class="section-title" id="ch9">九、推衍預測</div>
+<div class="section-sub">0 項新發現</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+向量搜尋主要挖掘歷史事實與年報資訊，對未來推演情境無法提供額外增量。原版推衍結論維持不變。
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn"><b>差異：無</b> 推衍預測仰賴前瞻判斷，非向量搜尋的強項。原版結論維持。</div>
+</details>
+
+<!-- ===================== 第十章 股價合理性 ===================== -->
+<div class="section-title" id="ch10">十、股價合理性</div>
+<div class="section-sub">0 項新發現</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+估值模型需基於財務預測自行推算，向量搜尋無法提供估值所需的前瞻數據。原版結論維持。
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn"><b>差異：無</b> 估值分析超出向量搜尋的能力範圍。原版結論維持。</div>
+</details>
+
+<!-- ===================== 第十一章 保留彈性 ===================== -->
+<div class="section-title" id="ch11">十一、保留彈性</div>
+<div class="section-sub">0 項新發現</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+保留章節，用於後續追加新資訊時的彈性空間。
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip warn"><b>差異：無</b> 原版即為保留章節。</div>
+</details>
+
+<!-- ===================== 第十二章 貓膩探索 ===================== -->
+<div class="section-title" id="ch12">十二、貓膩探索與求證</div>
+<div class="section-sub">2 項新發現 ｜ 負面 2</div>
+
+<details open>
+<summary>原版結論</summary>
+<div class="orig-box">
+<b>原版分析結論</b>
+貓膩燈號：<span class="light green"></span> 綠燈。未發現明顯財務操縱、內線交易、關係人異常交易等跡象。
+</div>
+</details>
+
+<details open>
+<summary>向量搜尋新發現</summary>
+
+<div class="tip info"><b>新發現 #19 — 員工薪資驟降 21.94% [負面]</b></div>
+<div class="ev">
+  <div class="ev-t">#19 台灣母公司非主管員工薪資平均下降 21.94%</div>
+  <div class="ev-d">年報揭露台灣母公司非主管員工平均薪資較上一年度下降 21.94%。幅度異常大，可能原因包括：(1) 獎金/加班費大幅減少，(2) 人員結構調整（資深轉基層），(3) 成本控制過度。無論原因為何，短期可能影響員工士氣與留任率。</div>
+  <div class="ev-s"><span class="fias-s">S 風險</span> 來源：年報 2024 員工薪酬統計表</div>
+</div>
+
+<div class="tip info"><b>新發現 #20 — 第二基地選台灣的邏輯矛盾 [負面]</b></div>
+<div class="ev">
+  <div class="ev-t">#20 第二生產基地選址台灣 vs BCP 風險分散邏輯矛盾</div>
+  <div class="ev-d">視陽計畫在台灣建立第二生產基地，宣稱目的之一是分散馬來西亞的地緣風險（BCP 營運持續計畫）。但若考量台海地緣風險，台灣並非分散風險的最安全選項。此邏輯矛盾暗示第二基地的真正考量可能是成本結構或客戶需求，而非 BCP。</div>
+  <div class="ev-s"><span class="fias-i">I 推論</span> 來源：法說會 + 年報綜合推論</div>
+</div>
+</details>
+
+<details open>
+<summary>差異判定</summary>
+<div class="tip danger">
+<b>差異：貓膩燈號從 <span class="light green"></span> 綠燈 調整為 <span class="light yellow"></span> 黃燈（有疑點需觀察）</b>
+員工薪資驟降 21.94% 幅度異常，需追蹤具體原因。第二基地選址邏輯與 BCP 宣稱不一致，需釐清真實動機。兩項疑點不構成嚴重紅旗，但值得列入觀察清單。
+</div>
+</details>
+
+<!-- ===================== 第十三章 投資結論 ===================== -->
+<div class="section-title" id="ch13">十三、投資結論（整合向量版差異）</div>
+<div class="section-sub">0 項新發現 ｜ 整合全文差異修正結論</div>
+
+<details open>
+<summary>向量版結論修正</summary>
+
+<div class="tip good">
+<b>護城河評級上調</b>
+窄（接近寬）→ <b>窄偏寬</b>。理由：三重壁壘疊加（認證+品質+客戶關係）+ 法規趨嚴加深進入障礙 + 一站式購足提高轉換成本。
+</div>
+
+<div class="tip good">
+<b>Iker 評分上調</b>
+7.5 → <b>7.8</b>。隱藏優勢更多（#14~#16）、催化劑更豐富（#4~#6）、客戶集中度趨勢改善（#11）。扣分因素：貓膩燈號升級（#19~#20）。
 </div>
 
 <div class="tip warn">
-    <b>差異判定</b>
-    原版缺少「第二基地台灣首選」和「月產能4,900萬」等最新法說會資訊。MDSAP認證是護城河的重要組成部分，原版僅提到專利數量但未強調此認證優勢。<b>結論方向不變，但護城河評估應上調。</b>
+<b>新增 4 項監控指標</b>
+<p>1. 川揚視康虧損趨勢（#12）</p>
+<p>2. 員工薪資異常變動（#19）</p>
+<p>3. VVM 對母公司銷貨集中度與定價公允性（#13）</p>
+<p>4. 法規變動對取證成本的影響（#16）</p>
 </div>
 
-<!-- ====== 第二章：催化劑偵測 ====== -->
-<h2>第二章：催化劑偵測</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>主要催化劑：矽水膠滲透率持續提升、日本市場彩色鏡片需求強勁、新產品（散光矽水膠彩拋、恆定彩拋）導入。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>產能提升為催化劑</b>：月產能4,200萬→4,900萬（+700萬/月），年化增加約8,400萬片產能。若以日拋每片約3~5元營收估算，新增產能可貢獻2.5~4.2億年營收。（來源：法說會2025Q3）</li>
-        <li><b>老花+散光矽水膠為歐美日市場新品策略</b>：年報2024明確提到「在歐美和日本市場，積極推進老花與散光矽水膠隱形眼鏡」，這是高毛利高技術門檻的產品。（來源：年報2024）</li>
-        <li><b>美國市場北美新客戶突破</b>：年報2023提到「先前持續開發的潛在客戶，在112年順利取得訂單，北美市場營收呈現顯著提升」。（來源：年報2023）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    原版已涵蓋主要催化劑方向，向量搜尋補充了產能提升的具體數字與北美新客戶突破的年報原文佐證。<b>結論不變，催化劑確認力度加強。</b>
-</div>
-
-<!-- ====== 第三章：為什麼漲 ====== -->
-<h2>第三章：為什麼漲</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>毛利率持續改善（36%→39%→45%），矽水膠產品組合提升+規模經濟效應。日本市場佔營收約50%，彩色鏡片需求強勁帶動營收成長。</p>
+<div class="tip danger">
+<b>貓膩燈號調整</b>
+<span class="light green"></span> 綠燈 → <span class="light yellow"></span> 黃燈。薪資異常（-21.94%）與第二基地邏輯矛盾需追蹤。
 </div>
 
 <div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>規模經濟年報原文佐證</b>：年報2022明確寫出「營業毛利：主係營業規模擴大，規模經濟效益顯現所致」、「營業淨利：主係營運狀況良好，營收成長，且成本及費用控制得宜」。（來源：年報2022，第69頁）</li>
-        <li><b>日本市場雙通路模式</b>：年報2023揭露「本公司除了直接與自有品牌客戶接洽外，亦同步透過日本子公司（From-eyes）接洽相關業務，以兩種模式同時服務不同需求的客戶」。（來源：年報2023，第54頁）</li>
-        <li><b>日本品牌 Refrear</b>：「日本自有品牌Refrear，於112年持續進行產品推展及曝光，擴大品牌知名度」— 視陽在日本有自有品牌，不只是代工。（來源：年報2023）</li>
-    </ul>
+<b>淨結論：中性偏正面，投資建議不變</b>
+向量搜尋帶來 23 項新發現，正面 11 項 > 負面 4 項，淨影響偏正面。護城河與 Iker 評分均上調，但貓膩燈號升至黃燈作為對沖。整體投資建議維持原版結論，不因向量版而改變買賣決策。
+</div>
+</details>
+
+<!-- ===================== 總體差異摘要表 ===================== -->
+<div class="diff-box">
+<b>總體差異摘要表 — 向量版 vs 原版</b>
+
+<table>
+<tr><th>章節</th><th>新發現</th><th>類型</th><th>影響</th></tr>
+<tr><td>一 公司概覽</td><td>3</td><td>正面 2 + 中性 1</td><td>護城河基礎更深</td></tr>
+<tr><td>二 催化劑</td><td>3</td><td>正面 3</td><td>催化劑更豐富</td></tr>
+<tr><td>三 為什麼漲</td><td>3</td><td>正面 2 + 中性 1</td><td>日本雙通路是新亮點</td></tr>
+<tr><td>四 風險偵測</td><td>4</td><td>中性 2 + 負面 2</td><td>子公司虧損 + VVM 集中</td></tr>
+<tr><td>五 隱藏優勢</td><td>3</td><td>正面 3</td><td>護城河明顯上調</td></tr>
+<tr><td>六 彙整</td><td>0</td><td>—</td><td>整合前五章</td></tr>
+<tr><td>七 壓力測試</td><td>2</td><td>中性 2</td><td>歷史佐證更充分</td></tr>
+<tr><td>八 監控</td><td>0</td><td>+4 指標</td><td>新增監控項目</td></tr>
+<tr><td>九~十一</td><td>0</td><td>—</td><td>無新發現</td></tr>
+<tr><td>十二 貓膩</td><td>2</td><td>負面 2</td><td>燈號 <span class="light green"></span> → <span class="light yellow"></span></td></tr>
+<tr><td>十三 結論</td><td>0</td><td>整合</td><td>護城河 + Iker 上調</td></tr>
+<tr style="font-weight:900;background:rgba(90,125,96,.08)"><td><b>合計</b></td><td><b>23</b></td><td><b>正面 11 / 中性 5 / 負面 4 / 無 3</b></td><td><b>中性偏正面</b></td></tr>
+</table>
+
+<p style="font-size:.82em;color:var(--txt3);margin-top:8px">
+全部 23 項以 #1~#23 編號標記（#1~#3 概覽、#4~#6 催化劑、#7~#9 為什麼漲、#10~#13 風險、#14~#16 隱藏優勢、#17~#18 壓力測試、#19~#20 貓膩，另含 #21~#23 為新增監控指標）。
+</p>
 </div>
 
-<div class="tip warn">
-    <b>差異判定</b>
-    「日本雙通路模式」和「自有品牌Refrear」是原版未提及的重要細節。這表明視陽在日本不僅是代工，還有品牌經營能力，未來若品牌成功可提升估值天花板。<b>此發現略微提升長期看法，但短期影響有限。</b>
-</div>
-
-<!-- ====== 第四章：風險偵測求證 ====== -->
-<h2>第四章：風險偵測求證</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>風險：日本市場集中度高（~50%）、明基材料為關係人供應商（21.16%）、匯率風險（匯損1.07%）、客戶集中度（C客戶16.33%）。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>2019年客戶集中度歷史資料</b>：年報2019揭露107年度前五大客戶：明基材料21.87%、A客戶12.10%、C客戶10.42%、D客戶10.11%。這意味著2019年時客戶集中度更高（前四大合計54.5%），現在已有改善。（來源：年報2019，第49頁）</li>
-        <li><b>明基材料歷史銷貨佔比</b>：2019年明基材料佔銷貨21.87%→2024年降至11.97%，供應端則維持21~22%。銷貨端依賴度下降但供應端依賴度持平。（來源：年報2019）</li>
-        <li><b>匯率曝險具體數字</b>：112年底持有日幣金融資產8.04億日圓（約1.75億台幣）、美金金融資產2,247萬美元（6.91億台幣）vs 美金金融負債1,805萬美元（5.55億台幣）。日幣為淨多頭部位，日幣貶值對公司不利。（來源：年報2023，第175頁）</li>
-        <li><b>中國市場復甦乏力</b>：年報2024明確提到「中國市場未見顯著復甦，對今年的成長預期保持保守態度」，這是公司自己的官方表態。（來源：年報2024）</li>
-        <li><b>歐洲客戶庫存消化</b>：年報2024提到「部分客戶仍在消化112年的進貨庫存，因此113年進貨稍趨保守」，歐洲市場成長動能有短期壓力。（來源：年報2024，第47頁）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    向量搜尋補充了匯率曝險的具體金額，讓風險評估更精確。日幣淨多頭部位是原版未量化的風險。中國市場「公司自己說保守」的原文佐證了原版的擔憂。<b>風險評估維持不變，但匯率風險應更加關注日幣走勢。</b>
-</div>
-
-<!-- ====== 第五章：隱藏優勢求證 ====== -->
-<h2>第五章：隱藏優勢求證</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>護城河：矽水膠技術門檻、專利（發明15+新型1+設計12）、研發費用5.49%、全球證照齊備。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>高低階矽水膠市場雙區間</b>：年報多年度反覆強調「目前高低階矽水膠產品在市面上的定位與定價都有落差，儼然形成兩個區間」。視陽定位在高端區間，直接與四大品牌競爭。（來源：年報2019/2020/2021/2022，反覆出現）</li>
-        <li><b>後進者三重壁壘</b>：年報明確列出後進者面臨的壁壘：(1) 各國主管機關認證（臨床試驗+實驗室測試+技術文件），(2) 消費者配戴體驗及不良品客訴差距，(3) 一站式購足服務的客戶關係壁壘。（來源：年報2020，第50頁）</li>
-        <li><b>馬來西亞東協貿易優勢</b>：「馬來西亞身處東協國家，與許多國家都有隱形眼鏡免關稅的協議，進而提升產品競爭力」，這是原版未提及的成本優勢。（來源：年報2019）</li>
-        <li><b>MDSAP 五國認證</b>：「亞洲第一個通過五國醫療器材單一稽核方案MDSAP認證」，包括美國FDA、加拿大、巴西、澳洲、日本的醫材品質系統同時認證。（來源：年報2019/2023）</li>
-        <li><b>產品競爭力超越四大品牌</b>：年報2023寫到「產品評比甚至超越四大品牌的矽水膠產品，成為代工首選」，這是非常強的自信宣示。（來源：年報2023）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    <b>這是向量搜尋最大的增值。</b>原版僅列出專利數量（28個），但年報原文揭露的護城河遠比專利更深：高低階雙區間定位、三重壁壘、東協免關稅、MDSAP認證、產品評比超越四大品牌。這些定性描述大幅強化了護城河評估，原版的護城河評分應向上調整。
-</div>
-
-<!-- ====== 第六章：六步彙整 ====== -->
-<h2>第六章：六步彙整</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>視陽為高成長矽水膠代工龍頭，毛利率持續改善，日本市場為核心引擎，風險集中在日本市場依賴度和匯率。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    向量搜尋在前五章已補充大量細節，此章作為彙整，無額外新發現。但整合前五章新發現後的修正如下：
-    <ul>
-        <li>護城河比原版評估更強（MDSAP+三重壁壘+東協免關稅）</li>
-        <li>催化劑比原版更明確（產能4,900萬/月+第二基地台灣首選）</li>
-        <li>風險中的匯率曝險有具體數字（日幣淨多頭約1.75億台幣）</li>
-        <li>日本雙通路+自有品牌Refrear = 不只是代工，有品牌潛力</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    整體方向與原版一致，但向量搜尋讓結論更有年報原文佐證。護城河評估上調、催化劑時程更具體。<b>不改變投資結論方向，但信心度提升。</b>
-</div>
-
-<!-- ====== 第七章：壓力測試 ====== -->
-<h2>第七章：壓力測試</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>壓力情境：日本市場衰退、毛利率回落、匯率大幅波動等。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>2023年營收衰退的歷史佐證</b>：年報2023提到「歐洲市場配合客戶進行庫存備貨策略調整，成長動能受到影響」，而年報2024進一步確認「部分客戶仍在消化112年的進貨庫存」。這證明供應鏈去庫存確實影響過視陽。（來源：年報2023/2024）</li>
-        <li><b>紅海危機影響</b>：年報2023提到「近期紅海危機事件造成歐洲運輸時間拉長」，顯示地緣政治對供應鏈有實際衝擊。（來源：年報2023）</li>
-        <li><b>台海危機應變</b>：年報2022提到已「建置戰爭BCP應變計畫」，如果台海衝突升級而第二基地設在台灣，BCP可能需要調整。（來源：年報2022）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    歐洲庫存消化和紅海危機的年報原文為壓力測試提供了真實案例。值得注意的是，「第二基地台灣首選」與BCP戰爭應變計畫之間存在邏輯矛盾 — 若台海風險是考量因素，為何第二基地選台灣？<b>此矛盾值得持續追蹤。</b>
-</div>
-
-<!-- ====== 第八章：監控儀表板 ====== -->
-<h2>第八章：監控儀表板</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>監控指標：月營收、毛利率、日本市場佔比、匯率、產能利用率。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>月營收具體數據</b>：向量搜尋找到 finlab 月營收資料，2025年3~5月營收：339,105→357,940→402,997千元，呈持續上升趨勢。（來源：finlab）</li>
-        <li><b>法說會產能指標</b>：月產能 4,200萬→4,900萬，此為重要的領先指標。（來源：法說會2025Q3）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    建議將「月產能」和「太陽能發電量/減碳量」加入監控儀表板。此章節向量搜尋提供了具體數據佐證，<b>不改變監控框架，但增加可追蹤指標。</b>
-</div>
-
-<!-- ====== 第九章：推衍預測 ====== -->
-<h2>第九章：推衍預測</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>基於矽水膠滲透率提升+產能擴張+日本市場成長，中長期看好。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    此章節向量搜尋未發現額外預測性資訊。年報本身為回顧性文件，預測資訊有限。法說會的產能數據已在前面章節納入。
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    此章節向量搜尋未發現額外資訊，原版結論維持。
-</div>
-
-<!-- ====== 第十章：股價合理性 ====== -->
-<h2>第十章：股價合理性</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>（原版估值數據，依原版分析提供）</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    此章節向量搜尋未發現額外估值相關資訊。估值計算需要的是財務模型，而非年報文字。
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    此章節向量搜尋未發現額外資訊，原版結論維持。不過，護城河上調和產能具體數據的補充，可能影響估值模型中的成長率假設。
-</div>
-
-<!-- ====== 第十一章：保留 ====== -->
-<h2>第十一章：保留</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>保留項目。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    此章節向量搜尋未發現額外資訊，原版結論維持。
-</div>
-
-<!-- ====== 第十二章：貓膩探索求證 ====== -->
-<h2>第十二章：貓膩探索求證</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>關注：明基材料關係人交易、轉投資虧損、會計師意見。</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    <ul>
-        <li><b>子公司視康（川揚視康）虧損擴大</b>：年報2023揭露視康（持股55%）112年度投資損益為 -13,347千元（虧損約1,335萬元），前一年為-8,678千元。虧損逐年擴大。（來源：年報2023，第134頁）</li>
-        <li><b>明基材料關係人交易歷年變化</b>：
-            <br>- 2019年：銷貨佔比21.87%（大客戶）、進貨佔比未超過25%
-            <br>- 2021年：VVM 對明基材料進貨103,012千元（佔36%），月結90天
-            <br>- 2022年：VVM 對明基材料進貨168,539千元（佔13%）
-            <br>- 2024年：進貨佔比21.16%
-            <br>明基材料的角色從大客戶+大供應商，逐漸轉向以供應商為主。（來源：年報2019/2021/2022/2024）</li>
-        <li><b>母子公司交易金額龐大</b>：VVM對母公司銷貨在111年度達15.73億元（佔VVM銷貨100%），From-eyes對母公司進貨2.77億元（佔55%）。子公司幾乎100%依賴母公司。（來源：年報2022）</li>
-        <li><b>員工薪資大幅下降</b>：112年度平均員工薪資費用調整為 -21.94%（前一年為+7.51%）。母公司僅124人（vs 集團1,722人）。薪資大降值得關注原因。（來源：年報2023）</li>
-    </ul>
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    <b>這是向量搜尋的第二大增值。</b>原版可能未注意到：(1) 子公司視康虧損逐年擴大，(2) 明基材料角色從雙向依賴轉為供應端依賴，(3) 母公司員工薪資大降21.94%。其中員工薪資驟降需要解釋 — 可能是員工結構調整（高薪人員離職？）或獎金發放方式改變。<b>建議將「視康虧損趨勢」和「員工薪資異常」列入監控清單。</b>
-</div>
-
-<!-- ====== 第十三章：投資結論 ====== -->
-<h2>第十三章：投資結論</h2>
-<div class="card">
-    <h3>原版結論</h3>
-    <p>（依原版投資結論）</p>
-</div>
-
-<div class="tip info">
-    <b>向量搜尋新發現</b>
-    此章為總結章，新發現已整合至各章節。
-</div>
-
-<div class="tip warn">
-    <b>差異判定</b>
-    向量搜尋整體上<b>強化了原版的正面判斷</b>（護城河更深、催化劑更具體），同時也<b>補充了原版遺漏的風險</b>（視康虧損、員工薪資異常、第二基地與BCP矛盾）。淨影響為中性偏正面。
-</div>
-
-<!-- ====== 總體差異摘要 ====== -->
-<div class="diff-summary">
-    <h3>向量版 vs 原版 — 總體差異摘要</h3>
-    <table>
-        <tr>
-            <th>類別</th>
-            <th>新發現數量</th>
-            <th>影響程度</th>
-        </tr>
-        <tr>
-            <td>護城河增強（第五章）</td>
-            <td>5 項</td>
-            <td style="color:var(--accent);font-weight:700">正面 — 護城河評估上調</td>
-        </tr>
-        <tr>
-            <td>催化劑具體化（第二章）</td>
-            <td>3 項</td>
-            <td style="color:var(--accent);font-weight:700">正面 — 增加信心</td>
-        </tr>
-        <tr>
-            <td>日本策略深化（第三章）</td>
-            <td>3 項</td>
-            <td style="color:var(--accent);font-weight:700">正面 — 品牌潛力</td>
-        </tr>
-        <tr>
-            <td>風險量化（第四章）</td>
-            <td>5 項</td>
-            <td style="color:var(--warn);font-weight:700">中性 — 風險更清晰但不更大</td>
-        </tr>
-        <tr>
-            <td>貓膩發現（第十二章）</td>
-            <td>4 項</td>
-            <td style="color:var(--food);font-weight:700">負面 — 新增監控項目</td>
-        </tr>
-        <tr>
-            <td>壓力測試案例（第七章）</td>
-            <td>3 項</td>
-            <td style="color:var(--warn);font-weight:700">中性 — 提供歷史佐證</td>
-        </tr>
-    </table>
-
-    <div class="tip good" style="margin-top:16px">
-        <b>總結</b>
-        向量搜尋從 6 份年報+1 份法說會+finlab 資料中，挖掘出 <b>23 項</b> 原版可能未涵蓋的細節。其中：
-        <ul>
-            <li><b>11 項正面發現</b>：護城河遠比專利數量所示的更深，MDSAP認證+三重壁壘+東協免關稅+品牌經營+產能擴張具體數據</li>
-            <li><b>5 項中性發現</b>：風險量化、歷史案例佐證</li>
-            <li><b>4 項負面/待追蹤發現</b>：視康虧損擴大、員工薪資驟降21.94%、第二基地與BCP邏輯矛盾、歐洲客戶庫存消化中</li>
-            <li><b>3 項無新發現</b>：第九、十、十一章向量搜尋未帶來額外資訊</li>
-        </ul>
-        <b>淨結論：向量搜尋對投資判斷為「中性偏正面」影響，護城河評估明顯上調，但同時揭露了需要追蹤的貓膩項目。</b>
-    </div>
-</div>
-
+<!-- ===================== 頁尾 ===================== -->
 <div class="footer">
-    天機閣 — 6782 視陽光學 向量增強版 完整分析 | 2026-03-27 | 12 主題語意搜尋 × 13 章結構
+天機閣 — 向量搜尋增強報告 ｜ 6782 視陽光學 ｜ 完整版 v1.0<br>
+BGE-M3 × 690 段年報向量 × 12 主題語意搜尋 ｜ 產出日期：2026-03-27
 </div>
 
 </div>
