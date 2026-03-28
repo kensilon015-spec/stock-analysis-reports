@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天機閣 — 跨報告關聯網絡</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#1a1410; color:#e0ddd5;
+    font-family:'Segoe UI','Microsoft JhengHei',sans-serif;
+    overflow:hidden; height:100vh;
+  }
+  .toolbar {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(26,20,16,0.95); backdrop-filter:blur(10px);
+    padding:12px 20px; display:flex; align-items:center; gap:16px;
+    border-bottom:1px solid #5a4f3f; flex-wrap:wrap;
+  }
+  .toolbar h1 {
+    color:#c4a96a; font-size:18px; margin-right:auto;
+  }
+  .toolbar a {
+    color:#c4a96a; text-decoration:none; font-size:13px;
+    padding:5px 12px; border:1px solid #5a4f3f; border-radius:16px;
+  }
+  .toolbar a:hover { background:#3a3530; }
+  .filter-group {
+    display:flex; align-items:center; gap:8px;
+  }
+  .filter-group label {
+    color:#888; font-size:12px;
+  }
+  .filter-group select, .filter-group input {
+    background:#2c2c2c; color:#e0ddd5; border:1px solid #5a4f3f;
+    border-radius:6px; padding:4px 8px; font-size:12px;
+  }
+  .filter-group input[type="range"] {
+    width:100px; accent-color:#c4a96a;
+  }
+  #graph-container {
+    width:100vw; height:100vh; padding-top:60px;
+  }
+  svg { width:100%; height:100%; }
+  .tooltip {
+    position:absolute; background:rgba(44,44,44,0.95);
+    border:1px solid #c4a96a; border-radius:8px; padding:12px;
+    color:#e0ddd5; font-size:13px; pointer-events:none;
+    max-width:300px; display:none; z-index:200;
+  }
+  .tooltip .tt-title { color:#c4a96a; font-weight:600; margin-bottom:4px; }
+  .tooltip .tt-dept { color:#888; font-size:12px; }
+  .tooltip .tt-links { margin-top:6px; font-size:12px; }
+  .legend {
+    position:fixed; bottom:20px; right:20px;
+    background:rgba(44,44,44,0.9); border:1px solid #5a4f3f;
+    border-radius:10px; padding:12px 16px; z-index:100;
+  }
+  .legend h3 { color:#c4a96a; font-size:13px; margin-bottom:8px; }
+  .legend-item {
+    display:flex; align-items:center; gap:8px; margin-bottom:4px;
+    font-size:12px;
+  }
+  .legend-dot {
+    width:12px; height:12px; border-radius:50%; flex-shrink:0;
+  }
+  .stats {
+    position:fixed; bottom:20px; left:20px;
+    background:rgba(44,44,44,0.9); border:1px solid #5a4f3f;
+    border-radius:10px; padding:12px 16px; z-index:100;
+    font-size:13px;
+  }
+  .stats span { color:#c4a96a; font-weight:600; }
+  .no-data {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center; color:#888;
+  }
+  .no-data h2 { color:#c4a96a; margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>跨報告關聯網絡</h1>
+  <div class="filter-group">
+    <label>部門：</label>
+    <select id="dept-filter">
+      <option value="">全部</option>
+      <option value="【金融戰情室】">金融戰情室</option>
+      <option value="【科技前哨站】">科技前哨站</option>
+      <option value="【地緣政治局】">地緣政治局</option>
+      <option value="【生活情報站】">生活情報站</option>
+      <option value="【興趣研究所】">興趣研究所</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>最低相似度：</label>
+    <input type="range" id="min-score" min="0" max="80" value="15" step="5">
+    <span id="score-display" style="color:#c4a96a;font-size:12px;">0.15</span>
+  </div>
+  <a href="天機閣總索引.html">← 總索引</a>
+</div>
+
+<div id="graph-container"></div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="legend">
+  <h3>部門色系</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:#e07474;"></div>金融戰情室</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7bafc4;"></div>科技前哨站</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e0c87a;"></div>地緣政治局</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6ecf9a;"></div>生活情報站</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c49adc;"></div>興趣研究所</div>
+</div>
+
+<div class="stats" id="stats-panel">
+  節點：<span id="node-count">0</span> ｜
+  連線：<span id="edge-count">0</span>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// === 部門色系 ===
+const DEPT_COLORS = {
+  '【金融戰情室】': '#e07474',
+  '【科技前哨站】': '#7bafc4',
+  '【地緣政治局】': '#e0c87a',
+  '【生活情報站】': '#6ecf9a',
+  '【興趣研究所】': '#c49adc',
+};
+
+// === 載入資料 ===
+let allData = { nodes: [], edges: [] };
+
+async function loadData() {
+  try {
+    // 嘗試從 API 載入
+    const resp = await fetch('/api/relations/network');
+    if (resp.ok) {
+      allData = await resp.json();
+      return;
+    }
+  } catch(e) {}
+
+  // 嘗試從本地索引載入
+  try {
+    const resp = await fetch('../天機閣-設定/關聯索引.json');
+    if (resp.ok) {
+      const indexData = await resp.json();
+      buildNetworkFromIndex(indexData);
+      return;
+    }
+  } catch(e) {}
+
+  showNoData();
+}
+
+function buildNetworkFromIndex(indexData) {
+  const cards = indexData['卡片資料'] || {};
+  const nodes = [];
+  const nodeIds = new Set();
+
+  for (const [cid, info] of Object.entries(cards)) {
+    nodes.push({
+      id: cid,
+      label: (info['標題'] || '').substring(0, 20),
+      dept: info['部門'] || '',
+      size: 0,
+    });
+    nodeIds.add(cid);
+  }
+
+  allData = { nodes, edges: [] };
+}
+
+function showNoData() {
+  const container = document.getElementById('graph-container');
+  container.innerHTML = `
+    <div class="no-data">
+      <h2>尚無關聯資料</h2>
+      <p>請先執行關聯引擎建立索引：</p>
+      <p style="color:#c4a96a;margin-top:8px;">python 天機閣_關聯引擎.py</p>
+    </div>
+  `;
+}
+
+// === 繪製圖形 ===
+function renderGraph(data) {
+  const container = document.getElementById('graph-container');
+  container.innerHTML = '';
+
+  if (!data.nodes.length) {
+    showNoData();
+    return;
+  }
+
+  document.getElementById('node-count').textContent = data.nodes.length;
+  document.getElementById('edge-count').textContent = data.edges.length;
+
+  const width = window.innerWidth;
+  const height = window.innerHeight - 60;
+
+  const svg = d3.select('#graph-container')
+    .append('svg')
+    .attr('viewBox', [0, 0, width, height]);
+
+  // 縮放
+  const g = svg.append('g');
+  svg.call(d3.zoom()
+    .scaleExtent([0.1, 4])
+    .on('zoom', (event) => g.attr('transform', event.transform))
+  );
+
+  // 力導向模擬
+  const simulation = d3.forceSimulation(data.nodes)
+    .force('link', d3.forceLink(data.edges)
+      .id(d => d.id)
+      .distance(d => 100 / (d.weight + 0.1))
+      .strength(d => d.weight * 0.5)
+    )
+    .force('charge', d3.forceManyBody().strength(-80))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(d => Math.max(5, d.size * 2 + 8)));
+
+  // 邊
+  const link = g.append('g')
+    .selectAll('line')
+    .data(data.edges)
+    .join('line')
+    .attr('stroke', '#5a4f3f')
+    .attr('stroke-opacity', 0.6)
+    .attr('stroke-width', d => Math.max(1, d.weight * 6));
+
+  // 節點
+  const node = g.append('g')
+    .selectAll('circle')
+    .data(data.nodes)
+    .join('circle')
+    .attr('r', d => Math.max(4, d.size * 2 + 4))
+    .attr('fill', d => DEPT_COLORS[d.dept] || '#888')
+    .attr('stroke', '#1a1410')
+    .attr('stroke-width', 1.5)
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', dragstarted)
+      .on('drag', dragged)
+      .on('end', dragended)
+    );
+
+  // 標籤（只顯示 size > 2 的）
+  const label = g.append('g')
+    .selectAll('text')
+    .data(data.nodes.filter(d => d.size > 2))
+    .join('text')
+    .text(d => d.label)
+    .attr('font-size', 10)
+    .attr('fill', '#e0ddd5')
+    .attr('dx', 10)
+    .attr('dy', 4)
+    .attr('pointer-events', 'none');
+
+  // 提示框
+  const tooltip = document.getElementById('tooltip');
+  node.on('mouseover', (event, d) => {
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = `
+      <div class="tt-title">${d.label}</div>
+      <div class="tt-dept">${d.dept}</div>
+      <div class="tt-links">關聯數：${d.size}</div>
+    `;
+  })
+  .on('mousemove', (event) => {
+    tooltip.style.left = (event.pageX + 15) + 'px';
+    tooltip.style.top = (event.pageY - 10) + 'px';
+  })
+  .on('mouseout', () => {
+    tooltip.style.display = 'none';
+  });
+
+  // 模擬更新
+  simulation.on('tick', () => {
+    link
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    node
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y);
+
+    label
+      .attr('x', d => d.x)
+      .attr('y', d => d.y);
+  });
+
+  function dragstarted(event) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    event.subject.fx = event.subject.x;
+    event.subject.fy = event.subject.y;
+  }
+  function dragged(event) {
+    event.subject.fx = event.x;
+    event.subject.fy = event.y;
+  }
+  function dragended(event) {
+    if (!event.active) simulation.alphaTarget(0);
+    event.subject.fx = null;
+    event.subject.fy = null;
+  }
+}
+
+// === 篩選邏輯 ===
+function applyFilters() {
+  const deptFilter = document.getElementById('dept-filter').value;
+  const minScore = parseInt(document.getElementById('min-score').value) / 100;
+  document.getElementById('score-display').textContent = minScore.toFixed(2);
+
+  let filteredNodes = allData.nodes;
+  if (deptFilter) {
+    filteredNodes = filteredNodes.filter(n => n.dept === deptFilter);
+  }
+  const nodeIds = new Set(filteredNodes.map(n => n.id));
+
+  let filteredEdges = allData.edges.filter(e => {
+    const srcId = typeof e.source === 'object' ? e.source.id : e.source;
+    const tgtId = typeof e.target === 'object' ? e.target.id : e.target;
+    return nodeIds.has(srcId) && nodeIds.has(tgtId) && e.weight >= minScore;
+  });
+
+  // 重新計算 size
+  const degree = {};
+  filteredEdges.forEach(e => {
+    const s = typeof e.source === 'object' ? e.source.id : e.source;
+    const t = typeof e.target === 'object' ? e.target.id : e.target;
+    degree[s] = (degree[s] || 0) + 1;
+    degree[t] = (degree[t] || 0) + 1;
+  });
+  filteredNodes = filteredNodes.map(n => ({
+    ...n, size: degree[n.id] || 0
+  }));
+
+  // 重建 edge source/target 為 id 字串
+  filteredEdges = filteredEdges.map(e => ({
+    source: typeof e.source === 'object' ? e.source.id : e.source,
+    target: typeof e.target === 'object' ? e.target.id : e.target,
+    weight: e.weight,
+  }));
+
+  renderGraph({ nodes: filteredNodes, edges: filteredEdges });
+}
+
+// === 事件綁定 ===
+document.getElementById('dept-filter').addEventListener('change', applyFilters);
+document.getElementById('min-score').addEventListener('input', applyFilters);
+
+// === 初始化 ===
+loadData().then(() => {
+  if (allData.nodes.length) {
+    renderGraph(allData);
+  }
+});
+</script>
+
+</body>
+</html>

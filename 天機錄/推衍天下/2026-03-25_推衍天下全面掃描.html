@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>推衍天下 — 全面弱訊號掃描 2026-03-25</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.resonance{background:linear-gradient(135deg,rgba(198,40,40,.08),rgba(194,124,110,.06));border:2px solid var(--danger);border-radius:10px;padding:14px 16px;margin:10px 0}
+.resonance h4{color:var(--bear);font-weight:900;font-size:1.05em;margin-bottom:6px}
+.chain{font-family:'Fira Code',monospace;font-size:.78em;color:var(--txt2);background:var(--code-bg);color:#e0ddd5;padding:10px 14px;border-radius:6px;margin:6px 0;line-height:1.7;overflow-x:auto;white-space:pre-wrap}
+.opportunity{background:linear-gradient(135deg,rgba(46,125,50,.08),rgba(90,125,96,.06));border:2px solid var(--bull);border-radius:10px;padding:14px 16px;margin:10px 0}
+.opportunity h4{color:var(--bull);font-weight:900;font-size:1.05em;margin-bottom:6px}
+.channel-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.68em;font-weight:600;margin:0 2px}
+.ch1{background:rgba(198,40,40,.12);color:#c62828}
+.ch2{background:rgba(21,101,192,.12);color:#1565c0}
+.ch3{background:rgba(184,150,12,.12);color:#b8960c}
+.ch4{background:rgba(90,125,96,.12);color:#2e7d32}
+.ch5{background:rgba(156,39,176,.12);color:#7b1fa2}
+.ch6{background:rgba(230,81,0,.12);color:#e65100}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>推衍天下 — 全面弱訊號掃描</h1>
+    <div class="sub">天機閣全系統六管道平行偵測 + 交叉比對分析</div>
+    <div class="desc">掃描日期：2026-03-25 ｜ 六管道 × 80+ 搜尋詞組 ｜ 偵測 63 個弱訊號<br>目標：找出「即將發生但尚未被廣泛注意」的重大事件</div>
+    <div class="tags">
+        <span class="tag">全球總經</span>
+        <span class="tag">產業趨勢</span>
+        <span class="tag">地緣政治</span>
+        <span class="tag">科技突破</span>
+        <span class="tag">市場異常</span>
+        <span class="tag">跨領域交叉</span>
+    </div>
+</div>
+
+<!-- ===== 全局威脅儀表板 ===== -->
+<div class="section-title">全局威脅儀表板</div>
+<div class="section-sub">六管道彙整 ｜ 整體威脅評估：82/100（極高）</div>
+
+<div class="grid3">
+    <div class="mini-card bear-card"><div class="title">偵測訊號</div><div class="num">63</div><div class="desc">六管道合計</div></div>
+    <div class="mini-card bear-card"><div class="title">多管道共振</div><div class="num">5</div><div class="desc">3+ 管道交叉確認</div></div>
+    <div class="mini-card bear-card"><div class="title">紅燈 / S 級</div><div class="num">11</div><div class="desc">需立即關注</div></div>
+</div>
+<div class="grid3">
+    <div class="mini-card neutral-card"><div class="title">搜尋詞組</div><div class="num">80+</div><div class="desc">中英文混合</div></div>
+    <div class="mini-card neutral-card"><div class="title">獨立來源</div><div class="num">100+</div><div class="desc">國際機構/媒體</div></div>
+    <div class="mini-card bull-card"><div class="title">機會訊號</div><div class="num">8</div><div class="desc">被低估的正面趨勢</div></div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.9em">目錄</strong>
+    <a href="#core5">壹、五大核心發現（多管道共振）</a>
+    <a href="#chains">貳、致命因果鏈（正回饋迴路）</a>
+    <a href="#silent">參、三大無聲斷路器</a>
+    <a href="#hidden">肆、最被忽略的「沒人注意到」訊號</a>
+    <a href="#opportunity">伍、被低估的機會</a>
+    <a href="#monitor">陸、監控儀表板</a>
+    <a href="#channels">柒、六管道掃描摘要</a>
+    <a href="#action">捌、接力行動建議</a>
+</div>
+
+<!-- ============================================ -->
+<!-- 壹、五大核心發現 -->
+<!-- ============================================ -->
+<div class="section-title" id="core5">壹、五大核心發現 — 多管道共振訊號</div>
+<div class="section-sub">以下訊號在 3 個以上管道被獨立偵測到，交叉驗證度最高</div>
+
+<!-- 核心發現 1 -->
+<div class="resonance">
+<h4>核心發現 #1：荷莫茲海峽危機 — 多路徑同步引爆</h4>
+<p style="font-size:.82em;margin-bottom:6px">
+<span class="channel-badge ch1">總經</span>
+<span class="channel-badge ch2">產業</span>
+<span class="channel-badge ch3">地緣</span>
+<span class="channel-badge ch5">市場</span>
+<span class="channel-badge ch6">跨域</span>
+<span class="fias-s">S 級</span> 信心度 95% ｜ 正在發生
+</p>
+<p style="font-size:.85em"><strong>核心事實</strong>：2026/2/28 美以聯合突襲伊朗後，荷莫茲海峽通行量驟降 70%，布蘭特原油飆至 $126。這不只是「油價問題」——它同時觸發了至少五條獨立的因果鏈，每條都足以造成全球性衝擊。</p>
+
+<details open><summary>五條因果鏈同步引爆</summary>
+<div class="chain">鏈A（能源通膨）: 荷莫茲封鎖 → 油價 $126 → CPI 回升 → Fed 無法降息 → 殖利率飆升 → 企業融資成本暴增
+鏈B（肥料糧食）: 荷莫茲封鎖 → 全球 34% 尿素斷供 → 肥料 +50% → 6-9 個月後食品通膨 +22%
+鏈C（氦氣半導體）: Ras Laffan 停產 → 全球 1/3 氦氣斷供 → 台灣 69% 氦氣來源中斷 → EUV 微影無替代品 → 晶圓廠減產
+鏈D（地緣真空）: 美軍 1/3 水面艦調中東 → 亞太兵力真空 → 中國趁機部署 055 入東部戰區
+鏈E（金融傳導）: 油價衝擊 → 信用利差擴大(HY 470bps) → 到期牆 $1.35T 再融資困難 → 私募信貸贖回潮</div>
+</details>
+
+<div class="tip danger"><b>為什麼比表面看到的更嚴重</b>
+多數分析只追蹤其中一條鏈（通常是「油價」）。但五條鏈同時作用時會產生非線性放大效應——油價推通膨、通膨推利率、利率推違約、違約推恐慌、恐慌推更多拋售。每條鏈的受害者又是另一條鏈的輸入。</div>
+</div>
+
+<!-- 核心發現 2 -->
+<div class="resonance">
+<h4>核心發現 #2：私募信貸 + 槓桿 — 2008 年以來最大金融裂縫</h4>
+<p style="font-size:.82em;margin-bottom:6px">
+<span class="channel-badge ch1">總經</span>
+<span class="channel-badge ch5">市場</span>
+<span class="channel-badge ch6">跨域</span>
+<span class="fias-s">S 級</span> 信心度 92% ｜ 正在發生
+</p>
+
+<details open><summary>三重槓桿危機同步</summary>
+<table>
+<tr><th>危機面</th><th>規模</th><th>現況</th><th>危機門檻</th></tr>
+<tr><td>私募信貸贖回</td><td>$2.1 兆</td><td>五大巨頭（BlackRock/Blackstone/Apollo/Blue Owl/Morgan Stanley）同時觸發贖回門檻</td><td>違約率 8~13%（歷史均值 2.5%）</td></tr>
+<tr><td>保證金債務</td><td>$1.28 兆</td><td>連續 9 個月創歷史新高，佔 GDP 4.1%（50 年中位數 1.5%）</td><td>年增 +36%，強制平倉已開始</td></tr>
+<tr><td>企業債到期牆</td><td>$1.35 兆</td><td>非金融企業 + CRE $8,750 億同步到期</td><td>HY 利差 470bps（危機門檻 500bps）</td></tr>
+</table>
+</details>
+
+<div class="tip danger"><b>「沒被注意到」的原因</b>
+私募信貸沒有即時市場報價，違約和減損延遲數月才浮出水面。AI 顛覆軟體業（佔私募信貸 25-26%）導致的結構性違約風險，被「AI 是利多」的主流敘事掩蓋。JPMorgan 已悄悄開始減記軟體貸款——當最大的銀行撤退時，聰明錢已經在移動。</div>
+</div>
+
+<!-- 核心發現 3 -->
+<div class="resonance">
+<h4>核心發現 #3：台灣多向量脆弱性匯聚（五線收束 2026-2028）</h4>
+<p style="font-size:.82em;margin-bottom:6px">
+<span class="channel-badge ch1">總經</span>
+<span class="channel-badge ch2">產業</span>
+<span class="channel-badge ch3">地緣</span>
+<span class="channel-badge ch5">市場</span>
+<span class="channel-badge ch6">跨域</span>
+<span class="fias-a">A 級</span> 信心度 85% ｜ 2026-2028 收束
+</p>
+
+<details open><summary>五條線同時收束</summary>
+<table>
+<tr><th>威脅面</th><th>具體數據</th><th>狀態</th></tr>
+<tr><td>軍事威脅</td><td>055 首次入列東部戰區 / 美軍亞太 -33% / 措辭「反對→打擊」台獨</td><td><span class="light red"></span> 升高</td></tr>
+<tr><td>能源脆弱</td><td>99% 能源進口 / 69% 氦氣來自波灣 / 油價 +83%</td><td><span class="light red"></span> 已觸發</td></tr>
+<tr><td>人口結構</td><td>2026/1/9 正式超高齡社會（65 歲以上 20.06%）/ 勞參率 59.3%</td><td><span class="light yellow"></span> 結構性</td></tr>
+<tr><td>資源瓶頸</td><td>台積電日用水千萬加侖 / 40% 新晶圓廠在高水壓力區</td><td><span class="light yellow"></span> 惡化中</td></tr>
+<tr><td>貿易壓力</td><td>CBAM 碳關稅衝擊 245 億台幣 / 美國關稅 15% / 外資單日賣超 839 億</td><td><span class="light red"></span> 多點開花</td></tr>
+</table>
+</details>
+
+<div class="tip danger"><b>非線性放大效應</b>
+每個問題單獨看都「可控」，但五條線同時收束時：缺工（老化）+ AI 替代 = 勞動市場兩端被擠壓；缺水 + 缺電 = 半導體核心資源同時吃緊；碳關稅 + 缺工 = 中小企出口雙重壓力。台灣各部會分別處理各議題，缺乏跨部會的「匯聚風險」評估框架。</div>
+</div>
+
+<!-- 核心發現 4 -->
+<div class="resonance">
+<h4>核心發現 #4：AI 基礎設施三重瓶頸鏈（材料→封裝→電力）</h4>
+<p style="font-size:.82em;margin-bottom:6px">
+<span class="channel-badge ch2">產業</span>
+<span class="channel-badge ch4">科技</span>
+<span class="channel-badge ch6">跨域</span>
+<span class="fias-i">I 級</span> 信心度 85% ｜ 2026 全年
+</p>
+
+<details open><summary>三個獨立瓶頸同時卡住</summary>
+<table>
+<tr><th>瓶頸</th><th>問題</th><th>嚴重度</th></tr>
+<tr><td>材料端：氦氣 + T-Glass</td><td>氦氣物理上不可替代（EUV 微影冷卻）；T-Glass 全球僅 AGC + Nitto Boseki 兩家，缺口 10-20%</td><td><span class="light red"></span></td></tr>
+<tr><td>封裝端：CoWoS 被鎖死</td><td>NVIDIA 預訂 595,000 片（佔 60%），AMD/Broadcom ASIC 排不到產能</td><td><span class="light yellow"></span></td></tr>
+<tr><td>電力端：49 GW 缺口</td><td>AI 資料中心 2026 突破 1,000 TWh，電網升級需要銅（7-15 年新礦開發）</td><td><span class="light yellow"></span></td></tr>
+</table>
+</details>
+
+<div class="chain">氦氣斷供 → 晶圓廠 EUV 減產 → HBM 更緊缺 → 消費電子被擠壓（手機 -12.9%）
+T-Glass 短缺 → 基板做不出來 → CoWoS 封裝空轉（有機器沒材料）
+電力缺口 → 銅價 $14,000/噸 → 電網升級更貴 → AI 營運成本上升 → 正回饋迴路</div>
+</div>
+
+<!-- 核心發現 5 -->
+<div class="resonance">
+<h4>核心發現 #5：肥料-糧食延遲炸彈（引信已點燃，6-9 個月後爆炸）</h4>
+<p style="font-size:.82em;margin-bottom:6px">
+<span class="channel-badge ch1">總經</span>
+<span class="channel-badge ch3">地緣</span>
+<span class="channel-badge ch6">跨域</span>
+<span class="fias-f">F 級</span> 信心度 90% ｜ 2026 Q4 ~ 2027 Q1
+</p>
+
+<details open><summary>三重供給打擊</summary>
+<table>
+<tr><th>來源</th><th>影響</th></tr>
+<tr><td>荷莫茲海峽封鎖</td><td>全球 34% 尿素 / 25% 氨 / 45% 硫磺 運輸受阻</td></tr>
+<tr><td>中國禁止出口</td><td>氮鉀磷肥料全面禁出口</td></tr>
+<tr><td>埃及天然氣轉用</td><td>砍 50% 肥料產量，天然氣優先發電</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:6px"><strong>世界銀行公式</strong>：肥料每漲 1% → 食品漲 0.45%（延遲 6-9 個月）<br>
+<strong>目前肥料已漲 50%</strong> → 預計 2026 Q4~2027 Q1 食品通膨 +22%（線性計算）<br>
+<strong>美國玉米播種面積預減 480 萬英畝</strong> → 畜牧飼料短缺 → 2027 年肉奶價格再漲</p>
+</details>
+
+<div class="tip warn"><b>最被低估的風險</b>
+能源價格其實在跌（-0.5%），但肥料在漲（+50%）——罕見的脫鉤現象。市場焦點在「油價」而非「肥料價」，但肥料對全球最底層人口的影響遠大於油價。引信已點燃，但爆炸要等 6-9 個月——等到反映在通膨數據時，市場才會「驚訝」。</div>
+</div>
+
+<!-- ============================================ -->
+<!-- 貳、致命因果鏈 -->
+<!-- ============================================ -->
+<div class="section-title" id="chains">貳、致命因果鏈 — 三條正回饋迴路</div>
+<div class="section-sub">這些迴路一旦啟動就會自我強化，難以外力打斷</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">迴路 A：油價 → 通膨 → 利率 → 信用 → 私募信貸（致命迴路）</h3>
+<div class="card-body">
+<div class="chain">荷莫茲封鎖 → Brent $126 → CPI 回升 → Fed 無法降息
+→ 短端殖利率飆升（2Y: 3.90%, +33bps）→ 信用利差擴大（HY 470bps）
+→ 企業再融資成本翻倍 → 軟體/科技違約率 8~13%
+→ 私募信貸 $2.1T 贖回潮（5 巨頭同時觸發）→ 被迫拋售優質資產
+→ 資產價格下跌 → 更多贖回 → 保證金追繳（$1.28T）→ 強制平倉瀑布
+→ ★★★ 負螺旋 ★★★</div>
+<p style="font-size:.82em"><strong>歷史參照</strong>：Oxford Economics 估計 Brent 持續 $140 超過兩個月足以將部分經濟體推入衰退。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">迴路 B：能源-銅-AI 三角絞殺</h3>
+<div class="card-body">
+<div class="chain">AI 爆發 → 資料中心 1,000 TWh（四年翻倍）→ 電網缺口 49 GW
+→ 升級電網需要銅（變壓器、電纜、太陽能板）
+→ 銅價破歷史新高 $14,000/噸 → 2040 年缺口 1,000 萬噸（需求 25%）
+→ 電網升級更貴 → 電價上漲 → AI 營運成本上升
+→ 但 AI 需求不減（反而更多）→ 更多資料中心 → 更多電力 → 更多銅
+→ ★★★ 自我強化循環 ★★★
+
+※ 銅新礦開發需 7-15 年，AI 資料中心 6-12 個月就能蓋好——時間尺度嚴重不匹配
+※ 能源轉型（1,570 萬噸）和 AI（400 萬噸）同時搶銅，各自假設「對方不會搶」</div>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">迴路 C：BOJ 升息 → 套利平倉 → 全球 risk-off</h3>
+<div class="card-body">
+<div class="chain">BOJ 升息至 1.0%（年底前）→ 美日利差壓縮至 &lt;2.5%
+→ 日圓套利吸引力下降 → 若全球 risk-off 觸發（私募信貸/油價）
+→ 日圓急升 → 強制平倉 → 賣出全球風險資產
+→ 2024 年 8 月式閃崩重演（當時日經 -12.4% 單日, VIX 飆至 65）
+
+※ 這次條件更脆弱：私募信貸已在出血、油價 $100+、Fed 被通膨困住無法救市
+※ BCA Research 直接用「定時炸彈」形容，Michael Burry 公開警告</div>
+</div></div>
+
+<!-- ============================================ -->
+<!-- 參、無聲斷路器 -->
+<!-- ============================================ -->
+<div class="section-title" id="silent">參、三大無聲斷路器</div>
+<div class="section-sub">平時不動、不上新聞，但一旦觸發就改變遊戲規則的隱藏開關</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">斷路器 #1：氦氣（半導體的隱形命脈）</h3>
+<div class="card-body">
+<p><strong>平時</strong>：沒人關注這種惰性氣體 | <strong>觸發後</strong>：全球晶圓廠 EUV 微影停擺</p>
+<p>卡達 Ras Laffan 佔全球 1/3 供應，已遭飛彈攻擊停產。氦氣在 EUV 中<strong>物理上不可替代</strong>——沒有替代品。台灣 69%、南韓 55% 來自波灣。現貨價一週內暴漲 70-100%。</p>
+<p><strong>時間窗口</strong>：晶圓廠庫存撐數週。若荷莫茲持續受阻，4-6 週內可能被迫減產。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">斷路器 #2：肥料-糧食延遲引信（6-9 個月定時器）</h3>
+<div class="card-body">
+<p><strong>平時</strong>：肥料不是頭條新聞 | <strong>觸發後</strong>：全球糧食通膨 +22%</p>
+<p>三重斷供（荷莫茲 + 中國禁出口 + 埃及減產）已推動肥料價格暴漲 50%。但從肥料到食品通膨有 6-9 個月延遲——現在引信已點燃，爆炸在 2026 Q4~2027 Q1。</p>
+<p>能源跌但肥料漲 = 供給面結構性破壞，不是正常的價格波動。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">斷路器 #3：中國戰略石油預先增購（意圖指標）</h3>
+<div class="card-body">
+<p><strong>平時</strong>：石油儲備數據不引人注目 | <strong>觸發後</strong>：暗示北京對台海行動的物質準備</p>
+<p>2026 年 1-2 月石油進口量較去年同期增加 15.8%——發生在伊朗衝突爆發<strong>之前</strong>。戰略儲備 12-13 億桶（全球最大），可提供超過 4 個月進口替代。同時利用荷莫茲「選擇性封鎖」獲得特殊通行。</p>
+<p>搭配 055 入列東部戰區 + 措辭升級「反對→打擊」+ 羚羊礁 15 km² 填海 → 系統性建立武力犯台物質基礎。</p>
+</div></div>
+
+<!-- ============================================ -->
+<!-- 肆、最被忽略的訊號 -->
+<!-- ============================================ -->
+<div class="section-title" id="hidden">肆、最被忽略的「沒人注意到」訊號</div>
+<div class="section-sub">不在任何主流媒體頭條，但推論依據鏈完整的隱藏訊號</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #1：T-Glass 玻纖布 — AI 封裝的隱形天花板</h3>
+<div class="card-body">
+<p><span class="fias-f">F 事實</span> 信心 88% ｜ 全球僅 AGC + Nitto Boseki 兩家供應 ｜ 缺口 10-20%</p>
+<p>大家討論「CoWoS 不夠」「HBM 短缺」，但更上游的 T-Glass（低熱膨脹係數玻纖布）才是真正瓶頸。AI 加速器/HBM/ABF 基板都需要它。產能已預訂到 2026 年底。即使台積電 CoWoS 擴到月產 13 萬片，沒有 T-Glass 做基板也是空的。</p>
+<p><strong>受影響</strong>：欣興(3037)、景碩(3189)、南電(8046)、日月光(3711)</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #2：AI 正在殺死軟體業 → 私募信貸 25% 曝險</h3>
+<div class="card-body">
+<p><span class="fias-i">I 推論</span> 信心 85% ｜ AI 在 2026/2 第一週抹去軟體股 &gt;$1 兆市值</p>
+<p>市場把 AI 當「利多」，忽略了 AI 同時在「殺死」傳統軟體公司（SaaS）。Salesforce/ServiceNow/Adobe YTD -25~30%。但私募信貸中軟體曝險佔 25-26%——JPMorgan 已主動減記軟體貸款，限制新放貸。</p>
+<p>Morgan Stanley 預估違約率飆至 8%，UBS 極端情境 13%（歷史均值 2.5%）。40% 的私募信貸貸款為負現金流狀態。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #3：PLAAF 異常暫停 13 天中 11 天無活動</h3>
+<div class="card-body">
+<p><span class="fias-i">I 推論</span> 信心 75% ｜ 2/27-3/11 期間 ｜ 2021 年以來最長空白期</p>
+<p>解放軍空軍此前常態：每月侵擾台灣超過 300 架次。但 2/27-3/5 連續 7 天完全無活動，13 天中有 11 天沉默。</p>
+<p>突然沉默可能代表：大規模換裝/重組、演習準備期「收斂」、或蓄意降溫為其他方向（055 部署、南海填海）創造掩護。無論哪種解讀，「異常安靜」本身就是一個訊號。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #4：保險公司撤退 → 房價崩跌 → $1.6 兆曝險</h3>
+<div class="card-body">
+<p><span class="fias-i">I 推論</span> 信心 80% ｜ 美國加州/佛州/路州 ｜ 無保險房屋從 5% 翻倍至 12%</p>
+<p>極端天氣加劇 → 保險公司退出高風險州 → 無保險 → 銀行不貸款 → 房價崩跌 20-40% → 地方稅收萎縮 → $1.6 兆未保護房產市值。這不像 2008 是「一次爆炸」，而是「緩慢淹水」——每年多一點地區變成不可保。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #5：HBM 零和賽局擠壓消費電子 — 手機出貨 -12.9%</h3>
+<div class="card-body">
+<p><span class="fias-i">I 推論</span> 信心 85% ｜ Samsung/SK Hynix/Micron 大規模轉向 HBM</p>
+<p>1 片 HBM 搶走 3 片 DDR5 產能。消費記憶體 2025/9~11 月漲 4 倍，2026Q1 再漲 55-60%。PC 廠預告漲價 15-20%，遊戲 GPU 產量面臨 40% 削減。IDC 預測 2026 年全球智慧手機市場萎縮 12.9%——史上最大降幅。這是寡佔廠商「有意識的產能重分配」。</p>
+</div></div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">隱藏 #6：TACO Trade 內線疑雲 + $15 億 S&P 期貨</h3>
+<div class="card-body">
+<p><span class="fias-s">S 級</span> 信心 92% ｜ 川普宣布暫停空襲前 16 分鐘 $5.8 億油期湧入</p>
+<p>宣布前 5 分鐘，$15 億 S&P 500 期貨被買入。Polymarket 超過 150 個帳號在戰爭前突然押注。CFTC 已啟動調查，參議員提出 BETS OFF 法案。交易模式暗示存在系統性的資訊不對稱利用。</p>
+</div></div>
+
+<!-- ============================================ -->
+<!-- 伍、被低估的機會 -->
+<!-- ============================================ -->
+<div class="section-title" id="opportunity">伍、被低估的機會</div>
+<div class="section-sub">在危機中被忽略的正面趨勢和投資方向</div>
+
+<div class="opportunity">
+<h4>機會 #1：矽光子（Silicon Photonics）— 2026 商業元年</h4>
+<p style="font-size:.85em"><span class="fias-f">F 事實</span> 信心 92% ｜ LightCounting 宣告「2026 是矽光子年」</p>
+<p style="font-size:.85em">800G/1.6T 光模組出貨翻倍，矽光子滲透率達 50-70%。Tower Semiconductor 投資 $3 億，2026 年中產能三倍化。AI 資料中心頻寬瓶頸是確定性需求。</p>
+<p style="font-size:.82em"><strong>台股受惠</strong>：聯亞(3081)、華星光(4979)、前鼎(4908)</p>
+</div>
+
+<div class="opportunity">
+<h4>機會 #2：鈉離子電池 — 已量產但被低估</h4>
+<p style="font-size:.85em"><span class="fias-f">F 事實</span> 信心 95% ｜ CATL 天星 II 量產 / MIT Technology Review 年度十大突破</p>
+<p style="font-size:.85em">能量密度 175 Wh/kg 媲美 LFP。鈉價格僅鋰的 1/20，完全擺脫鋰供應鏈地緣風險。BYD 循環壽命 10,000 次。一旦規模化用於儲能和低價 EV，全球鋰礦投資邏輯將根本改變。</p>
+</div>
+
+<div class="opportunity">
+<h4>機會 #3：核能復興 × AI 共生</h4>
+<p style="font-size:.85em"><span class="fias-i">I 推論</span> 信心 70% ｜ 2026 預計 15 座反應爐上線 / 中國玲瓏一號 SMR 商用首座</p>
+<p style="font-size:.85em">核能是唯一同時滿足「零碳 + 基載 + 高密度」的能源。微軟三哩島 $15 億、Google 等 $200 億清潔能源投資。SMR 工廠預製可縮短建設週期，匹配資料中心速度。</p>
+</div>
+
+<div class="opportunity">
+<h4>機會 #4：被嚴重低估的科技（58% 技術被低估）</h4>
+<p style="font-size:.85em">科技管道掃描發現 58% 的前沿技術被市場低估：</p>
+<table>
+<tr><th>技術</th><th>為何被低估</th><th>潛力</th></tr>
+<tr><td>神經形態晶片</td><td>所有注意力在 GPU/LLM</td><td>功耗為 GPU 的 1/1000，邊緣 AI 真正需要</td></tr>
+<tr><td>環境能量擷取</td><td>Samsung 零電池感測器沒人關注</td><td>2030 年 11 億出貨量，IoT 革命基礎</td></tr>
+<tr><td>合成生物燃料</td><td>航空燃油替代沒有話題性</td><td>Berkeley Lab 產量提升 5 倍</td></tr>
+<tr><td>RISC-V 伺服器級</td><td>x86/ARM 仍是主流敘事</td><td>地緣政治驅動（中國唯一開源替代）</td></tr>
+</table>
+</div>
+
+<!-- ============================================ -->
+<!-- 陸、監控儀表板 -->
+<!-- ============================================ -->
+<div class="section-title" id="monitor">陸、監控儀表板</div>
+<div class="section-sub">每日 / 每週應追蹤的關鍵指標與警戒門檻</div>
+
+<table>
+<tr><th>指標</th><th>當前值</th><th>警戒線</th><th>危機線</th><th>對應訊號</th></tr>
+<tr><td>Brent 原油</td><td>~$113</td><td>&gt;$120</td><td style="color:var(--bear)">&gt;$140 = 衰退觸發</td><td>核心 #1</td></tr>
+<tr><td>HY 信用利差</td><td>470 bps</td><td>&gt;500</td><td style="color:var(--bear)">&gt;600 = 系統性危機</td><td>核心 #2</td></tr>
+<tr><td>私募信貸贖回率</td><td>7-11%</td><td>&gt;15%</td><td style="color:var(--bear)">多家同時 &gt;15%</td><td>核心 #2</td></tr>
+<tr><td>FINRA 保證金債務</td><td>$1.28T</td><td>月增 &gt;5%</td><td style="color:var(--bear)">月減 &gt;10% = 爆倉</td><td>核心 #2</td></tr>
+<tr><td>2Y 美債殖利率</td><td>3.90%</td><td>&gt;4.25%</td><td style="color:var(--bear)">&gt;4.50% = 升息確認</td><td>迴路 A</td></tr>
+<tr><td>VIX</td><td>26.78</td><td>&gt;30</td><td style="color:var(--bear)">&gt;40</td><td>迴路 C</td></tr>
+<tr><td>USD/JPY</td><td>觀察中</td><td>急跌至 &lt;145</td><td style="color:var(--bear)">&lt;140 = 套利平倉啟動</td><td>迴路 C</td></tr>
+<tr><td>全球尿素價格</td><td>+30% MoM</td><td>持續 &gt;3 個月</td><td style="color:var(--bear)">+50% 超過半年</td><td>核心 #5</td></tr>
+<tr><td>氦氣現貨價</td><td>+70-100%</td><td>持續高位 &gt;4 週</td><td style="color:var(--bear)">台積電宣布減產</td><td>斷路器 #1</td></tr>
+<tr><td>台股外資買賣超</td><td>大幅賣超</td><td>連 5 日 &gt;200 億</td><td style="color:var(--bear)">連 10 日賣超</td><td>核心 #3</td></tr>
+<tr><td>黃金</td><td>$4,563</td><td>突破 $5,000</td><td>突破 $5,595 新高</td><td>避險遷徙</td></tr>
+<tr><td>等權 vs 市值加權</td><td>RSP+5.5% vs SPY-4%</td><td>差距持續擴大</td><td style="color:var(--bear)">RSP 也轉負</td><td>市場結構</td></tr>
+</table>
+
+<!-- ============================================ -->
+<!-- 柒、六管道掃描摘要 -->
+<!-- ============================================ -->
+<div class="section-title" id="channels">柒、六管道掃描摘要</div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 1：全球總經（9 訊號 / 4 紅燈）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>訊號</th><th>FIAS</th><th>信心</th></tr>
+<tr><td>1</td><td>私募信貸贖回潮 $2.1T（5 巨頭同時觸發）</td><td><span class="fias-f">F</span></td><td>高</td></tr>
+<tr><td>2</td><td>殖利率曲線扭轉（短端 +33bps，市場定價升息）</td><td><span class="fias-f">F</span></td><td>高</td></tr>
+<tr><td>3</td><td>肥料價格脫鉤（+50%，與能源反向）</td><td><span class="fias-f">F</span></td><td>中高</td></tr>
+<tr><td>4</td><td>日圓套利定時炸彈（BOJ 升息 → 平倉風險）</td><td><span class="fias-i">I</span></td><td>中</td></tr>
+<tr><td>5</td><td>Fed 附買回市場結構壓力（SOFR 飆至 3.87%）</td><td><span class="fias-f">F</span></td><td>中高</td></tr>
+<tr><td>6</td><td>AI 顛覆軟體 → 私募信貸違約暴增（軟體佔 25%）</td><td><span class="fias-i">I</span></td><td>中高</td></tr>
+<tr><td>7</td><td>全球央行極端分歧（6 大央行方向各異）</td><td><span class="fias-f">F</span></td><td>高</td></tr>
+<tr><td>8</td><td>海運崩盤 vs 陸運暴漲剪刀差</td><td><span class="fias-f">F</span></td><td>中</td></tr>
+<tr><td>9</td><td>中國人行外匯準備金率歸零（鼓勵買美元）</td><td><span class="fias-i">I</span></td><td>中</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 2：產業趨勢（9 訊號 / 3 嚴重級）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>訊號</th><th>FIAS</th><th>信心</th></tr>
+<tr><td>1</td><td>氦氣斷供（卡達停產，台灣 69% 來源中斷）</td><td><span class="fias-f">F</span></td><td>92%</td></tr>
+<tr><td>2</td><td>T-Glass 玻纖布短缺（全球僅 2 家，缺口 10-20%）</td><td><span class="fias-f">F</span></td><td>88%</td></tr>
+<tr><td>3</td><td>HBM 零和賽局（消費電子被擠壓，手機 -12.9%）</td><td><span class="fias-i">I</span></td><td>85%</td></tr>
+<tr><td>4</td><td>CoWoS 被 NVIDIA 鎖死（佔 60% 產能）</td><td><span class="fias-f">F</span></td><td>90%</td></tr>
+<tr><td>5</td><td>AI 資本支出大分裂（硬體飆 vs 軟體崩）</td><td><span class="fias-i">I</span></td><td>72%</td></tr>
+<tr><td>6</td><td>白銀短缺卡住太陽能擴張</td><td><span class="fias-i">I</span></td><td>78%</td></tr>
+<tr><td>7</td><td>電動車電池中國咽喉點（80% NMC 經中國）</td><td><span class="fias-f">F</span></td><td>85%</td></tr>
+<tr><td>8</td><td>電力 &gt; 算力成為 AI 瓶頸</td><td><span class="fias-i">I</span></td><td>80%</td></tr>
+<tr><td>9</td><td>成熟製程無人擴產（車用晶片荒重演？）</td><td><span class="fias-a">A</span></td><td>65%</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 3：地緣政治（10 訊號）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>訊號</th><th>FIAS</th><th>信心</th></tr>
+<tr><td>1</td><td>伊朗戰爭 / 荷莫茲海峽封鎖（選擇性審查制度）</td><td><span class="fias-s">S</span></td><td>95%</td></tr>
+<tr><td>2</td><td>055 驅逐艦首次部署東部戰區（對台作戰指揮體系）</td><td><span class="fias-a">A</span></td><td>90%</td></tr>
+<tr><td>3</td><td>美軍亞太兵力真空（1/3 水面艦隊調中東）</td><td><span class="fias-s">S</span></td><td>88%</td></tr>
+<tr><td>4</td><td>中日外交危機 + 稀土武器化（考慮對日禁令）</td><td><span class="fias-a">A</span></td><td>85%</td></tr>
+<tr><td>5</td><td>南海羚羊礁 15 km² 填海造陸（靜默進行）</td><td><span class="fias-i">I</span></td><td>82%</td></tr>
+<tr><td>6</td><td>中國戰略石油異常增購 +15.8%（衝突前）</td><td><span class="fias-a">A</span></td><td>85%</td></tr>
+<tr><td>7</td><td>台海措辭「反對 → 打擊台獨」</td><td><span class="fias-i">I</span></td><td>80%</td></tr>
+<tr><td>8</td><td>美國關稅體制斷裂（最高法院裁定 + 122 條臨時）</td><td><span class="fias-a">A</span></td><td>92%</td></tr>
+<tr><td>9</td><td>俄烏談判凍結（注意力被伊朗占據）</td><td><span class="fias-i">I</span></td><td>75%</td></tr>
+<tr><td>10</td><td>東協三重轉型（緬泰越同時換領導層）</td><td><span class="fias-i">I</span></td><td>70%</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 4：科技突破（16 項 / 58% 被低估）</h3>
+<div class="card-body">
+<table>
+<tr><th>梯隊</th><th>技術</th><th>判定</th></tr>
+<tr><td rowspan="6">已商業化 / 瓶頸突破</td><td>矽光子（2026 商業元年，滲透 50-70%）</td><td style="color:var(--bull)">被低估</td></tr>
+<tr><td>鈉離子電池（CATL 量產，鈉價 1/20 鋰）</td><td style="color:var(--bull)">被低估</td></tr>
+<tr><td>Agentic AI（40% 企業嵌入，MCP 10K+ 伺服器）</td><td>合理</td></tr>
+<tr><td>人形機器人（Boston Dynamics 首批工廠部署）</td><td>略偏炒作</td></tr>
+<tr><td>體內 CRISPR（全球首例客製化治療完成）</td><td style="color:var(--bull)">被低估</td></tr>
+<tr><td>核融合（SPARC 預計 2026 點火，私部門 $90 億）</td><td>合理</td></tr>
+<tr><td rowspan="4">嚴重低估</td><td>神經形態晶片（Loihi 3：功耗 GPU 的 1/1000）</td><td style="color:var(--bull);font-weight:700">嚴重低估</td></tr>
+<tr><td>環境能量擷取（Samsung 零電池感測器）</td><td style="color:var(--bull);font-weight:700">嚴重低估</td></tr>
+<tr><td>合成生物燃料（產量 5 倍提升）</td><td style="color:var(--bull);font-weight:700">嚴重低估</td></tr>
+<tr><td>RISC-V 伺服器級（阿里巴巴 C930）</td><td style="color:var(--bull)">被低估</td></tr>
+<tr><td rowspan="3">過度炒作</td><td>固態電池（2030 前大規模商業化不太可能）</td><td style="color:var(--bear)">過度炒作</td></tr>
+<tr><td>通用量子運算（糾錯仍在起步）</td><td style="color:var(--bear)">過度炒作</td></tr>
+<tr><td>AGI / 超級智慧</td><td style="color:var(--bear)">過度炒作</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 5：投資市場異常（12 訊號 / 威脅 78/100）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>訊號</th><th>FIAS</th><th>信心</th></tr>
+<tr><td>1</td><td>TACO Trade 內線疑雲（$5.8 億油期 + $15 億 S&P）</td><td><span class="fias-s">S</span></td><td>92%</td></tr>
+<tr><td>2</td><td>保證金債務 $1.28T 歷史極值（佔 GDP 4.1%）</td><td><span class="fias-s">S</span></td><td>95%</td></tr>
+<tr><td>3</td><td>企業債到期牆 $1.35T + CRE $8,750 億</td><td><span class="fias-a">A</span></td><td>88%</td></tr>
+<tr><td>4</td><td>市場寬度嚴重惡化（SPY -4% vs RSP +5.5%）</td><td><span class="fias-a">A</span></td><td>85%</td></tr>
+<tr><td>5</td><td>10Y 殖利率 4.40%，降息蒸發</td><td><span class="fias-a">A</span></td><td>90%</td></tr>
+<tr><td>6</td><td>選擇權異常押注 XOM/META/SMCI</td><td><span class="fias-i">I</span></td><td>75%</td></tr>
+<tr><td>7</td><td>黃金 $4,563 避險遷徙</td><td><span class="fias-i">I</span></td><td>88%</td></tr>
+<tr><td>8</td><td>台股外資單日賣超 839 億「黑色星期一」</td><td><span class="fias-i">I</span></td><td>90%</td></tr>
+<tr><td>9</td><td>內部人大量拋售 vs 散戶接盤（經典頂部訊號）</td><td><span class="fias-i">I</span></td><td>80%</td></tr>
+<tr><td>10</td><td>加密巨鯨異常輪動（13.7 年沉睡錢包甦醒）</td><td><span class="fias-f">F</span></td><td>65%</td></tr>
+<tr><td>11</td><td>VIX 期限結構反轉（恐慌初期訊號）</td><td><span class="fias-i">I</span></td><td>82%</td></tr>
+<tr><td>12</td><td>信用利差急擴 HY 470bps（距危機門檻 30bps）</td><td><span class="fias-s">S</span></td><td>90%</td></tr>
+</table>
+</div></div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">管道 6：跨領域隱藏關聯（7 發現）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>交叉模式</th><th>FIAS</th><th>信心</th><th>時間窗口</th></tr>
+<tr><td>1</td><td>能源-銅-AI 三角絞殺（正回饋迴路）</td><td><span class="fias-i">I</span></td><td>85%</td><td>2026-2030</td></tr>
+<tr><td>2</td><td>荷莫茲-肥料-糧食斷裂（引信已點燃）</td><td><span class="fias-a">A</span></td><td>90%</td><td>2026Q4-2027Q1</td></tr>
+<tr><td>3</td><td>氣候-保險-房市螺旋（$1.6 兆曝險）</td><td><span class="fias-i">I</span></td><td>80%</td><td>2026-2028</td></tr>
+<tr><td>4</td><td>台灣四面夾擊匯聚（五線收束）</td><td><span class="fias-i">I</span></td><td>75%</td><td>2026-2028</td></tr>
+<tr><td>5</td><td>核能復興 × AI 共生（機會）</td><td><span class="fias-i">I</span></td><td>70%</td><td>2026-2035</td></tr>
+<tr><td>6</td><td>AI 裁員 × 老齡化 × 食品通膨 壓力鍋</td><td><span class="fias-a">A</span></td><td>65%</td><td>2026Q4-2027</td></tr>
+<tr><td>7</td><td>監管碎片化系統風險（CBAM/ESG/碳定價分裂）</td><td><span class="fias-i">I</span></td><td>70%</td><td>2026-2030</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================ -->
+<!-- 捌、接力行動建議 -->
+<!-- ============================================ -->
+<div class="section-title" id="action">捌、接力行動建議</div>
+
+<table>
+<tr><th>優先級</th><th>訊號</th><th>建議接力</th><th>天機閣模組</th></tr>
+<tr><td style="color:var(--bear);font-weight:700">P0</td><td>荷莫茲→氦氣→半導體</td><td>推演引擎 Phase 3 全景推演</td><td>天機閣-推演.skill</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">P0</td><td>私募信貸+槓桿危機</td><td>推演引擎 Phase 1 偵測</td><td>天機閣-推演.skill</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">P0</td><td>台灣五線收束</td><td>推演引擎 Phase 3 全景推演</td><td>天機閣-推演.skill</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">P1</td><td>肥料-糧食延遲炸彈</td><td>通用深度調查（農業供應鏈）</td><td>通用深度調查.skill</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">P1</td><td>氦氣供應鏈</td><td>西碧拉建立氦氣節點圖</td><td>天機閣-西碧拉.skill</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">P1</td><td>矽光子 2026 商業元年</td><td>台股光通訊深度調查</td><td>投資分析.skill</td></tr>
+<tr><td style="font-weight:700">P2</td><td>鈉離子電池 vs 鋰礦</td><td>推演引擎 Phase 1（產業衝擊）</td><td>天機閣-推演.skill</td></tr>
+<tr><td style="font-weight:700">P2</td><td>中國軍事準備系統圖像</td><td>西碧拉更新東亞軍事節點</td><td>天機閣-西碧拉.skill</td></tr>
+<tr><td style="font-weight:700">P2</td><td>被低估的科技</td><td>神經形態晶片/RISC-V 追蹤</td><td>推衍天下學習記錄</td></tr>
+</table>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+    天機閣 — 推衍天下全面掃描 ｜ 2026-03-25<br>
+    六管道平行偵測 × 80+ 搜尋詞 × 63 個弱訊號 × 100+ 獨立來源<br>
+    天機閣 v3.0 ｜ 推衍天下 v2.1
+</div>
+
+</div>
+
+<script>
+// 展開/收合所有卡片
+function toggleAll(expand){
+  document.querySelectorAll('.card').forEach(c=>{
+    if(expand) c.classList.remove('collapsed');
+    else c.classList.add('collapsed');
+  });
+}
+</script>
+</body>
+</html>

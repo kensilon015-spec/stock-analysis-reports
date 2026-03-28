@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SNDK 深度研究報告 — SanDisk Corporation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--up:#2e7d32;--down:#c62828;--warn:#e65100}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:840px;margin:0 auto;padding:32px 24px}
+
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+.label{display:inline-block;font-size:.72em;padding:4px 12px;border-radius:8px;font-weight:700;margin-bottom:14px;letter-spacing:.5px;color:#fff}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
+
+.tip{padding:12px 16px;border-radius:8px;margin:8px 0;border-left:3px solid;font-size:.88em}
+.tip.danger{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.danger b{color:var(--food);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(230,81,0,.08);color:var(--txt)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.88em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+.up{color:var(--up);font-weight:700}
+.down{color:var(--down);font-weight:700}
+
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0}
+.metric{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.metric .val{font-size:1.4em;font-weight:900;color:var(--base)}
+.metric .lbl{font-size:.78em;color:var(--txt3);margin-top:4px}
+
+details{margin:8px 0}
+summary{cursor:pointer;font-weight:600;color:var(--base);padding:8px 0;font-size:.95em}
+summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:8px}
+details .inner{padding:0 16px 12px;color:var(--txt2);font-size:.9em;line-height:1.9}
+
+.section-title{font-size:1.3em;font-weight:900;color:var(--base);margin:32px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+
+.bar-chart{margin:12px 0}
+.bar-row{display:flex;align-items:center;margin:6px 0;gap:10px}
+.bar-label{width:120px;font-size:.82em;color:var(--txt2);text-align:right;flex-shrink:0}
+.bar-track{flex:1;background:var(--hover);border-radius:6px;height:22px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:.72em;color:#fff;font-weight:700;min-width:fit-content}
+
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+
+.source-list{margin:8px 0;padding-left:20px;font-size:.82em;color:var(--txt3)}
+.source-list a{color:var(--link);text-decoration:none}
+.source-list a:hover{text-decoration:underline}
+
+@media(max-width:600px){
+    .wrap{padding:16px 12px}
+    .metric-grid{grid-template-columns:1fr 1fr}
+    .bar-label{width:80px;font-size:.75em}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <!-- ===== 標題區 ===== -->
+    <div class="hero">
+        <div style="font-size:48px;margin-bottom:8px">SNDK</div>
+        <h1>SanDisk Corporation 深度研究報告</h1>
+        <div class="sub">NASDAQ: SNDK — AI 記憶體超級週期的純正受益者</div>
+        <div class="desc">從西部數據分拆重生，一年內股價飆漲超過 550%</div>
+        <div class="tags">
+            <span class="tag">NAND 快閃記憶體</span>
+            <span class="tag">資料中心儲存</span>
+            <span class="tag">AI 基礎設施</span>
+            <span class="tag">S&P 500 成分股</span>
+            <span class="tag">研究日期：2026/03/21</span>
+        </div>
+    </div>
+
+    <!-- ===== 即時快照 ===== -->
+    <span class="label" style="background:var(--accent)">即時市場快照</span>
+    <div class="card">
+        <h3>關鍵數據一覽（截至 2026/03/20）</h3>
+        <div class="metric-grid">
+            <div class="metric">
+                <div class="val">$709.71</div>
+                <div class="lbl">收盤價（USD）</div>
+            </div>
+            <div class="metric">
+                <div class="val">~$1,050 億</div>
+                <div class="lbl">市值（USD）</div>
+            </div>
+            <div class="metric">
+                <div class="val up">+132%</div>
+                <div class="lbl">2026 年初至今漲幅</div>
+            </div>
+            <div class="metric">
+                <div class="val">$28.27 — $777.60</div>
+                <div class="lbl">52 週區間（USD）</div>
+            </div>
+            <div class="metric">
+                <div class="val">18.08x</div>
+                <div class="lbl">前瞻本益比</div>
+            </div>
+            <div class="metric">
+                <div class="val">$767.68</div>
+                <div class="lbl">分析師平均目標價</div>
+            </div>
+        </div>
+        <div class="tip good">
+            <b>分析師共識：14 位買入，0 位賣出</b>
+            目標價區間 $600 ~ $1,000，平均 $767.68。約 75% 分析師維持「買入」或「強力買入」評等。
+        </div>
+    </div>
+
+    <!-- ===== 公司概覽 ===== -->
+    <div class="section-title">一、公司概覽與背景</div>
+
+    <div class="card">
+        <h3>分拆重生：從西部數據獨立</h3>
+        <table>
+            <tr><th>項目</th><th>內容</th></tr>
+            <tr><td>公司全名</td><td>SanDisk Corporation</td></tr>
+            <tr><td>股票代碼</td><td>NASDAQ: SNDK</td></tr>
+            <tr><td>獨立上市日</td><td>2025 年 2 月 24 日</td></tr>
+            <tr><td>分拆方式</td><td>西部數據（WDC）分配 80.1% 股份給股東，每持有 1 股 WDC 獲得 1/3 股 SNDK</td></tr>
+            <tr><td>完全獨立日</td><td>2026 年 2 月 18 日（WDC 出清最後 750 萬股）</td></tr>
+            <tr><td>總部</td><td>美國</td></tr>
+            <tr><td>加入 S&P 500</td><td>2026 年（分拆後快速納入）</td></tr>
+        </table>
+        <details>
+            <summary>展開：分拆背景詳情</summary>
+            <div class="inner">
+                SanDisk 原為獨立公司，2016 年被西部數據（Western Digital, WDC）以 190 億美元收購。2024 年底，WDC 宣布將 NAND 快閃記憶體業務（SanDisk）與 HDD 硬碟業務分拆，讓兩者各自專注核心市場。2025 年 2 月 24 日，SanDisk 以獨立公司身份重返 NASDAQ 交易所，代碼依舊使用經典的 SNDK。分拆後，SanDisk 成為純正的 NAND 快閃記憶體企業，擺脫了成長較慢的 HDD 業務拖累。
+            </div>
+        </details>
+    </div>
+
+    <div class="card">
+        <h3>核心業務</h3>
+        <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">
+            SanDisk 開發與製造基於 NAND 快閃記憶體的儲存解決方案，服務三大市場：
+        </p>
+        <table>
+            <tr><th>業務板塊</th><th>主要產品</th><th>成長驅動</th></tr>
+            <tr><td><b>資料中心</b></td><td>企業級 SSD（Gen5 TLC / QLC）</td><td>AI 訓練叢集、推理伺服器、KV Cache 儲存需求</td></tr>
+            <tr><td><b>邊緣裝置</b></td><td>嵌入式快閃記憶體、工業級 SSD</td><td>自駕車、IoT、邊緣 AI 運算</td></tr>
+            <tr><td><b>消費市場</b></td><td>microSD 卡、USB 隨身碟、消費級 SSD</td><td>智慧手機、筆電、遊戲主機</td></tr>
+        </table>
+    </div>
+
+    <!-- ===== Kioxia 合資 ===== -->
+    <div class="card">
+        <h3>關鍵資產：與 Kioxia 的合資事業</h3>
+        <p style="color:var(--txt2);font-size:.9em;margin-bottom:8px">
+            SanDisk 商業模式的核心基石是與 <b>Kioxia（前東芝記憶體）</b>的長期合資關係，雙方共同分攤數十億美元的研發與晶圓廠成本。
+        </p>
+        <table>
+            <tr><th>項目</th><th>內容</th></tr>
+            <tr><td>合資廠址</td><td>日本四日市（Yokkaichi）</td></tr>
+            <tr><td>協議期限</td><td>延長至 <b>2034 年 12 月 31 日</b>（2026 年 1 月宣布）</td></tr>
+            <tr><td>SanDisk 支付</td><td>11.65 億美元（2026～2029 分期支付），用於製造服務與供應保障</td></tr>
+            <tr><td>共同研發技術</td><td>BiCS FLASH 3D NAND（已發展至第 8 代 BiCS8，218 層）</td></tr>
+            <tr><td>未來路線圖</td><td>BiCS10（332 層）預計 2026 年開始量產，北上 K2 廠將轉用新製程</td></tr>
+        </table>
+        <div class="tip good">
+            <b>策略意義</b>
+            合資模式讓 SanDisk 無需自建晶圓廠，大幅降低資本支出風險，同時確保全球 NAND 位元產能的重要份額。Kioxia/SanDisk 計畫 2026 年投資額年增 41% 至 45 億美元，顯示擴產野心。
+        </div>
+    </div>
+
+    <!-- ===== 財務數據 ===== -->
+    <div class="section-title">二、財務數據與營運表現</div>
+
+    <div class="card">
+        <h3>季度財務數據</h3>
+        <table>
+            <tr>
+                <th>季度</th>
+                <th>營收</th>
+                <th>季增</th>
+                <th>GAAP 淨利/虧損</th>
+                <th>Non-GAAP EPS</th>
+            </tr>
+            <tr>
+                <td>FY2025 Q4<br><small>（截至 2025/06/27）</small></td>
+                <td>$19.0 億</td>
+                <td class="up">+12%</td>
+                <td class="down">-$0.23 億<br>（EPS -$0.16）</td>
+                <td>$0.29</td>
+            </tr>
+            <tr>
+                <td>FY2026 Q1<br><small>（截至 2025/10/03）</small></td>
+                <td>$23.1 億</td>
+                <td class="up">+21%</td>
+                <td>$1.12 億<br>（EPS $0.75）</td>
+                <td>$1.22</td>
+            </tr>
+            <tr>
+                <td><b>FY2026 Q2</b><br><small>（截至 2026/01/02）</small></td>
+                <td><b>$30.3 億</b></td>
+                <td class="up"><b>+31%</b></td>
+                <td class="up"><b>$8.03 億</b><br>（EPS $5.15）</td>
+                <td><b>$6.20</b></td>
+            </tr>
+        </table>
+        <div class="tip good">
+            <b>爆發式成長</b>
+            FY2026 Q2 營收 $30.3 億，年增 61%，毛利率從一年前的 32.5% 大幅擴張至 51.1%。資料中心營收季增 26%，為主要成長引擎。
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>關鍵獲利指標</h3>
+        <div class="metric-grid">
+            <div class="metric">
+                <div class="val">51.1%</div>
+                <div class="lbl">FY26Q2 毛利率</div>
+            </div>
+            <div class="metric">
+                <div class="val up">+18.6pp</div>
+                <div class="lbl">毛利率年增（vs 32.5%）</div>
+            </div>
+            <div class="metric">
+                <div class="val">$6.20</div>
+                <div class="lbl">FY26Q2 Non-GAAP EPS</div>
+            </div>
+            <div class="metric">
+                <div class="val">11.80x</div>
+                <div class="lbl">股價營收比（TTM）</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 股價表現 ===== -->
+    <div class="section-title">三、股價表現與估值</div>
+
+    <div class="card">
+        <h3>歷史性飆漲軌跡</h3>
+        <table>
+            <tr><th>時間節點</th><th>股價（USD）</th><th>備註</th></tr>
+            <tr><td>2025/02/24（上市日）</td><td>~$27.89</td><td>分拆上市首日</td></tr>
+            <tr><td>2025 年底</td><td>~$305</td><td>年漲幅 ~550%</td></tr>
+            <tr><td>2026/01/01</td><td>~$305</td><td>年初基準</td></tr>
+            <tr><td>2026/03/19</td><td>$761.52</td><td>歷史最高</td></tr>
+            <tr><td>2026/03/20</td><td>$709.71</td><td>回檔約 5%</td></tr>
+        </table>
+        <p style="color:var(--txt2);font-size:.88em;margin-top:8px">
+            從上市至今（約 13 個月），SNDK 股價從 ~$28 飆升至 ~$710，漲幅約 <b>2,440%</b>。2026 年初至今漲幅約 <b>132%</b>，為 S&P 500 第一季表現最佳的大型科技股。
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>估值指標對照</h3>
+        <table>
+            <tr><th>指標</th><th>數值</th><th>說明</th></tr>
+            <tr><td>前瞻本益比（Forward P/E）</td><td>18.08x</td><td>基於分析師預估盈餘</td></tr>
+            <tr><td>股價營收比（P/S TTM）</td><td>11.80x</td><td>以過去 12 個月營收計</td></tr>
+            <tr><td>股價淨值比（P/B MRQ）</td><td>10.26x</td><td>—</td></tr>
+            <tr><td>企業價值</td><td>~$1,040 億</td><td>—</td></tr>
+            <tr><td>TTM 利潤率</td><td>-11.66%</td><td>含分拆初期虧損季度，未來趨勢向上</td></tr>
+        </table>
+        <div class="tip warn">
+            <b>估值爭議</b>
+            目前股價已超越分析師平均目標價（$767.68），在經歷 1,270% 的飆漲後，市場定價的樂觀程度已超過專業共識。前瞻 P/E 18x 看似合理，但這仰賴盈餘持續高速成長的假設。
+        </div>
+    </div>
+
+    <!-- ===== 產業競爭 ===== -->
+    <div class="section-title">四、產業地位與競爭格局</div>
+
+    <div class="card">
+        <h3>全球 NAND 快閃記憶體市場份額</h3>
+        <div class="bar-chart">
+            <div class="bar-row">
+                <div class="bar-label">三星電子</div>
+                <div class="bar-track"><div class="bar-fill" style="width:31%;background:var(--link)">31%</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label">SK 海力士/Solidigm</div>
+                <div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--accent)">~21%</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label">Kioxia</div>
+                <div class="bar-track"><div class="bar-fill" style="width:19%;background:var(--food)">19%</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label">美光（Micron）</div>
+                <div class="bar-track"><div class="bar-fill" style="width:14%;background:var(--table-header)">~14%</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label"><b>SanDisk</b></div>
+                <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--base)">~12%</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label">長江存儲(YMTC)</div>
+                <div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--txt3)">~5%</div></div>
+            </div>
+        </div>
+        <p style="color:var(--txt3);font-size:.8em;margin-top:6px">
+            * 市佔率為約略估計，SanDisk 與 Kioxia 透過合資共享產能，合計約佔全球 31%。資料來源：TrendForce、產業研究報告
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>NAND 快閃記憶體市場概況</h3>
+        <table>
+            <tr><th>項目</th><th>數據</th></tr>
+            <tr><td>2026 年全球市場規模（預估）</td><td>~$587 億 ~ $650 億 USD</td></tr>
+            <tr><td>2031 年預估規模</td><td>~$760 億 USD</td></tr>
+            <tr><td>年複合成長率（CAGR）</td><td>5.32%</td></tr>
+            <tr><td>AI 應用佔 NAND 需求</td><td>2026 年預計每 5 個位元中有 1 個用於 AI，貢獻市場價值 34%</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>競爭對手動態</h3>
+        <details>
+            <summary>三星電子 — 市佔龍頭但策略保守</summary>
+            <div class="inner">
+                市佔約 31%，但 2026 年投資重心轉向 HBM 與 DRAM，NAND 投資預計減少。計畫對客戶提漲 20%~30%。
+            </div>
+        </details>
+        <details>
+            <summary>SK 海力士/Solidigm — 聚焦 HBM</summary>
+            <div class="inner">
+                NAND 投資同樣縮減，重心在 HBM（高頻寬記憶體）。預計 2026 年下半年推出 321 層 QLC NAND 產品。
+            </div>
+        </details>
+        <details>
+            <summary>美光（Micron）— 多元化佈局</summary>
+            <div class="inner">
+                同時佈局 DRAM 與 NAND，在資料中心 SSD 市場與 SanDisk 直接競爭。
+            </div>
+        </details>
+        <details>
+            <summary>長江存儲（YMTC）— 中國挑戰者</summary>
+            <div class="inner">
+                投資積極擴張策略，但受美國出口管制限制，先進設備取得困難。主要供應中國內需市場。
+            </div>
+        </details>
+    </div>
+
+    <!-- ===== 技術優勢 ===== -->
+    <div class="section-title">五、技術優勢與成長催化劑</div>
+
+    <div class="card">
+        <h3>BiCS FLASH 技術路線圖</h3>
+        <table>
+            <tr><th>世代</th><th>層數</th><th>狀態</th><th>備註</th></tr>
+            <tr><td>BiCS8（第 8 代）</td><td>218 層</td><td class="up">量產中</td><td>業界領先位元密度與能效，AI 資料中心關鍵零件</td></tr>
+            <tr><td>BiCS10（第 10 代）</td><td>332 層</td><td>2026 年開始量產</td><td>預計提前量產，北上 K2 廠轉用此製程</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>AI 儲存生態系佈局</h3>
+        <div class="tip good">
+            <b>NVIDIA GTC 2026 重大宣布</b>
+            SanDisk 在 NVIDIA GTC 2026 宣布大規模量產 BiCS8 QLC SSD，專為高密度 AI 儲存設計。這些 SSD 針對「KV Cache」瓶頸最佳化，讓 AI 工廠能維持大量對話上下文，解決長篇推理的效能退化問題。
+        </div>
+        <p style="color:var(--txt2);font-size:.9em;margin-top:8px">
+            <b>關鍵成長催化劑：</b>
+        </p>
+        <ul style="color:var(--txt2);font-size:.9em;padding-left:20px;margin-top:6px">
+            <li><b>AI 推理需求爆發</b>：代理式 AI（Agentic AI）採用加速，推升資料中心 NAND 需求</li>
+            <li><b>Gen5 TLC SSD 產品線</b>：企業級高效能 SSD，為 AI 訓練叢集提供骨幹儲存</li>
+            <li><b>NVIDIA 生態系整合</b>：SanDisk SSD 成為 NVIDIA AI 記憶體層級架構的一環</li>
+            <li><b>BiCS10 量產</b>：332 層技術預計 2026 年量產，進一步降低成本並提升競爭力</li>
+            <li><b>NAND 供需緊縮</b>：主要廠商聯手減產，推升 NAND 價格與毛利率</li>
+        </ul>
+    </div>
+
+    <!-- ===== 風險分析 ===== -->
+    <div class="section-title">六、風險與挑戰</div>
+
+    <div class="card">
+        <h3>主要風險因素</h3>
+
+        <div class="tip danger">
+            <b>1. 記憶體週期風險（最關鍵）</b>
+            NAND 快閃記憶體產業具有強烈週期性。歷史上，快速產能擴張最終會導致供過於求與價格暴跌。目前 AI 需求吸收供給，但當廠商加速擴產後，超額供給風險將浮現。
+        </div>
+
+        <div class="tip danger">
+            <b>2. 極端估值風險</b>
+            股價在 13 個月內飆漲 ~2,440%，目前交易價已超越分析師平均目標價。在專業共識之上交易意味著市場定價的樂觀程度極高，任何不及預期的數據都可能引發劇烈回檔。
+        </div>
+
+        <div class="tip warn">
+            <b>3. 位元出貨量下滑疑慮</b>
+            市場預期近期位元出貨量可能季減，引發對營收持續成長能力的擔憂。SanDisk 採用「按需生產」策略，可能犧牲市佔率以維持定價。
+        </div>
+
+        <div class="tip warn">
+            <b>4. 地緣政治與出口管制</b>
+            2026 年 1 月起，美國對中國 NAND 出口實施「年度審批制」，增加合規負擔。若中美晶片戰進一步升級，SanDisk 可能失去龐大的中國消費電子市場。
+        </div>
+
+        <div class="tip warn">
+            <b>5. 競爭壓力</b>
+            三星、SK 海力士、美光均在 AI 儲存領域積極佈局。三星市佔率最大且資源雄厚，可能在價格戰中佔優勢。
+        </div>
+
+        <div class="tip warn">
+            <b>6. 客戶集中度風險</b>
+            資料中心客戶（雲端超大規模運營商）高度集中，少數客戶佔比大量營收，議價能力強。
+        </div>
+    </div>
+
+    <!-- ===== 近期重大事件 ===== -->
+    <div class="section-title">七、近期重大事件時間軸</div>
+
+    <div class="card">
+        <table>
+            <tr><th>日期</th><th>事件</th><th>影響</th></tr>
+            <tr><td>2025/02/24</td><td>SanDisk 獨立上市於 NASDAQ</td><td>重新以 SNDK 代碼交易</td></tr>
+            <tr><td>2025/08/14</td><td>FY2025 Q4 財報發布</td><td>營收 $19 億，優於預期</td></tr>
+            <tr><td>2025/11/06</td><td>FY2026 Q1 財報發布</td><td>營收 $23.1 億，季增 21%</td></tr>
+            <tr><td>2026/01/29</td><td>與 Kioxia 延長合資至 2034 年</td><td>確保長期產能與技術合作</td></tr>
+            <tr><td>2026/01/29</td><td>FY2026 Q2 財報發布</td><td>營收 $30.3 億，年增 61%</td></tr>
+            <tr><td>2026/02/18</td><td>WDC 出清最後持股</td><td>SanDisk 完全獨立</td></tr>
+            <tr><td>2026/03 初</td><td>納入 S&P 500 指數</td><td>引入指數基金被動買盤</td></tr>
+            <tr><td>2026/03/17-18</td><td>NVIDIA GTC 2026 展示</td><td>宣布 BiCS8 QLC SSD 大規模量產</td></tr>
+            <tr><td>2026/03/19</td><td>股價創歷史新高 $761.52</td><td>隨後回檔約 5%</td></tr>
+            <tr><td>2026/03/19</td><td>WDC 出售持股引發壓力</td><td>短期賣壓</td></tr>
+        </table>
+    </div>
+
+    <!-- ===== 投資論點 ===== -->
+    <div class="section-title">八、多空論點彙整</div>
+
+    <div class="card">
+        <h3>看多論點（Bull Case）</h3>
+        <ul style="color:var(--txt2);font-size:.9em;padding-left:20px;line-height:2.2">
+            <li>AI 記憶體超級週期仍處於初期，資料中心 NAND 需求將持續數年高成長</li>
+            <li>純正 NAND 企業，擺脫 HDD 拖累，營運效率大幅提升</li>
+            <li>BiCS8/BiCS10 技術領先，與 Kioxia 合資降低資本支出風險</li>
+            <li>毛利率從 32.5% 擴張至 51.1%，獲利能力顯著改善</li>
+            <li>NAND 廠商聯手減產，供需結構有利維持高價格</li>
+            <li>NVIDIA 生態系合作深化，在 AI 儲存領域取得戰略地位</li>
+            <li>分析師目標價高端達 $1,000，仍有上行空間</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>看空論點（Bear Case）</h3>
+        <ul style="color:var(--txt2);font-size:.9em;padding-left:20px;line-height:2.2">
+            <li>記憶體產業週期性極強，歷史上多次出現供需逆轉導致價格崩跌</li>
+            <li>13 個月漲幅 ~2,440%，估值已超越分析師平均共識</li>
+            <li>位元出貨量預期下降，營收成長持續性存疑</li>
+            <li>三星等競爭者資源雄厚，可發動價格戰</li>
+            <li>中美地緣政治風險可能限制中國市場準入</li>
+            <li>TTM 利潤率仍為負值（-11.66%），含分拆初期虧損影響</li>
+            <li>近期 WDC 出售持股造成賣壓，短期技術面偏弱</li>
+        </ul>
+    </div>
+
+    <!-- ===== 結論 ===== -->
+    <div class="section-title">九、研究結論</div>
+
+    <div class="card">
+        <h3>綜合評估</h3>
+        <p style="color:var(--txt2);font-size:.9em;line-height:2">
+            SanDisk（SNDK）是目前全球最受矚目的 AI 基礎設施概念股之一。從西部數據分拆獨立後，公司成功定位為純正 NAND 快閃記憶體企業，精準搭上 AI 記憶體超級週期的浪潮。FY2026 Q2 營收 $30.3 億、毛利率 51.1% 的表現令人驚豔，與 Kioxia 延長合資至 2034 年也確保了長期技術與產能優勢。
+        </p>
+        <p style="color:var(--txt2);font-size:.9em;line-height:2;margin-top:8px">
+            然而，在經歷超過 2,400% 的驚人漲幅後，估值已處於極度樂觀的水準。記憶體產業的強烈週期性、位元出貨量下滑疑慮、以及地緣政治風險，都是不可忽視的潛在逆風。投資人需審慎評估目前的價位是否已充分反映甚至超越了基本面。
+        </p>
+        <div class="tip warn">
+            <b>重要提醒</b>
+            本報告僅為研究整理，不構成任何投資建議。投資有風險，請依個人風險承受能力審慎評估。所有數據來源於公開市場資訊，可能存在時效性差異。
+        </div>
+    </div>
+
+    <!-- ===== 資料來源 ===== -->
+    <div class="section-title">十、資料來源</div>
+    <div class="card">
+        <ol class="source-list" style="line-height:2.4">
+            <li><a href="https://investor.sandisk.com/news-releases/news-release-details/sandisk-celebrates-nasdaq-listing-after-completing-separation" target="_blank">SanDisk 官方：慶祝 NASDAQ 上市公告</a></li>
+            <li><a href="https://investor.sandisk.com/news-releases/news-release-details/sandisk-reports-fiscal-second-quarter-2026-financial-results" target="_blank">SanDisk 官方：FY2026 Q2 財報</a></li>
+            <li><a href="https://investor.sandisk.com/news-releases/news-release-details/sandisk-reports-fiscal-first-quarter-2026-financial-results" target="_blank">SanDisk 官方：FY2026 Q1 財報</a></li>
+            <li><a href="https://investor.sandisk.com/news-releases/news-release-details/kioxia-and-sandisk-extend-yokkaichi-joint-venture-agreement" target="_blank">SanDisk 官方：與 Kioxia 延長合資公告</a></li>
+            <li><a href="https://finance.yahoo.com/quote/SNDK/" target="_blank">Yahoo Finance：SNDK 即時報價</a></li>
+            <li><a href="https://www.trendforce.com/news/2025/11/13/news-nand-giants-reportedly-cut-output-in-2h25-as-prices-surge-samsung-mulls-20-30-hike-in-2026/" target="_blank">TrendForce：NAND 廠商減產與漲價動態</a></li>
+            <li><a href="https://seekingalpha.com/article/4882807-sandisk-this-nvidia-gtc-2026-announcement-could-be-a-gamechanger" target="_blank">Seeking Alpha：NVIDIA GTC 2026 對 SNDK 影響分析</a></li>
+            <li><a href="https://www.tipranks.com/news/why-sandisk-stock-sndk-is-crushing-the-sp-500-in-2026" target="_blank">TipRanks：SNDK 為何碾壓 S&P 500</a></li>
+            <li><a href="https://247wallst.com/investing/2026/03/20/sandisk-drops-5-ai-breakout-or-speculative-bubble-the-memory-sectors-hottest-debate/" target="_blank">24/7 Wall St：AI 突破還是投機泡沫？</a></li>
+            <li><a href="https://www.tradingview.com/news/zacks:e1c29c35f094b:0-gen5-tlc-bics8-pipeline-power-sandisk-s-data-center-growth-ambitions/" target="_blank">TradingView/Zacks：Gen5 TLC、BiCS8 推動資料中心成長</a></li>
+            <li><a href="https://parameter.io/sandisk-stock-ai-demand-valuation-debate-2026/" target="_blank">Parameter：SNDK AI 需求與估值辯論</a></li>
+        </ol>
+    </div>
+
+    <div class="footer">
+        天機閣 研究報告 — SNDK 深度調查 | 資料日期：2026/03/21 | 本報告不構成投資建議
+    </div>
+
+</div>
+</body>
+</html>

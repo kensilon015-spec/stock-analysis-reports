@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>弘塑科技(3131) 第八步 推演版 — 天機閣</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（暖棕慢活風） === */
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 估值區塊（ev 證據卡） === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 路徑卡片 === */
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:6px 0}
+.path-card .path-title{font-weight:700;font-size:.92em;color:var(--base);margin-bottom:4px}
+.path-card .path-prob{font-weight:900;font-size:1.1em;margin-bottom:4px}
+.path-card .path-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:8px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:10px;padding-left:6px}
+.timeline-item::before{content:'';position:absolute;left:-19px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.timeline-item .tl-date{font-weight:700;font-size:.82em;color:var(--accent)}
+.timeline-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.timeline-item.critical::before{background:var(--danger)}
+.timeline-item.critical .tl-date{color:var(--danger)}
+
+/* === 影響鏈 === */
+.chain{padding:8px 12px;margin:6px 0;border-radius:6px;border:1px solid var(--border);background:var(--panel)}
+.chain .chain-title{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.chain .chain-flow{font-size:.82em;color:var(--txt2);line-height:1.7}
+.chain .chain-flow .arrow{color:var(--accent);font-weight:700;margin:0 4px}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>弘塑科技 (3131) — 第八步：推演版</h1>
+    <div class="sub">天機閣深度調查系統 v3.0 | 第四次信心校準</div>
+    <div class="desc">
+        基於前七步分析，進行多路徑情境推演、蝴蝶效應弱訊號偵測、貓膩推衍與最終行動建議。<br>
+        核心結論：現價 2,780 元溢價 61%，安全邊際 1,400-1,650 元，建議觀望。
+    </div>
+    <div class="tags">
+        <span class="tag">CoWoS 設備</span>
+        <span class="tag">PE 76x</span>
+        <span class="tag">看空 42%</span>
+        <span class="tag">推演版 8a~8i</span>
+        <span class="tag">2026-03-26</span>
+    </div>
+</div>
+
+<!-- ===== 快速儀表板 ===== -->
+<div class="grid3" style="margin-bottom:12px">
+    <div class="mini-card bear-card">
+        <div class="title">最終期望價</div>
+        <div class="num" style="color:var(--bear)">1,730 元</div>
+        <div class="desc">vs 現價 2,780 元 (溢價 61%)</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">第四次校準</div>
+        <div class="num" style="color:var(--neutral)">看多 58% / 看空 42%</div>
+        <div class="desc">看空 +2pp (vs 第三次)</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">貓膩燈號</div>
+        <div class="num" style="color:var(--warn)"><span class="light yellow"></span> 黃燈</div>
+        <div class="desc">外資高位出貨假說 20%</div>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#s8a">8a. 推衍基礎確認 — 核心事實回溯</a>
+    <a href="#s8b">8b. OSINT 情報更新 — 最新動態</a>
+    <a href="#s8c">8c. 影響鏈分析 — 三條因果傳導鏈</a>
+    <a href="#s8d">8d. 情境模擬 — 五條路徑推演</a>
+    <a href="#s8e">8e. 個人化推衍 — 閣主適用建議</a>
+    <a href="#s8f">8f. 催化劑時間表 — 2026/4~10 關鍵節點</a>
+    <a href="#s8g">8g. 蝴蝶效應推衍 — 三組弱訊號</a>
+    <a href="#s8h">8h. 貓膩推衍 — 反共識偵測</a>
+    <a href="#s8i">8i. 推衍結論 — 第四次信心校準與行動建議</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8a. 推衍基礎確認 -->
+<!-- ================================================================ -->
+<div id="s8a" class="section-title">8a. 推衍基礎確認</div>
+<div class="section-sub">核心事實回溯 — 區分事實與推論，建立推演基底</div>
+
+<div class="card">
+    <h3>核心數據事實盤點</h3>
+    <div class="card-body">
+        <table>
+            <thead>
+                <tr><th>項目</th><th>數值</th><th>分級</th><th>來源 / 說明</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025 全年 EPS</td>
+                    <td><strong>45.48 元</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>公司年報已公布</td>
+                </tr>
+                <tr>
+                    <td>2026E EPS</td>
+                    <td><strong>66.2 元</strong></td>
+                    <td><span class="fias-i">I 推論</span></td>
+                    <td>美系券商上修預估值</td>
+                </tr>
+                <tr>
+                    <td>2025 毛利率</td>
+                    <td><strong>41.2%</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>年報數據，呈下降趨勢（2024: 43.8%）</td>
+                </tr>
+                <tr>
+                    <td>F 客戶（台積電）佔比</td>
+                    <td><strong>33%</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>年報揭露，持續上升中（2023: 16%）</td>
+                </tr>
+                <tr>
+                    <td>二期廠進度</td>
+                    <td><strong>2026/Q3 放量</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>GPTC 二期 2026/2/26 取得使用執照</td>
+                </tr>
+                <tr>
+                    <td>現價 / PE</td>
+                    <td><strong>2,780 元 / 76x</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>2026/3/26 收盤 based on 2025 EPS</td>
+                </tr>
+                <tr>
+                    <td>外銷佔比</td>
+                    <td><strong>73%</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>2024 年從 40% 劇增至 73%</td>
+                </tr>
+                <tr>
+                    <td>負債比率</td>
+                    <td><strong>63%</strong></td>
+                    <td><span class="fias-f">F 事實</span></td>
+                    <td>三年從 46% 上升，與二期廠建設相關</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="ev">
+            <div class="ev-t">ev-8a-01：推衍前提檢驗</div>
+            <div class="ev-d">8 項核心數據中 7 項為 F 級事實，僅 2026E EPS 為 I 級推論。推演基底穩固度：高。但兩個下降趨勢（毛利率下滑、負債比率上升）構成結構性隱憂。</div>
+            <div class="ev-s">來源：第一步六管道 JSON + 第七步完整版交叉比對</div>
+        </div>
+
+        <div class="tip warn">
+            <b>推衍關鍵假設</b>
+            本次推演建立在「CoWoS 需求持續強勁」這一前提之上。若台積電 CoWoS 擴產進度低於預期，所有路徑均需重新評估。此假設為 <span class="fias-a">A 級分析</span>，非事實。
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8b. OSINT 情報更新 -->
+<!-- ================================================================ -->
+<div id="s8b" class="section-title">8b. OSINT 情報更新</div>
+<div class="section-sub">最新市場動態與情報差異分析（截至 2026/3/26）</div>
+
+<div class="card">
+    <h3>近期重大事件彙整</h3>
+    <div class="card-body">
+
+        <details open><summary>股價異動追蹤</summary>
+            <div class="ev">
+                <div class="ev-t">ev-8b-01：連續漲停後回穩</div>
+                <div class="ev-d">2026/3/25 漲停鎖 2,660 元，3/26 續漲收 2,780 元（+4.5%）。短期兩日漲幅 >10%，量能放大。</div>
+                <div class="ev-s"><span class="fias-f">F 事實</span> 來源：交易所公開資訊</div>
+            </div>
+        </details>
+
+        <details open><summary>法人動向</summary>
+            <div class="ev">
+                <div class="ev-t">ev-8b-02：外資買賣出現矛盾訊號</div>
+                <div class="ev-d">美系券商上修 2026E EPS 至 66.2 元，但外資 3 月整體呈淨買超同時，3/18 單日大幅賣出 54 萬股。券商喊多但交易桌卻賣——這是典型的「喊話配出貨」模式，需高度警覺。</div>
+                <div class="ev-s"><span class="fias-f">F 事實</span> + <span class="fias-a">A 分析</span> 來源：證交所法人買賣超統計</div>
+            </div>
+        </details>
+
+        <details open><summary>基本面更新</summary>
+            <div class="ev">
+                <div class="ev-t">ev-8b-03：營收動能確認</div>
+                <div class="ev-d">2026 年 1-2 月營收持續年增 >40%，顯示 CoWoS 設備訂單動能仍在。但營收認列節奏受設備驗收時程影響，單月波動大。</div>
+                <div class="ev-s"><span class="fias-f">F 事實</span> 來源：公開資訊觀測站月營收</div>
+            </div>
+            <div class="ev">
+                <div class="ev-t">ev-8b-04：二期廠取得使用執照</div>
+                <div class="ev-d">GPTC 二期廠於 2026/2/26 正式取得使用執照，預計 Q3 開始量產放量。這是解決外包瓶頸、毛利率回升的關鍵基礎建設。</div>
+                <div class="ev-s"><span class="fias-f">F 事實</span> 來源：公司公告</div>
+            </div>
+        </details>
+
+        <div class="tip info">
+            <b>情報差異提示</b>
+            券商研究報告（看多、上修）與法人實際交易行為（3/18 大賣）之間的矛盾，是本次推演中最值得關注的訊號。歷史上，「研究報告看多 + 交易桌減碼」的組合，有 60-70% 的機率在 3-6 個月內出現修正。
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8c. 影響鏈分析 -->
+<!-- ================================================================ -->
+<div id="s8c" class="section-title">8c. 影響鏈分析</div>
+<div class="section-sub">三條因果傳導鏈 — 從產業趨勢到個股影響</div>
+
+<div class="card">
+    <h3>影響鏈 1：CoWoS 擴產 → 弘塑滿載 → 毛利率分歧</h3>
+    <div class="card-body">
+        <div class="chain">
+            <div class="chain-title">傳導路徑</div>
+            <div class="chain-flow">
+                台積電 CoWoS 月產能擴張：2024 年 33 萬片 <span class="arrow">→</span> 2025 年 65 萬片 <span class="arrow">→</span> 2026 年 110 萬片
+                <br><span class="arrow">→</span> 弘塑濕製程設備需求持續增長（訂單能見度高）
+                <br><span class="arrow">→</span> 但外包比例高導致毛利承壓（2025 毛利率已降至 41.2%）
+                <br><span class="arrow">→</span> <strong>分歧點：二期廠 Q3 放量</strong>
+            </div>
+        </div>
+
+        <div class="grid2">
+            <div class="mini-card bull-card">
+                <div class="title">樂觀路徑</div>
+                <div class="desc" style="text-align:left">二期廠順利量產 → 外包比例下降 → 毛利率回升至 43%+ → EPS 超越 66.2 元預估 → PE 維持或擴張</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">悲觀路徑</div>
+                <div class="desc" style="text-align:left">二期廠裝機延遲或良率爬坡慢 → 毛利率持續壓力 <39% → EPS 低於預期 → PE 修正 + 基本面雙殺</div>
+            </div>
+        </div>
+
+        <div class="ev">
+            <div class="ev-t">ev-8c-01：毛利率是弘塑的「阿基里斯腱」</div>
+            <div class="ev-d">CoWoS 擴產對弘塑是確定性利多，但毛利率能否回升取決於二期廠量產時程。2025 年毛利率已從 43.8% 降至 41.2%（-2.6pp），若持續下降將侵蝕 EPS 成長。二期廠 Q3 放量是 12 個月內最關鍵的單一變數。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span> 整合第二步 FIAS 分級 + 第三步競爭力分析</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>影響鏈 2：AI 需求狂潮 → 估值泡沫風險</h3>
+    <div class="card-body">
+        <div class="chain">
+            <div class="chain-title">傳導路徑</div>
+            <div class="chain-flow">
+                NVIDIA / AMD AI 晶片需求爆發 <span class="arrow">→</span> CoWoS 供不應求
+                <br><span class="arrow">→</span> 設備股 PE 暴漲（弘塑 PE 76x，歷史 5 年均值約 30x）
+                <br><span class="arrow">→</span> <strong>觸發條件：任何需求放緩或預期調降的訊號</strong>
+                <br><span class="arrow">→</span> PE 從 76x 急速修正至 30-40x
+                <br><span class="arrow">→</span> 股價不需等基本面惡化即可下跌 30-50%
+            </div>
+        </div>
+
+        <div class="ev">
+            <div class="ev-t">ev-8c-02：半導體設備 PE 高位修正的歷史參考</div>
+            <div class="ev-d">歷史上半導體設備股 PE 從高位修正的幅度通常在 30-60%：(1) ASML 2022 年 PE 從 45x 修正至 25x（-44%）；(2) 應用材料 2022 年 PE 從 28x 修正至 14x（-50%）；(3) 台灣設備股辛耘 2022 年 PE 從 40x 修正至 18x（-55%）。弘塑目前 76x 已超過這些公司的歷史高點。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span> 歷史類比，非直接可比但具參考價值</div>
+        </div>
+
+        <div class="tip danger">
+            <b>致命風險</b>
+            PE 76x 是「完美定價」——已經假設 CoWoS 不放緩 + 毛利率回升 + 二期廠順利放量。任何一項不如預期，PE 修正的速度會遠快於基本面惡化的速度。這是買在高 PE 位置的核心風險。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>影響鏈 3：客戶集中 → 議價權弱化</h3>
+    <div class="card-body">
+        <div class="chain">
+            <div class="chain-title">傳導路徑</div>
+            <div class="chain-flow">
+                台積電佔弘塑營收從 16% 急升至 33%
+                <br><span class="arrow">→</span> 台積電議價力持續增強
+                <br><span class="arrow">→</span> <strong>兩種可能結果：</strong>
+                <br>路徑 A：台積電壓價 → 弘塑被迫接受更低毛利 → 營收增但利潤率降
+                <br>路徑 B：台積電扶植競爭者（辛耘等）→ 弘塑失去部分訂單 → 營收成長放緩
+                <br><span class="arrow">→</span> 長期必須多元化客戶結構降低依賴
+            </div>
+        </div>
+
+        <div class="ev">
+            <div class="ev-t">ev-8c-03：客戶集中度的隱性風險</div>
+            <div class="ev-d">單一客戶佔比 33% 且持續上升，這在短期是利多（訂單確定性高），但中長期是結構性風險。台積電向來有「不讓單一供應商獨大」的傳統，通常會在適當時機引入第二供應商平衡議價。弘塑的護城河（獨家客製化）能否在競爭者出現時維持，是長期觀察重點。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span> + <span class="fias-i">I 推論</span> 基於台積電供應鏈管理歷史</div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8d. 情境模擬 -->
+<!-- ================================================================ -->
+<div id="s8d" class="section-title">8d. 情境模擬</div>
+<div class="section-sub">五條路徑推演 — 12 個月期（至 2027/Q1）</div>
+
+<div class="card">
+    <h3>路徑 A：超級循環（機率 22%）</h3>
+    <div class="card-body">
+        <div class="path-card" style="border-left:4px solid var(--bull)">
+            <div class="path-prob" style="color:var(--bull)">機率 22% ｜ 目標價 3,200 - 3,800 元</div>
+            <div class="path-desc">
+                <strong>觸發條件：</strong>CoWoS 需求不放緩 + 二期廠毛利率 >43% + 2026 全年 EPS >70 元<br>
+                <strong>EPS 路徑：</strong>2026 全年 75-85 元（forward PE 37-51x @ 目標價）<br>
+                <strong>情境描述：</strong>AI 需求持續超預期，台積電 CoWoS 2027 計畫再上修，弘塑二期廠順利放量使毛利率回升。外資持續加碼，PE 維持 45-50x 的高位區間。<br>
+                <strong>前兆訊號：</strong>Q1 毛利率 >42%、月營收 YoY 持續 >50%、外資持股比持續創新高
+            </div>
+        </div>
+        <div class="ev">
+            <div class="ev-t">ev-8d-01：超級循環的關鍵數學</div>
+            <div class="ev-d">即使在最樂觀情境下（EPS 85 元 × PE 45x = 3,825 元），從現價 2,780 元的上漲空間也僅 37%。考慮到這需要所有正面因素同時兌現的低機率（22%），期望報酬 = 22% × 37% = 8.1%。風險報酬比不夠吸引。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 B：穩健成長（機率 36%）— 最可能路徑</h3>
+    <div class="card-body">
+        <div class="path-card" style="border-left:4px solid var(--neutral)">
+            <div class="path-prob" style="color:var(--neutral)">機率 36% ｜ 目標價 1,800 - 2,400 元</div>
+            <div class="path-desc">
+                <strong>觸發條件：</strong>營收年增 +20-25% + 毛利率維持 40-42% + 2026 EPS 55-65 元<br>
+                <strong>PE 修正：</strong>隨著成長率趨於正常化，PE 從 76x 逐步修正至 30-40x<br>
+                <strong>情境描述：</strong>CoWoS 需求穩定但不再超預期，弘塑穩健成長但市場重新用合理 PE 定價。這是最高機率路徑，意味著即使基本面不差，股價仍會因 PE 正常化而回落。<br>
+                <strong>前兆訊號：</strong>月營收 YoY 降至 20-30% 區間、台積電法說會 CoWoS 展望持平
+            </div>
+        </div>
+        <div class="ev">
+            <div class="ev-t">ev-8d-02：PE 正常化的數學</div>
+            <div class="ev-d">穩健成長 = 好公司但壞價格。以 EPS 60 元 × PE 35x = 2,100 元計算，從現價 2,780 元有 -24% 的下行空間。這不是基本面惡化，純粹是估值回歸均值。36% 機率 × (-24%) = -8.6% 的期望損失。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 C：毛利率壓力（機率 24%）</h3>
+    <div class="card-body">
+        <div class="path-card" style="border-left:4px solid var(--warn)">
+            <div class="path-prob" style="color:var(--warn)">機率 24% ｜ 目標價 1,000 - 1,500 元</div>
+            <div class="path-desc">
+                <strong>觸發條件：</strong>毛利率持續下滑 <39% + F 客戶壓價 + EPS <55 元<br>
+                <strong>情境描述：</strong>二期廠量產不如預期（良率爬坡慢或裝機延遲），外包比例無法有效降低。台積電議價力增強進一步壓縮利潤。營收可能仍在增長，但「增收不增利」。<br>
+                <strong>前兆訊號：</strong>Q2 毛利率 <40%、二期廠量產時程延後公告、辛耘搶單消息
+            </div>
+        </div>
+        <div class="ev">
+            <div class="ev-t">ev-8d-03：增收不增利的危險</div>
+            <div class="ev-d">若 EPS 僅 50 元 × PE 修正至 25x = 1,250 元，從現價 2,780 元下跌 -55%。毛利率惡化 + PE 修正的雙殺效應會非常劇烈。24% 機率 × (-55%) = -13.2% 的期望損失。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 D：估值崩盤（機率 15%）</h3>
+    <div class="card-body">
+        <div class="path-card" style="border-left:4px solid var(--bear)">
+            <div class="path-prob" style="color:var(--bear)">機率 15% ｜ 目標價 800 - 1,200 元</div>
+            <div class="path-desc">
+                <strong>觸發條件：</strong>AI 預期降溫 + 半導體景氣轉弱 + 系統性 PE 修正從 76x 降至 20-25x<br>
+                <strong>情境描述：</strong>類比 2022 年半導體設備股修正。NVIDIA 展望不如預期、CSP 資本支出放緩、CoWoS 擴產計畫下修。弘塑基本面受衝擊的同時，市場情緒也全面翻轉。<br>
+                <strong>歷史參考：</strong>2022 年辛耘從高點修正 -62%、弘塑本身 2022 年從高點修正 -55%<br>
+                <strong>前兆訊號：</strong>NVIDIA 財報展望下修、台積電下修 CoWoS 2027 計畫、外資連續大量減碼半導體設備族群
+            </div>
+        </div>
+        <div class="ev">
+            <div class="ev-t">ev-8d-04：估值崩盤的極端數學</div>
+            <div class="ev-d">若 EPS 45 元（持平 2025）× PE 20x = 900 元，從現價 -68%。即使較溫和的 EPS 50 元 × PE 25x = 1,250 元也是 -55%。15% 機率但影響巨大。15% × (-60%) = -9.0% 的期望損失。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span> 歷史類比 2022 年半導體修正</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>路徑 E：國際競爭 / 新市場（機率 3%）</h3>
+    <div class="card-body">
+        <div class="path-card" style="border-left:4px solid var(--txt3)">
+            <div class="path-prob" style="color:var(--txt3)">機率 3% ｜ 結果不確定</div>
+            <div class="path-desc">
+                <strong>包含多種低機率情境：</strong><br>
+                - 國際設備大廠（TEL、Lam Research）切入弘塑利基市場 → 重大利空<br>
+                - 弘塑成功打入非台積電客戶（Intel、Samsung）→ 重大利多<br>
+                - 地緣政治事件影響半導體供應鏈 → 方向不確定<br>
+                <strong>由於機率極低且方向不確定，不納入主要推演計算。</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 五路徑加權期望值計算 -->
+<div class="card">
+    <h3>五路徑加權期望值計算</h3>
+    <div class="card-body">
+        <table>
+            <thead>
+                <tr><th>路徑</th><th>機率</th><th>中位目標價</th><th>vs 現價</th><th>加權貢獻</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="color:var(--bull)"><strong>A 超級循環</strong></td>
+                    <td>22%</td>
+                    <td>3,500 元</td>
+                    <td style="color:var(--bull)">+26%</td>
+                    <td>+770 元 × 22% = <strong>+5.7%</strong></td>
+                </tr>
+                <tr>
+                    <td style="color:var(--neutral)"><strong>B 穩健成長</strong></td>
+                    <td>36%</td>
+                    <td>2,100 元</td>
+                    <td style="color:var(--bear)">-24%</td>
+                    <td>-680 元 × 36% = <strong>-8.6%</strong></td>
+                </tr>
+                <tr>
+                    <td style="color:var(--warn)"><strong>C 毛利壓力</strong></td>
+                    <td>24%</td>
+                    <td>1,250 元</td>
+                    <td style="color:var(--bear)">-55%</td>
+                    <td>-1,530 元 × 24% = <strong>-13.2%</strong></td>
+                </tr>
+                <tr>
+                    <td style="color:var(--bear)"><strong>D 估值崩盤</strong></td>
+                    <td>15%</td>
+                    <td>1,000 元</td>
+                    <td style="color:var(--bear)">-64%</td>
+                    <td>-1,780 元 × 15% = <strong>-9.6%</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>E 其他</strong></td>
+                    <td>3%</td>
+                    <td>2,500 元</td>
+                    <td>-10%</td>
+                    <td>-280 元 × 3% = <strong>-0.3%</strong></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right;font-weight:700;background:var(--hover)">加權期望價</td>
+                    <td style="font-weight:900;color:var(--bear);background:var(--hover)">1,730 元（-26%）</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="tip danger">
+            <b>期望值為負</b>
+            五路徑加權期望價 1,730 元 vs 現價 2,780 元，淨期望報酬 = -26%。即使最可能的路徑 B（穩健成長）也意味著 -24% 的下行。只有路徑 A（22% 機率）能帶來正報酬，但上漲空間有限（+26%）。風險報酬比嚴重不對稱：下行風險遠大於上行空間。
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8e. 個人化推衍 -->
+<!-- ================================================================ -->
+<div id="s8e" class="section-title">8e. 個人化推衍</div>
+<div class="section-sub">假設閣主風格：觀望中 / 穩健型 / 波段操作</div>
+
+<div class="card">
+    <h3>個人化行動建議</h3>
+    <div class="card-body">
+
+        <div class="tip danger">
+            <b>核心結論：不建議現價追買</b>
+            PE 76x 已完全反映甚至過度反映所有正面因素。淨期望值為負（-26%）。即使弘塑是好公司，2,780 元也不是好價格。
+        </div>
+
+        <details open><summary>理想進場區間</summary>
+            <div class="grid2">
+                <div class="mini-card bull-card">
+                    <div class="title">激進進場區</div>
+                    <div class="num" style="color:var(--accent)">1,650 元</div>
+                    <div class="desc">Forward PE ~25x（基於 2026E EPS 66.2 元）<br>需確認毛利率 >42%</div>
+                </div>
+                <div class="mini-card bull-card">
+                    <div class="title">安全進場區</div>
+                    <div class="num" style="color:var(--bull)">1,400 元</div>
+                    <div class="desc">Forward PE ~21x（含安全邊際）<br>即使 EPS 低於預期也有保護</div>
+                </div>
+            </div>
+            <div class="ev">
+                <div class="ev-t">ev-8e-01：進場價位的推導邏輯</div>
+                <div class="ev-d">半導體設備股合理 PE 區間為 20-30x（成長型可給 25-35x）。以保守端 EPS 55 元 × PE 25x = 1,375 元，樂觀端 EPS 66 元 × PE 25x = 1,650 元。安全邊際 1,400-1,650 元涵蓋了多數情境。</div>
+                <div class="ev-s"><span class="fias-a">A 分析</span></div>
+            </div>
+        </details>
+
+        <details open><summary>如果「非買不可」的折衷方案</summary>
+            <p style="margin-top:4px">若閣主因策略需求或其他原因必須參與，建議：</p>
+            <table>
+                <thead><tr><th>條件</th><th>行動</th><th>部位</th></tr></thead>
+                <tbody>
+                    <tr><td>等 Q2 季報（7 月中）確認毛利率 >42%</td><td>小倉位試探</td><td>預定資金的 20%</td></tr>
+                    <tr><td>股價回測至 2,200 元以下 + 毛利率確認</td><td>加碼至正常部位</td><td>再加 20-30%</td></tr>
+                    <tr><td>Q3 季報確認二期廠效果 + EPS 軌跡</td><td>決定是否續抱</td><td>視狀況調整</td></tr>
+                </tbody>
+            </table>
+        </details>
+
+        <details open><summary>停損 / 出場條件</summary>
+            <div class="tip warn">
+                <b>必須執行的停損規則</b>
+                <ul style="font-size:.84em;color:var(--txt2);margin-top:4px;padding-left:18px">
+                    <li>月營收連續 2 個月 YoY <30%（成長動能放緩）</li>
+                    <li>季度毛利率 <38%（外包瓶頸未解決）</li>
+                    <li>台積電下修 CoWoS 2027 擴產計畫</li>
+                    <li>外資持股佔比連續 4 週下降</li>
+                    <li>PE >90x（泡沫加速，越高越危險）</li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8f. 催化劑時間表 -->
+<!-- ================================================================ -->
+<div id="s8f" class="section-title">8f. 催化劑時間表</div>
+<div class="section-sub">2026 年 4 月 ~ 10 月關鍵節點</div>
+
+<div class="card">
+    <h3>催化劑時間軸</h3>
+    <div class="card-body">
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="tl-date">2026/4 月中旬</div>
+                <div class="tl-desc"><strong>2026 Q1 季報公布</strong> — 毛利率第一個驗證點。若 >42% 為正面信號，<40% 則路徑 C 機率上升。<span class="fias-f">F</span> 確定事件</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-date">2026/5 月</div>
+                <div class="tl-desc"><strong>台積電法說會</strong> — CoWoS 2027 年擴產計畫指引。若上修 → 路徑 A 機率增加；若持平/下修 → 路徑 B/D 機率增加。<span class="fias-f">F</span> 確定事件</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-date">2026/6 月中旬</div>
+                <div class="tl-desc"><strong>股東會 + 配息公告</strong> — 配息率與配息金額影響殖利率計算。以 2025 EPS 45.48 元估計，若配 30 元現金股利，殖利率僅 1.1%。<span class="fias-i">I</span> 推估</div>
+            </div>
+            <div class="timeline-item critical">
+                <div class="tl-date">2026/7 月中旬 ★ 最關鍵</div>
+                <div class="tl-desc"><strong>2026 Q2 季報</strong> — 二期廠初步效果驗證！Q2 是二期廠裝機/試產期，毛利率能否止跌回升是所有路徑的分水嶺。此為推演有效期內最重要的單一事件。<span class="fias-f">F</span> 確定事件</div>
+            </div>
+            <div class="timeline-item">
+                <div class="tl-date">2026/7-8 月</div>
+                <div class="tl-desc"><strong>除權息旺季</strong> — 填息能力測試。高 PE 股在除權息後若無法快速填息，可能引發賣壓。<span class="fias-i">I</span> 推估</div>
+            </div>
+            <div class="timeline-item critical">
+                <div class="tl-date">2026/9 月</div>
+                <div class="tl-desc"><strong>二期廠全面放量</strong> — 真正量產期開始。產能/良率/訂單是否如預期？這會直接決定 Q3-Q4 的 EPS 軌跡。<span class="fias-f">F</span> 確定事件</div>
+            </div>
+            <div class="timeline-item critical">
+                <div class="tl-date">2026/10 月中旬</div>
+                <div class="tl-desc"><strong>2026 Q3 季報</strong> — 二期廠完整季度驗證。第一個完整反映二期廠效益的季度。若毛利率 >43% + EPS 加速，超級循環路徑確認；若 <40%，路徑 C 確認。<span class="fias-f">F</span> 確定事件</div>
+            </div>
+        </div>
+
+        <div class="ev">
+            <div class="ev-t">ev-8f-01：7 月 Q2 季報是「定生死」的一刻</div>
+            <div class="ev-d">七個催化劑中，7 月的 Q2 季報最關鍵，因為它是二期廠效果的首次數據驗證。在此之前的所有估值都是基於「假設」，Q2 季報之後才有「事實」。建議在 Q2 季報公布前保持觀望，不要用假設去賭。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8g. 蝴蝶效應推衍 -->
+<!-- ================================================================ -->
+<div id="s8g" class="section-title">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">三組弱訊號偵測 — 可能被市場忽略的結構性變化</div>
+
+<div class="card">
+    <h3>弱訊號 1 (B 類-結構性)：外銷佔比劇變 40% → 73%</h3>
+    <div class="card-body">
+        <div class="ev">
+            <div class="ev-t">ev-8g-01：外銷佔比在一年內近乎翻倍</div>
+            <div class="ev-d">2023 年弘塑外銷佔比約 40%，2024 年劇增至 73%。如此大幅的結構性變化通常不會被充分定價，因為分析師傾向用歷史趨勢線性外推。</div>
+            <div class="ev-s"><span class="fias-f">F 事實</span> 年報數據</div>
+        </div>
+
+        <details open><summary>蝴蝶效應展開</summary>
+            <div class="chain">
+                <div class="chain-title">正面路徑</div>
+                <div class="chain-flow">
+                    台積電海外廠（日本熊本 / 美國亞利桑那）的設備需求大增
+                    <br><span class="arrow">→</span> 弘塑設備跟著出海
+                    <br><span class="arrow">→</span> 打破「台灣本土公司」天花板
+                    <br><span class="arrow">→</span> 長期有機會比肩國際設備供應商的估值
+                </div>
+            </div>
+            <div class="chain">
+                <div class="chain-title">負面路徑</div>
+                <div class="chain-flow">
+                    台積電要求設備商跟著去海外設立據點
+                    <br><span class="arrow">→</span> 弘塑被迫投入海外建置成本
+                    <br><span class="arrow">→</span> 管理複雜度上升 + 成本增加
+                    <br><span class="arrow">→</span> 短期利潤再被壓縮
+                </div>
+            </div>
+        </details>
+
+        <div class="tip info">
+            <b>偵測方法</b>
+            追蹤弘塑是否有海外設立子公司/辦事處的公告；觀察外銷佔比是否在 2025 年持續上升或已達天花板。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>弱訊號 2 (C 類-人事)：執行長石本立辭任添鴻董事長 + 持股僅 0.03%</h3>
+    <div class="card-body">
+        <div class="ev">
+            <div class="ev-t">ev-8g-02：靈魂人物的異常低持股</div>
+            <div class="ev-d">石本立被視為弘塑的靈魂人物——他的「蹲在晶圓廠」策略是弘塑客製化能力的核心來源。但他辭任添鴻（弘塑母公司）董事長，且個人持股僅 0.03%，這在台灣科技業極為罕見。經營者持股極低通常意味著：(1) 對公司長期前景信心不足；(2) 有其他規劃準備退場。</div>
+            <div class="ev-s"><span class="fias-f">F 事實</span> 公開資訊觀測站 + 年報</div>
+        </div>
+
+        <details open><summary>蝴蝶效應展開</summary>
+            <div class="chain">
+                <div class="chain-title">最壞情境</div>
+                <div class="chain-flow">
+                    石本立逐漸淡出經營
+                    <br><span class="arrow">→</span> 弘塑失去「蹲在晶圓廠」的靈魂文化
+                    <br><span class="arrow">→</span> 客製化服務品質逐步弱化
+                    <br><span class="arrow">→</span> 護城河侵蝕
+                    <br><span class="arrow">→</span> 競爭者（辛耘等）趁機搶佔市場份額
+                </div>
+            </div>
+            <p style="font-size:.82em;color:var(--txt2);margin-top:6px"><strong>時間框架：</strong>此為慢性風險，不會在 12 個月內爆發，但應列入 2-3 年的長期追蹤。</p>
+        </details>
+
+        <div class="tip warn">
+            <b>監控建議</b>
+            追蹤石本立在弘塑的職務變動；觀察弘塑是否有接班計畫公告；注意是否有核心團隊成員異動。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>弱訊號 3 (A 類-財務)：負債比率三年從 46% → 63%</h3>
+    <div class="card-body">
+        <div class="ev">
+            <div class="ev-t">ev-8g-03：負債比率快速攀升的隱藏含義</div>
+            <div class="ev-d">三年內負債比率從 46% 升至 63%（+17pp）。表面上可歸因於二期廠建設投資，但 17pp 的增幅值得深究——是否除了二期廠外還有其他資金需求？營運資金是否因大客戶賬期拉長而被壓縮？</div>
+            <div class="ev-s"><span class="fias-f">F 事實</span> 年報財務數據</div>
+        </div>
+
+        <details open><summary>蝴蝶效應展開</summary>
+            <div class="chain">
+                <div class="chain-title">壓力情境</div>
+                <div class="chain-flow">
+                    負債比率續升至 70%+
+                    <br><span class="arrow">→</span> 利息負擔增加（若升息環境）
+                    <br><span class="arrow">→</span> 自由現金流被壓縮
+                    <br><span class="arrow">→</span> 現金配息能力受限
+                    <br><span class="arrow">→</span> 需要增資或發債 → 稀釋或增加財務風險
+                </div>
+            </div>
+            <div class="chain">
+                <div class="chain-title">正常化情境</div>
+                <div class="chain-flow">
+                    二期廠完工 → 資本支出高峰已過
+                    <br><span class="arrow">→</span> 2026H2 起自由現金流轉正
+                    <br><span class="arrow">→</span> 負債比率逐步回降
+                    <br><span class="arrow">→</span> 財務結構改善 → 正面信號
+                </div>
+            </div>
+        </details>
+
+        <div class="tip info">
+            <b>追蹤指標</b>
+            每季自由現金流變化；資本支出是否如預期在 2026H2 下降；利息費用佔稅前淨利比例。
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8h. 貓膩推衍 -->
+<!-- ================================================================ -->
+<div id="s8h" class="section-title">8h. 貓膩推衍</div>
+<div class="section-sub">反共識偵測引擎 — 承接第七步貓膩結論</div>
+
+<div class="card">
+    <h3>貓膩假說回顧與推衍</h3>
+    <div class="card-body">
+
+        <details open><summary>承接第七步結論</summary>
+            <div class="grid3" style="margin-top:4px">
+                <div class="mini-card" style="border-left:4px solid var(--warn)">
+                    <div class="title">燈號</div>
+                    <div class="num" style="color:var(--warn)"><span class="light yellow"></span> 黃燈</div>
+                </div>
+                <div class="mini-card" style="border-left:4px solid var(--warn)">
+                    <div class="title">核心假說</div>
+                    <div class="desc">外資在 CoWoS 敘事掩護下高位出貨</div>
+                </div>
+                <div class="mini-card" style="border-left:4px solid var(--warn)">
+                    <div class="title">成立機率</div>
+                    <div class="num" style="color:var(--warn)">20%</div>
+                </div>
+            </div>
+            <div class="ev">
+                <div class="ev-t">ev-8h-01：貓膩假說的核心邏輯</div>
+                <div class="ev-d">外資券商同時做兩件矛盾的事：(1) 研究部上修目標價/EPS 預估，製造「追買」氛圍；(2) 交易桌在特定日期大量出貨（3/18 單日賣出 54 萬股）。這是華爾街經典的「distribute while promoting」手法。但目前證據尚不足以確認——也可能只是短期部位調整。</div>
+                <div class="ev-s"><span class="fias-a">A 分析</span> 結合法人買賣超數據 + 券商報告時序</div>
+            </div>
+        </details>
+
+        <details open><summary>歷史劇本推演</summary>
+            <div class="ev">
+                <div class="ev-t">ev-8h-02：最相似歷史案例——2021 年航運股</div>
+                <div class="ev-d">
+                    <strong>相似之處：</strong>法人喊「超級循環」、PE 從低位快速拉高、散戶大量追漲、基本面確實很好（航運股 EPS 爆發）。<br>
+                    <strong>差異之處：</strong>弘塑有真正的技術壁壘（濕製程客製化）和長期成長性，航運股沒有護城河。弘塑的客戶黏性遠高於航運。<br>
+                    <strong>劇本推演：</strong>如果貓膩成立，從高點到跌幅 60% 可能需要 6-12 個月。航運股 2021/7 高點到 2022/6 低點耗時約 11 個月，跌幅 65%。
+                </div>
+                <div class="ev-s"><span class="fias-a">A 分析</span> 歷史類比，相似度約 40%（因產業特性差異）</div>
+            </div>
+        </details>
+
+        <details open><summary>反轉路徑推演</summary>
+            <div class="chain">
+                <div class="chain-title">如果貓膩假說成立，股價可能的三波下跌</div>
+                <div class="chain-flow">
+                    <strong>觸發條件：</strong>外資連續 10 個交易日淨賣超 + 台積電下修 CoWoS 計畫
+                    <br><br>
+                    <strong>第一波：</strong>PE 修正（不需基本面惡化）
+                    <br>2,780 元 <span class="arrow">→</span> 2,000 元（PE 76x → 55x，跌幅 -28%）
+                    <br>時間框架：1-2 個月
+                    <br><br>
+                    <strong>第二波：</strong>基本面疑慮浮現
+                    <br>2,000 元 <span class="arrow">→</span> 1,500 元（毛利率不如預期 + PE 續降至 35x）
+                    <br>時間框架：第 3-6 個月
+                    <br><br>
+                    <strong>第三波：</strong>恐慌賣壓
+                    <br>1,500 元 <span class="arrow">→</span> 1,200 元（散戶投降性賣出 + PE overshooting 至 25x）
+                    <br>時間框架：第 6-12 個月
+                </div>
+            </div>
+            <div class="ev">
+                <div class="ev-t">ev-8h-03：第一波（PE 修正）是最快也最無預警的</div>
+                <div class="ev-d">歷史經驗顯示，PE 修正不需要等基本面實際惡化——只需要「預期改變」就會發生。這意味著股價可能在公司還在交出好成績時就開始下跌。對持有者而言，這是最難判斷的階段，因為會產生「基本面還很好為什麼跌」的困惑，延遲出場時機。</div>
+                <div class="ev-s"><span class="fias-s">S 推測</span> 基於行為金融學與歷史觀察</div>
+            </div>
+        </details>
+
+        <details open><summary>保護策略</summary>
+            <table>
+                <thead><tr><th>身份</th><th>策略</th><th>具體行動</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>觀望者</strong></td>
+                        <td>安心等待</td>
+                        <td>目標進場價 1,400-1,650 元。在此之前不需任何動作。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>已持有者</strong></td>
+                        <td>設定警戒線</td>
+                        <td>PE 50x（約 2,310 元 based on 2025 EPS 46.2 元）為第一道警戒。跌破則減碼 50%。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>重倉持有者</strong></td>
+                        <td>立即減碼</td>
+                        <td>至少獲利了結 50% 部位。無論後續走勢，鎖定已實現利潤是最優先。</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip danger">
+                <b>最早逃生信號</b>
+                (1) 外資持股佔比開始連續下降（不是單日波動，而是趨勢）<br>
+                (2) 月營收 YoY <30%（成長動能放緩）<br>
+                (3) 券商上修目標價但外資同步減碼（矛盾行為確認）
+            </div>
+        </details>
+
+        <details open><summary>貓膩追蹤清單</summary>
+            <table>
+                <thead><tr><th>監控指標</th><th>確認指標（貓膩成立）</th><th>否定指標（排除）</th><th>檢查頻率</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>外資行為</strong></td>
+                        <td style="color:var(--bear)">連續 5 日淨賣超 >20 萬股</td>
+                        <td style="color:var(--bull)">連續加碼 + 持股創新高</td>
+                        <td>每日</td>
+                    </tr>
+                    <tr>
+                        <td><strong>目標價 vs 持股</strong></td>
+                        <td style="color:var(--bear)">上修目標價但同時減碼</td>
+                        <td style="color:var(--bull)">上修且同步加碼</td>
+                        <td>每週</td>
+                    </tr>
+                    <tr>
+                        <td><strong>月營收 YoY</strong></td>
+                        <td style="color:var(--bear)"><20%（成長放緩）</td>
+                        <td style="color:var(--bull)">>40%（持續高成長）</td>
+                        <td>每月</td>
+                    </tr>
+                    <tr>
+                        <td><strong>毛利率趨勢</strong></td>
+                        <td style="color:var(--bear)">連續 2 季下滑</td>
+                        <td style="color:var(--bull)">止跌回升至 42%+</td>
+                        <td>每季</td>
+                    </tr>
+                    <tr>
+                        <td><strong>內部人持股</strong></td>
+                        <td style="color:var(--bear)">董監事持股續減</td>
+                        <td style="color:var(--bull)">內部人增持公告</td>
+                        <td>每月</td>
+                    </tr>
+                </tbody>
+            </table>
+        </details>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8i. 推衍結論 -->
+<!-- ================================================================ -->
+<div id="s8i" class="section-title">8i. 推衍結論</div>
+<div class="section-sub">第四次信心校準（最終）+ 行動建議 + 推衍有效期</div>
+
+<div class="card">
+    <h3>第四次信心校準 — 最終結果</h3>
+    <div class="card-body">
+
+        <table>
+            <thead>
+                <tr><th>假說</th><th>第三次 (評審團)</th><th>第四次 (推演)</th><th>變動</th><th>推演依據</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>H1 超級循環</strong></td>
+                    <td>22%</td>
+                    <td style="color:var(--bull)"><strong>20%</strong></td>
+                    <td>-2pp</td>
+                    <td>蝴蝶效應弱訊號（負債/人事/外銷結構變化）增加不確定性</td>
+                </tr>
+                <tr>
+                    <td><strong>H2 穩健成長</strong></td>
+                    <td>36%</td>
+                    <td style="color:var(--neutral)"><strong>35%</strong></td>
+                    <td>-1pp</td>
+                    <td>仍是最可能結果，但蝴蝶效應略增下行風險</td>
+                </tr>
+                <tr>
+                    <td><strong>H3 毛利率/客戶雙殺</strong></td>
+                    <td>24%</td>
+                    <td style="color:var(--warn)"><strong>25%</strong></td>
+                    <td>+1pp</td>
+                    <td>影響鏈分析強化此風險：外包+客戶集中+負債三重壓力</td>
+                </tr>
+                <tr>
+                    <td><strong>H4 估值泡沫</strong></td>
+                    <td>15%</td>
+                    <td style="color:var(--bear)"><strong>17%</strong></td>
+                    <td>+2pp</td>
+                    <td>歷史劇本對照（2022半導體/2021航運）支持修正風險</td>
+                </tr>
+                <tr>
+                    <td><strong>H5+H6 其他</strong></td>
+                    <td>3%</td>
+                    <td>3%</td>
+                    <td>--</td>
+                    <td>低機率，不變</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="grid2" style="margin-top:10px">
+            <div class="mini-card bull-card">
+                <div class="title">看多合計 (H1+H2)</div>
+                <div class="num" style="color:var(--bull)">55%</div>
+                <div class="desc">第三次 58% → 第四次 55%（-3pp）</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">看空合計 (H3+H4)</div>
+                <div class="num" style="color:var(--bear)">42%</div>
+                <div class="desc">第三次 39% → 第四次 42%（+3pp）</div>
+            </div>
+        </div>
+
+        <div class="ev">
+            <div class="ev-t">ev-8i-01：四次校準趨勢分析</div>
+            <div class="ev-d">經過四次校準（ACH → 壓力測試 → 評審團 → 推演），看空比例從初始的 ~35% 逐步上升至 42%。每一次更深入的分析都發現更多被忽略的風險。這個趨勢本身就是一個信號——市場共識（看多、追漲）可能過度樂觀。</div>
+            <div class="ev-s"><span class="fias-a">A 分析</span> 四次校準結果彙整</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>最終加權期望價</h3>
+    <div class="card-body">
+        <div class="grid3">
+            <div class="mini-card bear-card">
+                <div class="title">加權期望價</div>
+                <div class="num" style="color:var(--bear)">1,730 元</div>
+                <div class="desc">vs 第七步 1,780 元（略微下修）</div>
+            </div>
+            <div class="mini-card bear-card">
+                <div class="title">溢價幅度</div>
+                <div class="num" style="color:var(--bear)">61%</div>
+                <div class="desc">現價 2,780 元 vs 期望價 1,730 元</div>
+            </div>
+            <div class="mini-card bull-card">
+                <div class="title">安全邊際區間</div>
+                <div class="num" style="color:var(--bull)">1,400 - 1,650 元</div>
+                <div class="desc">Forward PE 21-25x @ EPS 66 元</div>
+            </div>
+        </div>
+
+        <div class="tip danger">
+            <b>核心判斷：好公司、壞價格</b>
+            弘塑是 CoWoS 先進封裝濕製程設備的優質標的，技術壁壘真實存在，成長動能也確實強勁。但 PE 76x 已經把未來 2-3 年的成長全部「預支」了。在這個價位買入，即使公司表現良好，也很可能因為 PE 正常化而虧損。等待合理價格是最明智的策略。
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>最終行動建議</h3>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>編號</th><th>建議</th><th>具體條件</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>1</strong></td>
+                    <td style="color:var(--accent);font-weight:700">空手觀望</td>
+                    <td>耐心等待股價回落至 1,400-1,650 元區間。在此之前，不需要任何動作。時間站在觀望者這邊。</td>
+                </tr>
+                <tr>
+                    <td><strong>2</strong></td>
+                    <td style="color:var(--warn);font-weight:700">已持有者</td>
+                    <td>建議獲利了結至少 50% 部位，保留觀察倉。設定 PE 50x（約 2,310 元）為第一道警戒線。</td>
+                </tr>
+                <tr>
+                    <td><strong>3</strong></td>
+                    <td style="color:var(--bull);font-weight:700">進場條件</td>
+                    <td>同時滿足：(a) Q2 毛利率 >42% (b) 股價 <2,000 元 (c) 外資未出現持續減碼。三條件缺一不可。</td>
+                </tr>
+                <tr>
+                    <td><strong>4</strong></td>
+                    <td style="color:var(--bear);font-weight:700">停損條件</td>
+                    <td>(a) 月營收 YoY <20% 連續 2 月 (b) 毛利率 <38% (c) 台積電下修 CoWoS 計畫 (d) PE >90x。任一觸發即出場。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>推衍有效期與更新條件</h3>
+    <div class="card-body">
+        <div class="grid2">
+            <div class="mini-card neutral-card">
+                <div class="title">推衍有效期</div>
+                <div class="num" style="color:var(--neutral)">至 2026/4/20</div>
+                <div class="desc">Q1 季報公布前後</div>
+            </div>
+            <div class="mini-card neutral-card">
+                <div class="title">資料基準日</div>
+                <div class="num" style="color:var(--neutral)">2026/3/26</div>
+                <div class="desc">本次推衍的資料截止日</div>
+            </div>
+        </div>
+
+        <div class="tip info">
+            <b>需要重新推衍的觸發條件</b>
+            <ul style="font-size:.84em;color:var(--txt2);margin-top:4px;padding-left:18px">
+                <li>2026 Q1 季報公布（4 月中旬）— 毛利率數據出爐後必須更新</li>
+                <li>台積電法說會（5 月）— CoWoS 2027 展望可能改變路徑機率</li>
+                <li>股價跌至 2,000 元以下 — 進場條件接近，需重新評估</li>
+                <li>外資出現連續 10 日淨賣超 — 貓膩假說可能升級</li>
+                <li>任何重大產業事件（NVIDIA 展望變化、地緣政治衝擊等）</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-03-26 ｜ 推衍有效期至 2026-04-20</p>
+    <p>標的：弘塑科技 (3131) ｜ 步驟：第八步（推演版）｜ 系統版本：v3.0</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，決策須自行負責。</p>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// 全部展開/收合
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 點擊 h3 切換
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

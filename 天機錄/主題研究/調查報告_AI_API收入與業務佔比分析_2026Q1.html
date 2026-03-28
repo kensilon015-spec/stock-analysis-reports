@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI API 收入與業務佔比調查報告 — 2026 Q1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--purple:#7a6b8c;--gold:#8c7a5a}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:32px 24px}
+
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+.label{display:inline-block;font-size:.72em;padding:4px 12px;border-radius:8px;font-weight:700;margin-bottom:14px;letter-spacing:.5px;color:#fff}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
+
+.tip{padding:12px 16px;border-radius:8px;margin:8px 0;border-left:3px solid;font-size:.88em}
+.tip.danger{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.danger b{color:var(--food);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08);color:var(--txt)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--gold);background:rgba(140,122,90,.08);color:var(--txt)}
+.tip.warn b{color:var(--gold);display:block;margin-bottom:2px}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.88em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+.section-title{font-size:1.4em;font-weight:900;color:var(--base);margin:32px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+
+.bar-container{margin:8px 0}
+.bar-label{font-size:.82em;color:var(--txt2);margin-bottom:3px;display:flex;justify-content:space-between}
+.bar-track{height:22px;background:var(--hover);border-radius:6px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:.72em;color:#fff;font-weight:600;transition:width .6s ease}
+
+details{margin:8px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:8px 0;font-size:.95em}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:8px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0}
+@media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.stat-box .num{font-size:1.8em;font-weight:900;color:var(--base)}
+.stat-box .unit{font-size:.78em;color:var(--txt3);margin-top:2px}
+
+.timeline{position:relative;padding-left:24px;margin:12px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:16px;padding-left:16px}
+.timeline-item::before{content:'';position:absolute;left:-20px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+
+.source-list{font-size:.78em;color:var(--txt3);margin-top:6px;line-height:1.6}
+.source-list a{color:var(--link);text-decoration:none}
+.source-list a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <div style="font-size:48px;margin-bottom:8px">📊</div>
+    <h1>AI API 收入與業務佔比調查報告</h1>
+    <div class="sub">OpenAI · Google · Anthropic — 三巨頭 API 經濟深度剖析</div>
+    <div class="desc">調查時間：2026 年 3 月 21 日 ｜ 資料來源：公開財報、產業分析報告、媒體報導</div>
+    <div class="tags">
+        <span class="tag">API 收入分析</span>
+        <span class="tag">業務佔比</span>
+        <span class="tag">競爭格局</span>
+        <span class="tag">未來展望</span>
+    </div>
+</div>
+
+<!-- ===== 核心摘要 ===== -->
+<div class="tip good">
+    <b>核心發現摘要</b>
+    三家公司的 AI API 收入在 2025-2026 年間呈現爆發式成長。Anthropic 以 API 為核心（佔營收 70-75%），OpenAI 以消費端訂閱為主（API 僅佔約 15-20%），Google 則將 AI API 深度整合進雲端生態系。截至 2026 年初，Anthropic 在企業 LLM 支出中已超越 OpenAI 拿下 40% 市佔。
+</div>
+
+<!-- ===== 第一章：三巨頭營收總覽 ===== -->
+<div class="section-title">一、三巨頭營收總覽（2025-2026）</div>
+
+<div class="grid-3">
+    <div class="stat-box">
+        <div class="num" style="color:var(--play)">$200 億</div>
+        <div class="unit">OpenAI 2025 年 ARR</div>
+    </div>
+    <div class="stat-box">
+        <div class="num" style="color:var(--link)">$177 億</div>
+        <div class="unit">Google Cloud Q4 2025 單季</div>
+    </div>
+    <div class="stat-box">
+        <div class="num" style="color:var(--food)">$190 億</div>
+        <div class="unit">Anthropic 2026/3 ARR</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>營收成長速度對比</h3>
+    <table>
+        <tr><th>公司</th><th>2024 年底 ARR</th><th>2025 年底 ARR</th><th>2026/3 ARR</th><th>年增幅</th></tr>
+        <tr><td><b>OpenAI</b></td><td>$37 億</td><td>$200 億</td><td>—</td><td>~440%</td></tr>
+        <tr><td><b>Anthropic</b></td><td>$10 億</td><td>$90 億</td><td>$190 億</td><td>~800%</td></tr>
+        <tr><td><b>Google Cloud</b></td><td>$110 億/季</td><td>$177 億/季</td><td>—</td><td>~48% YoY</td></tr>
+    </table>
+    <p style="font-size:.78em;color:var(--txt3);margin-top:6px">注：Google Cloud 營收包含非 AI 業務，AI API 佔比未單獨揭露。OpenAI 與 Anthropic 為年化經常性收入（ARR）。</p>
+</div>
+
+<!-- ===== 第二章：API 收入對各公司業務佔比 ===== -->
+<div class="section-title">二、API 收入對業務佔比分析</div>
+
+<!-- OpenAI -->
+<span class="label" style="background:var(--play)">OpenAI</span>
+<div class="card">
+    <h3>OpenAI — API 佔營收約 15-20%，消費端訂閱為主力</h3>
+
+    <div class="bar-container">
+        <div class="bar-label"><span>ChatGPT 訂閱（個人）</span><span>~50%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--play)">~50%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>企業方案（Enterprise/Team/Edu）</span><span>~25-30%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:27%;background:var(--accent)">~25-30%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>API（開發者按量計費）</span><span>~15-20%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--link)">~15-20%</div></div>
+    </div>
+
+    <details>
+        <summary>詳細分析</summary>
+        <div class="tip info">
+            <b>API 收入快速成長中</b>
+            Sam Altman 於 2026 年 1 月 23 日表示，僅該月 API 業務就產生超過 $10 億 ARR。但相對於整體 $200 億 ARR，API 仍非主要收入來源。ChatGPT Plus（$20/月）和 ChatGPT Pro（$200/月）的訂閱收入在 2024 年貢獻了約 $55 億，佔比約 75%。企業端有超過 300 萬付費商業用戶。
+        </div>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:8px"><b>關鍵特徵：</b>OpenAI 的商業模式以 C 端（消費者）為重心，API 是開發者生態的基石但營收佔比相對低。這反映了 ChatGPT 的消費級品牌效應極強。</p>
+    </details>
+</div>
+
+<!-- Anthropic -->
+<span class="label" style="background:var(--food)">Anthropic</span>
+<div class="card">
+    <h3>Anthropic — API 佔營收 70-75%，B2B 導向最明確</h3>
+
+    <div class="bar-container">
+        <div class="bar-label"><span>API 收入（按 token 計費）</span><span>~70-75%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--food)">~70-75%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>企業合約 & 預留容量</span><span>~10-15%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--gold)">~10-15%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>消費者訂閱（Claude Pro/Max）</span><span>~10-15%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--purple)">~10-15%</div></div>
+    </div>
+
+    <details>
+        <summary>詳細分析</summary>
+        <div class="tip good">
+            <b>API 為核心商業模式</b>
+            Anthropic 是三家中最「API 優先」的公司。截至 2025 年 10 月，擁有超過 30 萬企業客戶，貢獻約 80% 的營收。Claude Code 於 2026 年 2 月已達 $25 億 ARR，自年初以來翻倍成長。ARR 從 2024 年底的 $10 億，飛速成長至 2026 年 3 月的 $190 億。
+        </div>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:8px"><b>關鍵特徵：</b>Anthropic 透過 Amazon Bedrock 與 Google Cloud 的合作夥伴通路取得大量企業客戶，API 即其核心變現引擎。消費端的 Claude Pro/Max 訂閱收入佔比較低。</p>
+    </details>
+</div>
+
+<!-- Google -->
+<span class="label" style="background:var(--link)">Google（Alphabet）</span>
+<div class="card">
+    <h3>Google — AI API 深度嵌入雲端生態，難以單獨拆分</h3>
+
+    <div class="bar-container">
+        <div class="bar-label"><span>廣告收入（Search + YouTube）</span><span>~75%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--txt3)">~75%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>Google Cloud（含 AI API）</span><span>~12-13%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--link)">~12-13%</div></div>
+    </div>
+    <div class="bar-container">
+        <div class="bar-label"><span>其他（訂閱、硬體等）</span><span>~12%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--border)">~12%</div></div>
+    </div>
+
+    <details>
+        <summary>詳細分析</summary>
+        <div class="tip info">
+            <b>AI 加速雲端成長</b>
+            Google Cloud 2025 Q4 營收 $177 億（年增 48%），AI 是主要推動力。近 75% 的 Google Cloud 客戶已使用 Google 的 AI 服務，超過 12 萬家企業使用 Gemini。Gemini API 處理量達每分鐘 100 億 tokens。但 Alphabet 整體年營收 $4,028 億中，AI API 的直接營收佔比極低，主要是做為雲端服務的加值項目。
+        </div>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:8px"><b>關鍵特徵：</b>Google 的策略不是靠 AI API 直接賺錢，而是用 AI 強化整個生態系（Search、Cloud、廣告、YouTube），間接提升各業務線營收。AI API 是「戰略性武器」而非獨立營利中心。</p>
+    </details>
+</div>
+
+<!-- ===== 第三章：企業市場佔有率 ===== -->
+<div class="section-title">三、企業 LLM API 市場佔有率變遷</div>
+
+<div class="card">
+    <h3>企業 LLM 支出市佔率（2023 → 2025）</h3>
+    <table>
+        <tr><th>公司</th><th>2023 年</th><th>2025 年</th><th>變化</th></tr>
+        <tr><td><b>Anthropic</b></td><td>—</td><td><b style="color:var(--food)">40%</b></td><td style="color:var(--accent)">急速崛起</td></tr>
+        <tr><td><b>OpenAI</b></td><td>50%</td><td><b>27%</b></td><td style="color:var(--food)">下降 23 個百分點</td></tr>
+        <tr><td><b>Google</b></td><td>7%</td><td><b>21%</b></td><td style="color:var(--accent)">上升 14 個百分點</td></tr>
+        <tr><td>其他</td><td>43%</td><td>12%</td><td>市場整合中</td></tr>
+    </table>
+    <p style="font-size:.78em;color:var(--txt3);margin-top:6px">資料來源：Menlo Ventures 2025 State of Generative AI in the Enterprise</p>
+
+    <div class="tip danger" style="margin-top:12px">
+        <b>重大轉變：Anthropic 在企業端反超 OpenAI</b>
+        OpenAI 從 2023 年的 50% 市佔暴跌至 27%，而 Anthropic 一路攀升至 40%。特別是在程式開發領域，Anthropic 的 Claude 佔據約 54% 的市佔，OpenAI 僅 21%。Claude Code 的成功是關鍵推手。
+    </div>
+</div>
+
+<!-- ===== 第四章：價格戰與競爭態勢 ===== -->
+<div class="section-title">四、目前的影響與競爭態勢</div>
+
+<div class="card">
+    <h3>API 定價趨勢：劇烈價格戰</h3>
+    <table>
+        <tr><th>模型</th><th>輸入價格/百萬 token</th><th>輸出價格/百萬 token</th><th>定位</th></tr>
+        <tr><td>GPT-5.2</td><td>$1.75</td><td>$14.00</td><td>旗艦級</td></tr>
+        <tr><td>Claude Sonnet 4</td><td>$3.00</td><td>$15.00</td><td>品質優先</td></tr>
+        <tr><td>Gemini 3.1 Pro</td><td>$2.00</td><td>$12.00</td><td>生態整合</td></tr>
+        <tr><td>Gemini 3 Flash</td><td>$0.50</td><td>$3.00</td><td>低成本高速</td></tr>
+    </table>
+    <div class="tip warn">
+        <b>價格降幅驚人</b>
+        2025 至 2026 年間，主要 LLM API 價格平均下降約 80%。GPT-5.2 的定價僅為 GPT-4 上市時的一小部分。這對開發者是好事，但也意味著 API 供應商必須靠「量」來彌補「價」。
+    </div>
+</div>
+
+<div class="card">
+    <h3>目前對產業的影響</h3>
+    <div class="grid-2">
+        <div>
+            <div class="tip good">
+                <b>企業採用率爆發</b>
+                Gartner 預測至 2026 年，超過 80% 的企業將使用過生成式 AI API 或部署 AI 應用程式，2023 年這個數字不到 5%。
+            </div>
+        </div>
+        <div>
+            <div class="tip info">
+                <b>開發者生態翻轉</b>
+                84% 的開發者表示正在使用或計畫使用 AI 工具，51% 每天使用。開發者平均每週節省 3.6 小時。
+            </div>
+        </div>
+    </div>
+
+    <details>
+        <summary>三大影響面向</summary>
+        <p style="font-size:.88em;color:var(--txt2)"><b>1. 多模型策略成為主流：</b>企業不再綁定單一供應商，而是根據任務特性選用不同模型。程式開發用 Claude、大量文件處理用 Gemini Flash、對話應用用 GPT。</p>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:8px"><b>2. AI Agent 崛起：</b>2026 年企業應用已從「提供數位工具給員工」進化為「管理 AI Agent 數位勞動力」。MCP（Model Context Protocol）的普及使得跨 Agent 通訊成為現實。</p>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:8px"><b>3. 虧損換增長模式面臨考驗：</b>OpenAI 預計到 2028 年累計虧損 $740 億，Anthropic 則預計 2027 年就能實現正向自由現金流。商業模式的可持續性差異日益明顯。</p>
+    </details>
+</div>
+
+<!-- ===== 第五章：未來衍變預測 ===== -->
+<div class="section-title">五、未來可能的衍變方向</div>
+
+<div class="card">
+    <h3>營收預測時間線（2026-2028）</h3>
+    <table>
+        <tr><th>年份</th><th>OpenAI</th><th>Anthropic</th><th>Google Cloud</th></tr>
+        <tr><td><b>2026 目標</b></td><td>$460 億</td><td>$200-260 億</td><td>—</td></tr>
+        <tr><td><b>2027 預估</b></td><td>$1,000 億+</td><td>$120-345 億</td><td>—</td></tr>
+        <tr><td><b>2028 預估</b></td><td>—</td><td>$700 億</td><td>—</td></tr>
+    </table>
+    <p style="font-size:.78em;color:var(--txt3);margin-top:6px">注：OpenAI 2027 年 $1,000 億目標由 CEO 親口提出。Anthropic 2028 年 $700 億為公司內部預測。Google Cloud 未公布 AI 相關獨立目標。上述數據來自公開報導，實際達成可能有差異。</p>
+</div>
+
+<div class="card">
+    <h3>五大衍變趨勢</h3>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <p style="font-weight:700;color:var(--base)">趨勢 1：API 定價持續崩跌，「免費增值」模式浮現</p>
+            <p style="font-size:.88em;color:var(--txt2)">API 價格每 12-18 個月降低 50-80%。Google 已在部分模型提供免費額度，未來可能出現「基礎 API 免費、進階功能收費」的模式，類似雲端計算的發展路徑。這對小型 AI 新創是好消息，但也會壓縮純 API 供應商的利潤空間。</p>
+        </div>
+        <div class="timeline-item">
+            <p style="font-weight:700;color:var(--base)">趨勢 2：Anthropic vs OpenAI 的盈利模式分歧加劇</p>
+            <p style="font-size:.88em;color:var(--txt2)">Anthropic（預計 2027 正現金流）走的是「高效 B2B」路線；OpenAI（預計 2030 才能獲利）走「燒錢換生態」路線。若 OpenAI IPO 順利，資金不是問題；但若市場降溫，其龐大虧損將成為巨大壓力。Anthropic 的財務紀律可能成為長期優勢。</p>
+        </div>
+        <div class="timeline-item">
+            <p style="font-weight:700;color:var(--base)">趨勢 3：Google 的「圍棋戰略」— 用 AI 加固護城河</p>
+            <p style="font-size:.88em;color:var(--txt2)">Alphabet 2026 年資本支出計畫 $1,750-1,850 億，幾乎是 2025 年的兩倍。Google 不靠 AI API 本身賺錢，而是用 AI 強化搜尋廣告（佔營收 75%）和 Cloud 黏著度。這讓 Google 有能力持續低價甚至虧損補貼 API，對純 API 公司形成定價壓力。</p>
+        </div>
+        <div class="timeline-item">
+            <p style="font-weight:700;color:var(--base)">趨勢 4：AI Agent 經濟取代單純 API 呼叫</p>
+            <p style="font-size:.88em;color:var(--txt2)">Claude Code 的 $25 億 ARR 已經證明：未來的贏家不是賣最便宜 token 的公司，而是能提供「完整 Agent 解決方案」的公司。API 只是基礎設施，Agent 才是價值載體。Forrester 預測 2026 年 AI Agent 將根本改變企業軟體市場。</p>
+        </div>
+        <div class="timeline-item">
+            <p style="font-weight:700;color:var(--base)">趨勢 5：營收分潤與合作夥伴生態</p>
+            <p style="font-size:.88em;color:var(--txt2)">Anthropic 在 2027 年可能需支付高達 $64 億給 Amazon、Google、Microsoft 等合作夥伴。這種「通路分潤」模式意味著 AI 模型公司不只是技術競爭，還要處理複雜的商業聯盟關係。誰能建立最強的生態系聯盟，誰就能在企業市場勝出。</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 第六章：綜合評估 ===== -->
+<div class="section-title">六、綜合評估與結論</div>
+
+<div class="card">
+    <h3>三家公司的 API 戰略定位對比</h3>
+    <table>
+        <tr><th>面向</th><th>OpenAI</th><th>Anthropic</th><th>Google</th></tr>
+        <tr><td><b>API 對營收重要性</b></td><td>低（15-20%）</td><td style="color:var(--food)"><b>極高（70-75%）</b></td><td>中（嵌入 Cloud）</td></tr>
+        <tr><td><b>主要營收來源</b></td><td>ChatGPT 訂閱</td><td>API 按量計費</td><td>廣告 + Cloud</td></tr>
+        <tr><td><b>企業市佔</b></td><td>27%（下滑中）</td><td style="color:var(--accent)"><b>40%（第一）</b></td><td>21%（上升中）</td></tr>
+        <tr><td><b>程式開發市佔</b></td><td>21%</td><td style="color:var(--accent)"><b>54%</b></td><td>—</td></tr>
+        <tr><td><b>預計獲利時間</b></td><td>2030 年</td><td style="color:var(--accent)"><b>2027 年</b></td><td>已獲利</td></tr>
+        <tr><td><b>戰略優勢</b></td><td>品牌 + 消費者基盤</td><td>技術品質 + B2B</td><td>生態系 + 資本</td></tr>
+        <tr><td><b>最大風險</b></td><td>虧損過大</td><td>過度依賴 API</td><td>AI 未顯著增收</td></tr>
+    </table>
+</div>
+
+<div class="tip warn">
+    <b>投資人與開發者的關鍵觀察</b>
+    AI API 市場正處於「黃金交叉」階段 — 企業採用率飆升（80%+）但 API 單價持續崩跌。這意味著市場總量仍在擴大，但獲利能力取決於誰能在「量」上取勝，以及誰能成功從「賣 token」轉型為「賣 Agent 解決方案」。
+</div>
+
+<div class="tip info">
+    <b>資料完整性聲明</b>
+    本報告所有數據均來自公開可查證的來源（財報、媒體報導、產業分析機構）。Google Cloud 未單獨揭露 AI API 營收數據，相關分析為基於公開資訊的推估。部分營收預測為公司內部目標或分析師估計，實際數字可能有所差異。
+</div>
+
+<!-- ===== 資料來源 ===== -->
+<details>
+    <summary style="font-weight:700;color:var(--base);font-size:1em;margin-top:24px">參考資料來源（點擊展開）</summary>
+    <div class="source-list" style="margin-top:8px">
+        <p><b>OpenAI：</b></p>
+        <p>• <a href="https://sacra.com/c/openai/" target="_blank">Sacra — OpenAI revenue, valuation & funding</a></p>
+        <p>• <a href="https://www.pymnts.com/artificial-intelligence-2/2026/openais-annual-recurring-revenue-tripled-to-20-billion-in-2025/" target="_blank">PYMNTS — OpenAI's ARR Tripled to $20 Billion in 2025</a></p>
+        <p>• <a href="https://finance.yahoo.com/news/openai-cfo-says-annualized-revenue-173519097.html" target="_blank">Yahoo Finance — OpenAI CFO says annualized revenue crosses $20 billion</a></p>
+        <p>• <a href="https://openai.com/index/a-business-that-scales-with-the-value-of-intelligence/" target="_blank">OpenAI Blog — A business that scales with the value of intelligence</a></p>
+        <p style="margin-top:8px"><b>Google / Alphabet：</b></p>
+        <p>• <a href="https://www.bitget.com/news/detail/12560605183527" target="_blank">Bitget — Google's 2025 Revenue Surpasses $400 Billion</a></p>
+        <p>• <a href="https://futurumgroup.com/insights/alphabet-q4-fy-2025-highlights-cloud-acceleration-and-enterprise-ai-momentum/" target="_blank">Futurum Group — Alphabet Q4 FY 2025 Highlights</a></p>
+        <p>• <a href="https://www.webpronews.com/google-gemini-ai-adoption-soars-85b-api-calls-34-cloud-revenue-jump/" target="_blank">WebProNews — Google Gemini AI Adoption Soars</a></p>
+        <p style="margin-top:8px"><b>Anthropic：</b></p>
+        <p>• <a href="https://www.saastr.com/anthropic-just-hit-14-billion-in-arr-up-from-1-billion-just-14-months-ago/" target="_blank">SaaStr — Anthropic Just Hit $14 Billion in ARR</a></p>
+        <p>• <a href="https://techcrunch.com/2025/11/04/anthropic-expects-b2b-demand-to-boost-revenue-to-70b-in-2028-report/" target="_blank">TechCrunch — Anthropic projects $70B in revenue by 2028</a></p>
+        <p>• <a href="https://www.tomshardware.com/tech-industry/anthropic-targets-gigantic-usd26-billion-in-revenue-by-the-end-of-2026-eye-watering-sum-is-more-than-double-openais-projected-2025-earnings" target="_blank">Tom's Hardware — Anthropic targets $26 billion in revenue by end of 2026</a></p>
+        <p style="margin-top:8px"><b>市場分析：</b></p>
+        <p>• <a href="https://www.gartner.com/en/newsroom/press-releases/2023-10-11-gartner-says-more-than-80-percent-of-enterprises-will-have-used-generative-ai-apis-or-deployed-generative-ai-enabled-applications-by-2026" target="_blank">Gartner — 80% of Enterprises Will Have Used GenAI APIs by 2026</a></p>
+        <p>• <a href="https://menlovc.com/perspective/2025-the-state-of-generative-ai-in-the-enterprise/" target="_blank">Menlo Ventures — 2025 State of Generative AI in the Enterprise</a></p>
+        <p>• <a href="https://www.finout.io/blog/openai-vs-anthropic-api-pricing-comparison" target="_blank">Finout — OpenAI vs Anthropic API Pricing Comparison 2026</a></p>
+        <p>• <a href="https://www.forrester.com/blogs/predictions-2026-ai-agents-changing-business-models-and-workplace-culture-impact-enterprise-software/" target="_blank">Forrester — Predictions 2026: AI Agents Impact Enterprise Software</a></p>
+    </div>
+</details>
+
+<div class="footer">
+    天機閣調查系統 · AI API 收入與業務佔比調查報告 · 2026 年 3 月 21 日<br>
+    資料來源均為公開可查證的財報、媒體報導與產業分析報告
+</div>
+
+</div>
+</body>
+</html>
