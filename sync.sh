@@ -272,6 +272,7 @@ details.folder>.folder-body{padding:2px 10px 10px}
 <div class="hero">
     <h1>天機閣</h1>
     <div class="sub">推衍系統 / 情報中心 / 投資分析</div>
+    <a href="天機閣服務介紹.html" style="display:inline-block;margin-top:10px;padding:6px 18px;background:#5a7d60;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">核心服務介紹</a>
 </div>
 <div class="section-head">
     <h2>天機錄</h2>
