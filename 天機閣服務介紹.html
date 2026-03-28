@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機閣 — 核心服務介紹</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--base:#3d3a36;--link:#5a7d8c;--warn:#b8960c;--danger:#a0522d;--good:#5a7d60;--info:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;padding:0}
+.wrap{max-width:780px;margin:0 auto;padding:32px 20px 48px}
+
+/* Hero */
+.hero{text-align:center;padding:36px 16px 28px;margin-bottom:24px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:2em;font-weight:900;color:var(--base);letter-spacing:.04em}
+.hero .sub{font-size:.92em;color:var(--accent);font-weight:600;margin-top:6px}
+.hero .tagline{font-size:.82em;color:var(--txt3);margin-top:10px;line-height:1.6;max-width:520px;margin-left:auto;margin-right:auto}
+
+/* 導覽卡片 */
+.nav-cards{display:flex;gap:10px;margin:20px 0 28px;flex-wrap:wrap}
+.nav-card{flex:1;min-width:180px;padding:14px 16px;background:var(--panel);border:1.5px solid var(--border);border-radius:10px;text-decoration:none;color:var(--txt);transition:all .15s;cursor:pointer}
+.nav-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.nav-card .nav-num{font-size:.7em;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.nav-card .nav-title{font-size:.9em;font-weight:700;color:var(--base);margin-top:2px}
+.nav-card .nav-desc{font-size:.72em;color:var(--txt3);margin-top:4px}
+
+/* Section */
+.section{margin:32px 0 0;padding-top:28px;border-top:1.5px solid var(--border)}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-head h2{font-size:1.2em;font-weight:900;color:var(--base)}
+.badge{background:var(--accent);color:#fff;font-size:.68em;font-weight:700;padding:2px 10px;border-radius:8px;white-space:nowrap}
+.section-intro{font-size:.88em;color:var(--txt2);margin-bottom:16px;padding:12px 16px;background:rgba(90,125,96,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0}
+
+/* details 收合 */
+details.block{margin:8px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+details.block[open]{border-color:var(--accent)}
+details.block>summary{padding:12px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.9em;color:var(--base);user-select:none;transition:background .12s}
+details.block>summary:hover{background:rgba(90,125,96,.06)}
+details.block>summary::-webkit-details-marker{display:none}
+details.block>summary::after{content:'▶';font-size:.55em;color:var(--txt3);transition:transform .2s;margin-left:auto}
+details.block[open]>summary::after{transform:rotate(90deg)}
+details.block>.body{padding:6px 16px 16px}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.82em}
+th{background:var(--base);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:.78em;letter-spacing:.03em}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:nth-child(even){background:rgba(255,255,255,.3)}
+tr:hover{background:rgba(90,125,96,.06)}
+td:first-child{font-weight:600;color:var(--base);white-space:nowrap}
+
+/* 步驟流程 */
+.step-flow{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.step{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:rgba(255,255,255,.4);border:1px solid var(--border);border-radius:8px}
+.step-num{flex-shrink:0;width:28px;height:28px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:800}
+.step-content{flex:1}
+.step-title{font-weight:700;font-size:.85em;color:var(--base)}
+.step-desc{font-size:.78em;color:var(--txt2);margin-top:2px}
+.step-arrow{text-align:center;color:var(--accent);font-size:.8em;padding:2px 0}
+
+/* 案例卡 */
+.case-card{display:flex;gap:12px;padding:12px 14px;margin:6px 0;background:rgba(255,255,255,.45);border:1px solid var(--border);border-radius:8px;align-items:flex-start}
+.case-verdict{flex-shrink:0;padding:3px 10px;border-radius:6px;font-size:.7em;font-weight:700;color:#fff;white-space:nowrap}
+.case-verdict.buy{background:var(--good)}
+.case-verdict.hold{background:var(--warn)}
+.case-verdict.avoid{background:var(--danger)}
+.case-body{flex:1}
+.case-name{font-weight:700;font-size:.85em;color:var(--base)}
+.case-detail{font-size:.78em;color:var(--txt2);margin-top:3px}
+
+/* 功能方塊 */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.feat-box{padding:12px 14px;background:rgba(255,255,255,.4);border:1px solid var(--border);border-radius:8px}
+.feat-box .feat-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:4px}
+.feat-box .feat-desc{font-size:.76em;color:var(--txt2);line-height:1.5}
+@media(max-width:520px){.feat-grid{grid-template-columns:1fr}}
+
+/* 警報等級 */
+.alert-levels{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.alert-row{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px}
+.alert-row.weak{background:rgba(90,125,140,.08);border:1px solid rgba(90,125,140,.25)}
+.alert-row.mid{background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25)}
+.alert-row.strong{background:rgba(160,82,45,.08);border:1px solid rgba(160,82,45,.25)}
+.alert-badge{flex-shrink:0;padding:3px 10px;border-radius:6px;font-size:.7em;font-weight:700;color:#fff}
+.alert-badge.weak{background:var(--info)}
+.alert-badge.mid{background:var(--warn)}
+.alert-badge.strong{background:var(--danger)}
+.alert-body{flex:1}
+.alert-cond{font-weight:700;font-size:.82em;color:var(--base)}
+.alert-action{font-size:.76em;color:var(--txt2);margin-top:2px}
+
+/* 串聯圖 */
+.flow-diagram{margin:16px 0;padding:20px;background:var(--panel);border:1.5px solid var(--border);border-radius:12px}
+.flow-row{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
+.flow-node{padding:6px 14px;border-radius:8px;font-size:.78em;font-weight:700;color:#fff;white-space:nowrap}
+.flow-node.scan{background:var(--info)}
+.flow-node.stock{background:var(--accent)}
+.flow-node.chain{background:var(--warn)}
+.flow-node.alert{background:var(--danger)}
+.flow-arrow{color:var(--txt3);font-size:.8em;font-weight:700}
+.flow-label{font-size:.72em;color:var(--txt3);font-style:italic}
+
+/* 提示框 */
+.tip{padding:12px 16px;border-radius:8px;margin:12px 0;font-size:.82em;line-height:1.6}
+.tip.info{background:rgba(90,125,140,.1);border:1px solid rgba(90,125,140,.3);color:var(--txt2)}
+.tip.good{background:rgba(90,125,96,.1);border:1px solid rgba(90,125,96,.3);color:var(--txt2)}
+.tip b{color:var(--base)}
+
+/* Footer */
+.footer{text-align:center;padding:20px 16px;color:var(--txt3);font-size:.74em;border-top:1.5px solid var(--border);margin-top:36px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== Hero ===== -->
+<div class="hero">
+    <h1>天機閣</h1>
+    <div class="sub">投資情報中樞 — 核心服務介紹</div>
+    <div class="tagline">在市場還沒注意到之前，就偵測到趨勢變化。<br>不是看到新聞才反應，而是從多個微小異常中收斂出別人還沒看見的方向。</div>
+</div>
+
+<!-- ===== 快速導覽 ===== -->
+<div class="nav-cards">
+    <a class="nav-card" href="#sec-stock">
+        <div class="nav-num">Service 01</div>
+        <div class="nav-title">個股深度研究</div>
+        <div class="nav-desc">九步驟分析 → 具體買賣建議</div>
+    </a>
+    <a class="nav-card" href="#sec-chain">
+        <div class="nav-num">Service 02</div>
+        <div class="nav-title">產業鏈透視</div>
+        <div class="nav-desc">供應鏈地圖 → 骨牌效應模擬</div>
+    </a>
+    <a class="nav-card" href="#sec-daily">
+        <div class="nav-num">Service 03</div>
+        <div class="nav-title">每日情報偵測</div>
+        <div class="nav-desc">弱訊號收斂 → 趨勢預警</div>
+    </a>
+</div>
+
+<!-- ============================================================ -->
+<!-- Service 01：個股深度研究 -->
+<!-- ============================================================ -->
+<div class="section" id="sec-stock">
+    <div class="section-head">
+        <h2>個股深度研究報告</h2>
+        <span class="badge">Service 01</span>
+    </div>
+    <div class="section-intro">
+        給一個股票代號（台股或美股），產出一份從資料蒐集到投資結論的完整分析報告——比法人報告更全面，因為同時檢驗多空雙方的證據。
+    </div>
+
+    <!-- 六管道 -->
+    <details class="block" open>
+        <summary>六大管道資料蒐集</summary>
+        <div class="body">
+            <table>
+                <tr><th style="width:22%">管道</th><th>蒐集內容</th></tr>
+                <tr><td>財務數據</td><td>近 5 年營收、毛利率、營業利益率、EPS、自由現金流、ROE / ROA、負債比</td></tr>
+                <tr><td>法人籌碼</td><td>三大法人買賣超、外資持股比例變化、融資融券餘額、大股東申報轉讓</td></tr>
+                <tr><td>新聞輿情</td><td>近期重大新聞、媒體報導方向、PTT / 論壇討論熱度與情緒</td></tr>
+                <tr><td>法說會</td><td>最近一次法說會重點摘要、管理層展望與語氣變化</td></tr>
+                <tr><td>年報分析</td><td>營收結構拆解、主要客戶與供應商集中度、研發投入佔比、關係人交易</td></tr>
+                <tr><td>產業報告</td><td>所屬產業趨勢、市場規模成長率、技術替代風險、國際同業動態</td></tr>
+            </table>
+        </div>
+    </details>
+
+    <!-- 分析亮點 -->
+    <details class="block" open>
+        <summary>分析流程亮點</summary>
+        <div class="body">
+            <div class="feat-grid">
+                <div class="feat-box">
+                    <div class="feat-title">九步遞進分析</div>
+                    <div class="feat-desc">從原始資料彙整 → 財務情報分析 → 產業競爭力 → 多空假說驗證 → 壓力測試 → 品質評審 → 完整報告 → 情境推演 → 投資結論，每一步都建立在前一步的基礎上。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">四次信心校準</div>
+                    <div class="feat-desc">ACH 多空對決、壓力測試最壞情境、23 項逐項評審、推演路徑模擬——四道關卡層層篩選，防止自己騙自己。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">貓膩探索</div>
+                    <div class="feat-desc">專門用反向思維檢視「市場共識可能錯在哪裡」、「管理層可能隱瞞什麼」、「財報數字背後有沒有不尋常的地方」。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">具體結論</div>
+                    <div class="feat-desc">不給模糊的「可以關注」，而是明確給出：買入 / 觀望 / 迴避，附建議價位區間與翻轉條件。</div>
+                </div>
+            </div>
+        </div>
+    </details>
+</div>
+
+<!-- ============================================================ -->
+<!-- Service 02：產業鏈透視 -->
+<!-- ============================================================ -->
+<div class="section" id="sec-chain">
+    <div class="section-head">
+        <h2>產業鏈透視</h2>
+        <span class="badge">Service 02</span>
+    </div>
+    <div class="section-intro">
+        從一家公司出發，展開整條供應鏈地圖——找出誰是關鍵節點、誰有替代風險、一個環節出問題會牽動哪些公司。
+    </div>
+
+    <details class="block" open>
+        <summary>五大功能</summary>
+        <div class="body">
+            <div class="feat-grid">
+                <div class="feat-box">
+                    <div class="feat-title">供應鏈上下游展開</div>
+                    <div class="feat-desc">自動展開 3 層：上游供應商 → 本公司 → 下游客戶。標示供貨佔比、替代難度、合作年限，找出「單一供應商依賴」的致命節點。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">同業競爭矩陣</div>
+                    <div class="feat-desc">橫向比較同產業 5-10 家公司的營收規模、毛利率、ROE、市佔率、本益比，一張表看出龍頭、高估股、低估股。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">概念股篩選</div>
+                    <div class="feat-desc">輸入題材（如「AI 液冷散熱」），列出所有相關公司並依受惠程度分級——核心受惠、間接受惠、邊緣沾光，避免買到假概念股。</div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-title">骨牌效應模擬</div>
+                    <div class="feat-desc">模擬「A 公司出問題，誰會受傷」的連鎖反應。也能反向追蹤：某公司股價異常，追溯可能的上游事件源頭。</div>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <details class="block">
+        <summary>三方驗證法（確保關係真實）</summary>
+        <div class="body">
+            <div class="tip info">
+                <b>每一條供應鏈關係都必須通過至少 2/3 來源驗證，避免建立「聽說」等級的虛假關係：</b>
+            </div>
+            <table>
+                <tr><th style="width:22%">來源</th><th>內容</th></tr>
+                <tr><td>來源 A</td><td>年報揭露——公司自行申報的客戶 / 供應商名單</td></tr>
+                <tr><td>來源 B</td><td>公開新聞 / 法說會——媒體報導或管理層提及的合作關係</td></tr>
+                <tr><td>來源 C</td><td>產業報告 / 第三方資料庫——獨立研究機構的交叉確認</td></tr>
+            </table>
+        </div>
+    </details>
+
+    <details class="block">
+        <summary>目前資料規模</summary>
+        <div class="body">
+            <div class="feat-grid">
+                <div class="feat-box" style="text-align:center">
+                    <div style="font-size:1.6em;font-weight:900;color:var(--accent)">2,921</div>
+                    <div style="font-size:.75em;color:var(--txt3)">公司節點</div>
+                </div>
+                <div class="feat-box" style="text-align:center">
+                    <div style="font-size:1.6em;font-weight:900;color:var(--accent)">58,196</div>
+                    <div style="font-size:.75em;color:var(--txt3)">關係邊</div>
+                </div>
+                <div class="feat-box" style="text-align:center">
+                    <div style="font-size:1.6em;font-weight:900;color:var(--accent)">18 種</div>
+                    <div style="font-size:.75em;color:var(--txt3)">關係類型</div>
+                </div>
+                <div class="feat-box" style="text-align:center">
+                    <div style="font-size:1.6em;font-weight:900;color:var(--accent)">120</div>
+                    <div style="font-size:.75em;color:var(--txt3)">產業社群</div>
+                </div>
+            </div>
+            <div class="tip info">
+                涵蓋台股主要上市櫃公司及其國際供應鏈夥伴，並持續透過年報解析與新聞擷取自動擴充。
+            </div>
+        </div>
+    </details>
+</div>
+
+<!-- ============================================================ -->
+<!-- Service 03：每日情報偵測 -->
+<!-- ============================================================ -->
+<div class="section" id="sec-daily">
+    <div class="section-head">
+        <h2>每日情報與趨勢偵測</h2>
+        <span class="badge">Service 03</span>
+    </div>
+    <div class="section-intro">
+        每天自動掃描市場，在別人還沒注意到的時候，就把異常訊號送到您面前。這是天機閣最核心的差異化能力。
+    </div>
+
+    <!-- 自動蒐集 -->
+    <details class="block" open>
+        <summary>每日自動蒐集（不需手動操作）</summary>
+        <div class="body">
+            <table>
+                <tr><th style="width:28%">來源</th><th style="width:12%">頻率</th><th>蒐集內容</th></tr>
+                <tr><td>關鍵指標追蹤</td><td>持續</td><td>指定公司的關鍵營運指標（營收月增率、毛利率變化、訂單能見度、庫存水位等），設定門檻後自動監控，異常時即時通知</td></tr>
+                <tr><td>公開資訊觀測站</td><td>每日</td><td>重大訊息、董事會決議、財報公告、內部人轉讓申報</td></tr>
+                <tr><td>PTT 五大看板</td><td>每日</td><td>Stock、StockStudy、Gossiping、Tech_Job、FinTech</td></tr>
+                <tr><td>RSS 新聞源</td><td>每日</td><td>財經新聞、產業新聞、國際動態</td></tr>
+                <tr><td>法說會排程</td><td>持續</td><td>即將召開的法說會提醒＋事後 7 天自動蒐集市場反應</td></tr>
+            </table>
+        </div>
+    </details>
+
+    <!-- 七大領域 -->
+    <details class="block" open>
+        <summary>七大領域全球掃描（推衍天下）</summary>
+        <div class="body">
+            <table>
+                <tr><th style="width:22%">領域</th><th>掃描重點</th></tr>
+                <tr><td>總體經濟</td><td>各國央行動態、利率決策、通膨數據、就業數據</td></tr>
+                <tr><td>科技產業</td><td>半導體、AI、雲端、消費電子的最新進展與訂單變化</td></tr>
+                <tr><td>地緣政治</td><td>國際關係變化、貿易政策、制裁動態對供應鏈的影響</td></tr>
+                <tr><td>能源原物料</td><td>油價、金屬、農產品價格異動與庫存變化</td></tr>
+                <tr><td>金融市場</td><td>全球股債匯市異常波動與資金流向</td></tr>
+                <tr><td>產業動態</td><td>併購案、新技術發表、監管政策變化</td></tr>
+                <tr><td>政策法規</td><td>各國新法規、補貼政策、環保標準變動</td></tr>
+            </table>
+        </div>
+    </details>
+
+    <!-- 弱訊號 -->
+    <details class="block" open>
+        <summary>弱訊號偵測（核心差異化能力）</summary>
+        <div class="body">
+            <div class="tip good">
+                <b>運作原理：</b>單一事件可能不起眼，但多個微小異常同時指向同一方向時，就是趨勢即將形成的訊號。
+            </div>
+            <p style="font-size:.82em;color:var(--txt2);margin:10px 0 6px"><b>範例：</b></p>
+            <div class="step-flow">
+                <div class="step">
+                    <div class="step-num" style="background:var(--info)">A</div>
+                    <div class="step-content">
+                        <div class="step-title">供應商法說會提到「交期延長兩週」</div>
+                        <div class="step-desc">單獨看 → 可能只是個案，記錄追蹤</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num" style="background:var(--info)">B</div>
+                    <div class="step-content">
+                        <div class="step-title">同業悄悄調高報價 3-5%</div>
+                        <div class="step-desc">單獨看 → 可能只是成本轉嫁，記錄追蹤</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num" style="background:var(--info)">C</div>
+                    <div class="step-content">
+                        <div class="step-title">下游客戶開始建立安全庫存</div>
+                        <div class="step-desc">單獨看 → 可能只是季節性備貨，記錄追蹤</div>
+                    </div>
+                </div>
+                <div class="step-arrow">↓ 7 天內 3 個弱訊號收斂 ↓</div>
+                <div class="step" style="border-color:var(--danger)">
+                    <div class="step-num" style="background:var(--danger)">!</div>
+                    <div class="step-content">
+                        <div class="step-title" style="color:var(--danger)">系統自動升級：供應鏈緊縮即將發生</div>
+                        <div class="step-desc">觸發深度分析 → 找出受惠股（有備貨的）與受害股（依賴單一來源的）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <!-- 三級警報 -->
+    <details class="block">
+        <summary>三級警報機制</summary>
+        <div class="body">
+            <div class="alert-levels">
+                <div class="alert-row weak">
+                    <span class="alert-badge weak">弱訊號</span>
+                    <div class="alert-body">
+                        <div class="alert-cond">單一異常事件</div>
+                        <div class="alert-action">記錄追蹤，標記方向，持續監控後續是否有更多訊號指向同方向</div>
+                    </div>
+                </div>
+                <div class="alert-row mid">
+                    <span class="alert-badge mid">中度警報</span>
+                    <div class="alert-body">
+                        <div class="alert-cond">7 天內 ≥ 3 個弱訊號指向同方向</div>
+                        <div class="alert-action">自動升級，觸發深度分析，開始評估影響範圍與可能的投資行動</div>
+                    </div>
+                </div>
+                <div class="alert-row strong">
+                    <span class="alert-badge strong">強烈警報</span>
+                    <div class="alert-body">
+                        <div class="alert-cond">多個中度訊號交叉確認</div>
+                        <div class="alert-action">產出完整推演報告，建議具體行動方案（加碼 / 減碼 / 避險）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <!-- 每日報告 11 區塊 -->
+    <details class="block">
+        <summary>每日偵測報告（11 個監控區塊）</summary>
+        <div class="body">
+            <table>
+                <tr><th style="width:8%">#</th><th style="width:24%">區塊</th><th>監控內容</th></tr>
+                <tr><td>1</td><td>收斂警報</td><td>哪些弱訊號正在收斂成趨勢</td></tr>
+                <tr><td>2</td><td>異常偵測</td><td>價量、籌碼、基本面的異常波動</td></tr>
+                <tr><td>3</td><td>壓力累積</td><td>持續累積壓力但尚未爆發的標的（爆發前預警）</td></tr>
+                <tr><td>4</td><td>弱訊號升級</td><td>從弱升級為中度的訊號追蹤</td></tr>
+                <tr><td>5</td><td>推演追蹤</td><td>之前做過的推演，現在驗證進展如何</td></tr>
+                <tr><td>6</td><td>產業連鎖</td><td>跨產業的連鎖影響偵測</td></tr>
+                <tr><td>7</td><td>恐懼指標</td><td>市場恐慌程度監控</td></tr>
+                <tr><td>8</td><td>反向訊號</td><td>市場共識的反面證據（大家都看好時，有沒有隱藏風險）</td></tr>
+                <tr><td>9</td><td>歷史驗證</td><td>歷史類比情境的後續追蹤</td></tr>
+                <tr><td>10</td><td>語意叢集</td><td>新聞語意聚類，找出媒體尚未命名的新趨勢</td></tr>
+                <tr><td>11</td><td>軌跡追蹤</td><td>弱訊號向量軌跡的收斂方向偵測</td></tr>
+            </table>
+        </div>
+    </details>
+</div>
+
+<!-- ============================================================ -->
+<!-- 三大服務串聯 -->
+<!-- ============================================================ -->
+<div class="section">
+    <div class="section-head">
+        <h2>三大服務如何串聯</h2>
+    </div>
+    <div class="flow-diagram">
+        <div class="flow-row">
+            <span class="flow-node scan">每日情報掃描</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-label">偵測到個股異常</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node stock">個股深度研究</span>
+        </div>
+        <div class="flow-row">
+            <span class="flow-node scan">每日情報掃描</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-label">偵測到產業趨勢</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node chain">產業鏈透視</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-label">鎖定標的</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node stock">個股研究</span>
+        </div>
+        <div class="flow-row">
+            <span class="flow-node stock">個股深度研究</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-label">需了解上下游</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node chain">產業鏈透視</span>
+        </div>
+        <div class="flow-row">
+            <span class="flow-node alert">弱訊號收斂</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-label">確認影響範圍</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node chain">產業鏈</span>
+            <span class="flow-arrow">+</span>
+            <span class="flow-node stock">個股研究</span>
+        </div>
+    </div>
+    <div class="tip good">
+        <b>不是三個獨立工具，而是一個持續運轉的情報循環。</b><br>
+        每日情報偵測持續餵養資料，異常觸發深度研究，研究過程需要產業鏈支撐，產業鏈又反過來發現更多值得追蹤的標的。
+    </div>
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="footer">
+    <p><b>天機閣</b> — 投資情報中樞</p>
+    <p style="margin-top:6px">所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+</body>
+</html>
