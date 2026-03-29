@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機閣 — 投資情報中樞</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#1a1a2e;--panel:#16213e;--surface:#0f3460;
+    --txt:#e8e8e8;--txt2:#a8a8b8;--txt3:#6a6a7a;
+    --accent:#e94560;--accent2:#533483;--gold:#f0c040;
+    --good:#4ecca3;--warn:#f0c040;--danger:#e94560;--info:#3fc1c9;
+    --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.1);
+    --r:12px;
+}
+html,body{height:100%;overflow:hidden;font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt)}
+.deck{position:relative;width:100%;height:100%}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.slide.active{opacity:1;pointer-events:auto}
+h1{font-size:3.2em;font-weight:900;letter-spacing:.04em;line-height:1.2}
+h2{font-size:2.2em;font-weight:800;margin-bottom:24px;letter-spacing:.03em}
+h3{font-size:1.4em;font-weight:700;color:var(--info);margin-bottom:12px}
+p,.desc{font-size:1.05em;color:var(--txt2);line-height:1.7;max-width:920px}
+.big-num{font-size:3.6em;font-weight:900;color:var(--accent);line-height:1}
+.highlight{color:var(--accent);font-weight:700}
+.highlight-gold{color:var(--gold);font-weight:700}
+.highlight-good{color:var(--good);font-weight:700}
+.highlight-info{color:var(--info);font-weight:700}
+.tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.72em;font-weight:700;margin:4px 2px}
+.tag-accent{background:var(--accent);color:#fff}
+.tag-good{background:var(--good);color:#111}
+.tag-warn{background:var(--warn);color:#111}
+.tag-info{background:var(--info);color:#111}
+.tag-purple{background:var(--accent2);color:#fff}
+.tag-dim{background:var(--glass);color:var(--txt3);border:1px solid var(--glass-border)}
+.center{text-align:center}
+.left{text-align:left;align-items:flex-start}
+.sub{font-size:1.15em;color:var(--gold);font-weight:600;margin-top:8px;letter-spacing:.02em}
+.divider{width:80px;height:3px;background:var(--accent);border-radius:2px;margin:20px auto}
+.card-grid{display:grid;gap:14px;margin:18px 0;width:100%;max-width:1000px}
+.cols-2{grid-template-columns:1fr 1fr}
+.cols-3{grid-template-columns:1fr 1fr 1fr}
+.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.cols-5{grid-template-columns:1fr 1fr 1fr 1fr 1fr}
+.card{background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(12px);border-radius:var(--r);padding:18px 20px;text-align:left;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card .card-title{font-weight:800;font-size:.95em;color:var(--txt);margin-bottom:5px}
+.card .card-desc{font-size:.82em;color:var(--txt2);line-height:1.55}
+.card .card-num{font-size:2em;font-weight:900;color:var(--accent);margin-bottom:4px}
+.card .card-icon{font-size:1.6em;margin-bottom:6px}
+.slide-table{width:100%;max-width:920px;border-collapse:collapse;margin:14px 0;font-size:.88em}
+.slide-table th{background:var(--surface);color:var(--info);padding:9px 14px;text-align:left;font-weight:700;font-size:.8em;letter-spacing:.04em;border-bottom:2px solid var(--accent)}
+.slide-table td{padding:9px 14px;border-bottom:1px solid var(--glass-border);color:var(--txt2);vertical-align:top}
+.slide-table td:first-child{color:var(--txt);font-weight:600;white-space:nowrap}
+.flow{display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap}
+.flow-box{padding:8px 18px;border-radius:var(--r);font-weight:700;font-size:.85em;color:#fff;white-space:nowrap}
+.flow-arrow{color:var(--txt3);font-size:1.1em;font-weight:700}
+.steps{display:flex;flex-direction:column;gap:10px;width:100%;max-width:920px}
+.step-row{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r)}
+.step-num{flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82em;color:#fff}
+.step-body{flex:1}
+.step-body .step-title{font-weight:700;font-size:.92em;color:var(--txt)}
+.step-body .step-desc{font-size:.8em;color:var(--txt2);margin-top:3px;line-height:1.5}
+.alert-bar{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:var(--r);margin:6px 0;width:100%;max-width:920px}
+.alert-bar.weak{background:rgba(63,193,201,.1);border:1px solid rgba(63,193,201,.3)}
+.alert-bar.mid{background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.3)}
+.alert-bar.strong{background:rgba(233,69,96,.1);border:1px solid rgba(233,69,96,.3)}
+.alert-badge{padding:4px 12px;border-radius:6px;font-size:.72em;font-weight:700;color:#fff;white-space:nowrap}
+.quote{padding:22px 26px;border-left:4px solid var(--accent);background:var(--glass);border-radius:0 var(--r) var(--r) 0;font-size:1.05em;color:var(--txt);line-height:1.7;max-width:820px;font-style:italic}
+.quote .author{font-style:normal;font-size:.82em;color:var(--txt3);margin-top:10px;text-align:right}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:10px 24px;background:rgba(26,26,46,.92);backdrop-filter:blur(10px);border-top:1px solid var(--glass-border);z-index:100;font-size:.78em;color:var(--txt3)}
+.nav-bar button{background:var(--glass);border:1px solid var(--glass-border);color:var(--txt);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600;transition:background .15s}
+.nav-bar button:hover{background:var(--surface)}
+.progress{flex:1;margin:0 20px;height:3px;background:var(--glass);border-radius:2px;overflow:hidden}
+.progress-bar{height:100%;background:var(--accent);transition:width .3s ease;border-radius:2px}
+.part-label{position:absolute;top:16px;left:24px;font-size:.68em;font-weight:700;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;z-index:10}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .anim{animation:fadeUp .55s ease both}
+.slide.active .anim-d1{animation-delay:.1s}
+.slide.active .anim-d2{animation-delay:.2s}
+.slide.active .anim-d3{animation-delay:.3s}
+.slide.active .anim-d4{animation-delay:.4s}
+.slide.active .anim-d5{animation-delay:.5s}
+.page-num{position:fixed;top:16px;right:24px;font-size:.72em;color:var(--txt3);z-index:100;font-weight:600}
+@media(max-width:900px){
+    .slide{padding:28px 24px}
+    h1{font-size:2em}h2{font-size:1.5em}
+    .card-grid.cols-3,.card-grid.cols-4,.card-grid.cols-5{grid-template-columns:1fr 1fr}
+    .card-grid.cols-2{grid-template-columns:1fr}
+    .flow{gap:6px}.flow-box{padding:6px 12px;font-size:.78em}
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ====== 01 封面 ====== -->
+<div class="slide active center" data-bg="radial-gradient(ellipse at 30% 40%,#533483 0%,#1a1a2e 60%)">
+    <div class="anim" style="font-size:.82em;color:var(--info);font-weight:600;letter-spacing:.15em;margin-bottom:10px">INTELLIGENCE HUB FOR INVESTORS</div>
+    <h1 class="anim anim-d1">天 機 閣</h1>
+    <div class="sub anim anim-d2">投資情報中樞</div>
+    <div class="divider anim anim-d3"></div>
+    <p class="anim anim-d4" style="margin-top:12px;font-size:.95em">在市場還沒注意到之前，就偵測到趨勢變化</p>
+</div>
+
+<!-- ====== 02 議程 ====== -->
+<div class="slide center">
+    <h2 class="anim">今天聊什麼</h2>
+    <div class="card-grid cols-4 anim anim-d1">
+        <div class="card center" style="border-left:3px solid var(--accent)">
+            <div class="card-title" style="color:var(--accent)">Part 1</div>
+            <div class="card-desc" style="font-size:.9em;margin-top:4px">為什麼需要<br>天機閣</div>
+            <div style="font-size:.7em;color:var(--txt3);margin-top:8px">40 分鐘</div>
+        </div>
+        <div class="card center" style="border-left:3px solid var(--gold)">
+            <div class="card-title" style="color:var(--gold)">Part 2</div>
+            <div class="card-desc" style="font-size:.9em;margin-top:4px">為什麼選<br>天機閣</div>
+            <div style="font-size:.7em;color:var(--txt3);margin-top:8px">12 分鐘</div>
+        </div>
+        <div class="card center" style="border-left:3px solid var(--info)">
+            <div class="card-title" style="color:var(--info)">Part 3</div>
+            <div class="card-desc" style="font-size:.9em;margin-top:4px">五大服務<br>具體功能</div>
+            <div style="font-size:.7em;color:var(--txt3);margin-top:8px">43 分鐘</div>
+        </div>
+        <div class="card center" style="border-left:3px solid var(--good)">
+            <div class="card-title" style="color:var(--good)">Part 4</div>
+            <div class="card-desc" style="font-size:.9em;margin-top:4px">展望與<br>誠實面對</div>
+            <div style="font-size:.7em;color:var(--txt3);margin-top:8px">25 分鐘</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:16px;font-size:.88em;color:var(--txt3)">不是取代你的投資判斷 — 是讓你把時間花在刀口上</p>
+</div>
+
+<!-- ====== 03 核心問題 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 為什麼需要</div>
+    <h2 class="anim">你的時間都花在哪？</h2>
+    <p class="anim anim-d1" style="font-size:1.1em;margin-bottom:20px">研究一家新公司，從完全不認識到形成初步看法，要花多久？</p>
+    <div class="card-grid cols-4 anim anim-d2">
+        <div class="card center">
+            <div class="card-icon">📄</div>
+            <div class="card-title">資料蒐集</div>
+            <div class="card-desc">財報、新聞、年報、法說會、產業報告⋯⋯散落各處，一個一個翻</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">🔀</div>
+            <div class="card-title">交叉比對</div>
+            <div class="card-desc">年報說的 vs 法說會說的<br>財務數字 vs 管理層展望<br>人腦工作記憶有限</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">🔗</div>
+            <div class="card-title">產業鏈理解</div>
+            <div class="card-desc">上游是誰？下游是誰？<br>競爭對手在幹嘛？<br>不熟的產業門檻特別高</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">👁️</div>
+            <div class="card-title">持續追蹤</div>
+            <div class="card-desc">追蹤標的越多、負擔越重<br>很多人最後放棄追蹤<br>等股價動了才回頭看</div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 04 痛點總結 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 為什麼需要</div>
+    <h2 class="anim">這四件事的共同特點</h2>
+    <div class="quote anim anim-d1" style="margin:20px 0">
+        花很多時間，但其實<span class="highlight">不需要你的「判斷力」</span><br><br>
+        它們需要的是耐心、記憶力、資料整合能力<br>
+        — 恰好是 AI 最擅長的
+    </div>
+    <div class="card-grid cols-2 anim anim-d2" style="max-width:750px;margin-top:16px">
+        <div class="card center" style="border-color:var(--danger)">
+            <div class="card-title" style="color:var(--danger)">被佔用的</div>
+            <div class="card-desc">翻年報、查新聞、做表格<br>比對數字、整理產業鏈</div>
+        </div>
+        <div class="card center" style="border-color:var(--good)">
+            <div class="card-title" style="color:var(--good)">你真正無可取代的</div>
+            <div class="card-desc">判斷力、經驗、產業直覺<br>跟管理層聊過後的那個「感覺」</div>
+        </div>
+    </div>
+    <p class="anim anim-d3" style="margin-top:16px;font-size:1em;color:var(--gold);font-weight:600">天機閣要解決的，就是這個錯配</p>
+</div>
+
+<!-- ====== 05 快：省下時間 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 價值：快</div>
+    <h2 class="anim">省下的時間做什麼？</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:800px;margin-top:20px">
+        <div class="card center" style="border-color:var(--danger);opacity:.6">
+            <div class="card-title" style="color:var(--danger)">AI 能做的（低價值但耗時）</div>
+            <div class="card-desc" style="margin-top:8px;line-height:1.8">翻年報找資料<br>整理財報數字<br>比對新聞和法說會<br>追蹤產業鏈動態</div>
+        </div>
+        <div class="card center" style="border-color:var(--good)">
+            <div class="card-title" style="color:var(--good)">只有你能做的（高價值）</div>
+            <div class="card-desc" style="margin-top:8px;line-height:1.8">實地拜訪公司<br>跟上下游的朋友聊<br>思考投資組合配置<br>做最終的投資決策</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:20px;font-size:.95em;color:var(--gold);font-weight:600">
+        讓 AI 做 AI 擅長的，你做只有你能做的
+    </p>
+</div>
+
+<!-- ====== 08 降低摩擦力 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 價值：降低摩擦力</div>
+    <h2 class="anim">什麼是研究摩擦力？</h2>
+    <div class="steps anim anim-d1" style="margin-top:16px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--warn)">1</div>
+            <div class="step-body">
+                <div class="step-title">投資群組看到一家沒聽過的公司</div>
+                <div class="step-desc">有點好奇，但⋯⋯</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--danger)">2</div>
+            <div class="step-body">
+                <div class="step-title">想到要從頭查：做什麼的？客戶？產業鏈？新聞？</div>
+                <div class="step-desc">光想就累了</div>
+            </div>
+        </div>
+        <div class="step-row" style="border-color:var(--danger)">
+            <div class="step-num" style="background:var(--danger)">3</div>
+            <div class="step-body">
+                <div class="step-title" style="color:var(--accent)">「算了」</div>
+                <div class="step-desc">繼續待在熟悉的標的裡 → 研究範圍越來越窄 → 可能錯過好機會</div>
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:16px;font-size:.92em;color:var(--txt2)">這個「算了」就是摩擦力在起作用</p>
+</div>
+
+<!-- ====== 09 摩擦力：效果 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 價值：降低摩擦力</div>
+    <h2 class="anim">天機閣怎麼降低摩擦力</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:800px;margin-top:20px">
+        <div class="card" style="border-color:var(--danger);opacity:.6">
+            <div class="card-title" style="color:var(--danger)">以前</div>
+            <div class="card-desc" style="line-height:1.8">一個月研究 3 家<br>只研究熟悉的產業<br>新標的從頭查起太累</div>
+        </div>
+        <div class="card" style="border-color:var(--good)">
+            <div class="card-title" style="color:var(--good)">用天機閣</div>
+            <div class="card-desc" style="line-height:1.8">先快篩 10 家（每家 10 分鐘）<br>從中挑 2-3 家深入研究<br>陌生產業也能快速掌握全貌</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:18px;font-size:.92em;color:var(--txt2)">
+        就像逛書店：不用每本從頭讀完才決定要不要買<br>
+        天機閣幫每家公司寫好「摘要」，<span class="highlight-good">讓你快速判斷值不值得深入</span>
+    </p>
+</div>
+
+<!-- ====== 10 核心定位 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 核心定位</div>
+    <h2 class="anim">不是取代你的投資思維</h2>
+    <div class="sub anim anim-d1" style="color:var(--accent);margin-bottom:20px">是高效的資訊整合</div>
+    <div class="card-grid cols-3 anim anim-d2">
+        <div class="card">
+            <div class="card-title" style="color:var(--info)">補足資訊整合</div>
+            <div class="card-desc">「客戶集中度是不是太高？」<br>→ 年報 + 新聞 + 法說會交叉整合<br>→ 幾秒鐘有引述來源的回答</div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--gold)">多公司交叉比對</div>
+            <div class="card-desc">五檔同業攤開比較<br>毛利率、資本支出、客戶重疊度<br>AI 不會看到第三份就忘了第一份</div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--good)">分析師報告驗證</div>
+            <div class="card-desc">券商說目標價 500？<br>交叉驗證每個假設<br>指出盲點與被忽略的風險</div>
+        </div>
+    </div>
+    <div class="quote anim anim-d3" style="margin-top:18px">
+        你的判斷力需要「原料」<br>
+        天機閣負責<span class="highlight-good">高效提供這些原料</span>
+    </div>
+</div>
+
+<!-- ====== 11 關鍵疑點深究 ====== -->
+<div class="slide center">
+    <div class="part-label">Part 1 — 價值：深究力</div>
+    <h2 class="anim">關鍵疑點，馬上深究</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:850px;margin-top:16px">
+        <div class="card">
+            <div class="card-title" style="color:var(--info)">你問</div>
+            <div class="card-desc" style="line-height:2">
+                「第二大客戶佔營收多少？」<br>
+                「這個原物料過去一年走勢？」<br>
+                「競爭對手最近什麼動態？」<br>
+                「存貨週轉天數有沒有異常？」
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--good)">天機閣做</div>
+            <div class="card-desc" style="line-height:2">
+                → 從年報原文找到數據<br>
+                → 查公開商品價格資料<br>
+                → 從新聞和法說會整理<br>
+                → 從財報趨勢分析
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:16px;font-size:.92em;color:var(--txt2)">
+        <span class="highlight-gold">有疑問就問，幾秒鐘有初步答案</span><br>
+        判斷值不值得你親自深挖 — 天機閣做初步探究，你做最終判斷
+    </p>
+</div>
+
+<!-- ====== 12 為什麼選天機閣：引言 ====== -->
+<div class="slide center" data-bg="radial-gradient(ellipse at 60% 40%,#0f3460 0%,#1a1a2e 60%)">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 為什麼選天機閣</div>
+    <h2 class="anim" style="font-size:2em">為什麼不是用 ChatGPT 就好？</h2>
+    <div class="divider anim anim-d1"></div>
+    <div class="card-grid cols-3 anim anim-d2" style="margin-top:24px">
+        <div class="card center" style="border-left:3px solid var(--accent)">
+            <div class="card-title" style="color:var(--accent);font-size:1em">獨特架構</div>
+            <div class="card-desc" style="margin-top:6px">每個人做出來的系統<br>一定不同</div>
+        </div>
+        <div class="card center" style="border-left:3px solid var(--gold)">
+            <div class="card-title" style="color:var(--gold);font-size:1em">經驗成長</div>
+            <div class="card-desc" style="margin-top:6px">越用越聰明<br>從每次互動中學習</div>
+        </div>
+        <div class="card center" style="border-left:3px solid var(--good)">
+            <div class="card-title" style="color:var(--good);font-size:1em">時間複利</div>
+            <div class="card-desc" style="margin-top:6px">累積的差距<br>只會越來越大</div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 13 獨特架構 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 獨特架構</div>
+    <h2 class="anim">每個人的系統一定不同</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:850px;margin-top:18px">
+        <div class="card" style="border-color:var(--txt3);opacity:.7">
+            <div class="card-title" style="color:var(--txt3)">通用 AI 工具</div>
+            <div class="card-desc" style="line-height:1.8;margin-top:8px">
+                你問一個問題<br>
+                它給你一個「通用」的回答<br>
+                沒有分析框架<br>
+                沒有驗證機制<br>
+                沒有反向思維檢視<br>
+                每次對話都從零開始
+            </div>
+        </div>
+        <div class="card" style="border-color:var(--accent)">
+            <div class="card-title" style="color:var(--accent)">天機閣</div>
+            <div class="card-desc" style="line-height:1.8;margin-top:8px">
+                架構反映設計者的<span class="highlight">投資 DNA</span><br>
+                怎麼看一家公司、哪些環節最重要<br>
+                哪裡踩過坑、報告該長什麼樣<br>
+                多空對決 → 反向思維 → 壓力測試<br>
+                → 品質評審 → 層層篩選後才給結論
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:16px;font-size:.92em;color:var(--txt2)">
+        通用工具給「AI 覺得」的答案<br>
+        天機閣給<span class="highlight-gold">「經過完整分析框架驗證」的結論</span>
+    </p>
+</div>
+
+<!-- ====== 14 學習成長系統 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 學習成長</div>
+    <h2 class="anim">天機閣具備經驗成長能力</h2>
+    <div class="card-grid cols-4 anim anim-d1" style="margin-top:18px">
+        <div class="card center">
+            <div class="card-icon">📚</div>
+            <div class="card-title" style="color:var(--info)">分析經驗累積</div>
+            <div class="card-desc">每完成一次研究<br>該產業的框架、指標、陷阱<br>全部記錄，下次帶著經驗出發</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">⚠️</div>
+            <div class="card-title" style="color:var(--accent)">錯誤教訓內化</div>
+            <div class="card-desc">搞混公司？遺漏風險？<br>明確記錄：錯在哪、為何錯<br>形成「經驗庫」，不重複犯錯</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">🎯</div>
+            <div class="card-title" style="color:var(--gold)">使用者偏好適配</div>
+            <div class="card-desc">「不要模糊結論」→ 記住<br>「我更關注現金流」→ 記住<br>未來自動符合你的風格</div>
+        </div>
+        <div class="card center">
+            <div class="card-icon">📊</div>
+            <div class="card-title" style="color:var(--good)">歷史比對校準</div>
+            <div class="card-desc">追蹤過去的預測 vs 實際走勢<br>哪些準、哪些偏<br>持續校準分析模型</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:14px;font-size:.92em;color:var(--txt3)">
+        一般 AI 每次從零開始 — 天機閣帶著所有過去的經驗出發
+    </p>
+</div>
+
+<!-- ====== 15 時間複利 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 時間複利</div>
+    <h2 class="anim">別人做不到的原因</h2>
+    <div class="steps anim anim-d1" style="margin-top:18px">
+        <div class="step-row" style="border-color:var(--accent)">
+            <div class="step-num" style="background:var(--accent)">1</div>
+            <div class="step-body">
+                <div class="step-title">架構不同</div>
+                <div class="step-desc">即使拿到同樣的 AI 技術，沒有你的投資邏輯和設計哲學 → 做出來的系統不一樣</div>
+            </div>
+        </div>
+        <div class="step-row" style="border-color:var(--gold)">
+            <div class="step-num" style="background:var(--gold);color:#111">2</div>
+            <div class="step-body">
+                <div class="step-title">經驗不同</div>
+                <div class="step-desc">即使做了類似架構，沒有你累積的分析經驗和錯誤教訓 → 系統的判斷力不一樣</div>
+            </div>
+        </div>
+        <div class="step-row" style="border-color:var(--good)">
+            <div class="step-num" style="background:var(--good);color:#111">3</div>
+            <div class="step-body">
+                <div class="step-title">時間不同</div>
+                <div class="step-desc">即使從今天開始累積，你已經領先了所有過去的經驗量 → 這個差距只會越來越大</div>
+            </div>
+        </div>
+    </div>
+    <div class="quote anim anim-d2" style="margin-top:18px;border-left-color:var(--gold)">
+        通用 AI 是<span class="highlight">每次重新開始的工讀生</span><br>
+        天機閣是<span class="highlight-good">跟你一起成長的分析夥伴</span>
+    </div>
+</div>
+
+<!-- ====== 14 成本：時間與金錢 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 成本優勢</div>
+    <h2 class="anim">一份完整深度報告</h2>
+    <div class="card-grid cols-3 anim anim-d1" style="margin-top:20px">
+        <div class="card center">
+            <div class="card-num">2-5h</div>
+            <div class="card-title">產出時間</div>
+            <div class="card-desc">財務 + 產業 + 多空驗證<br>壓力測試 + 推演<br>全部做完</div>
+        </div>
+        <div class="card center">
+            <div class="card-num" style="color:var(--gold)">$200-500</div>
+            <div class="card-title">每份成本</div>
+            <div class="card-desc">新台幣計價<br>含所有搜尋 + 分析 + 報告</div>
+        </div>
+        <div class="card center">
+            <div class="card-num" style="color:var(--good)">≈ $0</div>
+            <div class="card-title">追加問題</div>
+            <div class="card-desc">看完有疑問？直接問<br>幾秒鐘回覆<br>研究深度不再受時間限制</div>
+        </div>
+    </div>
+    <div class="quote anim anim-d2" style="margin-top:24px">
+        這些事情，相信各位自己花時間都能做<br>
+        但 <span class="highlight">時間，就是各位最寶貴的資源</span>
+    </div>
+</div>
+
+<!-- ====== 15 成本：前置 vs 使用 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--gold)">Part 2 — 成本優勢</div>
+    <h2 class="anim">成本在哪裡？</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:800px;margin-top:20px">
+        <div class="card">
+            <div class="card-title" style="color:var(--accent);font-size:1.05em">前置建設成本（高）</div>
+            <div class="card-desc" style="margin-top:10px;line-height:1.85">
+                • 涵蓋數千家公司的產業鏈資料庫<br>
+                • 累積數萬筆結構化情報資料<br>
+                • 每日自動化情報蒐集管線<br>
+                • 多步驟分析框架 + 校準機制<br>
+                • 持續維護與更新
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--good);font-size:1.05em">每次使用成本（低）</div>
+            <div class="card-desc" style="margin-top:10px;line-height:1.85">
+                • 一份報告 200-500 元<br>
+                • 追加問題 ≈ 0 元<br>
+                • 每日情報掃描 → 全自動<br>
+                • 交叉比對 → 幾秒完成<br>
+                • 而且資料庫會自己長大
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:18px;font-size:.92em;color:var(--txt2)">像蓋一座圖書館：蓋的成本高，但每個人進去查資料的成本接近零<br>而且這座圖書館<span class="highlight-good">會自己長大</span></p>
+</div>
+
+<!-- ====== 16 五大服務總覽 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — 五大服務</div>
+    <h2 class="anim">五大服務</h2>
+    <div class="card-grid cols-5 anim anim-d1" style="margin-top:20px">
+        <div class="card center" style="border-color:var(--good)">
+            <div class="tag tag-good">01</div>
+            <div class="card-title" style="margin-top:8px">個股深度研究</div>
+            <div class="card-desc">完整分析報告<br>→ 具體買賣建議</div>
+        </div>
+        <div class="card center" style="border-color:var(--warn)">
+            <div class="tag tag-warn">02</div>
+            <div class="card-title" style="margin-top:8px">產業鏈透視</div>
+            <div class="card-desc">供應鏈地圖<br>→ 連鎖反應模擬</div>
+        </div>
+        <div class="card center" style="border-color:var(--info)">
+            <div class="tag tag-info">03</div>
+            <div class="card-title" style="margin-top:8px">每日情報偵測</div>
+            <div class="card-desc">弱訊號收斂<br>→ 趨勢預警</div>
+        </div>
+        <div class="card center" style="border-color:var(--accent2)">
+            <div class="tag tag-purple">04</div>
+            <div class="card-title" style="margin-top:8px">智慧互動顧問</div>
+            <div class="card-desc">對話 / 驗證<br>→ 學習 / 客製</div>
+        </div>
+        <div class="card center" style="border-color:var(--accent)">
+            <div class="tag tag-accent">05</div>
+            <div class="card-title" style="margin-top:8px">情境推演模擬</div>
+            <div class="card-desc">事件出發<br>→ 多路徑分支</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:16px;font-size:.88em;color:var(--txt3)">不是五個獨立工具 — 是一個互相串聯的活情報系統</p>
+</div>
+
+<!-- ====== 17 S01：六管道 ====== -->
+<div class="slide left">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 01</div>
+    <div style="display:flex;align-items:center;gap:12px" class="anim">
+        <span class="tag tag-good">Service 01</span>
+        <h2 style="margin-bottom:0">個股深度研究 — 六大管道</h2>
+    </div>
+    <table class="slide-table anim anim-d1" style="margin-top:18px">
+        <tr><th style="width:16%">管道</th><th>蒐集什麼</th></tr>
+        <tr><td>財務數據</td><td>近 5 年營收、毛利率、營業利益率、EPS、自由現金流、ROE / ROA、負債比</td></tr>
+        <tr><td>法人籌碼</td><td>三大法人買賣超、外資持股比例變化、融資融券餘額、大股東申報轉讓</td></tr>
+        <tr><td>新聞輿情</td><td>近期重大新聞、媒體報導方向、論壇討論熱度與情緒</td></tr>
+        <tr><td>法說會</td><td>最近一次法說會重點摘要、管理層展望與語氣變化</td></tr>
+        <tr><td>年報分析</td><td>營收結構拆解、客戶供應商集中度、研發投入佔比、關係人交易</td></tr>
+        <tr><td>產業報告</td><td>所屬產業趨勢、市場規模成長率、技術替代風險、國際同業動態</td></tr>
+    </table>
+    <p class="anim anim-d2" style="color:var(--txt3);font-size:.85em;margin-top:6px">一個股票代號（台股 / 美股）→ 六管道同時蒐集 → 進入多步驟遞進分析</p>
+</div>
+
+<!-- ====== 18 S01：亮點 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 01</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-good">Service 01</span>
+        <h2 style="margin-bottom:0">分析流程亮點</h2>
+    </div>
+    <div class="card-grid cols-4 anim anim-d1" style="margin-top:20px">
+        <div class="card center">
+            <div class="card-title" style="color:var(--info)">多次信心校準</div>
+            <div class="card-desc">多空假說驗證<br>壓力測試<br>品質評審<br>推演模擬<br><br><span style="color:var(--accent);font-weight:600">防止自己騙自己</span></div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--accent)">反向思維檢視</div>
+            <div class="card-desc">市場共識可能錯在哪？<br>管理層可能隱瞞什麼？<br>財報有沒有不尋常？<br><br><span style="color:var(--accent);font-weight:600">專門挖「貓膩」</span></div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--gold)">具體結論</div>
+            <div class="card-desc">不說「可以關注」<br><br>買入 / 觀望 / 迴避<br>附價位區間<br>附翻轉條件</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--good)">因果遞進</div>
+            <div class="card-desc">每一步都建立在<br>前一步的基礎上<br>不能跳步<br><br><span style="color:var(--good);font-weight:600">結論有完整推導鏈</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 19 S01：案例 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 01</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-good">Service 01</span>
+        <h2 style="margin-bottom:0">實際案例</h2>
+    </div>
+    <div class="steps anim anim-d1" style="margin-top:18px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--warn)">A</div>
+            <div class="step-body">
+                <div class="step-title">某半導體通路商 →「好公司但壞價格」</div>
+                <div class="step-desc">市價明顯高於合理估值，建議等回到合理區間再進場。不是公司不好，是價格已經反映太多樂觀預期</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--danger)">B</div>
+            <div class="step-body">
+                <div class="step-title">某電子零件公司 →「強烈迴避」</div>
+                <div class="step-desc">本業本益比超過 70 倍 + 可轉債到期稀釋風險。媒體報導很正面，但財務數字攤開來看風險報酬比不划算</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">C</div>
+            <div class="step-body">
+                <div class="step-title">某 IP 設計公司 →「觀望，等合理價位」</div>
+                <div class="step-desc">中國市場佔營收超過四成，地緣政治下是致命的集中風險。給出考慮風險後的合理進場價</div>
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:12px;font-size:.88em;color:var(--gold);font-weight:600">
+        拿到手就知道：現在該做什麼、不該做什麼、什麼條件下重新評估
+    </p>
+</div>
+
+<!-- ====== 20 S02：產業鏈 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 02</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-warn">Service 02</span>
+        <h2 style="margin-bottom:0">產業鏈透視</h2>
+    </div>
+    <div class="card-grid cols-4 anim anim-d1" style="margin-top:18px">
+        <div class="card center">
+            <div class="card-title" style="color:var(--info)">供應鏈展開</div>
+            <div class="card-desc">多層上下游展開<br>標示佔比、替代難度<br>找出致命依賴節點</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--gold)">同業競爭矩陣</div>
+            <div class="card-desc">橫向比較多家同業<br>營收、毛利率、ROE<br>龍頭 vs 高估 vs 低估</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--good)">概念股篩選</div>
+            <div class="card-desc">輸入題材關鍵字<br>分級：核心 / 間接 / 邊緣<br>避免買到假概念股</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--accent)">連鎖反應模擬</div>
+            <div class="card-desc">A 出問題 → 誰受傷？<br>反向追蹤異常源頭<br>沿真實供應鏈路徑推算</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:14px;font-size:.85em;color:var(--txt3)">涵蓋數千家上市櫃公司及國際供應鏈｜每條關係通過<span class="highlight-info">多方驗證</span>才建立</p>
+</div>
+
+<!-- ====== 21 S02：場景 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 02</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-warn">Service 02</span>
+        <h2 style="margin-bottom:0">應用場景</h2>
+    </div>
+    <div class="steps anim anim-d1" style="margin-top:18px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">1</div>
+            <div class="step-body">
+                <div class="step-title">新聞：某電子零件缺貨</div>
+                <div class="step-desc">→ 沿供應鏈展開：上游供應商（可能漲價受惠）/ 下游客戶（可能被吃毛利）/ 替代供應商（搶市佔中）</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--gold);color:#111">2</div>
+            <div class="step-body">
+                <div class="step-title">對某產業感興趣，想找標的</div>
+                <div class="step-desc">→ 列出所有相關公司 + 各自競爭力分析 + 潛在機會與風險，不用一家一家查</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--danger)">3</div>
+            <div class="step-body">
+                <div class="step-title">持股的大客戶傳出營運不佳</div>
+                <div class="step-desc">→ 沿客戶關係推算營收曝險比例 → 評估衝擊程度 → 該減碼還是觀望</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 22 S03：情報偵測 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 03</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-info">Service 03</span>
+        <h2 style="margin-bottom:0">每日情報偵測</h2>
+    </div>
+    <p class="anim anim-d1" style="color:var(--gold);font-weight:600;margin:10px 0">天機閣最核心的差異化能力</p>
+    <div class="card-grid cols-2 anim anim-d2" style="max-width:850px">
+        <div class="card">
+            <div class="card-title" style="color:var(--info)">每日自動蒐集</div>
+            <div class="card-desc" style="line-height:1.85;margin-top:6px">
+                • 公開資訊觀測站（重大訊息、董事會決議）<br>
+                • 論壇與社群（PTT Stock 等看板）<br>
+                • 新聞源（財經 / 產業 / 國際）<br>
+                • 法說會排程 + 事後追蹤<br>
+                • 你指定的關鍵指標追蹤
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--gold)">七大領域全球掃描</div>
+            <div class="card-desc" style="line-height:1.85;margin-top:6px">
+                • 總體經濟（央行、利率、通膨）<br>
+                • 科技產業（半導體、AI、雲端）<br>
+                • 地緣政治（貿易、制裁、供應鏈）<br>
+                • 能源原物料 / 金融市場<br>
+                • 產業動態 / 政策法規
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d3" style="margin-top:10px;font-size:.85em;color:var(--txt3)">全自動，不需手動操作 — 早上打開就能看到昨天什麼值得注意</p>
+</div>
+
+<!-- ====== 23 S03：弱訊號 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 03</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-info">Service 03</span>
+        <h2 style="margin-bottom:0">弱訊號收斂</h2>
+    </div>
+    <div class="steps anim anim-d1" style="margin-top:16px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">A</div>
+            <div class="step-body">
+                <div class="step-title">供應商法說會：「交期延長兩週」</div>
+                <div class="step-desc">單獨看 → 可能只是個案</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">B</div>
+            <div class="step-body">
+                <div class="step-title">同業悄悄調高報價 3-5%</div>
+                <div class="step-desc">單獨看 → 可能只是成本轉嫁</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">C</div>
+            <div class="step-body">
+                <div class="step-title">下游客戶開始建立安全庫存</div>
+                <div class="step-desc">單獨看 → 可能只是季節性</div>
+            </div>
+        </div>
+        <div class="step-row" style="border-color:var(--accent)">
+            <div class="step-num" style="background:var(--danger)">!</div>
+            <div class="step-body">
+                <div class="step-title" style="color:var(--accent)">短時間內 3 個弱訊號收斂 → 供應鏈緊縮即將發生</div>
+                <div class="step-desc">自動觸發深度分析 → 找出受惠股（有備貨的）與受害股（依賴單一來源的）</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 24 S03：為什麼人做不到 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 03</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-info">Service 03</span>
+        <h2 style="margin-bottom:0">為什麼人類很難做到？</h2>
+    </div>
+    <div class="card-grid cols-3 anim anim-d1" style="margin-top:20px">
+        <div class="card center">
+            <div class="card-title" style="color:var(--accent)">來源分散</div>
+            <div class="card-desc">三則消息分別在<br>法說會、新聞、產業報告<br>你不會同時看到</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--warn)">各自不算大事</div>
+            <div class="card-desc">「交期延長兩週」<br>不會讓你發警報<br>看到就翻過去了</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--danger)">注意力有限</div>
+            <div class="card-desc">同時追蹤幾十家公司<br>幾百則消息<br>不可能逐一交叉比對</div>
+        </div>
+    </div>
+    <div class="quote anim anim-d2" style="margin-top:18px;border-left-color:var(--info)">
+        AI 可以同時看著所有消息，在背景持續比對方向<br>
+        一旦發現收斂 → <span class="highlight">自動升級警報</span>
+    </div>
+</div>
+
+<!-- ====== 25 S03：三級警報 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 03</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-info">Service 03</span>
+        <h2 style="margin-bottom:0">三級警報機制</h2>
+    </div>
+    <div style="width:100%;max-width:920px;margin-top:18px" class="anim anim-d1">
+        <div class="alert-bar weak">
+            <span class="alert-badge" style="background:var(--info)">弱訊號</span>
+            <div><strong>單一異常事件</strong> — 記錄追蹤，持續監控</div>
+        </div>
+        <div class="alert-bar mid">
+            <span class="alert-badge" style="background:var(--warn)">中度警報</span>
+            <div><strong>短時間內多個弱訊號同方向</strong> — 自動升級，觸發深度分析</div>
+        </div>
+        <div class="alert-bar strong">
+            <span class="alert-badge" style="background:var(--danger)">強烈警報</span>
+            <div><strong>多個中度交叉確認</strong> — 產出推演報告 + 建議行動方案</div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:18px;font-size:.9em;color:var(--txt2)">
+        每日偵測報告涵蓋：收斂警報、異常偵測、壓力累積、反向訊號、產業連鎖⋯⋯<br>
+        <span class="highlight-info">像一張每天自動更新的雷達圖</span>
+    </p>
+</div>
+
+<!-- ====== 26 S04：互動顧問 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 04</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-purple">Service 04</span>
+        <h2 style="margin-bottom:0">智慧互動顧問</h2>
+    </div>
+    <p class="anim anim-d1" style="color:var(--txt2);margin:10px 0">不是靜態報告 — 是一位你可以跟他對話的分析師</p>
+    <div class="card-grid cols-4 anim anim-d2">
+        <div class="card center">
+            <div class="card-title" style="color:var(--info)">即時問答</div>
+            <div class="card-desc">「這檔最近怎麼了？」<br>「A 和 B 誰值得投資？」<br>隨時問，即時答</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--gold)">報告驗證</div>
+            <div class="card-desc">丟券商報告進去<br>交叉驗證每個假設<br>指出盲點與遺漏</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--good)">記憶學習</div>
+            <div class="card-desc">記住分析經驗<br>記住你的修正與偏好<br>越用越懂你</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--accent)">客製報告</div>
+            <div class="card-desc">只看風險？只看成長？<br>快速摘要或完整深度？<br>按你需求量身打造</div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 27 S04：互動範例 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 04</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-purple">Service 04</span>
+        <h2 style="margin-bottom:0">實際互動範例</h2>
+    </div>
+    <div class="steps anim anim-d1" style="margin-top:16px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">問</div>
+            <div class="step-body">
+                <div class="step-title">「幫我比較台積電跟聯電，著重成熟製程競爭力」</div>
+                <div class="step-desc">→ 客製化比較報告，針對你指定的角度深入</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--gold);color:#111">問</div>
+            <div class="step-body">
+                <div class="step-title">「這篇法人報告說明年 EPS 15 元，你覺得合理嗎？」</div>
+                <div class="step-desc">→ 驗證報告裡的每個假設，指出哪些站得住腳、哪些過度樂觀</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--danger)">問</div>
+            <div class="step-body">
+                <div class="step-title">「只看風險面，列出這檔所有可能的地雷」</div>
+                <div class="step-desc">→ 客製化風險清單 + 各風險的發生機率評估</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--good);color:#111">問</div>
+            <div class="step-body">
+                <div class="step-title">「上次你分析某公司說有庫存風險，後來怎麼了？」</div>
+                <div class="step-desc">→ 調用學習記憶，回顧過去分析 + 追蹤後續驗證結果</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 28 S05：情境推演 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 05</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-accent">Service 05</span>
+        <h2 style="margin-bottom:0">情境推演模擬</h2>
+    </div>
+    <p class="anim anim-d1" style="color:var(--txt2);margin:10px 0">從「事件」出發，不是從「股票」出發</p>
+    <div class="flow anim anim-d2" style="justify-content:center;margin:14px 0">
+        <div class="flow-box" style="background:var(--info)">Phase 1 偵測</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box" style="background:var(--warn)">Phase 2 評估</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box" style="background:var(--accent)">Phase 3 全景推演</div>
+    </div>
+    <div class="card-grid cols-3 anim anim-d3" style="margin-top:10px">
+        <div class="card">
+            <div class="card-title" style="color:var(--info)">偵測</div>
+            <div class="card-desc">蒐集背景資料<br>歷史先例<br>利害關係方</div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--warn)">評估</div>
+            <div class="card-desc">沿產業鏈鑑定<br>直接 → 間接 → 蝴蝶效應<br>標示影響方向與強度</div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--accent)">推演</div>
+            <div class="card-desc">展開多條路徑<br>機率 + 觸發條件<br>受益股 + 受害股</div>
+        </div>
+    </div>
+    <p class="anim anim-d4" style="margin-top:12px;font-size:.85em;color:var(--good);font-weight:600">推演不是做完就結束 — 持續追蹤事件進展，接近某路徑時自動通知</p>
+</div>
+
+<!-- ====== 29 S05：範例 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — Service 05</div>
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center" class="anim">
+        <span class="tag tag-accent">Service 05</span>
+        <h2 style="margin-bottom:0">推演範例</h2>
+    </div>
+    <div class="steps anim anim-d1" style="margin-top:16px">
+        <div class="step-row">
+            <div class="step-num" style="background:var(--info)">問</div>
+            <div class="step-body">
+                <div class="step-title">「美國對中國半導體設備加徵 50% 關稅，會怎樣？」</div>
+                <div class="step-desc">→ 4 條路徑：中國加速國產替代 / 台廠轉單效應 / 全球晶片短缺 / 中國報復反制 — 每條附受益股與受害股</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--gold);color:#111">問</div>
+            <div class="step-body">
+                <div class="step-title">「推演日圓跌破 170 的蝴蝶效應」</div>
+                <div class="step-desc">→ 三層傳導：日本出口利多 → 韓國面板汽車受壓 → 台灣匯損風險 → 全球央行干預機率升高</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num" style="background:var(--accent)">問</div>
+            <div class="step-body">
+                <div class="step-title">「最近有什麼事情正在醞釀？」</div>
+                <div class="step-desc">→ 偵測模式啟動，從每日情報中找出弱訊號正在收斂的方向，提出預警</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 30 串聯 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--info)">Part 3 — 串聯</div>
+    <h2 class="anim">五大服務如何串聯</h2>
+    <div style="width:100%;max-width:950px;margin-top:14px" class="anim anim-d1">
+        <div class="flow" style="margin:7px 0">
+            <div class="flow-box" style="background:var(--info)">每日情報</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">個股異常</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--good)">個股研究</div>
+        </div>
+        <div class="flow" style="margin:7px 0">
+            <div class="flow-box" style="background:var(--info)">每日情報</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">產業趨勢</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--warn)">產業鏈</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">鎖定標的</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--good)">個股研究</div>
+        </div>
+        <div class="flow" style="margin:7px 0">
+            <div class="flow-box" style="background:var(--info)">每日情報</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">事件苗頭</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--accent)">情境推演</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">受益/受害</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--good)">個股研究</div>
+        </div>
+        <div class="flow" style="margin:7px 0">
+            <div class="flow-box" style="background:var(--accent2)">你的提問</div>
+            <span class="flow-arrow">→</span>
+            <span style="color:var(--txt3);font-size:.82em">調用對應服務</span>
+            <span class="flow-arrow">→</span>
+            <div class="flow-box" style="background:var(--good)">個股</div>
+            <span style="color:var(--txt3)">/</span>
+            <div class="flow-box" style="background:var(--warn)">產業鏈</div>
+            <span style="color:var(--txt3)">/</span>
+            <div class="flow-box" style="background:var(--info)">情報</div>
+            <span style="color:var(--txt3)">/</span>
+            <div class="flow-box" style="background:var(--accent)">推演</div>
+        </div>
+    </div>
+    <div class="quote anim anim-d2" style="margin-top:14px">
+        持續運轉的<span class="highlight">活情報系統</span>，不是你要用才打開的工具
+    </div>
+</div>
+
+<!-- ====== 31 未來規劃 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--good)">Part 4 — 未來規劃</div>
+    <h2 class="anim">未來規劃</h2>
+    <div class="card-grid cols-4 anim anim-d1" style="margin-top:18px">
+        <div class="card" style="border-style:dashed">
+            <div class="card-title" style="color:var(--info)">投資組合健康監控</div>
+            <div class="card-desc">登錄持倉 → 每日掃描<br>弱訊號命中你的部位時主動警告<br><br><span style="color:var(--good);font-weight:600">從研究一檔<br>→ 守護整個組合</span></div>
+        </div>
+        <div class="card" style="border-style:dashed">
+            <div class="card-title" style="color:var(--gold)">投資決策覆盤</div>
+            <div class="card-desc">記錄每次買賣決策與理由<br>定期覆盤：對了 / 錯了 / 錯在哪<br><br><span style="color:var(--good);font-weight:600">完成完整投資閉環</span></div>
+        </div>
+        <div class="card" style="border-style:dashed">
+            <div class="card-title" style="color:var(--accent)">知識庫問答</div>
+            <div class="card-desc">「哪些公司提過 CoWoS？」<br>跨年報、新聞、歷史報告搜原文<br><br><span style="color:var(--good);font-weight:600">知識複利最大化</span></div>
+        </div>
+        <div class="card" style="border-style:dashed">
+            <div class="card-title" style="color:var(--accent2)">風險壓力測試</div>
+            <div class="card-desc">複合情境同時衝擊持倉<br>找最脆弱環節、最大潛在損失<br><br><span style="color:var(--good);font-weight:600">防多重打擊</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 32 產品願景 ====== -->
+<div class="slide center" data-bg="radial-gradient(ellipse at 70% 50%,#0f3460 0%,#1a1a2e 60%)">
+    <div class="part-label" style="color:var(--good)">Part 4 — 產品願景</div>
+    <h2 class="anim">產品願景</h2>
+    <div class="anim anim-d1" style="font-size:1.5em;font-weight:900;color:var(--gold);margin:18px 0;line-height:1.4">
+        針對專業投資人的<br>訊息服務供應商
+    </div>
+    <div class="divider anim anim-d2"></div>
+    <div class="card-grid cols-2 anim anim-d3" style="max-width:700px;margin-top:18px">
+        <div class="card center">
+            <div class="card-title" style="color:var(--good)">專注做什麼</div>
+            <div class="card-desc">提供有用的情報<br>結構化已知資訊<br>快速查詢 + 交叉比對<br>整合散落各處的低階訊息</div>
+        </div>
+        <div class="card center">
+            <div class="card-title" style="color:var(--accent)">不做什麼</div>
+            <div class="card-desc">不做選股推薦<br>不做績效保證<br>不取代你的判斷力<br>不假裝知道未來</div>
+        </div>
+    </div>
+    <p class="anim anim-d4" style="margin-top:18px;color:var(--txt2);font-size:.92em">
+        你的時間應該花在<span class="highlight-good">高階判斷</span>上，不是花在翻年報找資料
+    </p>
+</div>
+
+<!-- ====== 33 AI 侷限：本質 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--good)">Part 4 — 誠實面對</div>
+    <h2 class="anim">AI 的侷限性</h2>
+    <div class="quote anim anim-d1" style="margin:18px 0;border-left-color:var(--warn)">
+        AI 就像一個<span class="highlight-gold">頂尖學歷、但沒有實務經驗的實習生</span><br><br>
+        讀了很多書、記性好、運算快<br>
+        但沒跟管理層吃過飯、沒走過工廠、沒在市場裡賠過錢
+    </div>
+    <div class="card-grid cols-3 anim anim-d2">
+        <div class="card">
+            <div class="card-title" style="color:var(--accent)">幻覺與誤植</div>
+            <div class="card-desc">
+                把相似的東西搞混<br>
+                真實案例：南亞 vs 南亞科<br>
+                所有大型語言模型都有這個問題
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--warn)">缺漏資料</div>
+            <div class="card-desc">
+                網路查不到的，AI 也查不到<br>
+                非公開資訊、口頭承諾<br>
+                業內潛規則 — 永遠不會有
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="color:var(--info)">推論的侷限</div>
+            <div class="card-desc">
+                擅長「已有資料中找模式」<br>
+                但最重要的轉折點<br>
+                往往是前所未有的新情境
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== 34 AI 侷限：解法 ====== -->
+<div class="slide center">
+    <div class="part-label" style="color:var(--good)">Part 4 — 誠實面對</div>
+    <h2 class="anim">解決辦法</h2>
+    <div class="card-grid cols-2 anim anim-d1" style="max-width:800px;margin-top:18px">
+        <div class="card" style="border-color:var(--txt3)">
+            <div class="card-title">但說實話⋯⋯</div>
+            <div class="card-desc" style="line-height:1.8;margin-top:8px">
+                人類也會記錯、漏看<br>
+                也會被偏見影響<br>
+                也會在壓力下不理性<br><br>
+                差別只在犯錯的方式不同<br>
+                <span style="color:var(--txt3)">人因情緒犯錯，AI 因幻覺犯錯<br>
+                → 兩者是互補的</span>
+            </div>
+        </div>
+        <div class="card" style="border-color:var(--good)">
+            <div class="card-title" style="color:var(--good);font-size:1.05em">加強驗證 — 反正成本低</div>
+            <div class="card-desc" style="line-height:1.8;margin-top:8px">
+                覺得不對？<span class="highlight-good">再問一次</span><br>
+                換個方式問<br>
+                要求提供引述來源<br>
+                驗證成本 ≈ 0<br><br>
+                <span class="highlight-gold">而且天機閣會從驗證中學習</span><br>
+                你糾正一次，它下次就不會再犯
+            </div>
+        </div>
+    </div>
+    <p class="anim anim-d2" style="margin-top:14px;font-size:.9em;color:var(--txt2)">
+        犯錯成本低、修正快、而且會從修正中學習 — 只要你保持「驗證」的習慣
+    </p>
+</div>
+
+<!-- ====== 35 Q&A ====== -->
+<div class="slide center" data-bg="radial-gradient(ellipse at 50% 50%,#533483 0%,#1a1a2e 60%)">
+    <div class="part-label" style="color:var(--good)">Part 4 — Q&A</div>
+    <h2 class="anim" style="font-size:2.6em">Q & A</h2>
+    <div class="divider anim anim-d1"></div>
+    <div class="card anim anim-d2" style="max-width:720px;margin-top:20px;border-color:var(--warn)">
+        <div class="card-title" style="color:var(--warn)">預備問題：即時庫存去哪裡看？季報太慢了</div>
+        <div class="card-desc" style="margin-top:8px;line-height:1.85">
+            季報庫存有 2-3 個月時間落差，確實太慢。<br><br>
+            天機閣可以做的 — 從多個間接管道拼湊「方向感」：<br>
+            • 法說會紀錄 → 管理層對庫存的最新說法<br>
+            • 新聞追蹤 → 通路端庫存變化報導<br>
+            • 同業法說會 → 交叉比對產業整體庫存<br>
+            • 價格訊號 → 產品價格止跌回升 ≈ 庫存偏低<br><br>
+            <span style="color:var(--txt3)">真正即時庫存 → 公司內部或產業調查機構才有<br>
+            這是天然邊界，我必須誠實說</span>
+        </div>
+    </div>
+    <p class="anim anim-d3" style="margin-top:20px;color:var(--txt2);font-size:1em">歡迎提問</p>
+</div>
+
+<!-- ====== 36 結語 ====== -->
+<div class="slide center" data-bg="radial-gradient(ellipse at 30% 40%,#533483 0%,#1a1a2e 60%)">
+    <h1 class="anim" style="font-size:2.4em">感謝聆聽</h1>
+    <div class="divider anim anim-d1"></div>
+    <p class="anim anim-d2" style="font-size:1.05em;color:var(--txt2);margin-top:14px;line-height:1.7">
+        天機閣還在持續進化中<br>
+        每一次使用、每一次回饋、每一次犯錯和修正<br>
+        都讓它變得更好
+    </p>
+    <p class="anim anim-d3" style="margin-top:14px;font-size:.95em;color:var(--gold);font-weight:600">
+        今天的天機閣跟三個月前已經不是同一個東西<br>
+        三個月後它又會更強
+    </p>
+    <div class="anim anim-d4" style="margin-top:24px;font-size:.85em;color:var(--txt3)">
+        天機閣 — 投資情報中樞
+    </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- 導覽列 -->
+<div class="nav-bar">
+    <button onclick="go(-1)">◀ 上一頁</button>
+    <div class="progress"><div class="progress-bar" id="progBar"></div></div>
+    <span id="pageInfo" style="min-width:60px;text-align:center"></span>
+    <button onclick="go(1)">下一頁 ▶</button>
+</div>
+<div class="page-num" id="pageNum"></div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+let cur=0;const total=slides.length;
+function show(i){
+    slides.forEach(s=>s.classList.remove('active'));
+    slides[i].classList.add('active');
+    const bg=slides[i].dataset.bg;
+    document.body.style.background=bg||'var(--bg)';
+    document.getElementById('progBar').style.width=((i+1)/total*100)+'%';
+    const t=(i+1)+' / '+total;
+    document.getElementById('pageInfo').textContent=t;
+    document.getElementById('pageNum').textContent=t;
+}
+function go(d){cur=Math.max(0,Math.min(total-1,cur+d));show(cur)}
+document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(1);
+    else if(e.key==='ArrowLeft'||e.key==='PageUp')go(-1);
+    else if(e.key==='Home'){cur=0;show(0)}
+    else if(e.key==='End'){cur=total-1;show(total-1)}
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx<0?1:-1)});
+show(0);
+</script>
+</body>
+</html>
