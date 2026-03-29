@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>2330 台積電 — 第八步：推演版（向量版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.date-label{position:fixed;top:12px;right:16px;background:var(--base);color:#faf9f7;padding:5px 14px;border-radius:6px;font-size:.78em;font-weight:700;z-index:999;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.btn-bar{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.btn-bar button{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:5px 16px;font-size:.8em;cursor:pointer;font-weight:600;color:var(--base);transition:background .2s}
+.btn-bar button:hover{background:var(--hover)}
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.grid5{grid-template-columns:repeat(2,1fr)}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 3px;padding-top:14px;border-top:2px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.ev h4{font-size:.95em;font-weight:700;color:var(--base);margin-bottom:6px}
+.ev .ev-t{font-size:.72em;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.ev .ev-d{font-size:.84em;color:var(--txt2);margin:4px 0;line-height:1.5}
+.ev .ev-s{font-size:.75em;color:var(--txt3);margin-top:4px}
+.chain-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:8px 0;position:relative}
+.chain-box h4{font-size:.92em;font-weight:700;color:var(--base);margin-bottom:6px}
+.chain-arrow{font-size:.82em;color:var(--txt2);line-height:1.8}
+.chain-arrow span{color:var(--accent);font-weight:700}
+.prob-bar{height:8px;border-radius:4px;background:var(--border);margin:4px 0;overflow:hidden}
+.prob-fill{height:100%;border-radius:4px}
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:8px 0}
+.path-card .path-title{font-size:.95em;font-weight:700;color:var(--base);margin-bottom:4px}
+.path-card .path-prob{font-size:.78em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.path-card .path-desc{font-size:.84em;color:var(--txt2);line-height:1.5}
+.tl{position:relative;margin:12px 0 12px 20px;padding-left:18px;border-left:2px solid var(--border)}
+.tl-item{position:relative;padding:6px 0;font-size:.84em}
+.tl-item::before{content:'';position:absolute;left:-23px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-date{font-weight:700;color:var(--base)}
+.tl-desc{color:var(--txt2)}
+.signal-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:6px 0}
+.signal-card .signal-type{font-size:.72em;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.signal-card .signal-desc{font-size:.84em;color:var(--txt2);line-height:1.5}
+ul.fl{list-style:none;padding:0;margin:4px 0}
+ul.fl li{font-size:.84em;color:var(--txt2);padding:3px 0 3px 16px;position:relative}
+ul.fl li::before{content:'\25B8';position:absolute;left:0;color:var(--accent);font-size:.7em;top:5px}
+.score-big{font-size:1.8em;font-weight:900;text-align:center;margin:4px 0}
+.score-big.positive{color:var(--bull)}
+.score-big.negative{color:var(--bear)}
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:2px solid var(--border);margin-top:22px}
+</style>
+</head>
+<body>
+
+<!-- 右上角日期標籤 -->
+<div class="date-label">2026-03-29</div>
+
+<div class="wrap">
+
+<!-- ===== 全部展開/收合按鈕 ===== -->
+<div class="btn-bar">
+<button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</button>
+<button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+<h1>2330 台積電 — 第八步：推演版（向量版）</h1>
+<div class="sub">推衍引擎 v2.0 | 五路徑情境推演 + 蝴蝶效應 + 貓膩反轉</div>
+<div class="desc">從第七步天機錄的結論出發，把「現在」往前推演 4 週，找出最可能的路徑和關鍵轉折點</div>
+<div class="tags">
+<span class="tag">推衍日期：2026-03-29</span>
+<span class="tag">基準股價：1,820</span>
+<span class="tag">推衍有效期：4 週（至 2026-04-26）</span>
+<span class="tag">Iker 8.1/10</span>
+<span class="tag">護城河：寬</span>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8a. 推衍基礎確認 -->
+<!-- ================================================================ -->
+<div class="section-title">8a. 推衍基礎確認</div>
+<div class="section-sub">核心事實回溯 — 確認推演的起跑點</div>
+
+<details open>
+<summary>核心事實與估值基礎</summary>
+
+<div class="ev">
+<h4>基本面核心數據</h4>
+<span class="ev-t" style="background:rgba(46,125,50,.1);color:#2e7d32">FACT</span>
+<div class="ev-d">
+台積電（2330.TW）是全球最大晶圓代工廠，先進製程（7nm 以下）市佔率高達 90-95%，幾乎壟斷了 AI 晶片的製造。2025 全年表現強勁：營收 3.8 兆新台幣、EPS 66.25 元、毛利率 59.9%（接近歷史高點）、營運現金流 2.3 兆。這些數字說明公司不只是「題材」，而是有紮實獲利支撐的超級印鈔機。
+</div>
+<div class="ev-s">出處：台積電 2025Q4 法說會、2025 年報</div>
+</div>
+
+<div class="grid3">
+<div class="mini-card bull-card">
+<div class="title">2025 營收</div>
+<div class="num" style="color:var(--bull)">3.8 兆</div>
+<div class="desc">YoY +33.9%</div>
+</div>
+<div class="mini-card bull-card">
+<div class="title">2025 EPS</div>
+<div class="num" style="color:var(--bull)">66.25</div>
+<div class="desc">歷史新高</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">2025 毛利率</div>
+<div class="num" style="color:var(--neutral)">59.9%</div>
+<div class="desc">接近 60% 大關</div>
+</div>
+</div>
+
+<div class="grid2">
+<div class="mini-card neutral-card">
+<div class="title">現價 / PE</div>
+<div class="num">1,820 / 27.48x</div>
+<div class="desc">基於 2025 EPS 66.25</div>
+</div>
+<div class="mini-card">
+<div class="title">外資持股</div>
+<div class="num">72%</div>
+<div class="desc">偏高，流動性充足</div>
+</div>
+</div>
+
+<div class="ev">
+<h4>ACH 假說權重（第四步結論）</h4>
+<span class="ev-t" style="background:rgba(184,150,12,.1);color:#b8960c">分析</span>
+<div class="ev-d">
+<strong>H1 — AI 超級週期延續（40%）：</strong>AI Capex 持續爆發，N2/CoWoS 滿載，EPS 上修 → 股價 2,000+<br>
+<strong>H2 — 估值已充分反映（35%）：</strong>好消息都已 Price-in，成長符合預期但難超預期 → 區間震盪<br>
+<strong>H3 — 風險情境（25%）：</strong>關稅/地緣/AI 泡沫 → 股價修正
+</div>
+<div class="ev-s">出處：第四步 ACH 競爭假說分析</div>
+</div>
+
+<div class="ev">
+<h4>Iker 評分與護城河</h4>
+<span class="ev-t" style="background:rgba(46,125,50,.1);color:#2e7d32">綜合</span>
+<div class="ev-d">
+Iker 投資適合度評分 <strong>8.1/10</strong>（高分，但不代表現在就要買）。護城河評級：<strong>寬</strong>（技術壁壘 + 生態系鎖定 + 規模經濟 + 客戶轉換成本）。加權期望價 1,823 元，與現價 1,820 幾乎一致 — 意思是市場定價精準，沒有明顯的「撿便宜」空間。
+</div>
+<div class="ev-s">出處：第六步評審團 + 第七步綜合結論</div>
+</div>
+
+<div class="tip info">
+<b>8a 整合結論</b>
+台積電的基本面無可挑剔：獲利能力全球頂尖、護城河寬廣、AI 趨勢是實質利多而非純題材。但問題不在「這家公司好不好」，而在「這個價格值不值」。現價 1,820 精確落在加權期望價 1,823 附近，代表所有已知的好消息和壞消息都已經被市場消化了。推演的核心問題因此變成：<strong>「接下來 4 週，有什麼增量資訊能打破這個均衡？」</strong>
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8b. OSINT 情報更新 -->
+<!-- ================================================================ -->
+<div class="section-title">8b. OSINT 情報更新</div>
+<div class="section-sub">截至 2026-03-29 的最新市場情報</div>
+
+<details open>
+<summary>最新市場情報與數據</summary>
+
+<div class="ev">
+<h4>2026 年 2 月營收速報</h4>
+<span class="ev-t" style="background:rgba(46,125,50,.1);color:#2e7d32">營收</span>
+<div class="ev-d">
+2026/2 月營收 3,177 億新台幣，年增 +22.2%（同比仍然強勁），但月減 -20.8%。過去幾年 2 月通常月減 10-15%（農曆年工作天少），今年的 -20.8% 偏大。可能原因包括：(1) 1 月基期偏高、(2) N2 換線調整、(3) 純粹的季節性波動。不需要過度解讀，但 3 月營收會是關鍵確認點。
+</div>
+<div class="ev-s">出處：台積電月營收公告（2026-03-10）</div>
+</div>
+
+<div class="ev">
+<h4>股價與市場情緒</h4>
+<span class="ev-t" style="background:rgba(90,125,140,.1);color:#5a7d8c">市場</span>
+<div class="ev-d">
+收盤價 1,820 元，距離歷史高點約回檔 10-15%。法人情緒方面，31 位分析師全數「買進」，0 位「賣出」，目標價均值 2,309 元（潛在上行空間 +27%）。外資持續站在買方。這種「一面倒看好」的共識本身就是一個需要警惕的訊號 — 當所有人都看好的時候，反轉往往最痛。
+</div>
+<div class="ev-s">出處：Bloomberg / 各券商研究報告彙整</div>
+</div>
+
+<div class="grid2">
+<div class="ev">
+<h4>關稅政策動態</h4>
+<span class="ev-t" style="background:rgba(198,40,40,.1);color:#c62828">風險</span>
+<div class="ev-d">
+美國對半導體進口維持 25% 關稅。台積電亞利桑那廠的成本比台灣高 30-50%，海外擴廠的毛利率稀釋效應約 2-4 個百分點。不過短期內海外產能佔比仍低（<10%），實質影響有限，真正的壓力會在 2027-2028 年浮現。
+</div>
+<div class="ev-s">出處：美國貿易代表署 / 台積電法說會</div>
+</div>
+
+<div class="ev">
+<h4>技術與產能進展</h4>
+<span class="ev-t" style="background:rgba(46,125,50,.1);color:#2e7d32">正面</span>
+<div class="ev-d">
+N2（2nm）量產順利，2026 全年訂單已售罄。CoWoS 先進封裝月產能擴至 13 萬片。NVIDIA 確認為最大客戶（年度合約金額 233 億美元）。AI 相關營收佔比預估已超過 50%。
+</div>
+<div class="ev-s">出處：台積電技術論壇 / NVIDIA 財報</div>
+</div>
+</div>
+
+<div class="tip warn">
+<b>8b 整合結論</b>
+情報面呈現「基本面強勁 vs 估值已滿 vs 外部風險潛伏」的三角拉扯。最值得關注的增量資訊有兩個：(1) 2 月營收季節性偏弱，如果 3 月數據也不如預期，市場可能開始質疑 AI 需求是否見頂；(2) 31 買 0 賣的極端共識，歷史上這種格局往往是反轉的前兆（不是一定會反轉，而是一旦反轉會很猛烈）。短期內這些都不構成賣出理由，但會增加波動性。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8c. 影響鏈分析 -->
+<!-- ================================================================ -->
+<div class="section-title">8c. 影響鏈分析</div>
+<div class="section-sub">三條主要因果鏈 — 從驅動因子到股價的傳導路徑</div>
+
+<details open>
+<summary>三條核心影響鏈</summary>
+
+<div class="chain-box" style="border-left:4px solid var(--bull)">
+<h4>鏈 1：AI Capex 爆發鏈（看多路徑）</h4>
+<div class="chain-arrow">
+<span>CSP 資本支出持續暴增</span> &rarr; NVIDIA/AMD 下單暴增 &rarr; <span>N2 + CoWoS 全滿載</span> &rarr; ASP 上升 + 產能利用率 100% &rarr; <span>毛利率突破 60%</span> &rarr; 2026 EPS 85-90 元 &rarr; <span>股價 2,000+</span>
+</div>
+<div style="margin-top:8px">
+<div class="prob-bar"><div class="prob-fill" style="width:45%;background:var(--bull)"></div></div>
+<span style="font-size:.78em;color:var(--txt3)">機率 45% / 信心：中高</span>
+</div>
+<ul class="fl">
+<li>支撐證據：NVIDIA 2026 AI GPU 訂單已排到年底、Google/Meta/Amazon 2026 Capex 指引均上調 15-30%</li>
+<li>關鍵假設：CSP 的 AI 投資不會在年中突然喊停</li>
+</ul>
+</div>
+
+<div class="chain-box" style="border-left:4px solid var(--warn)">
+<h4>鏈 2：關稅 + 海外擴廠成本鏈（看平偏空）</h4>
+<div class="chain-arrow">
+<span>25% 半導體關稅持續</span> &rarr; 客戶要求在地生產 &rarr; <span>亞利桑那/日本/德國擴廠加速</span> &rarr; 建廠成本高 30-50% + 人力貴 &rarr; <span>毛利率稀釋 2-4%</span> &rarr; EPS 低於樂觀預期 &rarr; <span>PE 壓縮 → 股價 1,500-1,700</span>
+</div>
+<div style="margin-top:8px">
+<div class="prob-bar"><div class="prob-fill" style="width:30%;background:var(--warn)"></div></div>
+<span style="font-size:.78em;color:var(--txt3)">機率 30% / 信心：中</span>
+</div>
+<ul class="fl">
+<li>支撐證據：亞利桑那廠已知成本超支、CHIPS Act 補貼與關稅政策自相矛盾</li>
+<li>關鍵假設：海外產能佔比將逐年提升至 20%+</li>
+</ul>
+</div>
+
+<div class="chain-box" style="border-left:4px solid var(--bear)">
+<h4>鏈 3：AI 泡沫 / 地緣風險鏈（黑天鵝路徑）</h4>
+<div class="chain-arrow">
+<span>AI 投資回報率不如預期</span> 或 <span>台海緊張升溫</span> &rarr; CSP 削減 Capex / 國際資本撤離 &rarr; <span>訂單減少 + 估值折價</span> &rarr; 外資拋售（持股 72% 是雙面刃）&rarr; <span>股價 1,000-1,300</span>
+</div>
+<div style="margin-top:8px">
+<div class="prob-bar"><div class="prob-fill" style="width:15%;background:var(--bear)"></div></div>
+<span style="font-size:.78em;color:var(--txt3)">機率 15% / 信心：低，但衝擊巨大不可忽略</span>
+</div>
+<ul class="fl">
+<li>支撐證據：歷史上每個科技週期都有泡沫破裂，台海風險是長期結構性問題</li>
+<li>關鍵假設：至少一個重大觸發事件在 12 個月內發生</li>
+</ul>
+</div>
+
+<div class="ev">
+<h4>跨鏈交互效應</h4>
+<span class="ev-t" style="background:rgba(184,150,12,.1);color:#b8960c">重要</span>
+<div class="ev-d">
+鏈 1 和鏈 2 很可能同時發生 — AI 需求很強（推升營收），但海外擴廠成本也在攀升（壓抑毛利）。這會造成一個「營收大增但毛利率不如預期」的矛盾局面。市場對台積電的期望已經很高，如果出現「營收超標但毛利率 miss」的情況，短期股價反應可能是負面的。這種「贏了面子輸了裡子」的劇本是最需要警惕的。
+</div>
+</div>
+
+<div class="tip info">
+<b>8c 整合結論</b>
+三條影響鏈指向的核心矛盾是：台積電的「量」幾乎確定會成長（AI 需求太強了），但「價」和「利」不確定。鏈 1 的 AI 爆發是最可能的主旋律，但鏈 2 的成本稀釋會在背景持續侵蝕。真正危險的不是鏈 3 的黑天鵝（機率低），而是鏈 1+鏈 2 同時發生時，市場從「營收超好」的興奮中清醒過來，發現利潤沒跟上的那個時刻。推演的關鍵驗證點：<strong>Q1 法說會的毛利率指引（4 月中）</strong>。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8d. 情境模擬 -->
+<!-- ================================================================ -->
+<div class="section-title">8d. 情境模擬（五條路徑）</div>
+<div class="section-sub">從樂觀到悲觀，五種可能的未來劇本</div>
+
+<details open>
+<summary>五條路徑詳細推演</summary>
+
+<div class="path-card" style="border-left:4px solid var(--bull)">
+<div class="path-title">路徑 A — AI 超級週期全面爆發</div>
+<span class="path-prob" style="background:rgba(46,125,50,.15);color:var(--bull)">機率 30%</span>
+<div class="path-desc">
+<strong>情境：</strong>CSP 持續加碼 AI 投資，N2 良率 >85%，地緣風險平穩，三星/Intel 持續落後。<br>
+<strong>財務：</strong>2026 EPS 95+ 元 / PE 維持 28x<br>
+<strong>目標價：</strong>95 x 28 = <strong style="color:var(--bull)">2,660 元</strong>（+46%）<br>
+<strong>觸發條件：</strong>Q1 毛利率 >63% + 全年 EPS 指引上修至 90+<br>
+<strong>白話說：</strong>這是「夢想成真」劇本 — AI 比所有人想像的都大，台積電吃到最大塊蛋糕，毛利率不降反升。
+</div>
+</div>
+
+<div class="path-card" style="border-left:4px solid var(--accent)">
+<div class="path-title">路徑 B — 穩健成長（最可能）</div>
+<span class="path-prob" style="background:rgba(90,125,96,.15);color:var(--accent)">機率 35%</span>
+<div class="path-desc">
+<strong>情境：</strong>成長如管理層指引，AI 強勁但非超預期，海外成本稀釋在預期內。<br>
+<strong>財務：</strong>2026 EPS 85 元 / PE 22x（市場給予「成熟成長股」估值）<br>
+<strong>目標價：</strong>85 x 22 = <strong style="color:var(--accent)">1,870 元</strong>（+3%）<br>
+<strong>觸發條件：</strong>Q1 表現符合共識 + 無重大利多或利空<br>
+<strong>白話說：</strong>最無聊但最可能的劇本 — 公司穩穩賺，股價小幅上行，但你在這個價位買進不會有太多超額報酬。
+</div>
+</div>
+
+<div class="path-card" style="border-left:4px solid var(--warn)">
+<div class="path-title">路徑 C — 成長放緩</div>
+<span class="path-prob" style="background:rgba(212,160,23,.12);color:var(--warn)">機率 15%</span>
+<div class="path-desc">
+<strong>情境：</strong>AI 投資回報率開始被質疑，1-2 家 CSP 放慢 Capex 節奏。<br>
+<strong>財務：</strong>2026 EPS 75 元 / PE 壓縮至 18x<br>
+<strong>目標價：</strong>75 x 18 = <strong style="color:var(--warn)">1,350 元</strong>（-26%）<br>
+<strong>觸發條件：</strong>任一家大型 CSP 下修 2027 Capex 指引 + AI 應用端變現數據不佳<br>
+<strong>白話說：</strong>不是台積電有問題，而是整個 AI 敘事開始鬆動。類似 2022 年加密貨幣對挖礦晶片需求的崩跌。
+</div>
+</div>
+
+<div class="path-card" style="border-left:4px solid var(--neutral)">
+<div class="path-title">路徑 D — 估值壓縮</div>
+<span class="path-prob" style="background:rgba(90,125,140,.12);color:var(--neutral)">機率 15%</span>
+<div class="path-desc">
+<strong>情境：</strong>基本面不變，但全球風險偏好下降 + 關稅升級 + 海外成本超預期。<br>
+<strong>財務：</strong>2026 EPS 85 元（不變）/ PE 壓縮至 18x<br>
+<strong>目標價：</strong>85 x 18 = <strong style="color:var(--neutral)">1,530 元</strong>（-16%）<br>
+<strong>觸發條件：</strong>全球股市修正 + 台灣地緣風險溢價上升 + 美元走強<br>
+<strong>白話說：</strong>公司沒變差，但市場情緒變了。就像同一碗牛肉麵，景氣好時你願意付 300 元，不確定時你只肯付 200 元。
+</div>
+</div>
+
+<div class="path-card" style="border-left:4px solid var(--bear)">
+<div class="path-title">路徑 E — 黑天鵝</div>
+<span class="path-prob" style="background:rgba(198,40,40,.1);color:var(--bear)">機率 5%</span>
+<div class="path-desc">
+<strong>情境：</strong>台海危機、全面制裁、或重大技術事故。<br>
+<strong>財務：</strong>2026 EPS 不變 / PE 崩至 12x（地緣折價）<br>
+<strong>目標價：</strong>66.25 x 12 = <strong style="color:var(--bear)">795 元</strong>（-56%）<br>
+<strong>觸發條件：</strong>台海軍事衝突升溫 / 美國對中國全面半導體禁令波及台灣<br>
+<strong>白話說：</strong>低機率高衝擊。不需要天天擔心，但持倉不能超過總資產 30% 就是因為這個。
+</div>
+</div>
+
+<!-- 加權期望價計算 -->
+<div class="ev">
+<h4>加權期望股價計算</h4>
+<span class="ev-t" style="background:rgba(184,150,12,.1);color:#b8960c">核心</span>
+<div class="ev-d">
+<table>
+<tr><th>路徑</th><th>機率</th><th>目標價</th><th>加權</th></tr>
+<tr><td>A — AI 超級週期</td><td>30%</td><td>2,660</td><td>798</td></tr>
+<tr><td>B — 穩健成長</td><td>35%</td><td>1,870</td><td>655</td></tr>
+<tr><td>C — 成長放緩</td><td>15%</td><td>1,350</td><td>203</td></tr>
+<tr><td>D — 估值壓縮</td><td>15%</td><td>1,530</td><td>230</td></tr>
+<tr><td>E — 黑天鵝</td><td>5%</td><td>795</td><td>40</td></tr>
+<tr style="font-weight:700"><td>加權期望價</td><td>100%</td><td></td><td style="color:var(--accent);font-size:1.1em">1,926</td></tr>
+</table>
+</div>
+<div class="ev-s">注意：加權期望價 1,926 vs 現價 1,820，潛在上行空間約 +5.8%，但這並非「安全邊際」，而是反映上行情境的拉動。若排除路徑 A（不賭最佳情境），期望價降至 ~1,490。</div>
+</div>
+
+<div class="tip warn">
+<b>8d 整合結論</b>
+五條路徑的加權期望價 1,926 元，比現價高約 6%。但這個數字會騙人 — 它是被路徑 A 的 2,660 元拉高的。如果你看中位數（路徑 B 的 1,870），現價幾乎沒有上行空間。更關鍵的是，下行風險不對稱：路徑 C/D/E 加起來 35% 的機率，目標價都在 1,530 以下。<strong>白話結論：現在買台積電，你有 35% 的機率賺大錢，35% 的機率小賺，30% 的機率虧 16-56%。這不是一個有吸引力的風險報酬比。</strong> 等到 1,500 以下（PE ~18x），風險報酬比才會翻轉為正。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8e. 個人化推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8e. 個人化推衍</div>
+<div class="section-sub">基於閣主穩健偏好、觀望中、中長期投資的建議</div>
+
+<details open>
+<summary>分批建倉策略與倉位管理</summary>
+
+<div class="ev">
+<h4>當前定位判斷</h4>
+<span class="ev-t" style="background:rgba(90,125,140,.1);color:#5a7d8c">策略</span>
+<div class="ev-d">
+現價 1,820 元，加權期望價約 1,926 元，上行空間約 +6%。對於穩健型投資人來說，6% 的期望報酬不值得承擔 30% 的下行機率。<strong>結論：觀望為主，不追高，等回檔。</strong>
+</div>
+</div>
+
+<div class="ev">
+<h4>分批建倉計畫</h4>
+<span class="ev-t" style="background:rgba(46,125,50,.1);color:#2e7d32">行動</span>
+<div class="ev-d">
+<table>
+<tr><th>批次</th><th>價位</th><th>PE 估算</th><th>倉位比例</th><th>安全邊際</th></tr>
+<tr><td>第一批</td><td style="font-weight:700">1,500 以下</td><td>~18x</td><td>20%</td><td>18%</td></tr>
+<tr><td>第二批</td><td style="font-weight:700">1,350 以下</td><td>~16x</td><td>30%</td><td>26%</td></tr>
+<tr><td>第三批</td><td style="font-weight:700">1,200 以下</td><td>~14x</td><td>50%</td><td>34%</td></tr>
+</table>
+</div>
+<div class="ev-s">安全邊際以加權期望價 1,826 為基準計算</div>
+</div>
+
+<div class="grid2">
+<div class="ev">
+<h4>如果現在就想持有？</h4>
+<div class="ev-d">
+最多配置 10-15% 資金建立觀察性部位。這不是「投資」，而是「買一張門票」— 萬一真的走路徑 A，你不會完全錯過。但主力子彈一定要保留。
+</div>
+</div>
+<div class="ev">
+<h4>停損邏輯</h4>
+<div class="ev-d">
+<strong>跌破 1,000 元（PE <15x）：</strong>如果基本面沒有惡化（營收仍在成長），這就是地緣恐慌造成的超跌 → 不停損，反而應該加碼。如果基本面同步惡化（營收連季衰退），則執行停損。
+</div>
+</div>
+</div>
+
+<div class="tip good">
+<b>8e 整合結論</b>
+對穩健型閣主的核心建議就一句話：<strong>台積電是好公司，但現在不是好價格。</strong> 1,820 買不會虧大錢（因為公司太強了），但也賺不了太多。真正的甜蜜點在 1,500 以下（PE ~18x），屆時安全邊際足夠，就算走路徑 C 或 D 也虧不了太多，但走路徑 A 或 B 就能賺一大票。耐心等待，不要被「全球最好的公司」的敘事綁架 — 好公司也需要好價格。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8f. 催化劑時間表 -->
+<!-- ================================================================ -->
+<div class="section-title">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月的關鍵事件節點</div>
+
+<details open>
+<summary>關鍵催化劑時間軸</summary>
+
+<div class="tl">
+<div class="tl-item">
+<div class="tl-date">2026/4 月 10 日左右</div>
+<div class="tl-desc"><strong>3 月營收公告</strong> — 驗證 2 月的 MoM -20.8% 是季節性還是趨勢性。如果 3 月回升至 3,500 億以上，市場安心；如果連續偏弱，質疑聲會出現。<span style="color:var(--warn);font-weight:700">（重要性：高）</span></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/4 月中旬</div>
+<div class="tl-desc"><strong>Q1 財報 + 法說會</strong> — 本輪推衍最重要的驗證點。重點看：(1) 毛利率是否達 63-65%；(2) Q2 指引 + 全年展望是否上修；(3) 管理層對海外成本的說法。<span style="color:var(--danger);font-weight:700">（重要性：極高）</span></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/5-6 月</div>
+<div class="tl-desc"><strong>COMPUTEX 2026</strong> — 台積電通常在此發表技術路線圖。A16（埃米級）進展、新客戶發表（車用/AI 邊緣端）。<span style="color:var(--accent);font-weight:700">（重要性：中高）</span></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/6 月初</div>
+<div class="tl-desc"><strong>Apple WWDC</strong> — 確認 iPhone 18 是否採用 N2 製程。如果是，代表 N2 的消費端出貨量將在 Q3 大幅放量。<span style="color:var(--accent);font-weight:700">（重要性：中）</span></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/7 月中旬</div>
+<div class="tl-desc"><strong>Q2 財報</strong> — N2 出貨量爬坡驗證。如果 N2 貢獻營收比例超過 10%，代表良率和客戶導入都很順利。<span style="color:var(--warn);font-weight:700">（重要性：高）</span></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/9 月</div>
+<div class="tl-desc"><strong>iPhone 18 發表</strong> — N2 第一個大規模消費端出貨驗證。出貨量和 ASP 會直接反映在 Q3/Q4 營收。<span style="color:var(--accent);font-weight:700">（重要性：中）</span></div>
+</div>
+</div>
+
+<div class="tip info">
+<b>8f 整合結論</b>
+未來 6 個月最關鍵的是 <strong>4 月中旬的 Q1 法說會</strong>，它會同時回答三個問題：AI 需求是否如預期強勁？毛利率能否對抗海外成本？全年 EPS 指引是否有上修空間？法說會的結果會決定路徑 A 和路徑 B 哪個更可能。如果你正在觀望，<strong>建議等法說會後再做決定</strong> — 多等 2-3 週獲得的資訊價值遠大於可能錯過的漲幅。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8g. 蝴蝶效應推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">弱訊號掃描 — 那些大家還沒注意到但可能很重要的事</div>
+
+<details open>
+<summary>五類弱訊號偵測</summary>
+
+<div class="signal-card" style="border-left:3px solid var(--warn)">
+<span class="signal-type" style="background:rgba(212,160,23,.12);color:var(--warn)">A 類 — 數據異常</span>
+<div class="signal-desc">
+<strong>2 月營收 MoM -20.8%，偏離往年季節性常態（-10~15%）。</strong><br>
+單看這個數字不能下結論 — 可能只是 1 月基期太高或農曆年工作天效應。但如果 3 月營收也低於預期（低於 3,300 億），就形成連續偏弱的模式，市場會開始用「AI 需求是否見頂」的框架來解讀。這就是典型的弱訊號：現在看不確定，事後看可能是轉折點。
+</div>
+</div>
+
+<div class="signal-card" style="border-left:3px solid var(--danger)">
+<span class="signal-type" style="background:rgba(198,40,40,.1);color:var(--bear)">B 類 — 行為變化</span>
+<div class="signal-desc">
+<strong>NVIDIA 佔 CoWoS 產能 ~60%，單一客戶集中度持續上升。</strong><br>
+台積電官方不會說這是風險（客戶愈多愈好），但從投資角度看，一旦 NVIDIA 的 AI GPU 增速放緩，CoWoS 產能利用率會斷崖式下降。更微妙的是：如果 NVIDIA 知道自己的談判籌碼這麼大，未來在 ASP 談判中會更強勢。
+</div>
+</div>
+
+<div class="signal-card" style="border-left:3px solid var(--link)">
+<span class="signal-type" style="background:rgba(90,125,140,.1);color:var(--link)">C 類 — 結構轉移</span>
+<div class="signal-desc">
+<strong>蘋果跳過 A16 晶片，直接進入下一代架構。</strong><br>
+表面看只是產品節奏調整，但深層含義可能是 Apple 正在醞釀自家先進封裝方案，減少對台積電 CoWoS 的依賴。如果 Apple 在 3-5 年內建立自己的封裝能力，台積電會失去 20%+ 的封裝客戶。目前只是推測，但值得長期追蹤。
+</div>
+</div>
+
+<div class="signal-card" style="border-left:3px solid var(--neutral)">
+<span class="signal-type" style="background:rgba(90,125,140,.1);color:var(--neutral)">D 類 — 政策動向</span>
+<div class="signal-desc">
+<strong>CHIPS Act 補貼 vs 25% 關稅 — 美國政策自相矛盾。</strong><br>
+一手給補貼鼓勵來美國設廠，另一手抽關稅增加設廠成本。這種矛盾遲早要解決，而解決方向（加碼補貼 or 豁免關稅 or 兩者都不做）會顯著影響台積電的海外擴廠成本和毛利率。下一輪政策調整可能在 2026Q3 美國預算案時出現。
+</div>
+</div>
+
+<div class="signal-card" style="border-left:3px solid var(--bear)">
+<span class="signal-type" style="background:rgba(198,40,40,.1);color:var(--bear)">E 類 — 技術突破</span>
+<div class="signal-desc">
+<strong>三星 2nm 如果意外良率突破 → 打破先進製程獨佔格局。</strong><br>
+目前三星 3nm GAA 良率仍然慘不忍睹（估計 <50%），但半導體技術有「非線性突破」的特性 — 一旦找到關鍵製程參數，良率可以在幾個月內從 40% 跳到 80%。機率 <10%，但一旦發生，台積電的先進製程壟斷地位和 ASP 溢價都會受到嚴重威脅。
+</div>
+</div>
+
+</details>
+
+<details open>
+<summary>蝴蝶效應推演鏈 Top 3</summary>
+
+<div class="chain-box" style="border-left:3px solid var(--danger)">
+<h4>推演鏈 #1：Apple 封裝自主化（3-5 年尺度）</h4>
+<div class="chain-arrow">
+Apple 跳過 A16 &rarr; 內部開發先進封裝技術 &rarr; 2027-2028 年自有封裝產線投產 &rarr; <span>減少對台積電 CoWoS 依賴</span> &rarr; 台積電失去 20%+ 封裝客戶 &rarr; <span>封裝毛利被壓 3-5 個百分點</span>
+</div>
+<ul class="fl">
+<li>目前狀態：推測階段，尚無直接證據</li>
+<li>監控指標：Apple 封裝相關專利申請數量、Apple 半導體團隊招聘動態</li>
+<li>影響程度：如果成真，對台積電 2028 年以後的毛利率結構有深遠影響</li>
+</ul>
+</div>
+
+<div class="chain-box" style="border-left:3px solid var(--warn)">
+<h4>推演鏈 #2：NVIDIA 集中度反噬（1-2 年尺度）</h4>
+<div class="chain-arrow">
+NVIDIA 佔 CoWoS 60% &rarr; NVIDIA AI GPU 增速從 100% 降至 30% &rarr; <span>CoWoS 產能利用率急降至 70%</span> &rarr; 封裝 ASP 被迫下調 &rarr; <span>先進封裝毛利被稀釋 2-3 個百分點</span>
+</div>
+<ul class="fl">
+<li>目前狀態：NVIDIA 增速仍強，但基期效應將在 2026H2 浮現</li>
+<li>監控指標：NVIDIA 季度財報中的資料中心營收增速</li>
+<li>影響程度：中等，但會影響市場對台積電的成長預期</li>
+</ul>
+</div>
+
+<div class="chain-box" style="border-left:3px solid var(--link)">
+<h4>推演鏈 #3：營收連續偏弱的心理衝擊（短期）</h4>
+<div class="chain-arrow">
+2 月營收 MoM -20.8% &rarr; 如果 3 月也偏弱（<3,300 億）&rarr; <span>媒體開始報導「AI 需求見頂？」</span> &rarr; 散戶恐慌 + 外資觀望 &rarr; <span>PE 先壓縮，基本面還沒變</span>
+</div>
+<ul class="fl">
+<li>目前狀態：只有 2 月單月偏弱，還不成模式</li>
+<li>監控指標：3 月營收（4 月 10 日前後公告）</li>
+<li>影響程度：短期心理衝擊，但可能創造買點</li>
+</ul>
+</div>
+
+<div class="tip warn">
+<b>8g 整合結論</b>
+五個弱訊號中，最需要立即關注的是 <strong>推演鏈 #3（營收連續偏弱）</strong>— 因為驗證時間最近（4 月 10 日），而且會直接影響短期股價。中期風險來自 <strong>推演鏈 #2（NVIDIA 集中度）</strong>，這是一個正在發生但被市場忽視的結構性問題。長期風險來自 <strong>推演鏈 #1（Apple 封裝自主化）</strong>，目前還只是推測，但如果真的發生，衝擊會是永久性的。天機閣的核心價值就是在這些訊號還很微弱的時候就開始追蹤，而不是等到新聞頭條了才反應。
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8h. 貓膩推衍 -->
+<!-- ================================================================ -->
+<div class="section-title">8h. 貓膩推衍</div>
+<div class="section-sub">第七步第十二章的反向思考延伸 — 當所有人都看好的時候，什麼可能出錯？</div>
+
+<details open>
+<summary>貓膩假說與歷史劇本</summary>
+
+<div class="ev">
+<h4>貓膩結論承接（第七步第十二章）</h4>
+<span class="ev-t" style="background:rgba(212,160,23,.12);color:var(--warn)">燈號：中性</span>
+<div class="ev-d">
+<strong>核心假說：</strong>AI 超級週期的敘事太完美了。31 位分析師全部「買進」、0 位「賣出」— 這在統計上是極端罕見的一致性。不是說分析師錯了，而是當所有人都站在同一邊的時候，船翻了就所有人一起落水。<br><br>
+<strong>貓膩成立機率：</strong>20%（AI 投資泡沫 + 過度共識導致反轉）<br>
+<strong>監控重點：</strong>CSP Capex 指引變化、AI 應用端變現數據
+</div>
+</div>
+
+<div class="ev">
+<h4>歷史最相似案例：2000 年 Cisco</h4>
+<span class="ev-t" style="background:rgba(198,40,40,.1);color:var(--bear)">歷史</span>
+<div class="ev-d">
+2000 年的 Cisco 是全球網路設備的壟斷者，就像今天的台積電之於 AI 晶片。當時的情況：
+<ul class="fl">
+<li>所有分析師一致看好（當時也是全 Buy）</li>
+<li>營收高速成長（YoY +55%）</li>
+<li>技術壟斷地位無人能撼動</li>
+<li>結果：2000-2002 年股價 <strong style="color:var(--bear)">-89%</strong></li>
+</ul>
+<strong>和台積電的差異：</strong><br>
+<ul class="fl">
+<li>Cisco 當時 PE 100x+，台積電現在只有 27.5x — 估值泡沫程度天差地遠</li>
+<li>台積電的利潤是實打實的（毛利率 60%），Cisco 的營收有很多是客戶用融資買的（虛假需求）</li>
+<li>AI 的基礎設施需求比 .com 時代的網路設備需求更剛性（訓練一旦開始就不能停）</li>
+</ul>
+<strong>相似度：35/100</strong> — 台積電基本面遠比 Cisco 紮實，但「所有人看好」的群體心理模式高度相似。
+</div>
+<div class="ev-s">出處：Bloomberg 歷史數據 / 《The Great Tech Boom and Bust》</div>
+</div>
+
+<div class="ev">
+<h4>反轉路徑推演</h4>
+<span class="ev-t" style="background:rgba(194,124,110,.1);color:var(--danger)">反轉</span>
+<div class="ev-d">
+<strong>觸發條件：</strong>任兩家 CSP（Google/Meta/Amazon/Microsoft 四選二）在法說會中下調 2027 AI Capex 指引。<br><br>
+<strong>市場反應路徑：</strong><br>
+<ul class="fl">
+<li>第 1-2 天：AI 概念股全面修正 15-20%，台積電跟跌 10-15%</li>
+<li>第 3-7 天：分析師開始下修目標價，「AI 泡沫」論述席捲媒體</li>
+<li>第 2-4 週：台積電因為有合約保護，實際營收可能只降 10-15%，但 PE 從 27x 壓縮至 18-20x</li>
+<li>對應股價：85 x 19 = 1,615 元（-11%）— 如果是最壞情況，75 x 18 = 1,350 元（-26%）</li>
+</ul>
+<strong>時間估計：</strong>如果這個反轉要發生，最可能出現在 2026Q4~2027Q1 的法說會季（距今 6-9 個月）。
+</div>
+</div>
+
+<div class="ev">
+<h4>保護策略</h4>
+<span class="ev-t" style="background:rgba(90,125,96,.1);color:var(--accent)">策略</span>
+<div class="ev-d">
+<table>
+<tr><th>你的立場</th><th>建議動作</th></tr>
+<tr><td><strong>不確定者（推薦）</strong></td><td>持倉 ≤50%，保留現金等回檔。關注 Q1 法說會後再決策</td></tr>
+<tr><td><strong>相信貓膩者</strong></td><td>不買，等 PE <20x（約 1,400 元以下）再考慮</td></tr>
+<tr><td><strong>不相信貓膩者</strong></td><td>可在現價建倉，但嚴格控制在總資產 30% 以下</td></tr>
+</table>
+<br>
+<strong>最早逃生信號：</strong>連續 2 家 CSP 的 Capex 指引轉為「持平」或「下滑」。一家不算（可能只是個別調整），兩家就代表趨勢反轉。
+</div>
+</div>
+
+<div class="tip danger">
+<b>8h 整合結論</b>
+貓膩分析的核心結論不是「台積電會崩盤」— 這家公司的基本面太強了，不太可能重演 Cisco 的悲劇。真正的風險是<strong>「過度共識導致的預期落差」</strong>：當 31 位分析師全部看好的時候，只要有一點點不如預期（比如毛利率 61% 而非 65%），市場的反應會過度劇烈。台積電的護城河保護了營收和利潤，但保護不了股價的短期波動。<strong>20% 的貓膩機率意味著每五次中有一次「完美故事」會出問題，而現在的股價沒有給你任何緩衝。</strong>
+</div>
+
+</details>
+
+<!-- ================================================================ -->
+<!-- 8i. 推衍結論 -->
+<!-- ================================================================ -->
+<div class="section-title">8i. 推衍結論</div>
+<div class="section-sub">最終判決 — 綜合 8a 到 8h 所有分析的最終結論</div>
+
+<details open>
+<summary>最終推衍結論與行動指引</summary>
+
+<div class="ev">
+<h4>最可能路徑</h4>
+<div class="ev-d" style="text-align:center">
+<div style="font-size:1.4em;font-weight:900;color:var(--accent);margin:8px 0">路徑 B — 穩健成長（機率 35%）</div>
+<div style="font-size:1em;color:var(--txt2)">2026 EPS ~85 元 / PE 22x → 股價 ~1,870 元（+3%）</div>
+<div style="font-size:.85em;color:var(--txt3);margin-top:6px">上行空間有限，但下行風險可控。不是最刺激的答案，卻是最誠實的。</div>
+</div>
+</div>
+
+<div class="ev">
+<h4>蝴蝶效應洞察 Top 3</h4>
+<span class="ev-t" style="background:rgba(212,160,23,.12);color:var(--warn)">弱訊號</span>
+<div class="ev-d">
+<ol style="font-size:.88em;color:var(--txt2);padding-left:18px;line-height:1.8">
+<li><strong>Apple 跳過 A16 →</strong> 3-5 年後 Apple 可能發展自有封裝，減少對台積電 CoWoS 依賴。目前只是推測，但如果成真影響深遠。</li>
+<li><strong>NVIDIA 佔 CoWoS 60% →</strong> 客戶集中度風險被市場嚴重低估。NVIDIA 增速放緩的那一天，台積電封裝毛利會首當其衝。</li>
+<li><strong>2 月營收季節性偏弱 →</strong> 如果 3 月也不好看，「AI 見頂」的敘事會開始發酵。短期心理衝擊，但可能反而創造買點。</li>
+</ol>
+</div>
+</div>
+
+<div class="ev">
+<h4>貓膩摘要</h4>
+<span class="ev-t" style="background:rgba(194,124,110,.1);color:var(--danger)">警示</span>
+<div class="ev-d">
+AI 超級週期的敘事完美但歷史上「完美故事」的結局多半不好。台積電本身沒有可疑行為（財報透明、營收實質），但市場共識過度一致（31 買 0 賣）本身就是一個危險信號。貓膩成立機率 20% — 不高，但對應的損失幅度是 -16% 至 -26%，在現價沒有安全邊際的情況下，這個風險不值得冒。
+</div>
+</div>
+
+<!-- 行動建議總表 -->
+<div class="ev" style="border:2px solid var(--accent)">
+<h4 style="font-size:1.05em">行動建議總表</h4>
+<div class="ev-d">
+<table>
+<tr><th>項目</th><th>建議</th></tr>
+<tr><td><strong>總體判斷</strong></td><td style="font-weight:700;color:var(--warn)">觀望為主，不追高</td></tr>
+<tr><td><strong>建倉起點</strong></td><td>1,500 以下開始分批（第一批 20%）</td></tr>
+<tr><td><strong>理想買點</strong></td><td>1,200-1,350（PE 14-16x，安全邊際 26-34%）</td></tr>
+<tr><td><strong>持有者</strong></td><td>不需要賣出，但控制倉位 ≤30% 總資產</td></tr>
+<tr><td><strong>停損邏輯</strong></td><td>跌破 1,000 且基本面同步惡化才停損；單純地緣恐慌反而加碼</td></tr>
+<tr><td><strong>最近催化劑</strong></td><td>Q1 財報法說會（4 月中）— 建議等法說會後再做決策</td></tr>
+<tr><td><strong>逃生信號</strong></td><td>連續 2 家 CSP 下調 AI Capex 指引</td></tr>
+</table>
+</div>
+</div>
+
+<!-- 追蹤清單 -->
+<div class="ev">
+<h4>四週追蹤清單</h4>
+<div class="ev-d">
+<table>
+<tr><th>時間</th><th>事件</th><th>追蹤重點</th></tr>
+<tr><td>4 月 10 日</td><td>3 月營收公告</td><td>是否回升至 3,300 億以上</td></tr>
+<tr><td>4 月中旬</td><td>Q1 財報 + 法說會</td><td>毛利率 63-65%？全年指引？</td></tr>
+<tr><td>4 月下旬</td><td>CSP 法說會季</td><td>Google/Meta/Amazon Capex 指引</td></tr>
+<tr><td>持續</td><td>NVIDIA 動態</td><td>AI GPU 出貨量、CoWoS 利用率</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip good">
+<b>8i 最終整合結論</b>
+台積電是一家卓越的公司，這一點毫無疑問。但卓越的公司在錯誤的價格買入，一樣會讓你虧錢（或浪費時間等解套）。現價 1,820 元精確落在「合理但不便宜」的位置 — 所有好消息都已經被定價了，而潛在的壞消息（營收偏弱、客戶集中、海外成本）還沒被充分反映。<br><br>
+<strong>最終建議：等。</strong>等 Q1 法說會給出更多線索，等股價回檔到 1,500 以下再分批進場。如果你已經持有，不需要賣，但別再加碼 — 子彈要留給真正的好價格。台積電不會消失，但好的買點不會天天有。耐心是穩健投資人最大的武器。
+</div>
+
+<!-- 推衍有效期 -->
+<div style="text-align:center;margin:18px 0;padding:12px;background:var(--panel);border:1px solid var(--border);border-radius:8px">
+<div style="font-size:.85em;color:var(--txt3)">推衍有效期</div>
+<div style="font-size:1.1em;font-weight:900;color:var(--base)">2026-03-29 至 2026-04-26（4 週）</div>
+<div style="font-size:.82em;color:var(--warn);margin-top:4px">下次更新觸發：Q1 財報公布後（預計 2026/4 月中旬）</div>
+</div>
+
+</details>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+天機閣推衍引擎 v2.0 | 第八步推演版（向量版）| 2330 台積電 | 2026-03-29<br>
+本報告為投資研究參考，不構成投資建議。所有推演基於已知資訊，實際結果可能與推演顯著不同。
+</div>
+
+</div>
+</body>
+</html>
