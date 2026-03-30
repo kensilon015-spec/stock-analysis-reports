@@ -55,10 +55,15 @@ def scan_folders():
                     'mtime_str': mtime_str,
                 })
 
-        # 排序：向量版優先，然後按修改時間降序
+        # 排序：完整版優先 → 推演版 → 其他，同優先級按步驟順序
         def sort_key(x):
-            priority = 0 if '向量' in x['name'] or '演算' in x['name'] else 1
-            return (priority, -x['mtime'])
+            name = x['name']
+            if '完整版' in name: priority = 0
+            elif '推演版' in name: priority = 1
+            elif '向量' in name or '演算' in name: priority = 2
+            else: priority = 3
+            # 同優先級內按檔名排序（第七步 < 第八步）
+            return (priority, name)
         files.sort(key=sort_key)
 
         if files:
