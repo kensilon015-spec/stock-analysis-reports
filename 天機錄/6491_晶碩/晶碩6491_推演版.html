@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>晶碩光學（6491）— 天機閣推衍報告 v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- ============================================================
+     天機閣 — 晶碩光學 6491 第八步：推演版（v2 全局審閱修訂版）
+     產出日期：2026-03-31
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.highlight{border-color:var(--accent);color:var(--accent);font-weight:700}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 估值區塊（ev 證據卡片） === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.tl-item.tl-warn::before{background:var(--warn)}
+.tl-item.tl-danger::before{background:var(--danger)}
+.tl-item.tl-bull::before{background:var(--bull)}
+
+/* === 分岔因果樹 === */
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:8px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--base);font-size:.88em}
+.fork-branches{display:grid;gap:8px;margin-top:4px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branches.b5{grid-template-columns:1fr 1fr 1fr 1fr 1fr}
+@media(max-width:700px){.fork-branches.b5{grid-template-columns:1fr 1fr;}.fork-branches.b3{grid-template-columns:1fr}}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;position:relative}
+.fork-branch::before{content:'\25BC';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.7em}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fork-branch .fb-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:2px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2)}
+
+/* === 風險情報驗證卡 === */
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+
+/* === 蝴蝶效應鏈 === */
+.butterfly-chain{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.butterfly-chain .bc-title{font-weight:700;color:var(--base);font-size:.92em;margin-bottom:6px}
+.bc-step{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.82em;color:var(--txt2)}
+.bc-arrow{color:var(--accent);font-weight:700;flex-shrink:0}
+.bc-track{font-size:.78em;color:var(--warn);font-weight:600;margin-top:4px;padding-top:4px;border-top:1px dashed var(--border)}
+
+/* === 盲點獵手 === */
+.blind-spot{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin:5px 0}
+.blind-spot .bs-strategy{font-weight:700;color:var(--accent);font-size:.82em}
+.blind-spot .bs-question{color:var(--warn);font-size:.82em;font-weight:600}
+.blind-spot .bs-answer{color:var(--txt2);font-size:.82em;margin-top:2px}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>晶碩光學（6491）— 天機閣推衍報告 v2</h1>
+    <div class="sub">天機閣深度調查系統 — 第八步：推演版（全局審閱後修訂版）</div>
+    <div class="desc">基於前七步事實基礎 + 第十步全局審閱修正，展開五條路徑推演、蝴蝶效應弱訊號掃描、貓膩推衍與個人化建議</div>
+    <div class="tags">
+        <span class="tag highlight">v2 全局審閱修訂</span>
+        <span class="tag">推衍日期 2026-03-31</span>
+        <span class="tag">基準股價 ~280</span>
+        <span class="tag">推衍有效期 至 2026-04-30</span>
+        <span class="tag">FIAS: F14 / I9 / A16 / S6</span>
+    </div>
+</div>
+
+<!-- ===== 展開/收合 ===== -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</button>
+    <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <b style="color:var(--base);font-size:.9em;">目錄</b>
+    <a href="#s8a">8a. 推衍基礎確認（含全局審閱修正）</a>
+    <a href="#s8b">8b. OSINT 情報更新（2月營收修正）</a>
+    <a href="#s8c">8c. 影響鏈分析</a>
+    <a href="#s8d">8d. 情境模擬（五條路徑 — 機率微調版）</a>
+    <a href="#s8e">8e. 個人化推衍</a>
+    <a href="#s8f">8f. 催化劑時間表（含新增追蹤項）</a>
+    <a href="#s8g">8g. 蝴蝶效應推衍</a>
+    <a href="#s8h">8h. 貓膩推衍</a>
+    <a href="#s8i">8i. 推衍結論（全局審閱修訂版）</a>
+</div>
+
+<!-- ===== v2 修訂說明 ===== -->
+<div class="tip warn">
+<b>v2 修訂說明（vs 原版推演版）</b>
+本版基於整合版-改.html 的全局審閱補充內容重新撰寫，主要修正項目：<br>
+(1) 月份標記修正：原版誤將「2月營收」標為「3月」，修正為 2026年2月個別營收 5.57億、YoY +6.0%，3月營收尚未公布<br>
+(2) 營收數據釐清：合併營收（含晶澈科技）vs 個別營收明確標示<br>
+(3) 信心校準微調：H2 穩健平庸 60%→63%、H1 暫時反轉 25%→22%、加權目標價 311→306 元<br>
+(4) 催化劑2期望值下修：Q1 爆發期望值 +5.4%→+3.5%（2月放緩影響）<br>
+(5) 新增正面發現：TechNews 2026/02/13 確認矽水膠認證進展<br>
+(6) 新增追蹤項：2026/01/31 晶碩澄清公告<br>
+(7) 五路徑機率微調：路徑1（35%→32%）、路徑2（30%→33%）、路徑4（20%→22%）
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8a. 推衍基礎確認                                                   -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">回溯前七步核心事實，為推演鋪設基準面（含全局審閱修正）</div>
+
+<details open><summary>公司核心事實表</summary>
+<table>
+<tr><th style="width:30%">項目</th><th>內容</th><th style="width:12%">FIAS</th></tr>
+<tr><td>公司定位</td><td>台灣隱形眼鏡龍頭，全球前十大代工廠（ODM 為主），41 國認證</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>股東背景</td><td>景碩（3228）+ 和碩（4938）= 集團資源支撐，供應鏈管理能力出色</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>核心客戶</td><td>SEED（日本）、J&J 嬌生、T-Garden（日本）；A 客戶佔 26%、前五大佔 53%</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>營收結構</td><td>日本 50%+、外銷 87%、中國主動降至 15-20%</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>矽水膠戰略</td><td>大溪廠擴產 1,000→2,000 萬片/月（2026H2 完成），FDA 認證進行中。TechNews 2026/02/13 確認認證進展正向</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>越南佈局</td><td>越南廠預計 2026Q4 取證，分散地緣風險</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>研發能力</td><td>研發費率 9.48%，台灣同業中偏高</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>澄清公告</td><td>2026/01/31 晶碩對媒體報導發出正式澄清公告（來源：Genet 觀點），具體內容待追蹤</td><td><span class="fias-i">I</span></td></tr>
+</table>
+</details>
+
+<details open><summary>ACH 假說機率分配（全局審閱微調版）</summary>
+<table>
+<tr><th>假說</th><th>描述</th><th>原始</th><th>微調後</th><th>含義</th></tr>
+<tr><td>H2 穩健平庸</td><td>營收+5-10%、毛利率持平，EPS 與去年持平</td><td>60%</td><td style="color:var(--bull);font-weight:700">63%</td><td>2月放緩支持平庸情境</td></tr>
+<tr><td>H1 暫時反轉</td><td>FY2025 的-11% 只是基期+匯損，2026 恢復正軌</td><td>25%</td><td style="color:var(--neutral);font-weight:700">22%</td><td>Q1 爆發力打折</td></tr>
+<tr><td>H5 矽水膠爆發</td><td>FDA 通過+日本大單，佔比飆升，毛利率跳升</td><td>8%</td><td style="color:var(--accent);font-weight:700">8%</td><td>TechNews 正面但未改變機率</td></tr>
+<tr><td>H3 中國拖累</td><td>瞳視玠持續虧損，拖累整體獲利</td><td>5%</td><td style="color:var(--warn);font-weight:700">5%</td><td>不變</td></tr>
+<tr><td>H4 轉單風險</td><td>大客戶轉向競爭者</td><td>2%</td><td style="color:var(--danger);font-weight:700">2%</td><td>不變</td></tr>
+</table>
+
+<div class="tip warn">
+<b>v2 修正說明</b>
+2月個別營收 YoY 僅 +6.0%（vs 1月 +31.4%），放緩幅度超出預期，使「穩健平庸（H2）」的機率從 60% 微升至 63%，而「暫時反轉（H1）」從 25% 下修至 22%。白話說：1月讓人以為春天來了，2月告訴你可能只是倒春寒。
+</div>
+
+<div class="ev">
+    <div class="ev-t">白話說</div>
+    <div class="ev-d">全局審閱後的判斷更保守了一些。六成三的機會是不上不下地平穩走，兩成二的機會是觸底反彈。矽水膠如果炸開來是意外之喜，TechNews 的報導讓這個可能性沒被下修，但也不足以上修。真正怕的還是客戶轉單，機率只有 2% 但一旦發生 EPS 直接腰斬。</div>
+</div>
+</details>
+
+<details open><summary>監控儀表板燈號</summary>
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title"><span class="light green"></span> 綠燈 x4</div>
+        <div class="desc">月營收 / 毛利率趨勢 / 現金流 / 負債比</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title"><span class="light yellow"></span> 黃燈 x4</div>
+        <div class="desc">EPS 衰退 / 匯率敏感度 / 中國曝險 / 客戶集中</div>
+    </div>
+</div>
+<p style="font-size:.82em;color:var(--txt2);margin-top:6px">紅燈 x0 — 目前沒有立即性危險信號。</p>
+</details>
+
+<details open><summary>估值錨點（全局審閱修訂）</summary>
+<div class="grid3">
+    <div class="mini-card neutral-card">
+        <div class="title">PE（TTM）</div>
+        <div class="num" style="color:var(--neutral)">13.42x</div>
+        <div class="desc">歷史區間 11-22x / 中位數 17x</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">加權目標價</div>
+        <div class="num" style="color:var(--bull)">306</div>
+        <div class="desc">安全邊際 8.5%（不足 20% 門檻）<br><span style="color:var(--warn);font-size:.85em">v1: 311 / 安全邊際 10.5%</span></div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">催化劑淨期望</div>
+        <div class="num" style="color:var(--bear)">-1.5%</div>
+        <div class="desc">期望+12.3% vs 風險-13.8%<br><span style="color:var(--warn);font-size:.85em">v1: -1.0%</span></div>
+    </div>
+</div>
+</details>
+
+<div class="tip info">
+<b>8a 整合結論</b>
+推衍基礎面在全局審閱後略偏保守。晶碩仍然是一家體質不錯的公司（負債低、現金流強、研發投入高），但 FY2025 的 EPS -11% 加上 2026年2月營收放緩（+6.0%），使「暫時反轉」的信心從 25% 下修至 22%。加權目標價從 311 降至 306 元，安全邊際從 10.5% 縮窄至 8.5%。白話說：好學生段考考差了，補考第一科看起來還行（1月），但第二科（2月）又差強人意，得等全部成績出來才知道是不是真的回來了。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8b. OSINT 情報更新                                                 -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8b">8b. OSINT 情報更新</div>
+<div class="section-sub">基準日即為分析日，v2 修正月份標記與營收數據口徑</div>
+
+<details open><summary>情報差異表（v2 修正版）</summary>
+<table>
+<tr><th>項目</th><th>原始數據</th><th>最新數據</th><th>差異</th><th>FIAS</th></tr>
+<tr><td>2026/01 合併營收</td><td>--</td><td>7.77 億（YoY +31.4%）</td><td style="color:var(--bull)">強勢</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026/01 個別營收</td><td>--</td><td>6.60 億（YoY +31.4%）</td><td style="color:var(--bull)">強勢</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026/02 個別營收</td><td>--</td><td>5.57 億（YoY +6.0%）</td><td style="color:var(--warn);font-weight:700">大幅放緩</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026/03 營收</td><td>--</td><td>尚未公布（約 4/10 公告）</td><td style="color:var(--txt3)">待確認</td><td>--</td></tr>
+<tr><td>TechNews 報導</td><td>--</td><td>2026/02/13 確認矽水膠認證進展</td><td style="color:var(--bull)">正面</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>澄清公告</td><td>--</td><td>2026/01/31 晶碩發出正式澄清</td><td style="color:var(--warn)">待追蹤</td><td><span class="fias-i">I</span></td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>v2 關鍵修正：月份與營收口徑釐清</b>
+原版 8b 將「2026/02 個別營收 5.57 億 YoY +6.0%」誤標為「2026/03 營收 YoY +6.1%」。實際情況如下：<br><br>
+<span class="fias-f">F 事實</span> <b>2月</b>個別營收 556,931 千元（5.57 億），YoY +6.0%。來源：finlab 資料。<br>
+<span class="fias-f">F 事實</span> <b>3月營收尚未公布</b>，預計 2026/04/10 左右公告。<br><br>
+<b>合併 vs 個別營收說明</b>：報告中「7.77 億」為1月合併營收（含晶澈科技等子公司月均約 1.17 億的貢獻），finlab 的 6.60 億為1月個別營收。兩者皆正確，合併數據含通路子公司收入。後續追蹤以個別營收為主、合併營收為輔。
+</div>
+
+<div class="tip good">
+<b>新增正面發現：TechNews 確認矽水膠認證進展</b>
+<span class="fias-f">F 事實</span> TechNews 2026/02/13 報導確認：晶碩矽水膠與多焦產品已進入「通過認證階段」，2025年多項產品完成關鍵市場取證。2026年將是「產品導入與產品線升級的重要一年」。此報導提升催化劑1（矽水膠放量）的可信度 — 認證進度正在按計畫推進。
+</div>
+
+<div class="tip warn">
+<b>新增追蹤項：澄清公告</b>
+<span class="fias-i">I 推論</span> 2026/01/31 晶碩對媒體報導發出正式澄清公告（來源：Genet 觀點）。具體內容不明，但「需要正式澄清」本身是一個信號 — 可能涉及市場傳言或不實報導。建議查閱公開資訊觀測站取得澄清全文，確認是否影響現有分析結論。
+</div>
+
+<div class="ev">
+    <div class="ev-t">v2 潛在含義</div>
+    <div class="ev-d">2月營收放緩但 3月尚未公布，這意味著原版推衍中對「Q1 整季 +11.8%」的計算是錯的（那是基於 3月 5.57 億的錯誤假設）。實際上，Q1 結果要等 3月營收公布後才能確定。如果 3月個別營收能回到 6 億以上（YoY +10%+），Q1 整季大約 18.2 億（YoY +10%+），仍可稱「雙位數成長」；但如果 3月也只有 5.5 億水準，Q1 就只有 17.7 億（YoY +7-8%），「爆發」二字就不成立了。</div>
+    <div class="ev-s">來源：finlab 個別月營收 + 推算</div>
+</div>
+
+<div class="tip info">
+<b>8b 整合結論</b>
+資料 → 1月營收暴增 31%+ 但 2月驟降至 +6.0%，3月尚未公布。觀察 → 這不像是穩定的趨勢反轉，更像是脈衝式成長。推論 → 客戶可能在年初集中拉貨（日本 SEED 會計年度 3 月底結帳，通常在 Q1 上半集中下單），2月工作天數較少也是因素之一。結論 → 原版 8b 中對 Q1 整季營收的計算需要等 3月數據才能確定。目前最佳估計：Q1 個別營收約 17.7-18.5 億（YoY +7-12%），取決於 3月表現。這個區間意味著「有成長但不算爆發」，對催化劑2的估值需要打折。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8c. 影響鏈分析                                                     -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">三大關鍵事件的一階至跨鏈因果推演</div>
+
+<details open><summary>事件 1：矽水膠大溪廠擴產 <span class="fias-i">I</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">矽水膠產能 1,000 → 2,000 萬片/月</div>
+        <div class="rc-level medium">影響等級：中高</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">一階效應</div><div>月產能從 1,000 萬片擴至 1,500（2026H1）→ 2,000 萬片（2026H2），產線稼動率需 6-9 個月爬升</div></div>
+        <div class="rc-row"><div class="rc-label">二階效應</div><div>矽水膠佔營收從目前 ~10% 提升至 12-15%；矽水膠毛利率比傳統水膠高 8-12 個百分點</div></div>
+        <div class="rc-row"><div class="rc-label">三階效應</div><div>整體毛利率回升 2-3% 至 54-55% → EPS 貢獻 +2-3 元，可能推動 PE 修復至 15-16x</div></div>
+        <div class="rc-row"><div class="rc-label">跨鏈效應</div><div>如果同時 FDA 認證通過 → 美國市場開放 → 矽水膠需求暴增 → 佔比可能超過 20% → 戴維斯雙擊（EPS 升 + PE 升）</div></div>
+    </div>
+</div>
+
+<div class="tip good">
+<b>v2 正面補充：TechNews 認證進展</b>
+TechNews 2026/02/13 確認矽水膠與多焦產品已進入實質認證通過階段，2026年為「產品導入與產品線升級的重要一年」。這驗證了擴產計畫並非空談，認證進度正在按計畫推進，降低了「擴了產但沒訂單」的風險。
+</div>
+
+<div class="ev">
+    <div class="ev-t">所以呢</div>
+    <div class="ev-d">矽水膠是晶碩未來 2-3 年的核心敘事。TechNews 的報導讓「產能建好了沒人買」的風險降低了一些，但關鍵仍在「速度」— 產能擴了不代表客戶就立刻大量下單，視陽的經驗告訴我們佔比提升比想像中慢（2 年才 5% → 12%）。所以要追蹤的不是「有沒有擴」，而是「佔比有沒有真的在升」。</div>
+</div>
+</details>
+
+<details open><summary>事件 2：2月營收 YoY 僅 +6.0%（v2 修正） <span class="fias-f">F</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">營收成長動能突然放緩</div>
+        <div class="rc-level high">影響等級：高（不確定性最大）</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">一階效應</div><div>2月個別營收 5.57 億（YoY +6.0%），相比1月個別 6.60 億（YoY +31.4%）大幅放緩。3月尚未公布，Q1 全貌待定</div></div>
+        <div class="rc-row"><div class="rc-label">二階效應</div><div>市場可能「被 1月慣壞了」而在 Q1 法說會失望賣出，股價短期承壓 5-10%</div></div>
+        <div class="rc-row"><div class="rc-label">三階效應</div><div>如果 3月也弱（YoY &lt;+10%），Q1 整季個別營收約 17.7 億（YoY +7-8%）→「反轉」敘事嚴重打折 → PE 壓縮至 12x 以下的風險上升</div></div>
+        <div class="rc-row"><div class="rc-label">跨鏈效應</div><div>如果放緩原因是 SEED 調整訂單節奏（會計年度因素）→ 3月或4月應該會補回來 → 需交叉比對 SEED 的日本端揭露</div></div>
+    </div>
+</div>
+
+<div class="tip warn">
+<b>v2 修正說明</b>
+原版將此事件標記為「3月營收 YoY +6.1%」，實際為「2月個別營收 YoY +6.0%」。3月營收尚未公布。可能的放緩原因：(a) 農曆新年工作天數減少 (b) 1月拉貨效應結束 (c) 結構性放緩。需等 3月營收確認。
+</div>
+
+<div class="ev">
+    <div class="ev-t">所以呢</div>
+    <div class="ev-d">2月放緩加上 3月未知，使得整個 Q1 成了「薛丁格的盒子」— 打開之前你不知道裡面是驚喜還是失望。穩健的做法就是等盒子打開再說。如果 3月營收 YoY 恢復 +15% 以上，那 2月就是季節因素無需擔心；但如果 3月也只有個位數，就要認真下調全年 EPS 估計了。</div>
+</div>
+</details>
+
+<details open><summary>事件 3：中國瞳視玠持續惡化 <span class="fias-f">F</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">瞳視玠浙江獲利衰退 80%（0.41 → 0.08 億）</div>
+        <div class="rc-level low">影響等級：低（已主動控制）</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">一階效應</div><div>中國營收佔比主動降至 15-20%，止損策略正確但需時間完成</div></div>
+        <div class="rc-row"><div class="rc-label">二階效應</div><div>短期少了一條成長腿 — 日本和歐美必須扛起所有成長責任</div></div>
+        <div class="rc-row"><div class="rc-label">三階效應</div><div>如果日本+歐美無法彌補，整體營收成長率可能降到 &lt;5%，估值沒有上修動力</div></div>
+        <div class="rc-row"><div class="rc-label">跨鏈效應</div><div>越南廠如果啟用，部分原本供中國的產能可以轉供東南亞市場，成本結構改善（人力成本低 30-40%）</div></div>
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">所以呢</div>
+    <div class="ev-d">中國不是炸彈，因為管理層已經在主動拆引線了。但它代表一個結構性的空洞 — 少了中國 20% 的營收成長引擎，晶碩必須從其他地方找到替代動能，否則就只能當「穩健但無聊」的公司。矽水膠和 FDA 就是管理層押注的替代引擎。</div>
+</div>
+</details>
+
+<div class="tip info">
+<b>8c 整合結論</b>
+三大影響鏈呈現一個清晰的敘事邏輯：晶碩正在從「中國成長引擎」換檔到「矽水膠+歐美多元引擎」。這個換檔過程中，2026 是最脆弱的過渡年 — 舊引擎（中國）已經熄火，新引擎（矽水膠量產+FDA）還沒全速運轉。2月營收放緩是這個「換檔真空期」最具體的表現。v2 的修正讓我們認識到 3月數據尚未落地，不確定性比原版更大。投資人要做的決策其實很簡單：你相不相信新引擎能在 2026H2 順利接手？相信就等確認訊號進場，不相信就離場等 2027。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8d. 情境模擬（五條路徑）                                            -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8d">8d. 情境模擬（五條路徑 — 機率微調版）</div>
+<div class="section-sub">基於 ACH + 影響鏈 + 全局審閱修正，推演五種未來走向</div>
+
+<!-- 路徑 1 -->
+<details open><summary>路徑 1：穩健反轉（機率 32%，v1: 35%）<span class="badge wide" style="margin-left:8px">偏多</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">Q2-Q3 確認反轉，全年 EPS 22-23</div>
+        <div class="rc-level low">偏多情境</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>Q2-Q3 營收維持 YoY +10-15%、毛利率回升至 53%+、矽水膠佔比突破 12%</div></div>
+        <div class="rc-row"><div class="rc-label">演進過程</div><div>FY2025 的 -11% 被確認為暫時性（匯損+中國）→ 市場重建信心 → PE 從 13x 修復至 15x</div></div>
+        <div class="rc-row"><div class="rc-label">EPS 估計</div><div>FY2026E：22-23 元（vs FY2025 20.87 元 = +5-10%）</div></div>
+        <div class="rc-row"><div class="rc-label">目標股價</div><div>330-345 元（+18-23%），12 個月時間軸</div></div>
+        <div class="rc-row"><div class="rc-label">關鍵分支</div><div>2026/07 Q2 財報是最關鍵確認點 — 如果毛利率真的回 53%+ 就確認這條路</div></div>
+        <div class="rc-row"><div class="rc-label">v2 修正</div><div>2月放緩使 Q1 全面驗證的信心降低，機率從 35% 下修至 32%</div></div>
+    </div>
+</div>
+</details>
+
+<!-- 路徑 2 -->
+<details open><summary>路徑 2：盤整蹲馬步（機率 33%，v1: 30%）<span class="badge narrow" style="margin-left:8px">中性</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">不上不下，吃股息的一年</div>
+        <div class="rc-level medium">中性情境</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>營收 +5-10%、毛利率 52-53%（持平）、矽水膠佔比停在 10-11%</div></div>
+        <div class="rc-row"><div class="rc-label">演進過程</div><div>沒有壞消息但也沒有驚喜 → PE 維持 13-14x → 股價原地踏步</div></div>
+        <div class="rc-row"><div class="rc-label">EPS 估計</div><div>FY2026E：21-22 元</div></div>
+        <div class="rc-row"><div class="rc-label">目標股價</div><div>275-308 元（-2% ~ +10%），殖利率 3.6-4.0%</div></div>
+        <div class="rc-row"><div class="rc-label">關鍵分支</div><div>矽水膠佔比是否突破 12% — 這是區分「路徑 2 轉路徑 1」的關鍵數字</div></div>
+        <div class="rc-row"><div class="rc-label">v2 修正</div><div>2月放緩支持「平庸」情境，機率從 30% 上修至 33%</div></div>
+    </div>
+</div>
+</details>
+
+<!-- 路徑 3 -->
+<details open><summary>路徑 3：矽水膠爆發（機率 8%，v1: 10%）<span class="badge wide" style="margin-left:8px">強多</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">FDA + 日本大單 = 戴維斯雙擊</div>
+        <div class="rc-level low">強多情境（低機率高報酬）</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>FDA 矽水膠認證通過 + SEED/J&J 大幅加單 + 佔比飆升至 >20%</div></div>
+        <div class="rc-row"><div class="rc-label">演進過程</div><div>毛利率跳升至 55%+ → EPS 26+ → 市場重新評價為「成長股」→ PE 修復至 17x（歷史中位數）</div></div>
+        <div class="rc-row"><div class="rc-label">EPS 估計</div><div>FY2026E：26+ 元（+25% YoY）</div></div>
+        <div class="rc-row"><div class="rc-label">目標股價</div><div>440+ 元（+57%），18 個月時間軸</div></div>
+        <div class="rc-row"><div class="rc-label">關鍵分支</div><div>FDA 結果（預計 2026H2）— 這是唯一的 game changer</div></div>
+        <div class="rc-row"><div class="rc-label">v2 修正</div><div>機率從 10% 微降至 8%（2月放緩略壓短期爆發信心）。但 TechNews 認證進展正面，沒有進一步下修</div></div>
+    </div>
+</div>
+</details>
+
+<!-- 路徑 4 -->
+<details open><summary>路徑 4：成長停滯（機率 22%，v1: 20%）<span class="badge none" style="margin-left:8px">偏空</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">2月放緩是趨勢起點，成長回不來</div>
+        <div class="rc-level high">偏空情境</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>2月放緩是趨勢而非季節因素、3月繼續弱、矽水膠量產延遲、中國止血不及</div></div>
+        <div class="rc-row"><div class="rc-label">演進過程</div><div>Q2 營收 YoY 降至 +0-5% → 市場認為「反轉失敗」→ PE 壓縮至 12x</div></div>
+        <div class="rc-row"><div class="rc-label">EPS 估計</div><div>FY2026E：19-20 元</div></div>
+        <div class="rc-row"><div class="rc-label">目標股價</div><div>228-240 元（-14 ~ -19%）</div></div>
+        <div class="rc-row"><div class="rc-label">關鍵分支</div><div>2026Q2 營收是否 &lt;16 億 — 跌破這個門檻就確認成長停滯</div></div>
+        <div class="rc-row"><div class="rc-label">v2 修正</div><div>2月放緩使此路徑機率從 20% 上修至 22%</div></div>
+    </div>
+</div>
+</details>
+
+<!-- 路徑 5 -->
+<details open><summary>路徑 5：黑天鵝（機率 5%，不變）<span class="badge none" style="margin-left:8px">極空</span></summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">多重利空同時爆發</div>
+        <div class="rc-level fatal">極空情境（尾部風險）</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>SEED / J&J 轉單 + 新台幣急速升值 + 中國業務全面崩潰（三者同時發生）</div></div>
+        <div class="rc-row"><div class="rc-label">演進過程</div><div>A 客戶營收直接消失 → EPS 腰斬 → PE 恐慌壓至 10x → 市場懷疑公司未來</div></div>
+        <div class="rc-row"><div class="rc-label">EPS 估計</div><div>FY2026E：15-17 元</div></div>
+        <div class="rc-row"><div class="rc-label">目標股價</div><div>150-170 元（-39 ~ -46%）</div></div>
+        <div class="rc-row"><div class="rc-label">關鍵分支</div><div>客戶正式公告轉單 / 匯率單月波動超過 5% / 瞳視玠結束營業</div></div>
+    </div>
+</div>
+</details>
+
+<!-- 概率樹 -->
+<details open><summary>概率樹（v2 五路徑分佈）</summary>
+<div class="fork-tree">
+    <div class="fork-root">
+        <div class="fork-node">晶碩 6491 @ 280 元（2026-03-31）v2 全局審閱修訂</div>
+    </div>
+    <div class="fork-branches b5">
+        <div class="fork-branch">
+            <span class="fb-label fb-bull">32% 穩健反轉</span>
+            <div class="fb-title">330-345 元</div>
+            <div class="fb-desc">+18~23%<br>PE 回 15x<br>EPS 22-23<br><span style="color:var(--warn);font-size:.9em">v1: 35%</span></div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-neutral">33% 盤整蹲馬步</span>
+            <div class="fb-title">275-308 元</div>
+            <div class="fb-desc">-2~+10%<br>PE 13-14x<br>EPS 21-22<br><span style="color:var(--warn);font-size:.9em">v1: 30%</span></div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-bull">8% 矽水膠爆發</span>
+            <div class="fb-title">440+ 元</div>
+            <div class="fb-desc">+57%<br>PE 17x<br>EPS 26+<br><span style="color:var(--warn);font-size:.9em">v1: 10%</span></div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-bear">22% 成長停滯</span>
+            <div class="fb-title">228-240 元</div>
+            <div class="fb-desc">-14~-19%<br>PE 12x<br>EPS 19-20<br><span style="color:var(--warn);font-size:.9em">v1: 20%</span></div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-bear">5% 黑天鵝</span>
+            <div class="fb-title">150-170 元</div>
+            <div class="fb-desc">-39~-46%<br>PE 10x<br>EPS 15-17<br><span style="color:var(--warn);font-size:.9em">v1: 5%</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">v2 概率加權期望值</div>
+    <div class="ev-d">
+        (32% x 337.5) + (33% x 291.5) + (8% x 440) + (22% x 234) + (5% x 160) = <b>293.5 元</b>（vs 現價 280 = 期望報酬 +4.8%）<br>
+        <span style="color:var(--warn)">v1：298.6 元（期望報酬 +6.6%）</span><br><br>
+        白話說：五條路加權下來，期望報酬從原版的 +6.6% 降至 +4.8%（含股息約 +8.7%）。路徑機率向「盤整+停滯」偏移，反映了 2月營收放緩的現實。報酬率更加中性，而且有 27% 的機率虧損 14% 以上（v1: 25%）。風險報酬比不如原版。
+    </div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>8d 整合結論</b>
+v2 的五條路徑分佈比原版更偏保守：中性+偏空路徑（路徑2+4+5）合計 60%（v1: 55%），偏多路徑（路徑1+3）合計 40%（v1: 45%）。期望報酬從 +6.6% 降至 +4.8%，安全邊際進一步收窄。決策含義：280 元這個價位不值得主動出擊。如果股價跌到 260 以下（讓期望報酬提升到 +13%+），或者 3月營收恢復 +15%+ 確認反轉，再考慮進場。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8e. 個人化推衍                                                     -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">基於閣主風險偏好的行動建議（v2 更保守版）</div>
+
+<details open><summary>閣主狀態假設</summary>
+<table>
+<tr><th>項目</th><th>假設</th></tr>
+<tr><td>持倉狀態</td><td>觀望中（未持有 6491）</td></tr>
+<tr><td>風險偏好</td><td>穩健型 — 偏好安全邊際 >15% 才進場</td></tr>
+<tr><td>投資時間軸</td><td>波段（3-12 個月）</td></tr>
+<tr><td>資金規劃</td><td>單一標的佔比 <15%</td></tr>
+</table>
+</details>
+
+<details open><summary>行動矩陣</summary>
+
+<div class="tip danger">
+<b>現在不進場（v2 信心更低）</b>
+安全邊際僅 8.5%（v1: 10.5%），距離穩健型 15% 門檻更遠了。2月營收放緩 + 3月尚未公布 = 雙重不確定性。在 3月營收和 Q1 財報出來之前，進場就是賭博。
+</div>
+
+<div class="tip good">
+<b>等待確認訊號（首選策略）</b>
+分兩階段確認：<br>
+第一關（2026/04/10 左右）：3月營收公布 — YoY >+10% 即過關<br>
+第二關（2026/04 中下旬）：Q1 財報 — 確認：<br>
+(1) 毛利率是否回升至 53%+<br>
+(2) 矽水膠佔比是否突破 12%<br>
+(3) 管理層對 Q2 展望<br>
+兩關都過 → 考慮在 280 以下分批建倉
+</div>
+
+<div class="tip info">
+<b>理想進場價（v2 下修）</b>
+260 元以下（v1: 265 元），對應 PE 約 12.5x，安全邊際約 17%。如果股價因 3月營收弱勢或 Q1 法說會失望而回測到這個區間，就是好的進場點。
+</div>
+
+<div class="tip warn">
+<b>事件驅動進場（備選策略）</b>
+如果 FDA 矽水膠認證通過 → 不管股價多少，當天都可以考慮進場。因為這會直接啟動路徑 3（矽水膠爆發），PE 修復空間從 13x 到 17x = +30% 的估值提升。
+</div>
+
+<div class="ev">
+    <div class="ev-t">持有後的停損紀律</div>
+    <div class="ev-d">
+        硬停損：跌破 245 元（v1: 250 元，v2 略下修以配合更低的進場價）<br>
+        軟停損：連續兩季 EPS &lt;4.5 元（意味年化 EPS &lt;18，比 FY2025 還差 → 基本面惡化確認）<br>
+        白話說：245 以下就認錯，不戀戰。
+    </div>
+</div>
+</details>
+
+<div class="tip info">
+<b>8e 整合結論</b>
+對觀望中的穩健型投資人來說，晶碩在 v2 修訂後處於「可以研究但更不用急著買」的位置。安全邊際從 10.5% 縮至 8.5%，期望報酬從 +6.6% 降至 +4.8%，都在告訴你「等一等」。兩個進場劇本：(A) 等 3月營收+Q1 財報雙重確認+股價回測 260 以下，(B) 等 FDA 認證通過直接搶進。在這兩個劇本發生之前，持有現金等待是最佳策略。+4.8% 的期望報酬不夠吸引人冒 27% 的下行風險。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8f. 催化劑時間表                                                   -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">未來 12 個月的關鍵事件節點（含新增追蹤項）</div>
+
+<details open><summary>催化劑期望值（v2 修訂）</summary>
+<div class="tip good">
+<b>催化劑合計期望值：+12.3%（v1: +14.2%）</b>
+<table style="margin-top:4px">
+<tr><th>催化劑</th><th>機率</th><th>影響</th><th>Price-in</th><th>v1 期望值</th><th>v2 期望值</th></tr>
+<tr><td>矽水膠放量</td><td>55%</td><td>+10%</td><td>30%</td><td>+3.9%</td><td>+3.9%</td></tr>
+<tr><td>Q1營收爆發</td><td>35%</td><td>+14%</td><td>25%</td><td>+5.4%</td><td style="color:var(--warn);font-weight:700">+3.5%</td></tr>
+<tr><td>晶澈IPO</td><td>40%</td><td>+5%</td><td>10%</td><td>+1.8%</td><td>+1.8%</td></tr>
+<tr><td>FDA認證</td><td>35%</td><td>+9%</td><td>5%</td><td>+2.1%</td><td>+2.1%</td></tr>
+<tr><td>高股利</td><td>90%</td><td>+2%</td><td>50%</td><td>+1.0%</td><td>+1.0%</td></tr>
+<tr><td colspan="4" style="font-weight:700;text-align:right">合計</td><td>+14.2%</td><td style="font-weight:700">+12.3%</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.82em;color:var(--txt2)"><b>v2 修正說明：</b>催化劑2（Q1營收爆發）因 2月放緩，實現機率從 45% 下修至 35%，影響幅度從 +17% 調至 +14%（Q1 整季可能只有 +7-12% 而非 +25%+），Price-in 從 20% 上修至 25%（1月數據已部分反應）。期望值從 +5.4% 降至 +3.5%。</p>
+</div>
+</details>
+
+<details open><summary>時間軸</summary>
+<div class="timeline">
+    <div class="tl-item tl-warn">
+        <div class="tl-date">2026/01/31</div>
+        <div class="tl-title">晶碩澄清公告（v2 新增）</div>
+        <div class="tl-desc">已發出，具體內容待追蹤。建議查閱公開資訊觀測站取得全文。</div>
+    </div>
+    <div class="tl-item tl-bull">
+        <div class="tl-date">2026/02/13</div>
+        <div class="tl-title">TechNews 報導矽水膠認證進展（v2 新增）</div>
+        <div class="tl-desc">確認矽水膠與多焦產品已進入實質認證通過階段。2026年為產品導入與升級的重要一年。</div>
+    </div>
+    <div class="tl-item tl-danger">
+        <div class="tl-date">2026/04/10 左右</div>
+        <div class="tl-title">3 月營收正式公布（最重要近期事件）</div>
+        <div class="tl-desc">v2 修正：3月營收尚未公布。這是判斷 Q1 整體表現的最後一塊拼圖。YoY >+10% 即第一關過。</div>
+    </div>
+    <div class="tl-item tl-danger">
+        <div class="tl-date">2026/04 中下旬</div>
+        <div class="tl-title">Q1 財報公布（最關鍵）</div>
+        <div class="tl-desc">三大確認指標：毛利率是否 >53% / 矽水膠佔比是否 >12% / 管理層對 Q2 展望。這是決定「路徑 1 或路徑 4」的分水嶺。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/05</div>
+        <div class="tl-title">Q1 法說會</div>
+        <div class="tl-desc">管理層對矽水膠放量速度、FDA 進度、越南廠時程的最新說法。追蹤重點：有沒有下調或上調任何指引。</div>
+    </div>
+    <div class="tl-item tl-bull">
+        <div class="tl-date">2026/06</div>
+        <div class="tl-title">股東會 + 除息</div>
+        <div class="tl-desc">殖利率 3.93%（11 元/股），除息行情可能帶來短期買盤。填息速度是信心指標。</div>
+    </div>
+    <div class="tl-item tl-bull">
+        <div class="tl-date">2026/H2</div>
+        <div class="tl-title">大溪廠矽水膠產能翻倍完成</div>
+        <div class="tl-desc">月產能 2,000 萬片到位。但「到位」不等於「滿載」，稼動率爬升需要觀察 2-3 季。</div>
+    </div>
+    <div class="tl-item tl-danger">
+        <div class="tl-date">2026/H2</div>
+        <div class="tl-title">FDA 矽水膠認證結果（Game Changer）</div>
+        <div class="tl-desc">如果通過 → 美國市場直接打開 → 路徑 3 啟動。如果延遲/失敗 → 矽水膠題材要再等 1-2 年。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/Q4</div>
+        <div class="tl-title">越南廠取證進度</div>
+        <div class="tl-desc">分散地緣風險 + 降低人力成本。如果順利取證，2027 年開始有實質貢獻。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2027</div>
+        <div class="tl-title">晶澈科技 IPO 計畫</div>
+        <div class="tl-desc">子公司分拆上市可能帶來一次性收益 + 集團價值重估。但時間點模糊，不宜作為投資主要考量。</div>
+    </div>
+</div>
+</details>
+
+<div class="tip info">
+<b>8f 整合結論</b>
+v2 新增了兩個已發生事件（1/31 澄清公告、2/13 TechNews 報導）和一個關鍵修正（3月營收尚未公布）。時間軸上最密集的決策點集中在 2026 年 4 月（3月營收+Q1 財報）和 H2（FDA+產能到位）。催化劑合計期望值從 +14.2% 下修至 +12.3%，主要因為 Q1 爆發力打折。白話說：最近一個月（4月）是觀察期的最關鍵窗口。3月營收好 + Q1 財報好 → 可以開始規劃進場；兩者有一個差 → 繼續等到 H2 看 FDA。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8g. 蝴蝶效應推衍                                                   -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8g">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">弱訊號掃描 + 蝴蝶效應推演鏈 + 盲點獵手</div>
+
+<details open><summary>弱訊號掃描（A-E 類）</summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">A 類：營運異常</div>
+        <div class="rc-level high">警戒</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-f">F</span> 2月個別營收 YoY +6.0%，相比 1月的 +31.4% 大幅放緩。這是「脈衝結束」還是「季節因素」？3月數據尚未公布，目前無法確定，但這個落差本身就是需要追蹤的弱訊號。</p>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">A+ 類：澄清公告（v2 新增）</div>
+        <div class="rc-level medium">關注</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-i">I</span> 2026/01/31 晶碩對媒體報導發出正式澄清公告。「需要正式澄清」本身是一個信號 — 代表市場上存在某種傳言或不實報導，嚴重到公司必須出面回應。可能涉及：(1) 矽水膠進度 (2) 客戶變動 (3) 財務數據修正。需查閱全文確認。</p>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">B 類：產業變化</div>
+        <div class="rc-level medium">關注</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-i">I</span> 全球矽水膠隱形眼鏡 CAGR 9.56%，但台灣製造商在全球矽水膠市場的佔比仍然偏低。TechNews 報導確認晶碩認證正在推進，但產業整體升級速度是否跟上全球趨勢，仍需觀察。</p>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">C 類：競爭者動態</div>
+        <div class="rc-level medium">關注</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-a">A</span> 視陽（6782）近年營收成長 +15%，快於晶碩的 +5-10%。如果視陽在日本市場搶到了晶碩的潛在客戶，市場份額可能正在悄悄轉移。但也可能只是視陽吃到了不同的需求（如歐洲市場），需要進一步交叉比對。</p>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">D 類：供應鏈/匯率</div>
+        <div class="rc-level high">警戒</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-s">S</span> 匯率敏感度暴增 26 倍（兌換損益從 69 千元/1% 飆到 1,808 千元/1%）。這代表晶碩的外幣部位大幅增加，匯率風險已經不是小事了。如果新台幣升值 5%，光匯損就可能吃掉 EPS 1-2 元。</p>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">E 類：宏觀環境</div>
+        <div class="rc-level low">觀察</div>
+    </div>
+    <div class="rc-body">
+        <p><span class="fias-i">I</span> 日本央行持續升息 → 日圓走強。晶碩有 50%+ 營收來自日本，如果部分以日圓計價，日圓走強對晶碩反而有正面影響（同樣的日圓收入換算更多新台幣）。但需確認計價幣別結構。</p>
+    </div>
+</div>
+</details>
+
+<details open><summary>Top 3 蝴蝶效應推演鏈</summary>
+
+<!-- 鏈 1 -->
+<div class="butterfly-chain">
+    <div class="bc-title">推演鏈 1：2月營收放緩的蝴蝶效應（v2 修正）</div>
+    <div class="bc-step"><span class="bc-arrow">1.</span> 2月個別營收 YoY +6.0%（vs 1月 +31.4%）</div>
+    <div class="bc-step"><span class="bc-arrow">2a.</span> 如果是農曆新年+SEED 調整訂單節奏 → 3月補回 → Q1 整季仍 +10%+ → 全年不受影響</div>
+    <div class="bc-step"><span class="bc-arrow">2b.</span> 如果是拉貨效應結束 → 3月繼續弱 → Q1 僅 +7-8% → 全年 EPS 下修至 20-21</div>
+    <div class="bc-step"><span class="bc-arrow">3a.</span> 路徑 2a → 3月營收公布後利空出盡 → 股價回升至 290+ →「反轉」敘事保留</div>
+    <div class="bc-step"><span class="bc-arrow">3b.</span> 路徑 2b → 市場失望 →「反轉」敘事崩塌 → PE 壓縮至 12x → 股價跌至 240-252</div>
+    <div class="bc-step"><span class="bc-arrow">4.</span> 但如果路徑 3b 發生且跌到 240 → 反而是好的進場點（PE 11.5x 接近歷史底部）</div>
+    <div class="bc-track">關鍵追蹤：2026/04/10 左右的 3月營收公告，以及 Q1 法說會管理層對 2月放緩的解釋</div>
+</div>
+
+<!-- 鏈 2 -->
+<div class="butterfly-chain">
+    <div class="bc-title">推演鏈 2：視陽矽水膠領先的競爭蝴蝶</div>
+    <div class="bc-step"><span class="bc-arrow">1.</span> 視陽營收成長 +15%，快於晶碩</div>
+    <div class="bc-step"><span class="bc-arrow">2.</span> 如果視陽已搶先取得日本新客戶的矽水膠訂單 → 晶碩的潛在增量被吃掉</div>
+    <div class="bc-step"><span class="bc-arrow">3.</span> 晶碩市佔被侵蝕 → 但晶碩有 41 國證照的「通路廣度」優勢 → 兩者走向差異化而非正面拼價</div>
+    <div class="bc-step"><span class="bc-arrow">4.</span> 差異化結果：晶碩維持日本+歐美的 ODM 大單，視陽搶新興市場 → 天花板不同但各自安好</div>
+    <div class="bc-track">關鍵追蹤：視陽法說會透露的客戶動態+地區營收結構</div>
+</div>
+
+<!-- 鏈 3 -->
+<div class="butterfly-chain">
+    <div class="bc-title">推演鏈 3：匯率敏感度暴增的隱形炸彈</div>
+    <div class="bc-step"><span class="bc-arrow">1.</span> 匯率敏感度暴增 26 倍（1,808 千元/1% vs 之前 69 千元/1%）</div>
+    <div class="bc-step"><span class="bc-arrow">2.</span> 外幣部位大幅增加 → 可能是海外業務擴張的副作用</div>
+    <div class="bc-step"><span class="bc-arrow">3.</span> 如果新台幣升值 5% → 匯損約 9,040 千元（~0.9 億）→ EPS 影響約 -1.5 元</div>
+    <div class="bc-step"><span class="bc-arrow">4.</span> 這比之前的估計嚴重 1.5-2 倍 → 之前的 EPS 估計可能偏樂觀</div>
+    <div class="bc-step"><span class="bc-arrow">5.</span> 但反過來：如果新台幣貶值 5% → 匯兌收益反而增加 EPS +1.5 元 → 這是雙面刃</div>
+    <div class="bc-track">關鍵追蹤：央行利率決議 + 新台幣/美元走勢 + 晶碩是否增加匯率避險操作</div>
+</div>
+</details>
+
+<details open><summary>盲點獵手（六種策略）</summary>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 1：反轉思維</div>
+    <div class="bs-question">如果矽水膠根本不是什麼大趨勢呢？</div>
+    <div class="bs-answer">全球 81% 的隱形眼鏡處方箋已經指定矽水膠材質，這是不可逆的醫療趨勢。所以矽水膠不是泡沫，但「晶碩能吃到多少」才是真正的問題。41 國證照是入場券，不是保證書。TechNews 確認認證正在推進，但推進的「速度」才是關鍵。 <span class="fias-f">F</span></div>
+</div>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 2：時間偏移</div>
+    <div class="bs-question">3 年後回看，什麼是最重要的？</div>
+    <div class="bs-answer">FDA 認證和越南廠。前者決定晶碩能不能進入全球最大的隱形眼鏡市場（美國），後者決定成本結構能不能降 20-30%。今天糾結的 2月營收放緩，3 年後回看根本不重要。 <span class="fias-i">I</span></div>
+</div>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 3：利害關係人追蹤</div>
+    <div class="bs-question">誰的行為最值得追蹤？</div>
+    <div class="bs-answer">SEED 的採購策略。SEED 是晶碩最大客戶（佔營收 26% 的 A 客戶高度可能就是 SEED），SEED 的任何採購調整都會直接影響晶碩季營收。追蹤 SEED 日本端的法說會和年報，比追蹤晶碩自己的公告更有預測價值。 <span class="fias-a">A</span></div>
+</div>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 4：量級偏差</div>
+    <div class="bs-question">哪個數字被低估了？</div>
+    <div class="bs-answer">匯率敏感度（暴增 26 倍）。大多數分析報告對晶碩的匯率風險只用一兩行帶過，但 26 倍的增幅意味著匯率已經從「小麻煩」變成「可以左右單季 EPS 的大因子」。這個風險被市場和我們自己嚴重低估。 <span class="fias-s">S</span></div>
+</div>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 5：遺漏因子</div>
+    <div class="bs-question">什麼是整個分析中完全沒被討論的？</div>
+    <div class="bs-answer">員工流動率和研發人才爭奪。隱形眼鏡是精密醫療器材，研發和品管人才極度稀缺。如果晶碩的核心技術人員跳槽到視陽或其他競爭者，影響可能比客戶轉單還嚴重。年報中的員工人數/平均年資/研發團隊規模值得追蹤。 <span class="fias-a">A</span></div>
+</div>
+
+<div class="blind-spot">
+    <div class="bs-strategy">策略 6：類比思維</div>
+    <div class="bs-question">哪家公司曾走過類似的路？</div>
+    <div class="bs-answer">大立光（3008）2014-2018。同樣是台灣光學龍頭，同樣從 ODM 代工走向自有核心技術（非球面鏡片），同樣面臨客戶集中風險（蘋果佔比過高）。大立光的經驗：技術領先確實能帶來超額報酬，但一旦技術差距被追上（手機多鏡頭技術下放），PE 就會大幅壓縮。晶碩的矽水膠技術是否能維持夠長的領先期，是關鍵類比點。 <span class="fias-i">I</span></div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>8g 整合結論</b>
+蝴蝶效應掃描的 v2 修正重點：(1) 推演鏈1 改為「2月營收放緩」而非「3月」，3月仍是未知數，讓不確定性更大而非更小；(2) 新增 A+ 類弱訊號（1/31 澄清公告），這是原版完全沒有的追蹤項；(3) TechNews 認證報導為 B 類產業變化提供了正面對沖。三大核心發現不變：營收放緩需追蹤、匯率敏感度被低估 26 倍、視陽成長速度值得交叉比對。盲點獵手最有價值的發現仍然是「員工流動率」這個完全被忽略的因子。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8h. 貓膩推衍                                                       -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">如果第七步的貓膩成立，會發生什麼？（含澄清公告追蹤）</div>
+
+<details open><summary>承接結論</summary>
+<div class="ev">
+    <div class="ev-t">第七步貓膩總評</div>
+    <div class="ev-d">
+        風險等級：2/5（中低）<br>
+        最可疑項目：矽水膠放量速度慢於預期 — 管理層一直說要擴產，但實際佔比提升的速度可能遠不如規劃。<br>
+        白話說：不是公司在騙人，而是「計畫趕不上變化」的可能性不低。
+    </div>
+</div>
+
+<div class="tip warn">
+<b>v2 新增：澄清公告與貓膩關聯</b>
+2026/01/31 的澄清公告可能與以下貓膩假說相關：(1) 矽水膠進度不如預期 (2) 客戶變動 (3) 財務數據修正。「需要正式澄清」本身暗示市場上存在某種負面傳言。目前尚無法判斷是否影響既有分析結論，建議查閱公開資訊觀測站取得澄清全文。
+</div>
+</details>
+
+<details open><summary>歷史劇本推演（如果貓膩成立）</summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">類比案例：視陽 2021 年矽水膠擴產</div>
+        <div class="rc-level medium">歷史相似度 65/100</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">歷史事實</div><div>視陽 2021 年宣布矽水膠擴產，但佔比從 5% 到 12% 花了整整 2 年（2021→2023），遠慢於市場預期的 1 年</div></div>
+        <div class="rc-row"><div class="rc-label">原因分析</div><div>矽水膠良率爬坡慢 + 客戶認證週期長 + 產能到位不等於訂單到位</div></div>
+        <div class="rc-row"><div class="rc-label">如果晶碩重演</div><div>矽水膠佔比 2026 年底僅 8%（vs 市場期待 15%）→ 毛利率不回升 → EPS 20-21 → PE 維持 13x</div></div>
+        <div class="rc-row"><div class="rc-label">股價影響</div><div>260-273 元（-2% ~ -7%），不會崩但也沒空間</div></div>
+        <div class="rc-row"><div class="rc-label">確認時間</div><div>6-12 個月（需要 2-3 季的法說會數據才能確認佔比趨勢）</div></div>
+    </div>
+</div>
+</details>
+
+<details open><summary>反轉路徑（貓膩不成立 → 驚喜上行）</summary>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">反轉條件 → 股價路徑</div>
+        <div class="rc-level low">偏多</div>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><div class="rc-label">觸發條件</div><div>某季法說會公布矽水膠佔比 >15% + 毛利率回升至 54%+</div></div>
+        <div class="rc-row"><div class="rc-label">市場反應</div><div>PE 快速修復至 16-17x（回到歷史中位數），分析師紛紛上調目標價</div></div>
+        <div class="rc-row"><div class="rc-label">股價路徑</div><div>280 → 340-374 元（+21% ~ +34%）</div></div>
+        <div class="rc-row"><div class="rc-label">先知先覺</div><div>法說會前 1-2 週，內部人已知數據 → 追蹤董監事持股變化。如果法說會前出現董監加碼，這是強烈的正面信號。</div></div>
+        <div class="rc-row"><div class="rc-label">v2 正面線索</div><div>TechNews 2026/02/13 確認認證進展，降低了「根本做不出來」的風險，但「做出來了但客戶不買單」的風險依然存在</div></div>
+    </div>
+</div>
+</details>
+
+<details open><summary>保護策略</summary>
+
+<div class="tip warn">
+<b>如果不確定貓膩是否成立</b>
+小倉位試水策略：在 260 元以下進場 10%（占總資金），停損設在 245 元。<br>
+最大虧損 = 10% x (260-245)/260 = 0.58% 的總資金 — 可承受的範圍。<br>
+如果後來法說會確認矽水膠佔比快速提升 → 加碼到 15-20%。<br>
+如果法說會顯示佔比停滯 → 停損離場，損失控制在 1% 以下。<br>
+<span style="color:var(--warn);font-size:.85em">v1: 進場 265 / 停損 250，v2 均下修 5 元</span>
+</div>
+
+<div class="tip danger">
+<b>逃生信號（必須無條件執行）</b>
+(1) 連續兩季毛利率 &lt;51%（意味著矽水膠完全沒有貢獻）<br>
+(2) SEED 營收佔比下降 >5%（意味著最大客戶在轉單）<br>
+(3) 董監事連續兩月大量賣出<br>
+任何一項觸發 → 立即全部出清，不問原因。
+</div>
+</details>
+
+<details open><summary>貓膩追蹤清單（v2 新增澄清公告）</summary>
+<table>
+<tr><th>指標</th><th>門檻值</th><th>確認/否定</th><th>頻率</th><th>下次檢查</th></tr>
+<tr><td>矽水膠月佔比</td><td>>12%</td><td style="color:var(--bull)">否定貓膩</td><td>每季法說會</td><td>2026/05</td></tr>
+<tr><td>整體毛利率</td><td>&lt;51%</td><td style="color:var(--danger)">確認貓膩</td><td>每季財報</td><td>2026/05</td></tr>
+<tr><td>SEED 訂單量</td><td>同比 -10%</td><td style="color:var(--danger)">確認風險</td><td>每季法說會</td><td>2026/05</td></tr>
+<tr><td>大溪廠稼動率</td><td>&lt;70%</td><td style="color:var(--danger)">確認貓膩</td><td>每季法說會</td><td>2026/05</td></tr>
+<tr><td>董監持股變化</td><td>連續減持</td><td style="color:var(--warn)">黃旗</td><td>每月</td><td>2026/04</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td>1/31 澄清公告全文（v2 新增）</td><td>涉及客戶/財務</td><td style="color:var(--danger)">需評估</td><td>一次性</td><td>盡快</td></tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>8h 整合結論</b>
+貓膩推衍的核心結論不變：矽水膠放量延遲的風險是「慢性病」不是「心臟病」。v2 新增了 1/31 澄清公告作為待確認項 — 如果澄清內容涉及客戶變動或財務修正，可能需要上調貓膩風險等級。TechNews 的正面報導則是反方向的對沖，降低了「技術做不出來」的疑慮。類比視陽的經驗，佔比提升可能要 2 年而非 1 年。保護策略明確：小倉位試水（260 以下 10%）+ 停損 245 + 法說會後才決定加碼或離場。逃生信號是三條紅線，任一觸發就走人。
+</div>
+
+
+<!-- ================================================================== -->
+<!--  8i. 推衍結論                                                       -->
+<!-- ================================================================== -->
+<div class="section-title" id="s8i">8i. 推衍結論</div>
+<div class="section-sub">五路徑 + 蝴蝶效應 + 貓膩推衍的最終彙整（v2 全局審閱修訂版）</div>
+
+<details open><summary>最可能路徑</summary>
+<div class="grid2">
+    <div class="mini-card neutral-card">
+        <div class="title">主路徑組合</div>
+        <div class="num" style="color:var(--neutral)">65%</div>
+        <div class="desc">路徑 2（盤整 33%）+ 路徑 1（穩健反轉 32%）<br>股價區間 275-345 元<br><span style="color:var(--warn);font-size:.9em">v1: 65%（30%+35%）</span></div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">下行風險</div>
+        <div class="num" style="color:var(--bear)">27%</div>
+        <div class="desc">路徑 4（停滯 22%）+ 路徑 5（黑天鵝 5%）<br>股價區間 150-240 元<br><span style="color:var(--warn);font-size:.9em">v1: 25%（20%+5%）</span></div>
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">v2 概率加權期望值</div>
+    <div class="ev-d">
+        加權目標價 293.5 元 vs 現價 280 元 = 期望報酬 <b>+4.8%</b>（加上殖利率 3.93% = 總報酬約 +8.7%）<br>
+        <span style="color:var(--warn)">v1：298.6 元 / 期望報酬 +6.6% / 總報酬 +10.5%</span><br>
+        27% 的下行尾巴風險（最大 -46%）讓風險調整後報酬率偏中性，比 v1 更不利。
+    </div>
+</div>
+</details>
+
+<details open><summary>蝴蝶效應洞察摘要</summary>
+<div class="tip warn">
+<b>發現 1：2月營收放緩（+6.0%）是本次推衍最重要的不確定性來源</b>
+它動搖了「Q1 爆發確認反轉」的敘事。3月尚未公布，如果 3月也弱，路徑 4 的機率會從 22% 進一步上升。
+</div>
+<div class="tip danger">
+<b>發現 2：匯率敏感度暴增 26 倍被低估</b>
+匯率風險可能比我們估計的嚴重 1.5-2 倍。新台幣升值 5% 可以吃掉 EPS 1.5 元，這在大多數分析報告中被低估或忽略。
+</div>
+<div class="tip good">
+<b>發現 3：TechNews 確認矽水膠認證進展（v2 新增）</b>
+認證正在按計畫推進，降低了「產能擴了但沒訂單」的風險。但「認證通過」和「訂單進來」之間仍有時間差。
+</div>
+<div class="tip info">
+<b>發現 4：1/31 澄清公告待追蹤（v2 新增）</b>
+具體內容不明，但「需要正式澄清」本身是信號。需盡快查閱全文確認是否影響分析結論。
+</div>
+</details>
+
+<details open><summary>貓膩推衍摘要</summary>
+<div class="ev">
+    <div class="ev-t">風險等級 2/5（中低）</div>
+    <div class="ev-d">
+        最關鍵影響：矽水膠放量延遲 → 毛利率不回升 → PE 不修復 → 股價原地踏步<br>
+        保護策略：小倉位 260 以下試水（10%）+ 停損 245<br>
+        類比視陽經驗：佔比提升可能要 2 年，不是管理層說的那麼快<br>
+        <span style="color:var(--warn)">v1: 進場 265 / 停損 250</span>
+    </div>
+</div>
+</details>
+
+<details open><summary>行動建議總結（v2 更保守版）</summary>
+
+<div class="tip danger">
+<b>現階段：觀望（不進場）</b>
+安全邊際 8.5% 嚴重不足 + 2月營收放緩 + 3月尚未公布 + 澄清公告待釐清<br>
+等待 3月營收 + Q1 財報的雙重確認。
+</div>
+
+<table>
+<tr><th>情境</th><th>行動</th><th>價位</th><th>v1 對比</th></tr>
+<tr><td>3月營收 >+10% + Q1 毛利率 >53% + 矽水膠佔比 >12%</td><td style="color:var(--bull)">分批建倉</td><td>280 以下</td><td>285 以下</td></tr>
+<tr><td>股價自然回測至低檔</td><td style="color:var(--bull)">小倉位試水</td><td>260 以下（PE <12.5x）</td><td>265 以下</td></tr>
+<tr><td>FDA 矽水膠認證通過</td><td style="color:var(--bull);font-weight:700">直接進場</td><td>不限（Game Changer）</td><td>同</td></tr>
+<tr><td>3月營收 YoY <+5% 且 Q1 毛利率 <52%</td><td style="color:var(--bear)">放棄追蹤</td><td>--</td><td>同</td></tr>
+<tr><td>連續兩季 EPS <4.5</td><td style="color:var(--danger);font-weight:700">永久移除</td><td>--</td><td>同</td></tr>
+</table>
+
+<div class="ev">
+    <div class="ev-t">白話總結（v2 版）</div>
+    <div class="ev-d">
+        晶碩是一家體質不錯、正在換檔的公司。舊引擎（中國）熄火了，新引擎（矽水膠+歐美）還沒全速。1月營收讓人以為春天來了，但 2月的放緩打了折扣，3月還是未知數。現在的股價（280）不算貴但安全邊際只有 8.5%，不值得主動出擊。等 4 月初 3月營收公布 + 4月中下旬 Q1 財報，兩關都過了再考慮進場。如果股價因失望而跌到 260 以下，那是好的試水點。FDA 認證通過則是不需要等的直接入場訊號。總之，比原版更保守，因為 2月數據讓「反轉」的信心打了折。
+    </div>
+</div>
+</details>
+
+<details open><summary>觀察清單（七大追蹤項，v2 新增一項）</summary>
+<table>
+<tr><th>#</th><th>追蹤項目</th><th>頻率</th><th>判斷門檻</th></tr>
+<tr><td>1</td><td>3月營收（v2 最重要近期事件）</td><td>2026/04/10</td><td>YoY >+10% = 正面 / <+5% = 負面</td></tr>
+<tr><td>2</td><td>每月營收 YoY（特別是 4-6 月）</td><td>每月 10 日</td><td>+15% 以上 = 正面 / &lt;+5% = 負面</td></tr>
+<tr><td>3</td><td>Q1 法說會：矽水膠佔比</td><td>2026/05</td><td>>12% = 正面 / &lt;10% = 負面</td></tr>
+<tr><td>4</td><td>新台幣/美元匯率走勢</td><td>每週</td><td>升值 >3% = 警戒</td></tr>
+<tr><td>5</td><td>視陽 6782 營收/客戶動態</td><td>每月/每季</td><td>視陽日本營收佔比提升 = 關注</td></tr>
+<tr><td>6</td><td>SEED 年報/法說會採購策略</td><td>每季</td><td>提到「供應商多元化」= 危險</td></tr>
+<tr><td>7</td><td>1/31 澄清公告全文（v2 新增）</td><td>一次性</td><td>涉及客戶/財務 = 重新評估</td></tr>
+</table>
+</details>
+
+<div class="tip good">
+<b>推衍有效期聲明</b>
+本次推衍有效期至 <b>2026-04-30</b>。3月營收公布 + Q1 財報公布後需重新推衍，因為：<br>
+(1) 2月營收放緩的原因將被確認或否定（3月數據是關鍵拼圖）<br>
+(2) 毛利率和矽水膠佔比的最新數據會改變路徑機率分配<br>
+(3) 管理層的 Q2 展望可能修正我們的 EPS 估計<br>
+(4) 1/31 澄清公告全文可能影響貓膩評估<br>
+屆時建議重新執行第八步，更新五路徑機率和行動矩陣。
+</div>
+
+<div class="tip info">
+<b>8i 整合結論（v2 全局審閱修訂版）</b>
+資料 → 五路徑加權期望報酬 +4.8%（含息 +8.7%），但有 27% 下行尾巴。觀察 → 2月營收放緩（+6.0%）+ 3月尚未公布 + 匯率風險被低估 = 三個沒被市場充分定價的不確定性。TechNews 確認矽水膠認證進展是唯一的正面新增。推論 → 現價 280 元從 v1 的「合理偏下」變成「合理」— 安全邊際從 10.5% 縮至 8.5%，期望報酬從 +6.6% 降至 +4.8%。結論 → 穩健型投資人現階段最優策略仍然是「等待+觀察」，但門檻更高了：需要 3月營收+Q1 財報雙重確認才值得動手。如果在等待過程中股價跌到 260 以下，那是可以小量試水的區間；如果 FDA 通過，那是不需要等的直接入場訊號。耐心是這個標的最重要的武器，v2 版本告訴你需要比之前更多的耐心。
+</div>
+
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+    天機閣深度調查系統 — 晶碩光學 6491 第八步推演版 v2（全局審閱修訂版）<br>
+    產出時間：2026-03-31 | 推衍有效期至 2026-04-30<br>
+    FIAS 計數：F14 / I9 / A16 / S6<br>
+    本報告為投資研究參考，不構成買賣建議
+</div>
+
+</div><!-- .wrap -->
+
+<!-- ===== 展開收合 JS ===== -->
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+    h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>
