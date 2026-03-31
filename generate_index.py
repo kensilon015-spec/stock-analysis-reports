@@ -33,7 +33,12 @@ def scan_folders():
     if not os.path.exists(TIANJI_DIR):
         return folders
 
+    # 不公開資料夾不推送、不顯示
+    SKIP_FOLDERS = {'不公開'}
+
     for folder_name in sorted(os.listdir(TIANJI_DIR)):
+        if folder_name in SKIP_FOLDERS:
+            continue
         folder_path = os.path.join(TIANJI_DIR, folder_name)
         if not os.path.isdir(folder_path):
             continue
