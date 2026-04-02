@@ -8,15 +8,25 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--base:#e8e4dc;--link:#7ab0c0;--warn:#d4a017;--danger:#d4887a;--gold:#d4b030}
 body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
-.wrap{max-width:760px;margin:0 auto;padding:24px 20px}
+.outer{max-width:1200px;margin:0 auto;padding:24px 20px}
 .hero{text-align:center;padding:18px 16px 14px;margin-bottom:16px;border-bottom:1.5px solid var(--border)}
 .hero h1{font-size:1.5em;font-weight:900;color:var(--base)}
 .hero .sub{font-size:.82em;color:var(--accent);font-weight:600;margin-top:3px}
 .hero .ver{font-size:.72em;color:var(--txt3);margin-top:4px}
 
-/* 日期區塊 */
-.day{margin:12px 0}
-.day-header{font-size:.88em;font-weight:700;color:var(--base);padding:6px 0 4px;border-bottom:1px solid var(--border);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+/* 雙欄主框架 */
+.two-col{display:flex;gap:24px;align-items:flex-start}
+.col-update{flex:1;min-width:0}
+.col-issue{width:340px;flex-shrink:0;position:sticky;top:20px}
+
+/* 欄位標題 */
+.col-title{font-size:.95em;font-weight:700;color:var(--base);padding:8px 12px;margin-bottom:10px;background:var(--panel);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:6px}
+.col-title.update::before{content:'🔧';font-size:.9em}
+.col-title.issue::before{content:'⚠';font-size:.9em}
+
+/* 日期區塊（共用） */
+.day{margin:10px 0}
+.day-header{font-size:.85em;font-weight:700;color:var(--base);padding:5px 0 3px;border-bottom:1px solid var(--border);margin-bottom:4px;display:flex;align-items:center;gap:8px}
 .day-badge{font-size:.65em;padding:1px 7px;border-radius:6px;font-weight:600;color:#fff}
 .day-badge.new{background:var(--accent)}
 
@@ -31,25 +41,42 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 .tag.infra{background:#7d5a6e}
 .tag.ui{background:var(--gold)}
 
+/* 問題反映項目 */
+.issue-item{padding:8px 10px;margin:3px 0;background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25);border-radius:7px;font-size:.78em}
+.issue-label{font-weight:600;color:var(--danger);margin-bottom:3px;line-height:1.4}
+.issue-fix{color:var(--accent);font-weight:600;line-height:1.4}
+.issue-status{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.72em;font-weight:700;color:#fff;margin-left:4px}
+.issue-status.resolved{background:var(--accent)}
+.issue-status.open{background:var(--danger)}
+
+/* 無紀錄提示 */
+.no-issue{color:var(--txt3);font-size:.75em;font-style:italic;padding:20px 0;text-align:center}
+
 .footer{text-align:center;padding:14px;color:var(--txt3);font-size:.7em;border-top:1px solid var(--border);margin-top:18px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="outer">
 <div class="hero">
   <h1>天機閣 系統更新日誌</h1>
   <div class="sub">功能開發與系統演進紀錄</div>
   <div class="ver">最後更新：2026-04-02</div>
 </div>
 
-<!-- ===== 04-02 ===== -->
+<div class="two-col">
+
+<!-- ==================== 左欄：系統更新 ==================== -->
+<div class="col-update">
+<div class="col-title update">系統更新</div>
+
+<!-- 04-02 -->
 <div class="day">
 <div class="day-header">2026-04-02 <span class="day-badge new">NEW</span></div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>年報 GID 亂碼批次修正管線</div><div class="item-desc">Python 批次數字偏移修正 + 中文映射 + 年度修正 + AI 讀圖補正。適用所有 Identity-H 編碼年報，PUA 字元歸零</div></div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>分析報告資料紀律規則強化</div><div class="item-desc">新增 4 條強制規則：最新資料為基本出發思考、同表不混用年度、舊數據加時間背景、缺失數據本身也是訊號</div></div>
 </div>
 
-<!-- ===== 03-31 ===== -->
+<!-- 03-31 -->
 <div class="day">
 <div class="day-header">2026-03-31 <span class="day-badge new">NEW</span></div>
 <div class="item"><div class="item-title"><span class="tag data">資料</span>美股資料來源擴充</div><div class="item-desc">新增美股財務資料雙引擎，涵蓋近 300 個財務欄位，含內建估值模型與分析師共識</div></div>
@@ -57,7 +84,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag data">資料</span>情報自動向量化</div><div class="item-desc">每日情報歸檔後自動建立語意索引，支援跨主題智慧搜尋</div></div>
 </div>
 
-<!-- ===== 03-30 ===== -->
+<!-- 03-30 -->
 <div class="day">
 <div class="day-header">2026-03-30</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>產業鏈自動辨識精準度提升</div><div class="item-desc">新聞中自動辨識產業鏈關係的準確率提升至近 100%，大幅減少誤判</div></div>
@@ -66,14 +93,14 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag core">核心</span>分析報告交叉驗證機制</div><div class="item-desc">全局審閱發現的修正會自動回寫到對應章節，確保前後數據一致</div></div>
 </div>
 
-<!-- ===== 03-29 ===== -->
+<!-- 03-29 -->
 <div class="day">
 <div class="day-header">2026-03-29</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>地緣事件全系統整合分析</div><div class="item-desc">首次結合推衍、知識圖譜、情報引擎進行多維度地緣事件深度分析</div></div>
 <div class="item"><div class="item-title"><span class="tag ui">介面</span>因果樹視覺化元件</div><div class="item-desc">新增橫向分岔因果樹，取代舊版單線流程圖，支援互動展開</div></div>
 </div>
 
-<!-- ===== 03-27~28 ===== -->
+<!-- 03-27~28 -->
 <div class="day">
 <div class="day-header">2026-03-27 ~ 03-28</div>
 <div class="item"><div class="item-title"><span class="tag data">資料</span>知識圖譜大規模擴充</div><div class="item-desc">大量新增產業關係與歷史案例，涵蓋範圍顯著提升</div></div>
@@ -83,7 +110,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag infra">基建</span>PDF 智慧處理工具</div><div class="item-desc">年報 PDF 一鍵轉文字並建立語意索引，支援後續智慧檢索</div></div>
 </div>
 
-<!-- ===== 03-26 ===== -->
+<!-- 03-26 -->
 <div class="day">
 <div class="day-header">2026-03-26</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>智慧判斷模組全面完成</div><div class="item-desc">風險記憶、注意力分配、情緒調節、經驗鞏固等 8 個智慧判斷模組全部上線並通過測試</div></div>
@@ -93,7 +120,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag core">核心</span>多項智慧引擎效益升級</div><div class="item-desc">趨勢偵測自動回饋、預測自動驗證、風險模式自動學習、經驗跨系統共享</div></div>
 </div>
 
-<!-- ===== 03-25 ===== -->
+<!-- 03-25 -->
 <div class="day">
 <div class="day-header">2026-03-25</div>
 <div class="item"><div class="item-title"><span class="tag auto">自動化</span>趨勢偵測全面完工</div><div class="item-desc">新聞、公告、社群、語意分析四大資料源全部整合，自動偵測異常並通知</div></div>
@@ -102,7 +129,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag ui">介面</span>系統說明書全面改版</div><div class="item-desc">完整更新系統架構說明、方法論、模組清單與功能總覽</div></div>
 </div>
 
-<!-- ===== 03-24 ===== -->
+<!-- 03-24 -->
 <div class="day">
 <div class="day-header">2026-03-24</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>知識圖譜建立完成</div><div class="item-desc">產業關係圖譜核心功能上線，支援多公司探索、關係自動分類、新關係自動發現</div></div>
@@ -111,18 +138,39 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="item"><div class="item-title"><span class="tag infra">基建</span>系統模組架構重整</div><div class="item-desc">整併功能相近的模組，建立清晰的引擎分工架構</div></div>
 </div>
 
-<!-- ===== 03-22~23 ===== -->
+<!-- 03-22~23 -->
 <div class="day">
 <div class="day-header">2026-03-22 ~ 03-23</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>深度投資分析引擎上線</div><div class="item-desc">十步驟分析流程確立，支援台股與美股，首批完成多檔個股研究</div></div>
 <div class="item"><div class="item-title"><span class="tag ui">介面</span>線上報告平台上線</div><div class="item-desc">報告自動發佈至線上頁面，首頁自動生成索引</div></div>
 </div>
 
-<!-- ===== 03-21 ===== -->
+<!-- 03-21 -->
 <div class="day">
 <div class="day-header">2026-03-21 — 系統建立</div>
 <div class="item"><div class="item-title"><span class="tag infra">基建</span>天機閣系統初始化</div><div class="item-desc">核心架構建立，推衍引擎、情報收集與報告產出流程上線</div></div>
 </div>
+
+</div><!-- end col-update -->
+
+<!-- ==================== 右欄：問題反映 ==================== -->
+<div class="col-issue">
+<div class="col-title issue">問題反映</div>
+
+<!-- 04-02 -->
+<div class="day">
+<div class="day-header">2026-04-02 <span class="day-badge new">NEW</span></div>
+<div class="issue-item">
+<div class="issue-label">AI 誤植錯誤時間，未正確抓到數據所屬時間 <span class="issue-status resolved">已處理</span></div>
+<div class="issue-fix">根因：資料庫發布時間與所屬時間混淆，已修正並新增檢驗規則</div>
+</div>
+</div>
+
+<div class="no-issue">— 更早期間暫無紀錄 —</div>
+
+</div><!-- end col-issue -->
+
+</div><!-- end two-col -->
 
 <div class="footer">天機閣 系統更新日誌</div>
 </div>
