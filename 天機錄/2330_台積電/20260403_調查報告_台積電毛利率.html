@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台積電毛利率完整分析報告</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-bg: #1e1e2e;
+            --panel-bg: #2a2a3e;
+            --card-bg: #32324a;
+            --accent-blue: #6aafd2;
+            --accent-green: #5cb85c;
+            --accent-yellow: #ffc107;
+            --accent-red: #e05565;
+            --text-main: #e0ddd5;
+            --text-secondary: #b0aba0;
+            --border-color: #444466;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            padding-bottom: 100px;
+        }
+        .hero-banner {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 50%, #1a2a3a 100%);
+            padding: 60px 0;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 40px;
+        }
+        .badge-tsmc {
+            background: rgba(106,175,210,0.2);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .kpi-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .kpi-val { font-size: 2rem; font-weight: 700; color: var(--accent-blue); }
+        .kpi-val.green { color: var(--accent-green); }
+        .kpi-val.yellow { color: var(--accent-yellow); }
+        .kpi-val.red { color: var(--accent-red); }
+        .kpi-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+        .accordion-item {
+            border: none;
+            margin-bottom: 15px;
+            border-radius: 15px !important;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .accordion-button {
+            font-weight: 700;
+            font-size: 1.15rem;
+            background-color: var(--panel-bg) !important;
+            color: var(--text-main) !important;
+            padding: 20px;
+        }
+        .accordion-button:not(.collapsed) { border-bottom: 1px solid var(--border-color); box-shadow: none; }
+        .accordion-button::after { filter: invert(1); }
+        .accordion-body { background-color: var(--card-bg); color: var(--text-main); }
+        .nested-accordion .accordion-button {
+            font-size: 1rem;
+            background-color: var(--card-bg) !important;
+            color: var(--text-secondary) !important;
+        }
+        .nested-accordion .accordion-body { background-color: #3a3a55; }
+        .highlight-box {
+            background: rgba(255,193,7,0.1);
+            border-left: 4px solid #ffc107;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 14px 0;
+            color: var(--text-main);
+        }
+        .highlight-box.info { background: rgba(106,175,210,0.1); border-left-color: var(--accent-blue); }
+        .highlight-box.danger { background: rgba(220,53,69,0.1); border-left-color: var(--accent-red); }
+        .highlight-box.success { background: rgba(92,184,92,0.1); border-left-color: var(--accent-green); }
+        .chart-container {
+            position: relative;
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        @media (max-width: 640px) { .chart-row { grid-template-columns: 1fr; } }
+        .table { color: var(--text-main); }
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            border-bottom-color: var(--border-color);
+            color: var(--text-main);
+        }
+        .table thead th {
+            background-color: var(--panel-bg) !important;
+            font-weight: 700;
+            color: var(--accent-blue) !important;
+        }
+        .list-group-item {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+        a { color: var(--accent-blue); }
+        a:hover { color: #8fc4e0; }
+        .text-secondary { color: var(--text-secondary) !important; }
+        .text-muted { color: #8a8580 !important; }
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-green { background: rgba(92,184,92,0.2); color: #5cb85c; }
+        .tag-red { background: rgba(224,85,101,0.2); color: #e05565; }
+        .tag-blue { background: rgba(106,175,210,0.2); color: var(--accent-blue); }
+        .tag-yellow { background: rgba(255,193,7,0.2); color: #ffc107; }
+        .factor-item {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .factor-item.pos { background: rgba(92,184,92,0.08); border-left: 3px solid #5cb85c; }
+        .factor-item.neg { background: rgba(224,85,101,0.08); border-left: 3px solid #e05565; }
+        .factor-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .source-chip {
+            display: inline-block;
+            background: rgba(106,175,210,0.1);
+            border: 1px solid rgba(106,175,210,0.3);
+            color: var(--accent-blue);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin: 3px;
+        }
+        @media (max-width: 768px) {
+            .hero-banner { padding: 40px 0; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .kpi-val { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero-banner text-center">
+    <div class="container">
+        <span class="badge-tsmc">2330 ｜ TSMC ｜ 快速查</span>
+        <h1 class="fw-bold mt-3" style="font-size:2rem;">📊 台積電毛利率完整分析</h1>
+        <p class="text-secondary mt-2">2020～2025 歷年趨勢 × 季度拆解 × 競爭對手比較 × 影響因素</p>
+        <p class="text-muted small mt-2">產出日期：2026-04-03 ｜ 資料截至：2025 Q4（4Q25 法說會）</p>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- KPI 快覽 -->
+    <div class="kpi-grid mb-4">
+        <div class="kpi-card">
+            <div class="kpi-val green">59.9%</div>
+            <div class="kpi-label">2025 全年毛利率</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-val">62.3%</div>
+            <div class="kpi-label">2025 Q4 單季高點</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-val">56.1%</div>
+            <div class="kpi-label">2024 全年毛利率</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-val yellow">+3.8pp</div>
+            <div class="kpi-label">2025 vs 2024 YoY</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-val">53%+</div>
+            <div class="kpi-label">管理層長期底線</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-val red">36.7%</div>
+            <div class="kpi-label">Intel 毛利率（Non-GAAP）</div>
+        </div>
+    </div>
+
+    <div class="accordion" id="mainAccordion">
+
+        <!-- 第一章：2024-2025 季度拆解 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    📅 第一章：2024～2025 季度毛利率拆解
+                </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+                    <div class="chart-container">
+                        <canvas id="quarterlyChart"></canvas>
+                    </div>
+
+                    <h6 class="mt-4 mb-3" style="color:var(--accent-blue);">▍2024 年各季</h6>
+                    <table class="table table-hover">
+                        <thead><tr><th>季度</th><th>毛利率</th><th>QoQ</th><th>備註</th></tr></thead>
+                        <tbody>
+                            <tr><td>2024 Q1</td><td><strong>53.1%</strong></td><td>—</td><td>5nm 佔 37%、3nm 佔 9%</td></tr>
+                            <tr><td>2024 Q2</td><td><strong>53.2%</strong></td><td>+0.1pp</td><td>持平</td></tr>
+                            <tr><td>2024 Q3</td><td><strong>57.8%</strong></td><td>+4.6pp</td><td>產能利用率大幅提升</td></tr>
+                            <tr><td>2024 Q4</td><td><strong>59.0%</strong></td><td>+1.2pp</td><td>季末衝高，AI 需求持續</td></tr>
+                            <tr style="background:rgba(106,175,210,0.08)"><td><strong>2024 全年</strong></td><td><strong>56.1%</strong></td><td>YoY +1.7pp</td><td>vs 2023 的 54.4%</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h6 class="mt-4 mb-3" style="color:var(--accent-green);">▍2025 年各季</h6>
+                    <table class="table table-hover">
+                        <thead><tr><th>季度</th><th>毛利率</th><th>QoQ</th><th>備註</th></tr></thead>
+                        <tbody>
+                            <tr><td>2025 Q1</td><td><strong>58.8%</strong></td><td>—</td><td>地震影響 -60bps、海外廠稀釋；達財測上緣（57~59%）</td></tr>
+                            <tr><td>2025 Q2</td><td><strong>58.6%</strong></td><td>-0.2pp</td><td>持平，匯率逆風（台幣偏強）</td></tr>
+                            <tr><td>2025 Q3</td><td><strong>59.5%</strong></td><td>+0.9pp</td><td>成本改善 + 產能利用率提升</td></tr>
+                            <tr><td>2025 Q4</td><td><strong>62.3%</strong></td><td>+2.8pp</td><td>匯率轉順風 + 高利用率 + 成本改善，近年單季新高</td></tr>
+                            <tr style="background:rgba(92,184,92,0.08)"><td><strong>2025 全年</strong></td><td><strong>59.9%</strong></td><td>YoY +3.8pp</td><td>全年接近 60% 大關，創歷史新高</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box success">
+                        <strong>✅ 第一章整合結論：2025 年是毛利率的新高峰年</strong><br>
+                        資料顯示 2025 Q1 即從 59.0% 高位起跳，全年均值 59.9% 已超越 2022 年超級週期時的 59.6%，創歷史最高全年均值。Q4 單季 62.3% 顯示在沒有外部衝擊的情況下，台積電的毛利率中樞已向上移位。推論：AI/HPC 需求為結構性驅動（非週期），此波高點不會像 2022 年般快速反轉。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二章：歷年趨勢 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    📈 第二章：歷年毛利率趨勢（2020～2025）
+                </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+                    <div class="chart-container">
+                        <canvas id="annualChart"></canvas>
+                    </div>
+
+                    <table class="table table-hover mt-3">
+                        <thead><tr><th>年度</th><th>毛利率</th><th>YoY</th><th>主要驅動因素</th></tr></thead>
+                        <tbody>
+                            <tr><td>2020</td><td>53.1%</td><td>+7.1pp</td><td>5nm 量產啟動、AI/HPC 需求起飛</td></tr>
+                            <tr><td>2021</td><td>51.6%</td><td>-1.5pp</td><td>大規模擴廠 + 新製程爬坡稀釋</td></tr>
+                            <tr><td>2022</td><td>59.6%</td><td>+8.0pp</td><td>半導體超級週期頂點，供不應求</td></tr>
+                            <tr><td>2023</td><td>54.4%</td><td>-5.2pp</td><td>庫存去化、需求收縮、3nm 爬坡稀釋</td></tr>
+                            <tr><td>2024</td><td>56.1%</td><td>+1.7pp</td><td>AI 拉貨回溫、產能利用率回升</td></tr>
+                            <tr style="background:rgba(92,184,92,0.08)"><td><strong>2025</strong></td><td><strong>59.9%</strong></td><td>+3.8pp</td><td>AI/HPC 強勁、N3 規模化、CoWoS 供不應求</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box info">
+                        <strong>📊 第二章整合結論：三個歷史階段與結構性轉變</strong><br>
+                        <strong>2020-2022（超級週期）</strong>：5nm 商業化 + 疫情數位化，毛利率從 53% 攀升到 59.6%。<br>
+                        <strong>2023（修正期）</strong>：庫存去化 + 3nm 爬坡稀釋，跌回 54.4%，為近 6 年低點。多數分析師當時預測「毛利率難以重返 58%」。<br>
+                        <strong>2024-2025（AI 新週期）</strong>：AI 晶片需求取代消費電子成為主力，毛利率不只收復失地，更超越前高。<br><br>
+                        推論：2023 年的修正是短暫的新製程爬坡稀釋，而非結構性惡化。現在反而應該修正估值模型——台積電的合理毛利率中樞是 57-62%，而非過去的 52-55%。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三章：管理層財測 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    🎯 第三章：管理層財測與長期展望
+                </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+                    <table class="table table-hover">
+                        <thead><tr><th>時間點</th><th>財測區間</th><th>實際結果</th><th>達成狀況</th></tr></thead>
+                        <tbody>
+                            <tr><td>2025 Q1 財測</td><td>57%～59%</td><td>58.8%</td><td><span class="tag tag-green">達上緣</span></td></tr>
+                            <tr><td>2025 Q2 財測</td><td>57%～59%</td><td>58.6%</td><td><span class="tag tag-blue">達中段</span></td></tr>
+                            <tr><td>2025 Q3 財測</td><td>58%～60%</td><td>59.5%</td><td><span class="tag tag-green">達中上段</span></td></tr>
+                            <tr><td>2025 Q4 財測</td><td>59%～61%</td><td>62.3%</td><td><span class="tag tag-green">超越上緣 +1.3pp</span></td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="accordion nested-accordion mt-3" id="subAccordion3">
+                        <div class="accordion-item shadow-none border" style="border-color:var(--border-color)!important;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subCollapse3a">
+                                    長期指引與 2026 年展望
+                                </button>
+                            </h3>
+                            <div id="subCollapse3a" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">📌 <strong>長期底線</strong>：管理層明確表示長期維持 <strong>53% 以上</strong>為最低目標</li>
+                                        <li class="list-group-item">📌 <strong>2026 預期區間</strong>：55%～62%（N2 量產稀釋 vs N3 稀釋遞減互相抵消）</li>
+                                        <li class="list-group-item">📌 <strong>N2 衝擊時間表</strong>：2025H2 開始量產 → 2026 年為稀釋高峰 → 2027 年起稀釋遞減</li>
+                                        <li class="list-group-item">📌 <strong>海外廠影響</strong>：亞利桑那廠（美國）+ 熊本廠（日本）成本高於台灣，為 2025-2027 最大稀釋來源</li>
+                                        <li class="list-group-item">📌 <strong>Q2 2025 匯率假設</strong>：管理層用 32.5 NTD/USD，可見已對台幣升值設保守假設</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>⚠️ 第三章整合結論：財測保守，實際多次超越</strong><br>
+                        觀察：2025 年四個季度，台積電實際毛利率達財測上緣或超越者佔 3/4 季。Q4 甚至超越上緣 1.3pp（62.3% vs 59~61%）。推論：管理層有意設定保守財測以避免驚嚇市場，實際執行力好於財測。決策影響：財測下緣可作為風險參考，財測上緣更接近「基本情境」。2026 年財測（預計 2026Q1 法說給出）可作為重要決策依據。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四章：競爭對手比較 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                    ⚔️ 第四章：競爭對手毛利率比較
+                </button>
+            </h2>
+            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <canvas id="compChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="gapChart"></canvas>
+                        </div>
+                    </div>
+
+                    <table class="table table-hover mt-3">
+                        <thead><tr><th>公司</th><th>2024 毛利率</th><th>2025 毛利率</th><th>Foundry 獲利</th><th>備註</th></tr></thead>
+                        <tbody>
+                            <tr style="background:rgba(92,184,92,0.08)">
+                                <td><strong>台積電（TSMC）</strong></td>
+                                <td>56.1%</td>
+                                <td><strong>59.9%</strong></td>
+                                <td><span class="tag tag-green">全球獨占</span></td>
+                                <td>純晶圓代工，定價權完整</td>
+                            </tr>
+                            <tr>
+                                <td>Samsung（整體）</td>
+                                <td>~38%</td>
+                                <td>上升中</td>
+                                <td><span class="tag tag-red">Foundry 持續虧損</span></td>
+                                <td>記憶體漲價拉抬整體，但 Foundry 部門連年虧損</td>
+                            </tr>
+                            <tr>
+                                <td>Intel（Non-GAAP）</td>
+                                <td>36.7%</td>
+                                <td>持續重整中</td>
+                                <td><span class="tag tag-red">Foundry 虧損 130 億美元</span></td>
+                                <td>2024 年 Foundry 虧損峰值，目標 2027 損益兩平</td>
+                            </tr>
+                            <tr>
+                                <td>SK Hynix（記憶體）</td>
+                                <td>~45%</td>
+                                <td>Q4 或超越台積電</td>
+                                <td>—</td>
+                                <td>HBM 漲價驅動，但業務為 DRAM，非邏輯晶片</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box success">
+                        <strong>✅ 第四章整合結論：毛利率護城河極深，且差距還在擴大</strong><br>
+                        資料：台積電 59.9% vs Intel Non-GAAP 36.7% = 差距 23.2pp；Samsung Foundry 虧損，目標 2027 損益兩平。<br>
+                        觀察：即使台積電 2026 年因 N2 稀釋跌至 57%，仍比 Intel 高出 20pp 以上。Samsung Foundry 若要在 2030 年達到 40% Non-GAAP 毛利率，需要 7 年追趕。<br>
+                        推論：技術壟斷（N3/N2 製程無競品）+ 規模效應 + 定價權，構成三重護城河，非短期可複製。<br>
+                        SK Hynix 雖 Q4 2025 毛利率可能超越台積電，但業務完全不同（HBM 記憶體），不構成競爭。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第五章：影響因素 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading5">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                    🔬 第五章：影響毛利率的主要因素
+                </button>
+            </h2>
+            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+
+                    <h6 class="mb-3" style="color:var(--accent-green);">▍正面因素（拉高毛利率）</h6>
+
+                    <div class="factor-item pos">
+                        <span class="factor-icon">🤖</span>
+                        <div>
+                            <strong>AI/HPC 強勁需求</strong><br>
+                            <span class="text-secondary">HPC 業務 2025 年佔台積電總收入超過 60%，AI 晶片（NVIDIA H100/B200、Apple、AMD 等）+ 高效能運算拉動先進製程需求，產能利用率近滿載。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item pos">
+                        <span class="factor-icon">⚙️</span>
+                        <div>
+                            <strong>N3/N5 節點規模化（稀釋遞減）</strong><br>
+                            <span class="text-secondary">3nm（N3E/N3P）從 2023 年爬坡進入 2024-2025 年規模量產，初期稀釋效果遞減，良率提升後毛利率逐步接近公司均值，預計 2026 年全面達均值。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item pos">
+                        <span class="factor-icon">📦</span>
+                        <div>
+                            <strong>CoWoS 先進封裝附加值</strong><br>
+                            <span class="text-secondary">CoWoS（矽中介層封裝）供應嚴重不足，需求持續超供給，台積電有完全定價權。2026 年產能計畫擴增約 69%，高附加值業務比重持續提升。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item pos">
+                        <span class="factor-icon">💰</span>
+                        <div>
+                            <strong>主動定價（N3/N5 漲價 ~5%）</strong><br>
+                            <span class="text-secondary">台積電以「銷售自身價值」為定價原則，N3/N5 節點 2025 年漲價約 5%，客戶（NVIDIA、Apple、AMD）接受度高，有效維持毛利率水準。</span>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4 mb-3" style="color:var(--accent-red);">▍負面因素（壓低毛利率）</h6>
+
+                    <div class="factor-item neg">
+                        <span class="factor-icon">🏭</span>
+                        <div>
+                            <strong>海外廠（美國/日本）稀釋</strong><br>
+                            <span class="text-secondary">亞利桑那廠（美國）及熊本廠（日本）製造成本比台灣高 20-30%，人工、土地、合規成本均較高。2025-2027 年為海外廠稀釋高峰期，每季約 -1～-2pp。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item neg">
+                        <span class="factor-icon">🔬</span>
+                        <div>
+                            <strong>N2（2奈米）量產爬坡</strong><br>
+                            <span class="text-secondary">N2 從 2025H2 開始量產，2026 年進入爬坡高峰。新製程初期良率低、設備攤提高，預計稀釋毛利率 -2～-3pp，2027 年後才開始遞減。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item neg">
+                        <span class="factor-icon">⚡</span>
+                        <div>
+                            <strong>台灣電費上漲</strong><br>
+                            <span class="text-secondary">台灣電費調漲壓力持續，半導體製造屬高耗電產業，電費成本增加直接影響製造毛利，目前影響相對可控（估計 -0.2～-0.5pp/年）。</span>
+                        </div>
+                    </div>
+
+                    <div class="factor-item neg">
+                        <span class="factor-icon">💱</span>
+                        <div>
+                            <strong>匯率逆風（台幣升值時）</strong><br>
+                            <span class="text-secondary">台積電以美元計價收入，台幣升值時換回新台幣的收入減少。2025 Q1-Q3 台幣偏強，造成約 -0.5pp 影響；Q4 台幣走弱轉為順風，支撐 62.3% 的單季高點。</span>
+                        </div>
+                    </div>
+
+                    <div class="accordion nested-accordion mt-3" id="subAccordion5">
+                        <div class="accordion-item shadow-none border" style="border-color:var(--border-color)!important;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subCollapse5a">
+                                    各因素量化影響估計（彙整表）
+                                </button>
+                            </h3>
+                            <div id="subCollapse5a" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <table class="table table-hover">
+                                        <thead><tr><th>因素</th><th>方向</th><th>估計影響（pp）</th><th>持續期</th></tr></thead>
+                                        <tbody>
+                                            <tr><td>AI/HPC 需求 + 利用率提升</td><td><span class="tag tag-green">正</span></td><td>+3～+5</td><td>結構性，長期持續</td></tr>
+                                            <tr><td>N3 規模化（稀釋遞減）</td><td><span class="tag tag-green">正</span></td><td>+1～+2</td><td>2024-2026 遞增</td></tr>
+                                            <tr><td>CoWoS 高附加值</td><td><span class="tag tag-green">正</span></td><td>+0.5～+1</td><td>2025-2027 持續</td></tr>
+                                            <tr><td>主動漲價 ~5%</td><td><span class="tag tag-green">正</span></td><td>+1～+2</td><td>每年議價</td></tr>
+                                            <tr><td>美國/日本廠稀釋</td><td><span class="tag tag-red">負</span></td><td>-1～-2</td><td>2025-2027 高峰</td></tr>
+                                            <tr><td>N2 量產爬坡</td><td><span class="tag tag-red">負</span></td><td>-2～-3</td><td>2026 為高峰</td></tr>
+                                            <tr><td>電費上漲</td><td><span class="tag tag-red">負</span></td><td>-0.2～-0.5</td><td>持續但緩慢</td></tr>
+                                            <tr><td>匯率（台幣強弱）</td><td><span class="tag tag-yellow">不定</span></td><td>±0.5～±1.5</td><td>每季波動</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>⚠️ 第五章整合結論：2026 年關鍵測試 — N2 稀釋 vs CoWoS 擴產</strong><br>
+                        推論：N2 量產爬坡（-2～-3pp）+ 海外廠持續稀釋（-1～-2pp）= 負面壓力合計 -3～-5pp。但 CoWoS 擴產 69% + N3 持續成熟 + 漲價支撐 = 正面因素 +3～+4pp。淨結果：2026 年毛利率預估 57%～59%，相較 2025 年的 59.9% 小幅下降但高於歷史平均。若 2026Q1 財測低於 57%，代表稀釋效果超預期需重估。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第六章：整合結論 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading6">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                    🏆 第六章：整合結論與投資決策影響
+                </button>
+            </h2>
+            <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+                <div class="accordion-body">
+
+                    <div class="highlight-box success">
+                        <strong>✅ 結論一：毛利率中樞已結構性上移至 57-62%</strong><br>
+                        資料：2020-2022 均值約 55%，2024-2025 均值接近 58%。觀察：驅動力從消費電子週期（弱），轉為 AI/HPC 結構性需求（強）。推論：即使 2026 年因 N2 稀釋回落，也只是回到 57-59%，而非 2023 年那種跌回 54% 的情境。結論：以往用 52-55% 毛利率估值的模型已過時，新的合理中樞是 57-62%，對應更高的盈利能力和估值支撐。
+                    </div>
+
+                    <div class="highlight-box info">
+                        <strong>📋 結論二：海外廠稀釋是最重要的追蹤指標（2025-2027）</strong><br>
+                        推論：美國亞利桑那廠和日本熊本廠的稀釋效果，是台積電未來 2 年最大的毛利率變數。追蹤指標：「海外廠收入佔比」與「海外廠毛利率改善速度」。若美國持續施壓要求擴廠（或 Intel 合作），稀釋效果可能比目前更大。但迄今管理層財測都是保守估計，實際稀釋程度未超過預期。
+                    </div>
+
+                    <div class="highlight-box danger">
+                        <strong>❌ 需要修正的常見錯誤觀念</strong><br>
+                        「台積電毛利率被壓在 53-55% 是常態」— 此觀念已過時。2023 年的修正是短暫的，不是新中樞。<br>
+                        「SK Hynix 毛利率超越台積電代表台積電護城河在縮小」— 業務完全不同（記憶體 vs 邏輯），不具可比性。<br>
+                        「海外廠會持續壓低毛利率至 2030 年」— 海外廠良率和效率會隨時間改善，稀釋效果會逐步遞減。
+                    </div>
+
+                    <div class="chart-container mt-3">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /accordion -->
+
+    <!-- 資料來源 -->
+    <div class="mt-4 p-3" style="background:var(--panel-bg);border-radius:12px;">
+        <h6 style="color:var(--text-secondary);">📎 資料來源</h6>
+        <div>
+            <span class="source-chip">台積電 4Q24 管理報告（2025-01）</span>
+            <span class="source-chip">台積電 3Q25 法說會記錄（2025-10）</span>
+            <span class="source-chip">台積電 4Q25 法說會記錄（2026-01）</span>
+            <span class="source-chip">Intel 2024 全年財報</span>
+            <span class="source-chip">Samsung 2024 全年財報</span>
+            <span class="source-chip">MacroTrends TSM 歷史毛利率</span>
+            <span class="source-chip">TrendForce 2025-12</span>
+            <span class="source-chip">Digitimes 2025-10-16</span>
+        </div>
+    </div>
+
+</div>
+
+<footer class="text-center mt-5">
+    <p class="text-muted small">© 2026 天機閣情報系統 ｜ 產出日期：2026-04-03 ｜ 資料截至：2025 Q4（4Q25 法說會）</p>
+</footer>
+
+<script>
+// 季度折線圖
+new Chart(document.getElementById('quarterlyChart'), {
+    type: 'line',
+    data: {
+        labels: ['2024Q1','2024Q2','2024Q3','2024Q4','2025Q1','2025Q2','2025Q3','2025Q4'],
+        datasets: [{
+            label: '季度毛利率（%）',
+            data: [53.1, 53.2, 57.8, 59.0, 58.8, 58.6, 59.5, 62.3],
+            borderColor: '#6aafd2',
+            backgroundColor: 'rgba(106,175,210,0.15)',
+            borderWidth: 2.5,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#e0ddd5', font: { family: "'Noto Sans TC'" } } },
+            title: { display: true, text: '台積電季度毛利率 2024-2025', color: '#e0ddd5', font: { family: "'Noto Sans TC'", size: 15 } }
+        },
+        scales: {
+            y: {
+                min: 50, max: 65,
+                ticks: { color: '#b0aba0', callback: v => v + '%' },
+                grid: { color: '#444466' }
+            },
+            x: { ticks: { color: '#b0aba0' }, grid: { color: '#444466' } }
+        }
+    }
+});
+
+// 歷年長條圖
+new Chart(document.getElementById('annualChart'), {
+    type: 'bar',
+    data: {
+        labels: ['2020','2021','2022','2023','2024','2025'],
+        datasets: [{
+            label: '全年毛利率（%）',
+            data: [53.1, 51.6, 59.6, 54.4, 56.1, 59.9],
+            backgroundColor: ['#5a7d8c','#5a7d8c','#5cb85c','#e05565','#6aafd2','#5cb85c'],
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#e0ddd5', font: { family: "'Noto Sans TC'" } } },
+            title: { display: true, text: '台積電歷年毛利率（2020-2025）', color: '#e0ddd5', font: { family: "'Noto Sans TC'", size: 15 } }
+        },
+        scales: {
+            y: {
+                min: 45, max: 65,
+                ticks: { color: '#b0aba0', callback: v => v + '%' },
+                grid: { color: '#444466' }
+            },
+            x: { ticks: { color: '#b0aba0' }, grid: { color: '#444466' } }
+        }
+    }
+});
+
+// 競爭對手橫向比較
+new Chart(document.getElementById('compChart'), {
+    type: 'bar',
+    data: {
+        labels: ['台積電 2025','台積電 2024','SK Hynix 2024','Samsung 2024','Intel 2024 Non-GAAP'],
+        datasets: [{
+            label: '毛利率（%）',
+            data: [59.9, 56.1, 45, 38, 36.7],
+            backgroundColor: ['#5cb85c','#6aafd2','#b5873a','#7a7268','#e05565'],
+            borderRadius: 8
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: '競爭對手毛利率比較', color: '#e0ddd5', font: { family: "'Noto Sans TC'", size: 14 } }
+        },
+        scales: {
+            x: {
+                min: 0, max: 70,
+                ticks: { color: '#b0aba0', callback: v => v + '%' },
+                grid: { color: '#444466' }
+            },
+            y: { ticks: { color: '#b0aba0' }, grid: { color: '#444466' } }
+        }
+    }
+});
+
+// 台積電 vs Intel 差距甜甜圈
+new Chart(document.getElementById('gapChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['台積電（59.9%）','Intel（36.7%）','差距（23.2pp）'],
+        datasets: [{
+            data: [59.9, 36.7, 23.2],
+            backgroundColor: ['#5cb85c','#e05565','rgba(106,175,210,0.3)'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { color: '#e0ddd5', font: { family: "'Noto Sans TC'" }, padding: 12 } },
+            title: { display: true, text: '台積電 vs Intel 毛利率差距', color: '#e0ddd5', font: { family: "'Noto Sans TC'", size: 14 } }
+        }
+    }
+});
+
+// 展望預測折線
+new Chart(document.getElementById('forecastChart'), {
+    type: 'line',
+    data: {
+        labels: ['2022','2023','2024','2025（實際）','2026（預估）','2027（預估）'],
+        datasets: [
+            {
+                label: '毛利率（%）',
+                data: [59.6, 54.4, 56.1, 59.9, null, null],
+                borderColor: '#6aafd2',
+                backgroundColor: 'rgba(106,175,210,0.1)',
+                borderWidth: 2.5,
+                pointRadius: 6,
+                fill: false,
+                tension: 0.3
+            },
+            {
+                label: '預估（基本情境）',
+                data: [null, null, null, 59.9, 58.0, 59.5],
+                borderColor: '#5cb85c',
+                borderDash: [6, 3],
+                borderWidth: 2,
+                pointRadius: 5,
+                fill: false,
+                tension: 0.3
+            },
+            {
+                label: '預估（N2 稀釋情境）',
+                data: [null, null, null, 59.9, 56.5, 58.0],
+                borderColor: '#ffc107',
+                borderDash: [4, 4],
+                borderWidth: 2,
+                pointRadius: 5,
+                fill: false,
+                tension: 0.3
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#e0ddd5', font: { family: "'Noto Sans TC'" } } },
+            title: { display: true, text: '台積電毛利率展望（2022-2027）', color: '#e0ddd5', font: { family: "'Noto Sans TC'", size: 15 } }
+        },
+        scales: {
+            y: {
+                min: 50, max: 65,
+                ticks: { color: '#b0aba0', callback: v => v + '%' },
+                grid: { color: '#444466' }
+            },
+            x: { ticks: { color: '#b0aba0' }, grid: { color: '#444466' } }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
