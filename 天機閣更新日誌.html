@@ -60,7 +60,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="hero">
   <h1>天機閣 系統更新日誌</h1>
   <div class="sub">功能開發與系統演進紀錄</div>
-  <div class="ver">最後更新：2026-04-02</div>
+  <div class="ver">最後更新：2026-04-04</div>
 </div>
 
 <div class="two-col">
@@ -69,9 +69,20 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="col-update">
 <div class="col-title update">系統更新</div>
 
+<!-- 04-04 -->
+<div class="day">
+<div class="day-header">2026-04-04 <span class="day-badge new">NEW</span></div>
+<div class="item"><div class="item-title"><span class="tag core">核心</span>RAG 向量索引架構重構</div><div class="item-desc">雙索引架構：A 投資分析（步驟報告+年報+天機錄，去重+排歷史）/ B 西碧拉（圖譜+新聞合併，source_type 分區）。統一使用 bge-m3（1024 維），清理舊版 small/base 模型與孤兒索引</div></div>
+<div class="item"><div class="item-title"><span class="tag data">資料</span>投資分析 RAG 去重清理</div><div class="item-desc">排除歷史資料夾舊版（-286 段）、天機錄同名 HTML 去重（-1,025 段）、年報文字檔兩處存放去重（-2,800 段），整體重複率從 5% 降至 0%</div></div>
+<div class="item"><div class="item-title"><span class="tag core">核心</span>西碧拉向量索引首建（bge-m3）</div><div class="item-desc">圖譜 1,623 節點 + 新聞 13,804 篇合併為單一 FAISS 索引，39,973 段 / 163.7 MB / 1024 維。年報 md 暫不納入（文字化未完成）</div></div>
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>vector_searcher.py 更新</div><div class="item-desc">刪除 small fallback、新增 graph/news source_type 支援、來源優先級排序、自動公司名辨識（_extract_company_hint）</div></div>
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>搜尋引擎技能 v2.1</div><div class="item-desc">雙模式架構：模式 A（Skill 定位 + Claude 自己讀檔回答）/ 模式 B（Discord RAG 全管線）。增量更新方案設計完成（IndexIDMap + hash 比對，待實作）</div></div>
+<div class="item"><div class="item-title"><span class="tag auto">清理</span>舊向量檔案清理</div><div class="item-desc">刪除 vector_db_small / vector_db_graph / vector_db_news（臨時版）/ 年報_向量 vector_store.npz（實驗殘留）/ bge-base-zh-v1.5 模型快取</div></div>
+</div>
+
 <!-- 04-02 -->
 <div class="day">
-<div class="day-header">2026-04-02 <span class="day-badge new">NEW</span></div>
+<div class="day-header">2026-04-02</div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>年報 GID 亂碼批次修正管線</div><div class="item-desc">Python 批次數字偏移修正 + 中文映射 + 年度修正 + AI 讀圖補正。適用所有 Identity-H 編碼年報，PUA 字元歸零</div></div>
 <div class="item"><div class="item-title"><span class="tag core">核心</span>分析報告資料紀律規則強化</div><div class="item-desc">新增 4 條強制規則：最新資料為基本出發思考、同表不混用年度、舊數據加時間背景、缺失數據本身也是訊號</div></div>
 </div>
