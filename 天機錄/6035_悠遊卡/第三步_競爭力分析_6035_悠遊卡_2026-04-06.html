@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>6035 悠遊卡 — Step3 競爭力分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--code-bg:#111;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin:6px 0;font-size:.84em}
+.ev .ev-src{font-size:.72em;color:var(--txt3);display:block;margin-top:3px}
+.score-box{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:1.1em;margin:4px 2px}
+.score-green{background:rgba(46,125,50,.25);color:#4caf50;border:1px solid #4caf50}
+.score-yellow{background:rgba(212,160,23,.15);color:#d4a017;border:1px solid #d4a017}
+.score-red{background:rgba(198,40,40,.2);color:#ef5350;border:1px solid #ef5350}
+.radar{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.radar-item{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.radar-item .ri-label{font-size:.78em;color:var(--txt3);font-weight:600}
+.radar-item .ri-score{font-size:1.2em;font-weight:900;margin:2px 0}
+.radar-item .ri-detail{font-size:.78em;color:var(--txt2)}
+.bar{height:8px;border-radius:4px;background:var(--border);margin:4px 0;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.toggle-all{position:fixed;bottom:16px;right:16px;background:var(--panel);border:1px solid var(--border);color:var(--txt2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78em;z-index:999}
+.toggle-all:hover{background:var(--hover)}
+@media(max-width:600px){.radar{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>6035 悠遊卡 — 競爭力分析</h1>
+  <div class="sub">第三步：競爭力地圖 + 護城河 + 產業面 + 籌碼面</div>
+  <div class="desc">分析日期：2026-04-06｜基準：FY2024 年報 + 2025/12 最新電支數據 + Step3 搜尋 16 次</div>
+  <div class="tags">
+    <span class="tag">興櫃 6035</span><span class="tag">電子支付</span><span class="tag">護城河：窄→侵蝕中</span><span class="tag">電支第四</span><span class="tag">北捷壟斷終結</span>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">3a. 競爭力地圖（7 維度事實拼圖）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>維度一：產品事實</h3>
+<div class="card-body">
+<table>
+<tr><th>產品線</th><th>描述</th><th>市場地位</th><th>FIAS</th></tr>
+<tr><td>悠遊卡（電子票證）</td><td>感應式儲值卡，累計發行 1.5 億張，年活躍卡 2,400 萬張。涵蓋交通（捷運/公車/台鐵/高鐵）+ 零售（超商/超市/自販機）</td><td><b style="color:var(--bull)">龍頭 80.96%</b></td><td><span class="fias-f">F</span></td></tr>
+<tr><td>悠遊付（電子支付）</td><td>手機 App 行動支付，支援 QR 掃碼、繳費稅、轉帳、跨境（韓國）。2026/3 達 410 萬用戶</td><td><b style="color:var(--bear)">第四名</b>（vs 一卡通 716 萬/街口 714 萬/全支付 700 萬）</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>超級悠遊卡</td><td>NFC 晶片卡，支援自動加值 + 聯名信用卡功能</td><td>滲透率低，主力仍為傳統悠遊卡</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>TPASS 月票平台</td><td>16 縣市公共運輸定期票，累計銷售逾 1,000 萬張</td><td>政策紅利，但月票降低單次加值需求</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>跨境支付（韓國）</td><td>2025/12 上線，36 萬店據點。2 個月日均交易額 +80%</td><td>起步，但競爭者（全支付/街口/一卡通）已先行支援韓日</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>數據產品</td><td>交通行為分析、會員圖鑑、商家導流。年報稱為第三成長引擎</td><td>營收貢獻極低（未單獨揭露），處於早期</td><td><span class="fias-i">I</span></td></tr>
+</table>
+
+<div class="tip danger">
+<b>致命弱勢：悠遊卡無法加入 Apple Wallet</b>
+2026/1 北捷開放 Apple Pay/信用卡感應進站，但悠遊卡本身<b>仍無法加入 Apple Wallet</b>。iPhone 用戶若要用悠遊卡必須帶實體卡。這在智慧型手機普及率 90%+ 的台灣是嚴重數位化落後。
+<span class="ev-src">來源：cool3c.com/article/245456 + city.gvm.com.tw/article/126485</span>
+</div>
+</div></div>
+
+<div class="card">
+<h3>維度二：競爭事實</h3>
+<div class="card-body">
+<table>
+<tr><th>競爭者</th><th>用戶數 (2025/12)</th><th>月交易額</th><th>策略</th><th>對悠遊卡威脅</th></tr>
+<tr><td><b>一卡通 iPASS</b></td><td>715.6 萬</td><td>16.9 億<br><span style="color:var(--bear);font-size:.8em">（LINE Pay 分家後腰斬 -59%）</span></td><td>LINE Pay 分家後重建自有用戶</td><td>中（自身正在重傷中）</td></tr>
+<tr><td><b>街口支付</b></td><td>714.1 萬</td><td>55.44 億<br><span style="color:var(--bull);font-size:.8em">（交易額龍頭）</span></td><td>小額高頻 + 街口券行銷</td><td>高（活躍度遠超悠遊付）</td></tr>
+<tr><td><b>全支付</b>（全聯）</td><td>700.4 萬</td><td>51.85 億</td><td>全聯 1,200 店為基地，每年燒 5 億</td><td>高（通路壟斷力強）</td></tr>
+<tr><td><b>LINE Pay Money</b></td><td>新進（2025/12 獨立）</td><td>19.86 億<br><span style="color:var(--warn);font-size:.8em">（上線首月即超車一卡通）</span></td><td>LINE 生態系 700 萬+用戶基礎</td><td><b style="color:var(--bear)">極高（最大威脅）</b></td></tr>
+<tr><td><b>悠遊付</b></td><td>~380 萬（推估）</td><td>~10 億</td><td>交通 + 跨境 + 政策合作</td><td>—</td></tr>
+</table>
+
+<div class="ev">
+<b>2025/12 市場大洗牌事件</b> <span class="fias-f">F</span><br>
+LINE Pay 與一卡通正式分家。一卡通月交易額從 41 億腰斬至 16.9 億（-59%）。LINE Pay Money 獨立上線首月代收付即達 19.86 億，超越一卡通。電支市場從「三強+悠遊卡」變成「四強+一卡通重傷+悠遊卡邊緣」。
+<span class="ev-src">來源：finance.ettoday.net/news/3118089</span>
+</div>
+</div></div>
+
+<div class="card">
+<h3>維度三：需求事實</h3>
+<div class="card-body">
+<table>
+<tr><th>需求面</th><th>趨勢</th><th>對悠遊卡影響</th></tr>
+<tr><td>交通支付</td><td>北捷 2026/7 全面開放信用卡/Apple Pay 感應進站</td><td><b style="color:var(--bear)">核心護城河崩塌</b>。20 年交通壟斷紅利終結</td></tr>
+<tr><td>小額零售</td><td>QR 支付成主流，實體卡感應逐步被取代</td><td>負面。悠遊卡優勢在「嗶」，但年輕人偏好手機掃碼</td></tr>
+<tr><td>繳費稅</td><td>政府推動數位繳費（TWQR、電支繳稅）</td><td>中性。悠遊付有參與但非獨佔</td></tr>
+<tr><td>跨境消費</td><td>韓日旅遊熱潮，跨境支付需求爆發</td><td>正面但晚。競爭者已先行，悠遊付 2025/12 才上線韓國</td></tr>
+<tr><td>TPASS 月票</td><td>16 縣市推行，降低單次交通加值需求</td><td>雙面。穩定流量但壓縮儲值金流入</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>維度四：財務事實</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>FY2024</th><th>同業對比</th><th>評價</th></tr>
+<tr><td>營收成長率</td><td>+1.89%</td><td>全支付 +51%/街口 +20%</td><td style="color:var(--bear)">嚴重落後</td></tr>
+<tr><td>淨利率</td><td>11.86%</td><td>八達通 ~20%+</td><td style="color:var(--warn)">中等（含利息）</td></tr>
+<tr><td>本業淨利率（扣利息）</td><td>~4%</td><td>—</td><td style="color:var(--bear)">極薄</td></tr>
+<tr><td>ROE</td><td>19.90%</td><td>—</td><td style="color:var(--bull)">帳面亮眼（但分母小）</td></tr>
+<tr><td>研發/營收</td><td>5.29%（1.04 億）</td><td>全支付年燒 5 億</td><td style="color:var(--bear)">投入不足以支撐轉型</td></tr>
+<tr><td>利息佔淨利</td><td>85.8%</td><td>—</td><td style="color:var(--bear)">獲利品質警示</td></tr>
+<tr><td>配息率</td><td>89.8%</td><td>—</td><td>高配息 = 低留存 = 低投資</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>維度五：供應鏈事實</h3>
+<div class="card-body">
+<table>
+<tr><th>位置</th><th>對象</th><th>依賴度</th><th>風險</th></tr>
+<tr><td>上游（票卡製造）</td><td>台灣銘板、藍摩半導體、第一美卡、宏通數碼</td><td>低（多家可替代）</td><td>低</td></tr>
+<tr><td>上游（軟體開發）</td><td>精誠資訊、北祥、普鴻、資通電腦</td><td>中（外包依賴）</td><td>中</td></tr>
+<tr><td>下游（交通）</td><td>台北捷運、台鐵、各縣市公車</td><td><b>極高</b>（交通佔營收 58%）</td><td><b style="color:var(--bear)">高（北捷多元支付開放）</b></td></tr>
+<tr><td>下游（零售）</td><td>統一超商、全家、全聯</td><td>高（清分手續費）</td><td>中（多卡通下議價力弱）</td></tr>
+<tr><td>信託銀行</td><td>台新銀行</td><td>高（儲值金信託）</td><td>低（法規要求）</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>維度六：管理層事實</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>評估</th></tr>
+<tr><td>董事長 林志盈</td><td>交通局長出身，穩定任期超過 1 年。交通專業但非金融/科技背景</td></tr>
+<tr><td>總經理 陳國君</td><td>東森新聞雲社長、北市府顧問。公關/政治背景，非支付/科技專業</td></tr>
+<tr><td>獨立董事</td><td>5 位，含法律/會計/交通/科技背景，組成尚可</td></tr>
+<tr><td>誠信度（Step2）</td><td>60 分/中等。悠遊付目標未達（目標 +100 萬，實際 +63.6 萬），研發投入 vs 轉型聲明有落差</td></tr>
+<tr><td>政治週期風險</td><td>72.72% 政府控股，市長換屆必換人。2026 市長選舉為下一風險窗口</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>維度七：市場調查事實（弱訊號）</h3>
+<div class="card-body">
+<table>
+<tr><th>訊號</th><th>來源</th><th>含義</th><th>FIAS</th></tr>
+<tr><td>悠遊卡公司推搭捷運 3 次送 20% 回饋</td><td>官網 2025/12</td><td>已感受北捷多元支付競爭壓力，被迫補貼</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>審查崗位高流動率</td><td>104 人力銀行/Dcard</td><td>可能反映內部合規壓力或薪酬競爭力不足</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>悠遊付「生存戰」媒體報導</td><td>markreadfintech.com</td><td>專業金融科技媒體用「邊緣求生」形容悠遊付</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>跨境支付「晚一步」</td><td>markreadfintech.com</td><td>全支付/街口/一卡通已先行韓日，悠遊付起步晚</td><td><span class="fias-f">F</span></td></tr>
+</table>
+</div></div>
+
+<div class="tip warn">
+<b>3a 整合結論 — 七維拼圖顯示的殘酷現實</b><br>
+<b>資料</b>：儲值卡龍頭 80.96% / 電支第四 380 萬 / 北捷 2026/7 開放多元支付 / 無法加入 Apple Wallet / 跨境晚一步 / 管理層非科技背景 / LINE Pay Money 首月即超車一卡通。<br>
+<b>觀察</b>：七個維度中只有「產品（儲值卡）」一項為強勢，其餘六項（電支競爭、需求轉移、財務品質、供應鏈依賴、管理層專業度、市場弱訊號）全部指向弱勢或惡化中。<br>
+<b>推論</b>：悠遊卡正處於「舊優勢加速崩塌、新優勢尚未建立」的脆弱轉型期。北捷多元支付是最大轉折點 — 交通佔營收 58% 的護城河正在被打開。<br>
+<b>結論</b>：悠遊卡的競爭力在「向下遷移」，從絕對壟斷走向多方競爭。能否穩住取決於：(1) 悠遊付用戶成長能否加速到 500 萬+；(2) 跨境支付能否在 2026 年內擴展至日本；(3) Apple Wallet 整合進度。
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">3b. 護城河框架</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>角色定位評分（0-5 分）</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>評分</th><th>依據</th></tr>
+<tr><td>市場地位</td><td>4/5</td><td>儲值卡 80.96% 龍頭，但電支僅第四</td></tr>
+<tr><td>品牌認知</td><td>5/5</td><td>「國民卡」24 年歷史，每人平均 5 張，品牌認知 99%+</td></tr>
+<tr><td>客戶黏著度</td><td>3/5</td><td>交通場域黏著高但正被多元支付侵蝕，零售場域黏著低</td></tr>
+<tr><td>技術護城河</td><td>1/5</td><td>無法加入 Apple Wallet、虛擬化進度停滯、軟體外包為主</td></tr>
+<tr><td>合計</td><td colspan="2"><span class="score-box score-yellow">13/20 → 中等偏低</span></td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>定價能力評分（0-14 分）</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>評分</th><th>依據</th></tr>
+<tr><td>手續費率維持力</td><td>1/3</td><td>多卡通政策下手續費率受壓，具體費率為商業機密但媒體報導「獲利空間被壓縮」</td></tr>
+<tr><td>轉換成本</td><td>2/3</td><td>交通場域轉換成本中（用戶習慣 + TPASS 綁定），零售場域轉換成本低（掃碼即可切換）</td></tr>
+<tr><td>產品差異化</td><td>1/3</td><td>儲值卡同質化嚴重（悠遊卡 vs 一卡通 vs icash），電支更同質</td></tr>
+<tr><td>毛利率趨勢</td><td>2/3</td><td>FY2024 毛利率 52.86%（微降 0.88ppt），尚穩定但本業薄</td></tr>
+<tr><td>供應商議價力</td><td>2/2</td><td>票卡供應商多、可替代性高</td></tr>
+<tr><td>合計</td><td colspan="2"><span class="score-box score-yellow">8/14 → 中等</span></td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>市佔率動態分析</h3>
+<div class="card-body">
+<div class="radar">
+<div class="radar-item">
+<div class="ri-label">儲值卡市佔趨勢</div>
+<div class="ri-score" style="color:var(--bull)">80.96% ↑</div>
+<div class="bar"><div class="bar-fill" style="width:81%;background:var(--bull)"></div></div>
+<div class="ri-detail">FY2022 78.20% → FY2024 80.96%，持續上升但整體儲值卡市場在萎縮</div>
+</div>
+<div class="radar-item">
+<div class="ri-label">電支用戶市佔趨勢</div>
+<div class="ri-score" style="color:var(--bear)">~11% ↓</div>
+<div class="bar"><div class="bar-fill" style="width:11%;background:var(--bear)"></div></div>
+<div class="ri-detail">380 萬 / 3,445 萬 ≈ 11%。排名第四且差距在擴大（前三名皆 700 萬+）</div>
+</div>
+<div class="radar-item">
+<div class="ri-label">交易額市佔</div>
+<div class="ri-score" style="color:var(--bear)">~3%</div>
+<div class="bar"><div class="bar-fill" style="width:3%;background:var(--bear)"></div></div>
+<div class="ri-detail">悠遊付月交易 ~10 億 vs 街口 55 億 vs 全支付 52 億，差距懸殊</div>
+</div>
+<div class="radar-item">
+<div class="ri-label">跨境支付進度</div>
+<div class="ri-score" style="color:var(--warn)">韓國 1 國</div>
+<div class="bar"><div class="bar-fill" style="width:20%;background:var(--warn)"></div></div>
+<div class="ri-detail">全支付/街口已支援韓日，一卡通有 LINE Pay 跨境。悠遊付僅韓國</div>
+</div>
+</div>
+</div></div>
+
+<div class="card">
+<h3>護城河總評</h3>
+<div class="card-body">
+<table>
+<tr><th>護城河類型</th><th>評估</th><th>趨勢</th></tr>
+<tr><td>網路效應</td><td>1.1 億張流通卡 + 2,400 萬活躍 + 16 萬特約機構。規模龐大</td><td style="color:var(--bear)">↓ 儲值金 -47%，交通壟斷終結</td></tr>
+<tr><td>轉換成本</td><td>交通場域中（綁定月票/記名卡），零售場域低</td><td style="color:var(--bear)">↓ 多元支付降低轉換門檻</td></tr>
+<tr><td>品牌效應</td><td>國民級品牌，認知度最高</td><td style="color:var(--warn)">→ 品牌在但不代表使用意願</td></tr>
+<tr><td>法規護城河</td><td>電子票證/電支雙牌照，儲值金信託利息收入</td><td style="color:var(--bear)">↓ CBDC + 開放多元支付侵蝕</td></tr>
+<tr><td>成本優勢</td><td>無。研發投入低但不是成本優勢</td><td>→</td></tr>
+</table>
+
+<div class="tip danger">
+<b>護城河總評：窄護城河，且正在被侵蝕</b><br>
+悠遊卡的護城河建立在「交通場域壟斷」+「1.1 億張卡片的網路效應」上。但 2026/7 北捷全面開放多元支付後，交通壟斷護城河正式瓦解。剩餘的品牌效應和轉換成本只能暫時延緩用戶流失，不足以阻止長期趨勢。<br><br>
+<b>白話說</b>：悠遊卡的城牆是「你不用我就搭不了捷運」。現在捷運說「用什麼都可以進站」，城牆就塌了一半。
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">3c. 產業面分析</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>產業生命週期定位</h3>
+<div class="card-body">
+<table>
+<tr><th>產品線</th><th>生命週期位置</th><th>依據</th></tr>
+<tr><td>電子票證（儲值卡）</td><td><b style="color:var(--bear)">衰退期</b></td><td>全球趨勢：實體儲值卡被手機支付取代。台灣儲值金 -47%。倫敦 Oyster 9,200 萬張休眠卡</td></tr>
+<tr><td>電子支付（悠遊付）</td><td><b style="color:var(--bull)">成長期</b></td><td>全台電支用戶 3,445 萬、年增 12%+。但悠遊付在此市場排第四</td></tr>
+<tr><td>跨境支付</td><td><b style="color:var(--accent)">導入期</b></td><td>2025/12 才上線韓國，規模極小。全球非接觸式交通支付 CAGR 21.5%</td></tr>
+<tr><td>數據變現</td><td><b style="color:var(--accent)">導入期</b></td><td>年報大談但營收貢獻未揭露，處於概念驗證階段</td></tr>
+</table>
+<p style="margin-top:8px;font-size:.84em"><b>綜合定位</b>：悠遊卡整體處於「核心業務衰退期 + 新業務導入/成長期」的<b>轉型斷裂帶</b>。最大風險是舊業務衰退速度 > 新業務成長速度。</p>
+</div></div>
+
+<div class="card">
+<h3>Porter 五力分析（量化）</h3>
+<div class="card-body">
+<table>
+<tr><th>力量</th><th>強度</th><th>評分</th><th>關鍵因素</th></tr>
+<tr><td>現有競爭者威脅</td><td><b style="color:var(--bear)">極高</b></td><td>5/5</td><td>一卡通/街口/全支付/LINE Pay Money 四強夾擊；電支市場從三強變四強</td></tr>
+<tr><td>新進入者威脅</td><td><b style="color:var(--bear)">高</b></td><td>4/5</td><td>LINE Pay Money 2025/12 進場即超車一卡通；Apple Pay/Google Pay 直接進站</td></tr>
+<tr><td>替代品威脅</td><td><b style="color:var(--bear)">高</b></td><td>4/5</td><td>信用卡感應 = 直接替代儲值卡；CBDC 長期替代儲值金模式</td></tr>
+<tr><td>買方議價力</td><td><b style="color:var(--warn)">中高</b></td><td>3/5</td><td>特約機構（超商/捷運）規模大、選擇多；消費者轉換成本低</td></tr>
+<tr><td>供應商議價力</td><td><b style="color:var(--bull)">低</b></td><td>1/5</td><td>票卡製造商多家可替代；軟體外包商亦有替代選項</td></tr>
+</table>
+<p style="margin-top:6px"><b>五力總評</b>：<span class="score-box score-red">17/25 — 產業競爭環境嚴峻</span></p>
+<p style="font-size:.84em">只有供應商議價力對悠遊卡有利，其餘四力全部不利。電子支付產業正進入「多強混戰 + 替代品湧入」的高度競爭階段。</p>
+</div></div>
+
+<div class="card">
+<h3>同業定位矩陣</h3>
+<div class="card-body">
+<table>
+<tr><th>業者</th><th>用戶規模</th><th>交易活躍度</th><th>通路壟斷</th><th>燒錢能力</th><th>技術能力</th><th>綜合</th></tr>
+<tr><td>街口</td><td>★★★★★</td><td>★★★★★</td><td>★★★</td><td>★★★</td><td>★★★★</td><td>最強</td></tr>
+<tr><td>全支付</td><td>★★★★★</td><td>★★★★★</td><td>★★★★★</td><td>★★★★★</td><td>★★★</td><td>最強</td></tr>
+<tr><td>LINE Pay Money</td><td>★★★★</td><td>★★★★</td><td>★★★★</td><td>★★★★★</td><td>★★★★★</td><td>潛力最大</td></tr>
+<tr><td>一卡通</td><td>★★★★★</td><td>★★</td><td>★★★</td><td>★★</td><td>★★★</td><td>重傷恢復中</td></tr>
+<tr><td style="color:var(--warn)"><b>悠遊付</b></td><td>★★★</td><td>★★</td><td>★★★★</td><td>★★</td><td>★★</td><td><b>中下</b></td></tr>
+</table>
+<p style="font-size:.84em;margin-top:6px">悠遊付唯一的強項是「通路壟斷」（交通場域），但 2026/7 後這項優勢大幅縮減。</p>
+</div></div>
+
+<div class="tip warn">
+<b>3c 整合結論 — 五面楚歌的產業環境</b><br>
+<b>資料</b>：核心業務（儲值卡）處於衰退期、電支市場五力 17/25（嚴峻）、四強 + 一卡通重傷 + LINE Pay Money 強勢進場。<br>
+<b>觀察</b>：悠遊卡在「舊世界衰退」和「新世界競爭激烈」之間兩頭承壓。LINE Pay Money 的進場是 2025/12 的重大事件 — 首月即超車一卡通，未來可能進一步壓縮悠遊付的生存空間。<br>
+<b>推論</b>：電支市場的均衡格局正在被 LINE Pay Money 打破。2026 年可能形成「LINE Pay + 街口 + 全支付」三超級強 vs 「一卡通 + 悠遊付」兩邊緣化的新格局。悠遊付若不在 12 個月內拉出差異化（跨境/交通整合），將被永久邊緣化。<br>
+<b>結論</b>：產業環境對悠遊卡<b>極度不利</b>，但不代表公司會虧損 — 儲值卡本業仍有現金流，利息收入仍在。問題是「成長故事」幾乎不存在，估值只能用現金流折現或股利折現，不能用成長股估值。
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">3d. 籌碼分析</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>籌碼面概況（興櫃限制）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>狀態</th><th>說明</th></tr>
+<tr><td>三大法人</td><td>不適用</td><td>興櫃無三大法人買賣超數據</td></tr>
+<tr><td>融資融券</td><td>不適用</td><td>興櫃無融資融券</td></tr>
+<tr><td>集中度</td><td><b>極高</b></td><td>前十大持 85.61%，其中政府系統 72.72%。散戶可交易流通量極低</td></tr>
+<tr><td>內部人交易</td><td><b>零異動</b></td><td>113 年度所有董事/經理人持股增減為「－」。僅 2 位認股權行使（共 1.3 萬股，微量）</td></tr>
+<tr><td>技術面</td><td>不適用</td><td>興櫃議價交易，無連續 K 線、無 RSI/KD/MA</td></tr>
+<tr><td>ESOP</td><td>認股價 16.3 元</td><td>2,500 張（250 萬股），已行使 81 萬股，未行使 138 萬股，稀釋 1.95%</td></tr>
+</table>
+
+<div class="tip info">
+<b>3d 整合結論 — 籌碼面的特殊性</b><br>
+悠遊卡是興櫃公司，籌碼分析工具幾乎全部失效。但核心觀察是：<br>
+(1) <b>流動性極低</b>：前十大持 85.61%，散戶可交易部分 < 15%。這意味買賣價差大、進出困難<br>
+(2) <b>內部人零賣出</b>：正面訊號，但也可能是因為興櫃交易不便<br>
+(3) <b>ESOP 認股價 16.3 元</b>：遠低於興櫃掛牌價 50 元，管理層已有足夠激勵<br>
+<b>結論</b>：籌碼面對估值的影響 = 需額外「流動性折價」（興櫃議價 vs 上市集中競價），估計 15-25%。
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">第三步整合結論</p>
+<!-- ============================================================ -->
+
+<div class="tip danger">
+<b>第三步整合結論：護城河正在崩塌，但現金流尚在</b><br><br>
+
+<b>資料→觀察→推論→結論：</b><br><br>
+
+<b>事實彙總</b>：<br>
+- 護城河評級：角色 13/20 + 定價 8/14 = <b>窄護城河，侵蝕中</b><br>
+- 五力分析：17/25 = <b>產業競爭環境嚴峻</b><br>
+- 產業生命週期：核心業務衰退期 + 新業務導入期 = <b>轉型斷裂帶</b><br>
+- 2026/7 北捷多元支付全面開放 = <b>20 年交通壟斷紅利終結</b><br>
+- LINE Pay Money 首月超車一卡通 = <b>電支市場大洗牌進行中</b><br>
+- 悠遊卡無法加入 Apple Wallet = <b>數位化重大落後</b><br><br>
+
+<b>觀察</b>：七維度競爭力中只有「儲值卡品牌與規模」一項為強勢，其餘六項弱勢或惡化中。護城河從「寬（交通壟斷）」加速收窄為「窄（品牌+習慣）」。<br><br>
+
+<b>推論</b>：悠遊卡正在經歷「護城河崩塌→本業衰退→利息支撐」的三段式下滑。短期（1-2 年）利息收入仍可撐住 EPS；中期（3-5 年）若跨境支付和悠遊付轉型失敗，本業營收可能年減 5-10%；長期（5年+）CBDC 若上路，整個商業模式都需重建。<br><br>
+
+<b>結論</b>：<br>
+- <b>看多的人需要相信</b>：跨境支付年複合成長 30%+ 能彌補本業衰退 + Apple Wallet 整合在 2026 年內完成 + CBDC 不會在 2028 前上路<br>
+- <b>看空的人看到的是</b>：本業已到頂（營收 +1.89%）+ 護城河正在瓦解 + EPS 85% 靠利息 + 管理層非科技背景 + 研發投入不足<br>
+- <b>最可能情境</b>：悠遊卡變成「利率敏感的準公營事業股」— 穩定配息、低成長、高政治風險。適合收息而非賺資本利得<br><br>
+
+<b>對後續步驟的影響</b>：<br>
+- Step4 ACH 假說必須包含：「北捷多元支付導致交通營收腰斬」的看空假說<br>
+- Step5 壓力測試：降息 + 交通營收 -20% 的雙重打擊情境<br>
+- Step7 估值：不可用成長股 PE，應用 DCF + 股利折現
+</div>
+
+</div><!-- end wrap -->
+
+<button class="toggle-all" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.toggle('collapsed'))">全部展開/收合</button>
+<script>
+document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'));
+document.querySelectorAll('.card h3').forEach(h=>{h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))});
+</script>
+</body>
+</html>

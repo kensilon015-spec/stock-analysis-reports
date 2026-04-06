@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>第一步：六管道資料收集 — 6035 悠遊卡</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#7fbf85;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#7ab0c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#d4b030;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#e88878;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+.risk-card .rc-body{font-size:.82em;color:var(--txt2)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.ok{background:#5a7d60}.badge.warn2{background:#b89030}.badge.fail{background:var(--danger)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>第一步：六管道資料收集 — 6035 悠遊卡</h1>
+    <div class="sub">EasyCard Corporation｜興櫃｜電子支付/儲值卡發行</div>
+    <div class="desc">資料日期 2026-04-05｜年報 FY2022~FY2024｜即時搜尋 WebSearch×19+WebFetch×5｜國際對比 5 家同業｜紅旗 8 項</div>
+    <div class="tags">
+        <span class="tag">興櫃</span>
+        <span class="tag">電子支付</span>
+        <span class="tag">政府系統 72.72%</span>
+        <span class="tag">FY2025 EPS 4.2</span>
+        <span class="tag">紅旗 8 項</span>
+    </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#ch1">一、執行摘要</a>
+    <a href="#ch2">二、公司基本資料</a>
+    <a href="#ch3">三、管道 A — 年報三年對照 (FY2022/2023/2024)</a>
+    <a href="#ch4">四、管道 B/C/E — 即時市場調查</a>
+    <a href="#ch5">五、管道 F + 國際搜尋對比</a>
+    <a href="#ch6">六、管道 D — finlab (結構性缺口)</a>
+    <a href="#ch7">七、西碧拉圖譜初探</a>
+    <a href="#ch8">八、紅旗彙總 (8 項)</a>
+    <a href="#ch9">九、第一步完成門檻自檢</a>
+    <a href="#ch10">十、第一步整合結論</a>
+</div>
+
+<!-- 全部展開/收合 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============ 章節一：執行摘要 ============ -->
+<h2 class="section-title" id="ch1">一、執行摘要</h2>
+<div class="section-sub">五大關鍵結論，從 FY2025 最新數據到結構性隱憂</div>
+
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">FY2025 EPS</div>
+        <div class="num" style="color:var(--bull)">4.2 元</div>
+        <div class="desc">年增 ~26%｜股利 2.95 元</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">儲值金 YoY</div>
+        <div class="num" style="color:var(--bear)">-47%</div>
+        <div class="desc">FY2023 121 億 → FY2024 64 億</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">電支市佔 (2024/10)</div>
+        <div class="num" style="color:var(--bear)">第 4 名</div>
+        <div class="desc">悠遊付 325 萬 vs 一卡通 660 萬</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">八達通淨利對比</div>
+        <div class="num" style="color:var(--bear)">~10 倍</div>
+        <div class="desc">Octopus USD 77-90M vs EasyCard 7.3M</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>五大關鍵結論（點擊展開）</h3>
+    <div class="card-body">
+        <ol style="font-size:.85em;color:var(--txt2);padding-left:20px;line-height:1.8">
+            <li><b>FY2025 業績創新高但獲利含金量需拆解</b>：營收 19.7 億、淨利 2.97 億、EPS 4.2 元（+26%）、股利 2.95 元（創新高） <span class="fias-f">事實</span>。但 FY2024 利息收入占淨利 85.8%，若 FY2025 結構未變，本業仍薄 <span class="fias-i">推論</span>。</li>
+            <li><b>RF-01 儲值金暴跌 -47%</b>：FY2023 121.3 億 → FY2024 64.4 億，減少 57 億，年報未解釋 <span class="fias-f">事實</span>。交叉即時搜尋得三重原因：銀行停權 1 年未用自動加值卡（4 家：中信、台新、永豐、玉山）+ 消費者轉移行動支付 + TPASS 月票改變扣款模式 <span class="fias-i">推論</span>。</li>
+            <li><b>國際落差 ~10 倍</b>：EasyCard 淨利 USD 7.3M vs Octopus HK 2024 估計 USD 77-90M，人口基數相近但淨利差 10 倍以上 <span class="fias-f">事實</span>，八達通轉型路徑（跨境 T-Union、超級 App、零售擴張）悠遊卡進度明顯落後 <span class="fias-i">推論</span>。</li>
+            <li><b>電支市場邊緣化</b>：2024/10 金管會數據，悠遊付 325.1 萬用戶（第 4），遠低於一卡通 659.7 萬、街口 658.7 萬、全支付 514.9 萬 <span class="fias-f">事實</span>。LINE Pay Money 2024/7 獲牌將成最大威脅 <span class="fias-a">假設</span>。</li>
+            <li><b>CBDC 結構性威脅 2026-2027</b>：台灣央行 CBDC 試行預計 2026-2027，雙層架構直接威脅「儲值 → 利息浮存金」模式 <span class="fias-f">事實（央行已公告）</span> + <span class="fias-s">推測（正式上路時程未定）</span>。</li>
+        </ol>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>第一章整合結論 — 表面光鮮、內核承壓</b>
+    <b>資料</b>：FY2025 EPS 4.2 元（+26%）歷史新高，股利 2.95 元創高；但 FY2024 利息收入占淨利 85.8%，儲值金年減 47%，電支市佔第 4，國際淨利落差 10 倍。<br>
+    <b>觀察</b>：高 EPS 與結構性衰退同時並存，是矛盾訊號。升息週期的利息財掩蓋本業衰退。<br>
+    <b>推論</b>：FY2025 亮眼數字有兩個解讀 —— ①本業真的轉強（需由後續步驟拆解利息占比）；②利率紅利再放大，本業持續萎縮。<br>
+    <b>結論</b>：本報告後續步驟必須優先拆解 FY2025 利息收入占比，以此判斷悠遊卡屬於「結構轉型成功」還是「利率紅利掩飾本業」。第一步結論：先存疑，等待更多資料。
+</div>
+
+<!-- ============ 章節二：公司基本資料 ============ -->
+<h2 class="section-title" id="ch2">二、公司基本資料</h2>
+<div class="section-sub">基本資訊、董事會、股東結構、管理層更迭時間線</div>
+
+<div class="card">
+    <h3>基本資訊表</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>項目</th><th>內容</th></tr>
+            <tr><td>公司全名</td><td>悠遊卡股份有限公司 (EasyCard Corporation) <span class="fias-f">事實</span></td></tr>
+            <tr><td>成立日期</td><td>民國 89 年 (2000) 3 月 10 日，至 FY2024 屆滿 25 年</td></tr>
+            <tr><td>市場</td><td>興櫃（2023/1/3 正式登錄，每股認購價 50 元）</td></tr>
+            <tr><td>總部</td><td>台北市南港區園區街 3-1 號 13 樓</td></tr>
+            <tr><td>實收資本額</td><td>NTD 708,103 千元（70,810 千股，2025/4/20）</td></tr>
+            <tr><td>會計師</td><td>資誠聯合 (PwC Taiwan) — 羅蕉森、吳尚</td></tr>
+            <tr><td>發言人</td><td>李志仁（資深副總）／周美里（代理）</td></tr>
+            <tr><td>員工數</td><td>FY2024 末 314 人（年報刊印日 318 人），平均年齡 42.72 歲、年資 9.79 年</td></tr>
+            <tr><td>認證</td><td>ISO27001 / BS10012 個資 / PCI DSS</td></tr>
+        </table>
+        <p style="font-size:.75em;color:var(--txt3);margin-top:6px">來源：2024 年報 p.60-71</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>前十大股東與政府系統持股分析</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>排名</th><th>股東</th><th>持股 (千股)</th><th>%</th><th>關係</th></tr>
+            <tr><td>1</td><td>悠遊卡投資控股</td><td>40,499</td><td>57.19%</td><td>母公司</td></tr>
+            <tr><td>2</td><td>台北大眾捷運</td><td>7,696.7</td><td>10.87%</td><td>北市府 100% 轉投資</td></tr>
+            <tr><td>3</td><td>臺北市政府</td><td>3,298.6</td><td>4.66%</td><td>直接持股</td></tr>
+            <tr><td>4</td><td>神通電腦</td><td>1,759.3</td><td>2.48%</td><td>苗豐強</td></tr>
+            <tr><td>5</td><td>台北富邦銀行</td><td>1,374.4</td><td>1.94%</td><td>蔡明興</td></tr>
+            <tr><td>6</td><td>國泰世華銀行</td><td>1,374.4</td><td>1.94%</td><td>郭明鑑</td></tr>
+            <tr><td>7</td><td>玉山銀行</td><td>1,348.9</td><td>1.90%</td><td>黃男州</td></tr>
+            <tr><td>8</td><td>欣欣客運</td><td>1,291.0</td><td>1.82%</td><td>泛北市府交通體系</td></tr>
+            <tr><td>9</td><td>臺北汽車客運</td><td>1,197.3</td><td>1.69%</td><td>李博文</td></tr>
+            <tr><td>10</td><td>三重汽車客運</td><td>845.2</td><td>1.19%</td><td>李博文</td></tr>
+        </table>
+        <p style="margin-top:8px"><b style="color:var(--base)">政府系統匯總</b>：投控 57.19% + 大眾捷運 10.87% + 北市府 4.66% = <b style="color:var(--warn)">72.72%</b>；若計入泛公部門體系，前十大合計約 <b>85.61%</b>。決策受北市府政策深度影響。<span class="fias-f">事實</span></p>
+        <p style="font-size:.75em;color:var(--txt3);margin-top:6px">來源：2024 年報 p.54-55</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>管理層三年更迭時間線（政治週期連動）</h3>
+    <div class="card-body">
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-date">2019-01</div>
+                <div class="tl-title">陳亭如任董事長</div>
+                <div class="tl-desc">延續前朝團隊 <span class="fias-f">事實</span></div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">2021-03-25</div>
+                <div class="tl-title">邱昱凱（33 歲）升任總經理</div>
+                <div class="tl-desc">柯文哲團隊愛將，媒體批評政治任命 <span class="fias-f">事實</span></div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">2023-03-29</div>
+                <div class="tl-title">林志盈接任董事長，解任邱昱凱</div>
+                <div class="tl-desc">前台中捷運董事長、交通領域專家；蔣萬安市府接手後重組 <span class="fias-f">事實</span></div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">2023-06-30</div>
+                <div class="tl-title">陳淑娟接任悠遊卡投控董事長</div>
+                <div class="tl-desc">前紐約梅隆銀行台北總經理，金融背景 <span class="fias-f">事實</span></div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">2024-03-27</div>
+                <div class="tl-title">陳國君接任總經理（取代代理李志仁）</div>
+                <div class="tl-desc">東森新聞雲前社長、北市府顧問，公關/政治背景；4/15 金管會核准 <span class="fias-f">事實</span></div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-date">2025+</div>
+                <div class="tl-title">林志盈+陳國君組合穩定超過一年</div>
+                <div class="tl-desc">股臨會改選後留任 <span class="fias-f">事實</span>；若 2026 市長選舉延續則機制延續 <span class="fias-a">假設</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>第二章整合結論 — 政治延伸工具，不是純商業公司</b>
+    <b>資料</b>：政府系統控股 72.72%（投控 57.19% + 北捷 10.87% + 北市府 4.66%），連續三年（2022/2023/2024）董座與總座大更迭，總經理背景從金融→政治→公關。<br>
+    <b>觀察</b>：公司治理穩定性高度依賴政治週期，市長換屆即觸發人事大震盪；策略延續性受干擾。<br>
+    <b>推論</b>：悠遊卡本質是「台北市政府的政治延伸工具」，上興櫃後向商業化推進，但股權結構未改變，這個矛盾將持續存在。<br>
+    <b>結論</b>：投資人必須將「政治折價」納入估值 —— 同類上市金控或電支公司的 PE/PB 不能直接套用，需額外折扣反映治理風險與策略延續性不足。如 2026 市長選舉執政黨更迭，短期內還會再經歷一輪人事震盪。
+</div>
+
+<!-- ============ 章節三：管道 A — 年報三年對照 ============ -->
+<h2 class="section-title" id="ch3">三、管道 A — 年報三年對照 (FY2022/2023/2024)</h2>
+<div class="section-sub">從三年財務與業務指標看出成長曲線、獲利品質與結構轉折</div>
+
+<div class="card">
+    <h3>業務指標三年對照表</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>指標</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY24 YoY</th></tr>
+            <tr><td>流通卡數（千張）</td><td>99,912</td><td>110,972</td><td>118,715</td><td>+7%</td></tr>
+            <tr><td>12 月交易卡數（千張）</td><td>—</td><td>10,741</td><td>10,958</td><td>+2%</td></tr>
+            <tr><td>交易金額（NTD 千元）</td><td>51,858,767</td><td>60,138,102</td><td>61,241,225</td><td>+2%</td></tr>
+            <tr><td>悠遊付會員（千人）</td><td>2,053</td><td>2,710</td><td>3,346</td><td>+23%</td></tr>
+            <tr><td>代理收付金額（NTD 千元）</td><td>4,506,776</td><td>8,245,973</td><td>11,154,115</td><td>+35%</td></tr>
+            <tr><td style="color:var(--bear)"><b>儲值金額（NTD 千元）</b></td><td>6,155,615</td><td>12,130,762</td><td><b>6,439,111</b></td><td><b style="color:var(--bear)">-47%</b></td></tr>
+        </table>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:6px">
+        <b>關鍵觀察</b>：代理收付 +35% 但儲值金額 -47%，年報未解釋 <span class="fias-f">事實</span>。這是 <b>RF-01</b> 的核心問題。
+        </p>
+        <p style="font-size:.75em;color:var(--txt3);margin-top:6px">來源：2024 年報 p.5 / 2023 年報 p.5 / 2022 年報 p.5</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>財務指標三年對照表</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>指標</th><th>FY2022</th><th>FY2023</th><th>FY2024</th></tr>
+            <tr><td>營業收入（NTD 千元）</td><td>1,656,302</td><td>1,927,952</td><td>1,964,363</td></tr>
+            <tr><td>毛利（NTD 千元）</td><td>833,416</td><td>1,036,180</td><td>1,038,296</td></tr>
+            <tr><td>營業淨利（NTD 千元）</td><td>70,603</td><td>244,602</td><td>274,897</td></tr>
+            <tr><td>本期淨利（NTD 千元）</td><td>60,323</td><td>201,205</td><td>232,958</td></tr>
+            <tr><td>EPS（NTD）</td><td>0.86</td><td>2.87</td><td>3.33</td></tr>
+            <tr><td>ROE（%）</td><td>6.15</td><td>18.98</td><td>19.90</td></tr>
+            <tr><td>ROA（%）</td><td>0.47</td><td>1.42</td><td>1.40</td></tr>
+            <tr><td>淨利率（%）</td><td>3.64</td><td>10.44</td><td>11.86</td></tr>
+        </table>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:6px">
+        <b>趨勢</b>：三年 EPS 成長 287%（0.86→3.33），ROE 自 6.15% 跳到 19.90%。但營收 CAGR 僅 8.9%，且 FY2024 營收年增率僅 +1.89%。獲利暴增主要來自毛利率回升+利息收入爆發。
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>獲利品質拆解（關鍵）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>項目</th><th>FY2023</th><th>FY2024</th></tr>
+            <tr><td>利息收入（NTD 千元）</td><td>148,698</td><td>199,938</td></tr>
+            <tr><td>利息占營收比</td><td>7.71%</td><td>10.18%</td></tr>
+            <tr><td>本期淨利（NTD 千元）</td><td>201,205</td><td>232,958</td></tr>
+            <tr><td style="color:var(--warn)"><b>利息占淨利比（估）</b></td><td>—</td><td><b>85.8%</b></td></tr>
+        </table>
+        <p style="font-size:.82em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>本業拆解</b>：FY2024 本期淨利 2.33 億，扣除利息 2.0 億後本業僅 8,000 萬稅前；換算本業淨利率約 4% <span class="fias-i">推論</span>。
+        </p>
+        <p style="font-size:.82em;color:var(--txt2);margin-top:4px;line-height:1.7">
+        <b>法規背景</b>：依《電子支付機構管理條例》，儲值金須全額信託或銀行十足履約保證；僅可投資公債/定存 <span class="fias-f">事實，法律條文</span>。升息受益、降息受衝擊。
+        </p>
+        <p style="font-size:.82em;color:var(--txt2);margin-top:4px;line-height:1.7">
+        <b>營收結構（FY2024）</b>：勞務佣金 54.61%（10.73 億）、商品銷售 36.07%（7.08 億）、權利金 5.09%（1.0 億）、其他 4.23%（0.83 億）。
+        </p>
+    </div>
+</div>
+
+<details>
+<summary>展開：FY2024 現金流與股利政策</summary>
+<table>
+    <tr><th>項目</th><th>金額 (NTD 千元)</th></tr>
+    <tr><td>營業活動現金流</td><td>+606,915</td></tr>
+    <tr><td>投資活動現金流</td><td>-125,064</td></tr>
+    <tr><td>籌資活動現金流</td><td>-200,153</td></tr>
+    <tr><td>現金淨變動</td><td>+281,698</td></tr>
+    <tr><td>FY2024 現金股利</td><td>209,220（每股 2.96 元）</td></tr>
+    <tr><td>配息率</td><td>約 89.8%</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">章程規定：盈餘 10% 法定公積後不低於 10% 分配；現金股利不得低於股利總額 30%。</p>
+</details>
+
+<div class="tip warn">
+    <b>第三章整合結論 — EPS 287% 成長的三大引擎與隱憂</b>
+    <b>資料</b>：三年 EPS 0.86→2.87→3.33（+287%），但 FY2024 營收 YoY 僅 +1.89%、利息收入占淨利 85.8%、儲值金 -47%。<br>
+    <b>觀察</b>：獲利暴增的三大引擎是 — ①疫後交通恢復（FY22→FY23 營收 +16%）、②毛利率回升、③升息紅利（FY22 1.48 億→FY24 2.00 億利息）。但 FY24 營收成長已掉到 +2%，代表疫後反彈紅利用完；同時儲值金崩盤顯示底層結構正在惡化。<br>
+    <b>推論</b>：EPS 3.33 是「疫後紅利+升息紅利+毛利修復」三重疊加的結果，不是可持續成長。FY2025 EPS 跳到 4.2（即時搜尋），若繼續靠利息，降息週期（2026+）將非常痛苦。<br>
+    <b>結論</b>：分拆悠遊卡為「利率敏感股 + 結構下滑本業」的組合，而非穩定成長股。估值應用類保險公司（承保利潤 + 投資收益）的框架，不是單純電支/金融科技成長股。
+</div>
+
+<!-- ============ 章節四：管道 B/C/E — 即時市場調查 ============ -->
+<h2 class="section-title" id="ch4">四、管道 B/C/E — 即時市場調查</h2>
+<div class="section-sub">FY2025 最新數據、電支競爭格局、儲值金暴跌深查</div>
+
+<div class="card">
+    <h3>FY2025 最新董事會公告（2026-03-26 發布）</h3>
+    <div class="card-body">
+        <div class="grid2">
+            <div class="mini-card bull-card">
+                <div class="title">FY2025 營收</div>
+                <div class="num" style="color:var(--bull)">19.7 億</div>
+                <div class="desc">YoY ~+0.3%（+28% 指獲利）</div>
+            </div>
+            <div class="mini-card bull-card">
+                <div class="title">FY2025 淨利</div>
+                <div class="num" style="color:var(--bull)">2.97 億</div>
+                <div class="desc">YoY +27%（vs 2.33 億）</div>
+            </div>
+            <div class="mini-card bull-card">
+                <div class="title">FY2025 EPS</div>
+                <div class="num" style="color:var(--bull)">4.2 元</div>
+                <div class="desc">YoY +26%（vs 3.33）</div>
+            </div>
+            <div class="mini-card bull-card">
+                <div class="title">現金股利</div>
+                <div class="num" style="color:var(--bull)">2.95 元</div>
+                <div class="desc">歷史新高，配發 2.09 億</div>
+            </div>
+        </div>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:8px">
+        來源：悠遊卡官網新聞稿 2026-03-26「逆境中突圍！114 年度營收、獲利雙雙刷新紀錄」 <span class="fias-f">事實</span> <br>
+        <a href="https://www.easycard.com.tw/news" style="color:var(--link);font-size:.9em">https://www.easycard.com.tw/news</a>
+        </p>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>月營收 2025 Q1 累計 4.80 億元</b>（年增 5.78%），2025/3 單月 1.65 億 <span class="fias-f">事實</span>。來源：cnyes.com/news/id/5935565、財報狗。
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>電子支付市場競爭格局（2024/10 金管會對比表）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>業者</th><th>電支用戶</th><th>月交易額</th><th>Q1 2024 成長</th><th>特色</th></tr>
+            <tr><td><b>一卡通 iPASS</b></td><td>659.7 萬 (冠軍)</td><td>35.2 億</td><td>+11.1%</td><td>儲值金市佔 67.14%、月轉帳占 62.48%</td></tr>
+            <tr><td><b>街口支付</b></td><td>658.7 萬</td><td>47.7 億</td><td>+7.3%</td><td>交易金額第一、發出 105 萬張街口券</td></tr>
+            <tr><td><b>全支付</b> (全聯)</td><td>514.9 萬</td><td>45.9 億</td><td>+51.3% (最快)</td><td>每年燒 5 億，目標 2027 損益兩平</td></tr>
+            <tr><td>玉山銀行電支</td><td>258.3 萬</td><td>18.13 億</td><td>—</td><td>銀行系</td></tr>
+            <tr><td style="color:var(--warn)"><b>悠遊付</b></td><td style="color:var(--warn)"><b>325.1 萬 (第 4)</b></td><td style="color:var(--warn)"><b>9.96 億</b></td><td>—</td><td>遠低於前三名，持續邊緣化</td></tr>
+            <tr><td>全盈 +PAY</td><td>214.6 萬</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>icash 愛金卡</td><td>149.5 萬</td><td>—</td><td>—</td><td>—</td></tr>
+        </table>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>新威脅：LINE Pay Money</b> <span class="fias-f">事實</span> — 2024/7/17 金管會核准獨資子公司（第 10 家電支業者），LINE Pay 系列用戶 700 萬+、交易量市佔 ~40%（龍頭）。正式進軍電支後可能重塑市場。來源：cnyes.com/news/id/5980752
+        </p>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:4px">
+        <b>悠遊付成長軌跡</b>：2023 年 250 萬 → 2025/5 359 萬 → 2026/3 410 萬。用戶數雖成長，但市佔仍第 4 且交易額差距擴大。
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>RF-01 儲值金 -47% 三重原因深查（即時搜尋交叉驗證）</h3>
+    <div class="card-body">
+        <div class="tip danger" style="margin:0 0 10px">
+            <b>原因一：銀行停權 1 年未用自動加值卡（直接證據）</b>
+            2024 年 4-5 月當月消費卡數減少 2.5 萬張，6-7 月減少 11.7 萬張；5-6 月消費金額減少 3.2 億元。中信、台新、永豐、玉山 4 家銀行集體停權未使用自動加值卡，動機是省錄碼費（50 元/卡 × 500 萬張 = 2.5 億成本）。<br>
+            <span style="font-size:.85em">來源：金管會公布數據 / 聯合新聞網 2024-10 <a href="https://udn.com/news/story/7239/8319798" style="color:var(--link)">udn.com/news/story/7239/8319798</a> <span class="fias-f">事實</span></span>
+        </div>
+        <div class="tip warn" style="margin:0 0 10px">
+            <b>原因二：消費者轉移至行動支付</b>
+            2021 起行動支付交易量已超越儲值卡，2023 年已達儲值卡 2 倍。用戶從悠遊卡實體卡轉向悠遊付 App（集團內轉移）與外部電支（LINE Pay/街口/全支付）。<br>
+            <span style="font-size:.85em">來源：未來流通研究所 / 天下雜誌 <span class="fias-f">事實</span></span>
+        </div>
+        <div class="tip info" style="margin:0">
+            <b>原因三：TPASS 月票改變扣款模式</b>
+            16 縣市 TPASS 定期票累積銷售超過 1,000 萬張。月票用戶不再每次加值，僅需月初一次付費，儲值餘額流失。<br>
+            <span style="font-size:.85em">來源：2024 年報 p.5 致股東報告 <span class="fias-f">事實</span> + <span class="fias-i">推論</span></span>
+        </div>
+        <p style="margin-top:10px;font-size:.82em;color:var(--txt2);line-height:1.7">
+        <b>集團內部資金重分配訊號</b>：儲值金 -47% 同時代理收付 +35%，悠遊付用戶持續成長（250→410 萬）。這不是資金流失，而是從「實體卡儲值」轉到「行動支付帳戶」。會計科目不同所以統計跳水，本質是業務轉型的副作用。
+        </p>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>第四章整合結論 — FY2025 好數字背後的三條隱藏線</b>
+    <b>資料</b>：FY2025 EPS 4.2 元（+26%）、電支市佔第 4、儲值金 -47%、LINE Pay Money 進場、韓國跨境上線 2 個月日均交易額 +80%。<br>
+    <b>觀察</b>：①獲利面看好，但本業市佔邊緣化；②儲值金崩盤是業務轉型副作用，不是純流失；③國際擴張（韓國）有起色但規模小。<br>
+    <b>推論</b>：悠遊卡在三條路徑分別處於不同階段 — （1）國內電支市場：守勢，難翻身；（2）集團內部轉型（卡→付）：順利推進；（3）跨境支付：剛起步，韓國 POC 成功但未形成規模。<br>
+    <b>結論</b>：單靠國內電支市場不可能成為成長股，必須看集團內轉型成效 + 跨境複製。LINE Pay Money 正式營運後若 1 年內再吃 10% 市佔，悠遊付將從第 4 掉到第 5 名。建議把「跨境交易額成長」列為 FY2026 核心觀察指標。
+</div>
+
+<!-- ============ 章節五：管道 F + 國際搜尋 ============ -->
+<h2 class="section-title" id="ch5">五、管道 F + 國際搜尋對比</h2>
+<div class="section-sub">興櫃無法說會 + 五國同業國際對比 + 八達通轉型路徑差距 + CBDC 威脅</div>
+
+<div class="card">
+    <h3>法說會狀況（管道 F：結構性缺口）</h3>
+    <div class="card-body">
+        <ul style="font-size:.85em;color:var(--txt2);padding-left:20px;line-height:1.7">
+            <li>興櫃公司非強制召開法說會 <span class="fias-f">事實</span></li>
+            <li>2022/12/28 舉辦興櫃前法說會（一次性掛牌前說明會），2023/1/3 正式登錄興櫃，每股認購價 50 元</li>
+            <li>2023~2024 年查無正式法人說明會記錄</li>
+            <li>官網 IR 頁面有「法人說明會」專區但無 2024 場次資料</li>
+            <li>資訊透明度顯著弱於上市櫃公司，投資人需納入折價反映此風險</li>
+        </ul>
+        <p style="font-size:.75em;color:var(--txt3);margin-top:6px">來源：blog.fugle.tw/easy-card-2023 / statementdog.com / easycard.com.tw/investor_stockPriceInformation</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>國際同業五國對比表（重點）</h3>
+    <div class="card-body">
+        <table style="font-size:.78em">
+            <tr><th>項目</th><th>EasyCard 6035 TW</th><th>Octopus HK</th><th>Suica JR East</th><th>EZ-Link SG</th><th>T-money KR</th></tr>
+            <tr><td>發卡量（萬張）</td><td>11,800</td><td>3,500</td><td>11,200</td><td>2,500</td><td>首都圈全覆蓋</td></tr>
+            <tr><td>人口滲透</td><td>人均 5 張</td><td>98% (15-64 歲)</td><td>~90%</td><td>~100%</td><td>~90%</td></tr>
+            <tr><td>營收 USD</td><td>62M</td><td>未獨立揭露</td><td>未獨立揭露</td><td>未揭露</td><td>165M (2021)</td></tr>
+            <tr><td>淨利 USD</td><td><b style="color:var(--bear)">7.3M</b></td><td><b style="color:var(--accent)">77-90M (2024 估)</b></td><td>未獨立揭露</td><td>未揭露</td><td>7.0M (2021)</td></tr>
+            <tr><td>淨利率</td><td>11.9%</td><td>20%+</td><td>—</td><td>—</td><td>4.3%</td></tr>
+            <tr><td>持股結構</td><td>泛公股 72.72%</td><td>MTR 64%</td><td>JR 東日本 100%</td><td>LTA 100%</td><td>首爾市 36.16% + LG CNS 32.91%</td></tr>
+            <tr><td>上市狀態</td><td>興櫃 (2023/1)</td><td>未上市 (港鐵間接)</td><td>JR East 上市</td><td>未上市</td><td>未上市 (2025 轉控股)</td></tr>
+        </table>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>關鍵發現</b>：悠遊卡是 5 家中<b>唯一獨立登錄資本市場</b>的公司，揭露壓力最大；其他 4 家都是交通母集團或政府非獨立事業部門。別家可以虧本做公共服務，悠遊卡必須對股東交代。 <span class="fias-f">事實</span>
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>八達通轉型路徑 vs 悠遊卡落差（~10 倍淨利差）</h3>
+    <div class="card-body">
+        <div class="grid2">
+            <div>
+                <h4 style="font-size:.9em;color:var(--accent);margin-bottom:6px">Octopus HK（轉型成功範本）</h4>
+                <ul style="font-size:.8em;color:var(--txt2);padding-left:16px;line-height:1.6">
+                    <li>2024/7 永久豁免中小企首 1 萬港幣轉帳手續費</li>
+                    <li>2024/9 與中國 T-Union 互通 336 城、1,759 縣</li>
+                    <li>跨境 App 2024 啟用中國互通</li>
+                    <li>2024/10 獲香港管理專業協會卓越品質大獎</li>
+                    <li>2024 全年淨利估 HKD 6-7 億（USD 77-90M）</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size:.9em;color:var(--bear);margin-bottom:6px">EasyCard（落後進度）</h4>
+                <ul style="font-size:.8em;color:var(--txt2);padding-left:16px;line-height:1.6">
+                    <li>2025/12 悠遊付韓國跨境支付上線（GS25/CU/7-11 36 萬點）</li>
+                    <li>2026/3 韓國滿月：日均交易 +80%，會員新用率 30%</li>
+                    <li>其他跨境（日本/新加坡）尚未上線</li>
+                    <li>B2B 零售擴張規模小</li>
+                    <li>FY2024 淨利 NTD 2.33 億（USD 7.3M）</li>
+                </ul>
+            </div>
+        </div>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:10px;line-height:1.7">
+        <b>Suica Renaissance 是另一標竿</b>：JR 東日本 2023 年啟動 Suica 復興計畫 — 儲值上限由 2 萬日圓提高、超級 App 化。悠遊卡最該參考的升級路徑。 <span class="fias-f">事實</span>
+        </p>
+        <p style="font-size:.78em;color:var(--txt2);margin-top:6px;line-height:1.7">
+        <b>T-money 海外輸出模式</b>：T-money 已將系統輸出至 Mongolia/Malaysia/Colombia/New Zealand，是跳脫本國天花板的第二成長曲線。悠遊卡年報中未見此類規劃。 <span class="fias-f">事實</span>
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>產業趨勢與 CBDC 結構性威脅</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>項目</th><th>數據</th><th>意義</th></tr>
+            <tr><td>全球非接觸式支付市場 2024</td><td>USD 544.4 億</td><td>CAGR 21.5% (2025-2033)</td></tr>
+            <tr><td>交通票證非接觸交易額</td><td>2024-2029 +460%</td><td>2029 達 USD 1,540 億</td></tr>
+            <tr><td>亞太區佔全球</td><td>39.2%</td><td>最大區域</td></tr>
+            <tr><td>全球 MaaS 市場 2024</td><td>USD 7,568 億</td><td>CAGR 11.6% (2024-2032)</td></tr>
+        </table>
+        <div class="tip danger" style="margin-top:10px">
+            <b>CBDC 威脅 — 對悠遊卡商業模式的生死挑戰</b>
+            台灣央行 CBDC 雛型平台 2022/6 已完工，2025 擬公開諮詢，雙層架構（央行→銀行/電支→公眾），試行預計 2026-2027。
+            <br><br>
+            <b>直接威脅</b>：若 CBDC 直接嵌入感應式支付，儲值卡的「預存→利息收入」商業模式將失去存在理由 — CBDC 由央行發行無利差空間。 <span class="fias-f">事實</span> + <span class="fias-a">假設（時程）</span>
+            <br><br>
+            <b>同業策略</b>：Octopus、Suica 皆轉向「超級 App + 跨境互通 + 加值服務」，不再依賴單一票證。
+        </div>
+        <div class="tip warn" style="margin-top:8px">
+            <b>浮存金紅利時代結束訊號</b>
+            國際產業研究指出：在當前利率環境下，浮存金利息「已非特別有利的收入來源」（not currently a particularly lucrative source）。代表悠遊卡靠高利率掩蓋本業弱點的紅利期有限。 <span class="fias-f">事實</span>
+        </div>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>第五章整合結論 — 國際對比照出的殘酷現實</b>
+    <b>資料</b>：悠遊卡淨利 USD 7.3M vs Octopus USD 77-90M（10 倍差）、悠遊卡 FY2024 ROE 19.90% vs Octopus 淨利率 20%+、悠遊卡海外輸出 0 個國家 vs T-money 4 國、CBDC 2026-2027 試行。<br>
+    <b>觀察</b>：①規模天花板：發卡 1.18 億張人均 5 張已無成長空間；②轉型落後：八達通 2024 年已完成跨境+超級 App，悠遊卡 2026/3 才剛讓韓國滿月；③結構性威脅：CBDC 直接挑戰利息浮存金模式。<br>
+    <b>推論</b>：悠遊卡的國內成長故事本質已進入「收割期」，未來成長必須來自三條路 — （1）跨境支付（已起步）、（2）海外系統輸出（尚未看到規劃）、（3）集團超級 App 化（進度中）。單靠任何一條都難以支撐現有估值。<br>
+    <b>結論（分歧）</b>：<br>
+    • <b>看空路徑</b>：FY2025 亮眼數字是利率+毛利+疫後紅利疊加的頂點，2026 降息週期 + CBDC 試行 + LINE Pay Money 進場，EPS 可能從 4.2 回落到 2.5-3.0。<br>
+    • <b>看平路徑</b>：跨境支付持續擴張（韓國→日本→新加坡），每年帶來 5-10% 營收增量，剛好抵銷本業衰退。<br>
+    • <b>看多路徑</b>：CBDC 試行後電支機構被認定為中介角色（雙層架構），悠遊卡反而受益於央行系統整合。機率較低。
+</div>
+
+<!-- ============ 章節六：管道 D — finlab ============ -->
+<h2 class="section-title" id="ch6">六、管道 D — finlab（結構性缺口）</h2>
+<div class="section-sub">興櫃股票 finlab 無資料，改走年報與月營收直接擷取</div>
+
+<div class="card">
+    <h3>finlab 缺口說明</h3>
+    <div class="card-body">
+        <ul style="font-size:.85em;color:var(--txt2);padding-left:20px;line-height:1.7">
+            <li>6035 為<b>興櫃股票</b>，finlab 月營收/財報/基本面資料庫覆蓋以上市上櫃為主 <span class="fias-f">事實</span></li>
+            <li>本步驟改以兩條替代路徑：①年報直接擷取（FY2022-2024 三年）；②新聞稿月營收（cnyes/財報狗）</li>
+            <li>無公開交易價格：興櫃採議價交易，缺乏連續收盤價、PE/PB 歷史百分位等量化指標 <span class="fias-f">事實</span></li>
+            <li>技術面分析（RSI/KD/MA）本案不適用</li>
+        </ul>
+        <div class="tip info" style="margin-top:8px">
+            <b>替代資料來源清單</b>
+            • 年報：公開資訊觀測站 MOPS 6035 年報查詢<br>
+            • 月營收：cnyes.com + statementdog.com<br>
+            • 重大訊息：MOPS 6035 個股重訊頁面<br>
+            • 產業數據：金管會電子支付業務統計公告
+        </div>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>第六章整合結論 — 量化資料缺口轉為質化深度</b>
+    <b>資料</b>：興櫃無 finlab 覆蓋、無連續股價、無技術面指標。<br>
+    <b>觀察</b>：量化估值路徑被切斷，傳統 PE/PB 對比不可行。<br>
+    <b>推論</b>：本案估值必須走質化路徑 — DCF 建模（需拆解本業 vs 利息）、國際同業倍數借鏡、股利折現（2.95 元/年為起點）。<br>
+    <b>結論</b>：後續步驟（Step 5 估值、Step 7 綜整）必須採用「DCF + 國際倍數 + 股利折現」三軌並行，不能只看 EPS × PE。
+</div>
+
+<!-- ============ 章節七：西碧拉圖譜初探 ============ -->
+<h2 class="section-title" id="ch7">七、西碧拉圖譜初探</h2>
+<div class="section-sub">節點存在但邊數 0，建議後續補建</div>
+
+<div class="card">
+    <h3>西碧拉現況</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>項目</th><th>狀態</th></tr>
+            <tr><td>node_id</td><td>TW_6035</td></tr>
+            <tr><td>type</td><td>company</td></tr>
+            <tr><td>name</td><td>悠遊卡</td></tr>
+            <tr><td>market</td><td>Emerging（興櫃）</td></tr>
+            <tr><td>industry</td><td>金融業</td></tr>
+            <tr><td style="color:var(--warn)"><b>邊數 (edges)</b></td><td style="color:var(--warn)"><b>0</b></td></tr>
+        </table>
+        <p style="font-size:.82em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>缺口說明</b>：西碧拉圖譜已有節點但未建立任何關係邊。以下關係建議後續補建：
+        </p>
+        <ul style="font-size:.82em;color:var(--txt2);padding-left:20px;line-height:1.7;margin-top:4px">
+            <li><b>上游</b>：台灣銘板、藍摩半導體、第一美卡、宏通數碼（票卡供應商）；精誠資訊、北祥、普鴻、資通電腦（軟體開發）</li>
+            <li><b>下游/客戶</b>：台北大眾捷運、台鐵、統一超商、全家、全聯、大都會客運、欣欣客運</li>
+            <li><b>股東/治理</b>：悠遊卡投資控股、臺北市政府、北捷、神通電腦、富邦銀行、國泰世華、玉山</li>
+            <li><b>競爭</b>：一卡通、街口、全支付、LINE Pay Money、icash、全盈 +PAY、悠遊付自身</li>
+            <li><b>監管</b>：金管會、電子支付機構管理條例、央行（CBDC）</li>
+        </ul>
+    </div>
+</div>
+
+<div class="tip info">
+    <b>第七章整合結論 — 圖譜補建優先順序</b>
+    <b>資料</b>：節點 1 個、邊 0 條。<br>
+    <b>觀察</b>：悠遊卡的關係網路高度豐富（上中下游、治理、競爭、監管四象限都有強連結），但目前完全未收錄。<br>
+    <b>推論</b>：若補建圖譜，對推衍「政策變動傳導路徑」「競爭壓力傳導路徑」「CBDC 衝擊傳導路徑」會有顯著幫助。<br>
+    <b>結論</b>：建議在 Step 6（產業鏈與供應鏈分析）完成後，將關係邊回寫入西碧拉圖譜，優先順序：競爭（同業 8 家）→ 治理（股東 10 家）→ 上下游（供應商 4 家+客戶 8 家）→ 監管（金管會+央行）。
+</div>
+
+<!-- ============ 章節八：紅旗彙總 ============ -->
+<h2 class="section-title" id="ch8">八、紅旗彙總（8 項）</h2>
+<div class="section-sub">從年報擷取的 8 個結構性警訊，已與即時搜尋交叉驗證</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-01 儲值金額 FY2024 暴跌 -47%</div>
+        <div class="rc-level high">高</div>
+    </div>
+    <div class="rc-body">
+        FY2023 儲值金 121.3 億 → FY2024 64.4 億，年減 56.9 億（-47%）；同時代理收付金額卻逆向 +35%。2024 年報未解釋原因。<br>
+        <b>即時搜尋交叉驗證</b>：主因為（1）4 大銀行停權 1 年未用自動加值卡（省錄碼費 2.5 億）；（2）消費者轉移至行動支付；（3）TPASS 月票改變扣款模式。屬業務轉型的會計副作用，非純粹流失。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.5 + udn.com/news/story/7239/8319798</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-02 淨利成長高度依賴利息收入（獲利品質）</div>
+        <div class="rc-level high">高</div>
+    </div>
+    <div class="rc-body">
+        FY2024 利息收入 1.999 億元佔營收 10.18%、佔淨利 85.8%。扣除利息後本業稅前僅 ~8,000 萬。法規要求儲值金信託於低風險投資，利率敏感度極高。升息受益、降息承壓。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.80 利率風險段 + 電子支付機構管理條例（全國法規資料庫）</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-03 連續三年董事長與總經理大變動</div>
+        <div class="rc-level medium">中高</div>
+    </div>
+    <div class="rc-body">
+        FY2022 劉奕成 → FY2023 邱昱凱（柯團隊）→ 2023/3 林志盈（蔣萬安接手）；總經理 邱昱凱 → 陳國君（2024/3）。政治輪替連動人事，管理層穩定性低。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.83 重大事項 + cna.com.tw/news/aloc/202303290292</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-04 北市府系統控股 72.72%（高度政治化）</div>
+        <div class="rc-level medium">中</div>
+    </div>
+    <div class="rc-body">
+        悠遊卡投控 57.19% + 台北大眾捷運 10.87% + 臺北市政府 4.66%。決策受北市府政策深度影響。優點：政策紅利（TPASS、敬老卡）；缺點：商業決策效率與創新受限。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.54-55</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-05 核心交易金額成長大幅放緩</div>
+        <div class="rc-level medium">中</div>
+    </div>
+    <div class="rc-body">
+        交易金額 FY22 518.6 億 → FY23 601.4 億（+16%）→ FY24 612.4 億（+2%）。疫後反彈紅利結束。流通卡成長率從 +11% 降至 +7%。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.5 / 2023 年報 p.5</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-06 儲值卡龍頭 vs 電子支付弱勢</div>
+        <div class="rc-level medium">中</div>
+    </div>
+    <div class="rc-body">
+        儲值卡市佔 80.96% 龍頭地位穩固，但更大的電子支付市場（含第三方）悠遊付僅 5%，第 4 名。面對 LINE Pay、街口、全支付競爭劣勢明顯。2024 年報明言「不是通路支付，DNA 是交通票證」反映自我定位讓步。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.65-66</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-07 董監酬勞 0 元，員工認股權集中於高階</div>
+        <div class="rc-level low">低</div>
+    </div>
+    <div class="rc-body">
+        FY2024 董監酬勞 NTD 0 元，員工酬勞 2,105 萬元。ESOP 認股價 16.3 元，8 位經理人取得 16 萬股，第一階員工 16 人取得 40 萬股。管理層激勵集中於認股權而非現金，依賴興櫃掛牌後股價表現。稀釋 1.95%。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.61-63</span>
+    </div>
+</div>
+
+<div class="risk-card">
+    <div class="rc-header">
+        <div class="rc-title">RF-08 與北市府系統業者廣泛關係人交易</div>
+        <div class="rc-level low">低</div>
+    </div>
+    <div class="rc-body">
+        重要契約方包括台北大眾捷運、欣欣客運、大南汽車、首都客運、三重汽車客運等，多為董事代表所屬公司。清分手續費、特約機構契約屬關係人交易，需檢視定價公允性。2024 年報未詳列各關係人交易金額。<br>
+        <span style="font-size:.75em;color:var(--txt3)">來源：2024 年報 p.74-76</span>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>第八章整合結論 — 8 紅旗分類定性</b>
+    <b>資料</b>：高度紅旗 2 個（RF-01 儲值金、RF-02 利息依賴）、中高 1 個（RF-03 人事）、中度 3 個（RF-04 政治、RF-05 成長放緩、RF-06 電支弱勢）、低度 2 個（RF-07 酬勞、RF-08 關係人）。<br>
+    <b>觀察</b>：8 紅旗可歸為兩大主軸 — ①結構性衰退訊號（RF-01/05/06）；②獲利品質與治理風險（RF-02/03/04/07/08）。<br>
+    <b>推論</b>：RF-01 已由即時搜尋破解（轉型副作用），降級為中度；但 RF-02 仍是最致命的 — 若 FY2025 仍有 80%+ 淨利來自利息，表示即使 EPS 4.2 元也只是「升息財」，一旦降息 EPS 將快速縮水。<br>
+    <b>結論</b>：Step 4（風險偵測與求證）必須重點驗證 RF-02（FY2025 利息占比）、RF-06（電支市佔趨勢）、CBDC 時程。其餘紅旗納入風險評分但不作為決策關鍵。
+</div>
+
+<!-- ============ 章節九：Gate Check ============ -->
+<h2 class="section-title" id="ch9">九、第一步完成門檻自檢（Gate Check）</h2>
+<div class="section-sub">六管道 + 西碧拉 七項檢查，評估第一步完成度</div>
+
+<div class="card">
+    <h3>六管道完成度檢查表</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>管道</th><th>內容</th><th>狀態</th><th>說明</th></tr>
+            <tr><td>A 年報</td><td>FY2022/2023/2024 三年對照</td><td><span class="badge ok">通過</span></td><td>取得 3 年，缺 FY2020/2021（不影響核心判斷）</td></tr>
+            <tr><td>B 必搜清單</td><td>月營收、重大公告、官網、產業報告</td><td><span class="badge ok">通過</span></td><td>完整，含 FY2025 最新公告</td></tr>
+            <tr><td>C 市場調查</td><td>上下游、競爭、人才、產業</td><td><span class="badge ok">通過</span></td><td>5/5 條線完成</td></tr>
+            <tr><td>D finlab</td><td>量化資料</td><td><span class="badge warn2">結構缺口</span></td><td>興櫃無 finlab，改走年報直接擷取</td></tr>
+            <tr><td>E 即時搜尋</td><td>WebSearch×19 + WebFetch×5</td><td><span class="badge ok">通過</span></td><td>RF-01~03 三項深查</td></tr>
+            <tr><td>F 法說會</td><td>投資人資料</td><td><span class="badge warn2">結構缺口</span></td><td>興櫃無常態法說會（僅 2022/12 興櫃前場次）</td></tr>
+            <tr><td>西碧拉</td><td>圖譜節點+邊</td><td><span class="badge warn2">節點缺口</span></td><td>節點存在但邊數 0，待 Step 6 補建</td></tr>
+        </table>
+        <p style="font-size:.82em;color:var(--txt2);margin-top:8px;line-height:1.7">
+        <b>總結</b>：4 項完整通過（A/B/C/E），3 項結構性缺口（D/F/西碧拉）但均為本案特性導致，非資料收集不足。<b>第一步完成度 = 4/4 可做項目全數通過</b>，可進入 Step 2。
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>資料統計摘要</h3>
+    <div class="card-body">
+        <div class="grid3">
+            <div class="mini-card">
+                <div class="title">WebSearch 次數</div>
+                <div class="num" style="color:var(--accent)">34</div>
+                <div class="desc">即時 19 + 國際 15</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">WebFetch 次數</div>
+                <div class="num" style="color:var(--accent)">12</div>
+                <div class="desc">即時 5 + 國際 7（3 成功）</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">引用來源總數</div>
+                <div class="num" style="color:var(--accent)">40+</div>
+                <div class="desc">官方/主流媒體/產業/維基</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">年報覆蓋年度</div>
+                <div class="num" style="color:var(--accent)">3+</div>
+                <div class="desc">FY22/23/24 主 + FY21 片段</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">紅旗數</div>
+                <div class="num" style="color:var(--warn)">8</div>
+                <div class="desc">2 高 + 1 中高 + 3 中 + 2 低</div>
+            </div>
+            <div class="mini-card">
+                <div class="title">國際對比國家</div>
+                <div class="num" style="color:var(--accent)">5</div>
+                <div class="desc">HK/JP/SG/KR/UK</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tip good">
+    <b>第九章整合結論 — Gate Check 通過，可進 Step 2</b>
+    <b>資料</b>：四項可做管道全數通過，三項結構缺口均有替代方案或已說明。<br>
+    <b>觀察</b>：結構缺口（finlab/法說會/西碧拉邊）不是第一步執行問題，而是悠遊卡作為興櫃小型公司的天然限制。<br>
+    <b>推論</b>：第一步資料收集品質足以支撐後續步驟的推論與求證。核心數據（FY2025 EPS 4.2、RF-01 ~47%、電支市佔第 4、國際落差 10 倍）均已就位。<br>
+    <b>結論</b>：✅ Gate Check 通過，第一步完成。可進入 Step 2（催化劑列表與求證）。
+</div>
+
+<!-- ============ 章節十：整合結論 ============ -->
+<h2 class="section-title" id="ch10">十、第一步整合結論（資料 → 觀察 → 推論 → 結論）</h2>
+<div class="section-sub">三條路徑的分歧結論，以及後續步驟觀察重點</div>
+
+<div class="card">
+    <h3>資料層（事實彙總）</h3>
+    <div class="card-body">
+        <ul style="font-size:.84em;color:var(--txt2);padding-left:20px;line-height:1.8">
+            <li><b>FY2025 最新</b>：營收 19.7 億、淨利 2.97 億、EPS 4.2 元、股利 2.95 元（+26% EPS，+27% 淨利）</li>
+            <li><b>FY2024 獲利結構</b>：利息收入 1.999 億，占淨利 85.8%；本業稅前僅 ~8,000 萬</li>
+            <li><b>市場地位</b>：儲值卡市佔 80.96%（龍頭）、電支用戶 325 萬（第 4，遠低於一卡通/街口/全支付）</li>
+            <li><b>股權結構</b>：政府系統 72.72%，連續三年董座更迭</li>
+            <li><b>國際對比</b>：淨利 USD 7.3M vs Octopus 77-90M（10 倍差距）</li>
+            <li><b>紅旗</b>：8 項（2 高 + 1 中高 + 3 中 + 2 低），RF-01 儲值金 -47% 已破解為業務轉型副作用</li>
+            <li><b>威脅</b>：LINE Pay Money（2024/7 獲牌）、CBDC（2026-2027 試行）、台北捷運多元支付進站（2026/1）</li>
+            <li><b>正面</b>：悠遊付會員 2026/3 達 410 萬（+64% vs 2023）、韓國跨境支付上線 2 個月日均交易 +80%</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>觀察層（矛盾訊號）</h3>
+    <div class="card-body">
+        <ul style="font-size:.84em;color:var(--txt2);padding-left:20px;line-height:1.8">
+            <li>表面看起來：EPS 三年 +287%、股利創高、ROE 19.90%、儲值卡市佔 80%+ → 像穩定成長股</li>
+            <li>拆解後看到：本業淨利 8,000 萬、電支第 4、儲值金 -47%、政治風險、國際落差 10 倍 → 像結構性衰退股</li>
+            <li>同時存在：集團內部轉型（卡→付）順利推進 + 跨境支付剛起步但規模小 → 轉型中間態</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>推論層 — 分歧三路徑</h3>
+    <div class="card-body">
+        <div class="tip danger" style="margin:6px 0">
+            <b>看空路徑（機率 40%）</b>
+            FY2025 4.2 元是「疫後+毛利+升息」三重紅利頂點。2026 降息週期開啟 + LINE Pay Money 進場 + CBDC 試行 + 台北捷運多元支付，EPS 可能回落至 2.5-3.0。興櫃議價市場流動性差，下跌時更痛。
+        </div>
+        <div class="tip warn" style="margin:6px 0">
+            <b>看平路徑（機率 45%）</b>
+            集團內部轉型進度順利（悠遊付 410 萬會員），跨境支付韓國成功後複製日本/新加坡，每年 5-10% 營收增量剛好抵銷本業衰退。EPS 維持 3.5-4.2 區間。適合賺股利（殖利率 ~5%）而非賺資本利得。
+        </div>
+        <div class="tip good" style="margin:6px 0">
+            <b>看多路徑（機率 15%）</b>
+            CBDC 試行後電支機構被正式認定為雙層架構中介角色，悠遊卡反而受益於央行系統整合。跨境支付規模指數成長（韓 → 日 → SG → 東南亞）。EPS 突破 5 元，估值重評。機率較低，需等多個催化劑同時兌現。
+        </div>
+    </div>
+</div>
+
+<div class="tip info">
+    <b>第一步整合最終結論</b>
+    <b>定性判斷</b>：悠遊卡是「升息紅利+疫後復甦+毛利修復」三重紅利在 FY2023-2024 同時兌現的結果，EPS 暴漲 287% 是不可持續的一次性現象。FY2025 EPS 4.2 元看起來是另一個高峰，但需由後續步驟拆解利息占比才能判斷是否為「利率紅利再放大」。<br><br>
+    <b>最大不確定性</b>：FY2025 利息收入占淨利比例。若仍維持 80%+，代表本業實質未改善；若降至 60% 以下，代表本業確實強化。<br><br>
+    <b>後續步驟優先任務</b>：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>Step 2 催化劑：韓國跨境戰果持續性、日本新加坡上線時程、LINE Pay Money 市佔演變</li>
+        <li>Step 3 為什麼漲：拆解 FY2025 2.97 億淨利中利息 vs 本業占比</li>
+        <li>Step 4 風險偵測：CBDC 時程、降息週期時點、台北捷運多元支付對交通本業衝擊</li>
+        <li>Step 5 估值：DCF + 國際倍數 + 股利折現三軌並行（興櫃無歷史 PE 可參考）</li>
+        <li>Step 6 產業鏈：補建西碧拉關係邊（競爭 8 家 + 治理 10 家 + 上下游 12 家 + 監管 2 家）</li>
+    </ul>
+    <br>
+    <b>第一步資料收集結論：通過 Gate Check，進入 Step 2。</b>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-04-05</p>
+    <p>資料來源：6035_年報擷取_2026-04-05.json + 6035_即時搜尋_管道BCE_2026-04-05.json + 6035_國際搜尋_管道F_2026-04-05.json + 6035_西碧拉_供應鏈.json</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

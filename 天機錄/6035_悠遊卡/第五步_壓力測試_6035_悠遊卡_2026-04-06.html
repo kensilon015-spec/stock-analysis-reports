@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>6035 悠遊卡 — Step5 假設壓力測試</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base)}.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.8em;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:5px 8px;text-align:left;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.bucket{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:700}
+.bucket-green{background:rgba(46,125,50,.25);color:#4caf50}
+.bucket-yellow{background:rgba(212,160,23,.15);color:#d4a017}
+.bucket-red{background:rgba(198,40,40,.2);color:#ef5350}
+.toggle-all{position:fixed;bottom:16px;right:16px;background:var(--panel);border:1px solid var(--border);color:var(--txt2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78em;z-index:999}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>6035 悠遊卡 — 假設壓力測試</h1>
+  <div class="sub">第五步：三桶分類 + 事前驗屍法 + 敏感度分析 + 盲點聲明</div>
+  <div class="desc">2026-04-06｜基於 Step4 主假說 H2(配息股45%)+H3(結構衰退35%)</div>
+  <div class="tags"><span class="tag">壓力測試</span><span class="tag">事前驗屍法 7 因</span><span class="tag">致命因子：降息</span><span class="tag">盲點 5 項</span></div>
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">一、關鍵假設三桶分類</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>三桶分類表</h3>
+<div class="card-body">
+<table>
+<tr><th>桶</th><th>假設</th><th>支撐程度</th><th>風險</th></tr>
+<tr><td><span class="bucket bucket-green">有支撐</span></td><td>悠遊卡儲值卡市佔 80%+ 短期不會崩盤</td><td>年報 + 金管會數據連續 3 年上升</td><td>低（1-2年內）</td></tr>
+<tr><td><span class="bucket bucket-green">有支撐</span></td><td>政府不會讓悠遊卡倒閉（72.72% 控股）</td><td>公股結構 + 公共運輸政策工具</td><td>極低</td></tr>
+<tr><td><span class="bucket bucket-green">有支撐</span></td><td>FY2025 EPS 4.2 元已實現（非預測）</td><td>公司正式新聞稿 2026-03-26</td><td>無（已發生）</td></tr>
+<tr><td><span class="bucket bucket-green">有支撐</span></td><td>CBDC 短期（2026-2027）不會正式上路</td><td>央行態度審慎 + 客家幣僅 2.8 億試驗</td><td>低</td></tr>
+<tr><td><span class="bucket bucket-yellow">需附註</span></td><td>利率短期維持不降</td><td>台灣央行 2025 年未降息，但全球降息趨勢已成</td><td><b>中高</b>。美國/歐洲已降，台灣壓力漸增</td></tr>
+<tr><td><span class="bucket bucket-yellow">需附註</span></td><td>悠遊付用戶持續成長（→500萬）</td><td>趨勢向上（250→410萬），但成長率遞減</td><td>中。LINE Pay Money 可能搶走增量</td></tr>
+<tr><td><span class="bucket bucket-yellow">需附註</span></td><td>北捷多元支付衝擊可控（交通營收跌幅<10%）</td><td>2026/7 才全面開放，影響尚未顯現</td><td><b>高</b>。無歷史數據可參考，香港/倫敦經驗顯示替代率可達 30-50%</td></tr>
+<tr><td><span class="bucket bucket-red">無支撐</span></td><td>跨境支付能成為第二成長曲線</td><td>韓國上線僅 2 個月，規模極小，未揭露交易額</td><td>高。競爭者先行，+80% 成長可能是低基期效應</td></tr>
+<tr><td><span class="bucket bucket-red">無支撐</span></td><td>數據變現能產生實質營收</td><td>年報大談但零營收揭露，處於概念階段</td><td>極高。0→1 的難度遠大於 1→10</td></tr>
+<tr><td><span class="bucket bucket-red">無支撐</span></td><td>Apple Wallet 整合能在 2026 完成</td><td>無任何官方時程或公告</td><td>極高。可能受限於 Apple 全球政策</td></tr>
+</table>
+
+<div class="tip danger">
+<b>三桶小結</b><br>
+<b>有支撐 4 個</b>（防守面穩固）/ <b>需附註 3 個</b>（中期風險集中在降息+交通衝擊）/ <b>無支撐 3 個</b>（所有成長故事都缺乏實質證據）<br>
+<b>白話說</b>：悠遊卡「不會死」這件事有很好的支撐，但「會成長」這件事完全沒有支撐。
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">二、事前驗屍法（≥7 個失敗原因）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>假設投資悠遊卡，2 年後失敗了，可能原因是什麼？</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>失敗原因</th><th>機率</th><th>衝擊</th><th>風險評分</th></tr>
+<tr><td>1</td><td><b>央行降息 ≥ 2 碼</b>：利息收入從 2.0 億降至 1.4-1.6 億，EPS 直接少 0.6-0.8 元</td><td>40%</td><td>極高</td><td style="color:var(--bear)"><b>4.0</b></td></tr>
+<tr><td>2</td><td><b>北捷多元支付後交通營收跌 20%+</b>：交通佔營收 58%，跌 20% = 營收減 2.3 億</td><td>30%</td><td>極高</td><td style="color:var(--bear)"><b>3.0</b></td></tr>
+<tr><td>3</td><td><b>LINE Pay Money 吃掉悠遊付增量</b>：悠遊付用戶停滯在 400 萬，被第五名超越</td><td>35%</td><td>高</td><td style="color:var(--warn)"><b>2.8</b></td></tr>
+<tr><td>4</td><td><b>2026 台北市長選舉換黨</b>：管理層再度大洗牌，策略中斷</td><td>40%</td><td>中</td><td style="color:var(--warn)"><b>2.4</b></td></tr>
+<tr><td>5</td><td><b>儲值卡市場加速萎縮</b>：Apple Pay/Google Pay 進站後實體卡使用量年減 15%+</td><td>25%</td><td>高</td><td style="color:var(--warn)"><b>2.0</b></td></tr>
+<tr><td>6</td><td><b>跨境支付複製失敗</b>：日本/新加坡遲未上線，韓國交易額見頂</td><td>45%</td><td>中</td><td style="color:var(--warn)"><b>1.8</b></td></tr>
+<tr><td>7</td><td><b>興櫃流動性陷阱</b>：想賣出時找不到買家，價差 10-20%</td><td>60%</td><td>中</td><td style="color:var(--warn)"><b>1.8</b></td></tr>
+<tr><td>8</td><td><b>配息被砍</b>：EPS 若降到 2.5 以下，配息率維持 90% 也只有 2.25 元/股</td><td>25%</td><td>高</td><td style="color:var(--warn)"><b>2.0</b></td></tr>
+</table>
+<p style="font-size:.82em;margin-top:6px"><b>致命因子（風險評分 ≥ 3.0）</b>：#1 降息 + #2 北捷多元支付。這兩個如果同時發生（聯合機率 ~12%），EPS 可能從 4.2 跌到 2.0-2.5，股價跌幅可達 40%+。</p>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">三、敏感度分析</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>EPS 敏感度矩陣（降息 × 交通營收變化）</h3>
+<div class="card-body">
+<p style="font-size:.82em;margin-bottom:6px">基準：FY2025 EPS 4.2 元（利息 ~2.2 億 + 本業 ~0.8 億）</p>
+<table style="text-align:center">
+<tr><th></th><th>交通營收 +5%</th><th>交通持平</th><th>交通 -10%</th><th>交通 -20%</th><th>交通 -30%</th></tr>
+<tr><td style="text-align:left"><b>利率不變</b></td><td style="color:var(--bull)">4.4</td><td style="color:var(--bull)">4.2</td><td style="color:var(--warn)">3.6</td><td style="color:var(--bear)">3.0</td><td style="color:var(--bear)">2.4</td></tr>
+<tr><td style="text-align:left"><b>降 1 碼</b></td><td style="color:var(--bull)">4.0</td><td style="color:var(--warn)">3.8</td><td style="color:var(--warn)">3.2</td><td style="color:var(--bear)">2.6</td><td style="color:var(--bear)">2.0</td></tr>
+<tr><td style="text-align:left"><b>降 2 碼</b></td><td style="color:var(--warn)">3.6</td><td style="color:var(--warn)">3.4</td><td style="color:var(--bear)">2.8</td><td style="color:var(--bear)">2.2</td><td style="color:var(--bear)">1.6</td></tr>
+<tr><td style="text-align:left"><b>降 3 碼</b></td><td style="color:var(--warn)">3.2</td><td style="color:var(--bear)">3.0</td><td style="color:var(--bear)">2.4</td><td style="color:var(--bear)">1.8</td><td style="color:var(--bear)">1.2</td></tr>
+</table>
+<div class="tip danger">
+<b>致命組合：降 2 碼 + 交通 -20% → EPS 2.2 元（腰斬）</b><br>
+此情境下股利僅約 2.0 元，以興櫃議價 50 元計算殖利率 4%，無吸引力。<br>
+<b>最可能情境（H2 主假說）</b>：降 0-1 碼 + 交通 -10% → EPS 3.2-3.6 元，股利 2.9-3.2 元，殖利率 5.8-6.4%，尚可接受。
+</div>
+</div></div>
+
+<div class="card">
+<h3>股利敏感度</h3>
+<div class="card-body">
+<table style="text-align:center">
+<tr><th>EPS</th><th>配息率 90%</th><th>配息率 80%</th><th>配息率 70%</th><th>殖利率 @50元</th></tr>
+<tr><td>4.2（基準）</td><td>3.78</td><td>3.36</td><td>2.94</td><td style="color:var(--bull)">5.9-7.6%</td></tr>
+<tr><td>3.5</td><td>3.15</td><td>2.80</td><td>2.45</td><td style="color:var(--bull)">4.9-6.3%</td></tr>
+<tr><td>2.5</td><td>2.25</td><td>2.00</td><td>1.75</td><td style="color:var(--warn)">3.5-4.5%</td></tr>
+<tr><td>1.5</td><td>1.35</td><td>1.20</td><td>1.05</td><td style="color:var(--bear)">2.1-2.7%</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">四、盲點聲明</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>誠實列出看不到的東西</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th>盲點</th><th>為何看不到</th><th>可能影響</th></tr>
+<tr><td>1</td><td><b>FY2025 利息佔淨利比例</b></td><td>FY2025 年報尚未公開（預計 2027/4），只有新聞稿總數</td><td>若降至 60% 以下 → H1 機率大升；若仍 80%+ → H3 確認</td></tr>
+<tr><td>2</td><td><b>北捷多元支付後的實際替代率</b></td><td>2026/7 才全面開放，目前零數據</td><td>替代率 5% vs 30% 對營收影響差 6 倍</td></tr>
+<tr><td>3</td><td><b>悠遊卡與 Apple 的談判進度</b></td><td>商業機密，無公開資訊</td><td>若 Apple Wallet 整合成功 → 護城河回穩</td></tr>
+<tr><td>4</td><td><b>儲值金信託利率的具體條件</b></td><td>年報僅揭露總利息收入，未揭露加權平均利率</td><td>無法精確計算降息對利息收入的衝擊倍數</td></tr>
+<tr><td>5</td><td><b>北市府對悠遊卡的真實策略意圖</b></td><td>政府內部決策不透明</td><td>可能有未公開的合併/改組計畫</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">第五步整合結論</p>
+<!-- ============================================================ -->
+
+<div class="tip warn">
+<b>第五步整合結論 — 防守有底但成長無撐，降息是致命因子</b><br><br>
+<b>資料→觀察→推論→結論：</b><br><br>
+<b>事實</b>：10 個關鍵假設中，4 個有支撐（防守面）、3 個需附註（中期風險）、3 個無支撐（成長故事）。致命因子 = 降息 × 交通營收下滑。<br><br>
+<b>觀察</b>：壓力測試顯示 EPS 對利率極度敏感 — 降 2 碼即讓 EPS 從 4.2 跌到 3.4；若同時交通 -20%，EPS 腰斬至 2.2。但基準情境（降 0-1 碼 + 交通 -10%）下 EPS 仍有 3.2-3.6，股利 2.9-3.2 元。<br><br>
+<b>推論</b>：悠遊卡的投資價值完全繫於「利率環境」而非「公司基本面改善」。這是一檔「偽裝成電子支付股的利率敏感股」，應用類似債券/REIT 的分析框架。<br><br>
+<b>結論（第二次信心校準 — 壓力測試後）</b>：<br>
+- H2 配息股：45% → <b>50%</b>（壓力測試確認基準情境下股利仍可接受）<br>
+- H3 結構衰退：35% → <b>30%</b>（CBDC 短期無威脅 + 政府托底 = 崩塌速度比想像慢）<br>
+- H1/H4/H5：維持不變（5%/10%/5%）<br>
+- <b>盲點最大風險</b>：北捷多元支付後的替代率，2026 下半年為關鍵觀察期
+</div>
+
+</div>
+<button class="toggle-all" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.toggle('collapsed'))">全部展開/收合</button>
+<script>
+document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'));
+document.querySelectorAll('.card h3').forEach(h=>{h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))});
+</script>
+</body>
+</html>

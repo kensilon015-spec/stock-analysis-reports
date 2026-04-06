@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>6035 悠遊卡 — Step6 評審團 v3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base)}.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.8em;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:5px 8px;text-align:left;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.role{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:700;margin-right:4px}
+.role-analyst{background:rgba(21,101,192,.25);color:#42a5f5}
+.role-researcher{background:rgba(46,125,50,.25);color:#66bb6a}
+.role-chipist{background:rgba(184,150,12,.25);color:#d4b030}
+.role-strategist{background:rgba(156,39,176,.25);color:#ab47bc}
+.role-risk{background:rgba(198,40,40,.25);color:#ef5350}
+.score-box{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:1em;margin:4px 2px}
+.score-green{background:rgba(46,125,50,.25);color:#4caf50;border:1px solid #4caf50}
+.score-yellow{background:rgba(212,160,23,.15);color:#d4a017;border:1px solid #d4a017}
+.score-red{background:rgba(198,40,40,.2);color:#ef5350;border:1px solid #ef5350}
+.toggle-all{position:fixed;bottom:16px;right:16px;background:var(--panel);border:1px solid var(--border);color:var(--txt2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78em;z-index:999}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>6035 悠遊卡 — 評審團 v3.0</h1>
+  <div class="sub">第六步：三系統融合 → 五角色逐層分析 → 第三次信心校準</div>
+  <div class="desc">2026-04-06｜輸入：Step2~5 全部結論 + ACH 信心 H2:50%/H3:30%</div>
+  <div class="tags"><span class="tag">5 角色</span><span class="tag">第三次校準</span><span class="tag">最終信心分配</span></div>
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">一、三大員工系統融合推衍</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>Iker 四層框架（23 項掃描）</h3>
+<div class="card-body">
+<table>
+<tr><th>層</th><th>項目</th><th>評分</th><th>說明</th></tr>
+<tr><td rowspan="3">基本面</td><td>營收成長</td><td style="color:var(--bear)">2/5</td><td>+1.89%，幾乎停滯</td></tr>
+<tr><td>獲利品質</td><td style="color:var(--bear)">1/5</td><td>85.8% 靠利息，本業極薄</td></tr>
+<tr><td>ROE 可持續性</td><td style="color:var(--warn)">3/5</td><td>19.9% 帳面亮眼但分母小且靠利息</td></tr>
+<tr><td rowspan="3">產業面</td><td>產業成長性</td><td style="color:var(--bull)">4/5</td><td>電子支付 +20%/年（但悠遊卡吃不到）</td></tr>
+<tr><td>競爭強度</td><td style="color:var(--bear)">1/5</td><td>五力 17/25，極度競爭</td></tr>
+<tr><td>護城河</td><td style="color:var(--bear)">2/5</td><td>窄且侵蝕中</td></tr>
+<tr><td rowspan="2">籌碼面</td><td>內部人動向</td><td style="color:var(--bull)">4/5</td><td>零賣出，正面</td></tr>
+<tr><td>流動性</td><td style="color:var(--bear)">1/5</td><td>興櫃，前十大持 85.61%</td></tr>
+<tr><td rowspan="2">估值面</td><td>殖利率</td><td style="color:var(--bull)">4/5</td><td>2.95/50 = 5.9%，具吸引力</td></tr>
+<tr><td>成長估值</td><td style="color:var(--bear)">1/5</td><td>成長故事被 ACH 否決</td></tr>
+</table>
+<p style="margin-top:6px"><b>Iker 總評</b>：<span class="score-box score-yellow">23/50 → 中下</span>。基本面與產業面嚴重拖分，殖利率和內部人為唯二亮點。</p>
+</div></div>
+
+<div class="card">
+<h3>BenTsai 價值波段（12 條心法掃描）</h3>
+<div class="card-body">
+<table>
+<tr><th>心法</th><th>判定</th><th>說明</th></tr>
+<tr><td>低估值進場</td><td style="color:var(--warn)">待確認</td><td>興櫃議價 ~50 元，PE ~12x（FY2025 EPS 4.2），看起來便宜但利息虛胖</td></tr>
+<tr><td>本業體質</td><td style="color:var(--bear)">不合格</td><td>扣除利息後本業 ROE ~5-7%，不符價值股標準</td></tr>
+<tr><td>配息穩定度</td><td style="color:var(--bull)">合格</td><td>FY2024 配 2.96 元（創高），配息率 89.8%</td></tr>
+<tr><td>產業護城河</td><td style="color:var(--bear)">不合格</td><td>窄且侵蝕中</td></tr>
+<tr><td>管理層信任</td><td style="color:var(--warn)">中等</td><td>60 分，政治任命風險</td></tr>
+<tr><td>安全邊際</td><td style="color:var(--warn)">待計算</td><td>需 Step7 完成估值後判斷</td></tr>
+</table>
+<p style="margin-top:6px"><b>BenTsai 結論</b>：6 項中 1 合格、2 不合格、3 待確認/中等。<b>不構成價值投資標準的「好公司」</b>，但可能是「合理價配息股」。</p>
+</div></div>
+
+<div class="card">
+<h3>豁達趨勢選股（正面 12 項 + 負面 12 項掃描）</h3>
+<div class="card-body">
+<table>
+<tr><th>面向</th><th>符合項數</th><th>關鍵項目</th></tr>
+<tr><td style="color:var(--bull)">正面指標</td><td>3/12</td><td>✓ EPS 連續成長 / ✓ 配息創高 / ✓ 內部人零賣出。其餘 9 項不符（營收趨緩、技術面無法判斷、外資無數據等）</td></tr>
+<tr><td style="color:var(--bear)">負面指標</td><td>6/12</td><td>✗ 營收成長停滯 / ✗ 護城河侵蝕 / ✗ 競爭加劇 / ✗ 管理層非專業 / ✗ 流動性差 / ✗ 產品無差異化</td></tr>
+</table>
+<p style="margin-top:6px"><b>豁達結論</b>：正面 3 vs 負面 6 = <b>淨負面 -3</b>。趨勢選股角度<b>不推薦</b>。</p>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">二、五角色逐層分析</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>產業分析師</h3>
+<div class="card-body">
+<p><span class="role role-analyst">產業分析師</span></p>
+<div class="tip info">
+<b>產業判斷：電子支付進入紅海淘汰賽</b><br>
+台灣電支市場 3,445 萬用戶、10 家專營 + 20 家兼營，供過於求。LINE Pay Money 進場後格局從三強變四超強，悠遊付夾在中間進退失據。悠遊卡唯一的「壟斷」（北捷交通）2026/7 瓦解。<br><br>
+<b>產業結論</b>：悠遊卡在電支產業中的定位是「被動防守者」而非「主動進攻者」。產業成長 20%/年但悠遊卡吃不到——它像一間立在高速公路旁邊的老商店，車流很大但大家不停靠。
+</div>
+</div></div>
+
+<div class="card">
+<h3>個股研究員</h3>
+<div class="card-body">
+<p><span class="role role-researcher">個股研究員</span></p>
+<div class="tip warn">
+<b>個股判斷：偽成長股的真面目是利率敏感配息股</b><br>
+EPS 4.2 元看起來漂亮，但拆開來看：利息 ~2.2 億（佔 74%）+ 本業 ~0.8 億（佔 26%）。如果把利息收入視為「央行政策紅利」而非「公司經營能力」，那真正的本業 EPS 只有 ~1.1 元。<br><br>
+估值框架建議：<br>
+- <b>不可用</b>：成長股 PE（成長故事不成立）<br>
+- <b>應該用</b>：股利折現（DDM，配息 2.95 元為起點）+ 分部估值（本業+利息分開評價）<br>
+- <b>參考用</b>：類 REIT/特別股的殖利率比較（5-7% 目標）
+</div>
+</div></div>
+
+<div class="card">
+<h3>籌碼分析師</h3>
+<div class="card-body">
+<p><span class="role role-chipist">籌碼分析師</span></p>
+<div class="tip warn">
+<b>籌碼判斷：流動性陷阱 = 額外 15-25% 折價</b><br>
+興櫃議價交易、前十大持 85.61%、無三大法人/融資券數據。買進容易賣出難。以同業上市電支公司（如果有）的流動性折價，悠遊卡至少需要 15-25% 的額外折價。<br><br>
+<b>唯一正面</b>：內部人 113 年度零賣出。但這也可能只是因為興櫃交易不方便，而非對前景有信心。
+</div>
+</div></div>
+
+<div class="card">
+<h3>策略長整合</h3>
+<div class="card-body">
+<p><span class="role role-strategist">策略長</span></p>
+<div class="tip info">
+<b>策略長整合結論</b><br><br>
+<b>共識區（五角色一致）</b>：<br>
+1. 成長股敘事不成立（H1 被否決）<br>
+2. 利息收入是獲利核心（非本業競爭力）<br>
+3. 護城河正在侵蝕（北捷多元支付為轉折點）<br>
+4. 興櫃流動性折價必須納入估值<br>
+5. 政府托底 = 不會倒但不會飛<br><br>
+
+<b>分歧區</b>：<br>
+- <b>買方論點</b>：殖利率 5.9% + 政府托底 + 降息短期不會來 = 穩定收息標的<br>
+- <b>等待方論點</b>：北捷 2026/7 多元支付影響未知 + 降息風險 + 流動性差 = 不急<br>
+- <b>仲裁</b>：建議「觀察等待」至 2026/Q4（北捷多元支付影響顯現後），再決定是否進場收息
+</div>
+</div></div>
+
+<div class="card">
+<h3>風控官交叉驗證</h3>
+<div class="card-body">
+<p><span class="role role-risk">風控官</span></p>
+<div class="tip danger">
+<b>風控官否決項</b>：<br>
+1. <b>流動性風險</b>：興櫃議價，買賣價差大，緊急出場可能損失 10-20%。<b>建議：投入金額不超過總組合 3%</b><br>
+2. <b>利率風險</b>：降 2 碼 → EPS 跌 0.8 元（-19%）。無法對沖<br>
+3. <b>政治風險</b>：2026 台北市長選舉若換黨，管理層全換。不可預測<br><br>
+<b>風控官結論</b>：<b>不否決但附條件</b>。作為收息標的可小量配置（≤3%），但不適合作為核心持股。必須設定降息觸發的停損機制。
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">三、第三次信心校準（評審團後）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>三次校準進程對比表</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>Step4 ACH<br>（第一次）</th><th>Step5 壓力測試<br>（第二次）</th><th>Step6 評審團<br>（第三次）</th><th>變化</th></tr>
+<tr><td>H1 轉型成長</td><td>5%</td><td>5%</td><td><b>5%</b></td><td>→</td></tr>
+<tr><td style="background:rgba(212,160,23,.08)"><b>H2 配息股</b></td><td style="background:rgba(212,160,23,.08)">45%</td><td style="background:rgba(212,160,23,.08)">50%</td><td style="background:rgba(212,160,23,.08)"><b>50%</b></td><td>→</td></tr>
+<tr><td><b>H3 結構衰退</b></td><td>35%</td><td>30%</td><td><b>30%</b></td><td>→</td></tr>
+<tr><td>H4 全面崩塌</td><td>10%</td><td>10%</td><td><b>10%</b></td><td>→</td></tr>
+<tr><td>H5 被收購</td><td>5%</td><td>5%</td><td><b>5%</b></td><td>→</td></tr>
+</table>
+
+<div class="tip good">
+<b>校準結論：三次校準收斂，信心穩定</b><br>
+三次校準結果高度一致，H2:50% + H3:30% 的「平到空」格局未改變。評審團五角色的交叉驗證<b>確認而非推翻</b>了 ACH 和壓力測試的結論。<br><br>
+<b>加權期望值</b>：<br>
+- 加權 EPS = 5% × 5.0 + 50% × 3.8 + 30% × 2.8 + 10% × 1.8 + 5% × 4.5（收購溢價） = <b>3.40 元</b><br>
+- 加權股利 = 3.40 × 89.8% = <b>3.05 元</b><br>
+- 加權殖利率 @50 元 = <b>6.1%</b><br><br>
+<b>安全邊際</b>：以 DDM（折現率 8%，成長率 -2%/年）計算，合理價 ≈ 3.05 / (8% - (-2%)) = <b>30.5 元</b>。相對興櫃議價 ~50 元，<b>無安全邊際</b>。<br><br>
+<b>若以目標殖利率 7% 回推</b>：合理買進價 = 3.05 / 7% = <b>43.6 元</b>。
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">第六步整合結論</p>
+<!-- ============================================================ -->
+
+<div class="tip danger">
+<b>第六步整合結論 — 評審團一致：觀察等待，不急進場</b><br><br>
+<b>資料→觀察→推論→結論：</b><br><br>
+
+<b>五角色共識</b>：成長故事不成立、利息是獲利核心、護城河侵蝕中、流動性折價必納、政府托底不會倒。<br><br>
+
+<b>核心數字</b>：<br>
+- 加權期望 EPS：3.40 元<br>
+- 加權期望股利：3.05 元<br>
+- DDM 合理價：30.5 元（vs 興櫃 ~50 元 = <b>溢價 64%</b>）<br>
+- 目標殖利率 7% 買進價：43.6 元<br><br>
+
+<b>策略長仲裁結論</b>：<br>
+<b>「觀察等待」至 2026/Q4</b>。原因：<br>
+1. 北捷 2026/7 全面開放多元支付 → 等看實際替代率數據<br>
+2. 央行利率政策 → 等看 2026 下半年是否降息<br>
+3. 悠遊付用戶 → 等看能否突破 500 萬還是被 LINE Pay Money 壓制<br><br>
+
+<b>若三個條件在 2026/Q4 的結果</b>：<br>
+- 交通替代率 < 10% + 利率不降 + 悠遊付 > 450 萬 → H2 確認，43 元以下可買<br>
+- 交通替代率 > 20% OR 降息 ≥ 1 碼 → H3 確認，30 元以下才考慮<br>
+- 三個都惡化 → H4，不碰
+</div>
+
+</div>
+<button class="toggle-all" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.toggle('collapsed'))">全部展開/收合</button>
+<script>
+document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'));
+document.querySelectorAll('.card h3').forEach(h=>{h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))});
+</script>
+</body>
+</html>

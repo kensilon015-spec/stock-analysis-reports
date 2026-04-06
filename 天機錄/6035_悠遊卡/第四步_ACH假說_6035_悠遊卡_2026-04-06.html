@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>6035 悠遊卡 — Step4 ACH 競爭假說分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.78em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:5px 8px;text-align:center;font-weight:600;font-size:.76em}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+td:first-child{text-align:left}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.72em;padding:1px 5px;border-radius:3px;background:rgba(184,150,12,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.cc{background:rgba(46,125,50,.3);color:#4caf50;font-weight:700}
+.c{background:rgba(46,125,50,.15);color:#81c784}
+.n{background:rgba(122,176,192,.1);color:var(--txt3)}
+.ii{background:rgba(198,40,40,.3);color:#ef5350;font-weight:700}
+.i-cell{background:rgba(198,40,40,.15);color:#e57373}
+.score-box{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:1em;margin:4px 2px}
+.score-green{background:rgba(46,125,50,.25);color:#4caf50;border:1px solid #4caf50}
+.score-yellow{background:rgba(212,160,23,.15);color:#d4a017;border:1px solid #d4a017}
+.score-red{background:rgba(198,40,40,.2);color:#ef5350;border:1px solid #ef5350}
+.toggle-all{position:fixed;bottom:16px;right:16px;background:var(--panel);border:1px solid var(--border);color:var(--txt2);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78em;z-index:999}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>6035 悠遊卡 — ACH 競爭假說分析</h1>
+  <div class="sub">第四步：5 假說 × 15 證據 → 診斷力排序 → 最少反證原則</div>
+  <div class="desc">分析日期：2026-04-06｜輸入：Step1~3 全部結論 + 67 條 FIAS 資料點</div>
+  <div class="tags">
+    <span class="tag">ACH 方法</span><span class="tag">5 假說</span><span class="tag">15 證據</span><span class="tag">主假說：H2 利率敏感配息股</span>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<p class="section-title">一、競爭假說清單（≥4 假說，含 ≥1 看空）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>五大競爭假說</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:8%">#</th><th style="width:12%">方向</th><th style="width:25%">假說名稱</th><th style="width:55%">核心論述</th></tr>
+<tr><td><b>H1</b></td><td style="color:var(--bull)">看多</td><td>轉型成功成長股</td><td>跨境支付（韓→日→東南亞）+ 悠遊付加速成長 + 數據變現，彌補本業衰退有餘。EPS 持續成長至 5 元+，估值從準公營事業重估為金融科技。</td></tr>
+<tr><td><b>H2</b></td><td style="color:var(--warn)">看平</td><td>利率敏感配息股</td><td>利息收入支撐 EPS 3.5-4.5 元，本業緩慢衰退但不崩盤。高配息率（~90%）提供穩定股利。適合收息投資人，不適合成長型投資人。</td></tr>
+<tr><td><b>H3</b></td><td style="color:var(--bear)">看空</td><td>結構性衰退開始</td><td>北捷多元支付 + 電支邊緣化 + 降息週期三重夾擊。交通營收年減 10-15%，利息收入縮水 20-30%。EPS 回落至 2.5-3.0 元，股利跟著砍。</td></tr>
+<tr><td><b>H4</b></td><td style="color:var(--bear)">強看空</td><td>護城河全面崩塌</td><td>交通營收腰斬 + 深度降息 + CBDC 試行 + LINE Pay Money 吃掉電支市佔。本業虧損，只靠利息維持微利。EPS 跌至 1.5-2.0 元。</td></tr>
+<tr><td><b>H5</b></td><td style="color:var(--neutral)">反共識</td><td>被收購/合併標的</td><td>悠遊卡持續邊緣化後，政策面推動與一卡通合併或被金融集團（富邦/國泰）收購。觸發溢價收購，短期利多。</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">二、證據清單（15 條關鍵證據）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>15 條關鍵證據（含 FIAS + 可靠度 + 診斷力）</h3>
+<div class="card-body">
+<table>
+<tr><th>#</th><th style="text-align:left;width:40%">證據</th><th>FIAS</th><th>可靠</th><th>方向</th></tr>
+<tr><td>E1</td><td style="text-align:left">FY2025 EPS 4.2 元，淨利 +27%，歷史新高</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bull)">多</td></tr>
+<tr><td>E2</td><td style="text-align:left">FY2024 利息佔淨利 85.8%，本業僅 8,000 萬</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E3</td><td style="text-align:left">營收 FY2024 僅 +1.89%，交易金額僅 +2%</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E4</td><td style="text-align:left">儲值卡市佔 80.96%，仍為絕對龍頭</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bull)">多</td></tr>
+<tr><td>E5</td><td style="text-align:left">電支排名第四（380 萬 vs 前三 700 萬+），差距擴大</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E6</td><td style="text-align:left">2026/7 北捷全面開放多元支付（Apple Pay/信用卡進站）</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E7</td><td style="text-align:left">悠遊卡無法加入 Apple Wallet</td><td><span class="fias-f">F</span></td><td>B</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E8</td><td style="text-align:left">悠遊付用戶持續成長 250→410 萬（2023→2026/3）</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bull)">多</td></tr>
+<tr><td>E9</td><td style="text-align:left">韓國跨境 2025/12 上線，2 個月日均交易 +80%</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bull)">多</td></tr>
+<tr><td>E10</td><td style="text-align:left">LINE Pay Money 首月超車一卡通，電支大洗牌</td><td><span class="fias-f">F</span></td><td>B</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E11</td><td style="text-align:left">政府控股 72.72%，連續三年管理層大更迭</td><td><span class="fias-f">F</span></td><td>A</td><td style="color:var(--bear)">空</td></tr>
+<tr><td>E12</td><td style="text-align:left">配息率 89.8% + 研發/營收 5.29%（投入不足）</td><td><span class="fias-f">F</span></td><td>A</td><td>中性</td></tr>
+<tr><td>E13</td><td style="text-align:left">CBDC 仍處早期試驗（客家幣 2.8 億限定），短期無威脅</td><td><span class="fias-f">F</span></td><td>B</td><td style="color:var(--bull)">多</td></tr>
+<tr><td>E14</td><td style="text-align:left">國際對比：八達通淨利 10 倍，Suica Renaissance 轉型中</td><td><span class="fias-i">I</span></td><td>B</td><td>中性</td></tr>
+<tr><td>E15</td><td style="text-align:left">跨境支付競爭者（全支付/街口/一卡通）已先行韓日</td><td><span class="fias-f">F</span></td><td>B</td><td style="color:var(--bear)">空</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">三、ACH 矩陣（CC/C/N/I/II）</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>證據 × 假說 一致性矩陣</h3>
+<div class="card-body">
+<p style="font-size:.78em;color:var(--txt3);margin-bottom:6px">CC=強一致 C=一致 N=中性 I=不一致 II=強不一致</p>
+<div style="overflow-x:auto">
+<table style="font-size:.74em">
+<tr><th style="text-align:left;width:35%">證據</th><th>H1 轉型成長</th><th>H2 配息股</th><th>H3 結構衰退</th><th>H4 全面崩塌</th><th>H5 被收購</th></tr>
+<tr><td style="text-align:left">E1 FY2025 EPS 4.2 創新高</td><td class="cc">CC</td><td class="cc">CC</td><td class="i-cell">I</td><td class="ii">II</td><td class="n">N</td></tr>
+<tr><td style="text-align:left">E2 利息佔淨利 85.8%</td><td class="ii">II</td><td class="c">C</td><td class="cc">CC</td><td class="cc">CC</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E3 營收僅 +1.89%</td><td class="ii">II</td><td class="i-cell">I</td><td class="cc">CC</td><td class="cc">CC</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E4 儲值卡市佔 80.96%</td><td class="c">C</td><td class="cc">CC</td><td class="n">N</td><td class="i-cell">I</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E5 電支第四，差距擴大</td><td class="ii">II</td><td class="i-cell">I</td><td class="cc">CC</td><td class="cc">CC</td><td class="cc">CC</td></tr>
+<tr><td style="text-align:left">E6 北捷 2026/7 多元支付</td><td class="i-cell">I</td><td class="i-cell">I</td><td class="cc">CC</td><td class="cc">CC</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E7 無法加入 Apple Wallet</td><td class="ii">II</td><td class="i-cell">I</td><td class="c">C</td><td class="cc">CC</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E8 悠遊付用戶成長至 410 萬</td><td class="cc">CC</td><td class="c">C</td><td class="i-cell">I</td><td class="ii">II</td><td class="n">N</td></tr>
+<tr><td style="text-align:left">E9 韓國跨境 +80% 成長</td><td class="cc">CC</td><td class="c">C</td><td class="n">N</td><td class="i-cell">I</td><td class="n">N</td></tr>
+<tr><td style="text-align:left">E10 LINE Pay Money 超車一卡通</td><td class="i-cell">I</td><td class="i-cell">I</td><td class="c">C</td><td class="cc">CC</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E11 政府 72.72%，管理層輪替</td><td class="i-cell">I</td><td class="n">N</td><td class="c">C</td><td class="c">C</td><td class="cc">CC</td></tr>
+<tr><td style="text-align:left">E12 配息 90% + 研發 5%</td><td class="ii">II</td><td class="cc">CC</td><td class="c">C</td><td class="c">C</td><td class="n">N</td></tr>
+<tr><td style="text-align:left">E13 CBDC 短期無威脅</td><td class="c">C</td><td class="c">C</td><td class="n">N</td><td class="ii">II</td><td class="n">N</td></tr>
+<tr><td style="text-align:left">E14 八達通淨利 10 倍差</td><td class="c">C</td><td class="n">N</td><td class="c">C</td><td class="c">C</td><td class="c">C</td></tr>
+<tr><td style="text-align:left">E15 跨境競爭者先行韓日</td><td class="i-cell">I</td><td class="n">N</td><td class="c">C</td><td class="c">C</td><td class="n">N</td></tr>
+</table>
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">四、計分與診斷力排序</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>加權計分（CC=+2, C=+1, N=0, I=-1, II=-2）</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>CC</th><th>C</th><th>N</th><th>I</th><th>II</th><th>加權分</th><th>不一致數</th></tr>
+<tr><td style="text-align:left"><b>H1 轉型成長</b></td><td>3</td><td>3</td><td>0</td><td>4</td><td>5</td><td style="color:var(--bear)"><b>-5</b></td><td style="color:var(--bear)">9</td></tr>
+<tr><td style="text-align:left;background:rgba(212,160,23,.1)"><b>H2 配息股</b></td><td style="background:rgba(212,160,23,.1)">3</td><td style="background:rgba(212,160,23,.1)">5</td><td style="background:rgba(212,160,23,.1)">2</td><td style="background:rgba(212,160,23,.1)">5</td><td style="background:rgba(212,160,23,.1)">0</td><td style="color:var(--bull);background:rgba(212,160,23,.1)"><b>+6</b></td><td style="background:rgba(212,160,23,.1)">5</td></tr>
+<tr><td style="text-align:left"><b>H3 結構衰退</b></td><td>4</td><td>5</td><td>2</td><td>2</td><td>0</td><td style="color:var(--bull)"><b>+11</b></td><td>2</td></tr>
+<tr><td style="text-align:left"><b>H4 全面崩塌</b></td><td>6</td><td>5</td><td>0</td><td>2</td><td>2</td><td style="color:var(--bull)"><b>+13</b></td><td>4</td></tr>
+<tr><td style="text-align:left"><b>H5 被收購</b></td><td>2</td><td>7</td><td>4</td><td>0</td><td>0</td><td style="color:var(--bull)"><b>+11</b></td><td>0</td></tr>
+</table>
+
+<div class="tip info">
+<b>計分解讀</b><br>
+- <b>H1 轉型成長</b>：加權 -5，不一致證據 9 條 — <b>被證據強烈反駁</b>。營收停滯、研發不足、Apple Wallet 缺席、電支第四，與「轉型成功」嚴重矛盾<br>
+- <b>H2 配息股</b>：加權 +6，不一致 5 條 — <b>中度支持</b>。多數證據一致（高配息、儲值卡龍頭、利息支撐），但北捷多元支付和電支排名帶來不一致<br>
+- <b>H3 結構衰退</b>：加權 +11，不一致僅 2 條 — <b>強支持</b>。絕大多數證據一致，僅悠遊付成長和 FY2025 創新高帶來不一致<br>
+- <b>H4 全面崩塌</b>：加權 +13 最高，但不一致 4 條 — 有 CBDC 短期無威脅和悠遊付成長兩條強反證，降低信心<br>
+- <b>H5 被收購</b>：加權 +11，不一致 0 — 但此假說缺乏直接觸發證據（無任何合併傳聞），僅為「不矛盾」而非「有支持」
+</div>
+</div></div>
+
+<div class="card">
+<h3>診斷力排序（哪些證據最能區分假說）</h3>
+<div class="card-body">
+<table>
+<tr><th>排名</th><th>證據</th><th>診斷力</th><th>說明</th></tr>
+<tr><td>1</td><td><b>E2 利息佔淨利 85.8%</b></td><td><b>4</b></td><td>H1(-2) vs H4(+2)。最能區分「轉型成功」和「崩塌」</td></tr>
+<tr><td>2</td><td><b>E5 電支第四差距擴大</b></td><td><b>4</b></td><td>H1(-2) vs H4(+2)。電支市場定位的試金石</td></tr>
+<tr><td>3</td><td><b>E7 無法加入 Apple Wallet</b></td><td><b>4</b></td><td>H1(-2) vs H4(+2)。數位化能力的直接指標</td></tr>
+<tr><td>4</td><td><b>E8 悠遊付成長至 410 萬</b></td><td><b>4</b></td><td>H1(+2) vs H4(-2)。唯一強力支持轉型假說的證據</td></tr>
+<tr><td>5</td><td><b>E12 配息 90% + 研發 5%</b></td><td><b>4</b></td><td>H1(-2) vs H2(+2)。區分「成長股」和「配息股」的關鍵</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.82em">前 5 大診斷力證據中，4 條指向空方（E2/E5/E7/E12），僅 1 條支持多方（E8）。</p>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">五、最少反證原則 → 主假說選擇</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>假說篩選（排除被反駁最多的）</h3>
+<div class="card-body">
+<table>
+<tr><th>步驟</th><th>動作</th><th>結果</th></tr>
+<tr><td>1</td><td>排除不一致最多的假說</td><td><b style="color:var(--bear)">H1 淘汰</b>（9 條不一致，被強烈反駁）</td></tr>
+<tr><td>2</td><td>H4 vs H3：H4 加權最高但不一致多 2 條</td><td>H4 降為替代假說（CBDC 短期無威脅 + 悠遊付仍成長 = 「全面崩塌」言之過早）</td></tr>
+<tr><td>3</td><td>H5 不一致 0 但缺直接觸發證據</td><td>H5 降為長期監控（無合併傳聞 = 目前無法驗證）</td></tr>
+<tr><td>4</td><td>H2 vs H3：核心分歧在「衰退速度」</td><td>H3 加權更高（+11 vs +6），但 H2 考慮利息緩衝更合理</td></tr>
+</table>
+
+<div class="tip warn">
+<b>主假說選擇：H2 + H3 混合（偏 H3）</b><br><br>
+
+純粹用 ACH 計分，H3（結構衰退）得分最高且不一致最少。但考量以下因素，主假說調整為 <b>H2（配息股）偏 H3（結構衰退）的混合</b>：<br><br>
+
+1. <b>利息緩衝效應</b>：即使本業衰退，利息收入 2 億/年在短期（1-2 年）仍可維持 EPS 3.5+。H3 的「EPS 回落至 2.5-3.0」需要降息+本業同時惡化，時間軸可能在 2-3 年後<br>
+2. <b>悠遊付持續成長</b>：E8 是唯一但重要的反證。若悠遊付能在 2026 突破 500 萬，結構衰退速度會被延緩<br>
+3. <b>政府托底效應</b>：72.72% 政府控股意味公司不會被允許倒閉或大幅裁員，但也代表不會激進轉型<br><br>
+
+<b>結論</b>：<br>
+- <b>短期（2026-2027）</b>：H2 為主（利息支撐配息股），信心 55%<br>
+- <b>中期（2027-2029）</b>：H3 為主（結構衰退），若降息+北捷多元支付衝擊顯現，信心 35%<br>
+- <b>長期（2030+）</b>：H4 可能（若 CBDC 上路），信心 5%<br>
+- <b>H5 被收購</b>：低機率但高衝擊事件，信心 5%
+</div>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">六、敏感度檢查</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>移除前 3 大診斷力證據後結論是否改變</h3>
+<div class="card-body">
+<table>
+<tr><th>測試</th><th>移除</th><th>H2 分數</th><th>H3 分數</th><th>結論變化</th></tr>
+<tr><td>移除 E2（利息 85.8%）</td><td>最大空方證據</td><td>+5</td><td>+9</td><td>H3 仍領先，結論不變</td></tr>
+<tr><td>移除 E5（電支第四）</td><td>第二大空方</td><td>+7</td><td>+9</td><td>H2 拉近但 H3 仍領先</td></tr>
+<tr><td>移除 E8（悠遊付成長）</td><td>最大多方證據</td><td>+5</td><td>+12</td><td>H3 大幅領先，偏向更空</td></tr>
+<tr><td>同時移除 E2+E5+E8</td><td>三大診斷力</td><td>+5</td><td>+8</td><td>H3 仍領先，結論穩健</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.84em"><b>敏感度結論</b>：無論怎麼移除高診斷力證據，H3（結構衰退）的得分始終 ≥ H2（配息股）。結論穩健。唯一能翻轉結論的情境是悠遊付用戶暴增至 700 萬+（追平前三名），目前無此跡象。</p>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">七、信心分配與監測指標</p>
+<!-- ============================================================ -->
+
+<div class="card">
+<h3>ACH 信心分配（第一次信心校準）</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>信心</th><th>時間軸</th><th>觸發條件</th></tr>
+<tr><td style="color:var(--bull)">H1 轉型成長</td><td><span class="score-box score-red">5%</span></td><td>需 3+ 年</td><td>悠遊付 700 萬+ AND Apple Wallet 整合 AND 跨境 3 國+</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td style="color:var(--warn)"><b>H2 配息股（主）</b></td><td><span class="score-box score-yellow">45%</span></td><td>2026-2027</td><td>利率維持不降 AND 交通營收跌幅 < 10%</td></tr>
+<tr><td style="color:var(--bear)"><b>H3 結構衰退</b></td><td><span class="score-box score-yellow">35%</span></td><td>2027-2029</td><td>降息 ≥ 2 碼 OR 交通營收跌幅 > 15%</td></tr>
+<tr><td style="color:var(--bear)">H4 全面崩塌</td><td><span class="score-box score-red">10%</span></td><td>2029+</td><td>CBDC 正式上路 AND 降息 ≥ 4 碼 AND 電支跌出前五</td></tr>
+<tr><td style="color:var(--neutral)">H5 被收購</td><td><span class="score-box score-red">5%</span></td><td>不確定</td><td>政策面合併討論 OR 大股東變動</td></tr>
+</table>
+</div></div>
+
+<div class="card">
+<h3>假說翻轉監測指標</h3>
+<div class="card-body">
+<table>
+<tr><th>監測指標</th><th>目前值</th><th>H2→H1 升級</th><th>H2→H3 降級</th></tr>
+<tr><td>悠遊付月活用戶</td><td>~380 萬</td><td>> 600 萬</td><td>< 350 萬（流失）</td></tr>
+<tr><td>央行利率</td><td>2.0%（重貼現率）</td><td>維持或升</td><td>降 ≥ 2 碼（≤ 1.5%）</td></tr>
+<tr><td>交通營收 YoY</td><td>+2%（FY2024）</td><td>> +5%</td><td>< -10%</td></tr>
+<tr><td>利息收入佔淨利</td><td>85.8%</td><td>< 60%（本業強化）</td><td>> 90%（更依賴）</td></tr>
+<tr><td>跨境支付國家數</td><td>1（韓國）</td><td>≥ 3（含日本）</td><td>仍為 1（停滯）</td></tr>
+<tr><td>Apple Wallet 整合</td><td>無</td><td>完成整合</td><td>2026 年底仍無</td></tr>
+<tr><td>北捷多元支付後交通使用佔比</td><td>待觀察（2026/7 後）</td><td>跌幅 < 5%</td><td>跌幅 > 15%</td></tr>
+</table>
+</div></div>
+
+<!-- ============================================================ -->
+<p class="section-title">第四步整合結論</p>
+<!-- ============================================================ -->
+
+<div class="tip warn">
+<b>第四步整合結論 — ACH 顯示「偽裝成長股」的本質已被看穿</b><br><br>
+
+<b>資料→觀察→推論→結論：</b><br><br>
+
+<b>核心發現</b>：<br>
+15 條證據中 <b>8 條指向空方、4 條指向多方、3 條中性</b>。H1（轉型成長）被 9 條證據強烈反駁，是所有假說中最不可能的 — 這直接否定了「悠遊卡是金融科技成長股」的敘事。<br><br>
+
+<b>主假說</b>：<b>H2（利率敏感配息股）45% + H3（結構衰退）35%</b> = 合計 80% 機率落在「平到空」區間。<br><br>
+
+<b>白話說</b>：悠遊卡最可能的未來不是「轉型飛天」，而是「靠利息撐著慢慢衰退」。好消息是它不會倒（政府撐著），壞消息是成長故事基本不存在。<br><br>
+
+<b>敏感度確認</b>：移除任何 1-3 條高診斷力證據，結論均不改變。穩健度高。<br><br>
+
+<b>最大翻轉因素</b>：<br>
+- 唯一能讓 H1 翻盤的是「悠遊付用戶暴增至 700 萬+」+ 「Apple Wallet 整合完成」+ 「跨境擴展至 3 國+」三件事同時發生。目前任何一件都還沒有明確時間表。<br>
+- 最大下行風險是「央行降息 ≥ 2 碼」，這將直接衝擊利息收入（佔淨利 85.8%），可能讓 H3 從 35% 跳到 60%。<br><br>
+
+<b>對後續步驟的影響</b>：<br>
+- Step5 壓力測試重點：降息 + 北捷交通營收下滑的雙重情境<br>
+- Step7 估值：以 H2（配息股）為基準，用股利折現為主、DCF 為輔，不用成長股 PE<br>
+- Step8 推演：主路徑 = H2 緩衰退配息，替代路徑 = H3 加速衰退
+</div>
+
+</div><!-- end wrap -->
+
+<button class="toggle-all" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.toggle('collapsed'))">全部展開/收合</button>
+<script>
+document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'));
+document.querySelectorAll('.card h3').forEach(h=>{h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))});
+</script>
+</body>
+</html>
