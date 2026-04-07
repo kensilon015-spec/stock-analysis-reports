@@ -34,7 +34,7 @@ def scan_folders():
         return folders
 
     # 不公開資料夾不推送、不顯示
-    SKIP_FOLDERS = {'不公開'}
+    SKIP_FOLDERS = {'不公開', '3213_茂訊'}
 
     for folder_name in sorted(os.listdir(TIANJI_DIR)):
         if folder_name in SKIP_FOLDERS:
