@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機閣內部更新日誌（完整版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.danger{border-color:var(--danger);background:rgba(212,136,122,.15)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:var(--code-bg);padding:2px 6px;border-radius:4px;color:var(--accent)}
+pre{background:var(--code-bg);padding:10px 14px;border-radius:6px;overflow-x:auto;font-size:.8em;line-height:1.6;margin:6px 0;color:var(--txt2);white-space:pre}
+.flow{font-family:'Fira Code',monospace;font-size:.78em;color:var(--txt2);padding:12px 16px;background:var(--code-bg);border-radius:6px;margin:8px 0;line-height:1.7;white-space:pre;overflow-x:auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.done-card{border-left:4px solid var(--bull)}
+.wait-card{border-left:4px solid var(--warn)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.7em;font-weight:700;color:#fff;margin-right:4px;vertical-align:middle}
+.tag.core{background:#5a7d60}
+.tag.data{background:#5a7d8c}
+.tag.auto{background:var(--warn)}
+.tag.infra{background:#7d5a6e}
+.tag.ui{background:var(--gold)}
+.tag.analysis{background:#6b7d9f}
+.phase-banner{text-align:center;padding:10px 14px;margin:20px 0 6px;border-radius:8px;font-size:.95em;font-weight:900;color:var(--base);background:linear-gradient(135deg,rgba(107,159,114,.15),rgba(122,176,192,.15));border:1px solid var(--border)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>天機閣內部更新日誌</h1>
+    <div class="sub">完整版 — 2026-03-21 ~ 2026-04-07</div>
+    <div class="desc">18 天從零到完整系統 ｜ ~155 項工作 ｜ 14 案個股分析 ｜ 4 大教訓</div>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<div class="grid2">
+    <div class="mini-card done-card">
+        <div class="title">總完成項目</div>
+        <div class="num">~155</div>
+        <div class="desc">引擎 8 個 / 西碧拉 50 模組 / Python 工具 11 個<br>搜尋 v1→v3.1 / 外網 9 引擎 / Discord v3 / 估值八法</div>
+    </div>
+    <div class="mini-card wait-card">
+        <div class="title">重大教訓 &amp; 問題</div>
+        <div class="num">18</div>
+        <div class="desc">步驟門檻三犯 / 背景代理無檔案 / 上下文壓縮 / 設限心態<br>DB locked / DDG 劣化 / CLAUDE.md 劫持 / Phase B/C 三犯</div>
+    </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════════════╗ -->
+<!-- ║                 Phase 3：品質深化 + 外網模組（04-02 ~ 04-07）       ║ -->
+<!-- ╚═══════════════════════════════════════════════════════════════════╝ -->
+<div class="phase-banner">Phase 3：品質深化 + 外網模組（04-02 ~ 04-07）</div>
+
+<!-- ===== 04-07 ===== -->
+<div class="section-title">2026-04-07 — 外網模組 + 搜尋 v3.1 + Discord v3 + 估值革命 + 瓦城</div>
+<div class="section-sub">外網 9 引擎聚合 / 搜尋六層 / CLI 常駐突破 / 估值五法→八法 / 瓦城 Step7 Phase B/C 教訓</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>外網模組 v1.0→v1.1.1 建置</h3>
+    <div class="card-body">
+        <p>路徑：<code>天機閣-外網模組/src/</code>（7 個 Python 檔案），統一入口 <code>search()</code> / <code>fetch()</code>。</p>
+<div class="flow">DDG（Python 套件）＋ open-webSearch daemon（Brave/DDG/Baidu 三引擎聚合）
+  ↓ 合併結果 → URL 去重 → 統一格式回傳</div>
+        <table>
+            <tr><th>版本</th><th>變更</th></tr>
+            <tr><td>v1.0</td><td>DDG + OWS(bing,ddg,brave) 聚合</td></tr>
+            <tr><td>v1.1</td><td>DDG primp 品質劣化→移除聚合管道</td></tr>
+            <tr><td>v1.1.1</td><td>OWS 改 [brave,ddg,baidu]（bing 被擋），動態評分，中文自動翻譯英文雙軌搜尋</td></tr>
+        </table>
+        <p style="margin-top:6px"><b>聚合模式（非備援）</b>：閣主明確要求「各管道都要收集再去重」。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>搜尋 API v3.0→v3.1 升級</h3>
+    <div class="card-body">
+<div class="flow">v3.0 五層：檔名 → 向量 → Grep → 新檔案 → WebSearch
+v3.1 六層：檔名 → 向量 → Grep → 新檔案 → 外網聚合（免費）→ WebSearch（最終手段）</div>
+        <table>
+            <tr><th>改動</th><th>說明</th></tr>
+            <tr><td><code>web_fallback</code> 參數</td><td>啟用外網聚合回退（預設 false）</td></tr>
+            <tr><td>Grep score 0.0→0.30</td><td>修正 CCO 過濾掉全部 Grep 結果</td></tr>
+            <tr><td>cli_runner 修正</td><td>timeout 5→10s / finlab 數據注入 context</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>CCO 弱訊號階段一驗證</h3>
+    <div class="card-body">
+        <p>指令：<code>python 天機閣_每日執行.py --convergence</code></p>
+        <p>結果：CCO 成功執行，<b>0 個收斂警報</b>（正確——所有壓力來自單一來源，無跨源交叉）。</p>
+        <table>
+            <tr><th>項目</th><th>狀態</th></tr>
+            <tr><td>CCO 程式（941 行）</td><td>✅ 四來源全部實作</td></tr>
+            <tr><td>convergence_pressure.json</td><td>✅ 94 筆壓力記錄（12 個標的）</td></tr>
+            <tr><td>convergence_alerts.json</td><td>❌ 尚未產出（0 筆跨源收斂）</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>Discord Bot v3 架構確認</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>問題</th><th>解法</th></tr>
+            <tr><td>關鍵字路由判錯</td><td>砍掉硬路由，改 AI 智能判斷 4 路徑</td></tr>
+            <tr><td>AI 幻覺 URL</td><td>程式從 Pages 快取取正確連結，白名單制過濾</td></tr>
+            <tr><td>中間層延遲翻倍</td><td>路徑 1-2 合併成 1 次 Sonnet CLI（28s→15s）</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>CLI 常駐 stream-json 模式突破</h3>
+    <div class="card-body">
+        <p><b>問題</b>：<code>claude -p</code> 每次冷啟動 15-20s。</p>
+        <p><b>突破</b>：stream-json 常駐模式——查詢 1=11s（冷啟動）→ 查詢 2=<b>3s</b>（常駐秒回）。</p>
+        <pre>claude -p --input-format stream-json --output-format stream-json --verbose --model opus --permission-mode acceptEdits</pre>
+        <p>走訂閱不花 API 費。<code>--output-format stream-json</code> 必須搭配 <code>--verbose</code>。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>估值方法大升級：台股五法→八法</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>新增</th><th>說明</th></tr>
+            <tr><td>方法六 DCF 雙版本</td><td>版本 A（現況版 TTM FCF 永續折現=下限）+ 版本 B（成長版三階段×三情境）</td></tr>
+            <tr><td>方法七 EV/EBITDA</td><td>企業價值倍數法</td></tr>
+            <tr><td>方法八 PEG</td><td>本益成長比</td></tr>
+        </table>
+        <p style="margin-top:6px"><b>DCF 安全閥四項</b>：終值佔比>75% / WACC-g<2% / FCF≤0 / FCF 波動>100%。</p>
+        <p><b>新增圖表元件</b>：<code>.dcf-dual</code> + <code>.dcf-position-bar</code> + <code>.dcf-matrix</code>（5×5 敏感度矩陣）。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>2729 瓦城泰統 Steps 2-7 完成</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>發現</th><th>數據</th></tr>
+            <tr><td>EPS 三年連降</td><td>FY2023=13.54→FY2024=9.01→FY2025=6.76</td></tr>
+            <tr><td>ACH 結果</td><td>H4 估值泡沫 38% + H3 收息防禦 32%。加權期望值 136.6 元，淨期望值 -21.7%</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>向量索引增量建構 + 規劃書盤點 + 天機 Wiki 規劃書 v2.0</h3>
+    <div class="card-body">
+        <p><b>增量模式</b>：比對 metadata.json 修改時間，只向量化新增/修改檔案。檔案 665→783（+118），段落 80K→98K。</p>
+        <p><b>規劃書盤點</b>：主目錄 12 有效 / 已完成 31 歸檔 / 設定/規劃書/ 清空統一在藏經閣。</p>
+        <p><b>天機 Wiki</b>：16 章 1530 行，Karpathy LLM Wiki + ByteDance OpenViking。閣主審閱完畢，先擱置。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag auto">自動化</span>系統維護</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>項目</th><th>說明</th></tr>
+            <tr><td>搜尋服務殘留清理</td><td>10 個 start_server.py 殘留程序清除</td></tr>
+            <tr><td>npx 路徑修正</td><td>Windows subprocess → 改用絕對路徑</td></tr>
+            <tr><td>OWS daemon API</td><td>POST /search + engines 用陣列</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>教訓：Step7 Phase B/C 三次犯錯（瓦城）</b>
+    <p>(1) 跳過 Phase B/C 直接存檔 (2) Phase B 只查錯字不換角度 (3) Phase C 用 Edit 補而非重寫。</p>
+    <p><b>思維高度教訓</b>：報告不只是「數據→好不好→貴不貴」，要有產業結構性思考。中小型個股資料少≠寫得淺。</p>
+</div>
+
+<div class="tip danger">
+    <b>問題：CLAUDE.md 會劫持副閣主</b>
+    <p>cwd=天機閣 → 讀 CLAUDE.md → 看到觸發規則 → 自動走九步驟。解法：觸發規則搬到深度調查.skill。</p>
+</div>
+
+<div class="tip warn">
+    <b>問題：DDG Python 套件品質劣化 + 新檔案掃描 bug</b>
+    <p>primp 爬 Bing 品質崩壞→移除。<code>_new_files_scan</code> 取代向量結果→搜什麼都只回悠遊卡，已修正。</p>
+</div>
+
+<!-- ===== 04-06 ===== -->
+<div class="section-title">2026-04-06 — 悠遊卡完整分析 + CCO v1.1 完工</div>
+<div class="section-sub">第 14 案 / CCO 四輪修正 + 4/4 壓力源接齊 / Discord 21 筆 QA</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>悠遊卡 6035 — 第 14 案完整深度分析</h3>
+    <div class="card-body">
+        <p>Step 2~9 全部完成，上傳 GitHub Pages（<code>天機錄/6035_悠遊卡/</code>）。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>CCO 因果收斂協調器 v1.1 四輪修正</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>輪次</th><th>內容</th></tr>
+            <tr><td>第一輪</td><td>13 處規劃書 vs 程式碼不匹配修正</td></tr>
+            <tr><td>第二輪</td><td>亂碼修正 + 標題狀態更正</td></tr>
+            <tr><td>第三輪</td><td>新增 <code>_save_alerts()</code> / <code>_save_outcomes()</code> / <code>_check_fear_memory()</code> / <code>--convergence</code></td></tr>
+            <tr><td>第四輪</td><td>壓力來源 2/4→<b>4/4</b>（anomaly + news 接齊）+ 端到端驗證 + fear_memory 接線</td></tr>
+        </table>
+        <p style="margin-top:6px"><b>7/7 整合驗證通過</b>。fear_memory 介面陷阱：實際簽名 <code>check_fear(text, tags)</code> 需 wrapper 適配。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag auto">自動化</span>其他 4/6 活動</h3>
+    <div class="card-body">
+        <p>年報管線更新 / Discord 21 筆 QA / 每日快報+偵測報告 / 向量歷史類比 MAT_copper 0.986 / 弱訊號完成狀態檢查 / 外網搜尋規劃</p>
+    </div>
+</div>
+
+<!-- ===== 04-05 ===== -->
+<div class="section-title">2026-04-05 — Discord 全面升級 + Vast.ai GPU 測試</div>
+<div class="section-sub">副閣主多輪接力 / 小天 v2 / 深度報告自動上線 / Vast.ai 5090 測試</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>Discord 助理全面升級</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>功能</th><th>說明</th></tr>
+            <tr><td>多輪對話追問</td><td>上下文記憶，自動判斷是否需釐清。最多 3 輪，超時 120s</td></tr>
+            <tr><td>深度調查自動上線</td><td>完成→產出報告→上傳 Pages→回覆摘要卡片與連結</td></tr>
+            <tr><td>副閣主多輪接力</td><td>每輪獨立 <code>claude -p</code>，對話歷史打包在 prompt</td></tr>
+            <tr><td>小天 v2</td><td>sonnet 全權處理，拿掉硬路由</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>Vast.ai GPU 租用測試（5090 32GB）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>模型</th><th>結果</th></tr>
+            <tr><td>Gemma 4 26B MoE</td><td>❌ FP8 品質崩壞</td></tr>
+            <tr><td>Qwen3.5-27B</td><td>❌ vLLM 0.19 不支援</td></tr>
+            <tr><td><b>Qwen2.5-VL-32B-AWQ</b></td><td><b>✅ 可用</b>，OCRBench 89.4</td></tr>
+        </table>
+        <p><b>結論</b>：原生文字 PDF 不需 VLM（pymupdf 完勝），VLM 用武之地=掃描版+圖文混合頁。</p>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>問題：BAT 中文路徑亂碼</b>
+    <p>正解：Python 橋接（BAT 只放英文呼叫 Python）+ <code>paths.json</code> 集中管理路徑。</p>
+</div>
+
+<!-- ===== 04-04 ===== -->
+<div class="section-title">2026-04-04 — 搜尋服務常駐化 + RAG v2.0 + 路由架構整頓</div>
+<div class="section-sub">Flask API port 5577 / 雙索引 120K 段 / Skill 5→4 / 路由表唯一來源 / Wave 3</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>搜尋服務常駐化 v1.0</h3>
+    <div class="card-body">
+        <p><code>vector_search_server.py</code>（Flask, port 5577）。索引 A=80,134 段 + B=39,973 段 = <b>120,107 段</b>。</p>
+        <p>搜尋 100~300ms / GPU 2.2GB。四層回退：向量→Grep→WebSearch→方案 C。finlab 門檻 0.5。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>RAG 搜尋引擎 v2.0 + 雙索引架構</h3>
+    <div class="card-body">
+        <p>fast/deep 雙模式。三種 AI 引擎全 CLI 不走 API。圖譜即時讀取+事件驅動觸發索引重建。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>Skill/路由架構整頓 v1.3</h3>
+    <div class="card-body">
+        <p>全域 Skill 5→4 / 路由表唯一來源 / 向量情報引擎歸入推演 Phase 1 / settings.json 300→80 條。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag data">資料</span>年報批次下載 Wave 3（FY2024 補齊）</h3>
+    <div class="card-body">
+        <p>成功 1,923 / 無年報 250 / 失敗 31 / 待驗證 528。財報狗命中率 65%。</p>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>問題：Flask threading 陷阱 + 進度檔不區分 wave</b>
+    <p><code>threaded=False</code> 被 finlab 卡死→改 <code>threaded=True</code>+Lock。<code>--resume</code> 不區分 wave→清進度檔重跑。</p>
+</div>
+
+<!-- ===== 04-03 ===== -->
+<div class="section-title">2026-04-03 — PDF v1.1 完工 + 搜尋引擎 v1.0 + 圖譜驗證機制</div>
+<div class="section-sub">22 家年報全 PASS / 搜尋引擎取代快速查 / +709 高品質邊 / 小天架構研究</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>PDF 轉檔引擎 v1.1 完工</h3>
+    <div class="card-body">
+        <p><b>22 家 FY2024 全部 PASS</b>（7 項品質檢查 + 數字交叉 253/254 = 99.6%）。</p>
+        <p>修正 3 bug / <code>post_process()</code> 抽成共用函數 / Gemini Flash 數字 100% 正確 / Kaggle VLM 不可行。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>搜尋引擎 v1.0 + 藏經閣整理</h3>
+    <div class="card-body">
+        <p><code>藏經閣索引.json</code>（28 家×1154 檔+78 finlab 欄位）。藏經閣整理 48 項。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag data">資料</span>圖譜 +709 邊 + verify_level 驗證機制</h3>
+    <div class="card-body">
+        <p>1,794→2,503 邊，驗證率 100%（全 V2+）。V0~V3 四級 + <code>verify_sources</code> 記錄。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>小天搜尋架構研究結論</h3>
+    <div class="card-body">
+        <p>測 6 種方案，最終：<b>向量定位 + AI 讀檔</b>（向量當索引定位，AI 讀完整段落回答）。bge-m3 品質優先。</p>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>問題：同產業自動建邊回滾（12,291 條）</b>
+    <p>批次建 competitors 14,790 邊，閣主「要驗證不要低品質」→全數回滾。邊必須逐條有具體依據。</p>
+</div>
+
+<!-- ===== 04-02 ===== -->
+<div class="section-title">2026-04-02 — 茂訊分析 + 年報管線 v2.2 + 資料紀律</div>
+<div class="section-sub">茂訊 RODA 客戶解碼 / GID 亂碼管線 / +4 強制規則</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>3213 茂訊 v3.0 + 2729 瓦城 Steps 2-6</h3>
+    <div class="card-body">
+        <p><b>茂訊</b>：RODA = 最大客戶 32.55%（GID 解碼），產銷量值表省略=負面訊號，Iker 38.9。</p>
+        <p><b>瓦城</b>：Steps 2-6 完成。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>年報 GID 亂碼批次修正管線 + 管線 v2.2</h3>
+    <div class="card-body">
+        <p>Python 批次數字偏移→中文映射→年度修正→AI 讀圖補正。PUA 字元歸零。</p>
+        <p>download_verify.py v2.2 / pdf_to_text 大改 / RapidOCR 第三層。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>資料紀律 +4 強制規則</h3>
+    <div class="card-body">
+        <p>①最新資料為出發點 ②同表不混年度 ③舊數據加時間背景 ④缺失數據=訊號</p>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>問題：AI 誤植錯誤時間（已處理）</b>
+    <p>資料庫發布時間與所屬時間混淆，已修正+新增檢驗規則。</p>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════════════╗ -->
+<!-- ║               Phase 2：大規模擴充時代（03-27 ~ 04-01）             ║ -->
+<!-- ╚═══════════════════════════════════════════════════════════════════╝ -->
+<div class="phase-banner">Phase 2：大規模擴充時代（03-27 ~ 04-01）</div>
+
+<!-- ===== 04-01 ===== -->
+<div class="section-title">2026-04-01 — 產業鏈 v2.0 全日戰役 + 年報管線 + 每日執行修復</div>
+<div class="section-sub">375→1,557 邊 / 產業地圖法 14x / Wave 1: 2430 家 / 15 修復 / GID 映射突破</div>
+
+<div class="card">
+    <h3><span class="tag data">資料</span>產業鏈擴充 v2.0 — 全日三輪</h3>
+    <div class="card-body">
+        <p><b>第一輪</b>：DDG+AI 雙階段，375→891 邊，驗證 96%。</p>
+        <p><b>第二輪</b>：弱邊驗證 194 VERIFIED / DDG R1 +77 / DDG R2 零收穫（天花板）。</p>
+        <p><b>第三輪</b>：產業地圖法 <b>14 倍效率</b>（26,363→1,835 token/邊），三批 +667 邊，新增 5 種 relation_type。</p>
+        <p><b>最終</b>：<b>4,092 節點 / 1,557 邊 / 12 種 type</b>。concepts 22 種 425 節點。Token ~2.1M。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>年報管線整合 + Wave 1</h3>
+    <div class="card-body">
+        <p>download_verify.py v2.0 / Wave 1: 2,515 家成功 2,430 / 9.5GB / 9.2hr / 管線 20→6 主力。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>GID→Unicode 字型映射突破</h3>
+    <div class="card-body">
+        <p>fontTools 讀系統字型 cmap 反轉映射，<b>零 OCR / 零 AI / 零 token</b>。v5.1 頁面級偵測。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag auto">自動化</span>每日執行 15 項修復</h3>
+    <div class="card-body">
+        <p>PID 鎖 / 45min Timer / feedparser→requests / LLM 改 CLI / SVL 向量化×2 / 金融 default / Unicode / SSL / anomaly 方法名 / SQLite timeout×6 / DB locked retry×3 / news_to_graph 近 3 天</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>雙軌制 v2.0 + 外文搜尋擴充 + 圖譜品質清理</h3>
+    <div class="card-body">
+        <p>雙軌制方法論獨立 / 外文 114 管道+25 模板 / 圖譜四步清理 4,092→4,002 節點。</p>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>問題：Haiku 不合格（一致率 29%）+ 概念橋接回滾</b>
+    <p>Haiku 方向判斷不行→禁用品質敏感任務。批次建邊正確率僅 60-70%→全數回滾。</p>
+</div>
+
+<div class="tip warn">
+    <b>問題：SQLite DB locked + 免費替代方案全失敗</b>
+    <p>年報轉檔鎖 DB→busy_timeout+retry。Goodinfo(反爬)/MoneyDJ(SSL)/finlab(無關係)/年報(僅2份)均失敗。</p>
+</div>
+
+<!-- ===== 03-30 ===== -->
+<div class="section-title">2026-03-30 — 產業鏈全量擴充 + 望隼/東聯分析</div>
+<div class="section-sub">v1 管線 3,771 節點/65,044 邊 + 2 案分析 + 向量外掛 + 交叉驗證</div>
+
+<div class="card">
+    <h3><span class="tag data">資料</span>產業鏈全量擴充（v1 管線）</h3>
+    <div class="card-body">
+        <p><b>3,771 節點 / 65,044 邊</b>，覆蓋率 100%，供應鏈 87%。五層策略：關鍵字重掃(+1,744)/MoneyDJ(+2,167)/同業升級(+1,392)/ChromeDriver(+330)/WebSearch(+157)。</p>
+        <p>規則引擎 v6.3：16 規則 + 42 假縮寫，prescan 200 倍加速。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>4771 望隼 + 7738 東聯互動（累計 13 案）</h3>
+    <div class="card-body">
+        <p><b>望隼</b>：觀望，合理價 208 vs 現價 192。<b>東聯</b>：觀望/積極，EPS 14.61，淨利率>毛利率謎題→匯兌價差=手續費 50%。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>向量外掛 + 交叉驗證 + 備份重構 + 報告頁面優化</h3>
+    <div class="card-body">
+        <p>四道防線對抗上下文壓縮。Phase B/C 修正回寫對應章節。一鍵備份壓縮檔。</p>
+    </div>
+</div>
+
+<div class="tip warn">
+    <b>教訓：Step 8 必須深度分析不可套模板（東聯互動 4 次重寫）</b>
+</div>
+
+<!-- ===== 03-29 ===== -->
+<div class="section-title">2026-03-29 — 地緣事件全系統整合</div>
+<div class="section-sub">首次三引擎聯合分析 + 因果樹視覺化 + 通用深度調查 + 推演引擎 v2.0</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>地緣事件整合 + 因果樹 + 通用調查 + 推演 v2.0</h3>
+    <div class="card-body">
+        <p><b>首次結合推衍+知識圖譜+情報引擎</b>進行多維度地緣事件分析。</p>
+        <p>因果樹 v1.0：CSS 版（≤15 節點）/ SVG 互動版（>15 節點）。</p>
+        <p>通用深度調查 v1.0 / 推演引擎 v2.0 完整三階段。</p>
+    </div>
+</div>
+
+<!-- ===== 03-27~28 ===== -->
+<div class="section-title">2026-03-27 ~ 03-28 — 知識圖譜大規模擴充</div>
+<div class="section-sub">西碧拉 +1,811 邊 / 歷史新聞 ~9,942 張 / 偵測報告升級 5→11 / Discord 小天初版</div>
+
+<div class="card">
+    <h3><span class="tag data">資料</span>知識圖譜 +1,811 邊 / 歷史新聞 ~9,942 張</h3>
+    <div class="card-body">
+        <p>涵蓋 25+ 產業，每條關係經多方交叉驗證。回補 2025 年底~2026 年初財經新聞。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag auto">自動化</span>ChromeDriver 三引擎 + 偵測報告 5→11 + PDF 工具 + Discord 小天</h3>
+    <div class="card-body">
+        <p>本地搜尋零 token / 新增壓力訊號累積 / 年報一鍵轉文字+語意索引 / 小天初版上線。</p>
+        <p>Claude Code SDK 限制：不可 nested（<code>CLAUDECODE</code> 變數存在時拋 ProcessError）。</p>
+    </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════════════════════════════════╗ -->
+<!-- ║              Phase 1：系統誕生→Phase 5 完工（03-21 ~ 03-26）       ║ -->
+<!-- ╚═══════════════════════════════════════════════════════════════════╝ -->
+<div class="phase-banner">Phase 1：系統誕生 → Phase 5 完工（03-21 ~ 03-26）</div>
+
+<!-- ===== 03-26 ===== -->
+<div class="section-title">2026-03-26 — Phase 5 類腦完工 + 核心價值確立</div>
+<div class="section-sub">西碧拉 v0.38.0 全面完工 / 弱訊號收斂偵測 / 投資分析效率革命 / APP-01~12 確認</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>西碧拉 v0.38.0 全面完工（N1~N8 ALL PASS, 84/84）</h3>
+    <div class="card-body">
+        <p>五層架構 50 模組 24,000+ 行。N1 恐懼記憶 / N2 注意力閘門 / N3 神經調節器 / N4 鞏固週期 / N5 工作記憶 / N6 側向抑制 / N7 意圖模擬器 / N8 恆定調節。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>天機閣核心價值（閣主親定）+ 效率革命</h3>
+    <div class="card-body">
+        <p><b>弱訊號收斂偵測</b>：多個微小異常同時指向同方向→推衍出還沒人看到的趨勢。</p>
+        <p>應用層 APP-01~12 全確認（4 Sprint）。投資分析.skill v2.0（1,711→243 行+28 參考檔）。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>5244 弘凱 + 3131 弘塑（累計 11 案）</h3>
+    <div class="card-body">
+        <p>弘凱：強烈迴避 PE 70x+CB。弘塑：不追高 PE 76x。閣主糾正：「西碧拉是全網雷達不是個股放大鏡」。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>情報引擎端對端驗證 + 年報亂碼修復</h3>
+    <div class="card-body">
+        <p>訊號偵測→自動報告完整流程驗證成功。年報雙模式（no-ocr + Claude API）解決兩成讀取問題。</p>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>教訓四：不要給自己設限（5244 弘凱）</b>
+    <p>遇資訊缺口→「哪裡有資料？」而非「做不到」。態度問題不是能力問題。</p>
+</div>
+
+<!-- ===== 03-25 ===== -->
+<div class="section-title">2026-03-25 — 趨勢偵測 + 向量情報引擎</div>
+<div class="section-sub">四大資料源偵測 + 推演三階段 + 向量引擎四引擎 + SharedVectorLayer + 弱訊號升級</div>
+
+<div class="card">
+    <h3><span class="tag auto">自動化</span>趨勢偵測全面完工（11/11 ALL PASS）</h3>
+    <div class="card-body">
+        <p>新聞+公告+社群+語意分析四大資料源整合。PTT 五看板 / MOPS 重大訊息 / Haiku 語意。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>推演引擎升級 + 向量情報引擎 Phase 3 v0.3.0</h3>
+    <div class="card-body">
+        <p>三階段流水線（偵測→評估→全景推演）。四引擎：RelationDetector / EmergentCausality / TemporalLeader / HistoryReference。</p>
+        <p>SignalRouter 弱/中/強三級+自動升級。SnapshotManager 四層快照。SharedVectorLayer BGE-M3+TF-IDF。</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>全面掃描升級 + 系統說明書改版</h3>
+    <div class="card-body">
+        <p>歷史類比比對自動標記。推衍天下七領域完整支援。系統架構說明全面更新。</p>
+    </div>
+</div>
+
+<!-- ===== 03-24 ===== -->
+<div class="section-title">2026-03-24 — 核心引擎建設日</div>
+<div class="section-sub">知識圖譜 + 情報引擎 + 網頁擷取引擎 + 模組架構重整</div>
+
+<div class="card">
+    <h3><span class="tag core">核心</span>知識圖譜 + 情報引擎初版 + 擷取引擎 + 架構重整</h3>
+    <div class="card-body">
+        <p><b>知識圖譜</b>：多公司探索 / 關係自動分類 / 新關係自動發現。</p>
+        <p><b>情報引擎</b>：關係偵測 / 因果推論 / 訊號分級 / 歷史快照比對。</p>
+        <p><b>擷取引擎</b>：四層漸進（requests→feedparser→Playwright→Selenium）。</p>
+        <p>散亂腳本→引擎/Skill/設定檔三層結構。</p>
+    </div>
+</div>
+
+<!-- ===== 03-23 ===== -->
+<div class="section-title">2026-03-23 — 大量分析日 + 三大教訓</div>
+<div class="section-sub">單日 6 案（富喬/文曄/景碩/長亨/旺宏/順達）+ 步驟門檻第三犯 + 上下文壓縮教訓</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>單日 6 案深度分析（累計 9 案）</h3>
+    <div class="card-body">
+        <table>
+            <tr><th>代號</th><th>名稱</th><th>結論</th></tr>
+            <tr><td>1815</td><td>富喬</td><td>不建議，期望報酬 -27%</td></tr>
+            <tr><td>3036</td><td>文曄</td><td>好公司壞價格，等 180-220 元</td></tr>
+            <tr><td>3189</td><td>景碩</td><td>迴避，期望價 227 vs 現價 390</td></tr>
+            <tr><td>4546</td><td>長亨</td><td>強烈迴避，Iker 2/23</td></tr>
+            <tr><td>2337</td><td>旺宏</td><td>不買，溢價 140%</td></tr>
+            <tr><td>3211</td><td>順達</td><td>觀望，本業 PE 65-81x</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>教訓一（第三犯，最嚴重）：步驟門檻 — 3036 文曄</b>
+    <p>5234→SNDK→<b>3036（三犯）</b>。閣主親訂 v2.0：第一步必須等「過」才進第二步。</p>
+</div>
+
+<div class="tip danger">
+    <b>教訓三：上下文壓縮後讀摘要寫報告（4546 長亨）</b>
+    <p>Step7/8 前先「上下文存活檢查」，答不出年報具體數字→重讀全文。</p>
+</div>
+
+<!-- ===== 03-22 ===== -->
+<div class="section-title">2026-03-22 — 首批個股分析上線</div>
+<div class="section-sub">台股首案 5234 + 美股首案 SNDK + GOOGL + GitHub Pages 上線 + 九步驟確立</div>
+
+<div class="card">
+    <h3><span class="tag analysis">分析</span>首批 3 案 + GitHub Pages + 九步驟流程</h3>
+    <div class="card-body">
+        <p>5234 達興材料（台股首案）/ SNDK SanDisk（美股首案）/ GOOGL Alphabet v3.0。</p>
+        <p>GitHub Pages 上線：<code>kensilon015-spec/stock-analysis-reports</code>，sync.sh 自動同步。</p>
+        <p>十步驟流程確立：Step1→1.5→2→3→4→5→6→7→8→9，四次信心校準。</p>
+    </div>
+</div>
+
+<!-- ===== 03-21 ===== -->
+<div class="section-title">2026-03-21 — 系統建立</div>
+<div class="section-sub">天機閣從零開始</div>
+
+<div class="card">
+    <h3><span class="tag infra">基建</span>天機閣系統初始化</h3>
+    <div class="card-body">
+        <p>核心架構建立：推衍引擎 / 情報收集 / 報告產出 / 藏經閣目錄結構。</p>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>教訓二：背景代理結果必須落地儲存（SNDK 事件）</b>
+    <p>代理完成後必須 Write → <code>ls</code> 驗證存在+大小合理，不可宣稱完成卻無檔案。</p>
+</div>
+
+<!-- ===== 全局結論 ===== -->
+<div class="tip good">
+    <b>18 天整合結論</b>
+    <p><b>Phase 1（03-21~26）創世紀</b>：從零到完整系統——8 引擎 + 50 模組西碧拉 + 11 案分析 + 核心價值確立。四大教訓成為系統永久基因。</p>
+    <p><b>Phase 2（03-27~04-01）衝量→要品質</b>：知識圖譜 65K→1.5K（回滾低品質），年報管線 2,430 家，產業地圖法 14 倍效率突破。建立 verify_level 驗證機制。</p>
+    <p><b>Phase 3（04-02~07）品質收割</b>：搜尋 v1→v3.1，外網 0→9 引擎，Discord v1→v3，估值五→八法，PDF 22 家全 PASS。CCO 邏輯驗證通過待累積資料。</p>
+    <p><b>下一里程碑</b>：CCO 產出第一筆跨源收斂警報 / 西碧拉 Phase 4 環境場 / 知識飛輪計畫。</p>
+</div>
+
+<div class="footer">
+    <p>天機閣 — 內部更新日誌（完整版）</p>
+    <p>最後更新：2026-04-07</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
