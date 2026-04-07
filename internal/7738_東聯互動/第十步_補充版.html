@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>7738 東聯互動 — 第十步 全局審閱補充版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- ============================================================
+     天機閣 — 第十步 全局審閱補充版
+     7738 東聯互動 (Neweb Technology Inc.)
+     產出日期：2026-03-30
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 發現卡片 === */
+.finding-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.2);overflow:hidden}
+.finding-card .card-header{padding:12px 16px;font-size:1em;font-weight:700;color:var(--base);display:flex;align-items:center;gap:8px}
+.finding-card .card-body{padding:0 16px 14px}
+.finding-card p,.finding-card li{font-size:.85em;color:var(--txt2);margin-bottom:3px;line-height:1.6}
+.finding-card ul,.finding-card ol{padding-left:18px;margin:4px 0 8px}
+
+/* 卡片邊框顏色 */
+.card-good{border-left:4px solid var(--accent)}
+.card-good .card-header{color:var(--accent)}
+.card-danger{border-left:4px solid var(--danger)}
+.card-danger .card-header{color:var(--danger)}
+.card-warn{border-left:4px solid var(--warn)}
+.card-warn .card-header{color:var(--warn)}
+.card-info{border-left:4px solid var(--link)}
+.card-info .card-header{color:var(--link)}
+
+/* 卡片標記徽章 */
+.badge-good{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(90,125,96,.25);color:var(--accent)}
+.badge-danger{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(194,124,110,.25);color:var(--danger)}
+.badge-warn{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(212,160,23,.25);color:var(--warn)}
+.badge-info{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(90,125,140,.25);color:var(--link)}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+td.changed{color:var(--accent);font-weight:700}
+td.old{color:var(--txt3);text-decoration:line-through}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:5px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:5px 16px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:20px 0 3px;padding-top:14px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 迷你卡片 === */
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:600px){.grid3,.grid4{grid-template-columns:1fr 1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 結論區 === */
+.conclusion{background:linear-gradient(135deg,rgba(90,125,96,.15),rgba(90,125,140,.10));border:1.5px solid var(--accent);border-radius:10px;padding:16px 18px;margin:16px 0}
+.conclusion h3{color:var(--accent);font-size:1.1em;margin-bottom:8px}
+.conclusion p{font-size:.88em;color:var(--txt);line-height:1.7}
+
+/* 螢光筆 */
+mark{background:rgba(212,176,48,.25);color:var(--base);padding:1px 4px;border-radius:3px}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px 0;margin-top:20px;border-top:1px solid var(--border);font-size:.72em;color:var(--txt3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===================== Hero ===================== -->
+<div class="hero">
+  <h1>7738 東聯互動 — 第十步 全局審閱補充版</h1>
+  <div class="sub">挖掘新資訊 / 修正錯誤 / 補充觀點</div>
+  <div class="desc">針對第一步至第九步的完整回顧：以 2025 全年業績確認、B011 文件性質修正、治理深挖為核心，共挖掘 6 大發現。</div>
+  <div class="tags">
+    <span class="tag">2026-03-30 產出</span>
+    <span class="tag">天機閣 v3.0</span>
+    <span class="tag">第十步 全局審閱</span>
+    <span class="tag">7738.TW</span>
+  </div>
+</div>
+
+<!-- ===================== 全展全收按鈕 ===================== -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ===================== 關鍵數字速覽 ===================== -->
+<div class="section-title">關鍵修正數字速覽</div>
+<div class="section-sub">第十步審閱後的核心數字更新</div>
+
+<div class="grid4">
+  <div class="mini-card bull-card">
+    <div class="title">2025 EPS（確認）</div>
+    <div class="num" style="color:var(--bull)">14.61 元</div>
+    <div class="desc">原推估 15-16 元</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">配息（確認）</div>
+    <div class="num" style="color:var(--bull)">10 元</div>
+    <div class="desc">配發率 68.4%</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">2025 PE</div>
+    <div class="num" style="color:var(--neutral)">12.35x</div>
+    <div class="desc">@180.5 元收盤</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">加權目標價</div>
+    <div class="num" style="color:var(--bull)">264.3 元</div>
+    <div class="desc">上漲空間 +46%</div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現一：2025 全年業績                                     -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-good">
+  <div class="card-header">
+    <span class="badge-good">正面更新</span> 發現一：2025 全年業績正式出爐（重大更新）
+  </div>
+  <div class="card-body">
+
+    <details open>
+      <summary>資料來源與核心數據</summary>
+      <p><b>來源：</b>工商時報 2026/03/14 + Yahoo 股市</p>
+      <ul>
+        <li>稅後純益 <mark>3.71 億元</mark></li>
+        <li>EPS <mark>14.61 元</mark>（vs 先前推估 15-16，Q4 = 14.61 - 11.58 = <b>3.03</b>）</li>
+        <li>營收 5.65 億，YoY <b>+30.18%</b></li>
+        <li>營業毛利 3.11 億（毛利率 <b>55%</b>，與法說會一致）</li>
+        <li>淨利率 <mark>65.7%</mark>（371M / 565M）→ 確認高淨利率是常態，不是異常！</li>
+        <li>配息 <mark>10 元</mark> 確認（配發率 68.4%，高於 50% 目標但章程允許）</li>
+        <li>殖利率 <b>5.4%</b>（@185 元收盤價）</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>PE 修正計算</summary>
+      <table>
+        <tr><th>情境</th><th>計算</th><th>PE</th></tr>
+        <tr><td>2025 Actual</td><td>180.5 / 14.61</td><td class="changed">12.35x</td></tr>
+        <tr><td>2026E（+20% 成長）</td><td>180.5 / 17.53</td><td class="changed">10.3x</td></tr>
+        <tr><td>2026E（+30% 成長）</td><td>180.5 / 18.99</td><td class="changed">9.5x</td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>Q4 季節性觀察</summary>
+      <p>Q4 EPS 3.03 略低於 Q1-Q3 均值 3.86 → 可能有季節性因素（Q4 匯款量較低？需追蹤）。但差距不大（-21%），尚在合理範圍內。</p>
+    </details>
+
+    <div class="tip good">
+      <b>影響評估</b>
+      2025 全年業績確認後，EPS 14.61 元雖略低於先前推估的 15-16 元，但配息 10 元大幅超越法說會提及的 50% 目標（實際配發率 68.4%），顯示管理層對現金流充裕有信心。淨利率 65.7% 確認為常態水準（而非 Q2 的 82.5% 異常高點），代表公司的輕資產+跨境支付模式具備穩定的高獲利能力。PE 12.35x 對一家成長 30%+ 的 Fintech 公司而言仍具吸引力。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現二：B011 修正                                         -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-danger">
+  <div class="card-header">
+    <span class="badge-danger">重要修正</span> 發現二：B011 不是可轉債，是現金增資（修正錯誤）
+  </div>
+  <div class="card-body">
+
+    <details open>
+      <summary>錯誤還原與修正</summary>
+      <p><b>來源：</b>向量搜尋公開說明書 chunk0414</p>
+      <p>公開說明書明確記載：</p>
+      <div class="tip info" style="margin:6px 0">
+        <b>原文引述</b>
+        「該公司本次非申報發行具股權轉換(交換、認購)性質之各種有價證券」
+      </div>
+      <ul>
+        <li>之前在第一步到第六步反覆提及「CB 稀釋風險」→ <b style="color:var(--danger)">全部為錯誤假設</b></li>
+        <li>B011 = 現金增資發行普通股的公開說明書</li>
+        <li><b>修正：</b>刪除所有 CB 相關風險分析，改為「IPO 現金增資稀釋效應」分析</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>稀釋效應重新計算</summary>
+      <table>
+        <tr><th>項目</th><th>數值</th></tr>
+        <tr><td>IPO 前股本</td><td>24,855,799 股</td></tr>
+        <tr><td>IPO 後股本</td><td>27,355,800 股</td></tr>
+        <tr><td>稀釋幅度</td><td class="changed">~10%</td></tr>
+        <tr><td>增資用途</td><td>海外擴張（正面用途）</td></tr>
+      </table>
+      <p style="margin-top:6px">現金增資 ~3 億元用於海外市場拓展，屬成長型資本支出，與 CB 的被動稀釋性質完全不同。</p>
+    </details>
+
+    <div class="tip danger">
+      <b>修正影響</b>
+      此修正移除了先前分析中一個重要的風險項目。CB 稀釋風險（原估 -3%~-5% 影響）不存在，代表股東價值被稀釋的風險僅來自 IPO 時的一次性現金增資（~10%），且增資款有明確的正面用途。風險合計期望損失應對應下修。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現三：投資公司架構                                       -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-info">
+  <div class="card-header">
+    <span class="badge-info">深挖治理</span> 發現三：吳侑勳的投資公司架構
+  </div>
+  <div class="card-body">
+
+    <details open>
+      <summary>持股架構全貌</summary>
+      <p><b>來源：</b>向量搜尋公開說明書 chunk0040 + chunk0027</p>
+      <table>
+        <tr><th>持股方式</th><th>股數（千股）</th><th>比例</th></tr>
+        <tr><td>吳侑勳個人</td><td>436</td><td>1.76%</td></tr>
+        <tr><td>利用他人名義（投資公司）</td><td>2,320</td><td>9.33%</td></tr>
+        <tr><td><b>小計：吳侑勳實質控制</b></td><td><b>2,756</b></td><td class="changed"><b>~11.09%</b></td></tr>
+        <tr><td>配偶（黃元珊）源侑增公司</td><td>~1,038</td><td>4.18%</td></tr>
+        <tr><td><b>合計：創辦人+配偶</b></td><td><b>~3,794</b></td><td class="changed"><b>~15.27%</b></td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>六家投資公司明細</summary>
+      <table>
+        <tr><th>公司名稱</th><th>吳侑勳職位</th><th>備註</th></tr>
+        <tr><td>侑侑投資(股)公司</td><td>董事長</td><td>成立 113.08.20，持股 620,000 股，設質價 150.03 元</td></tr>
+        <tr><td>侑昌投資(股)公司</td><td>董事長</td><td>—</td></tr>
+        <tr><td>侑盛投資(股)公司</td><td>董事長</td><td>—</td></tr>
+        <tr><td>安盛全球投資(股)公司</td><td>董事長</td><td>—</td></tr>
+        <tr><td>安盛投資有限公司</td><td>董事</td><td>—</td></tr>
+        <tr><td>安盛智能有限公司</td><td>董事</td><td>—</td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>治理風險判斷</summary>
+      <ul>
+        <li>透過投資公司持股是台灣常見的<b>稅務規劃手段</b>，本身非紅旗</li>
+        <li>實質控制力 ~11%（直接+間接）+ 配偶公司 4.18% = <mark>~15%</mark></li>
+        <li>這比上櫃後「前十大 14.56%」的數字更有意義</li>
+        <li>創辦人+配偶合計控制 ~15% → 對 50 億市值公司來說偏低但尚可</li>
+      </ul>
+    </details>
+
+    <div class="tip info">
+      <b>監控重點</b>
+      需持續追蹤這六家投資公司是否開始減持。侑侑投資成立於 2024 年 8 月（IPO 前），設質價 150.03 元，若股價跌破此價位可能觸發質押追繳。創辦人+配偶合計 ~15% 的控制力不算特別高，但短期內無大量解質或轉讓跡象即屬正面。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現四：陳韋名辭任                                         -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-warn">
+  <div class="card-header">
+    <span class="badge-warn">治理警示</span> 發現四：陳韋名辭任的完整脈絡
+  </div>
+  <div class="card-body">
+
+    <details open>
+      <summary>辭任經過</summary>
+      <p><b>來源：</b>向量搜尋公開說明書 chunk0025 + 年報</p>
+      <div class="tip info" style="margin:6px 0">
+        <b>原文引述</b>
+        「前任董事長陳韋名先生於 114 年 1 月 20 日辭任董事長一職，經 114 年 1 月 20 日之臨時董事會推選副董事長兼總經理吳侑勳先生接任。」
+      </div>
+      <p>官方理由：「吳侑勳董事長對本集團財務及業務有相當程度瞭解及掌握，且在業界具豐富實務經驗。」</p>
+    </details>
+
+    <details>
+      <summary>陳韋名持股與薪酬分析</summary>
+      <ul>
+        <li>2023 年報：陳韋名擔任董事長時，薪酬佔稅後純益 <mark>33.26%</mark>（含員工酬勞）！</li>
+        <li>陳韋名是「創科投資有限公司」代表人</li>
+        <li>持股變化：<b>5.55%</b>（2023 年報）→ <b>3.53%</b>（2024 年報）→ <b>&lt;10% 解除內部人申報</b>（114 年 3 月 7 日）</li>
+        <li>辭任時機：2025/01 辭任 → 2025/10 上櫃（IPO 前 9 個月）</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>可能原因推論</summary>
+      <ol>
+        <li>專業經理人交棒給創辦人 — 最常見的上市前治理調整</li>
+        <li>上市前治理結構優化 — 減少薪酬佔比過高的治理疑慮</li>
+        <li>2023 年薪酬佔稅後純益 33.26% 可能引發投資人質疑</li>
+      </ol>
+    </details>
+
+    <div class="tip warn">
+      <b>風險評估</b>
+      辭任本身不是負面訊號（創辦人接掌很正常），但陳韋名持股從 5.55% 持續下降至解除內部人申報（&lt;10%），顯示已在逐步退出。114 年 3 月 7 日起不再需要申報持股異動，後續動向將更難追蹤。此為<b>中度警示</b>：不構成賣出理由，但應列入季度追蹤清單。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現五：匯率避險                                           -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-info">
+  <div class="card-header">
+    <span class="badge-info">風險修正</span> 發現五：匯率風險的自然避險機制
+  </div>
+  <div class="card-body">
+
+    <details open>
+      <summary>自然避險機制說明</summary>
+      <p><b>來源：</b>向量搜尋公開說明書 chunk0152</p>
+      <div class="tip info" style="margin:6px 0">
+        <b>原文引述</b>
+        「本集團應收外幣款項與應付外幣款項之部分幣別相同……產生自然避險效果。」
+      </div>
+      <ul>
+        <li>公司<b>未採用避險會計</b> → 匯兌損益直接進損益表</li>
+        <li>利息收入：112 年 1,469 千元 / 113 年 5,706 千元（佔營收 0.43% → 1.31%）</li>
+        <li>應收與應付外幣款項幣別部分相同 → 雙向抵消降低淨匯率曝險</li>
+      </ul>
+    </details>
+
+    <div class="tip info">
+      <b>修正建議</b>
+      自然避險降低了匯率風險的實際衝擊度。之前風險卡給「匯率波動 -3.5% 期望損失」可能偏高。<br>
+      <b>修正：</b>匯率波動期望損失從 <span style="text-decoration:line-through;color:var(--txt3)">-3.5%</span> 修正為 <mark>-2.0%</mark>。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              發現六：模板錯誤已修正                                     -->
+<!-- ==================================================================================== -->
+<div class="finding-card card-good">
+  <div class="card-header">
+    <span class="badge-good">已確認</span> 發現六：第九步「線上博弈」模板錯誤已修正
+  </div>
+  <div class="card-body">
+    <p>之前的全局審閱代理已修正此問題，確認第九步追蹤回饋設定中的公司描述已改為正確的「跨境支付/第三方支付」內容，不再誤用「線上博弈」的範本文字。</p>
+    <div class="tip good">
+      <b>狀態：已解決</b>
+      無需額外處理。
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              修正後關鍵數字彙整表                                       -->
+<!-- ==================================================================================== -->
+<div class="section-title">修正後關鍵數字彙整表</div>
+<div class="section-sub">第十步審閱後的完整修正對照</div>
+
+<table>
+  <tr><th>項目</th><th>原值</th><th>修正值</th><th>原因</th></tr>
+  <tr>
+    <td>2025 EPS</td>
+    <td class="old">15-16（推估）</td>
+    <td class="changed">14.61（確認）</td>
+    <td>全年業績公布</td>
+  </tr>
+  <tr>
+    <td>配息</td>
+    <td class="old">6-7 元（法說會）</td>
+    <td class="changed">10 元（確認）</td>
+    <td>工商時報 + Yahoo</td>
+  </tr>
+  <tr>
+    <td>配發率</td>
+    <td class="old">50%</td>
+    <td class="changed">68.4%</td>
+    <td>10 / 14.61</td>
+  </tr>
+  <tr>
+    <td>Q4 EPS</td>
+    <td class="old">4-5（推估）</td>
+    <td class="changed">3.03（確認）</td>
+    <td>14.61 - 11.58</td>
+  </tr>
+  <tr>
+    <td>PE（2025）</td>
+    <td class="old">~12（推估）</td>
+    <td class="changed">12.35</td>
+    <td>180.5 / 14.61</td>
+  </tr>
+  <tr>
+    <td>CB 稀釋風險</td>
+    <td class="old">存在（假設）</td>
+    <td class="changed">不存在（修正）</td>
+    <td>B011 = 現金增資</td>
+  </tr>
+  <tr>
+    <td>匯率 EL</td>
+    <td class="old">-3.5%</td>
+    <td class="changed">-2.0%</td>
+    <td>自然避險機制</td>
+  </tr>
+  <tr>
+    <td>風險合計 EL</td>
+    <td class="old">-28.1%</td>
+    <td class="changed">~-26.5%</td>
+    <td>匯率修正 + CB 移除</td>
+  </tr>
+  <tr>
+    <td>淨利率</td>
+    <td class="old">異常（82.5% Q2）</td>
+    <td class="changed">常態 65.7%</td>
+    <td>全年確認</td>
+  </tr>
+</table>
+
+<!-- ==================================================================================== -->
+<!--                              修正後加權目標價                                           -->
+<!-- ==================================================================================== -->
+<div class="section-title">修正後加權目標價</div>
+<div class="section-sub">三情境加權估值模型</div>
+
+<table>
+  <tr><th>情境</th><th>機率</th><th>EPS</th><th>PE</th><th>目標價</th></tr>
+  <tr>
+    <td>樂觀</td>
+    <td>30%</td>
+    <td>19</td>
+    <td>18x</td>
+    <td style="color:var(--bull);font-weight:700">342 元</td>
+  </tr>
+  <tr>
+    <td>基準</td>
+    <td>45%</td>
+    <td>17.5</td>
+    <td>15x</td>
+    <td style="color:var(--neutral);font-weight:700">262 元</td>
+  </tr>
+  <tr>
+    <td>保守</td>
+    <td>25%</td>
+    <td>14.6</td>
+    <td>12x</td>
+    <td style="color:var(--txt2);font-weight:700">175 元</td>
+  </tr>
+</table>
+
+<div class="grid3" style="margin-top:10px">
+  <div class="mini-card bull-card">
+    <div class="title">樂觀貢獻</div>
+    <div class="num" style="color:var(--bull)">102.6</div>
+    <div class="desc">342 x 30%</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">基準貢獻</div>
+    <div class="num" style="color:var(--neutral)">117.9</div>
+    <div class="desc">262 x 45%</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">保守貢獻</div>
+    <div class="num" style="color:var(--bear)">43.75</div>
+    <div class="desc">175 x 25%</div>
+  </div>
+</div>
+
+<div class="conclusion">
+  <h3>加權目標價 = 102.6 + 117.9 + 43.75 = 264.3 元（+46%）</h3>
+  <p>以目前股價 ~180.5 元計算，距離加權目標價 264.3 元仍有 <b>+46% 的上漲空間</b>。</p>
+</div>
+
+<!-- ==================================================================================== -->
+<!--                              整合結論                                                  -->
+<!-- ==================================================================================== -->
+<div class="section-title">第十步 整合結論</div>
+<div class="section-sub">資料 → 觀察 → 推論 → 結論</div>
+
+<div class="tip good">
+  <b>第十步整合結論</b>
+
+  <p style="margin-top:6px"><b>資料：</b>第十步全局審閱挖掘出 6 大發現，涵蓋業績確認、文件性質修正、治理深挖、匯率風險重估等面向。</p>
+
+  <p style="margin-top:6px"><b>觀察：</b></p>
+  <ul style="padding-left:18px;margin:4px 0">
+    <li>2025 全年 EPS 14.61 元 + 配息 10 元，業績與配息均已確認，不再是推估值</li>
+    <li>B011 文件性質從「可轉債」修正為「現金增資」，移除了一個原本標記的重要風險</li>
+    <li>吳侑勳透過 6 家投資公司實質控制 ~15% 股權，治理結構透明但控制力偏低</li>
+    <li>陳韋名持股持續下降並已解除內部人申報，屬中度警示</li>
+    <li>自然避險機制降低匯率風險實際衝擊</li>
+  </ul>
+
+  <p style="margin-top:6px"><b>推論：</b>修正後的基本面比之前認知更紮實 —— 淨利率 65.7% 為常態（非異常）、配息超預期（68.4% 配發率）、CB 風險不存在。風險端主要剩下：(1) 創辦人持股偏低需追蹤、(2) 前董事長退場脈絡需留意、(3) Q4 季節性是否為常態。</p>
+
+  <p style="margin-top:6px"><b>結論：</b></p>
+  <ul style="padding-left:18px;margin:4px 0">
+    <li>投資評級維持 <b>B+</b> 不變</li>
+    <li>加權目標價從先前的 251-274 修正為 <mark>264.3 元（+46%）</mark></li>
+    <li>基本面穩固度<b>提升</b>（淨利率常態化 + CB 風險移除 + 配息超預期）</li>
+    <li>治理風險<b>略升</b>（創辦人+配偶僅 15% + 前董事長退場）</li>
+    <li>整體風險期望損失從 -28.1% 下修至 <b>-26.5%</b></li>
+  </ul>
+</div>
+
+<!-- ===================== 頁尾 ===================== -->
+<div class="footer">
+  天機閣 — 7738 東聯互動 第十步全局審閱補充版 | 產出日期：2026-03-30 | 本報告僅供研究參考，不構成投資建議
+</div>
+
+</div><!-- .wrap -->
+</body>
+</html>

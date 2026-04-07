@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>第九步：追蹤回饋設定 — 7738 東聯互動</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:28px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);z-index:1}
+.tl-item.past::before{background:var(--txt3)}
+.tl-item.active::before{background:var(--gold);box-shadow:0 0 6px rgba(212,176,48,.5)}
+.tl-item.future::before{background:var(--neutral)}
+.tl-date{font-size:.78em;font-weight:700;color:var(--accent)}
+.tl-event{font-size:.85em;font-weight:600;color:var(--base);margin-top:1px}
+.tl-verify{font-size:.78em;color:var(--txt2);margin-top:1px}
+
+/* === 燈號統計 === */
+.signal-summary{display:flex;gap:12px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.signal-box{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;background:var(--panel);border:1px solid var(--border);font-size:.85em;font-weight:600}
+.signal-box .count{font-size:1.2em;font-weight:900}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ==================== Hero ==================== -->
+<div class="hero">
+  <h1>第九步：追蹤回饋設定</h1>
+  <div class="sub">7738 東聯互動 — 跨境移工匯款 Fintech 龍頭</div>
+  <div class="desc">分析日期：2026-03-30 ｜ 主要假說：H1 強勁成長 ｜ 信心水準：58%</div>
+  <div class="tags">
+    <span class="tag">加權目標價 $274.5</span>
+    <span class="tag">現價 $180.5</span>
+    <span class="tag">潛在報酬 +52.1%</span>
+    <span class="tag">下次檢查 2026-04-30</span>
+  </div>
+</div>
+
+<!-- ==================== 控制列 ==================== -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ==================== 一、核心概覽 ==================== -->
+<div class="section-title" id="s1">一、核心概覽</div>
+<div class="section-sub">投資假說總覽與信心校準</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">主要假說</div>
+    <div class="num" style="font-size:1em">H1 強勁成長</div>
+    <div class="desc">信心 58%</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">加權目標價</div>
+    <div class="num">$274.5</div>
+    <div class="desc">潛在上漲 52.1%</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">現價</div>
+    <div class="num">$180.5</div>
+    <div class="desc">2026-03-30</div>
+  </div>
+</div>
+
+<div class="signal-summary">
+  <div class="signal-box"><span class="light green"></span><span class="count">4</span> 綠燈</div>
+  <div class="signal-box"><span class="light yellow"></span><span class="count">0</span> 黃燈</div>
+  <div class="signal-box"><span class="light red"></span><span class="count">1</span> 紅燈</div>
+  <div class="signal-box" style="color:var(--txt2)"><span class="count">1</span> 反向機會</div>
+</div>
+
+<div class="tip info">
+  <b>第一章整合結論</b>
+  <strong>觀察：</strong>6 項監控指標中 4 項綠燈、1 項紅燈（外資持股極低），整體偏正向。<br>
+  <strong>推論：</strong>58% 信心搭配 52% 潛在報酬，風險/報酬比尚可。外資持股僅 0.35% 看似紅燈，但對上櫃不到一年的小型股而言，這反而代表「法人尚未發現」的反向機會窗口。若後續法人研究覆蓋啟動（2026-08 上櫃滿一年），有催化劑拉升估值空間。<br>
+  <strong>結論：</strong>以目前燈號分布而言，假說並未被否定，可繼續持有觀察。首要關注 4 月底 Q4 季報能否確認全年 EPS 15+ 的假設。
+</div>
+
+<!-- ==================== 二、監控指標儀表板 ==================== -->
+<div class="section-title" id="s2">二、監控指標儀表板</div>
+<div class="section-sub">六大核心追蹤指標與燈號狀態</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">監控指標總覽</h3>
+  <div class="card-body">
+    <table>
+      <tr>
+        <th>指標</th>
+        <th>當前值</th>
+        <th>綠線</th>
+        <th>黃線</th>
+        <th>紅線</th>
+        <th>頻率</th>
+        <th>狀態</th>
+      </tr>
+      <tr>
+        <td><strong>月營收 YoY</strong></td>
+        <td>+30.6%</td>
+        <td style="color:#4caf50">&gt;20%</td>
+        <td style="color:#ffc107">10-20%</td>
+        <td style="color:#f44336">&lt;10%</td>
+        <td>每月10日前</td>
+        <td><span class="light green"></span>綠燈</td>
+      </tr>
+      <tr>
+        <td><strong>季度 EPS</strong></td>
+        <td>4.20 (Q3)</td>
+        <td style="color:#4caf50">&gt;4.0</td>
+        <td style="color:#ffc107">3.0-4.0</td>
+        <td style="color:#f44336">&lt;3.0</td>
+        <td>每季</td>
+        <td><span class="light green"></span>綠燈</td>
+      </tr>
+      <tr>
+        <td><strong>毛利率</strong></td>
+        <td>57%</td>
+        <td style="color:#4caf50">&gt;55%</td>
+        <td style="color:#ffc107">50-55%</td>
+        <td style="color:#f44336">&lt;50%</td>
+        <td>每季</td>
+        <td><span class="light green"></span>綠燈</td>
+      </tr>
+      <tr>
+        <td><strong>外資持股比例</strong></td>
+        <td>0.35%</td>
+        <td style="color:#4caf50">&gt;5%</td>
+        <td style="color:#ffc107">1-5%</td>
+        <td style="color:#f44336">&lt;1%</td>
+        <td>每日</td>
+        <td><span class="light red"></span>紅燈<br><span style="font-size:.72em;color:var(--gold)">（反向機會）</span></td>
+      </tr>
+      <tr>
+        <td><strong>大股東減持</strong></td>
+        <td>未減持</td>
+        <td style="color:#4caf50">未動</td>
+        <td style="color:#ffc107">小量轉讓</td>
+        <td style="color:#f44336">大量減持</td>
+        <td>每月</td>
+        <td><span class="light green"></span>綠燈</td>
+      </tr>
+      <tr>
+        <td><strong>新進業者市佔變化</strong></td>
+        <td>東聯&gt;40%</td>
+        <td style="color:#4caf50">&gt;40%</td>
+        <td style="color:#ffc107">35-40%</td>
+        <td style="color:#f44336">&lt;35%</td>
+        <td>每半年</td>
+        <td><span class="light green"></span>綠燈</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<details open>
+  <summary>各指標詳細說明</summary>
+  <div class="card">
+    <h3 onclick="this.parentElement.classList.toggle('collapsed')">月營收 YoY — 最即時的成長訊號</h3>
+    <div class="card-body">
+      <p>當前 +30.6% 遠高於綠線門檻 20%，顯示營收動能強勁。此指標為最高頻（每月更新），是判斷成長假說是否持續的第一道防線。</p>
+      <div class="score-bar"><span style="color:var(--base);font-size:.82em;min-width:80px">達成率</span><div class="bar"><div class="fill" style="width:100%;background:var(--bull)"></div></div><div class="val" style="color:var(--bull)">153%</div></div>
+      <p style="font-size:.78em;color:var(--txt3)">達成率 = 當前值 / 綠線門檻 = 30.6% / 20% = 153%</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 onclick="this.parentElement.classList.toggle('collapsed')">季度 EPS — 獲利品質驗證</h3>
+    <div class="card-body">
+      <p>Q3 EPS 4.20 元，剛好越過綠線 4.0。需注意是否有一次性業外收益灌水，應對照營業利益率確認本業獲利。</p>
+      <div class="score-bar"><span style="color:var(--base);font-size:.82em;min-width:80px">達成率</span><div class="bar"><div class="fill" style="width:100%;background:var(--bull)"></div></div><div class="val" style="color:var(--bull)">105%</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 onclick="this.parentElement.classList.toggle('collapsed')">外資持股 — 反向指標解讀</h3>
+    <div class="card-body">
+      <p>0.35% 極低持股在一般框架下為紅燈。但東聯互動 2025-08 才上櫃，外資研究覆蓋尚未啟動。此指標應作為「催化劑偵測器」：一旦外資開始建倉（突破 1%），可能觸發價值重估。</p>
+      <div class="tip warn">
+        <b>注意</b>
+        外資持股低的雙面性：正面是潛在買盤尚未進場（仍有上漲空間），負面是流動性極低可能導致波動放大。建議以 1% 為分水嶺觀察。
+      </div>
+    </div>
+  </div>
+</details>
+
+<div class="tip info">
+  <b>第二章整合結論</b>
+  <strong>觀察：</strong>6 項指標中，營收 YoY（153% 達標率）、毛利率（57% vs 綠線 55%）、大股東持股（穩定）、市佔率（>40%）均為安全綠燈。外資持股是唯一紅燈但屬結構性因素。<br>
+  <strong>推論：</strong>核心營運面全數綠燈，代表 H1 強勁成長假說在當下時點獲得數據支持。唯一需要警覺的是季度 EPS 達標率僅 105%，若 Q4 因季節性或一次性費用導致 EPS 低於 4.0，將觸發黃燈。<br>
+  <strong>結論：</strong>儀表板整體健康，無需立即修正假說。最關鍵的下一個驗證點是 2026-04 的 Q4 季報。
+</div>
+
+<!-- ==================== 三、失效條件（紅線清單） ==================== -->
+<div class="section-title" id="s3">三、失效條件（紅線清單）</div>
+<div class="section-sub">觸發任一條件即須重新評估或停損</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">四大失效條件</h3>
+  <div class="card-body">
+    <table>
+      <tr><th style="width:40px">#</th><th>失效條件</th><th>嚴重程度</th><th>當前狀態</th></tr>
+      <tr>
+        <td style="text-align:center;font-weight:700">1</td>
+        <td>月營收連續 3 月 YoY &lt; 10%</td>
+        <td><span style="color:var(--danger);font-weight:700">高</span> — 直接否定成長假說</td>
+        <td><span class="light green"></span>安全（當前 +30.6%）</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-weight:700">2</td>
+        <td>大股東減持超過 5% 持股</td>
+        <td><span style="color:var(--danger);font-weight:700">高</span> — 內部人信心崩塌訊號</td>
+        <td><span class="light green"></span>安全（未減持）</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-weight:700">3</td>
+        <td>金管會處分或暫停營業</td>
+        <td><span style="color:var(--danger);font-weight:700">極高</span> — 營運生存風險</td>
+        <td><span class="light green"></span>安全（無異常）</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-weight:700">4</td>
+        <td>毛利率連續 2 季 &lt; 50%</td>
+        <td><span style="color:var(--warn);font-weight:700">中高</span> — 競爭力侵蝕</td>
+        <td><span class="light green"></span>安全（當前 57%）</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="tip warn">
+  <b>第三章整合結論</b>
+  <strong>觀察：</strong>四項失效條件全數處於安全狀態。營收 YoY 離紅線（10%）仍有 20.6 個百分點的緩衝；毛利率離紅線（50%）有 7 個百分點緩衝。<br>
+  <strong>推論：</strong>短期內觸發失效條件的機率低。但跨境匯款產業受金管會監管政策影響極大，條件 3（金管會處分）屬突發型風險，無法用趨勢預判，需持續監控新聞面。大股東減持方面，東聯主要股東為創辦人團隊，上櫃未滿一年且有閉鎖期約束，短期減持風險有限。<br>
+  <strong>結論：</strong>失效條件為安全區間。建議將「監管風險」列為日常新聞掃描重點，這是最難預測但衝擊最大的失效觸發因子。
+</div>
+
+<!-- ==================== 四、關鍵時間節點 ==================== -->
+<div class="section-title" id="s4">四、關鍵時間節點</div>
+<div class="section-sub">未來 7 個月的驗證時間軸</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">時間軸</h3>
+  <div class="card-body">
+    <div class="timeline">
+      <div class="tl-item active">
+        <div class="tl-date">2026-04 &#9733; 最近</div>
+        <div class="tl-event">Q4 2025 季報公布</div>
+        <div class="tl-verify">驗證重點：全年 EPS 是否達 15 元以上</div>
+      </div>
+      <div class="tl-item future">
+        <div class="tl-date">2026-05</div>
+        <div class="tl-event">配息公告</div>
+        <div class="tl-verify">驗證重點：是否配發 10 元現金股利（殖利率 5.5%）</div>
+      </div>
+      <div class="tl-item future">
+        <div class="tl-date">2026-06</div>
+        <div class="tl-event">股東常會</div>
+        <div class="tl-verify">驗證重點：經營層對新年度營運展望與海外佈局說明</div>
+      </div>
+      <div class="tl-item future">
+        <div class="tl-date">2026-07</div>
+        <div class="tl-event">Q1 2026 季報公布</div>
+        <div class="tl-verify">驗證重點：YoY 是否維持 &gt;20% 成長</div>
+      </div>
+      <div class="tl-item future">
+        <div class="tl-date">2026-08 &#9733; 重要催化劑</div>
+        <div class="tl-event">上櫃滿一年</div>
+        <div class="tl-verify">驗證重點：法人研究覆蓋是否啟動、外資持股變化</div>
+      </div>
+      <div class="tl-item future">
+        <div class="tl-date">2026-10</div>
+        <div class="tl-event">Q2 2026 季報公布</div>
+        <div class="tl-verify">驗證重點：海外營收佔比是否提升</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>第四章整合結論</b>
+  <strong>觀察：</strong>6 個時間節點中，4 月 Q4 季報與 8 月上櫃滿一年是最關鍵的兩個事件。Q4 季報決定全年 EPS 是否達標（直接影響目標價計算的分母），上櫃滿一年則可能觸發法人覆蓋（改變估值倍數的分子）。<br>
+  <strong>推論：</strong>時間軸上存在兩波潛在催化劑：(1) 短期：Q4 季報 + 配息公告 → 若 EPS 15+ 且配息 10 元，殖利率 5.5% 將吸引存股族注意；(2) 中期：上櫃滿一年 → 法人覆蓋啟動可能帶來估值重估。<br>
+  <strong>結論：</strong>建議 4 月底 Q4 季報為「決策轉折點」。若全年 EPS 確認 15+，可考慮建立初始部位；若低於 12 元，應下修目標價並重新評估假說。8 月上櫃滿一年為第二決策點。
+</div>
+
+<!-- ==================== 五、命中率與回饋機制 ==================== -->
+<div class="section-title" id="s5">五、命中率與回饋機制</div>
+<div class="section-sub">歷史預測追蹤與自我校準</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">命中率統計</h3>
+  <div class="card-body">
+    <div class="tip info">
+      <b>首次分析</b>
+      這是東聯互動的首次完整分析（2026-03-30），尚無歷史預測可供回測。命中率統計將在後續檢查點逐步累積。
+    </div>
+    <table>
+      <tr><th>檢查日期</th><th>預測事項</th><th>預測值</th><th>實際值</th><th>結果</th></tr>
+      <tr><td colspan="5" style="text-align:center;color:var(--txt3);font-style:italic">尚無歷史紀錄，將於 2026-04-30 首次檢查後新增</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">回饋更新流程</h3>
+  <div class="card-body">
+    <p><strong>每月例行檢查（每月 10 日後）：</strong></p>
+    <p>1. 更新月營收 YoY 數據 → 對照綠/黃/紅線</p>
+    <p>2. 檢查大股東持股異動公告</p>
+    <p>3. 掃描監管新聞（金管會公告、媒體報導）</p>
+    <p>4. 更新追蹤.json 中的當前值與狀態欄位</p>
+    <br>
+    <p><strong>每季深度檢查（季報公布後）：</strong></p>
+    <p>1. 更新季度 EPS、毛利率</p>
+    <p>2. 重新計算目標價（若假設有變動）</p>
+    <p>3. 比對預測 vs 實際，填入命中率統計表</p>
+    <p>4. 評估是否需要調整信心水準或切換假說</p>
+    <br>
+    <p><strong>觸發型檢查（事件驅動）：</strong></p>
+    <p>1. 任一指標轉黃/紅燈 → 立即重新評估</p>
+    <p>2. 失效條件觸發 → 啟動停損/減碼流程</p>
+    <p>3. 外資持股突破 1% → 評估估值重估效應</p>
+  </div>
+</div>
+
+<div class="tip info">
+  <b>第五章整合結論</b>
+  <strong>觀察：</strong>作為首次分析，命中率機制尚處於初始化階段。回饋流程已建立三層檢查機制（月/季/事件驅動），確保資訊更新不漏接。<br>
+  <strong>推論：</strong>追蹤系統的價值在於「早期預警」。月營收是最高頻指標，若出現連續 2 月 YoY 下滑趨勢（即使仍在綠線以上），就應提高警覺。回饋機制的關鍵是紀律執行——每月 10 日後必須更新，不能拖延。<br>
+  <strong>結論：</strong>系統已設定完備，下次檢查點為 2026-04-30。屆時應同時更新 3 月營收數據與 Q4 季報結果，並在命中率表格中記錄首筆預測驗證。
+</div>
+
+<!-- ==================== 頁尾 ==================== -->
+<div class="footer">
+  天機閣 — 第九步：追蹤回饋設定 ｜ 7738 東聯互動 ｜ 分析日期：2026-03-30<br>
+  下次檢查點：2026-04-30 ｜ 資料來源：追蹤.json
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// 卡片點擊收合
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>

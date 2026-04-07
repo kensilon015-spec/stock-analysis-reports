@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機錄｜7738 東聯互動 — 完整版 Part 2（Ch8-13）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- 天機閣 — 第七步完整版 Part 2（第8-13章）  產出日期：2026-03-30 -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.65;padding:0}
+.wrap{max-width:880px;margin:0 auto;padding:20px 18px 40px}
+
+/* === 右上日期標籤 === */
+.date-tag{position:fixed;top:12px;right:14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:.72em;color:var(--txt3);z-index:999;font-weight:600}
+
+/* === Hero === */
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === FIAS 計數 Hero === */
+.fias-hero{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.fias-box{padding:6px 14px;border-radius:6px;font-size:.78em;font-weight:700;text-align:center}
+.fias-box .count{font-size:1.3em;display:block}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:5px 16px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 14px}
+.toc-title{font-weight:700;color:var(--base);font-size:.92em;margin-bottom:6px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:3px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 段落標題 === */
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 4px;padding-top:14px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 收合區塊（details/summary） === */
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:5px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 網格 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === ev 證據卡片 === */
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px}
+.ev .ev-d{color:var(--txt2);font-size:.88em;line-height:1.55}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:3px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:4px 0}
+.score-bar .label{font-size:.82em;color:var(--txt2);min-width:100px}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:13px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right;color:var(--base)}
+
+/* === 情報驗證卡 === */
+.intel-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0}
+.intel-card .ic-title{font-weight:700;color:var(--base);font-size:.92em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.intel-card .ic-row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;font-size:.82em}
+.intel-card .ic-label{font-weight:600;color:var(--txt3);min-width:70px}
+.intel-card .ic-val{color:var(--txt2)}
+
+/* === 事前驗屍 === */
+.premortem{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:.84em}
+.premortem .pm-title{font-weight:700;color:var(--danger);margin-bottom:4px}
+.premortem .pm-item{padding:4px 0;border-bottom:1px dashed var(--border);color:var(--txt2)}
+.premortem .pm-item:last-child{border-bottom:none}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.badge.high{background:var(--bull)}.badge.mid{background:var(--warn)}.badge.low{background:var(--bear)}
+
+/* === 因果樹 === */
+.tree{margin:12px 0;padding:0 0 0 14px;border-left:2px solid var(--accent)}
+.tree .node{margin:6px 0;padding:6px 10px;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:.84em}
+.tree .node .prob{font-weight:700;color:var(--gold);margin-right:6px}
+.tree .node .lbl{color:var(--base);font-weight:600}
+.tree .node .detail{color:var(--txt2);font-size:.88em;margin-top:2px}
+.tree .sub-tree{margin-left:16px;border-left:2px solid var(--border)}
+
+/* === 進度條時間軸 === */
+.timeline{margin:10px 0}
+.tl-item{display:flex;align-items:flex-start;gap:10px;margin:4px 0;font-size:.84em}
+.tl-dot{min-width:12px;min-height:12px;border-radius:50%;margin-top:4px}
+.tl-dot.active{background:var(--accent)}
+.tl-dot.future{background:var(--border)}
+.tl-date{font-weight:700;color:var(--base);min-width:80px}
+.tl-desc{color:var(--txt2)}
+
+/* === 星級 === */
+.stars{color:var(--gold);letter-spacing:2px;font-size:1.1em}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:22px}
+
+/* === 列印 === */
+@media print{body{background:#fff;color:#333}details{open:true}details[open] summary{border-bottom:none}.date-tag{display:none}}
+</style>
+</head>
+<body>
+
+<!-- 右上日期標籤 -->
+<div class="date-tag">2026-03-30 | Part 2 / 2</div>
+
+<div class="wrap">
+
+<!-- ==================== Hero ==================== -->
+<div class="hero">
+  <h1>7738 東聯互動</h1>
+  <div class="sub">Eastern Union Interactive — 天機錄完整版 Part 2（Ch8-13）</div>
+  <div class="desc">移工跨境小額匯款龍頭 ｜ 2025/10 上櫃 ｜ 股價 180.5（2026/3/30）｜ 股本 2.74 億 ｜ 市值 ~49 億</div>
+  <div class="tags">
+    <span class="tag">Fintech</span>
+    <span class="tag">跨境匯款</span>
+    <span class="tag">移工經濟</span>
+    <span class="tag">IPO 蜜月</span>
+    <span class="tag">高成長</span>
+  </div>
+</div>
+
+<!-- 全部展開 / 收合 -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ==================== 目錄 ==================== -->
+<div class="toc">
+  <div class="toc-title">目錄（Part 2）</div>
+  <a href="#ch8">第八章｜監控儀表板</a>
+  <a href="#ch9">第九章｜推衍預測</a>
+  <a href="#ch10">第十章｜股價合理性分析</a>
+  <a href="#ch11">第十一章｜（保留）全球 Fintech 匯款平台估值比較</a>
+  <a href="#ch12">第十二章｜貓膩探索與求證</a>
+  <a href="#ch13">第十三章｜投資結論</a>
+  <div style="font-size:.78em;color:var(--txt3);margin-top:6px">Part 1（Ch1-7）請見另一份檔案</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第八章 監控儀表板                         -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch8">第八章｜監控儀表板</div>
+<div class="section-sub">實時監控指標、燈號狀態、關鍵時間節點</div>
+
+<details open>
+<summary>8-1｜核心監控指標燈號</summary>
+
+<p style="font-size:.84em;color:var(--txt2);margin:6px 0">以下指標採三色燈號制，每月/每季更新一次，用以追蹤投資假說是否偏移。</p>
+
+<table>
+<tr><th>監控指標</th><th>當前值</th><th style="color:#4caf50">綠線</th><th style="color:#ffc107">黃線</th><th style="color:#f44336">紅線</th><th>燈號</th></tr>
+<tr><td>月營收 YoY</td><td>+30.6%（2026/02）</td><td>&gt;20%</td><td>10-20%</td><td>&lt;10%</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>EPS 年增率</td><td>&gt;100%（Q1-Q3）</td><td>&gt;20%</td><td>0-20%</td><td>&lt;0%</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>毛利率</td><td>57%（Q3 2025）</td><td>&gt;55%</td><td>50-55%</td><td>&lt;50%</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>活躍用戶數</td><td>~23 萬</td><td>持續成長</td><td>停滯</td><td>下降</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>外資持股比</td><td>0.35%</td><td>&gt;5%</td><td>1-5%</td><td>&lt;1%</td><td><span class="light red"></span> 極低（反向機會）</td></tr>
+<tr><td>大股東減持</td><td>未減持</td><td>未動</td><td>小量轉讓</td><td>大量減持</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>新進業者動態</td><td>第 5 家剛核准</td><td>市佔穩定</td><td>市佔微降</td><td>市佔跌破 35%</td><td><span class="light green"></span> 正常</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 燈號事實摘要</div>
+  <div class="ev-d">七項指標中六項綠燈，僅外資持股為紅燈——但方向是「反向機會」而非風險。外資 0.35% 極低意味著法人尚未覆蓋，一旦分析師啟動覆蓋（上櫃滿一年後 2026/10 起），可能觸發重新定價。</div>
+  <div class="ev-s">來源：月營收公告、季報、公開說明書持股結構</div>
+</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">綠燈數</div>
+    <div class="num" style="color:var(--bull)">6 / 7</div>
+    <div class="desc">基本面穩健</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">紅燈數</div>
+    <div class="num" style="color:var(--bear)">1 / 7</div>
+    <div class="desc">外資（反向機會）</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">黃燈數</div>
+    <div class="num" style="color:var(--warn)">0 / 7</div>
+    <div class="desc">無指標處於警戒</div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>8-2｜關鍵時間節點</summary>
+
+<div class="timeline">
+  <div class="tl-item"><div class="tl-dot active"></div><div class="tl-date">2026/04</div><div class="tl-desc">Q4 2025 季報公布 → 驗證全年 EPS 是否落在 15-16 區間</div></div>
+  <div class="tl-item"><div class="tl-dot active"></div><div class="tl-date">2026/05</div><div class="tl-desc">配息政策確認 → 驗證市場預期 10 元配息（殖利率 ~5.5%）</div></div>
+  <div class="tl-item"><div class="tl-dot future"></div><div class="tl-date">2026/06</div><div class="tl-desc">股東常會 → 觀察管理層對 2026 展望的具體指引</div></div>
+  <div class="tl-item"><div class="tl-dot future"></div><div class="tl-date">2026/07</div><div class="tl-desc">Q1 2026 季報 → 驗證 +20-30% 成長指引能否兌現</div></div>
+  <div class="tl-item"><div class="tl-dot future"></div><div class="tl-date">2026/08</div><div class="tl-desc">上櫃滿一年 → 法人覆蓋啟動窗口，券商研究報告可能出現</div></div>
+  <div class="tl-item"><div class="tl-dot future"></div><div class="tl-date">2026/10</div><div class="tl-desc">Q2 2026 季報 + 上櫃一周年 → 雙重催化時間點</div></div>
+  <div class="tl-item"><div class="tl-dot future"></div><div class="tl-date">2026 整年</div><div class="tl-desc">海外布局營收佔比是否突破 3% → 成長第二曲線驗證</div></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 時間節點推論</div>
+  <div class="ev-d">4-5 月為短期最關鍵時段：Q4 季報 + 配息確認將同步驗證盈利能力與股東回饋意願。若 EPS ≥ 15 且配息 ≥ 10 元，將確認「高成長 + 高配息」雙重吸引力，可能觸發一波資金進場。7-10 月則是法人覆蓋窗口，有機會帶來結構性重新定價。</div>
+  <div class="ev-s">來源：上櫃公司資訊揭露時程、過往 IPO 法人覆蓋經驗</div>
+</div>
+</details>
+
+<details open>
+<summary>8-3｜觸發調整機制</summary>
+
+<table>
+<tr><th>觸發條件</th><th>行動建議</th></tr>
+<tr><td>月營收 YoY 連續 2 月 &lt;15%</td><td>降低信心等級至 45%，暫停加碼</td></tr>
+<tr><td>毛利率跌破 50%</td><td>立即檢視競爭態勢，評估是否降費搶市</td></tr>
+<tr><td>大股東單月減持 &gt;1%</td><td>紅燈警報，考慮減碼</td></tr>
+<tr><td>月營收 YoY 連續 3 月 &lt;10%</td><td>觸發停損條件</td></tr>
+<tr><td>新競爭者取得 &gt;15% 市佔</td><td>重新評估競爭壁壘假說</td></tr>
+<tr><td>主管機關限制費率</td><td>重估毛利率模型，可能需大幅下修估值</td></tr>
+</table>
+</details>
+
+<!-- 第八章整合結論 -->
+<div class="tip info">
+  <b>第八章整合結論</b>
+  <strong>資料：</strong>七項核心指標中六項綠燈（營收成長 +30.6%、EPS 翻倍、毛利率 57%、用戶成長中、大股東未減持、競爭態勢穩定），唯一紅燈為外資持股 0.35%。<br>
+  <strong>觀察：</strong>全面綠燈在上櫃不到半年的公司中並不常見，顯示基本面尚未出現裂縫。外資幾乎零持倉反映的是「尚未認識」而非「看空離場」。<br>
+  <strong>推論：</strong>當前屬於「業績先行、資金後到」的典型結構。4-5 月 Q4 季報 + 配息確認是短期最大催化劑；8-10 月法人覆蓋啟動窗口是中期結構性催化劑。<br>
+  <strong>結論：</strong>監控儀表板支持「基本面無虞但定價尚未充分反映」的判斷。建議以月營收 YoY &lt;10% 連續三個月作為硬性停損指標，其餘保持追蹤即可。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第九章 推衍預測                           -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch9">第九章｜推衍預測</div>
+<div class="section-sub">短中長期多路徑推演、分岔因果樹、機率分配</div>
+
+<details open>
+<summary>9-1｜短期推衍（1-3 個月，2026/04-06）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 最新 OSINT 錨點</div>
+  <div class="ev-d">2026/02 營收 +30.6% YoY，連續 12 個月正成長。Q1-Q3 2025 累計 EPS 11.58，全年推估 15-16。公司指引 2026 年營收成長 +20-30%，毛利率朝 60% 邁進。</div>
+  <div class="ev-s">來源：月營收公告、法說會逐字稿</div>
+</div>
+
+<div class="tree">
+  <div class="node">
+    <span class="prob">[80%]</span>
+    <span class="lbl">主路徑：配息催化啟動</span>
+    <div class="detail">Q4 季報確認全年 EPS 15-16 → 宣布配息 10 元 → 殖利率 5.5% 吸引存股資金 → 股價溫和走升至 190-210</div>
+  </div>
+  <div class="sub-tree">
+    <div class="node">
+      <span class="prob">[55%]</span>
+      <span class="lbl">子路徑 A：超預期</span>
+      <div class="detail">若 Q4 EPS &gt;4.5（全年 &gt;16）或配息 &gt;10 元 → 超預期拉升至 210-230</div>
+    </div>
+    <div class="node">
+      <span class="prob">[25%]</span>
+      <span class="lbl">子路徑 B：符合預期</span>
+      <div class="detail">EPS 15-16、配息 10 元 → 小幅上漲至 190-200，低量盤整</div>
+    </div>
+  </div>
+  <div class="node">
+    <span class="prob">[15%]</span>
+    <span class="lbl">次路徑：低於預期</span>
+    <div class="detail">Q4 EPS &lt;3.5 或配息 &lt;8 元 → 預期落空賣壓 → 股價回測 160-175</div>
+  </div>
+  <div class="node">
+    <span class="prob">[5%]</span>
+    <span class="lbl">黑天鵝：系統性衝擊</span>
+    <div class="detail">法規突襲、AML 裁罰、或大盤系統風險 → 股價急跌至 140-155</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 短期推衍評估</div>
+  <div class="ev-d">短期最大變數是 Q4 季報數字。考慮到 Q4 營收已知（12-2 月月營收合計可推算），EPS 落在 15-16 的機率極高。配息方面，以公司高獲利與新上櫃塑造形象需求，10 元配息合理且機率偏高。整體短期偏多。</div>
+  <div class="ev-s">情報可信度：A 級（官方數據可追蹤驗證）</div>
+</div>
+</details>
+
+<details open>
+<summary>9-2｜中期推衍（3-6 個月，2026/07-09）</summary>
+
+<div class="tree">
+  <div class="node">
+    <span class="prob">[60%]</span>
+    <span class="lbl">路徑 A：成長延續 + 法人進場</span>
+    <div class="detail">Q1 2026 季報確認 +20-30% 成長指引兌現 → 上櫃滿一年接近 → 券商開始研究覆蓋 → 法人資金進場 → 股價突破 200-250</div>
+  </div>
+  <div class="node">
+    <span class="prob">[25%]</span>
+    <span class="lbl">路徑 B：成長放緩但穩健</span>
+    <div class="detail">成長率降至 15-20%（基期墊高）→ 市場小幅失望 → 股價區間整理 150-200，等待下一催化劑</div>
+  </div>
+  <div class="node">
+    <span class="prob">[15%]</span>
+    <span class="lbl">路徑 C：利空衝擊</span>
+    <div class="detail">估值回調/黑天鵝事件/競爭者搶佔市佔 → 股價跌至 130-150，需重新評估基本面</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 法人覆蓋假設</div>
+  <div class="ev-d">假設上櫃滿一年後（2026/10 前後）至少有 1-2 家券商啟動覆蓋。此假設基於台灣小型股上櫃後通常在一年內獲得首份研究報告的歷史經驗。若覆蓋延遲（因市值不到 50 億），則路徑 A 的時間表需後延 3-6 個月。</div>
+  <div class="ev-s">情報可信度：B 級（歷史經驗推估，無法確定）</div>
+</div>
+</details>
+
+<details open>
+<summary>9-3｜長期推衍（6-12 個月，2026/10-2027/03）</summary>
+
+<div class="tree">
+  <div class="node">
+    <span class="prob">[45%]</span>
+    <span class="lbl">路徑 A：海外 + 新業務啟動二次成長</span>
+    <div class="detail">海外布局（菲律賓/越南匯入端）初見成效 → 新支付場景上線 → 二次成長動能 → 法人持續增持 → 目標 300+</div>
+  </div>
+  <div class="sub-tree">
+    <div class="node">
+      <span class="prob">[20%]</span>
+      <span class="lbl">樂觀子路徑：超預期海外擴張</span>
+      <div class="detail">海外營收佔比 &gt;5% + 台灣市佔續升 → 成長重新加速 → 350-400</div>
+    </div>
+    <div class="node">
+      <span class="prob">[25%]</span>
+      <span class="lbl">基準子路徑：穩步擴張</span>
+      <div class="detail">海外營收 3-5% + 核心穩健 → 300-350</div>
+    </div>
+  </div>
+  <div class="node">
+    <span class="prob">[35%]</span>
+    <span class="lbl">路徑 B：核心穩健但增速收斂</span>
+    <div class="detail">台灣市佔觸頂（~65-70%）→ 海外布局尚未貢獻 → 成長降至 10-15% → PE 壓縮 → 股價 200-250 之間</div>
+  </div>
+  <div class="node">
+    <span class="prob">[20%]</span>
+    <span class="lbl">路徑 C：海外虧損 + 競爭加劇</span>
+    <div class="detail">海外擴張燒錢拖累獲利 → 新進業者搶佔市佔 → 毛利率降至 50% 以下 → 股價 150-180</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-s">S</span> 長期推測風險</div>
+  <div class="ev-d">長期最大不確定性是海外擴張的成敗。目前海外營收佔比極低（&lt;3%），實質進展尚未可見。成功與否取決於：(1) 當地監管許可取得速度、(2) 對手銀行/地下匯兌的反應、(3) 資本需求是否超出預期。這是推測層級的判斷。</div>
+  <div class="ev-s">情報可信度：C 級（推測性質，缺乏硬數據支撐）</div>
+</div>
+</details>
+
+<details open>
+<summary>9-4｜加權期望值計算</summary>
+
+<div class="grid2">
+  <div class="mini-card bull-card">
+    <div class="title">ACH 信心（H1 成長延續）</div>
+    <div class="num" style="color:var(--bull)">58%</div>
+    <div class="desc">來自 Part1 第四章</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">加權期望值</div>
+    <div class="num" style="color:var(--neutral)">+40.2%</div>
+    <div class="desc">多路徑機率加權</div>
+  </div>
+</div>
+
+<table>
+<tr><th>時間段</th><th>樂觀</th><th>基準</th><th>保守</th><th>加權中位</th></tr>
+<tr><td>短期（1-3M）</td><td>230（+27%）</td><td>200（+11%）</td><td>165（-9%）</td><td>~205（+14%）</td></tr>
+<tr><td>中期（3-6M）</td><td>250（+39%）</td><td>190（+5%）</td><td>140（-22%）</td><td>~210（+16%）</td></tr>
+<tr><td>長期（6-12M）</td><td>350（+94%）</td><td>230（+27%）</td><td>160（-11%）</td><td>~255（+41%）</td></tr>
+</table>
+</details>
+
+<!-- 第九章整合結論 -->
+<div class="tip good">
+  <b>第九章整合結論</b>
+  <strong>資料：</strong>短期 80% 機率走主路徑（配息催化），中期 60% 機率法人進場推動重定價，長期 45% 機率海外布局打開二次成長。ACH 信心 58%，加權期望值 +40.2%。<br>
+  <strong>觀察：</strong>三個時間段的推衍一致指向「向上偏移」的不對稱報酬結構——下檔有配息 5.5% 保護（假設 10 元配息），上檔有法人覆蓋和海外擴張兩大催化。<br>
+  <strong>推論：</strong>風險/報酬比有利的核心邏輯在於「市場定價僅反映已知盈利，尚未計入成長持續性與法人重定價」。致命因子是 A2「地下匯兌轉化速度」——若合法匯款管道無法持續從地下匯兌搶佔市佔，整個成長假說將瓦解。<br>
+  <strong>結論：</strong>
+  （路徑一）配息確認後短線看 200-210，中期法人覆蓋推升至 250，適合分批建倉。
+  （路徑二）若 Q1 2026 成長不如預期，可能在 160-180 區間長時間整理，轉為存股策略。
+  （路徑三）若致命因子觸發（地下匯兌政策轉向、AML 裁罰），應止損離場。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第十章 股價合理性分析                      -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch10">第十章｜股價合理性分析</div>
+<div class="section-sub">五法交叉驗證、安全邊際計算、市場隱含假設反推</div>
+
+<details open>
+<summary>10-1｜方法一：前瞻本益比法（Forward PE）</summary>
+
+<table>
+<tr><th>參數</th><th>保守</th><th>基準</th><th>樂觀</th></tr>
+<tr><td>2025 全年 EPS 推估</td><td>15.0</td><td>15.5</td><td>16.0</td></tr>
+<tr><td>2026 全年 EPS 推估</td><td>18.0（+20%）</td><td>19.0（+23%）</td><td>20.0（+25%）</td></tr>
+<tr><td>合理 PE 倍數</td><td>15x</td><td>17x</td><td>20x</td></tr>
+<tr><td style="font-weight:700">2025E 合理價</td><td style="color:var(--accent)">225</td><td style="color:var(--accent)">264</td><td style="color:var(--accent)">320</td></tr>
+<tr><td style="font-weight:700">2026E 合理價</td><td style="color:var(--bull)">270</td><td style="color:var(--bull)">323</td><td style="color:var(--bull)">400</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> PE 倍數選擇邏輯</div>
+  <div class="ev-d">高成長 Fintech 在台灣市場的 PE 中位數為 15-25x（參考街口支付母公司、悠遊卡公司等估值框架）。考量東聯互動營收規模仍小（年營收 ~5 億）、上櫃不到一年、流動性較低，給予折價至 15-20x 合理。若成長持續超過 25% 且法人開始覆蓋，PE 有可能擴張至 20x 以上。</div>
+  <div class="ev-s">來源：台灣 Fintech 可比公司估值範圍推算</div>
+</div>
+
+<div class="grid2">
+  <div class="mini-card bull-card">
+    <div class="title">現價 vs 2025E 基準合理價</div>
+    <div class="num" style="color:var(--bull)">安全邊際 46%</div>
+    <div class="desc">180.5 → 264</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">現價 vs 2026E 基準合理價</div>
+    <div class="num" style="color:var(--bull)">安全邊際 79%</div>
+    <div class="desc">180.5 → 323</div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>10-2｜方法二：股價淨值比法（PBR）</summary>
+
+<table>
+<tr><th>項目</th><th>數值</th><th>說明</th></tr>
+<tr><td>每股淨值（推估）</td><td>~32 元</td><td>IPO 增資後，含資本公積</td></tr>
+<tr><td>現價 PBR</td><td>5.6x</td><td>180.5 / 32</td></tr>
+<tr><td>高成長 Fintech PBR 範圍</td><td>5-15x</td><td>輕資產模式 PBR 偏高為常態</td></tr>
+<tr><td>判斷</td><td colspan="2" style="color:var(--accent);font-weight:700">偏低端，不算昂貴</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> PBR 解讀</div>
+  <div class="ev-d">PBR 5.6x 對輕資產高毛利（57%）的 Fintech 而言並不高。此方法適用性有限——Fintech 的核心價值在用戶基數與牌照壁壘，非有形資產。PBR 僅作為「是否嚴重高估」的檢驗工具，5.6x 明確排除泡沫疑慮。</div>
+  <div class="ev-s">來源：推算值，僅作參考框架</div>
+</div>
+</details>
+
+<details open>
+<summary>10-3｜方法三：分部估值法（SOTP）</summary>
+
+<table>
+<tr><th>業務板塊</th><th>營收佔比</th><th>估值方式</th><th>估值金額</th></tr>
+<tr><td>台灣匯款核心業務</td><td>~95%</td><td>EPS 15 × PE 15x</td><td>225 元</td></tr>
+<tr><td>海外布局（初期）</td><td>~3%</td><td>選擇權價值</td><td>+20 元</td></tr>
+<tr><td>新業務潛力（支付、保險代理）</td><td>~2%</td><td>選擇權價值</td><td>+15 元</td></tr>
+<tr><td style="font-weight:700">合計合理價</td><td colspan="3" style="color:var(--accent);font-weight:700">~260 元</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 選擇權價值假設</div>
+  <div class="ev-d">海外布局與新業務的選擇權價值 +35 元是假設性估計。邏輯：若海外擴張成功（市場規模 10x 台灣），營收可在 3-5 年內翻倍，折現後約值 20 元；新支付場景若取得 10% 移工消費金流，年增約 1-1.5 億營收，折現約值 15 元。兩者均為機率加權後的期望值，不代表確定收益。</div>
+  <div class="ev-s">來源：分析師推算，機率加權</div>
+</div>
+</details>
+
+<details open>
+<summary>10-4｜方法四：隱含預期反推法</summary>
+
+<p style="font-size:.84em;color:var(--txt2);margin:6px 0">反向工程：現價 180.5 元到底在預期什麼？</p>
+
+<table>
+<tr><th>假設 PE</th><th>隱含 EPS</th><th>解讀</th></tr>
+<tr><td>12x</td><td>15.0</td><td>= 2025 全年水準，市場定價僅反映已知盈利</td></tr>
+<tr><td>10x</td><td>18.0</td><td>≈ 2026 預估，若 PE=10 則隱含零成長預期</td></tr>
+<tr><td>15x</td><td>12.0</td><td>低於 Q1-Q3 累計，暗示市場預期衰退</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 隱含假設分析</div>
+  <div class="ev-d">最可能解讀：市場以 PE 12x 定價 2025E EPS 15，意味著「看到了獲利但尚未相信成長持續性」。這是典型的 IPO 初期不信任折價。若成長持續 2-3 季獲得驗證，PE 從 12x 擴張至 15-17x 是合理預期，對應 28-42% 上漲空間。</div>
+  <div class="ev-s">來源：股價反推計算</div>
+</div>
+
+<p style="font-size:.84em;color:var(--txt2);margin:8px 0"><strong>聯合機率檢驗：</strong></p>
+<table>
+<tr><th>條件</th><th>成立機率</th></tr>
+<tr><td>2026 營收成長 &gt;20%</td><td>70%</td></tr>
+<tr><td>毛利率維持 &gt;55%</td><td>75%</td></tr>
+<tr><td>市佔率穩定（≥55%）</td><td>85%</td></tr>
+<tr><td style="font-weight:700">聯合機率</td><td style="font-weight:700;color:var(--accent)">70% × 75% × 85% = 44.6%</td></tr>
+</table>
+
+<div class="tip info">
+  <b>隱含預期結論</b>
+  市場定價隱含偏保守假設（PE 12x = 僅反映已知盈利）。聯合機率 44.6% 顯示「成長持續且質優」的情境仍有近半機率實現，而市場定價幾乎未計入這一情境的溢價。低估的來源不是市場看空，而是市場尚未充分認識。
+</div>
+</details>
+
+<details open>
+<summary>10-5｜方法五：歷史循環比較法</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-s">S</span> 歷史可比性限制</div>
+  <div class="ev-d">東聯互動上櫃不到 6 個月，無自身歷史循環可參考。台灣 Fintech 上櫃案例極少（目前專營移工匯款的同業無上市公司），直接比較困難。僅能參考一般小型股 IPO 後的股價行為模式。</div>
+  <div class="ev-s">來源：歷史經驗推估</div>
+</div>
+
+<table>
+<tr><th>IPO 階段</th><th>典型行為</th><th>東聯互動位置</th></tr>
+<tr><td>上櫃首月</td><td>蜜月期波動大，定價尋找中</td><td>已過（2025/10-11）</td></tr>
+<tr><td>上櫃 3-6 月</td><td>閉鎖期到期、初始投資人退出壓力</td><td>目前（2026/01-04）</td></tr>
+<tr><td>上櫃 6-12 月</td><td>法人覆蓋啟動，基本面驗證第一輪</td><td>即將進入</td></tr>
+<tr><td>上櫃 1-2 年</td><td>重新定價完成，進入穩態估值</td><td>未來</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> IPO 後股價行為假設</div>
+  <div class="ev-d">假設東聯互動遵循台灣小型成長股 IPO 後的典型軌跡：第一年震盪 → 第二年法人認同 → 重新定價。若基本面持續強勁，第二年重新定價幅度可達 30-60%。但此假設建立在「成長持續」的前提上，若成長失速則不適用。</div>
+  <div class="ev-s">來源：歷史經驗推估，不構成預測</div>
+</div>
+</details>
+
+<details open>
+<summary>10-6｜五法交叉綜合判斷</summary>
+
+<table>
+<tr><th>方法</th><th>合理價範圍</th><th>安全邊際（vs 180.5）</th><th>可信度</th></tr>
+<tr><td>前瞻本益比法</td><td>225-400</td><td>25-122%</td><td style="color:var(--bull)">高</td></tr>
+<tr><td>股價淨值比法</td><td>不貴（排除泡沫）</td><td>—</td><td style="color:var(--warn)">低（輔助）</td></tr>
+<tr><td>分部估值法</td><td>~260</td><td>44%</td><td style="color:var(--accent)">中</td></tr>
+<tr><td>隱含預期反推法</td><td>PE 僅 12x（偏保守）</td><td>28-42%（若 PE 擴張）</td><td style="color:var(--bull)">高</td></tr>
+<tr><td>歷史循環法</td><td>無直接可比</td><td>—</td><td style="color:var(--bear)">極低</td></tr>
+</table>
+
+<div class="grid3">
+  <div class="mini-card bear-card">
+    <div class="title">保守合理價</div>
+    <div class="num" style="color:var(--warn)">250</div>
+    <div class="desc">PE 16x × EPS 15.5</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">基準合理價</div>
+    <div class="num" style="color:var(--accent)">290</div>
+    <div class="desc">PE 15x × EPS 19</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">樂觀合理價</div>
+    <div class="num" style="color:var(--bull)">380</div>
+    <div class="desc">PE 20x × EPS 19</div>
+  </div>
+</div>
+
+<div class="tip warn">
+  <b>估值不確定性提醒</b>
+  所有估值方法均受限於東聯互動上櫃歷史僅半年、可比公司稀少、行業估值中樞尚未建立等因素。PE 倍數的選擇（15-20x）本身就帶有較大主觀判斷成分。安全邊際數字僅在假設成立時有意義，投資人應充分理解估值不確定性後再做決策。
+</div>
+</details>
+
+<!-- 第十章整合結論 -->
+<div class="tip good">
+  <b>第十章整合結論</b>
+  <strong>資料：</strong>五法交叉中有效的三法（PE 法、SOTP、隱含預期法）均指向合理價在 250-320 區間，現價 180.5 具有 39-77% 安全邊際。PBR 排除泡沫疑慮，歷史循環法因缺乏數據僅供參考。<br>
+  <strong>觀察：</strong>三法罕見地趨於一致——方向相同（低估），差異僅在幅度。這種一致性強化了「市場定價偏保守」的判斷。核心原因是 PE 僅 12x，而公司實際成長 &gt;30%。<br>
+  <strong>推論：</strong>低估的根源不是基本面問題，而是「資訊不對稱」——上櫃太短、法人零覆蓋、散戶主導定價。一旦資訊不對稱縮小（法人覆蓋、連續季報驗證），PE 擴張至 15-17x 是自然路徑，對應 250-320 目標價。<br>
+  <strong>結論：</strong>
+  （主要判斷）現價具有合理安全邊際，但需警惕「歷史短 → PE 不確定性高」的風險。加權目標價 274.5 元（+52%）。
+  （保留意見）若行業 PE 中樞最終僅落在 10-12x（如銀行股級別），則現價已接近合理，安全邊際消失。此情境機率約 20%。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第十一章（保留）                           -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch11">第十一章｜（保留）全球 Fintech 匯款平台估值比較</div>
+<div class="section-sub">國際同業參考框架（非直接可比）</div>
+
+<details open>
+<summary>11-1｜國際匯款 Fintech 估值概覽</summary>
+
+<p style="font-size:.84em;color:var(--txt2);margin:6px 0">以下為全球主要匯款 Fintech 的估值數據，僅供建立參考框架，因市值、流動性、成長階段、市場環境均有本質差異，不宜直接對比。</p>
+
+<table>
+<tr><th>公司</th><th>市場</th><th>市值</th><th>PE（TTM）</th><th>營收成長</th><th>毛利率</th><th>備註</th></tr>
+<tr><td>Wise（WISE.L）</td><td>倫敦</td><td>~120 億美元</td><td>~35x</td><td>+25%</td><td>~65%</td><td>全球跨境匯款龍頭</td></tr>
+<tr><td>Remitly（RELY）</td><td>NASDAQ</td><td>~40 億美元</td><td>~45x</td><td>+35%</td><td>~55%</td><td>移工匯款專注，仍虧損中</td></tr>
+<tr><td>Western Union（WU）</td><td>NYSE</td><td>~35 億美元</td><td>~7x</td><td>-5%</td><td>~40%</td><td>傳統巨頭，衰退中</td></tr>
+<tr><td style="font-weight:700;color:var(--accent)">東聯互動（7738）</td><td style="color:var(--accent)">TPEX</td><td style="color:var(--accent)">~1.4 億美元</td><td style="color:var(--accent)">~12x</td><td style="color:var(--accent)">+30%</td><td style="color:var(--accent)">~57%</td><td style="color:var(--accent)">台灣移工匯款龍頭</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 國際比較的限制</div>
+  <div class="ev-d">東聯互動市值僅 ~1.4 億美元（49 億台幣），與 Wise（120 億美元）、Remitly（40 億美元）差距 30-85 倍，流動性、機構覆蓋、市場深度完全不在同一量級。PE 差距（12x vs 35-45x）部分反映規模折價、流動性折價、單一市場風險折價，不能簡單歸因於「低估」。</div>
+  <div class="ev-s">來源：Bloomberg、各公司財報（2026/03 數據）</div>
+</div>
+</details>
+
+<details open>
+<summary>11-2｜估值差距的可能解釋</summary>
+
+<table>
+<tr><th>折價因素</th><th>說明</th><th>影響幅度</th></tr>
+<tr><td>規模折價</td><td>市值 49 億 vs 國際同業千億級</td><td>PE 折價 30-50%</td></tr>
+<tr><td>流動性折價</td><td>日均成交量 &lt;1,000 萬，機構難進出</td><td>PE 折價 15-25%</td></tr>
+<tr><td>單一市場風險</td><td>95%+ 營收來自台灣移工匯款</td><td>PE 折價 10-20%</td></tr>
+<tr><td>上市歷史折價</td><td>上櫃僅半年，不確定性高</td><td>PE 折價 10-15%</td></tr>
+<tr><td style="font-weight:700">合計合理折價</td><td colspan="2" style="font-weight:700">國際同業 PE 35-45x → 折價後合理 PE 12-20x</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 國際框架啟示</div>
+  <div class="ev-d">即便考慮所有折價因素，東聯互動 PE 12x 仍處於折價後合理範圍的下緣（12-20x），暗示市場對其認知不足。若未來規模放大（市值過百億）、流動性改善、海外營收佔比提升，各項折價因素將逐步收斂，PE 有自然擴張空間。</div>
+  <div class="ev-s">來源：跨市場估值比較分析</div>
+</div>
+</details>
+
+<!-- 第十一章整合結論 -->
+<div class="tip info">
+  <b>第十一章整合結論</b>
+  <strong>資料：</strong>國際匯款 Fintech 龍頭 PE 35-45x，衰退中的傳統巨頭 PE 7x，東聯互動 PE 12x。營收成長（+30%）與毛利率（57%）均介於 Wise 和 Remitly 之間。<br>
+  <strong>觀察：</strong>東聯互動的成長和獲利指標接近國際一線，但 PE 僅為其 1/3-1/4。差距主要來自規模、流動性、單一市場、歷史短等合理折價。<br>
+  <strong>推論：</strong>國際估值框架提供了一個「天花板參考」——若東聯互動未來成長為區域性匯款平台（市值百億+），PE 有望從 12x 擴張至 20x+，但這需要數年時間和海外成功的前提條件。<br>
+  <strong>結論：</strong>國際比較不能直接得出「低估 3 倍」的結論，但可確認東聯互動的業務品質（成長率+毛利率）放在國際框架中毫不遜色。PE 差距的收斂是長期選擇權，不是短期催化劑。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第十二章 貓膩探索與求證                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch12">第十二章｜貓膩探索與求證</div>
+<div class="section-sub">敘事解剖、歷史前科、巧合偵測、反轉假說、利益追蹤、總評</div>
+
+<details open>
+<summary>12-1｜敘事解剖</summary>
+
+<div class="intel-card">
+  <div class="ic-title"><span class="light yellow"></span> 市場主流敘事</div>
+  <div class="ic-row"><div class="ic-label">敘事內容</div><div class="ic-val">「移工匯款高成長 Fintech，法規壁壘深，市佔第一，高配息」</div></div>
+  <div class="ic-row"><div class="ic-label">敘事受益者</div><div class="ic-val">公司本身（IPO 募資估值最大化）、創投股東（退場變現窗口）、承銷券商（承銷費收入）</div></div>
+  <div class="ic-row"><div class="ic-label">利益衝突</div><div class="ic-val">上櫃前密集增資（2024/01 B06 + 2024/05 B07 + 2025 三次 B011），可能在業績最佳時機募資</div></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 敘事真偽判斷</div>
+  <div class="ev-d">敘事核心「高成長 + 法規壁壘」有數據支撐（營收 +30%、全台僅 5 家持牌），不是無中生有。但密集增資的時機選擇確實巧妙——恰好在盈利爆發期，使估值最大化。這不違法，但投資人應意識到 IPO 估值可能已包含最樂觀情境的定價。</div>
+  <div class="ev-s">來源：公開說明書增資紀錄、營收趨勢交叉比對</div>
+</div>
+</details>
+
+<details open>
+<summary>12-2｜歷史前科搜查</summary>
+
+<table>
+<tr><th>檢查項目</th><th>結果</th><th>狀態</th></tr>
+<tr><td>法律訴訟紀錄</td><td>無</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>主管機關裁罰</td><td>無</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>AML/CFT 違規</td><td>無</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>會計師更換</td><td>未更換（安永聯合）</td><td><span class="light green"></span> 正常</td></tr>
+<tr><td>董事長更替</td><td>2025/01 陳韋名→吳侑勳</td><td><span class="light yellow"></span> 需追蹤</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 前科搜查結果</div>
+  <div class="ev-d">截至 2026/03，無任何法律/裁罰/訴訟紀錄。但公司歷史僅 10 年（成立 2016），上市歷史僅半年，「無前科」的樣本量太小，不足以做出強結論。董事長 2025/01 由陳韋名更替為創辦人吳侑勳，時間點恰在 IPO 前，原因需追蹤。</div>
+  <div class="ev-s">來源：司法院裁判書查詢、金管會裁罰公告、公開說明書</div>
+</div>
+</details>
+
+<details open>
+<summary>12-3｜巧合偵測</summary>
+
+<div class="premortem">
+  <div class="pm-title">可疑巧合清單</div>
+  <div class="pm-item"><strong>巧合一：</strong>密集增資（2024/01、2024/05、2025 三次）恰好與營收爆發期（2024 Q2-Q3）重疊 → 募資時機最佳化？IPO 估值最大化？<br><em>嚴重度：中。合法但值得關注。</em></div>
+  <div class="pm-item"><strong>巧合二：</strong>董事長突然更替（陳韋名→吳侑勳，2025/01），距離上櫃僅 9 個月 → IPO 前的治理結構調整？還是內部分歧？<br><em>嚴重度：中低。需了解陳韋名現在角色與持股變化。</em></div>
+  <div class="pm-item"><strong>巧合三：</strong>Q2 2025 淨利率高達 82.5%，出現在 IPO 前/後的關鍵時期 → 自然波動？還是費用後移/收入前拉？<br><em>嚴重度：中高。若 Q4 淨利率大幅回落至 &lt;50%，此巧合將升級為警告。</em></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 巧合機率評估</div>
+  <div class="ev-d">三個巧合若獨立發生，各自可解釋為正常商業行為。但三個同時出現（密集增資 + 董事長換人 + 異常高淨利率），聯合機率提高了「刻意美化 IPO 窗口」的可能性。保守估計此假說成立機率 10-20%。Q4 季報將是關鍵驗證點——若淨利率回歸 55-65% 的正常水準，可大幅排除；若異常偏低（&lt;40%），則反向證實。</div>
+  <div class="ev-s">來源：公開資訊交叉比對分析</div>
+</div>
+</details>
+
+<details open>
+<summary>12-4｜反轉假說求證</summary>
+
+<div class="intel-card">
+  <div class="ic-title"><span class="light yellow"></span> 反轉假說一：高成長只是一次性爆發</div>
+  <div class="ic-row"><div class="ic-label">假說</div><div class="ic-val">「如果移工匯款市場的合法轉化是一次性的從地下轉地上，而非持續趨勢？」</div></div>
+  <div class="ic-row"><div class="ic-label">求證</div><div class="ic-val">SARS 市佔從 0% → 60.25%（3 年），且 2026 前 2 月營收仍 +30% YoY → 趨勢持續中</div></div>
+  <div class="ic-row"><div class="ic-label">結論</div><div class="ic-val" style="color:var(--accent)">排除一次性假說。轉化仍在加速中，距離飽和（估計 70-75% 合法化率）尚有空間。</div></div>
+</div>
+
+<div class="intel-card">
+  <div class="ic-title"><span class="light yellow"></span> 反轉假說二：高毛利不可持續</div>
+  <div class="ic-row"><div class="ic-label">假說</div><div class="ic-val">「如果毛利率 57% 是因為監管寬鬆、缺乏競爭，未來會被壓縮至 40%？」</div></div>
+  <div class="ic-row"><div class="ic-label">求證</div><div class="ic-val">2024/12 修法方向是提高門檻（資本額+AML）而非壓縮費率；公司指引毛利率朝 60% 走</div></div>
+  <div class="ic-row"><div class="ic-label">結論</div><div class="ic-val" style="color:var(--warn)">暫排除，但保留觀察。費率壓縮風險在 2-3 年後可能浮現（若市場充分競爭）。</div></div>
+</div>
+
+<div class="intel-card">
+  <div class="ic-title"><span class="light yellow"></span> 反轉假說三：市佔高峰已至</div>
+  <div class="ic-row"><div class="ic-label">假說</div><div class="ic-val">「如果 60% 市佔已是天花板，新進業者會逐步蠶食？」</div></div>
+  <div class="ic-row"><div class="ic-label">求證</div><div class="ic-val">第 5 家業者剛核准（2025 Q4），但前 3 名合計 &gt;90%，後進者缺乏規模經濟</div></div>
+  <div class="ic-row"><div class="ic-label">結論</div><div class="ic-val" style="color:var(--accent)">短期（1-2 年）市佔下降風險低。中長期需觀察新進者是否攜帶差異化優勢。</div></div>
+</div>
+</details>
+
+<details open>
+<summary>12-5｜利益追蹤</summary>
+
+<table>
+<tr><th>關係人</th><th>持股/行為</th><th>可疑度</th><th>追蹤指標</th></tr>
+<tr><td>吳侑勳（董座兼總經理）</td><td>利用他人名義持股 9.33%</td><td><span class="light yellow"></span> 中</td><td>為何不直接持有？稅務規劃？控制工具？</td></tr>
+<tr><td>達和貳創投</td><td>7.44%（IPO 前 8.05%，微幅減持 -0.61%）</td><td><span class="light green"></span> 低</td><td>未來減持節奏，若加速減持→警告</td></tr>
+<tr><td>法人機構</td><td>外資 0.35%，投信幾乎零</td><td><span class="light green"></span> 低</td><td>無機構喊話與行為不一致的問題</td></tr>
+<tr><td>陳韋名（前董事長）</td><td>現職與持股不明</td><td><span class="light yellow"></span> 中</td><td>離開原因、現持股變化、是否另立門戶</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 利益追蹤評估</div>
+  <div class="ev-d">兩項需追蹤：(1) 吳侑勳利用他人名義持股——可能是台灣中小企業常見的稅務安排，但也可能隱含控制權操作，需持續關注公開說明書關係人交易段落。(2) 前董事長陳韋名的去向——若仍持有大量股份且保持沉默，問題不大；若已大量減持或出走另立門戶，需重新評估團隊穩定性。</div>
+  <div class="ev-s">來源：公開說明書持股結構、董監事異動公告</div>
+</div>
+</details>
+
+<details open>
+<summary>12-6｜貓膩總評</summary>
+
+<div class="grid2">
+  <div class="mini-card" style="border-left:4px solid var(--warn)">
+    <div class="title">貓膩燈號</div>
+    <div class="num" style="color:var(--warn)">黃燈</div>
+    <div class="desc">有可疑點，尚未構成紅燈</div>
+  </div>
+  <div class="mini-card" style="border-left:4px solid var(--warn)">
+    <div class="title">貓膩成立機率</div>
+    <div class="num" style="color:var(--warn)">15%</div>
+    <div class="desc">低但非零，需持續監控</div>
+  </div>
+</div>
+
+<table>
+<tr><th>可疑點</th><th>嚴重度</th><th>驗證方式</th><th>驗證時間</th></tr>
+<tr><td>密集增資時機</td><td>中</td><td>後續是否繼續增資/發行 CB</td><td>持續</td></tr>
+<tr><td>董事長突換</td><td>中低</td><td>陳韋名去向與持股變化</td><td>2026/06 股東會</td></tr>
+<tr><td>Q2 淨利率 82.5% 異常</td><td>中高</td><td>Q4 淨利率是否回歸 55-65%</td><td>2026/04 季報</td></tr>
+<tr><td>利用他人名義持股</td><td>中</td><td>關係人交易揭露、集保戶資料</td><td>持續</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 監控建議</div>
+  <div class="ev-d">Q4 季報（2026/04 公布）將是最關鍵的貓膩驗證點。若淨利率回歸正常（55-65%），三個巧合中最嚴重的一個可排除，整體貓膩機率降至 8-10%。若淨利率異常偏低（&lt;40%），應升級至紅燈並重新評估投資假說。大股東減持節奏為另一長期追蹤指標。</div>
+  <div class="ev-s">來源：綜合分析</div>
+</div>
+</details>
+
+<!-- 第十二章整合結論 -->
+<div class="tip warn">
+  <b>第十二章整合結論</b>
+  <strong>資料：</strong>敘事「高成長 Fintech + 法規壁壘」有數據支撐但受益者明確（IPO 利益鏈）。無法律前科但歷史樣本極小。三項巧合（密集增資、董座換人、Q2 淨利率異常）同時出現。利益追蹤發現兩項黃燈（他人名義持股、前董事長去向）。<br>
+  <strong>觀察：</strong>單一巧合可用正常商業邏輯解釋，但三項同步出現拉高了「IPO 窗口美化」的貝氏後驗機率。目前仍以「合理商業行為」為主要解釋（85% 機率），但不可忽視 15% 的「刻意操作」可能性。<br>
+  <strong>推論：</strong>貓膩探索的最大價值不是得出「有/沒有問題」的結論，而是明確指出了哪些數據點需要追蹤驗證。Q4 季報的淨利率是最具判別力的單一指標。<br>
+  <strong>結論：</strong>
+  （主要判斷）黃燈，不構成否決投資的理由，但要求投資人保持警覺、分批建倉、設好停損。
+  （附帶條件）Q4 淨利率若 &lt;40%，立即將貓膩評級升至紅燈並暫停建倉。大股東若單月減持 &gt;1%，同樣升級。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第十三章 投資結論                          -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch13">第十三章｜投資結論</div>
+<div class="section-sub">一句話總結、綜合評估、三情境估值、操作建議、免責提醒</div>
+
+<details open>
+<summary>13-1｜一句話總結</summary>
+
+<div class="tip good">
+  <b>核心結論</b>
+  東聯互動是台灣移工匯款賽道的明確領導者，結構性順風 + 高成長 + 高毛利 + 法規壁壘構成有吸引力的投資機會，但 IPO 歷史僅半年、治理結構需觀察、估值不確定性高，<strong>適合分批佈局而非重倉追高</strong>。
+</div>
+</details>
+
+<details open>
+<summary>13-2｜綜合評估表</summary>
+
+<table>
+<tr><th>評估項目</th><th>評級</th><th>說明</th></tr>
+<tr><td>產業趨勢</td><td><span class="stars">★★★★★</span></td><td>移工匯款合法化 + 無現金化雙重結構性順風，極度有利</td></tr>
+<tr><td>競爭地位</td><td><span class="stars">★★★★☆</span></td><td>市佔 60%+ 領導者，牌照壁壘深，但新進業者開始增加</td></tr>
+<tr><td>財務品質</td><td><span class="stars">★★★★☆</span></td><td>EPS 翻倍成長、毛利率 57%、輕資產高現金流，強勁</td></tr>
+<tr><td>管理層</td><td><span class="stars">★★★☆☆</span></td><td>創辦人主導且有行業經驗，但治理結構（他人名義持股、董座更替）待觀察</td></tr>
+<tr><td>估值吸引力</td><td><span class="stars">★★★★☆</span></td><td>PE 12x vs 成長 30%+ 明顯偏低，但歷史短導致 PE 中樞不確定</td></tr>
+<tr><td>風險程度</td><td><span class="stars">★★★☆☆</span></td><td>中等：IPO 初期不確定性高，但下檔有配息保護</td></tr>
+<tr><td style="font-weight:700;color:var(--accent)">總評</td><td style="font-weight:700;color:var(--accent)"><span class="stars">B+</span></td><td style="font-weight:700;color:var(--accent)">結論可信但附帶條件，適合條件式投資</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>13-3｜三情境估值</summary>
+
+<table>
+<tr><th>情境</th><th>機率</th><th>2026 EPS</th><th>合理 PE</th><th>目標價</th><th>vs 現價 180.5</th></tr>
+<tr style="color:var(--bull)"><td><strong>樂觀</strong></td><td>30%</td><td>20</td><td>18x</td><td>360</td><td>+100%</td></tr>
+<tr><td><strong>基準</strong></td><td>45%</td><td>18</td><td>15x</td><td>270</td><td>+50%</td></tr>
+<tr style="color:var(--bear)"><td><strong>保守</strong></td><td>25%</td><td>15</td><td>12x</td><td>180</td><td>±0%</td></tr>
+</table>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">加權目標價</div>
+    <div class="num" style="color:var(--bull)">274.5</div>
+    <div class="desc">360×30% + 270×45% + 180×25%</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">上漲潛力</div>
+    <div class="num" style="color:var(--accent)">+52%</div>
+    <div class="desc">vs 現價 180.5</div>
+  </div>
+  <div class="mini-card" style="border-left:4px solid var(--warn)">
+    <div class="title">催化 EV - 風險 EL</div>
+    <div class="num" style="color:var(--warn)">-1.5%</div>
+    <div class="desc">+26.6% − 28.1% ≈ 中性</div>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 淨期望值解讀</div>
+  <div class="ev-d">催化劑 EV +26.6% 與風險 EL -28.1% 相抵後淨值 -1.5%，接近中性。但這反映的是「已定價風險/報酬的均衡」，並未計入：(1) 法人覆蓋帶來的 PE 擴張超額報酬、(2) 配息 5.5% 的現金收益、(3) 海外擴張的選擇權價值。加入這些隱含因素後，實際期望值偏正。</div>
+  <div class="ev-s">來源：Part1 催化劑/風險量化 + 本章估值分析</div>
+</div>
+</details>
+
+<details open>
+<summary>13-4｜四次信心校準彙整</summary>
+
+<table>
+<tr><th>校準環節</th><th>結果</th><th>信心方向</th></tr>
+<tr><td>ACH 競爭假說分析</td><td>H1 成長延續 58%、H2 成長放緩 25%、H3 利空 17%</td><td><span class="light green"></span> 偏多</td></tr>
+<tr><td>壓力測試（第五步）</td><td>6 項壓力 4 項可承受、2 項需關注</td><td><span class="light green"></span> 偏多</td></tr>
+<tr><td>評審團（第六步）</td><td>5 位分析師 3 偏多 / 1 中性 / 1 偏空</td><td><span class="light green"></span> 偏多</td></tr>
+<tr><td>推衍推演（第九章）</td><td>加權期望值 +40.2%，致命因子 A2 可控</td><td><span class="light green"></span> 偏多</td></tr>
+<tr><td style="font-weight:700">四次校準一致性</td><td colspan="2" style="font-weight:700;color:var(--accent)">四次均偏多 → 信心等級：中偏高（B+）</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 校準一致性分析</div>
+  <div class="ev-d">四次獨立校準結果罕見一致（均偏多），這降低了「單一分析偏誤」的風險。但也需警惕「確認偏誤」——當所有訊號都指向同一方向時，更應關注反面訊號。貓膩探索（第十二章）提供了最重要的反面訊號：Q2 淨利率異常 + 密集增資時機。四次偏多 + 一個黃燈 = B+ 評級。</div>
+  <div class="ev-s">來源：步驟一至步驟七 + 本章綜合</div>
+</div>
+</details>
+
+<details open>
+<summary>13-5｜操作建議（僅供參考）</summary>
+
+<div class="grid2">
+  <div class="intel-card">
+    <div class="ic-title" style="color:var(--bull)">適合的投資人</div>
+    <div class="ic-row"><div class="ic-val">● 長期投資者（1 年以上持有期）</div></div>
+    <div class="ic-row"><div class="ic-val">● 分批建倉、紀律執行者</div></div>
+    <div class="ic-row"><div class="ic-val">● 看好移工經濟趨勢的主題投資者</div></div>
+    <div class="ic-row"><div class="ic-val">● 存股族（配息 5.5% 殖利率）</div></div>
+  </div>
+  <div class="intel-card">
+    <div class="ic-title" style="color:var(--bear)">不適合的投資人</div>
+    <div class="ic-row"><div class="ic-val">● 短線交易者（流動性低、價差大）</div></div>
+    <div class="ic-row"><div class="ic-val">● 重倉單一標的者（歷史短風險高）</div></div>
+    <div class="ic-row"><div class="ic-val">● 無法承受 -30% 回撤的投資人</div></div>
+  </div>
+</div>
+
+<table>
+<tr><th>操作項目</th><th>建議內容</th></tr>
+<tr><td>建倉策略</td><td>分 3-4 批，170-190 元區間佈局。不追高、不一次重倉</td></tr>
+<tr><td>加碼條件</td><td>跌破 150 元（= 保守合理價 250 的 60%）且基本面未惡化</td></tr>
+<tr><td>停損條件</td><td>跌破 130 元（= 保守合理價的 52%），或月營收連續 3 月 YoY &lt;10%</td></tr>
+<tr><td>停利條件</td><td>股價突破 300 元（接近樂觀情境）時開始分批減碼</td></tr>
+<tr><td>持有期間</td><td>至少持有至 2026/10（上櫃一周年 + 法人覆蓋窗口）</td></tr>
+<tr><td>部位大小</td><td>建議不超過總投資組合的 5-8%</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 致命因子提醒</div>
+  <div class="ev-d">A2「地下匯兌轉化速度」為本案唯一致命因子。若政府對地下匯兌的取締力道減弱、或新政策意外有利地下匯兌（如放寬外勞匯款限額但未加強監管），整個成長假說的根基將被動搖。此因子無法用停損價格捕捉，需透過政策追蹤（金管會、內政部移民署公告）主動監控。</div>
+  <div class="ev-s">來源：ACH 分析致命因子評估</div>
+</div>
+</details>
+
+<details open>
+<summary>13-6｜免責提醒</summary>
+
+<div class="tip danger">
+  <b>免責聲明</b>
+  本報告為 AI 輔助分析，基於公開資訊整理，<strong>不構成投資建議</strong>。投資人應自行判斷並承擔風險。報告中所有估值均為推算，實際結果可能大幅偏離。過去的業績不代表未來表現。投資有風險，入市需謹慎。
+</div>
+
+<div class="tip info">
+  <b>報告完整性說明</b>
+  本報告共 <strong>13 章</strong>（Part1 Ch1-7 + Part2 Ch8-13），請合併閱讀。<br>
+  Part 1 涵蓋：公司概覽、催化劑、市場買單邏輯、風險偵測求證、隱藏優勢、六步彙整、壓力測試。<br>
+  Part 2 涵蓋：監控儀表板、推衍預測、股價合理性、國際估值比較、貓膩探索、投資結論。<br>
+  兩份報告互為補充，單獨閱讀可能導致判斷不完整。
+</div>
+</details>
+
+<!-- 第十三章整合結論 -->
+<div class="tip good">
+  <b>第十三章整合結論（全報告最終結論）</b>
+  <strong>資料彙總：</strong>13 章分析涵蓋基本面（EPS 15-16、毛利率 57%、市佔 60%+）、催化劑（EV +26.6%）、風險（EL -28.1%）、估值（五法交叉合理價 250-320）、貓膩檢驗（黃燈 15%）。四次信心校準均偏多，ACH 信心 58%，加權目標價 274.5（+52%）。<br><br>
+  <strong>觀察：</strong>東聯互動呈現「好生意、好趨勢、合理但偏低的價格」三要素並存的結構。下檔有配息（5.5%）與低 PE（12x）提供緩衝，上檔有法人覆蓋、海外擴張、成長驗證三大催化。不對稱報酬結構明確。<br><br>
+  <strong>推論過程：</strong>
+  <ol style="margin:4px 0 4px 16px;color:var(--txt2)">
+    <li>移工匯款合法化是不可逆的結構性趨勢（政策 + 社會需求驅動）→ 行業蛋糕持續做大</li>
+    <li>東聯市佔 60%+ 且牌照壁壘高 → 蛋糕做大時份額不會被大幅蠶食</li>
+    <li>PE 12x vs 成長 30%+ 反映資訊不對稱（IPO 太短、法人零覆蓋）→ 低估有結構性原因</li>
+    <li>結構性原因會隨時間自然消除（上櫃滿一年、連續季報驗證、法人覆蓋）→ PE 擴張是時間問題</li>
+    <li>風險主要在「時間維度」（需要 6-12 月驗證）而非「方向維度」（基本面沒有明確惡化訊號）</li>
+  </ol><br>
+  <strong>最終結論：</strong><br>
+  <span style="color:var(--bull);font-weight:700">（主要路徑 · 60%）</span> 分批建倉，170-190 區間佈局，持有至 2026/10 法人覆蓋窗口。加權目標 274.5 元（+52%），配息 5.5% 額外保護。總評 B+。<br>
+  <span style="color:var(--warn);font-weight:700">（備選路徑 · 25%）</span> 成長放緩但不崩壞，轉為存股策略，靠配息 + 緩慢 PE 擴張累積報酬。<br>
+  <span style="color:var(--bear);font-weight:700">（風險路徑 · 15%）</span> 致命因子觸發（AML 裁罰、地下匯兌政策轉向、大股東減持），止損離場。130 元為硬性停損線。
+</div>
+
+<!-- 頁尾 -->
+<div class="footer">
+  天機閣 · 天機錄 — 7738 東聯互動 完整版 Part 2（Ch8-13）<br>
+  產出日期：2026-03-30 ｜ 本報告共 13 章（Part1 Ch1-7 + Part2 Ch8-13），請合併閱讀<br>
+  AI 輔助分析，不構成投資建議
+</div>
+
+</div><!-- .wrap -->
+</body>
+</html>

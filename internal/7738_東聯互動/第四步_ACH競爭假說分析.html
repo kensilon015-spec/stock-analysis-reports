@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>7738 東聯互動 — 第四步 ACH 競爭假說分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片（點擊展開/收合） === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === ACH 矩陣專用 === */
+.ach-cc{background:rgba(76,175,80,.3);color:#4caf50;font-weight:700;text-align:center}
+.ach-c{background:rgba(76,175,80,.15);color:#81c784;text-align:center}
+.ach-n{background:rgba(122,176,192,.1);color:var(--txt3);text-align:center}
+.ach-i{background:rgba(239,83,80,.15);color:#ef9a9a;text-align:center}
+.ach-ii{background:rgba(239,83,80,.3);color:#ef5350;font-weight:700;text-align:center}
+
+/* === 假說標籤 === */
+.hypo-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff;margin-right:4px}
+.hypo-bull{background:#2e7d32}
+.hypo-mild{background:#5a7d60}
+.hypo-neutral{background:#5a7d8c}
+.hypo-bear{background:#c62828}
+.hypo-doom{background:#880e4f}
+
+/* === 信心儀表板 === */
+.confidence-meter{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:8px 0;font-size:.72em;font-weight:700}
+.confidence-meter div{display:flex;align-items:center;justify-content:center;color:#fff}
+.cm-h1{background:#2e7d32}
+.cm-h2{background:#5a7d60}
+.cm-h3{background:#5a7d8c}
+.cm-h4{background:#c62828}
+.cm-h5{background:#880e4f}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 列印（展開所有卡片） === */
+@media print{body{background:#fff;color:#333}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <h1>7738 東聯互動</h1>
+  <div class="sub">第四步：ACH 競爭假說分析</div>
+  <div class="desc">以 20 條關鍵證據、5 個競爭假說進行結構化分析競爭假說（Analysis of Competing Hypotheses）<br>方法論：CIA Richard Heuer ACH Framework</div>
+  <div class="tags">
+    <span class="tag">移工匯款 Fintech</span>
+    <span class="tag">ACH 分析</span>
+    <span class="tag">5 假說 × 20 證據</span>
+    <span class="tag">第一次信心校準</span>
+    <span class="tag">2026-03-30</span>
+  </div>
+</div>
+
+<!-- ========== 展開/收合控制 ========== -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ========== 目錄 ========== -->
+<div class="toc">
+  <b style="color:var(--base);font-size:.9em">目錄</b>
+  <a href="#hypotheses">一、五個競爭假說定義</a>
+  <a href="#evidence">二、20 條關鍵證據清單</a>
+  <a href="#matrix">三、ACH 一致性矩陣</a>
+  <a href="#scoring">四、加權計分與排名</a>
+  <a href="#calibration">五、第一次信心校準</a>
+  <a href="#sensitivity">六、敏感度檢查</a>
+  <a href="#monitor">七、監測指標與觸發條件</a>
+  <a href="#conclusion">八、第四步整合結論</a>
+</div>
+
+<!-- ================================================================
+     一、五個競爭假說定義
+     ================================================================ -->
+<div class="section-title" id="hypotheses">一、五個競爭假說定義</div>
+<div class="section-sub">涵蓋從極度看多到結構性看空的完整光譜</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">
+    <span><span class="hypo-tag hypo-bull">H1</span> 強勁成長（看多 — 主要假說）</span>
+  </h3>
+  <div class="card-body">
+    <p>東聯是台灣移工匯款 Fintech 領導者，三重結構性催化劑（移工人數增加 + 匯款限額提升 + 服務業移工解禁）加上 80% 地下匯兌待轉化空間以及海外擴張佈局，將持續推動 <b style="color:var(--bull)">25-35% 年增長率</b>，毛利率朝 60% 邁進。</p>
+    <p><b style="color:var(--base)">核心邏輯：</b>結構性供給開放 × 合規化趨勢 × 壟斷平台效應 → 指數型成長</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">
+    <span><span class="hypo-tag hypo-mild">H2</span> 穩健成長（溫和看多）</span>
+  </h3>
+  <div class="card-body">
+    <p>核心業務穩健成長 <b style="color:var(--bull)">15-20%</b>，但海外佈局初期虧損 + 新業務（支付/微金融）拖累短期獲利，成長曲線趨於平緩。東聯仍是優質企業，但估值倍數無法繼續擴張。</p>
+    <p><b style="color:var(--base)">核心邏輯：</b>基本面穩健但成長天花板漸近 + 新業務稀釋利潤</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">
+    <span><span class="hypo-tag hypo-neutral">H3</span> 成長放緩（中性）</span>
+  </h3>
+  <div class="card-body">
+    <p>市場滲透率接近飽和（移工數成長放緩）、新進第五家業者加劇競爭、費率壓力導致毛利率回落至 <b style="color:var(--warn)">45-50%</b>，營收增速降至 5-10%。</p>
+    <p><b style="color:var(--base)">核心邏輯：</b>成長趨緩 + 競爭侵蝕 → 從高成長股回歸價值股</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">
+    <span><span class="hypo-tag hypo-bear">H4</span> 市佔流失（看空）</span>
+  </h3>
+  <div class="card-body">
+    <p>銀行反擊（大幅降低手續費）、新進業者用補貼搶客、監管趨嚴增加合規成本，東聯市佔從 40% 滑落到 <b style="color:var(--bear)">25%</b>，獲利衰退。</p>
+    <p><b style="color:var(--base)">核心邏輯：</b>護城河被突破 + 價格戰 + 成本上升 → 獲利能力惡化</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">
+    <span><span class="hypo-tag hypo-doom">H5</span> 模式顛覆（結構性看空）</span>
+  </h3>
+  <div class="card-body">
+    <p>加密貨幣 / CBDC / 即時跨境支付系統（如 PayNow-UPI）顛覆傳統匯款模式，金管會開放新管道，東聯現有模式被繞過。整個「匯款中介」的商業模式面臨 <b style="color:var(--bear)">存在性威脅</b>。</p>
+    <p><b style="color:var(--base)">核心邏輯：</b>技術替代 + 監管開放 → 中介者價值歸零</p>
+  </div>
+</div>
+
+<div class="tip info">
+  <b>第一章整合結論：假說光譜設計</b>
+  五個假說從結構性利多（H1）到結構性毀滅（H5），覆蓋了完整的可能性光譜。H1 與 H2 的差異在於「成長持續性」，H3 與 H4 的差異在於「競爭強度」，H5 則是完全不同的維度——技術替代風險。這種設計確保我們不會只在「看多程度」上打轉，而是納入了質性不同的威脅類型。ACH 的核心價值在於迫使分析師認真對待「不太可能但後果嚴重」的假說（如 H5），避免確認偏誤。
+</div>
+
+<!-- ================================================================
+     二、20 條關鍵證據清單
+     ================================================================ -->
+<div class="section-title" id="evidence">二、20 條關鍵證據清單</div>
+<div class="section-sub">每條證據均標註 FIAS 分級（事實/推論/假設/猜測），確保分析透明度</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">證據清單（E1 - E20）</h3>
+  <div class="card-body">
+    <table>
+      <thead>
+        <tr><th style="width:36px">#</th><th>證據內容</th><th style="width:56px">FIAS</th><th style="width:120px">來源</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>E1</b></td><td>2025 年營收 5.65 億元，YoY +30%</td><td><span class="fias-f">事實</span></td><td>Yahoo / finlab</td></tr>
+        <tr><td><b>E2</b></td><td>EPS 三年軌跡 3.01 → 9.51 → 11.58（2025 Q1-3）</td><td><span class="fias-f">事實</span></td><td>finlab / 年報</td></tr>
+        <tr><td><b>E3</b></td><td>毛利率 55% → 57%，呈上升趨勢</td><td><span class="fias-f">事實</span></td><td>法說會 / finlab</td></tr>
+        <tr><td><b>E4</b></td><td>交易筆數市佔 >40%（894 萬筆中）</td><td><span class="fias-f">事實</span></td><td>vocus 產業分析</td></tr>
+        <tr><td><b>E5</b></td><td>活躍用戶市佔 27.7%（23 萬 / 83 萬）</td><td><span class="fias-f">事實</span></td><td>內政部統計</td></tr>
+        <tr><td><b>E6</b></td><td>金管會 2024/12 修法提高新進業者門檻</td><td><span class="fias-f">事實</span></td><td>FSC</td></tr>
+        <tr><td><b>E7</b></td><td>在台移工 86.58 萬人，創歷史新高</td><td><span class="fias-f">事實</span></td><td>勞動部</td></tr>
+        <tr><td><b>E8</b></td><td>2026/01 服務業移工正式解禁</td><td><span class="fias-f">事實</span></td><td>天下雜誌</td></tr>
+        <tr><td><b>E9</b></td><td>匯款上限從 40 萬提高至 50 萬元</td><td><span class="fias-f">事實</span></td><td>FSC</td></tr>
+        <tr><td><b>E10</b></td><td>80% 移工匯款仍走地下匯兌管道</td><td><span class="fias-f">事實</span></td><td>AmCham</td></tr>
+        <tr><td><b>E11</b></td><td>配息 10 元（超出市場預期的 6-7 元）</td><td><span class="fias-i">推論</span></td><td>工商時報標題，待確認</td></tr>
+        <tr><td><b>E12</b></td><td>負債比 9.98%，自由現金流 1.92 億</td><td><span class="fias-f">事實</span></td><td>finlab</td></tr>
+        <tr><td><b>E13</b></td><td>第五家匯款業者 2025/06 獲核准</td><td><span class="fias-f">事實</span></td><td>FSC</td></tr>
+        <tr><td><b>E14</b></td><td>海外業務僅驗證階段，貢獻營收 3-5%</td><td><span class="fias-a">假設</span></td><td>法說會展望</td></tr>
+        <tr><td><b>E15</b></td><td>Q2 淨利率 82.5% 異常高（可能含一次性項目）</td><td><span class="fias-f">事實</span></td><td>finlab</td></tr>
+        <tr><td><b>E16</b></td><td>外資 0.35%，法人幾乎零持倉</td><td><span class="fias-f">事實</span></td><td>公開資訊</td></tr>
+        <tr><td><b>E17</b></td><td>Wise / Remitly 等國際巨頭未進入台灣市場</td><td><span class="fias-f">事實</span></td><td>搜尋驗證</td></tr>
+        <tr><td><b>E18</b></td><td>統振聚焦預付卡（>50% 營收），非直接競爭</td><td><span class="fias-f">事實</span></td><td>vocus</td></tr>
+        <tr><td><b>E19</b></td><td>管理層承諾兌現率 100%（2 年歷史）</td><td><span class="fias-f">事實</span></td><td>交叉驗證</td></tr>
+        <tr><td><b>E20</b></td><td>全球數位匯款市場 CAGR 22.5%</td><td><span class="fias-f">事實</span></td><td>Fortune / Global Growth</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:8px">
+      <div class="grid3">
+        <div class="mini-card bull-card">
+          <div class="title">事實（F）</div>
+          <div class="num" style="color:var(--bull)">17 條</div>
+          <div class="desc">佔比 85%</div>
+        </div>
+        <div class="mini-card neutral-card">
+          <div class="title">推論（I）</div>
+          <div class="num" style="color:var(--neutral)">1 條</div>
+          <div class="desc">E11 待確認</div>
+        </div>
+        <div class="mini-card" style="border-left:4px solid var(--warn)">
+          <div class="title">假設（A）</div>
+          <div class="num" style="color:var(--warn)">1 條</div>
+          <div class="desc">E14 海外展望</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>第二章整合結論：證據品質評估</b>
+  20 條證據中有 17 條為事實（85%），僅 1 條推論（E11 配息金額待確認）與 1 條假設（E14 海外營收比例為法說會展望而非已實現數據）。證據品質整體極高，且覆蓋了財務面（E1-3, E12, E15）、市場面（E4-5）、政策面（E6-9）、競爭面（E13, E17-18）、管理面（E19）以及總經面（E7, E20）六大維度，分析基礎紮實。唯一需要注意的是：大部分證據偏向利多面（收集偏誤風險），後續 ACH 矩陣的「不一致」評分將是修正此偏誤的關鍵機制。
+</div>
+
+<!-- ================================================================
+     三、ACH 一致性矩陣
+     ================================================================ -->
+<div class="section-title" id="matrix">三、ACH 一致性矩陣</div>
+<div class="section-sub">CC = 強一致 (+3) | C = 一致 (+1) | N = 中性 (0) | I = 不一致 (-2) | II = 強不一致 (-4)</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">完整 ACH 矩陣（5 假說 × 20 證據）</h3>
+  <div class="card-body">
+    <div style="overflow-x:auto">
+    <table style="font-size:.78em">
+      <thead>
+        <tr>
+          <th style="width:32px">#</th>
+          <th style="min-width:150px">證據摘要</th>
+          <th style="width:72px;text-align:center"><span class="hypo-tag hypo-bull">H1</span><br>強勁成長</th>
+          <th style="width:72px;text-align:center"><span class="hypo-tag hypo-mild">H2</span><br>穩健成長</th>
+          <th style="width:72px;text-align:center"><span class="hypo-tag hypo-neutral">H3</span><br>成長放緩</th>
+          <th style="width:72px;text-align:center"><span class="hypo-tag hypo-bear">H4</span><br>市佔流失</th>
+          <th style="width:72px;text-align:center"><span class="hypo-tag hypo-doom">H5</span><br>模式顛覆</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>E1</b></td><td>營收 5.65 億 YoY +30%</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-ii">II</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E2</b></td><td>EPS 三年翻倍</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-ii">II</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E3</b></td><td>毛利率 55%→57% 上升</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-i">I</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E4</b></td><td>筆數市佔 >40%</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-ii">II</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E5</b></td><td>用戶市佔 27.7%</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-i">I</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E6</b></td><td>修法提高新進門檻</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E7</b></td><td>移工 86.58 萬創新高</td>
+          <td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E8</b></td><td>服務業移工解禁</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E9</b></td><td>匯款上限 40→50 萬</td>
+          <td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E10</b></td><td>80% 仍走地下匯兌</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-i">I</td>
+        </tr>
+        <tr>
+          <td><b>E11</b></td><td>配息 10 元超預期</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-ii">II</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E12</b></td><td>負債比 9.98%＋現金流 1.92 億</td>
+          <td class="ach-cc">CC</td><td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E13</b></td><td>第五家業者核准</td>
+          <td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E14</b></td><td>海外僅驗證階段 3-5%</td>
+          <td class="ach-n">N</td><td class="ach-i">I</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E15</b></td><td>Q2 淨利率 82.5% 異常</td>
+          <td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E16</b></td><td>法人零持倉</td>
+          <td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E17</b></td><td>國際巨頭未進入台灣</td>
+          <td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-i">I</td>
+        </tr>
+        <tr>
+          <td><b>E18</b></td><td>統振非直接競爭</td>
+          <td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-i">I</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E19</b></td><td>管理層承諾兌現 100%</td>
+          <td class="ach-cc">CC</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-i">I</td><td class="ach-n">N</td>
+        </tr>
+        <tr>
+          <td><b>E20</b></td><td>全球數位匯款 CAGR 22.5%</td>
+          <td class="ach-c">C</td><td class="ach-c">C</td><td class="ach-n">N</td><td class="ach-n">N</td><td class="ach-c">C</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="tip info">
+  <b>第三章整合結論：矩陣模式解讀</b>
+  <p style="margin-top:4px"><b>觀察 1 — H1 的一致性壓倒性優勢：</b>20 條證據中 10 條 CC、5 條 C，沒有任何一條 I 或 II，這是 ACH 分析中極為罕見的「乾淨」假說。通常市場上如此乾淨的假說意味著——如果你的假說得到幾乎所有證據支持，你可能遺漏了關鍵的反面證據。</p>
+  <p><b>觀察 2 — H4 被系統性否定：</b>6 條 I + 4 條 II = 10 條不一致/強不一致，這在 ACH 中代表「在現有證據下，此假說應被排除」。市佔流失在目前階段的可能性極低。</p>
+  <p><b>觀察 3 — H5 大量中性：</b>15 條 N 代表現有證據「無法判斷」模式顛覆的可能性。這不是好消息——它意味著如果技術替代真的發生，我們目前的證據框架無法提前偵測。這是一個「觀測盲區」。</p>
+  <p><b>推論：</b>H1 為目前最佳解釋假說，但應持續收集能夠區分 H1 與 H2 的差異化證據（特別是海外擴張進度、新業務毛利率），同時建立 H5 的早期預警指標。</p>
+</div>
+
+<!-- ================================================================
+     四、加權計分與排名
+     ================================================================ -->
+<div class="section-title" id="scoring">四、加權計分與排名</div>
+<div class="section-sub">加權規則：CC = +3, C = +1, N = 0, I = -2, II = -4</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">計分結果</h3>
+  <div class="card-body">
+    <table>
+      <thead>
+        <tr><th>假說</th><th style="text-align:center">CC</th><th style="text-align:center">C</th><th style="text-align:center">N</th><th style="text-align:center">I</th><th style="text-align:center">II</th><th style="text-align:center">加權分</th><th style="text-align:center">排名</th></tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(76,175,80,.12)">
+          <td><b><span class="hypo-tag hypo-bull">H1</span> 強勁成長</b></td>
+          <td style="text-align:center;color:var(--bull);font-weight:700">10</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center;font-weight:900;color:var(--bull);font-size:1.1em">+35</td>
+          <td style="text-align:center;font-weight:900;color:var(--gold);font-size:1.1em">1</td>
+        </tr>
+        <tr>
+          <td><b><span class="hypo-tag hypo-mild">H2</span> 穩健成長</b></td>
+          <td style="text-align:center;color:var(--bull)">2</td>
+          <td style="text-align:center">13</td>
+          <td style="text-align:center">3</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center;font-weight:700;color:var(--bull)">+17</td>
+          <td style="text-align:center;font-weight:700">2</td>
+        </tr>
+        <tr>
+          <td><b><span class="hypo-tag hypo-neutral">H3</span> 成長放緩</b></td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">8</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center;font-weight:700;color:var(--bear)">-4</td>
+          <td style="text-align:center;font-weight:700">3</td>
+        </tr>
+        <tr>
+          <td><b><span class="hypo-tag hypo-doom">H5</span> 模式顛覆</b></td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">15</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center;font-weight:700;color:var(--bear)">-3</td>
+          <td style="text-align:center;font-weight:700">4</td>
+        </tr>
+        <tr style="background:rgba(239,83,80,.08)">
+          <td><b><span class="hypo-tag hypo-bear">H4</span> 市佔流失</b></td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">6</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center;font-weight:900;color:var(--bear);font-size:1.1em">-28</td>
+          <td style="text-align:center;font-weight:700">5</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:10px;font-size:.82em;color:var(--txt3)">
+      <b>計分公式：</b>H1 = 10×3 + 5×1 + 4×0 + 0×(-2) + 0×(-4) = <b>+35</b> ｜
+      H2 = 2×3 + 13×1 + 3×0 + 1×(-2) + 0×(-4) = <b>+17</b> ｜
+      H3 = 0×3 + 4×1 + 8×0 + 4×(-2) + 0×(-4) = <b>-4</b> ｜
+      H4 = 0×3 + 0×1 + 5×0 + 6×(-2) + 4×(-4) = <b>-28</b> ｜
+      H5 = 0×3 + 1×1 + 15×0 + 2×(-2) + 0×(-4) = <b>-3</b>
+    </p>
+
+    <!-- 視覺化分數條 -->
+    <div style="margin-top:10px">
+      <p style="font-size:.82em;color:var(--base);font-weight:700;margin-bottom:4px">加權分數視覺化（滿分 +60 / 最低 -80）</p>
+      <div class="score-bar">
+        <span style="min-width:100px;font-size:.78em">H1 強勁成長</span>
+        <div class="bar"><div class="fill" style="width:68%;background:var(--bull)"></div></div>
+        <span class="val" style="color:var(--bull)">+35</span>
+      </div>
+      <div class="score-bar">
+        <span style="min-width:100px;font-size:.78em">H2 穩健成長</span>
+        <div class="bar"><div class="fill" style="width:55%;background:#5a7d60"></div></div>
+        <span class="val" style="color:#5a7d60">+17</span>
+      </div>
+      <div class="score-bar">
+        <span style="min-width:100px;font-size:.78em">H3 成長放緩</span>
+        <div class="bar"><div class="fill" style="width:28%;background:var(--neutral)"></div></div>
+        <span class="val" style="color:var(--neutral)">-4</span>
+      </div>
+      <div class="score-bar">
+        <span style="min-width:100px;font-size:.78em">H5 模式顛覆</span>
+        <div class="bar"><div class="fill" style="width:29%;background:#880e4f"></div></div>
+        <span class="val" style="color:#880e4f">-3</span>
+      </div>
+      <div class="score-bar">
+        <span style="min-width:100px;font-size:.78em">H4 市佔流失</span>
+        <div class="bar"><div class="fill" style="width:8%;background:var(--bear)"></div></div>
+        <span class="val" style="color:var(--bear)">-28</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>第四章整合結論：計分結果判讀</b>
+  <p style="margin-top:4px"><b>資料：</b>H1（+35）遙遙領先 H2（+17），差距 18 分；H3/H5 接近零（-4/-3），H4 強烈被否定（-28）。</p>
+  <p><b>觀察：</b>H1 與 H2 之間的差距主要來自 CC 數量（10 vs 2），即「強一致」證據的差異——財務高速成長（E1-3）、市佔領先（E4-5）、管理層可信度（E19）、配息超預期（E11）這些「超出預期」的表現只有 H1 能解釋。</p>
+  <p><b>推論：</b>如果東聯的成長確實只是「穩健」（H2），我們不應該看到 30% 的營收增速和 EPS 三年翻倍。這些數據明確指向超越穩健的強勁成長軌道。</p>
+  <p><b>結論：</b>在現有 20 條證據框架下，H1 為最佳解釋。但需警惕：H3 與 H5 分數接近零並非因為它們被否定，而是因為中性（N）太多——我們缺乏足夠證據來否定或確認它們的長期可能性。</p>
+</div>
+
+<!-- ================================================================
+     五、第一次信心校準
+     ================================================================ -->
+<div class="section-title" id="calibration">五、第一次信心校準</div>
+<div class="section-sub">將 ACH 計分結果轉換為機率分佈，作為後續分析的錨定值</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">信心分佈儀表板</h3>
+  <div class="card-body">
+    <!-- 信心條 -->
+    <div class="confidence-meter">
+      <div class="cm-h1" style="width:65%">H1 65%</div>
+      <div class="cm-h2" style="width:25%">H2 25%</div>
+      <div class="cm-h3" style="width:5%">H3</div>
+      <div class="cm-h4" style="width:3%">H4</div>
+      <div class="cm-h5" style="width:2%">H5</div>
+    </div>
+
+    <div class="grid2" style="margin-top:10px">
+      <div class="mini-card bull-card">
+        <div class="title">主要假說</div>
+        <div class="num" style="color:var(--bull)">H1 — 65%</div>
+        <div class="desc">強勁成長（看多）</div>
+      </div>
+      <div class="mini-card" style="border-left:4px solid #5a7d60">
+        <div class="title">替代假說</div>
+        <div class="num" style="color:#5a7d60">H2 — 25%</div>
+        <div class="desc">穩健成長（溫和看多）</div>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:6px">
+      <div class="mini-card neutral-card">
+        <div class="title">H3 成長放緩</div>
+        <div class="num" style="color:var(--neutral)">5%</div>
+        <div class="desc">中性情境</div>
+      </div>
+      <div class="mini-card bear-card">
+        <div class="title">H4 市佔流失</div>
+        <div class="num" style="color:var(--bear)">3%</div>
+        <div class="desc">看空情境</div>
+      </div>
+      <div class="mini-card" style="border-left:4px solid #880e4f">
+        <div class="title">H5 模式顛覆</div>
+        <div class="num" style="color:#880e4f">2%</div>
+        <div class="desc">結構性風險</div>
+      </div>
+    </div>
+
+    <!-- 診斷力排名 -->
+    <div style="margin-top:12px">
+      <p style="font-size:.88em;font-weight:700;color:var(--base);margin-bottom:4px">診斷力最高證據（對假說區分最有用）</p>
+      <table>
+        <thead><tr><th>排名</th><th>證據</th><th>診斷力說明</th></tr></thead>
+        <tbody>
+          <tr><td><b>1</b></td><td><b>E1</b> 營收 YoY +30%</td><td>在 H1 為 CC、H4 為 II，跨度最大（+7 分差），是區分成長 vs 衰退的核心指標</td></tr>
+          <tr><td><b>2</b></td><td><b>E2</b> EPS 三年翻倍</td><td>同 E1，CC vs II 跨度，且三年趨勢比單年更有說服力</td></tr>
+          <tr><td><b>E4</b></td><td><b>E4</b> 筆數市佔 >40%</td><td>CC vs II，市佔數據直接否定「市佔流失」假說</td></tr>
+          <tr><td><b>4</b></td><td><b>E10</b> 80% 地下匯兌</td><td>CC vs I，對 H1 極度利好（待轉化空間），對 H5 不利（代表現有模式仍有需求）</td></tr>
+          <tr><td><b>5</b></td><td><b>E6</b> 修法提高門檻</td><td>CC vs I，政策護城河直接影響 H1/H4 之間的判定</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 信心校準說明 -->
+    <div style="margin-top:10px">
+      <p style="font-size:.88em;font-weight:700;color:var(--base);margin-bottom:4px">校準邏輯</p>
+      <p style="font-size:.82em;color:var(--txt2)">
+        • <b>H1 65%</b>：10 個 CC + 5 個 C + 0 個反面 → ACH 史上罕見的「乾淨」支持，但考慮證據收集可能的利多偏誤，下修至 65%（而非機械式計算的 ~80%）<br>
+        • <b>H2 25%</b>：作為 H1 的「保守版本」，若海外擴張不順（E14）或一次性利益消失（E15），成長可能溫和化<br>
+        • <b>H3 5%</b>：第五家業者（E13）和費率壓力是唯一支持此假說的證據，在移工總數持續增長的背景下，放緩需要更多負面催化劑<br>
+        • <b>H4 3%</b>：被 ACH 系統性否定（-28 分），但保留最低機率以防「黑天鵝」<br>
+        • <b>H5 2%</b>：中短期（2-3 年）台灣移工使用加密貨幣 / CBDC 匯款的基礎設施完全不存在，但長期不可忽視
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="tip warn">
+  <b>第五章整合結論：信心校準的意義與限制</b>
+  <p style="margin-top:4px"><b>資料 → 觀察：</b>H1+H2 合計 90% 的信心度，代表在現有證據下，東聯互動處於成長軌道的機率極高，差異僅在成長的「強度」。下行情境（H3+H4+H5）合計僅 10%。</p>
+  <p><b>推論 1：</b>90% 看多信心是否過度樂觀？從 ACH 數學上看合理——但 ACH 的弱點在於「你放進什麼證據，就得到什麼結論」。如果我們遺漏了關鍵的負面證據（例如：移工匯款 app 的留存率下降、競爭對手的補貼力度），信心度可能需要大幅修正。</p>
+  <p><b>推論 2：</b>H5 的 2% 看似微不足道，但其後果是毀滅性的（商業模式歸零）。風險調整後的影響力 = 2% × 100% 損失 = 2%，不可忽略。</p>
+  <p><b>結論：</b>本次校準作為「錨定值」傳遞至第五步壓力測試，由壓力測試專門挑戰 H1 的成立條件。若壓力測試後 H1 仍然穩固，則信心度可維持或上調；若出現裂痕，則向 H2/H3 遷移。</p>
+</div>
+
+<!-- ================================================================
+     六、敏感度檢查
+     ================================================================ -->
+<div class="section-title" id="sensitivity">六、敏感度檢查</div>
+<div class="section-sub">系統性移除證據群組，測試結論的穩健性</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">敏感度測試一：移除財務核心證據（E1 + E2 + E4）</h3>
+  <div class="card-body">
+    <p style="font-size:.84em;color:var(--txt2);margin-bottom:6px"><b>邏輯：</b>如果沒有營收成長、EPS 翻倍、市佔數據這三個最強支撐，結論是否改變？</p>
+    <table>
+      <thead><tr><th>假說</th><th style="text-align:center">原始分數</th><th style="text-align:center">移除後分數</th><th style="text-align:center">變化</th><th>影響</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>H1</b> 強勁成長</td>
+          <td style="text-align:center;font-weight:700;color:var(--bull)">+35</td>
+          <td style="text-align:center;font-weight:700;color:var(--bull)">+25</td>
+          <td style="text-align:center;color:var(--bear)">-10</td>
+          <td><span class="light yellow"></span>仍領先但優勢縮小</td>
+        </tr>
+        <tr>
+          <td><b>H2</b> 穩健成長</td>
+          <td style="text-align:center">+17</td>
+          <td style="text-align:center">+14</td>
+          <td style="text-align:center;color:var(--bear)">-3</td>
+          <td>影響較小</td>
+        </tr>
+        <tr>
+          <td><b>H3</b> 成長放緩</td>
+          <td style="text-align:center">-4</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center;color:var(--bull)">+4</td>
+          <td>回到中性</td>
+        </tr>
+        <tr>
+          <td><b>H4</b> 市佔流失</td>
+          <td style="text-align:center;color:var(--bear)">-28</td>
+          <td style="text-align:center;color:var(--bear)">-18</td>
+          <td style="text-align:center;color:var(--bull)">+10</td>
+          <td>減輕否定力道，但仍為最末</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tip info" style="margin-top:6px">
+      <b>結果：</b>H1 仍以 +25 領先 H2 的 +14（差距 11 分），結論穩健。但若財務數據反轉（營收下滑、EPS 衰退），H1 → H2 的遷移將快速發生。<br>
+      <b>判定：<span class="light green"></span> 通過</b> — 結論不因單一證據群組移除而改變。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">敏感度測試二：移除政策催化劑（E6 + E7 + E8）</h3>
+  <div class="card-body">
+    <p style="font-size:.84em;color:var(--txt2);margin-bottom:6px"><b>邏輯：</b>如果政策紅利消失（移工不再增長、門檻未提高、服務業不解禁），結論變化？</p>
+    <table>
+      <thead><tr><th>假說</th><th style="text-align:center">原始分數</th><th style="text-align:center">移除後分數</th><th style="text-align:center">變化</th><th>影響</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>H1</b> 強勁成長</td>
+          <td style="text-align:center;font-weight:700;color:var(--bull)">+35</td>
+          <td style="text-align:center;font-weight:700;color:var(--bull)">+26</td>
+          <td style="text-align:center;color:var(--bear)">-9</td>
+          <td><span class="light yellow"></span>優勢明顯縮小</td>
+        </tr>
+        <tr>
+          <td><b>H2</b> 穩健成長</td>
+          <td style="text-align:center">+17</td>
+          <td style="text-align:center">+12</td>
+          <td style="text-align:center;color:var(--bear)">-5</td>
+          <td>差距從 18→14 分</td>
+        </tr>
+        <tr>
+          <td><b>H3</b> 成長放緩</td>
+          <td style="text-align:center">-4</td>
+          <td style="text-align:center">-6</td>
+          <td style="text-align:center;color:var(--bear)">-2</td>
+          <td>被否定力道微增</td>
+        </tr>
+        <tr>
+          <td><b>H4</b> 市佔流失</td>
+          <td style="text-align:center;color:var(--bear)">-28</td>
+          <td style="text-align:center;color:var(--bear)">-26</td>
+          <td style="text-align:center;color:var(--bull)">+2</td>
+          <td>幾乎無影響</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tip warn" style="margin-top:6px">
+      <b>結果：</b>H1 仍領先但 H1 vs H2 差距從 18 縮至 14 分。政策催化劑是 H1 與 H2 之間的<b>關鍵區分因子</b>——如果 2026 移工增長不如預期或服務業解禁延後，應考慮將主要假說從 H1 下修為 H2。<br>
+      <b>判定：<span class="light yellow"></span> 條件性通過</b> — 結論不變但差距縮小，政策面需密切追蹤。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">敏感度測試三：增加假設性負面證據</h3>
+  <div class="card-body">
+    <p style="font-size:.84em;color:var(--txt2);margin-bottom:6px"><b>邏輯：</b>如果出現以下尚未觀察到的負面訊號，各假說如何變動？</p>
+    <table>
+      <thead><tr><th>假設性負面證據</th><th>影響最大的假說</th><th>可能的遷移方向</th></tr></thead>
+      <tbody>
+        <tr><td>連續 3 月營收 YoY <15%</td><td>H1 弱化，H2 強化</td><td>H1 (65%) → H2 (50%)</td></tr>
+        <tr><td>第五家業者搶走 10% 市佔</td><td>H3/H4 強化</td><td>H1 → H3，H4 重新評估</td></tr>
+        <tr><td>Wise 宣布進入台灣市場</td><td>H3/H4 強化</td><td>H1 (65%) → H2 (40%)</td></tr>
+        <tr><td>金管會開放加密貨幣匯款</td><td>H5 劇烈強化</td><td>H5 從 2% → 15-20%</td></tr>
+        <tr><td>毛利率連續 2 季 <50%</td><td>H3 強化</td><td>H1 → H2/H3 交界</td></tr>
+        <tr><td>管理層關鍵承諾違約</td><td>全面信心下降</td><td>E19 翻轉，H1 信心 -10%</td></tr>
+      </tbody>
+    </table>
+    <div class="tip danger" style="margin-top:6px">
+      <b>結果：</b>目前結論的最大風險來自「多個溫和負面訊號同時出現」而非單一災難事件。任何單一負面訊號都不足以推翻 H1，但若 2-3 個同時發生（例如：營收放緩 + 毛利率下滑 + 新競爭者崛起），將觸發從 H1 向 H2/H3 的快速遷移。<br>
+      <b>判定：<span class="light yellow"></span> 注意</b> — 需建立系統性監測機制（見第七章）。
+    </div>
+  </div>
+</div>
+
+<div class="tip info">
+  <b>第六章整合結論：敏感度分析總結</b>
+  <p style="margin-top:4px"><b>穩健性判定：</b>H1「強勁成長」作為主要假說，通過了三項敏感度測試。即使移除最強的 3 條財務證據或 3 條政策催化劑，H1 仍然排名第一。</p>
+  <p><b>脆弱點識別：</b>（1）政策催化劑是 H1 vs H2 的關鍵區分因子；（2）多重溫和負面訊號同時出現比單一災難更危險；（3）H5 模式顛覆的觸發條件（監管開放加密匯款）完全在分析框架之外，屬於「你看不到它來」的風險。</p>
+  <p><b>行動建議：</b>建立下方第七章的四項監測指標，每月檢視一次，作為假說遷移的觸發條件。</p>
+</div>
+
+<!-- ================================================================
+     七、監測指標與觸發條件
+     ================================================================ -->
+<div class="section-title" id="monitor">七、監測指標與觸發條件</div>
+<div class="section-sub">持續追蹤以驗證/推翻主要假說，明確定義何時該改變看法</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">四大監測指標</h3>
+  <div class="card-body">
+    <table>
+      <thead><tr><th style="width:36px">#</th><th>監測指標</th><th>當前狀態</th><th>觸發條件</th><th>觸發後動作</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>M1</b></td>
+          <td><b>月營收 YoY 成長率</b></td>
+          <td><span class="light green"></span>+30%（2025）</td>
+          <td style="color:var(--warn)">連續 3 個月 <15%</td>
+          <td>H2 權重上升至 40-50%，H1 下修至 40%</td>
+        </tr>
+        <tr>
+          <td><b>M2</b></td>
+          <td><b>毛利率趨勢</b></td>
+          <td><span class="light green"></span>57%，上升中</td>
+          <td style="color:var(--warn)">連續 2 季 <50%</td>
+          <td>H3 權重上升，檢視是否為費率戰</td>
+        </tr>
+        <tr>
+          <td><b>M3</b></td>
+          <td><b>交易筆數市佔率</b></td>
+          <td><span class="light green"></span>>40%</td>
+          <td style="color:var(--danger)">降至 <35%</td>
+          <td>H4 重新啟動評估，深入調查競爭者動態</td>
+        </tr>
+        <tr>
+          <td><b>M4</b></td>
+          <td><b>替代管道進展</b><br>（加密/CBDC/即時跨境）</td>
+          <td><span class="light green"></span>台灣無相關基建</td>
+          <td style="color:var(--danger)">金管會發布開放草案 或 移工實際使用率 >5%</td>
+          <td>H5 權重上升至 10-20%，重新評估商業模式存續性</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:10px">
+      <p style="font-size:.88em;font-weight:700;color:var(--base);margin-bottom:4px">複合觸發條件（多訊號同時出現）</p>
+      <table>
+        <thead><tr><th>組合情境</th><th>觸發門檻</th><th>動作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>M1 + M2 同時觸發</td>
+            <td>營收放緩 <b>且</b> 毛利率下滑</td>
+            <td style="color:var(--bear)"><b>主要假說遷移至 H2/H3</b>，H1 降至 30% 以下</td>
+          </tr>
+          <tr>
+            <td>M1 + M3 同時觸發</td>
+            <td>營收放緩 <b>且</b> 市佔流失</td>
+            <td style="color:var(--bear)"><b>主要假說遷移至 H3/H4</b>，重新啟動完整 ACH</td>
+          </tr>
+          <tr>
+            <td>M3 + M4 同時觸發</td>
+            <td>市佔流失 <b>且</b> 替代管道崛起</td>
+            <td style="color:var(--danger)"><b>發出「商業模式風險」警報</b>，考慮退出</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>第七章整合結論：監測系統設計邏輯</b>
+  <p style="margin-top:4px">四項指標分別對應不同的風險維度：M1（成長動能）、M2（定價權/競爭力）、M3（護城河完整性）、M4（模式存續性）。單一指標觸發代表「特定維度出問題」，需要局部調整；複合觸發代表「多維度同時惡化」，需要根本性重新評估。這套機制確保我們不會「設定好 65% 信心然後忘記它」，而是持續用新證據驗證或推翻自己的判斷。</p>
+</div>
+
+<!-- ================================================================
+     八、第四步整合結論
+     ================================================================ -->
+<div class="section-title" id="conclusion">八、第四步整合結論</div>
+<div class="section-sub">綜合所有分析，輸出結構化結論供後續步驟使用</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">ACH 分析總結</h3>
+  <div class="card-body">
+    <div class="grid2">
+      <div class="mini-card bull-card">
+        <div class="title">主要假說</div>
+        <div class="num" style="color:var(--bull)">H1 強勁成長</div>
+        <div class="desc">信心 65% ｜加權 +35</div>
+      </div>
+      <div class="mini-card" style="border-left:4px solid #5a7d60">
+        <div class="title">替代假說</div>
+        <div class="num" style="color:#5a7d60">H2 穩健成長</div>
+        <div class="desc">信心 25% ｜加權 +17</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      <p style="font-size:.88em;font-weight:700;color:var(--base);margin-bottom:4px">傳遞至後續步驟的錨定參數</p>
+      <table>
+        <thead><tr><th>參數</th><th>值</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>主要假說信心</td><td style="font-weight:700;color:var(--bull)">65%（H1）</td><td>第五步壓力測試的挑戰對象</td></tr>
+          <tr><td>H1+H2 合計信心</td><td style="font-weight:700;color:var(--bull)">90%（看多光譜）</td><td>估值模型的情境權重</td></tr>
+          <tr><td>下行機率</td><td style="font-weight:700;color:var(--bear)">10%（H3+H4+H5）</td><td>風險折價計算</td></tr>
+          <tr><td>最高診斷力證據</td><td>E1 > E2 > E4 > E10 > E6</td><td>後續追蹤優先順序</td></tr>
+          <tr><td>關鍵區分因子</td><td>政策催化劑（E6-8）</td><td>H1 vs H2 的分界線</td></tr>
+          <tr><td>觀測盲區</td><td>H5 模式顛覆（15/20 為 N）</td><td>需建立獨立監測管道</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>第八章整合結論：ACH 分析最終判定</b>
+  <p style="margin-top:4px"><b>資料匯整：</b>20 條證據（85% 為事實級）、5 個競爭假說、100 格矩陣評分、3 輪敏感度測試、4 項監測指標。</p>
+  <p><b>核心結論：</b>東聯互動（7738）在 ACH 框架下呈現<b>「高度一致的強勁成長」格局</b>。H1 以 +35 分遙遙領先，且通過所有敏感度測試。15 條證據支持看多（CC+C），0 條反面證據，這在 ACH 分析中屬於極度罕見的「乾淨假說」。</p>
+  <p><b>風險警告：</b>ACH 的「乾淨結論」有時反映的是<b>證據收集的偏誤</b>而非事實。建議第五步壓力測試特別針對以下三個面向發起挑戰：（1）80% 地下匯兌轉化率的實際可行性；（2）移工匯款市場的天花板（86 萬人 × 每人匯出金額 = 總市場規模是否足以支撐 25-35% 持續成長）；（3）Q2 淨利率 82.5% 異常值的成因。</p>
+  <p><b>信心傳遞：</b>本次 ACH 為天機閣九步驟流程的「第一次信心校準」，錨定 H1 65% / H2 25%，後續由壓力測試、推衍推演、評審團三輪校準逐步修正。</p>
+</div>
+
+<!-- ========== 頁尾 ========== -->
+<div class="footer">
+  天機閣 — 第四步 ACH 競爭假說分析 ｜ 7738 東聯互動 ｜ 2026-03-30 產出<br>
+  方法論：CIA ACH Framework (Richard Heuer) ｜ 5 假說 × 20 證據 × 3 敏感度測試
+</div>
+
+</div><!-- /.wrap -->
+
+<!-- ========== 互動腳本 ========== -->
+<script>
+// 卡片點擊展開/收合
+document.querySelectorAll('.card h3').forEach(h3 => {
+  h3.addEventListener('click', () => h3.parentElement.classList.toggle('collapsed'));
+});
+</script>
+
+</body>
+</html>

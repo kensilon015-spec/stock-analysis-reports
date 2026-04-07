@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4771 望隼科技 — 質化分析報告（完整版 v2）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.65;padding:0}
+.wrap{max-width:880px;margin:0 auto;padding:20px 18px 40px}
+
+/* === 右上日期標籤 === */
+.date-tag{position:fixed;top:12px;right:14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:.72em;color:var(--txt3);z-index:999;font-weight:600}
+
+/* === Hero === */
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === FIAS 計數 Hero === */
+.fias-hero{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.fias-box{padding:6px 14px;border-radius:6px;font-size:.78em;font-weight:700;text-align:center}
+.fias-box .count{font-size:1.3em;display:block}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:8px 28px;border-radius:8px;font-size:.88em;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(107,159,114,.15);color:#6b9f72;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.2);letter-spacing:.05em}
+.toggle-btn:hover{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(107,159,114,.4)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 14px}
+.toc-title{font-weight:700;color:var(--base);font-size:.92em;margin-bottom:6px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:3px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 段落標題 === */
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 4px;padding-top:14px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 收合區塊（details/summary） === */
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:5px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 網格 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === ev 證據卡片 === */
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px}
+.ev .ev-d{color:var(--txt2);font-size:.88em;line-height:1.55}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:3px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:4px 0}
+.score-bar .label{font-size:.82em;color:var(--txt2);min-width:100px}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:13px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right;color:var(--base)}
+
+/* === 情報驗證卡 === */
+.intel-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0}
+.intel-card .ic-title{font-weight:700;color:var(--base);font-size:.92em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.intel-card .ic-row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;font-size:.82em}
+.intel-card .ic-label{font-weight:600;color:var(--txt3);min-width:70px}
+.intel-card .ic-val{color:var(--txt2)}
+
+/* === 事前驗屍 === */
+.premortem{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:.84em}
+.premortem .pm-title{font-weight:700;color:var(--danger);margin-bottom:4px}
+.premortem .pm-item{padding:4px 0;border-bottom:1px dashed var(--border);color:var(--txt2)}
+.premortem .pm-item:last-child{border-bottom:none}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.badge.high{background:var(--bull)}.badge.mid{background:var(--warn)}.badge.low{background:var(--bear)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:22px}
+
+/* === 列印 === */
+@media print{body{background:#fff;color:#333}details{open:true}details[open] summary{border-bottom:none}.date-tag{display:none}}
+
+/* === 因果樹 === */
+.tree{margin:12px 0;padding:0 0 0 14px;border-left:2px solid var(--accent)}
+.tree .node{margin:6px 0;padding:6px 10px;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:.84em}
+.tree .node .prob{font-weight:700;color:var(--gold);margin-right:6px}
+.tree .node .lbl{color:var(--base);font-weight:600}
+.tree .node .detail{color:var(--txt2);font-size:.88em;margin-top:2px}
+.tree .sub-tree{margin-left:16px;border-left:2px solid var(--border)}
+/* === 進度條時間軸 === */
+.timeline{margin:10px 0}
+.tl-item{display:flex;align-items:flex-start;gap:10px;margin:4px 0;font-size:.84em}
+.tl-dot{min-width:12px;min-height:12px;border-radius:50%;margin-top:4px}
+.tl-dot.active{background:var(--accent)}
+.tl-dot.future{background:var(--border)}
+.tl-date{font-weight:700;color:var(--base);min-width:80px}
+.tl-desc{color:var(--txt2)}
+/* === 星級 === */
+.stars{color:var(--gold);letter-spacing:2px;font-size:1.1em}
+/* === 圖表元件 === */
+.timeline{position:relative;padding:16px 0 16px 20px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:3px;background:var(--border)}
+.tl-item{position:relative;margin:0 0 16px;padding-left:24px}
+.tl-dot{position:absolute;left:-4px;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--panel);z-index:2}
+.tl-dot.green{background:var(--bull)}.tl-dot.red{background:var(--bear)}.tl-dot.yellow{background:var(--warn)}.tl-dot.blue{background:var(--link)}
+.tl-date{font-weight:800;font-size:.85em;color:var(--base)}
+.tl-event{font-size:.82em;color:var(--txt2);font-weight:600}
+.tl-detail{font-size:.75em;color:var(--txt3);margin-top:2px}
+.tl-impact{display:inline-block;font-size:.7em;font-weight:700;padding:1px 8px;border-radius:4px;margin-top:3px}
+.tl-impact.bull{background:rgba(76,175,80,.15);color:var(--bull)}
+.tl-impact.bear{background:rgba(239,83,80,.12);color:var(--bear)}
+.tl-impact.mixed{background:rgba(212,160,23,.15);color:var(--warn)}
+.chart-svg{width:100%;overflow-x:auto;margin:10px 0}
+.chart-svg svg{display:block;margin:0 auto}
+.chart-svg text{font-family:'Inter','Noto Sans TC',sans-serif}
+.gauge{display:flex;align-items:center;gap:8px;margin:4px 0}
+.gauge .gauge-label{min-width:90px;font-size:.8em;font-weight:600;color:var(--base);text-align:right}
+.gauge .gauge-track{flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden}
+.gauge .gauge-fill{height:100%;border-radius:7px;transition:width .4s}
+.gauge .gauge-val{min-width:40px;font-size:.78em;font-weight:700}
+.metric-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.metric-card{flex:1;min-width:100px;text-align:center;padding:10px 8px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.metric-card .mc-num{font-size:1.4em;font-weight:900;margin:2px 0}
+.metric-card .mc-label{font-size:.72em;color:var(--txt3);font-weight:500}
+.metric-card .mc-sub{font-size:.68em;color:var(--txt3);margin-top:2px}
+.metric-card.bull-border{border-left:4px solid var(--bull)}
+.metric-card.bear-border{border-left:4px solid var(--bear)}
+.metric-card.neutral-border{border-left:4px solid var(--link)}
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:10px 0}
+.compare-cols .col-left,.compare-cols .col-right{padding:12px;border:1px solid var(--border)}
+.compare-cols .col-left{border-radius:8px 0 0 8px;background:rgba(239,83,80,.06);border-right:none}
+.compare-cols .col-right{border-radius:0 8px 8px 0;background:rgba(76,175,80,.06)}
+.compare-cols h4{font-size:.82em;font-weight:700;text-align:center;margin-bottom:6px}
+.compare-cols .col-left h4{color:var(--bear)}
+.compare-cols .col-right h4{color:var(--bull)}
+@media(max-width:600px){.compare-cols{grid-template-columns:1fr}}
+/* === 層級縮排系統 === */
+/* 一級章節（一～十三）：不縮排 */
+/* 二級小標題：縮排 20px */
+details details{margin-left:20px;padding-left:0}
+/* 三級子項：再縮排 16px */
+details details details{margin-left:16px}
+/* 小標題內的段落文字：統一左距 */
+details > p,
+details > div:not(.tip):not(.ev):not(.chart-svg):not(.timeline):not(.compare-cols):not(.metric-row){padding-left:8px}
+/* section-sub 副標題 */
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px;padding-left:4px}
+/* ev 證據卡片 */
+.ev{margin-left:12px;margin-right:4px}
+/* tip 提示框 */
+details .tip{margin-left:8px;margin-right:4px}
+/* 表格左距 */
+details table{margin-left:8px;width:calc(100% - 12px)}
+/* card-body 內容區 */
+.card-body{padding-left:20px}
+/* 列表縮排 */
+details ul,details ol{padding-left:28px}
+/* summary 小標題字級區分 */
+details > details > summary{font-size:.88em;color:var(--txt2)}
+details > details > details > summary{font-size:.84em;color:var(--txt3)}
+
+/* === 望隼專用 === */
+.ev-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0}
+.ev-card .ev-title{font-weight:900;font-size:1em;margin-bottom:6px}
+.ev-card .ev-row{display:flex;gap:8px;margin:3px 0;flex-wrap:wrap;font-size:.84em}
+.ev-card .ev-label{font-weight:700;color:var(--base);min-width:90px}
+.ev-card .ev-val{color:var(--txt2)}
+.ev-risk{border-left:4px solid var(--bear)}
+.ev-catalyst{border-left:4px solid var(--bull)}
+.chain{display:flex;align-items:center;gap:0;margin:10px 0;flex-wrap:wrap}
+.chain-node{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.82em;text-align:center;min-width:120px}
+.chain-arrow{color:var(--txt3);font-size:1.2em;padding:0 4px}
+.chain-node.trigger{border-color:var(--accent);border-width:2px}
+.chain-node.risk{border-color:var(--danger);border-width:2px}
+.chain-node.opportunity{border-color:var(--bull);border-width:2px}
+.bar-chart{margin:10px 0}
+.bar-chart .bar-row{display:flex;align-items:center;margin:4px 0;gap:8px}
+.bar-chart .bar-label{min-width:60px;font-size:.82em;font-weight:600;color:var(--base);text-align:right}
+.bar-chart .bar-track{flex:1;background:var(--border);border-radius:6px;height:22px;overflow:hidden}
+.bar-chart .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.72em;font-weight:700;color:#fff}
+</style>
+</head>
+<body>
+<div class="date-tag">2026-03-30</div>
+
+<div class="wrap">
+
+<!-- ============ Hero ============ -->
+<div class="hero">
+  <h1>望隼科技 (4771) — 質化分析報告</h1>
+  <div class="sub">VIZIONFOCUS INC. | 隱形眼鏡 ODM 代工 | 台股上市</div>
+  <div class="desc">本報告以質化分析為核心 — 這家公司有什麼優勢？有沒有值得買進的理由？目前股價有什麼風險？<br>所有分析皆基於公開資訊，最終決策由閣主自行判斷。</div>
+  <div class="tags">
+    <span class="tag">事實:42 / 推論:16 / 假設:8 / 推測:2</span>
+    <span class="tag">收盤價 192.0（2026/3/27）</span>
+    <span class="tag">生技醫療 — 隱形眼鏡製造</span>
+    <span class="tag">向量增強版 582段</span>
+    <span class="tag">Part 1/3：Ch1-3</span>
+  </div>
+</div>
+
+<!-- ============ 快照總覽 ============ -->
+<div class="grid3">
+  <div class="mini-card bull-card"><div class="title">2025 全年營收</div><div class="num">34.87億</div><div class="desc">YoY +16.2%，歷史新高</div></div>
+  <div class="mini-card neutral-card"><div class="title">PE (TTM)</div><div class="num">15.1x</div><div class="desc">EPS 12.71 元（2025全年）</div></div>
+  <div class="mini-card bull-card"><div class="title">最新月營收</div><div class="num">3.68億</div><div class="desc">2026/2 月 YoY +43.4%</div></div>
+</div>
+<div class="grid3">
+  <div class="mini-card neutral-card"><div class="title">加權合理價</div><div class="num">208元</div><div class="desc">vs 現價 192（+8.3%）</div></div>
+  <div class="mini-card bear-card"><div class="title">安全邊際買入</div><div class="num">166元</div><div class="desc">合理價 × 0.8</div></div>
+  <div class="mini-card" style="border-left:4px solid var(--warn)"><div class="title">主假說</div><div class="num">H2 44%</div><div class="desc">穩健成長，估值合理</div></div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="toggleAll(true)">全部展開</button>
+  <button class="toggle-btn" onclick="toggleAll(false)">全部收合</button>
+</div>
+
+<!-- ================================================================== -->
+<!-- ==================== 第一章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">一、公司概覽 — 你在看的是什麼公司？</summary>
+<div class="section-sub">基本資料 + 14年成長軌跡 + 營收結構 + 七項新產品 + 製造能力 + 競爭力地圖 + 財務體質</div>
+
+<!-- 1-1 基本資料 -->
+<details>
+<summary>1-1. 基本資料</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 望隼是誰？一句話版本</div>
+  <div class="ev-d">一家 2012 年由前鴻海副總黃修權和前群創研發處長石安創立的隱形眼鏡 ODM 代工廠，在苗栗竹南和中國江蘇設有工廠，2024 年 3 月才上市。主要替日本和中國的彩色隱形眼鏡品牌商代工生產日拋型美瞳片，2025 年營收 34.87 億元，838 名員工。</div>
+  <div class="ev-s">來源：113年報致股東報告書（第5-8頁）、法說會P3</div>
+</div>
+
+<table>
+  <tr><th>項目</th><th>內容</th><th>FIAS</th></tr>
+  <tr><td>公司全名</td><td>望隼科技股份有限公司（VIZIONFOCUS INC.）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>股票代號</td><td>4771（TWSE 上市，2024/3/18 掛牌）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>成立日期</td><td>民國 101 年 5 月 10 日（2012 年）— 創業 14 年</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>董事長</td><td>黃修權 — 前鴻海科技集團副總裁、前群創光電副董事長</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>總經理</td><td>石安 — 自公司成立起擔任至今，前群創光電研發處長，專精隱形眼鏡產業經營與策略</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>發言人</td><td>張伯榮（業務處處長）/ 代理：李幸娟（經營管理處協理，亦為財務長）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>總部</td><td>苗栗縣竹南鎮友義路 66 號 3 樓</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>工廠</td><td>竹南一廠（總部）+ 竹南二廠（仁義街5號）+ 中國江蘇河陽廠（2016年設立）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>員工</td><td>838 人（113年Q1止），平均年齡 32 歲，平均年資 2.5 年，研發 93 人（11.1%），碩博士 5.25%</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>資本額</td><td>~5.8 億元（法說會揭露）/ 113年報股本 5.245 億 → 差額推測為 CB 轉換</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>最大股東</td><td>長華電材（上市，代表人黃嘉能、吳聲濤擔任董事）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>董監質押</td><td>0%（全部「無」，包含董事長黃修權、總經理石安、長華電材代表人、三位獨立董事）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>會計師</td><td>勤業眾信聯合會計師事務所（Deloitte），劉裕祥、王兆群，108-112 年五年一致「無保留意見」</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>配息</td><td>2025 年配現金 5.522 元，殖利率 3.08%（以現價 192 計）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>產業分類</td><td>生技醫療業 — 隱形眼鏡製造（TWSE 分類）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>核心業務</td><td>軟式拋棄型隱形眼鏡之研發、製造及銷售（ODM 代工為主），99.83% 營收來自隱形眼鏡</td><td><span class="fias-f">F</span></td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 前十大股東完整名單 — 三個隱藏訊號</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>#</th><th>股東</th><th>持股</th><th>佔比</th><th>備註</th></tr>
+      <tr><td>1</td><td><b>長華電材</b></td><td>8,105,970</td><td><b>14.09%</b></td><td>法人董事，代表人洪全成</td></tr>
+      <tr><td>2</td><td><b>全喬莉投資</b></td><td>4,674,390</td><td><b>8.13%</b></td><td>代表人蔡桂枝，與董事長黃修權<b>互為二親等</b></td></tr>
+      <tr><td>3</td><td>玉山創投</td><td>3,150,000</td><td>5.48%</td><td>財務投資人</td></tr>
+      <tr><td>4</td><td><b>黃修權</b>（董事長）</td><td>2,840,643</td><td><b>4.94%</b></td><td>個人持股</td></tr>
+      <tr><td>5</td><td>松凌投資</td><td>2,015,000</td><td>3.50%</td><td>—</td></tr>
+      <tr><td>6</td><td>國泰創投</td><td>1,700,000</td><td>2.96%</td><td>財務投資人</td></tr>
+      <tr><td>7</td><td>宣品投資</td><td>1,435,000</td><td>2.50%</td><td>—</td></tr>
+      <tr><td>8</td><td><b>石安</b>（總經理）</td><td>1,245,026</td><td><b>2.16%</b></td><td>個人持股</td></tr>
+      <tr><td>9</td><td>EXCEL QUALITY</td><td>996,590</td><td>1.73%</td><td>海外法人</td></tr>
+      <tr><td>10</td><td>全球創投</td><td>853,425</td><td>1.48%</td><td>財務投資人</td></tr>
+    </table>
+    <b>隱藏訊號一</b>：董事長黃修權家族實質控制 ~13%（個人4.94% + 全喬莉8.13%，蔡桂枝是二親等親屬）——加上長華電材14.09%（黃嘉能曾為代表人），經營派合計可能控制 ~27% 以上。<br>
+    <b>隱藏訊號二</b>：三家創投（玉山+國泰+全球）合計持股 ~10%——創投有退場時間壓力（通常IPO後1-3年），若同時出場可形成顯著賣壓。望隼2024/3上市，2025-2027年可能面臨創投出場潮。<br>
+    <b>隱藏訊號三</b>：總經理石安持股僅2.16%（~1.25億市值）——相比董事長家族13%，總經理的「skin in the game」偏低。不過石安112年增持6萬股+113年增持5,000股，方向是正面的。
+  </div>
+  <div class="ev-s">來源：113年報第57頁「前十大股東」表</div>
+</div>
+
+<div class="tip info">
+  <b>白話說：為什麼管理層背景很重要？</b>
+  <p>黃修權是前鴻海副總、群創副董，石安是前群創研發處長——兩人都來自面板產業，把「大量生產精密光學元件」的know-how帶進了隱形眼鏡。望隼的核心製程「全注模（Cast Molding）+ AI 智慧品檢」就是面板產業思維的移植。數位時代專訪記載，黃修權創業時自掏1億增資、公司曾瀕臨倒閉，三明治美瞳良率從19%做到90%花了數年——這不是資本市場的投機客，而是技術出身的創業者。</p>
+</div>
+</details>
+
+<!-- 1-2 公司沿革 -->
+<details>
+<summary>1-2. 公司沿革 — 14 年成長軌跡</summary>
+<div class="section-sub">從年報沿革表逐年整理，看得出一家公司怎麼從零走到上市</div>
+
+<div class="timeline">
+  <div class="tl-item milestone">
+    <div class="tl-date">101年（2012）— 創立</div>
+    <div class="tl-text">5月10日核准設立，資本額1.86億。竹南一廠第一套超精密加工機+第一條產線裝機。同年取得 ISO 13485 品質系統認證。<b>白話說：從零開始，一年內就建廠拿證，速度很快。</b></div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">102年（2013）— 拿到國際入場券</div>
+    <div class="tl-text">取得<b>歐盟 CE 認證</b>（38%含水率水膠+矽水膠）+ 衛福部 GMP 證 + 醫療器材許可證 + <b>日本厚生省醫療機器外國製造業者認定證</b>。同年成立海外子公司 Green Wealth 和 Clear Precise。<b>白話說：創立第二年就拿到歐盟和日本的入場券，這個速度在醫材業很罕見——通常要3-5年。</b></div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">103年（2014）— 三明治美瞳首次出貨日本</div>
+    <div class="tl-text">採用三明治技術的38%含水率美瞳隱形眼鏡，<b>首次出貨日本</b>。這是望隼的核心技術首次被市場驗證。</div>
+  </div>
+  <div class="tl-item warning">
+    <div class="tl-date">104年（2015）— 減資彌補虧損</div>
+    <div class="tl-text">辦理<b>減資彌補虧損 1.55 億</b>，再增資 1.43 億，實收資本額 2.74 億。竹南一廠第二條產線裝機。取得散光/多焦/遠視透明片許可證 + 中國醫療器械註冊證。<b>白話說：創業第四年還在虧損需要減資——這段「瀕臨倒閉」的歷史是真的。但同時產品線在擴張。</b></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">105年（2016）— 進軍中國</div>
+    <div class="tl-text">38%含水率美瞳首次大量出貨日本。取得矽水膠製造方法台灣專利。首次注資中國子公司「丹陽視准」（後改名江蘇視准），江蘇中潤廠區建廠+第一條產線裝機。</div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">106年（2017）— 專利+新材料+中國擴張</div>
+    <div class="tl-text">第三條產線裝機。取得 55%含水率產品許可證+CE認證。取得<b>矽水膠美國專利+中國專利</b>。取得<b>三明治美瞳台灣專利</b>。江蘇視准增資至人民幣1,650萬。<b>白話說：106年是專利佈局的關鍵年，三明治+矽水膠兩大核心技術都拿到專利保護。</b></div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">107年（2018）— 取得美國 FDA</div>
+    <div class="tl-text">第四條產線+AOI光學檢測。取得中國美瞳月拋註冊證。<b>取得美國 FDA 產品證照</b>（55%含水率美瞳，含近視/遠視/散光/多焦/散光多焦功能）。矽水膠台灣專利取得。江蘇視准大幅增資至人民幣4,770萬。<b>白話說：FDA 是全球最嚴格的醫材認證之一，望隼創業第七年就拿到了。</b></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">108年（2019）— 台商回台+第五六條產線</div>
+    <div class="tl-text">增資至4.87億。第五、六條產線裝機。取得55%歐盟CE、中國日拋註冊證、美國FDA運動型鏡片證照。取得「歡迎台商回台投資行動方案」資格。江蘇視准更名。<b>年營收5.85億。</b></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">109-110年（2020-2021）— 疫情中逆勢成長</div>
+    <div class="tl-text">營收從8.55億→14.20億（+66%）。110年增資至5.20億。江蘇視准河陽新廠區取得生產許可證+全面量產。<b>白話說：疫情兩年營收不減反增，證明隱形眼鏡需求的韌性。</b></div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">111年（2022）— 營收破18億</div>
+    <div class="tl-text">營收18.34億（+29%），EPS 6.02元。取得矽水膠台灣上市許可，開始在台灣銷售矽水膠產品。</div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">112年（2023）— 營收破25億+核准上市</div>
+    <div class="tl-text">合併營收25.72億（+40%），營業利益8.32億（+127%），稅後淨利6.56億（+107%），<b>EPS 10.77元</b>。12月經台灣證券交易所核准上市。竹南新總部土地取得、建廠規劃啟動（投資25億）。</div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">113年（2024）— 掛牌上市</div>
+    <div class="tl-text">3月18日正式掛牌上市。全年營收30.02億（+17%），EPS 11.81元。發行3次可轉換公司債募集擴廠資金。</div>
+  </div>
+</div>
+
+<div class="tip good">
+  <b>沿革整合觀察：從虧損減資到年賺6.5億只花了8年</b>
+  <p>104年（2015）還在虧損減資1.55億，112年（2023）已經年賺6.56億——這8年間營收從不到3億成長到25.72億（CAGR ~38%）。關鍵轉折點是103年三明治美瞳首次出貨日本——打進日本市場後營收開始指數型成長。認證時間軸顯示管理層的超前佈署能力：102年就同時拿到歐盟CE+日本厚生省認證，107年拿到美國FDA——這些認證在今天成為望隼進入各市場的入場券。</p>
+</div>
+</details>
+
+<!-- 1-3 營收結構 -->
+<details>
+<summary>1-3. 營收結構 — 誰在付錢？產品賣什麼？賣去哪？</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 營收純度：99.83% 來自隱形眼鏡</div>
+  <div class="ev-d">112年報揭露營收比重：隱形眼鏡 25.68億（99.83%），其他（出售原物料等）430萬（0.17%）。這是一家產品線極度集中的公司——好處是專注，風險是缺乏多角化緩衝。</div>
+  <div class="ev-s">來源：113年報第66頁營業比重表</div>
+</div>
+
+<div class="grid2">
+  <div>
+    <p style="font-weight:800;margin-bottom:6px;color:var(--base)">產品組合演變（三場法說會完整軌跡）</p>
+    <table>
+      <tr><th>產品</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>Q1'25</th><th>H1'25</th><th>Q3'25</th></tr>
+      <tr><td>透明片</td><td>48%</td><td>53%</td><td>43%</td><td>48%</td><td>—</td><td>42%</td><td style="color:var(--bear)">36%</td></tr>
+      <tr><td style="color:var(--bull)"><b>美瞳片</b></td><td>48%</td><td>46%</td><td>56%</td><td>49%</td><td>—</td><td style="color:var(--bull)">55%</td><td style="color:var(--bull)"><b>46%</b></td></tr>
+      <tr><td style="color:var(--bull)"><b>功能型</b></td><td>2%</td><td>0.5%</td><td>0.1%</td><td>1%</td><td>—</td><td>2%</td><td style="color:var(--bull)"><b>17%</b></td></tr>
+      <tr><td>矽水膠</td><td>0.7%</td><td>1%</td><td>0.1%</td><td>1%</td><td>—</td><td>1%</td><td>1%</td></tr>
+    </table>
+  </div>
+  <div>
+    <p style="font-weight:800;margin-bottom:6px;color:var(--base)">地區營收演變（三場法說會+年報）</p>
+    <table>
+      <tr><th>地區</th><th>112年報</th><th>Q1'25</th><th>Q2'25</th><th>Q3'25</th><th>YoY</th></tr>
+      <tr><td>日本</td><td>34.2%</td><td style="color:var(--bull)"><b>54%</b></td><td>49%</td><td>47%</td><td style="color:var(--bull)">+43%</td></tr>
+      <tr><td>中國</td><td style="color:var(--bear)">60.8%</td><td style="color:var(--bull)">41%</td><td>45%</td><td>47%</td><td style="color:var(--bear)">-9%</td></tr>
+      <tr><td>台灣</td><td>4.9%</td><td>5%</td><td>6%</td><td>6%</td><td>穩定</td></tr>
+      <tr><td>美國</td><td>0.1%</td><td colspan="3">微量</td><td style="color:var(--bull)">+43%</td></tr>
+      <tr><td>東南亞</td><td>—</td><td colspan="3">新進入</td><td style="color:var(--bull)">+53%</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 功能型鏡片的驚人爆發：從 2% 到 17%</div>
+  <div class="ev-d">這是三場法說會比對後發現的最大意外。功能型鏡片（散光/濾藍光/多焦）在 2025 上半年僅佔 2%，到 Q3 暴增至 17%。年報提到「在散光、漸進多焦(老花)、近視防控之開發上，已至產品成熟、具成本優勢之進程」——這段文字在 Q3 法說會的數字中得到驗證。功能型鏡片的 ASP（平均售價）高於透片和一般美瞳，佔比提升代表產品組合正在升級。<b>為什麼這是問題？</b>因為功能型佔比暴增 15pp 的同時，毛利率僅微升 1pp（40%→41%），代表功能型的成本結構可能不如預期那麼有利，或者其他產品線在拖後腿（中國殺價）。</div>
+  <div class="ev-s">來源：2025Q1法說會P7、Q2法說會P7、Q3法說會P7 交叉比對</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 中國市場的完整故事：Q1 觸底 -20% → 逐季改善</div>
+  <div class="ev-d">如果只看 Q3 法說會的 -9%，會以為中國只是「小幅衰退」。但 Q1 法說會揭露的真相是：<b>中國 Q1 YoY -20%</b>，且「僅抖音維持 +64% 成長，天貓與京東衰退」。到 Q2 改善至 -14%（抖音 +60%、京東 +7%、天貓 -6%），Q3 進一步改善至 -9%（抖音 +40%、京東 +31%、天貓持平）。<b>白話說：中國最慘的時候已經過了（Q1 -20%），但恢復速度不快——三個季度才從 -20% 改善到 -9%。而且中國隱形眼鏡消費正在從傳統電商轉向抖音直播，如果望隼的客戶品牌沒跟上這波轉移，中國營收回升可能很緩慢。</b></div>
+  <div class="ev-s">來源：Q1法說會P8「2025Q1中國線上銷售+9%，僅抖音+64%，天貓京東衰退」+ Q3法說會P8 交叉比對</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 日本佔比的波動：54% → 47%（高峰已過？）</div>
+  <div class="ev-d">Q1 法說會顯示日本曾佔營收 54%——這是因為中國 Q1 暴跌 -20%，日本的相對佔比被推高。到 Q3 日本回落至 47%（因為中國在恢復）。日本的<b>絕對金額</b>仍在成長（YoY +37%→+53%→+43%），但佔比高峰可能已過。<b>潛在含義：</b>望隼不是「日本取代中國」，而是「日本成長中，中國在底部震盪」，兩個市場最終可能穩定在各 45-50% 的均衡狀態。</div>
+  <div class="ev-s">來源：Q1法說會P6、Q2法說會P6、Q3法說會P6 三場完整比對</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 112年報營收地區明細（精確到千元）</div>
+  <div class="ev-d">
+    年報第79頁揭露精確數字：<br>
+    內銷（台灣）：1.25億（4.88%）<br>
+    外銷-日本：8.78億（34.15%）<br>
+    外銷-中國：<b>15.64億（60.81%）</b><br>
+    外銷-美國：311萬（0.12%）<br>
+    外銷-澳洲：115萬（0.04%）<br>
+    <b>注意：</b>112年報的中國佔比 60.81% 觸發紅旗（>40%），到 2025Q3 降至 47%——15個月內下降了 14pp，改善明顯但仍在紅線之上。
+  </div>
+  <div class="ev-s">來源：113年報第79頁銷售地區表（合併報表）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 客戶集中度：前四大佔 55%，且結構劇變</div>
+  <div class="ev-d">
+    112年報第176頁主要客戶表：<br>
+    甲公司：5.80億（23%）— 111年僅2.42億（13%），<b>一年暴增 140%</b><br>
+    乙公司：5.29億（21%）— 111年僅1.82億（10%），<b>一年暴增 191%</b><br>
+    丙公司：2.65億（10%）— 111年2.85億（16%），小幅下降<br>
+    丁公司：1,906萬（1%）— 111年1.92億（10%），<b>一年暴跌 90%</b><br>
+    前四大合計：13.92億（55%）— 111年9.01億（49%）<br>
+    <b>為什麼這是問題？</b>丁公司從佔營收 10% 在一年內幾乎歸零（-90%），證明 ODM 客戶可以突然消失。甲乙公司同時暴增 140-191% 是好消息，但也代表望隼正在更集中地依賴少數客戶。如果甲公司也像丁公司一樣突然消失，營收立即衝擊 23%。
+  </div>
+  <div class="ev-s">來源：113年報第176頁「主要客戶資訊」</div>
+</div>
+
+<div class="tip warn">
+  <b>1-3 整合結論：產品升級中但地區風險未解</b>
+  <p><b>資料→觀察</b>：三場法說會完整比對揭露了比單看 Q3 更豐富的故事——功能型鏡片 2%→17% 爆發、中國 Q1 觸底 -20% 逐季改善、日本佔比高峰 54% 已回落。產品組合正從「透片+美瞳」雙引擎轉向「美瞳+功能型+矽水膠」三引擎。</p>
+  <p><b>觀察→推論</b>：功能型爆發可能部分抵消中國殺價的毛利壓力，但兩者對沖後毛利率僅微升 1pp（40%→41%），代表效果有限。客戶集中度 55% 且丁公司 -90% 的前例是結構性風險——ODM 模式下客戶轉單的轉換成本不夠高。</p>
+  <p><b>推論→結論</b>：望隼的營收結構正在「正確的方向」演進（功能型+矽水膠升級、日本成長分散中國風險），但演進速度不夠快——中國仍佔 47%、矽水膠仍僅 1%、客戶集中度反而在上升。<span class="fias-i">I</span></p>
+</div>
+</details>
+
+<!-- 1-4 年報揭露的七項新產品開發 -->
+<details>
+<summary>1-4. 年報揭露的七項新產品開發計畫</summary>
+<div class="section-sub">年報第66-67頁，每一項都代表一條潛在的營收成長線</div>
+
+<table>
+  <tr><th>#</th><th>產品</th><th>技術重點</th><th>目標市場</th><th>進度推估</th></tr>
+  <tr><td>1</td><td><b>功能性運動鏡片</b></td><td>自有材料+製程技術，波長管理提高視覺對比度，與美國運動視光學教授合作</td><td>運動愛好者（日拋）</td><td>已有兩種色調量產，開發室內版 <span class="fias-i">I</span></td></tr>
+  <tr><td>2</td><td><b>高透氧矽水膠彩色片</b></td><td>自有材料合成，親水因子鎖附鏡片表面+三明治夾層彩瞳製程</td><td>日本/歐美（2026出貨）</td><td>許可證已取得，量產驗證中 <span class="fias-f">F</span></td></tr>
+  <tr><td>3</td><td><b>第二代濾藍光</b></td><td>濾掉無益高能量藍光波長，可用於水膠+矽水膠</td><td>台灣市場先行</td><td>年報提及2024台灣推出 <span class="fias-f">F</span></td></tr>
+  <tr><td>4</td><td><b>特殊保存液配方</b></td><td>維生素B12、玻尿酸HA、薄荷醇等保健成分</td><td>中國市場（高保濕+特色）</td><td>年報提及2024中國推出 <span class="fias-f">F</span></td></tr>
+  <tr><td>5</td><td><b>漸進多焦老花片</b></td><td>矯正老花+舒壓功能，看遠清晰看近舒適</td><td>日本高齡化市場</td><td>年報稱「產品成熟」<span class="fias-i">I</span></td></tr>
+  <tr><td>6</td><td><b>散光矯正美瞳片</b></td><td>眨眼對位穩定+視力矯正+美瞳外觀，與國外研究機構合作</td><td>日系客戶（已有需求）</td><td>法說會顯示Q3功能型17%已含散光 <span class="fias-f">F</span></td></tr>
+  <tr><td>7</td><td><b>特殊美瞳設計</b></td><td>多層式+非對稱式圖紋設計，客製化品牌形象</td><td>全市場</td><td>核心能力，持續進行 <span class="fias-f">F</span></td></tr>
+</table>
+
+<div class="tip good">
+  <b>七項產品的戰略意義</b>
+  <p>這七項不是隨便列的願望清單——每一項都對應一個具體的市場需求：(1)運動鏡片=新賽道 (2)矽水膠彩片=高毛利升級 (3)濾藍光=差異化 (4)特殊保存液=中國性價比市場 (5)老花片=日本高齡化 (6)散光美瞳=日本客戶指定需求 (7)客製圖紋=ODM核心能力。特別是#5老花片+#6散光美瞳，對應的是全球近視管理隱形眼鏡 CAGR 16.8% 的新賽道——望隼年報說「已至產品成熟」，Q3功能型佔比暴增至17%初步驗證了這個說法。</p>
+</div>
+</details>
+
+<!-- 1-5 製造能力 -->
+<details>
+<summary>1-5. 製造能力 — 全注模 + AI 品檢 + 三明治美瞳 90% 良率</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 製程：全注模（Cast Molding）— 與 J&J ACUVUE 同等級</div>
+  <div class="ev-d">年報揭露望隼採用「注模成型（Cast-Molding）」製程，這是全球主流的日拋隱形眼鏡大量製造技術，與 J&J 的 ACUVUE 系列使用相同製程類型。國際情報顯示，全球三大製程為車削（Lathe）、離心鑄造（Spin Cast）和全注模（Cast Molding），其中全注模適合大量生產日拋，是自動化程度最高、單位成本最低的製程。望隼在此基礎上加入「大數據+AI 智慧製造」，導入 AOI 自動化光學檢測系統（107年），逐步減少人工接觸鏡片。</div>
+  <div class="ev-s">來源：113年報第66頁產銷政策、第10頁107年沿革（AOI導入）、國際情報.json 製造技術章節</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 三明治美瞳：良率從 19% 做到 90% 的技術壁壘</div>
+  <div class="ev-d">三明治美瞳是將色素層夾在兩層鏡片材料中間——色素不直接接觸眼球，比傳統印刷式美瞳更安全。但製造難度極高：兩層材料要精準對位+色素層要均勻分布+整體要維持光學品質。數位時代報導記載望隼花了數年將良率從 19% 提升到 90%——這個數字在公開紀錄中是隱形眼鏡 ODM 業界最高之一。106年取得「彩色隱形眼鏡及其制法」台灣專利，為這個技術提供法律保護。<b>為什麼這是護城河？</b>因為新競爭者要複製這個良率，也需要花數年+大量試錯成本，而且望隼有專利保護。但專利有期限，長期來看韓國 Interojo 和中國本土廠正在追趕。</div>
+  <div class="ev-s">來源：數位時代專訪、113年報第10頁106年沿革（專利取得）、國際情報.json 韓國OEM章節</div>
+</div>
+
+<table>
+  <tr><th>廠區</th><th>產品</th><th>產線數</th><th>月產能</th><th>稼動率</th><th>狀態</th></tr>
+  <tr><td>竹南一廠（總部）</td><td>日拋水膠/彩片/功能型</td><td>6+ 條</td><td rowspan="2">合計 ~3,500 萬片</td><td rowspan="2">>90%</td><td>滿載 <span class="fias-i">I</span></td></tr>
+  <tr><td>竹南二廠</td><td>包裝/物流</td><td>—</td><td>營運中</td></tr>
+  <tr><td>江蘇河陽廠</td><td>彩片+透片（中國客戶就近供應）</td><td>—</td><td>~2,200 萬片</td><td>—</td><td>營運中 <span class="fias-i">I</span></td></tr>
+  <tr><td style="color:var(--bull)"><b>竹南新總部</b></td><td><b>全產品線含矽水膠</b></td><td>—</td><td><b>+約 1 億片</b></td><td>—</td><td style="color:var(--bull)"><b>2026完工</b> <span class="fias-f">F</span></td></tr>
+  <tr><td colspan="3"><b>完工後合計</b></td><td><b>~1.6 億片/月</b></td><td>—</td><td>目前→完工後 <b>+207%</b></td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 產能擴張時間軸（年報+法說會）</div>
+  <div class="ev-d">法說會P10揭露歷年月產能：2,550萬片(2021)→3,000萬(2022)→4,160萬(2023)→5,425萬(2024)→5,745萬(2025預估)。每年產能成長 17-39%。Q1法說會稱「月產能預計>5,700萬片」，Q3法說會確認已達5,700萬片（去年底新增一條產線）。望隼目前稼動率 >90%（優分析報導），產能接近極限——這代表營收成長受限於產能瓶頸，竹南新廠完工前無法大幅加速。<b>反面思考：</b>如果訂單突然減少（如最大客戶流失），現有產線的固定成本會拖累利潤率。</div>
+  <div class="ev-s">來源：Q1法說會P10（年產能圖）、Q3法說會P3（5,700萬片）、優分析報導（稼動率>90%）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 研發投入與三大成果方向 — 5%營收持續投入</div>
+  <div class="ev-d">年報明確承諾「投入營業收入金額之5%以上為研發資金」，實際執行率：111年9,947萬(5.42%)、112年1.27億(4.95%)——基本兌現。以2025年營收34.87億推算，2025年研發費用約1.7億。研發5%不算高（J&amp;J Vision約8-10%），但望隼的研發效率高——成果都是「降成本+提效率」型，而非「純科研」型，與ODM定位一致。<br><br>
+  <b>112年三大研發成果</b>（年報第66頁揭露）：<br>
+  ① 設備產能效率提升計畫完成量產（包裝線自動化）<br>
+  ② <b>第4代乾片線</b>開發完成，月產能 250萬→350萬片（<b>+40%</b>）<br>
+  ③ 自製鏡片包裝杯 PP Blister 完成建置量產（降低外購成本）<br><br>
+  <b>113年研發成果</b>：第2代美瞳鋼板設備（精細度倍升）開發完成量產——代表美瞳印刷品質再提升。
+  </div>
+  <div class="ev-s">來源：113年報第66頁（研發費用表+研發成果表）、第104頁（研發費用承諾）</div>
+</div>
+
+<div class="tip info">
+  <b>1-5 整合結論：製造能力是望隼的硬實力，但也是雙面刃</b>
+  <p>全注模+AI品檢+三明治美瞳90%良率+六國認證（台/歐/日/中/美/澳）是真正的技術壁壘——不是花錢就能複製的。但產能即將從5,700萬片跳到1.6億片（+207%），如果需求跟不上產能，25億投資的回收期會很長。這是「好問題」——成長型公司都會遇到的「擴產賭注」，關鍵是賭對了就是飛躍，賭錯了就是包袱。</p>
+</div>
+</details>
+
+<!-- 1-6 五年財務 -->
+<details>
+<summary>1-6. 五年財務趨勢 — 從年報原始數據完整展開</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 五年損益表（合併，年報第89頁原始數據）</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>年度（民國）</th><th>108</th><th>109</th><th>110</th><th>111</th><th>112</th><th>CAGR</th></tr>
+      <tr><td>營收(百萬)</td><td>585</td><td>855</td><td>1,420</td><td>1,834</td><td>2,572</td><td style="color:var(--bull)"><b>+45%</b></td></tr>
+      <tr><td>毛利(百萬)</td><td>186</td><td>289</td><td>492</td><td>697</td><td>1,025</td><td>+53%</td></tr>
+      <tr><td>營業利益(百萬)</td><td>81</td><td>149</td><td>317</td><td>366</td><td>832</td><td>+79%</td></tr>
+      <tr><td>稅後淨利(百萬)</td><td>90</td><td>150</td><td>278</td><td>317</td><td>656</td><td>+64%</td></tr>
+      <tr><td>母公司淨利(百萬)</td><td>120</td><td>146</td><td>234</td><td>313</td><td>562</td><td>+47%</td></tr>
+      <tr><td>EPS(元)</td><td>2.49</td><td>2.94</td><td>4.64</td><td>6.02</td><td>10.77</td><td style="color:var(--bull)"><b>+44%</b></td></tr>
+      <tr><td>毛利率</td><td>31.8%</td><td>33.8%</td><td>34.6%</td><td>38.0%</td><td>39.8%</td><td>+2pp/年</td></tr>
+      <tr><td>營利率</td><td>13.8%</td><td>17.4%</td><td>22.3%</td><td>20.0%</td><td>32.3%</td><td>—</td></tr>
+      <tr><td>淨利率</td><td>15.4%</td><td>17.6%</td><td>19.6%</td><td>17.3%</td><td>25.5%</td><td>—</td></tr>
+    </table>
+    <b>加上 2024-2025 年（finlab 資料）：</b><br>
+    2024全年：營收 30.02億(+17%)、EPS 11.81元(+10%)、毛利率 ~39%<br>
+    2025全年：營收 34.87億(+16%)、EPS 12.71元(+8%)、毛利率 ~41%<br>
+    <b>法說會 CAGR（2021-2024）：營收 28.3%、EPS 40.1%</b>
+  </div>
+  <div class="ev-s">來源：113年報第89頁五年簡明損益表（合併）、finlab_data.json、Q1法說會P4-P5</div>
+</div>
+
+<!-- 營收長條圖 -->
+<p style="font-weight:800;margin:14px 0 6px;font-size:.92em;color:var(--base)">營收成長軌跡（108-114年，百萬元）</p>
+<div class="bar-chart">
+  <div class="bar-row"><div class="bar-label">108年</div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--neutral)"><span>585</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">109年</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--neutral)"><span>855</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">110年</div><div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--accent)"><span>1,420</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">111年</div><div class="bar-track"><div class="bar-fill" style="width:53%;background:var(--accent)"><span>1,834</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">112年</div><div class="bar-track"><div class="bar-fill" style="width:74%;background:var(--bull)"><span>2,572</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">113年</div><div class="bar-track"><div class="bar-fill" style="width:86%;background:var(--bull)"><span>3,002</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">114年</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--bull),var(--gold))"><span>3,487</span></div></div></div>
+</div>
+
+<!-- EPS 長條圖 -->
+<p style="font-weight:800;margin:14px 0 6px;font-size:.92em;color:var(--base)">EPS 成長軌跡（元）</p>
+<div class="bar-chart">
+  <div class="bar-row"><div class="bar-label">108年</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--neutral)"><span>2.49</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">109年</div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--neutral)"><span>2.94</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">110年</div><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--accent)"><span>4.64</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">111年</div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--accent)"><span>6.02</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">112年</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--bull)"><span>10.77</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">113年</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--bull)"><span>11.81</span></div></div></div>
+  <div class="bar-row"><div class="bar-label">114年</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--bull),var(--gold))"><span>12.71</span></div></div></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 五年財務比率（年報第93頁完整數據）</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>比率</th><th>108</th><th>109</th><th>110</th><th>111</th><th>112</th><th>趨勢</th></tr>
+      <tr><td>負債比</td><td>35.9%</td><td>40.9%</td><td>37.4%</td><td>37.0%</td><td style="color:var(--warn)"><b>53.0%</b></td><td>↑ 建廠舉債</td></tr>
+      <tr><td>流動比率</td><td>315%</td><td>346%</td><td>283%</td><td>287%</td><td style="color:var(--warn)">184%</td><td>↓ 資金投入廠房</td></tr>
+      <tr><td>利息保障倍數</td><td>10.2x</td><td>22.3x</td><td>64.4x</td><td>41.6x</td><td>52.2x</td><td>安全</td></tr>
+      <tr><td>AR週轉天數</td><td>111</td><td>124</td><td>115</td><td>94</td><td style="color:var(--bull)">74</td><td>↓ 改善中</td></tr>
+      <tr><td>存貨週轉天數</td><td>89</td><td>92</td><td>73</td><td>68</td><td style="color:var(--bull)">56</td><td>↓ 改善中</td></tr>
+      <tr><td>ROE（年度）</td><td>12.2%</td><td>13.0%</td><td>17.9%</td><td>16.5%</td><td style="color:var(--bull)"><b>32.3%</b></td><td>112年高峰</td></tr>
+      <tr><td>ROA</td><td>8.2%</td><td>8.2%</td><td>11.1%</td><td>10.6%</td><td style="color:var(--bull)">17.4%</td><td>↑</td></tr>
+      <tr><td>現金流量比率</td><td>11.8%</td><td>30.2%</td><td>82.4%</td><td>138.2%</td><td>100.5%</td><td>穩健</td></tr>
+    </table>
+    年報解釋112年變動原因：「負債比上升主係籌措購置土地及機器設備資金，長期借款增加」「流動比率下降主係資金運用在不動產廠房設備」「AR週轉率上升主係銷貨淨額增加且應收帳款減少」
+  </div>
+  <div class="ev-s">來源：113年報第93頁五年財務分析（合併+個體雙表）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 現金流量（112年度，年報第98頁）</div>
+  <div class="ev-d">
+    期初現金 9.19億 → 營業活動 <b>+9.59億</b>（強勁） → 投資活動 <b>-13.94億</b>（重大資本支出） → 籌資活動 +3.25億（長期借款） → 期末現金 8.00億<br>
+    <b>自由現金流 = 營業 - 投資 = -4.35億</b>（負）<br>
+    年報解釋：「營業活動主係本年度獲利增加淨變動」「投資活動主係購置不動產廠房設備」「籌資活動主係舉借長期借款」<br>
+    未來一年預估（年報第98頁）：期初8.00億 + 營業+6.71億 - 支出-7.78億 = 期末6.93億（現金持續減少但不至於不足）
+  </div>
+  <div class="ev-s">來源：113年報第98頁現金流量分析（合併）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> ROE 之謎：年報 32% vs finlab 季度 5.4%</div>
+  <div class="ev-d">
+    112年報顯示年度ROE 32.3%（歷史最高），但 finlab 季度數據顯示 2024Q1 起 ROE 開始下降：11.97%(2022Q4) → 7.15%(2024Q1) → 4.85%(2024Q4) → 5.40%(2025Q4)。<br>
+    <b>為什麼差這麼多？</b>finlab 的 ROE 是「季度」數值（非年化），5.4% × 4 ≈ 21.6% 年化——仍算健康。但相比 112年的32.3% 確實下降了。<br>
+    <b>杜邦分析拆解</b>：(1)淨利率從25.5%降至~24%（微降）(2)資產周轉率因新廠投資致總資產膨脹而下降 (3)權益乘數因IPO+CB募資後權益基礎擴張而下降。三者合力導致ROE下降，<b>主因是「股本膨脹+資產膨脹」，不是獲利能力衰退</b>。<br>
+    <b>白話說：</b>ROE下降是上市+CB的副作用，不是公司變差了。但這代表投資人用2023年的ROE 32%去推估未來是不切實際的。
+  </div>
+  <div class="ev-s">來源：113年報第93頁ROE、finlab_data_supplement.json ROE稅後季度數據</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 資產膨脹精確數字 — 不動產廠房設備一年暴增80%</div>
+  <div class="ev-d">年報第97頁資產負債分析：不動產廠房設備從111年12.96億→112年23.34億（<b>+80.1%, +10.38億</b>）。資產總額從32.10億→44.63億（+39.0%）。其中竹南新總部土地取得（112年5月4日董事會通過，交易金額<b>6.99億</b>，資金來源為自有資金+銀行借款）佔了資產增長的主要部分。<br><br>
+  年報原文（第100頁）：「規劃建造自有廠房以利廠區整合⋯以<b>階段性方式逐步增加產能</b>」——「階段性」三個字很重要，代表不是一次性全開，而是分階段爬坡，降低產能閒置風險。<br><br>
+  <b>營運資金充足性聲明</b>：年報確認「營業活動淨現金流入為正數」「主要營運資金來源為營業收入款項及銀行融資額度」「評估短期內無流動性不足之風險」。但未來一年預估現金從8億降至6.93億——雖不至於不足，但緩衝空間正在縮小。
+  </div>
+  <div class="ev-s">來源：113年報第97頁（資產負債分析）+第100頁（重大資本支出+營運資金說明）</div>
+</div>
+
+<div class="tip info">
+  <b>1-6 財務體質整合結論</b>
+  <p><b>正面</b>：營收五年CAGR 45%、EPS CAGR 44%、毛利率每年改善2pp、AR/存貨週轉天數持續下降（經營效率提升）、營業現金流+9.59億強勁、利息保障52x安全。</p>
+  <p><b>負面</b>：負債比從37%跳至53%（建廠）、流動比從287%降至184%、浮動利率負債15.2億（+187%）、FCF -4.35億、ROE從峰值32%降至年化~22%（股本膨脹）。</p>
+  <p><b>結論</b>：這是典型的「高速成長期公司財務特徵」——賺錢能力沒問題（營業現金流+9.59億），花錢速度更快（資本支出-13.94億建新廠）。關鍵是新廠完工後能否在2-3年內讓FCF轉正。如果能，所有負面指標都會改善；如果不能，25億投資就是包袱。<span class="fias-i">I</span></p>
+</div>
+</details>
+
+<!-- 1-7 競爭力地圖+護城河+五力 (摘要引用前步驟) -->
+<details>
+<summary>1-7. 競爭力地圖（7維度）+ 護城河 + 五力</summary>
+<div class="section-sub">詳細分析見第三步報告，此處展示核心結論</div>
+
+<table>
+  <tr><th>維度</th><th>評分</th><th>視覺</th><th>關鍵事實依據</th></tr>
+  <tr><td>1.產品</td><td style="color:var(--bull)"><b>強</b></td><td><div class="score-bar"><div class="score-fill" style="width:85%;background:var(--bull)"></div></div></td><td>日拋+美瞳+矽水膠+功能型四線齊發，三明治美瞳90%良率為技術門檻 <span class="fias-f">F</span></td></tr>
+  <tr><td>2.競爭</td><td>中</td><td><div class="score-bar"><div class="score-fill" style="width:55%;background:var(--warn)"></div></div></td><td>台灣#4（營收最小），全球<1%市佔，但成長率同業最快+16% <span class="fias-f">F</span></td></tr>
+  <tr><td>3.需求</td><td style="color:var(--bull)"><b>強</b></td><td><div class="score-bar"><div class="score-fill" style="width:85%;background:var(--bull)"></div></div></td><td>全球日拋CAGR 12.49%、彩片OEM CAGR 9.5%、近視管理CAGR 16.8% <span class="fias-f">F</span></td></tr>
+  <tr><td>4.財務</td><td>中</td><td><div class="score-bar"><div class="score-fill" style="width:60%;background:var(--warn)"></div></div></td><td>毛利41%穩定、營收CAGR 28%，但FCF負/負債比53%/ROE下降 <span class="fias-f">F</span></td></tr>
+  <tr><td>5.供應鏈</td><td>中</td><td><div class="score-bar"><div class="score-fill" style="width:55%;background:var(--warn)"></div></div></td><td>中日雙基地就近供應，全注模自主製程，上游HEMA等為標準化學品 <span class="fias-i">I</span></td></tr>
+  <tr><td>6.管理層</td><td style="color:var(--bull)"><b>強</b></td><td><div class="score-bar"><div class="score-fill" style="width:80%;background:var(--bull)"></div></div></td><td>誠信85分、承諾兌現率80%（5/9兌現+4/9進行中+0落空）、零質押 <span class="fias-f">F</span></td></tr>
+  <tr><td>7.市場調查</td><td>中</td><td><div class="score-bar"><div class="score-fill" style="width:60%;background:var(--warn)"></div></div></td><td>5/5調查線完成，18次國際搜尋，日本+43%確認/中國殺價確認 <span class="fias-f">F</span></td></tr>
+</table>
+
+<p style="font-size:.86em;margin-top:8px"><b>護城河：窄（Narrow Moat）</b>— 轉換成本（認證黏著6-12月）+ 成本優勢（雙基地+高良率）。距離「寬護城河」差一步——缺自有品牌和網路效應。</p>
+<p style="font-size:.86em"><b>五力：</b>客戶議價力<b>高</b>（品牌商可轉單）、同業競爭<b>激烈</b>（台韓中三國ODM搶單）、新進入者威脅<b>中</b>（認證門檻但中國廠快速崛起）、供應商議價力<b>低</b>、替代品威脅<b>低</b>（美瞳需求結構性成長）。</p>
+</details>
+
+<div class="tip info">
+  <b>第一章總結：望隼的完整畫像</b>
+  <p>望隼是一家<b>技術出身（鴻海系）、專注ODM（99.83%單一產品）、中日雙基地佈局、正在從水膠升級到矽水膠的成長期隱形眼鏡代工廠</b>。14年從虧損減資走到年營收35億、EPS 12.71元。優勢在技術（三明治90%良率+六國認證）和管理層（零質押、高誠信）。劣勢在規模（台灣#4、全球<1%）、客戶集中（前2大44%+丁公司-90%前例）、中國依賴（47%且曾觸底-20%）。正在進行的25億擴廠賭注和矽水膠升級，將在2026-2027年決定這家公司是飛躍還是停滯。</p>
+</div>
+</details>
+
+<!-- Part 1 暫時到此，Ch2-3 接下來繼續 -->
+
+<!-- ================================================================== -->
+<!-- ==================== 第二章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">二、近期催化劑 — 接下來有什麼好事可能發生？</summary>
+<div class="section-sub">5 張催化劑驗證卡 + 時間軸 + 視陽對照 + 期望值合計</div>
+
+<!-- C1 矽水膠 -->
+<details>
+<summary>催化劑 C1：矽水膠日本出貨（2026）— 最關鍵的轉型催化劑</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 年報原文：「民國114年將接續在中國、日本及美國推出矽水膠隱形眼鏡」</div>
+  <div class="ev-d">113年報第7頁（致股東報告書第三段）明確承諾2025年（民國114年）在中日美三國推矽水膠。到 2025Q3 法說會，矽水膠佔比仍僅1%，管理層更新時程為「日本2026出貨」——比年報承諾延遲了約一年。<b>為什麼這很重要？</b>矽水膠 vs 水膠的零售溢價 40-50%（國際情報數據），ODM 出廠價溢價可能更高。望隼若從1%提升到10%矽水膠佔比，等於在產品組合中加入一塊高毛利引擎。但管理層已經延遲一次——第二次延遲的風險不能忽視。</div>
+  <div class="ev-s">來源：113年報第7頁「民國114年將接續推出矽水膠」/ Q3法說會P7「矽水膠1%，日本2026出貨」/ 國際情報.json ASP趨勢</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 望隼的矽水膠專利佈局時間軸</div>
+  <div class="ev-d">年報沿革記載：105年取得台灣矽水膠製造方法專利 → 106年取得美國+中國矽水膠專利 → 107年取得台灣矽水膠專利（第二項）→ 111年台灣取得矽水膠上市許可開始銷售。<b>白話說：</b>望隼從2016年就開始布局矽水膠專利，到2022年才在台灣上市——研發到商業化花了6年。現在要在日本出貨，需要通過日本客戶的品質驗證——這不只是拿證照的問題，更是客戶端接受度的問題。</div>
+  <div class="ev-s">來源：113年報沿革表105-111年紀事</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 矽水膠臨床試驗完整細節 — 跨三國八家醫院，零不良事件</div>
+  <div class="ev-d">年報第67頁原文：「矽水膠鏡片的台灣產品證照已在2022年取得並在台灣開始銷售；2022經過大陸3家醫院臨床，2023台灣2家醫院臨床，並未有不適之案例產生。2023年9月開始在美國進行3家教學醫院的臨床測試。截至目前並無重大異常事件影響矽水膠產品之臨床試驗結果。<b>中國市場預計在2024第三季取證銷售，日本與美國預計在2024第四季末取證銷售。</b>」<br><br>
+  <b>關鍵發現</b>：年報承諾的取證時間（中國2024Q3、日本美國2024Q4末）到2025Q3法說會時都還沒完全兌現——矽水膠佔比仍僅1%。管理層在Q3法說會更新為「日本2026出貨」——比年報原始承諾延遲至少一年。但臨床試驗「並未有不適案例」是正面訊號——延遲可能是認證流程問題而非產品品質問題。<br><br>
+  <b>跨三國八家醫院臨床</b>是望隼在報告中被低估的技術壁壘——新進入者要複製這個臨床規模需要至少2-3年+數千萬費用。
+  </div>
+  <div class="ev-s">來源：113年報第67頁「技術及研發概況」矽水膠臨床段落</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽的矽水膠已在2024Q4出貨日本</div>
+  <div class="ev-d">視陽報告揭露：「2024 Q4 推出矽水膠散光日拋（進入日本市場），2025 Q3 推出散光彩拋和恆定彩拋兩款新品」。視陽的矽水膠已經在日本出貨，且正在擴展品項。<b>這代表什麼？</b>(1) 日本市場確實在接受矽水膠——視陽的成功驗證了市場需求存在 (2) 但望隼比視陽晚了約1.5年——先行者優勢在視陽手上 (3) 晶碩也已在2024年取得日本矽水膠認證——望隼面臨「兩面追趕」的壓力。<b>反面思考：</b>望隼的矽水膠彩片（三明治技術+矽水膠）是比視陽更難的產品——如果做出來，技術壁壘更高；但風險也更大（難度=延遲機率更高）。</div>
+  <div class="ev-s">來源：視陽(6782)第七步完整版Ch2「2024 Q4推出矽水膠散光日拋」/ 視陽第七步Ch4「晶碩2024年取得日本認證」</div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑驗證卡 C1：矽水膠日本出貨</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">年報沿革（專利6年佈局）+ Q3法說會（佔比1%/2026出貨）+ 視陽報告（2024Q4已先行出貨）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">(1) 日本客戶端品質驗證通過 (2) 矽水膠彩片（三明治+矽水膠）量產良率達標 (3) 產能分配到位（不擠壓現有水膠訂單）</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">視陽已驗證日本市場接受度 → 望隼客戶可能加速導入；全球日拋矽水膠滲透率每年+8pp</span></div>
+  <div class="ev-row"><span class="ev-label">阻礙因子：</span><span class="ev-val">管理層已延遲一次（年報承諾2025→實際2026）；矽水膠彩片比矽水膠透片更難（三明治+矽水膠的材料相容性挑戰）</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val"><b>50-65%</b>（原估50-75%，因已延遲一次+視陽對照顯示技術可行但望隼更晚，下修上緣）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">毛利率+2-3pp → EPS +12-18%。視陽報告佐證：「功能性鏡片佔比每提升5%，整體毛利率上升1-2ppt」</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~30%（市場知道但矽水膠佔比僅1%代表觀望態度）</span></div>
+  <div class="ev-row"><span class="ev-label">期望超額收益：</span><span class="ev-val">57.5% × 15% × (1-0.3) = <b style="color:var(--bull)">+6.0%</b></span></div>
+</div>
+</details>
+
+<!-- C2 竹南新廠 -->
+<details>
+<summary>催化劑 C2：竹南新廠完工（產能三倍化）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 產能擴張的完整時間軸</div>
+  <div class="ev-d">法說會P10揭露歷年月產能成長：2,550萬片(2021) → 3,000萬(2022) → 4,160萬(2023) → 5,425萬(2024) → 5,745萬(2025)。每年新增一條產線，產能增速17-39%。目前稼動率>90%（優分析報導），接近產能天花板。竹南新總部投資25億，完工後月產能從5,700萬片跳升至1.6億片（+207%）——這不是漸進式擴產，而是跳躍式倍增。<b>風險在於</b>：從5,700萬到1.6億需要填滿額外1億片/月的訂單，等於需要營收從35億成長到約100億——這需要3-4年的時間。</div>
+  <div class="ev-s">來源：Q1法說會P10（年產能圖）、113年報沿革（竹南新總部土地取得）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 竹南新廠購地精確細節 — 6.99億土地+「階段性」三字暗藏策略</div>
+  <div class="ev-d">年報揭露：112年5月4日董事會通過購置竹南鎮土地，交易金額<b>6.99億</b>，資金來源為自有資金+銀行借款。年報原文（第100頁）描述為「規劃建造自有廠房以利廠區整合⋯以<b>階段性方式逐步增加產能</b>」。<br><br>
+  「階段性」三個字是關鍵——代表管理層不打算一次性把1億片/月的產能全部上線，而是根據訂單狀況分批爬坡。這與視陽的漸進式擴產策略異曲同工，降低了產能閒置風險。但一次性的土地購入6.99億+後續設備建設投資共計25億，已造成不動產廠房設備一年暴增80%（12.96億→23.34億），資產膨脹速度遠快於營收成長。
+  </div>
+  <div class="ev-s">來源：113年報第100頁（重大資本支出）+第97頁（資產負債分析）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽也在擴產，但規模和策略不同</div>
+  <div class="ev-d">視陽月產能 3,800→4,200 萬片（+10.5%），漸進式擴產。望隼則是 5,700→16,000 萬片（+180%）的激進式擴產。視陽製造基地在<b>馬來西亞</b>（CPTPP免關稅+工資為台灣40-50%），望隼在台灣+中國。<b>白話說：</b>視陽用馬來西亞的低成本慢慢長大，望隼用台灣的25億大投資賭一把快速長大。兩種策略各有風險——視陽的風險是成長太慢被追過，望隼的風險是擴太快填不滿。</div>
+  <div class="ev-s">來源：視陽(6782)第七步Ch5「馬來西亞CPTPP免關稅，工資為台灣40-50%」</div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑驗證卡 C2：竹南新廠完工</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">年報+法說會+資本支出13.94億已投入 <span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">建設如期完工 + 設備安裝 + 人力招募（需增員數百人，平均年資僅2.5年代表已在大量招人）</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">矽水膠訂單湧入（若C1成功）→ 新廠產能立即被填充</span></div>
+  <div class="ev-row"><span class="ev-label">阻礙因子：</span><span class="ev-val">台灣缺工（半導體搶人）、建材漲價、設備交期延遲</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val"><b>55-70%</b>（完工機率高，但產能爬坡到70%稼動率需要2-3年）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">營收天花板從~45億→~120億解除；但短期若稼動率<50%反而壓低ROE</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~50%（市場已知計畫，但爬坡速度未反映）</span></div>
+  <div class="ev-row"><span class="ev-label">期望超額收益：</span><span class="ev-val">62.5% × 20% × (1-0.5) = <b style="color:var(--bull)">+6.3%</b></span></div>
+</div>
+</details>
+
+<!-- C3 功能型爆發 -->
+<details>
+<summary>催化劑 C3：功能型鏡片爆發（2%→17%，已在發生！）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 這是三場法說會比對後才發現的「隱形催化劑」</div>
+  <div class="ev-d">功能型鏡片（散光/濾藍光/多焦/近視防控）在2021-2024年佔比僅0.1-2%，幾乎可以忽略。但2025Q3突然暴增至17%——佔比一個季度跳升15pp。年報揭露望隼在104年就取得散光/多焦許可證，113年報稱「散光、漸進多焦、近視防控之開發已至產品成熟」——原來這條線已經醞釀了10年，現在才開始爆發。</div>
+  <div class="ev-s">來源：Q1法說會P7（功能型2%）→ Q3法說會P7（功能型17%）+ 113年報第7頁（產品成熟聲明）+ 沿革104年（散光多焦許可證）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽的散光鏡片ASP比透片高30-50%</div>
+  <div class="ev-d">視陽報告明確揭露：「散光鏡片和多焦鏡片 ASP 比一般透明片高 30-50%，毛利率也更好。功能性鏡片佔比每提升5%，就能推動整體毛利率上升1-2ppt。」<b>套用到望隼</b>：功能型從2%升至17%（+15pp），理論上應推動毛利率上升3-6pp（15pp ÷ 5pp × 1-2ppt）。但實際毛利率僅從40%微升至41%（+1pp）——差距代表其他產品線（透片/中國殺價）在拖後腿，或者望隼的功能型ASP溢價不如視陽。</div>
+  <div class="ev-s">來源：視陽(6782)第七步Ch2「散光鏡片ASP高30-50%，佔比每+5%毛利率+1-2ppt」</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 全球近視管理隱形眼鏡市場 CAGR 16.8%</div>
+  <div class="ev-d">國際情報搜尋結果：2025年 USD 4.55億 → 2035年 USD 69.9億（CAGR 16.8%），是所有隱形眼鏡片段中成長最快的。亞太佔88.3%營收。望隼的功能型產品（散光+多焦+近視防控）直接對應這個市場。如果功能型佔比能從17%繼續升至25-30%，這將成為不亞於矽水膠的成長引擎。</div>
+  <div class="ev-s">來源：國際情報.json 近視大流行章節（PubMed/WHO/BMJ/Lancet 多源）</div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑驗證卡 C3：功能型鏡片持續放量</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">三場法說會軌跡（2%→17%）+ 年報（產品成熟聲明）+ 視陽ASP數據 + 國際近視管理數據 <span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">日本散光美瞳客戶持續下單 + 近視防控產品取得上市許可</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val"><b>65-80%</b>（已在發生中，Q3佔比17%為事實非預測）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">佔比維持15-20% → 毛利率+0.5-1pp → EPS +3-6%</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~15%（市場幾乎沒注意到這條線——Q3法說會才首次揭露17%佔比）</span></div>
+  <div class="ev-row"><span class="ev-label">期望超額收益：</span><span class="ev-val">72.5% × 4.5% × (1-0.15) = <b style="color:var(--bull)">+2.8%</b></span></div>
+</div>
+</details>
+
+<!-- C4 東南亞 -->
+<details>
+<summary>催化劑 C4：東南亞市場加速（YoY +53%，新引擎啟動）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 東南亞三季加速：+18% → +46% → +53%</div>
+  <div class="ev-d">三場法說會完整軌跡顯示東南亞營收YoY從Q1的+18%加速至Q3的+53%，是所有地區中成長最快的（超越日本的+43%）。國際情報顯示東南亞隱形眼鏡市場2025年USD 3.51億，印尼佔30%，彩色片受年輕世代+社群媒體KOL驅動。<b>望隼的優勢</b>：台灣+中國雙基地比韓國ODM更靠近東南亞，且東南亞法規門檻低於歐美（部分國家CE/FDA快速註冊可行）。</div>
+  <div class="ev-s">來源：Q1法說會P6（+18%）、Q2法說會P6（+46%）、Q3法說會P6（+53%）、國際情報.json東南亞章節</div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑驗證卡 C4：東南亞市場放量</div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val"><b>55-70%</b>（已在發生，但基期極低——佔比<2%，短期營收貢獻有限）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">2026年可能貢獻營收3-5%（~1.5-2億），2027年若擴至5-8%為更顯著</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~5%（市場幾乎完全忽略）</span></div>
+  <div class="ev-row"><span class="ev-label">期望超額收益：</span><span class="ev-val">62.5% × 3% × (1-0.05) = <b style="color:var(--bull)">+1.8%</b></span></div>
+</div>
+</details>
+
+<!-- C5 美歐 -->
+<details>
+<summary>催化劑 C5：美國/歐洲市場突破（中長期，門檻高）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 望隼早在107年（2018）就取得美國FDA</div>
+  <div class="ev-d">年報沿革記載107年取得「美國FDA產品證照（55%含水率美瞳，含近視/遠視/散光/多焦/散光多焦功能）」，108年再取得「FDA運動型鏡片證照」。也就是說望隼<b>已經有FDA證照</b>——但法說會顯示美國營收僅佔0.12%（112年報），且YoY+43%的基期極低。<b>有證照卻沒營收</b>——代表取得認證和打進市場是完全不同的事。韓國Interojo正在2026/1申請FDA，但望隼8年前就拿到了卻沒做起來——為什麼？</div>
+  <div class="ev-s">來源：113年報沿革107-108年（FDA兩次取證）、法說會P6（美國YoY+43%但佔比<1%）、國際情報.json FDA章節</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽美國營收已在放量</div>
+  <div class="ev-d">視陽報告揭露美國已佔營收約7%，且法說會提到「美國市場持續放量觀察點」。視陽的優勢是MDSAP認證（一次審查滿足美/加/巴/澳/日五國），且馬來西亞製造享CPTPP免關稅。<b>對望隼的啟示</b>：美國市場的門檻不在FDA認證（望隼早就有），而在通路、品牌合作、和成本結構。視陽用馬來西亞低成本+MDSAP一站式認證打進美國，望隼的台灣+中國製造可能在美國市場缺乏成本競爭力。</div>
+  <div class="ev-s">來源：視陽(6782)第七步Ch2「美國市場EV +2.8%」、Ch5「MDSAP台灣首家」</div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑驗證卡 C5：美國/歐洲突破</div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val"><b>15-25%</b>（短期內，FDA已有但通路未建立；歐洲有CE但EU MDR門檻高）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">若成功打入美國大型品牌ODM → 營收+10-15%、但可能需要3-5年</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~5%</span></div>
+  <div class="ev-row"><span class="ev-label">期望超額收益：</span><span class="ev-val">20% × 12% × (1-0.05) = <b style="color:var(--bull)">+2.3%</b></span></div>
+</div>
+</details>
+
+<!-- 催化劑合計 -->
+<div class="grid2" style="margin-top:16px">
+  <div class="mini-card bull-card"><div class="title">催化劑 EV 合計</div><div class="num" style="color:var(--bull)">+19.2%</div><div class="desc">5張卡加總（C1:6.0+C2:6.3+C3:2.8+C4:1.8+C5:2.3）</div></div>
+  <div class="mini-card neutral-card"><div class="title">視陽催化劑 EV 對比</div><div class="num">+8.3%</div><div class="desc">視陽3張卡合計——望隼催化劑空間更大但確定性更低</div></div>
+</div>
+
+<div class="tip info">
+  <b>第二章整合結論（含視陽對照）</b>
+  <p><b>資料→觀察</b>：望隼有5個催化劑（vs 視陽3個），EV合計+19.2%（vs 視陽+8.3%），看似望隼催化劑空間更大。但拆開來看：視陽最大催化劑（矽水膠，EV +3.2%）的實現機率>80%（已在出貨），望隼最大催化劑（矽水膠，EV +6.0%）的實現機率50-65%（尚未出貨且已延遲一次）。</p>
+  <p><b>觀察→推論</b>：望隼的催化劑是「高彈性低確定性」，視陽是「低彈性高確定性」。這反映在兩家公司的定位差異——望隼是「追趕者」有更多上行空間但風險也大，視陽是「先行者」穩但漲幅有限。</p>
+  <p><b>推論→結論</b>：投資望隼本質上是在賭「追趕者能否成功追上」——矽水膠出貨+新廠填滿+功能型持續爆發，三者至少要成功兩個才能讓望隼從H2（穩健）升級到H1（高速）。功能型已在發生（C3最確定），矽水膠和新廠還在等待驗證。<span class="fias-i">I</span></p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第三章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">三、為什麼在漲？市場為什麼買單？</summary>
+<div class="section-sub">拆解近期股價驅動力 + 法說會三場完整軌跡驗證</div>
+
+<!-- 驅動力1 -->
+<details>
+<summary>驅動力 1：月營收持續創高且加速</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 營收加速的數據證據</div>
+  <div class="ev-d">
+    finlab 月營收資料完整軌跡：<br>
+    2025上半年 YoY：-9.4%(1月) → -20.3%(2月) → +18.3%(3月) → +29.7%(4月) → +13.6%(5月) → +10.0%(6月)<br>
+    2025下半年 YoY：+37.8%(7月) → +20.8%(8月) → +2.3%(9月) → +22.0%(10月) → +14.3%(11月) → +35.0%(12月)<br>
+    2026年初 YoY：+29.2%(1月) → <b>+43.4%(2月)</b> → +21.3%(3月)<br>
+    <b>白話說：</b>2025上半年營收曾經衰退（1-2月YoY負成長），到下半年恢復正成長，2026年初加速到+40%+。股價跟著營收走——2025/12的170元低點對應的是上半年的弱勢營收，2026/3的196元對應的是2月+43%的超預期表現。<b>市場買的是「營收加速」這個趨勢。</b>
+  </div>
+  <div class="ev-s">來源：finlab_data.json 月營收（24月完整）+ finlab_data_supplement.json 營收年增率</div>
+</div>
+</details>
+
+<!-- 驅動力2 -->
+<details>
+<summary>驅動力 2：日本市場爆發性成長（全面展開）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 日本是望隼營收加速的最大引擎</div>
+  <div class="ev-d">
+    三場法說會揭露的日本市場完整故事：<br>
+    <b>佔比</b>：112年報 34.2% → Q1'25 54%（高峰）→ Q2 49% → Q3 47%<br>
+    <b>YoY</b>：2024年+11%（年報提到）→ Q1'25 +37% → Q2 +53%（高峰）→ Q3 +43%<br>
+    <b>年報原文</b>（第7頁）：「深耕日本市場，透過積極的市場策略和高品質的產品，取得了良好的市場份額」<br>
+    <b>年報原文</b>（第70頁）：「日本當地品牌之主要產地為台灣」「日本從台灣進口佔16.3%，僅次於愛爾蘭（43.2%，四大品牌產地）和波多黎各（11.3%）」<br>
+    <b>白話說：</b>日本隱形眼鏡市場的非國際品牌部分，台灣是最大供應國——望隼正在這塊市場快速搶佔份額。日本 YoY +43% 遠超日本市場整體成長率+1.6%（國際情報），代表望隼不只是跟著市場成長，而是在主動搶市佔。
+  </div>
+  <div class="ev-s">來源：113年報第7頁（致股東書）+第70頁（日本市場概況）、三場法說會P6、國際情報.json日本章節</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽日本佔50%，但成長方式不同</div>
+  <div class="ev-d">視陽日本佔營收50%，最大客戶C佔16.3%，且設有日本子公司From-eyes提供在地化服務。視陽在日本的優勢是「先行者+在地化+MDSAP認證」。望隼在日本的優勢是「三明治美瞳差異化+快速成長的絕對金額」。<b>兩者的日本策略本質不同</b>：視陽靠深耕穩固大客戶，望隼靠差異化產品快速擴張。風險也不同——視陽怕大客戶轉單，望隼怕新客戶熱度消退。</div>
+  <div class="ev-s">來源：視陽第七步Ch4「日本客戶集中度風險EV -3.0%」、Ch5「From-eyes在地服務」</div>
+</div>
+</details>
+
+<!-- 驅動力3 -->
+<details>
+<summary>驅動力 3：美瞳取代透片的結構性轉移</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 全球消費者從「矯正視力」轉向「美妝+矯正並重」</div>
+  <div class="ev-d">
+    望隼的產品組合變化就是全球趨勢的縮影：透片從2021年佔48%降至2025Q3的36%（-12pp），美瞳從48%升至46%但中間曾高達56%（2023）。Q3法說會原文：「透片銷量略為下滑，主要是終端消費者的消費模式逐漸轉換至美瞳片」「美瞳片3Q'25佔比46%，主要是新品定位彩拋片的需求強勁」。<br>
+    年報第69頁產業分析：「隨著健康意識抬頭，亦有推出可阻擋眼睛吸收過量藍光之濾藍光產品」「各大廠商積極開發散光鏡片、多焦點鏡片及彩妝鏡片等差異化產品」<br>
+    國際情報：全球彩色片OEM市場CAGR 9.5%（2025 USD 31.8億→2033 USD 65.7億），亞太佔消費80%+。<br>
+    <b>白話說：</b>望隼的核心能力（三明治美瞳）恰好對準了全球隱形眼鏡市場最大的結構性轉移——從「看得清楚」到「又美又健康」。這不是週期性的，而是消費文化的永久改變。
+  </div>
+  <div class="ev-s">來源：Q3法說會P7（產品佔比原文）、113年報第69頁（產品趨勢）、國際情報.json彩色片OEM章節</div>
+</div>
+</details>
+
+<!-- 驅動力4 -->
+<details>
+<summary>驅動力 4：中國本土品牌崛起 = 望隼的機會（反直覺）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 「四大品牌佔比下降」對望隼是利多不是利空</div>
+  <div class="ev-d">
+    年報第8頁關鍵段落：「國際四大廠品牌佔隱形眼鏡市場份額超過90%，屬寡占型市場。但亞洲市場由於美瞳片比重高⋯中國本土品牌快速崛起⋯<b>由於中國本土具備質量能力的隱形眼鏡製造廠屈指可數，品牌商大多倚賴台廠代工，使代工廠商具有高度的成長潛力。</b>」<br>
+    Q1法說會P8：「大陸隱形眼鏡市場在經歷行業的轉型，行業集中度在下降。傳統的四大+海昌佔比在下降，新銳品牌的佔比在快速提升。」<br>
+    <b>反直覺的邏輯</b>：中國市場「衰退」（YoY -9~-20%）看起來是壞事，但拆開看——衰退的是國際四大品牌的市佔，崛起的是中國本土品牌。而本土品牌「大多倚賴台廠代工」——望隼在中國有就近供應的江蘇廠，正是這些本土品牌的首選ODM。所以中國市場的「衰退」其實是「從國際品牌自有供應鏈→轉向本土品牌委外代工」的結構性轉移——望隼身處轉移的受益端。
+  </div>
+  <div class="ev-s">來源：113年報第8頁「中國本土品牌倚賴台廠代工」+ Q1法說會P8「新銳品牌佔比快速提升」</div>
+</div>
+</details>
+
+<!-- 驅動力5 -->
+<details>
+<summary>驅動力 5：2026/2月營收+43.4%的「驚喜效應」</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 短線急漲的直接導火線</div>
+  <div class="ev-d">
+    finlab 數據：2026/2月營收3.68億（YoY+43.4%），創歷史次高（僅次於2025/11月的3.55億）。股價在2026/3/17從179元急拉至196元（+9.5%，3天），成交量同步暴增至73.6萬股（10倍日均）。外資3/17單日買超15.3萬股（60日最大單日）。<br>
+    <b>白話說：</b>這波急漲不是基本面突然改變，而是+43.4%的月營收YoY遠超市場預期（前月+29.2%），引發短線資金搶進。但外資3/18隔天即反手賣超10.2萬股——典型的「營收利多出貨」行為，非長期布局。
+  </div>
+  <div class="ev-s">來源：finlab_data.json月營收+收盤價+外資買賣超+成交量（60日完整數據）</div>
+</div>
+</details>
+
+<div class="tip info">
+  <b>第三章整合結論</b>
+  <p><b>資料→觀察</b>：望隼股價驅動力有5層：(1)營收加速（趨勢確認）(2)日本爆發（+43%搶市佔）(3)美瞳取代透片（結構性）(4)中國本土品牌崛起=ODM機會（反直覺）(5)2月營收超預期（短線導火線）。五層中前四層是中長期驅動力，第五層是短線事件。</p>
+  <p><b>觀察→推論</b>：市場買單的核心邏輯——「營收CAGR 28%的成長股只給PE 15x，便宜」——在一定程度上成立。但需要注意：(1)營收加速的最大貢獻來自日本（+43%），如果日本成長放緩（從54%佔比回落已是訊號），加速可能中斷 (2)中國本土品牌倚賴台廠代工的邏輯正確，但蝴蝶效應分析顯示重慶彩片產業聚落正在崛起——中國本土代工能力提升可能在2-3年後稀釋望隼的優勢。</p>
+  <p><b>推論→結論</b>：望隼的驅動力是真實的，不是炒作。但「加速成長」能持續多久是核心問題——如果只是日本單一市場的爆發期，持續性有限；如果是多引擎（日本+功能型+矽水膠+東南亞）同時啟動，則可持續3-5年。目前的證據支持「多引擎正在啟動但尚未全面開動」。<span class="fias-i">I</span></p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第四章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">四、潛在風險偵測與求證 — 市場還沒看到什麼？</summary>
+<div class="section-sub">5 項風險深度展開 + 即時求證 + 視陽對照 + 總覽表</div>
+
+<!-- 風險1 -->
+<details>
+<summary>風險 4-1：客戶集中度極高且結構劇變（致命級）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 丁公司從佔營收10%一年內暴跌至1%——這不是假設性情境</div>
+  <div class="ev-d">113年報第176頁主要客戶表清楚記載：丁公司111年度營收1.92億（佔10%），112年度僅1,906萬（佔1%），一年之內流失了90%。年報沒有解釋原因——是合約到期？品質問題？價格談不攏？轉單到韓國？我們不知道。但事實是：<b>一個佔營收10%的客戶可以在一年內幾乎歸零。</b><br><br>
+  與此同時，甲公司從13%暴增至23%（+140%），乙公司從10%暴增至21%（+191%）——望隼顯然打入了新的大客戶，但客戶結構的劇烈波動代表ODM業務的黏著度不如想像中高。前2大客戶合計44%，如果甲公司也發生丁公司的情況，營收衝擊23%——遠大於任何其他單一風險。</div>
+  <div class="ev-s">來源：113年報第176頁「主要客戶資訊」（甲5.80億23%/乙5.29億21%/丙2.65億10%/丁0.19億1%）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽最大客戶C佔16.3%，且設有日本子公司維護關係</div>
+  <div class="ev-d">視陽報告揭露最大客戶C佔16.3%——比望隼的甲公司23%低了7pp。更重要的是，視陽設有日本子公司From-eyes提供在地化服務（快速回應品質問題、參與新品開發、維護長期關係），這是「比技術還硬的客戶黏著劑」。望隼沒有日本子公司——客戶關係維護全靠總部遠端，黏著度先天較弱。<br><br>
+  <b>為什麼這是問題？</b>視陽的策略是「深耕少數大客戶+在地服務」（類似嫁接），望隼的策略是「快速開發多客戶+差異化產品」（類似播種）。兩種策略沒有優劣，但望隼的策略天生客戶黏著度較低。</div>
+  <div class="ev-s">來源：視陽(6782)第七步Ch4「R1日本客戶集中度，最大客戶C佔16.33%」、Ch5「From-eyes在地銷售能力」</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 客戶身分推論：甲乙公司可能是日本彩色片頭部品牌</div>
+  <div class="ev-d">年報隱藏客戶名稱（以甲乙丙丁代號），但可以從已知資訊交叉推論：(1)日本佔營收47%且以彩色片龍頭為主客戶 (2)甲公司112年5.80億≈日本營收8.78億的66% (3)國際情報顯示日本頂級彩色片品牌包括ReVIA(Candy Magic)/Ever Color/LIL MOON/Flurry。<b>推論：甲公司極可能是Candy Magic（ReVIA），乙公司可能是Ever Color系列品牌商。</b>但這是推論非事實，客戶名單保密是無法消除的盲點。</div>
+  <div class="ev-s">來源：推論基礎=113年報客戶表+地區營收表+國際情報.json日本品牌章節</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 年報文字遊戲？「無單一集團超過23%」——但甲公司剛好就是23%</div>
+  <div class="ev-d">年報第103頁銷貨集中風險段落稱：「本公司及子公司112年度無單一集團之營收占合併銷貨淨額比重超過23%」。而第176頁客戶表顯示甲公司佔比<b>剛好是23%</b>——踩在自己定義的線上。<br><br>
+  <b>這個巧合需要注意</b>：(1)年報通常用「20%」或「25%」作為銷貨集中風險門檻——望隼用「23%」是為了讓甲公司剛好不超標？(2)如果甲公司113年成長到24%，年報就得改口承認銷貨集中——這是管理層在玩文字遊戲嗎？還是巧合？<b>無法確認，但值得監控</b>。如果下一期年報的門檻從「23%」悄悄改成「25%」或更高，就幾乎可以確定是刻意操作。
+  </div>
+  <div class="ev-s">來源：113年報第103頁（銷貨集中風險聲明）vs 第176頁（甲公司23%）</div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--bear)">風險情報驗證卡 R1：最大客戶流失</div>
+  <div class="ev-row"><span class="ev-label">嚴重度：</span><span class="ev-val" style="color:var(--bear);font-weight:700">致命（EPS -23%）</span></div>
+  <div class="ev-row"><span class="ev-label">觸發距離：</span><span class="ev-val">初期跡象存在（丁公司-90%為歷史前例）</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">10-25%（低，但非零——丁公司已證明會發生）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">營收-23%、股價-30~40%、持續6-12月（找新客源）</span></div>
+  <div class="ev-row"><span class="ev-label">可恢復性：</span><span class="ev-val">部分可恢復——望隼已證明能快速打入新客戶（甲乙+140~191%），但需要時間</span></div>
+  <div class="ev-row"><span class="ev-label">預警訊號：</span><span class="ev-val">月營收突然連續下降+特定地區（日本）營收驟降</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">17.5% × 35% = <b style="color:var(--bear)">-6.1%</b></span></div>
+  <div class="ev-row"><span class="ev-label">視陽對比：</span><span class="ev-val">視陽R1期望損失-3.0%（望隼是視陽的2倍——因為望隼最大客戶佔比更高且無在地子公司）</span></div>
+</div>
+</details>
+
+<!-- 風險2 -->
+<details>
+<summary>風險 4-2：中國市場衰退+殺價（已在發生中）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 中國 Q1 曾惡化至 -20%：三場法說會的完整真相</div>
+  <div class="ev-d">
+    如果只看Q3法說會的-9%，會低估中國市場的嚴峻程度。完整軌跡：<br>
+    <b>Q1法說會</b>（2025/5/14）：「中國線上銷售+9%，<b>僅抖音維持+64%，天貓與京東衰退</b>」→ 望隼中國YoY <b>-20%</b><br>
+    <b>Q2法說會</b>（2025/8/14）：「中國線上+10%，抖音+60%，京東+7%，天貓-6%」→ 望隼中國YoY -14%<br>
+    <b>Q3法說會</b>（2025/11/17）：「中國線上+14.7%，抖音+40%，京東+31%，天貓持平」→ 望隼中國YoY -9%<br><br>
+    <b>三個觀察</b>：(1)中國線上市場整體在成長（+9%→+14.7%），但望隼在衰退（-20%→-9%）——代表望隼正在丟市佔 (2)抖音增速從+64%降至+40%，短影音紅利正在消退 (3)「行業集中度下降，傳統四大+海昌佔比下降，本土品牌崛起」——市場格局在重組，望隼的中國客戶結構可能也在重組中。
+  </div>
+  <div class="ev-s">來源：Q1法說會P8、Q2法說會P8、Q3法說會P8 三場完整比對</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 蝴蝶效應：重慶彩色片產業聚落崛起</div>
+  <div class="ev-d">國際情報搜尋中發現 ichongqing 報導：重慶正在成為全球彩色隱形眼鏡製造重鎮。如果中國本土ODM能力快速提升，望隼在中國的就近供應優勢（江蘇廠）可能被稀釋——中國品牌商有了更多更便宜的本土選擇。<b>白話說</b>：望隼中國營收下降可能不只是「消費衰退」，更是「被本土廠替代」——如果是後者，回升就更難了。</div>
+  <div class="ev-s">來源：國際情報.json 中國市場章節、第八步蝴蝶效應弱訊號2</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 江蘇視准持股80% + 佔合併利潤32.7% — 中國利潤集中度比想像中更高</div>
+  <div class="ev-d">年報第57頁揭露江蘇視准持股比例<b>80%</b>（非100%），另20%由Clear Precise Investments Limited（望隼透過 Green Wealth → Clear Precise → 江蘇視准 的三層架構控制）。<br><br>
+  江蘇視准112年度認列投資利益<b>2.14億</b>——佔望隼合併稅後淨利6.56億的<b>32.7%</b>。<b>白話說</b>：望隼將近三分之一的利潤來自中國子公司——這比營收佔比60.8%低（因中國毛利率低於台灣），但仍是非常顯著的利潤來源。中國營收佔比47%已從60.8%改善，但利潤佔33%仍然偏高。如果中國子公司出問題（監管、稅務、匯率、經營權），不只營收衝擊，<b>利潤衝擊更直接</b>。
+  </div>
+  <div class="ev-s">來源：113年報第57頁（持股架構）+第100頁（轉投資獲利表：江蘇視准214,380千元）</div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--bear)">風險情報驗證卡 R2：中國市場持續衰退+本土替代</div>
+  <div class="ev-row"><span class="ev-label">嚴重度：</span><span class="ev-val" style="color:var(--warn)">中度（EPS -12~18%）</span></div>
+  <div class="ev-row"><span class="ev-label">觸發距離：</span><span class="ev-val" style="color:var(--bear)">已在發生（Q1 -20%→Q3 -9%，改善中但仍為負）</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">消費衰退持續 30-40%、本土替代加速 20-30%</span></div>
+  <div class="ev-row"><span class="ev-label">可恢復性：</span><span class="ev-val">消費衰退=部分可恢復（景氣循環）；本土替代=不可逆（結構性改變）</span></div>
+  <div class="ev-row"><span class="ev-label">抑制因子：</span><span class="ev-val">望隼中國佔比正在下降（61%→47%）、日本/東南亞分散化進行中</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">消費衰退 35% × 15% = -5.3%；本土替代 25% × 10% = -2.5%；合計 <b style="color:var(--bear)">-7.8%</b></span></div>
+</div>
+</details>
+
+<!-- 風險3 -->
+<details>
+<summary>風險 4-3：25億新廠的財務壓力+產能閒置風險</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 從年報現金流看25億賭注的真實代價</div>
+  <div class="ev-d">
+    112年度現金流量：營業+9.59億 → 投資-13.94億 → 籌資+3.25億 → 期末8.00億。FCF = -4.35億。<br>
+    年報第98頁預估113年度：期初8.00億 + 營業+6.71億 - 支出-7.78億 = 期末6.93億。<br>
+    <b>兩年現金從9.19億降至6.93億</b>（-24.6%），且負債比從37%跳至53%，浮動利率負債15.2億（+187%）。<br><br>
+    <b>做一個簡單算術</b>：新廠月產能+1億片，假設 ASP 2元/片 × 稼動率50%（初期）= 月營收1億 × 12 = 年營收12億。但25億投資 ÷ 12億增量營收 × 25%淨利率 = 回收期 <b>~8年</b>。若稼動率爬到80%→回收期縮短到~5年。這是長期賭注，不是短線催化劑。
+  </div>
+  <div class="ev-s">來源：113年報第98頁（現金流分析+113年度預估）、第93頁（負債比/浮動利率負債）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 視陽對照：視陽用馬來西亞低成本漸進式擴產</div>
+  <div class="ev-d">視陽在馬來西亞擴產：工資為台灣40-50%、CPTPP免關稅、漸進式從3,800萬→4,200萬片（+10.5%）。望隼在台灣一次性投資25億蓋新廠，跳躍式從5,700萬→1.6億片（+180%）。<b>兩種策略的風險截然不同</b>：視陽的風險是「成長太慢」（+10.5% vs 市場需求），望隼的風險是「擴太快填不滿」（+180%需要營收翻倍才能用滿）。且望隼的台灣製造成本高於馬來西亞——長期成本競爭力是隱憂。</div>
+  <div class="ev-s">來源：視陽(6782)第七步Ch5「馬來西亞CPTPP+工資40-50%」</div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--bear)">風險情報驗證卡 R3：新廠產能閒置</div>
+  <div class="ev-row"><span class="ev-label">嚴重度：</span><span class="ev-val">中度（ROE壓抑+折舊吃利潤）</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">20-35%（若矽水膠延遲+中國持續衰退→新產能填不滿）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">稼動率<50%→年折舊增加~2-3億→EPS -3~4元（-20~25%）</span></div>
+  <div class="ev-row"><span class="ev-label">可恢復性：</span><span class="ev-val">可恢復（訂單成長即可填滿，但需要時間）</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">27.5% × 22% = <b style="color:var(--bear)">-6.1%</b></span></div>
+</div>
+</details>
+
+<!-- 風險4 -->
+<details>
+<summary>風險 4-4：CB 稀釋（已知盲點，影響可能被低估）</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 股本已從5.245億增至5.8億（+10.6%），CB轉換是主因</div>
+  <div class="ev-d">113年報股本524,547千元，但三場法說會一致揭露資本額5.8億元——差額5,550萬代表有10.6%的股本膨脹。2023-2024年密集發行3次CB（公開說明書B011類），轉換是最可能的原因。<b>2025 EPS 12.71元已反映這些稀釋</b>（加權平均股數已包含）。<br><br>
+    <b>關鍵盲點</b>：CB公開說明書（17.1MB）已下載但未深讀——轉換價、未轉換餘額、到期日均不明。如果還有大量未轉換CB，在股價上漲時持有人會加速轉換→股本再膨脹→EPS再被稀釋。<b>最壞推估</b>：若仍有1億元CB未轉換且全數轉換，股本再增~17%→2026E EPS從15.0元降至12.8元。</div>
+  <div class="ev-s">來源：113年報股本表（524,547千元）、法說會P3（資本額5.8億）、公開說明書（未深讀=盲點）</div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--bear)">風險情報驗證卡 R4：CB 進一步稀釋</div>
+  <div class="ev-row"><span class="ev-label">嚴重度：</span><span class="ev-val">中度（EPS可能再降15-20%）</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">30-50%（CB持有人在股價上漲時有強烈轉換動機）</span></div>
+  <div class="ev-row"><span class="ev-label">預警訊號：</span><span class="ev-val">季報中「加權平均股數」突然大增（>5%）</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">40% × 10% = <b style="color:var(--bear)">-4.0%</b></span></div>
+  <div class="ev-row"><span class="ev-label">待消除：</span><span class="ev-val">需深讀CB公開說明書確認未轉換餘額——標記「尚未實作」</span></div>
+</div>
+</details>
+
+<!-- 風險5 -->
+<details>
+<summary>風險 4-5：韓國 Interojo 搶先進美國+競爭加劇</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> Interojo 年營收 USD 7,850萬（≈NT$25億），已申請 FDA</div>
+  <div class="ev-d">國際情報揭露：Interojo 是韓國最大隱形眼鏡製造商，成立2000年，出口逾60國，年營收USD 7,850萬（TTM至2025/6），2026/1提交FDA 510(k)申請。望隼2025年營收NT$34.87億——兩家在同一量級（望隼略大40%）。但Interojo的產品線更廣（含RGP、治療用鏡片等），且在OEM/ODM市場深耕更久（26年 vs 望隼14年）。<br><br>
+  <b>矛盾的事實</b>：望隼107年（2018）就取得了美國FDA證照（55%含水率美瞳），但美國營收至今僅佔0.12%。有FDA卻沒做起來，而Interojo現在才申請卻可能在1-2年內追上——代表FDA只是門票，打進美國ODM市場需要的是通路、品牌合作、和成本結構（視陽的MDSAP+馬來西亞低成本就是例子）。</div>
+  <div class="ev-s">來源：國際情報.json韓國OEM章節（KED Global報導）、113年報沿革107年（FDA取證）</div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--bear)">風險情報驗證卡 R5：韓國競爭+美國落後</div>
+  <div class="ev-row"><span class="ev-label">嚴重度：</span><span class="ev-val">輕度～中度（短期無直接營收衝擊，但長期市場機會被搶佔）</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">40-55%（Interojo已在進行中）</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">47.5% × 5% = <b style="color:var(--bear)">-2.4%</b></span></div>
+</div>
+</details>
+
+<!-- 風險6 PFAS -->
+<details>
+<summary>風險 4-6：PFAS（有機氟化物）法規風險 — 全產業潛在衝擊</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 年報第73頁原文：「歐美已著手修法來限制PFAS的應用，未來隱形眼鏡之製造將面臨更嚴峻之挑戰」</div>
+  <div class="ev-d">PFAS（全氟/多氟烷基物質）是一種軟塑膠材料，被廣泛用於隱形眼鏡的塗層中——保持表面光滑、防止細菌繁殖。越來越多科學數據顯示PFAS與癌症、胎兒併發症、肝病有關，歐美正在立法限制。<br><br>
+  <b>為什麼這很重要但被忽略？</b>這不是望隼獨有的風險，而是全產業風險——J&amp;J、Alcon、CooperVision全部會受影響。如果歐美禁止含PFAS的隱形眼鏡，所有廠商都需更換材料配方——可能是「重新洗牌」的機會（誰先開發出無PFAS配方誰就贏），也可能是成本上升的威脅。望隼年報提到這件事但沒有說自己的產品是否含PFAS，也沒有說有無開發替代材料。<br><br>
+  <b>對望隼的影響推估</b>：短期（1-2年）幾乎無影響（歐美立法需時間+過渡期）；中長期（3-5年）如果禁令實施，望隼需配方調整→研發成本增加+認證時間延長。但如果望隼提前開發無PFAS配方，反而可搶先取得新認證→競爭優勢。
+  </div>
+  <div class="ev-s">來源：113年報第73頁「安全意識抬頭改變隱形眼鏡之製材」段落</div>
+</div>
+</details>
+
+<!-- 風險7 匯率 -->
+<details>
+<summary>風險 4-7：匯率風險被低估 — 兌換利益暴跌95%</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 兌換利益：111年1,817萬(0.99%營收) → 112年僅94萬(0.04%營收)</div>
+  <div class="ev-d">收款幣別為美金+人民幣，支出主要台幣+人民幣。兌換利益從0.99%暴跌到0.04%——代表112年匯率環境對望隼不利。年報揭露望隼正在用「外銷貸款建立美元負債部位」等方式避險，代表管理層其實很在意匯率風險。<br><br>
+  <b>視陽對照</b>：視陽報告揭露「2024年匯兌損失39,208千元（佔營收1.07%），比前一年翻三倍」，且視陽收日幣。望隼收美金+人民幣——兩家都面臨匯率風險，但幣別暴險不同（視陽=日幣風險，望隼=人民幣風險）。如果人民幣大幅貶值（例：中國經濟硬著陸），望隼的中國營收轉回台幣時會縮水。<br><br>
+  <b>為什麼原報告忽略？</b>因為兌換利益94萬佔營收僅0.04%——看起來很小。但94萬不代表「匯率風險很小」，只代表「112年剛好對沖得不錯」。真正的曝險部位是中國營收15.64億（人民幣計價）——任何匯率波動都會放大。
+  </div>
+  <div class="ev-s">來源：113年報第100頁（利率/匯率風險分析表+因應措施四點）、視陽第七步Ch4 R3</div>
+</div>
+</details>
+
+<!-- 風險8 創投賣壓 -->
+<details>
+<summary>風險 4-8：三家創投合計10%持股 — 2025-2027年出場潮壓力</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 玉山(5.48%)+國泰(2.96%)+全球(1.48%)合計 ~10% — 創投有退場時間壓力</div>
+  <div class="ev-d">前十大股東中有三家創投，合計持股約10%。創投基金的運作邏輯是「投資→IPO→退場獲利」，通常在IPO後1-3年出場。望隼2024年3月上市，代表2025-2027年是創投出場的高機率時間窗口。<br><br>
+  <b>三家如果同時出場</b>：10%的持股量=約5,700萬股×192元≈10.9億市值——以望隼日均成交量估計，需要數週到數月才能消化，期間會對股價形成持續賣壓。<br><br>
+  <b>但也可能分批緩步出場</b>：如果創投以每季減持1-2%的節奏慢慢出場，對股價衝擊會小得多。關鍵觀察指標是每月的董監持股變動公告——如果玉山或國泰開始申報轉讓，就是賣壓即將到來的預警信號。
+  </div>
+  <div class="ev-s">來源：113年報第57頁前十大股東表（玉山3,150,000股+國泰1,700,000+全球853,425）</div>
+</div>
+</details>
+
+<!-- 風險總覽 -->
+<details>
+<summary>4-9. 潛在風險總覽表</summary>
+<table>
+  <tr><th>風險</th><th>嚴重度</th><th>機率</th><th>EV損失</th><th>觸發距離</th><th>可恢復？</th><th>FIAS</th></tr>
+  <tr><td style="color:var(--bear)"><b>R1 客戶流失</b></td><td style="color:var(--bear)">致命</td><td>10-25%</td><td style="color:var(--bear)"><b>-6.1%</b></td><td>有前例</td><td>部分</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>R2 中國衰退+替代</td><td>中度</td><td>25-40%</td><td style="color:var(--bear)"><b>-7.8%</b></td><td style="color:var(--bear)">已發生</td><td>消費=可/替代=不可逆</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>R3 新廠閒置</td><td>中度</td><td>20-35%</td><td style="color:var(--bear)"><b>-6.1%</b></td><td>2026-27</td><td>可（需時間）</td><td><span class="fias-i">I</span></td></tr>
+  <tr><td>R4 CB稀釋</td><td>中度</td><td>30-50%</td><td>-4.0%</td><td>進行中</td><td>不可逆</td><td><span class="fias-a">A</span></td></tr>
+  <tr><td>R5 韓國競爭</td><td>輕度</td><td>40-55%</td><td>-2.4%</td><td>進行中</td><td>可</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td style="color:var(--warn)"><b>R6 PFAS法規</b></td><td>中度</td><td>15-30%</td><td>-1.5%</td><td>中長期(3-5年)</td><td>部分（配方調整）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td>R7 匯率風險</td><td>輕度</td><td>30-50%</td><td>-1.2%</td><td>持續</td><td>可（避險工具）</td><td><span class="fias-f">F</span></td></tr>
+  <tr><td style="color:var(--warn)"><b>R8 創投賣壓</b></td><td>中度</td><td>50-70%</td><td>-3.0%</td><td>2025-2027</td><td>可逆（出清即止）</td><td><span class="fias-i">I</span></td></tr>
+</table>
+
+<div class="tip danger">
+  <b>風險合計期望損失：-32.1%</b>（原五項-26.4% + 新增三項-5.7%）
+  <p>（vs 視陽 -8.7%——望隼的風險EV是視陽的<b>近4倍</b>）<br>
+  最大單一風險仍是R2中國衰退+本土替代（-7.8%），最致命的是R1客戶流失（單一事件可衝擊EPS -23%）。新增三項中<b>R8創投賣壓</b>機率最高（50-70%，幾乎確定會發生），但影響可控（出清即止）。<b>R6 PFAS</b>機率低但一旦實施是產業級事件，長期值得追蹤。八項風險中有四項（R1+R2+R4+R8）指向同一個根源——<b>望隼的業務結構太集中+上市不久的籌碼不穩定</b>。分散化進行中但速度不夠快。</p>
+</div>
+</details>
+
+<div class="tip info">
+  <b>第四章整合結論</b>
+  <p><b>資料→觀察</b>：八項風險全部有事實支撐——丁公司-90%不是假設而是已發生事實、中國-20%是法說會揭露的真實數據、25億投資和CB稀釋都在年報/財報中清楚記載。新增的PFAS法規風險來自年報原文揭露、匯率風險來自兌換利益暴跌95%的數據、創投賣壓來自前十大股東表中三家創投合計10%。</p>
+  <p><b>觀察→推論</b>：風險EV合計-32.1%顯著高於催化劑EV合計+19.2%——淨期望值為<b>-12.9%</b>。但這不代表望隼一定會跌，而是在概率加權下，風險的數學期望大於報酬。最大的不對稱在R1（客戶流失）：機率雖低（10-25%），但一旦發生衝擊巨大（-30~40%）。新增風險中R8創投賣壓幾乎確定會發生（50-70%），但影響可控。</p>
+  <p><b>推論→結論</b>：以目前192元的價位，風險報酬比不利——需要更大的安全邊際才能補償這些風險。與視陽對比更明顯：視陽風險EV -8.7%（可管理）、望隼-32.1%（需極度謹慎）。差異主要來自望隼的客戶/地區/資本三重集中+上市不久的籌碼不穩定。<span class="fias-i">I</span></p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第五章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">五、隱藏優勢挖掘與求證 — 市場錯過了什麼？</summary>
+<div class="section-sub">4 項隱藏優勢 + 視陽對照 + 總覽表</div>
+
+<details>
+<summary>隱藏優勢 5-1：三明治美瞳 90% 良率的真正技術意義</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 從19%到90%：這個數字的含金量</div>
+  <div class="ev-d">數位時代專訪記載望隼花了數年將三明治美瞳良率從19%提升至90%。三明治技術是將色素層夾在兩層鏡片材料中間——色素不接觸眼球，比傳統印刷式更安全。年報第73頁揭露：「本公司掌握美瞳關鍵核心技術，致力追求美瞳圖案設計及移印工藝的領先，專注於實現客戶多樣性之需求，客製符合客戶品牌形象之美瞳圖紋多層式與非對稱式圖紋設計。」<br><br>
+  <b>白話說</b>：良率90%意味著每10片生產9片合格——在三明治這種高難度製程下，這是非常高的數字。韓國GEO Medical和Interojo也有類似產品，但良率數字沒有公開紀錄。望隼106年取得「彩色隱形眼鏡及其制法」台灣專利，提供法律保護。<b>市場為什麼低估？</b>因為望隼是「ODM」，投資人傾向把ODM當「低技術代工」看待，但三明治美瞳的技術含量遠高於一般代工。</div>
+  <div class="ev-s">來源：數位時代專訪（良率19%→90%）、113年報第73頁（美瞳核心技術描述）、沿革106年（專利取得）</div>
+</div>
+</details>
+
+<details>
+<summary>隱藏優勢 5-2：近視防控產品（CAGR 16.8%的隱藏賽道）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 年報明確宣告產品成熟、全球市場CAGR 16.8%</div>
+  <div class="ev-d">113年報第7頁：「散光、漸進多焦(老花)、近視防控之開發上，<b>已至產品成熟、具成本優勢之進程上</b>，將成為未來營運成長之新動能。」國際情報：全球近視管理隱形眼鏡市場2025年USD 4.55億→2035年USD 69.9億（CAGR 16.8%），亞太佔88.3%營收。<br><br>
+  Q3法說會功能型佔比從2%暴增至17%——部分可能就是近視防控產品開始出貨。但年報和法說會都沒有獨立揭露近視防控的營收數字，與散光/多焦混在「功能型」類別中。<b>市場為什麼沒看到？</b>因為法說會的分類把近視防控藏在「功能型17%」裡面——投資人看到的是「功能型17%」，不知道其中有多少是近視防控。</div>
+  <div class="ev-s">來源：113年報第7頁（產品成熟聲明）、國際情報.json近視大流行章節（PubMed/WHO/BMJ/Lancet）、Q3法說會P7</div>
+</div>
+</details>
+
+<details>
+<summary>隱藏優勢 5-3：中國本土品牌崛起 = 望隼的結構性機會</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 年報第8頁的關鍵一句話</div>
+  <div class="ev-d">「由於中國本土具備質量能力的隱形眼鏡製造廠屈指可數，品牌商大多倚賴台廠代工，使代工廠商具有高度的成長潛力。」這句話點出了望隼在中國市場的結構性機會——不是跟國際四大品牌競爭，而是服務那些正在取代國際品牌的中國本土品牌。<b>但蝴蝶效應分析提示</b>：重慶彩片產業聚落正在崛起，中國本土ODM能力在提升——這個結構性機會的窗口可能只有2-3年。</div>
+  <div class="ev-s">來源：113年報第8頁「中國本土品牌倚賴台廠代工」</div>
+</div>
+</details>
+
+<details>
+<summary>隱藏優勢 5-4：六國認證的累積壁壘（台/歐/日/中/美/澳）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 14年認證時間軸：從零到六國的超前佈署</div>
+  <div class="ev-d">年報沿革記載的認證取得時間軸：101年ISO 13485 → 102年歐盟CE+日本厚生省 → 104年中國NMPA → 107年美國FDA → 108年歐盟CE（55%新品）+中國日拋+美國運動型。每取得一個國家的認證平均需要1-3年+數百萬費用。望隼14年間累積了6國認證——新進入者要複製這些需要至少5-8年。<br><br>
+  <b>但視陽有MDSAP——一次認證滿足5國。</b>這是比逐國認證更高效的路徑。望隼如果也取得MDSAP，可以加速新市場進入。目前年報未提及MDSAP計畫。</div>
+  <div class="ev-s">來源：113年報沿革101-108年（各國認證取得記錄）、視陽報告Ch5「MDSAP台灣首家」</div>
+</div>
+</details>
+
+<details>
+<summary>隱藏優勢 5-5：供應鏈安全度高 — 進貨高度分散</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 「無單一供應商超過11%」+「建立多家供應商」— 供應鏈風險比預期更低</div>
+  <div class="ev-d">年報第103頁明確記載：「本公司及子公司112年度並無單一供應商之進貨金額占合併進貨淨額比重超過11%」「會依各供應商之品質、價格、交期及配合度建立多家以上之原物料供應商」。主要進貨項目為化學原料（HEMA等）、鋁箔、包材、PP料及PP杯——全部是標準化工品，供應商眾多。<br><br>
+  <b>白話說</b>：望隼的供應鏈風險比先前推論的更低——不只是「原物料標準化」，而是積極多元化供應商。相比銷貨端的高度集中（甲公司23%），進貨端的分散度是一個正面的不對稱——即使單一供應商斷貨，也不會影響整體生產。
+  </div>
+  <div class="ev-s">來源：113年報第103頁「進貨集中風險」</div>
+</div>
+</details>
+
+<details>
+<summary>隱藏優勢 5-6：替代品威脅極低 — 年報法律聲明佐證</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 「短期內並無可取代之革命性技術與產品」— 年報原文</div>
+  <div class="ev-d">年報第102頁原文：「替代產品主要有侵入式醫療手術（例如：雷射手術或植入式隱形眼鏡），然因手術本身即有風險、適應期與可能後遺症，加上不可回復性與非一次解決視力問題之缺點⋯一般視力障礙患者接受程度並不高；另一為傳統鏡框式眼鏡⋯僅能維持一定的市場佔有率，對隱形眼鏡尚不具威脅。」<br><br>
+  <b>這段值得引用的原因</b>：它直接佐證了五力分析中「替代品威脅=低」的判斷，而且是公司自己的法律聲明——年報在法律上有責任誠實揭露風險，如果管理層認為替代品風險高，他們必須揭露。他們沒有，代表至少管理層自己不認為短期有替代品威脅。這讓「替代品威脅=低」從推論升級為年報佐證的事實。
+  </div>
+  <div class="ev-s">來源：113年報第102頁「科技改變及產業變化對公司財務業務之影響」</div>
+</div>
+</details>
+
+<table>
+  <tr><th>隱藏優勢</th><th>被忽略原因</th><th>潛在利益</th><th>實現機率</th><th>Price-in</th></tr>
+  <tr><td>三明治90%良率</td><td>ODM被低估技術含量</td><td style="color:var(--bull)">重大（護城河核心）</td><td>高（已實現）</td><td>~30%</td></tr>
+  <tr><td>近視防控</td><td>藏在功能型17%裡</td><td style="color:var(--bull)">重大（CAGR 16.8%）</td><td>中（量產中但未獨立揭露）</td><td>~10%</td></tr>
+  <tr><td>中國本土品牌</td><td>市場只看到-9%衰退</td><td>中度（結構性但有時間窗口）</td><td>中（蝴蝶效應：中國本土ODM崛起中）</td><td>~15%</td></tr>
+  <tr><td>六國認證</td><td>被視為基本門檻</td><td>中度（進入障礙）</td><td>高（已取得）</td><td>~40%</td></tr>
+  <tr><td style="color:var(--bull)"><b>進貨高度分散</b></td><td>報告前段未提及年報數據</td><td>正面（供應鏈韌性）</td><td>高（已實現）</td><td>~60%</td></tr>
+  <tr><td style="color:var(--bull)"><b>替代品威脅低</b></td><td>年報法律聲明未被引用</td><td>正面（需求結構穩定）</td><td>高（年報佐證）</td><td>~70%</td></tr>
+</table>
+
+<div class="tip good">
+  <b>第五章整合結論</b>
+  <p>四項隱藏優勢中，三明治技術和六國認證是「已實現但被低估」的存量優勢，近視防控和中國本土品牌是「正在兌現但有時間窗口」的流量機會。與視陽對比，望隼的技術優勢（三明治）比視陽更獨特，但視陽的制度優勢（MDSAP+馬來西亞）比望隼更系統化。兩家的護城河來源不同——望隼靠「技術差異化」，視陽靠「制度效率」。</p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第六章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">六、六步分析關鍵決策因素彙整</summary>
+<div class="section-sub">Bull vs Bear 對照 + ACH + 評審團共識/分歧 + 策略長仲裁</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t" style="color:var(--bull)">買進因素（Bull Case）— 6 項</div>
+  <div class="ev-d">
+    1. 營收 CAGR 28%、2026初加速至+43%，且多引擎正在啟動 <span class="fias-f">F</span><br>
+    2. 矽水膠2026日本出貨→毛利率+2-3pp的結構性提升 <span class="fias-i">I</span><br>
+    3. 功能型鏡片從2%爆發至17%——已在發生的第三引擎 <span class="fias-f">F</span><br>
+    4. 竹南新廠→產能3倍化，解除營收天花板 <span class="fias-f">F</span><br>
+    5. PE 15x為同業最低但成長率最高——估值存在修正空間 <span class="fias-f">F</span><br>
+    6. 管理層誠信85分、承諾零落空率、董監零質押 <span class="fias-f">F</span>
+  </div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bear)">
+  <div class="ev-t" style="color:var(--bear)">風險因素（Bear Case）— 7 項</div>
+  <div class="ev-d">
+    1. 前2大客戶佔44%+丁公司-90%前例=致命級集中風險 <span class="fias-f">F</span><br>
+    2. 中國佔47%+Q1曾-20%+本土ODM崛起=結構性威脅 <span class="fias-f">F</span><br>
+    3. FCF -4.35億、負債比53%、浮動利率債15.2億 <span class="fias-f">F</span><br>
+    4. CB稀釋未知——股本已+10.6%，未轉換餘額不明 <span class="fias-a">A</span><br>
+    5. 韓國Interojo搶先FDA+規模接近+歷史更久 <span class="fias-f">F</span><br>
+    6. 矽水膠已延遲一次（年報承諾2025→實際2026）<span class="fias-f">F</span><br>
+    7. 風險EV -32.1%（8項，含PFAS/匯率/創投賣壓） > 催化劑EV +19.2% = 淨期望值-12.9% <span class="fias-i">I</span>
+  </div>
+</div>
+
+<div class="ev">
+  <div class="ev-t">ACH 假說信心分配（第四次校準後最終版）</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>假說</th><th>機率</th><th>情境</th></tr>
+      <tr><td style="color:var(--bull)"><b>H2 穩健成長</b></td><td style="color:var(--bull)"><b>44%</b></td><td>營收+15-20%、毛利41-42%、PE 15x合理</td></tr>
+      <tr><td>H1 高速成長</td><td>20%</td><td>矽水膠+功能型雙引擎爆發、EPS 18+</td></tr>
+      <tr><td style="color:var(--bear)">H4 中國風險</td><td>17%</td><td>中國持續衰退+本土替代加速</td></tr>
+      <tr><td>H5 矽水膠延遲</td><td>11%</td><td>日本出貨再延遲、佔比停滯</td></tr>
+      <tr><td>H3 成長陷阱</td><td>8%</td><td>客戶流失+中國崩潰複合衝擊</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="tip warn">
+  <b>策略長仲裁結論</b>
+  <p><b>買方論點</b>：「成長快+估值低+催化劑明確+管理層可信」→ 邏輯成立，但需要矽水膠+功能型至少一個成功兌現。<br>
+  <b>等待方論點</b>：「安全邊際不足+客戶風險無支撐+中國惡化中+風險EV大於催化劑」→ 同樣有力，且更多事實支撐。<br>
+  <b>仲裁</b>：不追高。加權目標價215元（+15%含息），表面看報酬不錯，但風險調整後淨期望值為-12.9%（8項風險EV -32.1% > 催化劑EV +19.2%），不足以補償客戶流失的尾部風險（-30~40%）。等更好的進場點——166元（安全邊際20%）或等矽水膠佔比突破5%（催化劑確認）。</p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第七章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">七、風險清單與壓力測試</summary>
+<div class="section-sub">致命因子排序 + 事前驗屍法 + 盲點清單</div>
+
+<details>
+<summary>致命因子排序（EPS衝擊 × 可控性）</summary>
+<table>
+  <tr><th>排名</th><th>風險</th><th>EPS衝擊</th><th>可控？</th><th>EV損失</th></tr>
+  <tr><td style="color:var(--bear)"><b>1</b></td><td>R1 客戶流失</td><td>-23%</td><td>低（客戶決定轉單我們無法控制）</td><td>-6.1%</td></tr>
+  <tr><td><b>2</b></td><td>R2 中國衰退+替代</td><td>-12~18%</td><td>中（可分散市場但需要時間）</td><td>-7.8%</td></tr>
+  <tr><td><b>3</b></td><td>R3 新廠閒置</td><td>-20~25%</td><td>中（取決於訂單成長速度）</td><td>-6.1%</td></tr>
+  <tr><td>4</td><td>R4 CB稀釋</td><td>-15~20%</td><td>低（CB持有人決定轉換）</td><td>-4.0%</td></tr>
+  <tr><td>5</td><td>R5 韓國競爭</td><td>-5%</td><td>中（可靠技術差異化應對）</td><td>-2.4%</td></tr>
+</table>
+</details>
+
+<details>
+<summary>EPS 敏感度（基準：2026E EPS 15.0元）</summary>
+<table>
+  <tr><th>情境</th><th>EPS變化</th><th>新EPS</th></tr>
+  <tr><td>甲客戶流失（-23%營收）</td><td style="color:var(--bear)">-3.5元</td><td>11.5</td></tr>
+  <tr><td>中國殺價（毛利率降3pp）</td><td style="color:var(--bear)">-1.8元</td><td>13.2</td></tr>
+  <tr><td>矽水膠爆發（佔比10%，毛利率+3pp）</td><td style="color:var(--bull)">+1.8元</td><td>16.8</td></tr>
+  <tr><td>新廠延遲（營收成長僅+8%）</td><td style="color:var(--bear)">-1.4元</td><td>13.6</td></tr>
+  <tr><td>CB大量轉換（股本+15%）</td><td style="color:var(--bear)">-2.0元</td><td>13.0</td></tr>
+  <tr style="background:rgba(198,40,40,.08)"><td><b>最差組合</b>（客戶流失+中國殺價+CB轉換）</td><td style="color:var(--bear)"><b>-7.3元</b></td><td style="color:var(--bear)"><b>7.7</b></td></tr>
+  <tr style="background:rgba(46,125,50,.08)"><td><b>最佳組合</b>（矽水膠爆發+營收+25%+功能型持續）</td><td style="color:var(--bull)"><b>+4.5元</b></td><td style="color:var(--bull)"><b>19.5</b></td></tr>
+</table>
+<p style="font-size:.85em;margin-top:6px"><b>EPS區間：最差 7.7 元 ↔ 基準 15.0 元 ↔ 最佳 19.5 元</b>。下行幅度（-49%）大於上行（+30%），風險報酬不對稱。</p>
+</details>
+
+<details>
+<summary>資料盲點清單</summary>
+<table>
+  <tr><th>盲點</th><th>影響</th><th>信心降級</th><th>可消除？</th></tr>
+  <tr><td>前五大客戶真實身分</td><td>無法評估黏著度和轉單風險</td><td>-10%</td><td>否（年報保密）</td></tr>
+  <tr><td>CB未轉換餘額/轉換價</td><td>無法精確估算稀釋幅度</td><td>-5%</td><td>是（深讀公開說明書）</td></tr>
+  <tr><td>矽水膠實際良率與成本</td><td>無法估算毛利率溢價</td><td>-5%</td><td>否（商業機密）</td></tr>
+  <tr><td>江蘇廠獨立財務</td><td>無法拆分中國獲利貢獻</td><td>-5%</td><td>部分（合併報表有子公司資訊）</td></tr>
+  <tr><td>竹南新廠月度進度</td><td>無法判斷完工時間精確度</td><td>-3%</td><td>是（下次法說會追蹤）</td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+  <b>風險合計期望損失：-32.1%（含8張風險卡，新增PFAS/匯率/創投賣壓）</b>
+  <p>vs 催化劑合計期望收益 +19.2%<br>
+  <b>淨期望值 = +19.2% - 32.1% = -12.9%</b>（負值）<br>
+  含股息修正：-12.9% + 3.08% = <b>-9.8%</b>（仍為負）<br>
+  <b>白話說：以概率加權的角度，192元買入望隼的預期報酬是負的</b>——風險的數學期望大於報酬。要讓淨期望值轉正，需要股價降至~155元以下（安全邊際約19%），或等催化劑確認後風險EV下降。</p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第八章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">八、監控儀表板 — 哪些燈號要盯著看？</summary>
+<div class="section-sub">10 指標燈號 + 關鍵時間節點</div>
+
+<table>
+  <tr><th>指標</th><th>目前值</th><th style="color:var(--bull)">綠燈</th><th style="color:var(--warn)">黃燈</th><th style="color:var(--bear)">紅燈</th><th>頻率</th></tr>
+  <tr><td>月營收 YoY</td><td style="color:var(--bull)">+43.4%</td><td>>20%</td><td>5-20%</td><td><5% 連3月</td><td>每月10日</td></tr>
+  <tr><td>矽水膠佔比</td><td>1%</td><td>>5%</td><td>2-5%</td><td>2026H2仍<2%</td><td>每季法說會</td></tr>
+  <tr><td>功能型佔比</td><td style="color:var(--bull)">17%</td><td>>20%</td><td>15-20%</td><td><10%回落</td><td>每季法說會</td></tr>
+  <tr><td>中國營收佔比</td><td style="color:var(--warn)">47%</td><td><40%</td><td>40-50%</td><td>>55%回升</td><td>每季法說會</td></tr>
+  <tr><td>中國 YoY</td><td style="color:var(--bear)">-9%</td><td>>0%轉正</td><td>-10~0%</td><td><-10%再惡化</td><td>每季法說會</td></tr>
+  <tr><td>毛利率</td><td style="color:var(--bull)">41%</td><td>>43%</td><td>38-43%</td><td><38% 連2季</td><td>每季</td></tr>
+  <tr><td>前1大客戶佔比</td><td style="color:var(--warn)">23%</td><td><20%</td><td>20-30%</td><td>>30% 或驟降</td><td>每年年報</td></tr>
+  <tr><td>竹南新廠</td><td>建設中</td><td>如期完工</td><td>延遲<6月</td><td>延遲>6月</td><td>每季法說會</td></tr>
+  <tr><td>加權平均股數</td><td>待確認</td><td>穩定</td><td>季增<5%</td><td>季增>5%（CB大量轉換）</td><td>每季報</td></tr>
+  <tr><td>外資持股動態</td><td>震盪偏多</td><td>連續3週淨買</td><td>進出不定</td><td>連續3週淨賣</td><td>每週</td></tr>
+</table>
+
+<div class="timeline" style="margin-top:16px">
+  <div class="tl-item milestone">
+    <div class="tl-date">2026/4月 — 3月營收公布</div>
+    <div class="tl-text">觀察YoY是否維持>20%。若回落至<10%→營收加速趨勢可能中斷。</div>
+  </div>
+  <div class="tl-item milestone">
+    <div class="tl-date">2026/5月 — Q1法說會（推估）</div>
+    <div class="tl-text"><b>最關鍵觀察窗口</b>：矽水膠出貨進度+功能型佔比是否維持+竹南新廠時程更新+中國Q1趨勢。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026/6-7月 — 竹南新廠完工驗收</div>
+    <div class="tl-text">若如期完工→C2催化劑確認。若延遲→路徑C機率上升。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026/8月 — Q2法說會+半年報</div>
+    <div class="tl-text">矽水膠佔比首次完整揭露（目標>2%）+新廠初始稼動率+CB轉換狀態+中國H1趨勢。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026/11月 — Q3法說會</div>
+    <div class="tl-text">新廠產能爬坡進度+矽水膠佔比是否突破5%門檻（H1→H2升級觸發點）。</div>
+  </div>
+  <div class="tl-item warning">
+    <div class="tl-date">2027/4月 — 113年報公布</div>
+    <div class="tl-text">首次揭露2026全年客戶集中度變化（甲乙丙丁公司最新佔比）+CB轉換完整記錄。</div>
+  </div>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第九章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">九、推衍預測 — 接下來可能怎麼走？</summary>
+<div class="section-sub">三場法說會承諾追蹤 + 短中長期推衍鏈 + 5 路徑概率</div>
+
+<details>
+<summary>9-1. 管理層承諾追蹤（三場法說會交叉驗證）</summary>
+<table>
+  <tr><th>場次</th><th>管理層承諾</th><th>後續驗證</th><th>結果</th></tr>
+  <tr><td rowspan="3">Q1<br>2025/5</td><td>中國推矽水膠+半年拋美瞳</td><td>Q3矽水膠佔比仍1%，中國未見放量</td><td style="color:var(--warn)">⚠️ 延遲</td></tr>
+  <tr><td>日本差異化（散光/二代濾藍光）</td><td>Q3功能型佔比17%（含散光/濾藍光）</td><td style="color:var(--bull)">✅ 兌現</td></tr>
+  <tr><td>月產能>5,700萬片</td><td>Q3確認已達5,700萬片</td><td style="color:var(--bull)">✅ 兌現</td></tr>
+  <tr><td rowspan="3">Q2<br>2025/8</td><td>中國短鏈供應+新客戶美瞳</td><td>中國佔比從41%回升至47%</td><td style="color:var(--bull)">✅ 兌現</td></tr>
+  <tr><td>日本差異化擴大市佔</td><td>日本YoY +53%→+43%持續高成長</td><td style="color:var(--bull)">✅ 兌現</td></tr>
+  <tr><td>美歐矽水膠耕耘</td><td>美國YoY+43%但佔比仍<1%</td><td style="color:var(--warn)">⚠️ 進行中</td></tr>
+  <tr><td rowspan="3">Q3<br>2025/11</td><td>矽水膠日本2026出貨</td><td>待2026驗證</td><td style="color:var(--warn)">⚠️ 進行中</td></tr>
+  <tr><td>第四季大幅成長</td><td>12月營收3.08億、2月3.68億（+43%）</td><td style="color:var(--bull)">✅ 兌現</td></tr>
+  <tr><td>竹南新總部2026完工</td><td>待2026驗證</td><td style="color:var(--warn)">⚠️ 進行中</td></tr>
+</table>
+<p style="margin-top:8px"><b>統計：5/9兌現 + 4/9進行中 + 0/9落空。零落空率維持管理層誠信度85分。</b></p>
+<p style="font-size:.85em;color:var(--txt3)">特別注意：Q1承諾「中國推矽水膠」到Q3仍未見成效（佔比維持1%），但不算落空——管理層在Q3更新時程為「2026日本出貨」，等於主動修正承諾而非隱瞞延遲。</p>
+</details>
+
+<details>
+<summary>9-2. 短期推衍（2026/4-6，1-3個月）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 營收動能持續但股價可能區間震盪</div>
+  <div class="ev-d">3月營收3.15億（YoY+21%）仍正成長但從2月的+43%放緩。短期股價在180-200區間消化前波急漲（170→196）的獲利賣壓。外資3月中旬大進大出（+15萬→-10萬）屬短線交易，投信零持股代表缺乏穩定機構買盤。<b>推衍</b>：除非4月營收再次超預期（>+30%），否則股價在5月法說會前維持震盪整理。</div>
+</div>
+</details>
+
+<details>
+<summary>9-3. 中期推衍（2026/7-9，3-6個月）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 2026Q2是關鍵分岔點——三件事同時明朗化</div>
+  <div class="ev-d">
+    <b>事件A</b>：矽水膠日本是否如期出貨（Q2法說會揭露佔比）<br>
+    <b>事件B</b>：竹南新廠是否完工驗收（重大訊息公告）<br>
+    <b>事件C</b>：中國市場是否止跌回穩（Q2地區營收數據）<br><br>
+    三件事的組合決定路徑：<br>
+    ABC全正面（機率~20%）→ 路徑A：股價250+<br>
+    AB正面C中性（機率~30%）→ 路徑B：股價220-250<br>
+    A延遲+BC中性（機率~25%）→ 路徑C/D：股價170-200<br>
+    A延遲+C惡化（機率~15%）→ 路徑D：股價150-170<br>
+    客戶流失突發（機率~10%）→ 路徑E：股價100-130
+  </div>
+</div>
+</details>
+
+<details>
+<summary>9-4. 長期推衍（2026/10-2027/3，6-12個月）</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 五路徑概率決策樹</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>路徑</th><th>機率</th><th>條件</th><th>2027E EPS</th><th>目標價</th></tr>
+      <tr style="background:rgba(46,125,50,.06)"><td style="color:var(--bull)"><b>A. 多引擎爆發</b></td><td>20%</td><td>矽水膠>10%+功能型>20%+新廠70%稼動</td><td>18-20元</td><td style="color:var(--bull)"><b>320-360</b></td></tr>
+      <tr><td><b>B. 穩健成長</b></td><td style="color:var(--accent)"><b>35%</b></td><td>矽水膠3-5%+營收+18%+中國持平</td><td>15-17元</td><td><b>225-255</b></td></tr>
+      <tr><td>C. 矽水膠延遲</td><td>20%</td><td>佔比仍<2%+成長放緩至+10%</td><td>12-14元</td><td>156-182</td></tr>
+      <tr><td style="color:var(--bear)">D. 中國惡化</td><td>15%</td><td>中國YoY -20%+殺價擴大+本土替代</td><td>10-12元</td><td style="color:var(--bear)">120-144</td></tr>
+      <tr><td style="color:var(--bear)">E. 客戶流失</td><td>10%</td><td>甲公司轉單+新廠閒置</td><td>7-9元</td><td style="color:var(--bear)">84-108</td></tr>
+    </table>
+    <b>加權目標價</b>：A(20%)×340 + B(35%)×240 + C(20%)×169 + D(15%)×132 + E(10%)×96 = 68+84+33.8+19.8+9.6 = <b>~215元</b>（vs 現價192，+12%）<br>
+    <b>含股息</b>：+12% + 3.08% = <b>+15%</b>
+  </div>
+</div>
+</details>
+
+<div class="tip info">
+  <b>第九章整合結論</b>
+  <p>加權12個月目標價215元（+15%含息），但分布不對稱——路徑D+E的下行（-31~-44%）遠大於路徑A的上行（+77%）。管理層承諾追蹤顯示零落空率（可信），但矽水膠出貨已延遲一次且尚未兌現。<b>建議在2026Q2法說會（預計5月）後再做投資決策</b>——屆時矽水膠/新廠/中國三個變數都會有新資訊。</p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第十章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">十、股價合理性分析 — 目前股價貴不貴？</summary>
+<div class="section-sub">五種估值法全展開 + 視陽對照 + 安全邊際</div>
+
+<details>
+<summary>方法一：前瞻本益比法</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 用已驗證EPS為錨點</div>
+  <div class="ev-d">
+    2025已實現EPS 12.71元 × 歷史平均PE 14.5x = <b>184元</b>（偏低）<br>
+    2026E EPS 15.0元（H2基準）× PE 15x = <b>225元</b><br>
+    2026E EPS 15.0元 × PE 18x（若矽水膠兌現）= <b>270元</b><br>
+    <b>視陽對照</b>：視陽PE ~15x，EPS ~13.91元 → 股價~209元（實際210）。望隼PE 15x × EPS 12.71 = 191元 ≈ 現價192——<b>市場目前給望隼和視陽相同的PE，合理。</b>
+  </div>
+</div>
+</details>
+
+<details>
+<summary>方法二：股價淨值比法</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> PBR 歷史參考</div>
+  <div class="ev-d">113年報每股淨值34.07元（112年底），推估2025年底每股淨值~65元（考慮盈餘保留+CB轉換）。PBR = 192/65 = <b>2.95x</b>。同業：晶碩PBR ~2.3x、視陽PBR ~3.2x。望隼PBR介於兩者之間，合理。</div>
+</div>
+</details>
+
+<details>
+<summary>方法三：分部估值法</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 依產品線分開估值</div>
+  <div class="ev-d">
+    美瞳（46%營收 ~16億）× 淨利率25% × PE 16x ÷ 5,800萬股 = 每股 <b>111元</b><br>
+    透片（36%營收 ~12.6億）× 淨利率20% × PE 12x ÷ 5,800萬股 = 每股 <b>52元</b><br>
+    功能型（17%營收 ~5.9億）× 淨利率28% × PE 18x ÷ 5,800萬股 = 每股 <b>51元</b><br>
+    矽水膠（1%營收 ~0.35億）× 淨利率30% × PE 25x ÷ 5,800萬股 = 每股 <b>5元</b><br>
+    <b>合計：~219元</b>（矽水膠佔比太低，目前貢獻微乎其微）<br>
+    若矽水膠升至10%：矽水膠貢獻從5元→46元，合計~260元
+  </div>
+</div>
+</details>
+
+<details>
+<summary>方法四：隱含預期反推法</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 市場用什麼假設在定價192元？</div>
+  <div class="ev-d">
+    192元 = EPS × PE → 192 / 15x = 12.8元隱含EPS<br>
+    12.8元 vs 2025已實現12.71元 → 市場隱含<b>僅1%成長</b><br>
+    <b>白話說</b>：市場目前的定價幾乎沒有反映2026年的任何成長預期。要達到這個隱含EPS 12.8元的條件：<br>
+    (1) 營收成長 ~1%（機率極低，2026/2已+43%）<br>
+    (2) 或毛利率下降3pp至38%（機率中等，若中國殺價擴大）<br>
+    (3) 或CB大量轉換稀釋EPS ~15%（機率中等）<br>
+    聯合機率：三個條件至少一個成立 = 1 - (0.9 × 0.65 × 0.55) = <b>67.8%</b><br>
+    <b>反向解讀</b>：市場有67.8%的機率認為「至少有一個負面因素會拖累EPS」——這不算過度悲觀，而是合理的風險定價。
+  </div>
+</div>
+</details>
+
+<details>
+<summary>方法五：同業比較法</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 台灣隱形眼鏡四雄估值對照</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>公司</th><th>PE(TTM)</th><th>EPS成長率</th><th>PEG</th><th>毛利率</th><th>風險EV</th></tr>
+      <tr><td>晶碩(6491)</td><td>~15x</td><td>-11%</td><td>負值</td><td>52%</td><td>—</td></tr>
+      <tr><td>視陽(6782)</td><td>~15x</td><td>+18%</td><td>0.83</td><td>45%</td><td>-8.7%</td></tr>
+      <tr><td>精華(1565)</td><td>~28x</td><td>—</td><td>—</td><td>25%</td><td>—</td></tr>
+      <tr><td style="color:var(--accent)"><b>望隼(4771)</b></td><td><b>15.1x</b></td><td><b>+16%</b></td><td><b>0.94</b></td><td><b>41%</b></td><td style="color:var(--bear)"><b>-32.1%</b></td></tr>
+    </table>
+    望隼PEG 0.94接近合理（PEG=1為公允），但風險EV -32.1%是視陽的近4倍（含PFAS法規、匯率風險、創投賣壓三項新增風險）。如果用風險調整後的PEG（考慮風險EV），望隼應該享有比視陽更低的PE，而非相同。
+  </div>
+</div>
+</details>
+
+<div class="tip warn">
+  <b>五法交叉結論：合理區間 195-225 元，現價 192 偏下緣</b>
+  <p>
+    方法一（前瞻PE）：225元<br>
+    方法二（PBR）：~192元（市價=合理）<br>
+    方法三（分部）：219元<br>
+    方法四（隱含反推）：市場隱含僅1%成長，偏保守但不離譜<br>
+    方法五（同業）：PE合理但風險調整後應折價<br><br>
+    <b>加權合理價：~208元</b>（vs 現價192，+8.3%）<br>
+    <b>安全邊際買入價：208 × 0.8 = 166元</b><br>
+    <b>含股息年化報酬：+8.3% + 3.08% = +11.4%</b>（不考慮風險EV）<br>
+    <b>風險調整後報酬：+11.4% - 12.9%（淨負EV，全局審閱後8項風險）= -1.5%</b>（低於無風險利率，風險報酬比不利）
+  </p>
+</div>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第十二章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">十二、貓膩探索與求證 — 這故事太完美了嗎？</summary>
+<div class="section-sub">敘事解剖 + 歷史前科 + 巧合偵測 + 反轉假說 + 利益追蹤 + 總評</div>
+
+<details>
+<summary>12-1. 敘事解剖</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 市場敘事：「鴻海系創業+三明治美瞳突破+日本爆發+矽水膠升級+新廠三倍化」</div>
+  <div class="ev-d">
+    <b>故事受益者</b>：(1)管理層黃修權/石安——IPO+CB募資完成，個人持股價值大增 (2)大股東長華電材——股價連動 (3)承銷券商——有題材推薦 (4)分析師——有成長故事可以寫。<br>
+    <b>利益衝突檢查</b>：管理層在上市初期有動機維持「成長故事」的敘事力——因為CB轉換價通常與股價掛鉤，股價越高CB持有人越願意轉換→公司不需要還債→財務壓力減輕。這不代表管理層在造假，但代表他們有動機把好消息放大、壞消息淡化。
+  </div>
+</div>
+</details>
+
+<details>
+<summary>12-2. 歷史前科</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 望隼本身無前科；大股東長華電材有訴訟</div>
+  <div class="ev-d">
+    <b>望隼</b>：無重大法律糾紛。晶碩曾於2024/12提起專利訴訟，已於2025/9自行撤回。<br>
+    <b>長華電材</b>（大股東）：112年報揭露頎邦科技於105年對長華電材提起營業秘密訴訟，求償NT$17.65億，截至年報刊印日尚未判決確定。長華電材管理層評估「尚無重大不利影響」。<b>為什麼要注意？</b>長華電材是望隼的董事公司（代表人黃嘉能、吳聲濤），如果訴訟結果不利（雖然已拖了8年），可能影響長華電材對望隼的支持力度。
+  </div>
+  <div class="ev-s">來源：113年報（晶碩專利訴訟）、112年報（長華電材頎邦訴訟NT$17.65億，尚繫屬中）</div>
+</div>
+</details>
+
+<details>
+<summary>12-3. 巧合偵測——時間序太完美？</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 上市→CB→營收創高→矽水膠→新廠：時間序分析</div>
+  <div class="ev-d">
+    112/12 核准上市 → 113/3 掛牌 → 113年 密集發行3次CB → 113年營收30億+17% → 114年矽水膠「即將出貨」→ 115年新廠「即將完工」<br><br>
+    <b>合理解釋</b>：上市→CB是為了募集25億建廠資金（年報明確記載），營收成長是ODM業務的自然結果，矽水膠是6年研發的產出——每一步都有獨立的商業邏輯。<br>
+    <b>需要警惕的</b>：CB發行在上市後密集進行，代表管理層在股價最高、市場最熱的窗口期大量舉債——這是聰明的財務操作，但如果新廠投資回報不如預期，這些債務就成了包袱。104年「減資彌補虧損1.55億」的歷史提醒我們：這個管理團隊曾經創業失敗差點倒閉——他們對風險應該有深刻理解，但也代表他們可能更傾向「搏大」而非「穩守」。<br><br>
+    <b>另一個巧合</b>：年報用「無單一集團超過23%」作為銷貨集中風險門檻，而甲公司佔比剛好就是23%——踩在自己定義的線上。通常企業用20%或25%作為門檻，望隼用23%是否為了讓甲公司剛好不超標？<b>這不是證據</b>，只是值得追蹤的巧合——如果下一期年報門檻悄悄上調，就更可疑了。（詳見第四章 R1）
+  </div>
+</div>
+</details>
+
+<details>
+<summary>12-4. 利益追蹤 — 內部人完整交易明細</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 內部人行為一致性檢查 — 完整股權移轉明細</div>
+  <div class="ev-d">
+    <b>董監質押</b>：0%（全部無，包含董事長+總經理+長華電材代表+3位獨立董事）<span class="fias-f">F</span><br><br>
+    <b>年報第52頁完整股權移轉明細（112年度+113年Q1）</b>：
+    <table>
+      <tr><th>職稱</th><th>姓名</th><th>112年增減</th><th>113年Q1增減</th><th>質押</th><th>判讀</th></tr>
+      <tr><td>董事長</td><td>黃修權</td><td>0</td><td style="color:var(--bear)">-100,000</td><td>0</td><td>小量減持（佔總持股3.5%）</td></tr>
+      <tr><td>大股東</td><td>長華電材</td><td>0</td><td style="color:var(--bear)">-100,000</td><td>0</td><td>小量減持（佔持股1.2%）</td></tr>
+      <tr><td>總經理</td><td>石安</td><td style="color:var(--bull)">+60,000</td><td style="color:var(--bull)">+5,000</td><td>0</td><td style="color:var(--bull)">持續小量增持（正面）</td></tr>
+      <tr><td>副總經理</td><td>尚瑞峯</td><td>0</td><td>+2,000</td><td>0</td><td>增持</td></tr>
+      <tr><td>財務長</td><td>李幸娟</td><td style="color:var(--bull)">+36,000</td><td>+2,000</td><td>0</td><td style="color:var(--bull)"><b>財務長大量增持（強正面信號）</b></td></tr>
+      <tr><td>C專案協理</td><td>范揚斌</td><td>+2,000</td><td>0</td><td>0</td><td>小量增持</td></tr>
+      <tr><td>C專案協理</td><td>張嘉華</td><td>0</td><td>+8,000</td><td>0</td><td>增持</td></tr>
+      <tr><td>資安長</td><td>蘇憲奇</td><td>+19,000</td><td style="color:var(--bear)">-18,000</td><td>0</td><td style="color:var(--warn)">112年買→113年幾乎全賣</td></tr>
+    </table>
+    <b>白話說</b>：最值得注意的是<b>財務長李幸娟112年增持36,000股</b>——財務長是最了解公司真實財務狀況的人，她的大量增持是強正面信號。董事長和長華電材各減持10萬股量很小（各佔持股~1-3%），不構成「拋售」。資安長蘇憲奇的「112年買→113年幾乎全賣」比較奇怪但他是資安長非核心營運人員，重要性較低。<br><br>
+    <b>法說會言行一致性</b>：管理層在法說會看好→財務長/總經理/副總都在增持→言行一致（強正面）。
+  </div>
+  <div class="ev-s">來源：113年報第52頁「董事經理人股權移轉及質押變動」</div>
+</div>
+</details>
+
+<details>
+<summary>12-5. 貓膩總評</summary>
+<table>
+  <tr><th>指標</th><th>燈號</th><th>說明</th></tr>
+  <tr><td>管理層誠信</td><td style="color:var(--bull)">綠</td><td>數據一致、承諾零落空、法說會揭露充分</td></tr>
+  <tr><td>內部人行為</td><td style="color:var(--bull)">綠</td><td>零質押、總經理+財務長增持、無大額拋售（財務長增持36,000股為強正面）</td></tr>
+  <tr><td>會計品質</td><td style="color:var(--bull)">綠</td><td>Deloitte 5年無保留、無異常政策變更</td></tr>
+  <tr><td>敘事可信度</td><td style="color:var(--warn)">黃</td><td>時間序完美有合理解釋，但CB密集發行+新廠賭注需持續監控</td></tr>
+  <tr><td>大股東風險</td><td style="color:var(--warn)">黃</td><td>長華電材有頎邦訴訟NT$17.65億（8年未結案）</td></tr>
+</table>
+<div class="tip good">
+  <b>貓膩風險：低（綠3/黃2/紅0）</b>
+  <p>整體來看，望隼的故事可信度不錯——Deloitte五年背書、管理層行為一致（零質押+增持+零落空）、技術壁壘有專利和公開紀錄佐證。唯一需要持續監控的是CB轉換進度（股本是否繼續膨脹）和長華電材訴訟進展。<b>白話說：這家公司不像在騙人，但25億新廠是一個很大的賭注——賭對了是英雄，賭錯了歷史會重演（104年減資的教訓）。</b></p>
+</div>
+</details>
+</details>
+
+<!-- ================================================================== -->
+<!-- ==================== 第十三章 ==================== -->
+<!-- ================================================================== -->
+<details>
+<summary class="section-title">十三、投資結論</summary>
+
+<div class="tip warn">
+  <b>一句話總結</b>
+  <p style="font-size:1.15em;font-weight:900;color:var(--base)">望隼是一家方向正確、成長快速、管理可信的隱形眼鏡 ODM 公司，但192元的價位安全邊際不足（全局審閱後8項風險EV -32.1%，風險調整後年化報酬-1.5%），建議觀望等回檔至166元或等矽水膠催化劑兌現再評估。</p>
+</div>
+
+<table>
+  <tr><th>項目</th><th>評估</th></tr>
+  <tr><td>評級</td><td><b>B 級</b>（結論需附帶條件：矽水膠+客戶穩定兩者至少一個要成立）</td></tr>
+  <tr><td>核心優勢</td><td>三明治美瞳90%良率 + 日本爆發+43% + 功能型2%→17%爆發 + 管理層零質押85分</td></tr>
+  <tr><td>核心風險</td><td>客戶集中44%（丁公司-90%前例）+ 中國47%衰退中 + FCF負 + CB稀釋 + PFAS法規 + 創投賣壓10% + 風險EV -32.1%（8項）</td></tr>
+  <tr><td>值得買進理由</td><td>PE 15x同業最低+成長最高、催化劑EV +19.2%、隱藏優勢（近視防控/功能型/進貨分散）幾乎零Price-in</td></tr>
+  <tr><td>應該迴避理由</td><td>安全邊際僅+12%、風險EV（-32.1%）>催化劑EV（+19.2%）、淨期望值-12.9%、不對稱下行風險</td></tr>
+  <tr><td>視陽對比結論</td><td>視陽風險EV -8.7%（望隼近4倍）、視陽馬來西亞成本優勢、視陽MDSAP制度優勢——視陽的風險報酬比優於望隼</td></tr>
+</table>
+
+<div style="display:flex;gap:10px;margin:14px 0;flex-wrap:wrap">
+  <div style="flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--bull);border-radius:8px;padding:16px;text-align:center">
+    <div style="font-weight:700;font-size:.85em;color:var(--txt2)">樂觀版（路徑A, 20%）</div>
+    <div style="font-size:1.8em;font-weight:900;color:var(--bull)">340元</div>
+    <div style="font-size:.78em;color:var(--txt3)">PE 18x × EPS 19<br>矽水膠+新廠+功能型全爆發</div>
+  </div>
+  <div style="flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--neutral);border-radius:8px;padding:16px;text-align:center">
+    <div style="font-weight:700;font-size:.85em;color:var(--txt2)">期望值版（路徑B, 35%）</div>
+    <div style="font-size:1.8em;font-weight:900;color:var(--base)">240元</div>
+    <div style="font-size:.78em;color:var(--txt3)">PE 15x × EPS 16<br>穩健成長、估值合理</div>
+  </div>
+  <div style="flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--bear);border-radius:8px;padding:16px;text-align:center">
+    <div style="font-weight:700;font-size:.85em;color:var(--txt2)">悲觀版（路徑D+E, 25%）</div>
+    <div style="font-size:1.8em;font-weight:900;color:var(--bear)">120元</div>
+    <div style="font-size:.78em;color:var(--txt3)">PE 12x × EPS 10<br>中國惡化+客戶流失</div>
+  </div>
+</div>
+
+<p style="font-size:.88em;margin:10px 0">
+  <b>加權合理價</b>：~208元（vs 現價192）<br>
+  <b>淨期望值</b>：催化劑EV +19.2% - 風險EV 32.1% = <b>-12.9%</b>（負值，全局審閱後新增PFAS/匯率/創投三項風險）<br>
+  <b>含股息風險調整報酬</b>：-12.9% + 12% + 3.08% = <b>+2.2%/年</b>（幾乎等於定存）<br>
+  <b>安全邊際買入價</b>：<b>166元</b>（合理價208 × 0.8）
+</p>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 行動建議矩陣</div>
+  <div class="ev-d">
+    <table>
+      <tr><th>情境</th><th>行動</th><th>條件</th></tr>
+      <tr><td style="color:var(--bull)"><b>積極買入</b></td><td>全部建倉</td><td>股價<166 + 矽水膠佔比確認>5%（兩個條件同時滿足）</td></tr>
+      <tr><td><b>試探建倉</b></td><td>1/3倉位</td><td>股價170-180 + 2026Q2法說會正面</td></tr>
+      <tr><td><b>觀望</b></td><td>不動</td><td>股價180-210（目前區間）</td></tr>
+      <tr><td style="color:var(--bear)"><b>迴避</b></td><td>不碰</td><td>月營收YoY<5%連3月 or 最大客戶營收驟降</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="tip warn">
+  <b>免責提醒</b>
+  <p>本報告為天機閣系統產出之質化分析，僅供參考。所有前瞻性判斷均基於截至2026-03-30的公開資訊，不構成投資建議。報告中的視陽(6782)對照數據來自天機閣已完成的分析，同為分析而非建議。投資有風險，決策請閣主自行判斷。</p>
+</div>
+</details>
+
+<!-- ============ Footer ============ -->
+
+<!-- 第十步16項發現已全部注入各章節：Ch1(前十大股東/研發費用/資產膨脹) Ch2(矽水膠臨床/新廠購地) Ch4(PFAS/匯率/甲公司踩線/創投賣壓/江蘇視准) Ch5(進貨分散/替代品) Ch9(目標價修正) Ch12(內部人完整/巧合偵測) -->
+
+
+
+<div class="footer">
+  天機閣 — 推衍系統 / 投資分析引擎 v2.0（向量增強版）<br>
+  4771 望隼科技 | 質化分析報告 v2.1（完整版，第十步全局審閱已整合注入各章）| 2026-03-30<br>
+  13章 × 16項全局審閱發現（已融入各章） × 582段向量 × 32次WebSearch × 4份年報 × 3場法說會 × 視陽(6782)交叉對照
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+function toggleAll(expand) {
+    if (expand) {
+        document.querySelectorAll('details').forEach(d => d.open = true);
+    } else {
+        // 收合：大標題(depth=1)展開，小標題(depth=2)收合
+        document.querySelectorAll('details').forEach(d => {
+            const depth = getDetailsDepth(d);
+            d.open = (depth <= 1);
+        });
+    }
+}
+function getDetailsDepth(el) {
+    let depth = 0;
+    let node = el;
+    while (node) {
+        if (node.tagName === 'DETAILS') depth++;
+        node = node.parentElement;
+    }
+    return depth;
+}
+// 頁面載入時預設收合（跟按收合按鈕一樣：大標題展開、小標題收合）
+document.addEventListener('DOMContentLoaded', function() { toggleAll(false); });
+</script>
+</body>
+</html>

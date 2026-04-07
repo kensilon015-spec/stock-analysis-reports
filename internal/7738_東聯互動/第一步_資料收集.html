@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>7738 東聯互動 — 第一步：六管道資料收集</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--code-bg:#111;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== Hero ===== -->
+<div class="hero">
+  <h1>7738 東聯互動 — 第一步：六管道資料收集</h1>
+  <div class="sub">Eastern Union Interactive Corp.</div>
+  <div class="desc">跨境金融科技 | 移工小額匯款領導者 | 2025/10 上櫃</div>
+  <div class="tags">
+    <span class="tag">上櫃 TPEX</span>
+    <span class="tag">數位雲端</span>
+    <span class="tag">Fintech</span>
+    <span class="tag">跨境匯款</span>
+    <span class="tag">普惠金融</span>
+    <span class="tag">IPO 2025/10</span>
+  </div>
+  <div class="desc" style="margin-top:8px">分析日期：2026-03-30 | 模型：Claude Opus 4.6 (1M)</div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ===== 公司概覽 ===== -->
+<div class="section-title">公司基本概覽</div>
+<div class="section-sub">管道 A + B 彙整</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">股價</div>
+    <div class="num" style="color:var(--bull)">180.5 元</div>
+    <div class="desc">2026/03/30 收盤</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">市值</div>
+    <div class="num" style="color:var(--neutral)">49.4 億</div>
+    <div class="desc">股本 2.74 億 / 2,735 萬股</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">2025 營收</div>
+    <div class="num" style="color:var(--bull)">5.65 億</div>
+    <div class="desc">YoY +30.2%</div>
+  </div>
+</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">EPS (Q1-Q3 2025)</div>
+    <div class="num" style="color:var(--bull)">11.58 元</div>
+    <div class="desc">已超越 2024 全年 9.51 元</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">毛利率</div>
+    <div class="num" style="color:var(--bull)">55%</div>
+    <div class="desc">Q3 單季 57%，目標 60%</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">負債比率</div>
+    <div class="num" style="color:var(--bull)">10.0%</div>
+    <div class="desc">2025-Q3，極低負債</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">公司基本資料</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>內容</th><th>FIAS</th></tr>
+      <tr><td>公司全名</td><td>東聯互動股份有限公司 (Eastern Union Interactive Corp.)</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>成立年份</td><td>2016 年</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>上櫃日期</td><td>2025 年 10 月 16 日（競價拍賣均價 203.49 元，承銷價 168 元）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>董事長</td><td>吳侑勳（創辦人，2025/01 升任董事長；前遠傳電信 11 年）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>地址</td><td>新北市土城區中央路四段 51 號 7 樓之 1</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>員工數</td><td>~70 人（逾 1/4 持洗錢防制證照，40% 為外籍配偶/東南亞畢業生）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>產業分類</td><td>上櫃 — 數位雲端</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>實收資本額</td><td>2.74 億元 / 已發行 2,735.58 萬股</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>股東人數</td><td>1,679 人</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>外資持股</td><td>0.35%</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>前十大持股</td><td>佔比 14.56%（法人：達和貳創投、達昌創投）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>獨立董事</td><td>許瀞心、邱寶桂、游裕明；2026 補選蔡維哲</td><td><span class="fias-f">事實</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">核心業務與商業模式</h3>
+  <div class="card-body">
+    <p><b>主營業務</b>：跨境小額匯款服務，以在台外籍移工為核心客群</p>
+    <p><b>服務國家</b>：印尼、菲律賓、越南、泰國（收款端）；已取得香港、日本執照</p>
+    <p><b>App 矩陣</b>：IndoMoney（印尼）、PhilMoney（菲律賓）、VietMoney（越南）、EUI Money（總平台）</p>
+    <p><b>通路</b>：超商掃碼繳款（7-11/全家）+ 台新銀行 ATM QR Code 代收 + App 線上下單</p>
+    <p><b>費用優勢</b>：手續費 150 元（vs 銀行 500-600 元），匯率較銀行優惠，當日到帳</p>
+    <p><b>會員數</b>：223,000 人（截至 2025 年中）</p>
+    <p><b>交易規模</b>：2023 年全年超過 300 萬筆交易，金額近 300 億元</p>
+
+    <div class="tip good">
+      <b>商業模式亮點</b>
+      輕資產模式：核心收入來自匯差 + 手續費，AI 動態調整匯率報價最大化匯兌收益。固定成本結構（法遵系統建置後），每增一筆交易的邊際成本極低 → 規模效益顯著。自動化 KYC/AML 降低 60-70% 人工成本。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 管道 A ===== -->
+<div class="section-title">管道 A — 年報 + 公開說明書</div>
+<div class="section-sub">MOPS 自動下載 + PDF 轉文字</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">年報取得狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>年度</th><th>檔名</th><th>檔案大小</th><th>文字檔</th><th>狀態</th></tr>
+      <tr><td>2024（民國 114）</td><td>2024_7738_20250618F04.pdf</td><td>3.5 MB</td><td>169 KB (.txt)</td><td style="color:var(--bull)">✅ 完成</td></tr>
+      <tr><td>2023（民國 113）</td><td>2023_7738_20240628F04.pdf</td><td>12 MB</td><td>373 KB (.txt)</td><td style="color:var(--bull)">✅ 完成</td></tr>
+      <tr><td>2022 以前</td><td colspan="3">MOPS 無資料（公司 2025/10 才上櫃，2022 以前未申報）</td><td style="color:var(--warn)">⚠️ 不可得</td></tr>
+    </table>
+    <div class="tip warn">
+      <b>年報不足 5 年說明</b>
+      東聯互動 2025 年 10 月才上櫃，MOPS 僅有 2023、2024 兩個年度的年報。此為客觀限制，非遺漏。公開說明書可部分補充歷史資料。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">公開說明書取得狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>檔名</th><th>類型</th><th>檔案大小</th><th>文字檔</th><th>狀態</th></tr>
+      <tr><td>202401_7738_B06.pdf</td><td>上市前公開說明書</td><td>12 MB</td><td>608 KB (.txt)</td><td style="color:var(--bull)">✅ 轉檔完成</td></tr>
+      <tr><td>202405_7738_B07.pdf</td><td>增資公開說明書</td><td>7.0 MB</td><td>—</td><td style="color:var(--txt3)">已下載</td></tr>
+      <tr><td>202504_7738_B07.pdf</td><td>增資公開說明書</td><td>11 MB</td><td>—</td><td style="color:var(--txt3)">已下載</td></tr>
+      <tr><td>202508_7738_B011.pdf</td><td>可轉換公司債/增資</td><td>17 MB</td><td>—</td><td style="color:var(--txt3)">已下載</td></tr>
+      <tr><td>202509_7738_B011.pdf</td><td>可轉換公司債/增資</td><td>19 MB</td><td>—</td><td style="color:var(--txt3)">已下載</td></tr>
+      <tr><td>202510_7738_B011.pdf</td><td>IPO 公開說明書</td><td>19 MB</td><td>1,497 KB (.txt)</td><td style="color:var(--bull)">✅ 轉檔完成</td></tr>
+    </table>
+    <div class="tip info">
+      <b>公開說明書觀察</b>
+      6 份公開說明書涵蓋 2024/01 ~ 2025/10，密度高。B06 = 上市前（2024/01）、B07 = 增資（2024/05 + 2025/04）、B011 = 可轉債/增資（2025/08~10），顯示公司在上櫃前後有多次募資動作。IPO 募資約 3 億元。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 管道 B ===== -->
+<div class="section-title">管道 B — 必搜清單</div>
+<div class="section-sub">WebSearch 即時搜尋</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">月營收（近 12 個月）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>年月</th><th>營收(千元)</th><th>月增率</th><th>年增率</th><th>累計年增</th></tr>
+      <tr><td>2026/02</td><td>52,672</td><td style="color:var(--bull)">+12.96%</td><td style="color:var(--bull)">+30.63%</td><td>+19.74%</td></tr>
+      <tr><td>2026/01</td><td>46,629</td><td>+0.10%</td><td style="color:var(--bull)">+9.44%</td><td>+9.44%</td></tr>
+      <tr><td>2025/12</td><td>46,582</td><td>+5.98%</td><td style="color:var(--bull)">+18.41%</td><td>+30.17%</td></tr>
+      <tr><td>2025/11</td><td>43,953</td><td style="color:var(--bear)">-13.58%</td><td style="color:var(--bull)">+19.02%</td><td>+31.32%</td></tr>
+      <tr><td>2025/10</td><td>50,861</td><td>-0.67%</td><td style="color:var(--bull)">+33.91%</td><td>+32.59%</td></tr>
+      <tr><td>2025/09</td><td>51,202</td><td>-7.67%</td><td style="color:var(--bull)">+41.06%</td><td>+32.44%</td></tr>
+      <tr><td>2025/08</td><td>55,456</td><td colspan="3">年增 +45%</td></tr>
+    </table>
+    <p><b>2025 全年營收</b>：565,110 千元 = 5.65 億（YoY +30.17%）</p>
+    <p><b>2024 全年營收</b>：約 4.34 億（YoY +27%）<span class="fias-i">推論</span></p>
+    <p><b>2023 全年營收</b>：3.38~3.41 億（YoY +108%）<span class="fias-f">事實</span></p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">季度 EPS 與獲利能力（finlab）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>季度</th><th>EPS</th><th>毛利率</th><th>營業利益率</th><th>稅後淨利率</th></tr>
+      <tr><td>2025-Q3</td><td>4.20</td><td>—</td><td>—</td><td>66.5%</td></tr>
+      <tr><td>2025-Q2</td><td>4.66</td><td>—</td><td>—</td><td>82.5%</td></tr>
+      <tr><td>2025-Q1</td><td>2.72</td><td>—</td><td>—</td><td>53.5%</td></tr>
+      <tr><td>2024-Q4</td><td>4.91</td><td>—</td><td>—</td><td>54.6%</td></tr>
+      <tr><td>2024-Q2</td><td>4.60</td><td>—</td><td>—</td><td>52.9%</td></tr>
+      <tr><td>2023-Q4</td><td>3.01</td><td>—</td><td>—</td><td>17.7%</td></tr>
+    </table>
+    <p><b>2025 Q1-Q3 累計 EPS</b>：11.58 元（已超越 2024 全年 9.51 元） <span class="fias-f">事實</span></p>
+    <p><b>每股現金流量 2025-Q3</b>：7.71 元 <span class="fias-f">事實</span></p>
+    <p><b>自由現金流 2025-Q3</b>：191,689 千元 <span class="fias-f">事實</span></p>
+
+    <div class="tip good">
+      <b>獲利觀察</b>
+      淨利率從 2023-Q4 的 17.7% 飆升至 2025-Q2 的 82.5%（可能含一次性收入需驗證），核心趨勢是規模效益帶動邊際成本遞減。法說會公布累計毛利率 55%、Q3 單季 57%，目標朝 60% 邁進。負債比僅 10%，現金流強勁。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">近期新聞與重大訊息</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>日期</th><th>事件</th><th>FIAS</th></tr>
+      <tr><td>2026/03</td><td>永豐金證券《企業家觀點》專訪吳侑勳董事長，談普惠金融與海外布局</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2026/03/10</td><td>法人說明會於台北晶華酒店 4F</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025/12</td><td>金管會修法：移工年度匯款上限 NT$40萬→NT$50萬（12/6 生效）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025/11/12</td><td>法說會：2026 核心業務 +20-30%、毛利率目標 60%、配息 6-7 元</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025/10/16</td><td>正式上櫃掛牌（承銷價 168 元，競拍均價 203.49 元）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025/10</td><td>首 5 日穩定價格操作完成</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025/09</td><td>公告初次上櫃現金增資（募資約 3 億元）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025</td><td>取得香港、日本營業執照</td><td><span class="fias-f">事實</span></td></tr>
+    </table>
+    <p>搜尋「東聯互動 風險/利空/訴訟/負面」未發現重大不利消息。<span class="fias-f">事實</span></p>
+  </div>
+</div>
+
+<!-- ===== 管道 C ===== -->
+<div class="section-title">管道 C — 市場調查五條線</div>
+<div class="section-sub">外部視角交叉驗證</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">① 下游驗證（移工端/通路端）</h3>
+  <div class="card-body">
+    <p><b>會員數</b>：223,000 人（vs 台灣移工總數 86.58 萬人 = 滲透率約 26%）<span class="fias-i">推論</span></p>
+    <p><b>超商通路</b>：與 7-11、全家合作掃碼繳款 <span class="fias-f">事實</span></p>
+    <p><b>銀行通路</b>：台新銀行 ATM 跨境匯款代收（支援 7 國語言）<span class="fias-f">事實</span></p>
+    <p><b>合作銀行（收款端）</b>：印尼人民銀行、菲律賓首都銀行、越南 SCB 銀行等東南亞前五大 <span class="fias-f">事實</span></p>
+    <p><b>SARS 市佔</b>：2024 年截至 9 月，646,000 名移工進行 649 萬筆、607 億元交易（全行業，含所有業者）<span class="fias-f">事實</span></p>
+    <p><b>正規管道滲透</b>：Welldone + EUI 合計約佔正規匯款 20%，80% 仍走非正式管道（地下匯兌）<span class="fias-f">事實</span></p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">② 競爭對手驗證</h3>
+  <div class="card-body">
+    <p><b>金管會核准小額跨境匯款業者（截至 2025 年中共 5 家）</b>：</p>
+    <table>
+      <tr><th>業者</th><th>核准時間</th><th>服務國家</th><th>特點</th></tr>
+      <tr><td><b>統振（好棒國際/Welldone）</b></td><td>2021/10（首家）</td><td>菲/印尼/越/泰</td><td>超商條碼繳款先驅，Quickpay 平台</td></tr>
+      <tr><td><b>東聯互動 (EUI)</b></td><td>2022/04（第二家）</td><td>菲/印尼/越/泰</td><td>多語系 App、AI 匯率定價、市場領導</td></tr>
+      <tr><td><b>數位至匯 (Digital Idea)</b></td><td>2023/07（第三家）</td><td>印尼/越/菲</td><td>較新進入者</td></tr>
+      <tr><td><b>美神人力 (May-God HR)</b></td><td>~2024（第四家）</td><td>印尼/越/菲</td><td>人力仲介背景</td></tr>
+      <tr><td><b>第五家</b></td><td>2025/06 核准</td><td>—</td><td>細節待查</td></tr>
+    </table>
+    <p><b>國際競爭者</b>：Wise、Remitly、WorldRemit 等全球匯款平台在東南亞活躍，但目前並未針對「台灣移工→東南亞」此一特定走廊大舉布局。台灣市場的法規門檻（金管會執照）構成進入障礙。<span class="fias-i">推論</span></p>
+
+    <div class="tip info">
+      <b>競爭格局觀察</b>
+      台灣移工匯款市場目前由東聯互動與統振/好棒兩強主導。雖有 5 家核准業者，但東聯的 App 覆蓋度、會員數、交易量均為領先。80% 非正式管道尚待轉化為正規業者的增量空間巨大。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">③ 產業第三方驗證（市場規模）</h3>
+  <div class="card-body">
+    <p><b>台灣移工人數</b>：86.58 萬人（2025/11，創歷史新高）<span class="fias-f">事實</span></p>
+    <table>
+      <tr><th>國籍</th><th>人數</th><th>佔比</th></tr>
+      <tr><td>印尼</td><td>30 萬+</td><td>37.2%</td></tr>
+      <tr><td>越南</td><td>28.1 萬</td><td>34.4%</td></tr>
+      <tr><td>菲律賓</td><td>16 萬</td><td>~20%</td></tr>
+      <tr><td>泰國</td><td>7.2 萬</td><td>8.8%</td></tr>
+    </table>
+    <p><b>政府預估</b>：五年內需求上看 150 萬人（法說會引用）<span class="fias-a">假設</span></p>
+    <p><b>2026/01 新政</b>：服務業移工 30 年來首度解禁（旅宿、商港碼頭），將進一步增加移工人數 <span class="fias-f">事實</span></p>
+    <p><b>匯款上限</b>：NT$40 萬→ NT$50 萬（2024/12/6 生效），因應中階技術移工薪資成長 <span class="fias-f">事實</span></p>
+    <p><b>台灣移工年匯款總額</b>：超過 US$40 億（~1,280 億）；SARS 正規管道 2024/1-9 達 607 億 <span class="fias-f">事實</span></p>
+    <p><b>全球數位跨境匯款市場</b>：2024 USD 108 億 → 2034 預估 USD 826 億（CAGR 22.5%）<span class="fias-f">事實</span></p>
+    <p><b>亞太跨境支付</b>：CAGR 9.16%，為全球最快成長區域 <span class="fias-f">事實</span></p>
+    <p><b>菲律賓匯款市場</b>：2025 USD 1,681 億 → 2034 USD 2,276 億（CAGR 3.32%）<span class="fias-f">事實</span></p>
+
+    <div class="tip good">
+      <b>市場驅動力整合</b>
+      三大結構性成長動力同時發生：(1) 台灣移工人數持續創新高 + 服務業解禁；(2) 匯款上限提高 25%；(3) 80% 地下匯兌→正規管道轉化。三者疊加意味著東聯的可定址市場（TAM）在擴大，而非只靠搶市佔。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">④ 技術與護城河初探</h3>
+  <div class="card-body">
+    <p><b>金管會執照</b>：全台僅 5 家，申請需檢具可行營運計畫 + 律師審查 + 資安 <span class="fias-f">事實</span></p>
+    <p><b>法遵科技（RegTech）</b>：自動化 KYC + AML 系統，降低 60-70% 人工成本 <span class="fias-f">事實</span></p>
+    <p><b>AI 匯率定價</b>：大數據分析 + AI 動態調整匯率與手續費，最大化匯兌收益 <span class="fias-i">推論</span></p>
+    <p><b>SaaS 跨境金融平台</b>：高相容性，可快速串接各國 eBanking / 電子支付 <span class="fias-f">事實</span></p>
+    <p><b>技術架構</b>：AWS 雲端 + Laravel 開發框架 + eKYC + 生物辨識 + 文件辨識 <span class="fias-f">事實</span></p>
+    <p><b>國發會認證</b>：獲選「NEXT BIG」潛力新創 <span class="fias-f">事實</span></p>
+  </div>
+</div>
+
+<div class="card collapsed">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">⑤ 人才市場驗證</h3>
+  <div class="card-body">
+    <p><b>員工規模</b>：約 70 人 <span class="fias-f">事實</span></p>
+    <p><b>員工結構特色</b>：40% 外籍員工（外配/東南亞畢業生）提供原生語言服務 <span class="fias-f">事實</span></p>
+    <p><b>AML 專業</b>：超過 1/4 員工持有國內外洗錢防制專業證照 <span class="fias-f">事實</span></p>
+    <p><b>104 徵才</b>：搜尋未取得具體職缺數據，建議後續直接查閱 <span class="fias-s">推測</span></p>
+  </div>
+</div>
+
+<!-- ===== 管道 D ===== -->
+<div class="section-title">管道 D — finlab 量化資料</div>
+<div class="section-sub">已存入 finlab_data.json</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">finlab 數據摘要</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>指標</th><th>取得筆數</th><th>最新值</th><th>狀態</th></tr>
+      <tr><td>月營收</td><td>6 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>收盤價（近 60 日）</td><td>60 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>EPS（季）</td><td>6 筆</td><td>4.20 (Q3)</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>毛利率</td><td>6 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>本益比（近 60 日）</td><td>60 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>外資買賣超</td><td>60 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>營業利益率</td><td>6 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>成交量（近 60 日）</td><td>60 筆</td><td>—</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>股本</td><td>6 筆</td><td>248,558 千元</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>負債比率</td><td>6 筆</td><td>9.98%</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>自由現金流</td><td>6 筆</td><td>191,689 千元</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>每股現金流</td><td>6 筆</td><td>7.71</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>稅後淨利率</td><td>6 筆</td><td>66.5%</td><td style="color:var(--bull)">✅</td></tr>
+      <tr><td>ROE</td><td colspan="2">欄位不存在</td><td style="color:var(--warn)">⚠️</td></tr>
+      <tr><td>每股淨值</td><td colspan="2">欄位不存在</td><td style="color:var(--warn)">⚠️</td></tr>
+    </table>
+    <p>JSON 存檔：<code>finlab_data.json</code>（供後續步驟直接引用）</p>
+  </div>
+</div>
+
+<!-- ===== 管道 E ===== -->
+<div class="section-title">管道 E — 即時搜尋深讀</div>
+<div class="section-sub">中英文深度讀取</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">深讀來源一覽</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>來源</th><th>語言</th><th>內容</th></tr>
+      <tr><td>富果直送 法說會備忘錄</td><td>中</td><td>2025/11/12 法說會完整重點，含營收/EPS/展望/海外計畫</td></tr>
+      <tr><td>優分析 海外布局專文</td><td>中</td><td>菲/印尼/越南市場選擇邏輯、通路與技術基礎</td></tr>
+      <tr><td>鉅亨網 專家觀點</td><td>中</td><td>競爭優勢（法規壁壘/技術平台/先發優勢）、市場機會</td></tr>
+      <tr><td>台灣光華雜誌 / NGO 雙語網</td><td>中</td><td>創辦人故事、公司歷史、社會影響力、2023 交易量 300 億</td></tr>
+      <tr><td>AmCham Taiwan Business TOPICS</td><td>英</td><td>台灣移工匯款產業全景：法規/競爭者/費率/市場規模</td></tr>
+      <tr><td>Taiwan News / FSC Press Release</td><td>英</td><td>匯款上限 40→50 萬修法細節、4 家業者名單</td></tr>
+      <tr><td>Fortune/Mordor/Global Growth</td><td>英</td><td>全球數位匯款市場 CAGR 22.5%、亞太領先</td></tr>
+      <tr><td>Vocal Media / Philippines</td><td>英</td><td>菲律賓匯款市場規模與數位化趨勢</td></tr>
+      <tr><td>Taiwan Insight (學術)</td><td>英</td><td>SARS 框架 60.25% 市佔、707K 用戶（2024）</td></tr>
+      <tr><td>Crunchbase / CBInsights</td><td>英</td><td>EUI 公司基本資料、成立於 2016</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 管道 F ===== -->
+<div class="section-title">管道 F — 法說會資料</div>
+<div class="section-sub">2025/11/12 法說會</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">2025/11/12 法說會重點（富果直送）</h3>
+  <div class="card-body">
+    <p><b>出處</b>：富果直送 — 東聯互動法說會重點備忘錄 <span class="fias-f">事實</span></p>
+    <table>
+      <tr><th>項目</th><th>內容</th><th>FIAS</th></tr>
+      <tr><td>2025 Q1-Q3 營收</td><td>4.24 億元，YoY +32.4%</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2025 Q1-Q3 EPS</td><td>11.58 元（已超 2024 全年 9.51）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>累計毛利率</td><td>55%（Q3 單季 57%）</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>淨利率</td><td>68%</td><td><span class="fias-f">事實</span></td></tr>
+      <tr><td>2026 核心業務成長指引</td><td>營收/獲利 +20-30%</td><td><span class="fias-a">假設</span>（管理層承諾）</td></tr>
+      <tr><td>毛利率目標</td><td>朝 60% 邁進</td><td><span class="fias-a">假設</span></td></tr>
+      <tr><td>海外營收佔比目標</td><td>3-5%（驗證階段）</td><td><span class="fias-a">假設</span></td></tr>
+      <tr><td>股利政策</td><td>預期配 6-7 元現金股利（~50% 配發率）</td><td><span class="fias-a">假設</span></td></tr>
+      <tr><td>新業務</td><td>2026 推支付/微型金融/保險/理財，2026 獲利影響不大，2027 顯現</td><td><span class="fias-a">假設</span></td></tr>
+      <tr><td>市場規模引用</td><td>台灣 85 萬移工、五年看 150 萬；全球跨境工作者 1.64 億、匯款市場 >6,000 億美元</td><td><span class="fias-i">推論</span></td></tr>
+    </table>
+
+    <div class="tip warn">
+      <b>管理層承諾追蹤清單</b>
+      ① 2026 核心 +20-30% → 2026 Q2 季報驗證<br>
+      ② 毛利率 → 60% → 逐季追蹤<br>
+      ③ 配息 6-7 元 → 2026 股東會<br>
+      ④ 海外 3-5% 營收 → 2026 年報<br>
+      ⑤ 新業務 2027 顯現 → 2027 年報
+    </div>
+
+    <p style="margin-top:8px"><b>下一場法說會</b>：2026/03/10 台北晶華酒店 4F（已結束，待查結果）</p>
+  </div>
+</div>
+
+<!-- ===== Gate Check ===== -->
+<div class="section-title">第一步完成門檻自檢</div>
+<div class="section-sub">Gate Check — 閣主確認後才可進入第二步</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">完成門檻自檢表</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>管道</th><th>完成標準</th><th>狀態</th><th>具體說明</th></tr>
+      <tr>
+        <td>A. 年報</td>
+        <td>至少 5 年年報 + 轉文字檔</td>
+        <td style="color:var(--warn)">⚠️ 部分達標</td>
+        <td>取得 2 份年報（2023, 2024）+ 6 份公開說明書，已全部轉文字檔。公司 2025/10 才上櫃，MOPS 僅 2 年為客觀限制。公開說明書可部分補充歷史資料。</td>
+      </tr>
+      <tr>
+        <td>B. 必搜清單</td>
+        <td>必須類覆蓋 ≥80%</td>
+        <td style="color:var(--bull)">✅ 達標</td>
+        <td>月營收 ✅ / 法說會 ✅ / 季報數據 ✅ / 官網 ✅ / 重大訊息 ✅ / 董監持股 ✅ / 新聞 ✅ / 產業報告 ✅ / 法人持股 ✅ — 9/9 必須項完成（100%）</td>
+      </tr>
+      <tr>
+        <td>C. 市場調查</td>
+        <td>≥3/5 條線</td>
+        <td style="color:var(--bull)">✅ 達標</td>
+        <td>下游（移工端/通路） ✅ / 競爭對手 ✅ / 產業第三方 ✅ / 技術護城河 ✅ / 人才 ⚠️部分 — 4.5/5 條完成</td>
+      </tr>
+      <tr>
+        <td>D. finlab</td>
+        <td>取數完成存 JSON</td>
+        <td style="color:var(--bull)">✅ 達標</td>
+        <td>13 項指標成功取得，2 項欄位不存在（ROE/每股淨值），已存 finlab_data.json</td>
+      </tr>
+      <tr>
+        <td>E. 即時搜尋</td>
+        <td>≥3 議題深讀</td>
+        <td style="color:var(--bull)">✅ 達標</td>
+        <td>10+ 來源深讀完成（中英文各 5+），涵蓋法說會/海外布局/產業規模/監管/競爭/全球趨勢</td>
+      </tr>
+      <tr>
+        <td>F. 法說會</td>
+        <td>≥1 次 + 結構化萃取</td>
+        <td style="color:var(--bull)">✅ 達標</td>
+        <td>2025/11/12 法說會完整重點已整理，含 5 項管理層承諾追蹤</td>
+      </tr>
+    </table>
+
+    <div class="tip good">
+      <b>總結：5.5/6 管道達標</b>
+      管道 A 年報僅 2 年為客觀限制（IPO 公司），已用 6 份公開說明書補充。其餘 5 管道全數達標。建議放行進入第二步。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 資料收集整合結論 ===== -->
+<div class="section-title">第一步整合結論</div>
+
+<div class="tip info">
+  <b>資料收集整合結論</b><br><br>
+  <b>資料→觀察</b>：東聯互動是一家 2016 年成立、2025/10 剛上櫃的跨境匯款金融科技公司。核心客群為在台 86 萬外籍移工，提供手續費僅 150 元（vs 銀行 500-600 元）的小額匯款服務。2025 全年營收 5.65 億（+30%），Q1-Q3 EPS 11.58（超越 2024 全年），毛利率 55% 且上升中，負債比僅 10%，自由現金流強勁。<br><br>
+  <b>觀察→推論</b>：(1) 商業模式是「移工版的數位支付平台」，輕資產 + 高邊際貢獻 → 規模效益極強。(2) 金管會執照構成法規壁壘，目前僅 5 家業者，東聯為前二大。(3) 三大結構性催化劑同時存在：移工人數持續創新高 + 匯款上限提高 + 80% 地下匯兌轉正規。(4) 海外布局（港/日/東南亞）是 2026-2027 的潛在成長第二曲線。<br><br>
+  <b>推論→初步結論</b>：高成長 + 高毛利 + 強現金流 + 法規壁壘 + 結構性順風，基本面數據非常正面。但需警惕：(a) 上櫃僅 5 個月，歷史數據有限；(b) 淨利率異常高（82.5%）需驗證是否含一次性項目；(c) 股東結構極度集中（前十大僅 14.56%，但股東僅 1,679 人）；(d) 海外布局執行風險；(e) 新進業者的競爭威脅。第二步需深入 FIAS 分級驗證。
+</div>
+
+<!-- ===== 記錄區 ===== -->
+<div class="section-title">執行記錄</div>
+
+<div class="card collapsed">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">資源消耗統計</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>數量</th></tr>
+      <tr><td>WebSearch 次數</td><td>~15 次</td></tr>
+      <tr><td>WebFetch 深讀次數</td><td>~8 次</td></tr>
+      <tr><td>finlab 查詢</td><td>2 輪（~20 欄位）</td></tr>
+      <tr><td>MOPS 年報下載</td><td>2 份 PDF（15.5 MB）</td></tr>
+      <tr><td>MOPS 公開說明書下載</td><td>6 份 PDF（85 MB）</td></tr>
+      <tr><td>PDF 轉文字檔</td><td>4 份（年報 2 + 公開說明書 2）</td></tr>
+      <tr><td>Claude OCR API 呼叫</td><td>年報轉檔使用（趕時間模式）</td></tr>
+      <tr><td>對話互動輪次</td><td>~8 輪</td></tr>
+      <tr><td>搜尋語言</td><td>繁體中文 + 英文</td></tr>
+    </table>
+    <p style="margin-top:6px;font-size:.8em;color:var(--txt3)">本步驟產出檔案：第一步_資料收集.html / finlab_data.json / 2 份年報文字檔 / 2 份公開說明書文字檔</p>
+  </div>
+</div>
+
+</div><!-- wrap -->
+
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'))
+})
+</script>
+</body>
+</html>

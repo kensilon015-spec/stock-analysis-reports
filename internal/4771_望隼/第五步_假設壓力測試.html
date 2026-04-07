@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4771 望隼科技 — 第五步：假設壓力測試</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.4em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.8em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:5px 8px;text-align:left;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.7em;padding:1px 5px;border-radius:3px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.7em;padding:1px 5px;border-radius:3px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.7em;padding:1px 5px;border-radius:3px;background:rgba(184,150,12,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.ev-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;font-size:.84em}
+.ev-card .ev-title{font-weight:900;font-size:1em;margin-bottom:6px}
+.ev-card .ev-row{display:flex;gap:6px;margin:3px 0;flex-wrap:wrap}
+.ev-card .ev-label{font-weight:700;color:var(--base);min-width:80px}
+.ev-card .ev-val{color:var(--txt2)}
+.ev-risk{border-left:4px solid var(--bear)}
+.ev-catalyst{border-left:4px solid var(--bull)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base)}
+.toggle-btn:hover{background:var(--hover)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>4771 望隼科技 — 第五步：假設壓力測試</h1>
+  <div class="sub">事前驗屍 + 敏感度 + 情報驗證卡 → 第二次信心校準</div>
+  <div class="desc">2026-03-30</div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card,.ev-card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">A. 關鍵假設檢查（三桶分類）</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">假設分桶</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>假設</th><th>分桶</th><th>若錯影響</th><th>反例/驗證</th></tr>
+      <tr><td>日本市場持續成長 20%+/年</td><td style="color:var(--bull)">有支撐</td><td>4/5</td><td>3Q25 YoY+43%事實支撐；反例：日本經濟衰退+日圓暴貶 <span class="fias-f">F</span></td></tr>
+      <tr><td>中國營收佔比持續下降</td><td style="color:var(--warn)">需附註</td><td>3/5</td><td>從61%降至47%趨勢明確，但3Q25 YoY-9%可能加速或反彈 <span class="fias-f">F</span></td></tr>
+      <tr><td>矽水膠2026日本出貨</td><td style="color:var(--warn)">需附註</td><td>4/5</td><td>管理層承諾2026，但目前佔比僅1%、量產驗證未完成 <span class="fias-a">A</span></td></tr>
+      <tr><td>竹南新廠2026完工、2027產能爬坡</td><td style="color:var(--bull)">有支撐</td><td>5/5</td><td>年報+法說會一致；資本支出13.9億已投入；反例：缺工/缺料延遲 <span class="fias-f">F</span></td></tr>
+      <tr><td>毛利率維持40-42%</td><td style="color:var(--bull)">有支撐</td><td>3/5</td><td>12季穩定在36-43%，無結構性下行壓力；反例：中國殺價擴大 <span class="fias-f">F</span></td></tr>
+      <tr><td>前2大客戶不會流失</td><td style="color:var(--danger)">無支撐</td><td>5/5</td><td>客戶名單保密，112年丁公司從10%驟降至1%已為前例。純推測。<span class="fias-a">A</span></td></tr>
+    </table>
+    <div class="tip danger">
+      <b>致命假設：「前2大客戶不會流失」為無支撐假設</b>
+      <p>甲公司（23%）+乙公司（21%）合計44%營收，且112年丁公司驟降90%已證明客戶流失可以發生。若甲公司流失，營收立即衝擊23%——這是整個投資論述中最脆弱的環節。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">B. 事前驗屍法</div>
+<div class="section-sub">「12 個月後虧損 40%，原因是什麼？」</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">7 個死因分析</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>死因</th><th>機率(1-5)</th><th>衝擊(1-5)</th><th>風險分數</th></tr>
+      <tr><td>1</td><td><b>最大客戶流失</b>：甲公司（23%營收）轉單至韓國 Interojo</td><td>2</td><td>5</td><td style="color:var(--bear)"><b>10</b></td></tr>
+      <tr><td>2</td><td><b>中國政策風險</b>：NMPA 加嚴審批或江蘇廠被迫停產</td><td>2</td><td>5</td><td style="color:var(--bear)"><b>10</b></td></tr>
+      <tr><td>3</td><td><b>竹南新廠延遲</b>：缺工/材料漲價致2026無法完工</td><td>2</td><td>4</td><td>8</td></tr>
+      <tr><td>4</td><td><b>矽水膠品質問題</b>：日本客戶驗證不通過，退回重做</td><td>2</td><td>4</td><td>8</td></tr>
+      <tr><td>5</td><td><b>中國殺價擴大</b>：毛利率從41%降至35%以下</td><td>3</td><td>3</td><td>9</td></tr>
+      <tr><td>6</td><td><b>CB 稀釋+利率上升</b>：浮動利率15.2億+CB轉換壓縮 EPS</td><td>3</td><td>2</td><td>6</td></tr>
+      <tr><td>7</td><td><b>全球隱形眼鏡需求反轉</b>：近視手術技術突破或經濟衰退</td><td>1</td><td>4</td><td>4</td></tr>
+    </table>
+    <p style="margin-top:6px;color:var(--txt3);font-size:.82em">風險分數 ≥15 才需強制預警方案。目前最高分為10，無單一致命風險，但風險#1+#2 若同時發生（機率低但非零）則衝擊巨大。</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">C. 敏感度分析</div>
+<div class="section-sub">各假設錯誤對 2026 EPS 的影響</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">EPS 敏感度表（基準：2026E EPS 15.0 元）</h3>
+  <div class="card-body">
+    <p style="font-size:.82em;color:var(--txt3)">基準假設：營收 +18% → ~41.1億、毛利率 41%、營利率 29%、稅率 ~20%、股本 ~5.8億</p>
+    <table>
+      <tr><th>情境</th><th>影響變數</th><th>EPS 變化</th><th>新 EPS</th></tr>
+      <tr><td>甲公司流失（-23%營收）</td><td>營收 -23%</td><td style="color:var(--bear)">-3.5 元</td><td>11.5</td></tr>
+      <tr><td>中國殺價（毛利率降3pp）</td><td>毛利率 38%</td><td style="color:var(--bear)">-1.8 元</td><td>13.2</td></tr>
+      <tr><td>矽水膠爆發（佔比10%，毛利率+3pp）</td><td>毛利率 44%</td><td style="color:var(--bull)">+1.8 元</td><td>16.8</td></tr>
+      <tr><td>新廠延遲（營收成長僅+8%）</td><td>營收 37.7億</td><td style="color:var(--bear)">-1.4 元</td><td>13.6</td></tr>
+      <tr><td>日本超預期（日本+50%）</td><td>營收 +5%</td><td style="color:var(--bull)">+0.8 元</td><td>15.8</td></tr>
+      <tr><td>利率上升1%（浮動債15.2億）</td><td>利息+1,520萬</td><td style="color:var(--bear)">-0.2 元</td><td>14.8</td></tr>
+      <tr style="background:rgba(239,83,80,.1)"><td><b>最差組合</b>（甲客戶流失+中國殺價+新廠延遲）</td><td>複合</td><td style="color:var(--bear)"><b>-6.7 元</b></td><td style="color:var(--bear)"><b>8.3</b></td></tr>
+      <tr style="background:rgba(76,175,80,.1)"><td><b>最佳組合</b>（矽水膠爆發+日本超預期+營收+25%）</td><td>複合</td><td style="color:var(--bull)"><b>+4.1 元</b></td><td style="color:var(--bull)"><b>19.1</b></td></tr>
+    </table>
+    <div class="tip warn">
+      <b>敏感度結論</b>
+      <p>2026E EPS 區間：最差 8.3 元 ↔ 基準 15.0 元 ↔ 最佳 19.1 元。下行幅度（-45%）大於上行（+27%），不對稱風險偏空。<b>致命因子是客戶流失</b>——單一因素即可衝擊 EPS -23%。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">D. 盲點聲明</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">本報告無法取得的關鍵資料</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>盲點</th><th>影響</th><th>信心度降級</th></tr>
+      <tr><td>前五大客戶真實身分</td><td>無法評估客戶黏著度、合約年限、轉單風險</td><td>-10%</td></tr>
+      <tr><td>矽水膠實際良率與成本</td><td>無法精確估算矽水膠毛利率溢價</td><td>-5%</td></tr>
+      <tr><td>竹南新廠具體完工進度（月度）</td><td>無法判斷2026H1或H2完工</td><td>-3%</td></tr>
+      <tr><td>江蘇廠稼動率與獨立財務</td><td>無法拆分中國子公司獲利貢獻</td><td>-5%</td></tr>
+      <tr><td>CB 未轉換餘額與轉換價</td><td>無法精確計算稀釋幅度（公開說明書未深讀）</td><td>-3%</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>盲點總降級：-26%。第四步 H2 信心從 45% → 調降至 33%（盲點修正後）</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">E. 風險情報驗證卡</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--danger)">風險卡 R1：最大客戶流失</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">年報客戶集中度表（管道1）+ 112年丁公司-90%前例（管道2）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">前置條件：</span><span class="ev-val">甲公司找到替代 ODM（Interojo/中國廠）且通過認證（需6-12月）</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">望隼品質問題/交期延遲/競爭對手大幅降價</span></div>
+  <div class="ev-row"><span class="ev-label">抑制因子：</span><span class="ev-val">轉換認證期6-12月、望隼三明治美瞳技術門檻、已建立的供應關係</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">低（10-25%）。依據：丁公司前例證明會發生，但甲公司營收 +140% 代表關係正在強化而非弱化</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">股價 -30~40%、EPS -23%、持續中期（6-12月找新客源）、部分可恢復</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">17.5% × 35% = <b>-6.1%</b></span></div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--danger)">風險卡 R2：中國政策/地緣風險</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">年報中國佔比61%（管道1）+ 3Q25 中國YoY-9%（管道2）+ 國際情報NMPA法規（管道3）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">前置條件：</span><span class="ev-val">台海緊張升級/NMPA政策突變/中國經濟硬著陸</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">美中對抗加劇、中國消費信心崩潰、本土品牌替代加速</span></div>
+  <div class="ev-row"><span class="ev-label">抑制因子：</span><span class="ev-val">望隼有江蘇本地廠（非純出口）、中國佔比正在下降（61%→47%）、ODM不涉及敏感技術</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">低（10-25%）。依據：2025年台海情勢相對穩定，但中國消費衰退已在發生（3Q-9%）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">輕度（消費衰退）：股價-15%、中期；重度（政治風險）：股價-50%+、長期、不可逆</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">輕度 20% × 15% = -3.0%；重度 5% × 50% = -2.5%；合計 <b>-5.5%</b></span></div>
+</div>
+
+<div class="ev-card ev-risk">
+  <div class="ev-title" style="color:var(--danger)">風險卡 R3：中國殺價侵蝕毛利</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">新聞「晶碩/望隼受中國殺價影響Q3為全年低谷」（管道1）+ 法說會「行業集中度下降、本土品牌崛起」（管道2）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">前置條件：</span><span class="ev-val">中國本土 OEM 擴產成功+品牌商持續壓價</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">中國經濟持續低迷、消費降級、過剩產能出清</span></div>
+  <div class="ev-row"><span class="ev-label">抑制因子：</span><span class="ev-val">望隼轉向高毛利矽水膠+日本市場分散；中國佔比正在下降</span></div>
+  <div class="ev-row"><span class="ev-label">發生機率：</span><span class="ev-val">中（25-50%）。依據：已在發生中，但幅度可控（毛利率仍維持40-41%）</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">毛利率降2-3pp → EPS -12~18%、持續中期、部分可恢復（產品組合調整）</span></div>
+  <div class="ev-row"><span class="ev-label">期望損失：</span><span class="ev-val">37.5% × 15% = <b>-5.6%</b></span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">F. 催化劑情報驗證卡</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑卡 C1：矽水膠日本出貨（2026）</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">法說會P7「矽水膠在日本2026出貨」（管道1）+ 年報「已取得矽水膠抗UV許可證」（管道2）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">日本客戶端驗證通過 + 量產良率達標 + 產能分配到位</span></div>
+  <div class="ev-row"><span class="ev-label">加速因子：</span><span class="ev-val">日本市場矽水膠滲透率快速上升（全球+8pp/年）、日本客戶主動要求</span></div>
+  <div class="ev-row"><span class="ev-label">阻礙因子：</span><span class="ev-val">良率未達標、客戶驗證延遲、產能排擠既有水膠訂單</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val">中高（50-75%）。依據：管理層已多次公開承諾、許可證已取得、承諾兌現率80%</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">毛利率+2-3pp → EPS +12-18%、持續受惠數季、結構性提升</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~30%（分析師目標價233已部分反映，但矽水膠佔比1%代表市場尚在觀望）</span></div>
+  <div class="ev-row"><span class="ev-label">潛在超額收益：</span><span class="ev-val">62.5% × 15% × (1-0.3) = <b>+6.6%</b></span></div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑卡 C2：竹南新廠完工（產能3倍化）</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">法說會P3「竹南新總部2026完工」（管道1）+ 年報資本支出13.9億（管道2）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">建設如期完工 + 設備安裝 + 產能爬坡（通常6-12月）</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val">高（50-75%）。依據：25億已大部分投入、法說會未提延遲</span></div>
+  <div class="ev-row"><span class="ev-label">影響幅度：</span><span class="ev-val">月產能 5,700萬→1.6億片，解除產能天花板 → 營收天花板從~45億提升至~120億</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~50%（市場已知新廠計畫，但產能爬坡速度未反映）</span></div>
+  <div class="ev-row"><span class="ev-label">潛在超額收益：</span><span class="ev-val">62.5% × 20% × (1-0.5) = <b>+6.3%</b></span></div>
+</div>
+
+<div class="ev-card ev-catalyst">
+  <div class="ev-title" style="color:var(--bull)">催化劑卡 C3：美國/歐洲市場突破</div>
+  <div class="ev-row"><span class="ev-label">情報來源：</span><span class="ev-val">法說會P6「美國YoY+43%, 歐洲耕耘中」（管道1）+ 年報「已有歐盟CE認證」（管道2）<span class="fias-f">F</span></span></div>
+  <div class="ev-row"><span class="ev-label">必要條件：</span><span class="ev-val">FDA 510(k)取得（美國）+ 大型品牌商ODM合約</span></div>
+  <div class="ev-row"><span class="ev-label">阻礙因子：</span><span class="ev-val">FDA審查需~1年、Interojo已搶先申請、歐洲EU MDR門檻高</span></div>
+  <div class="ev-row"><span class="ev-label">實現機率：</span><span class="ev-val">低（10-25%）短期內。美國基期極低（0.12%營收），2026年不太可能有重大貢獻</span></div>
+  <div class="ev-row"><span class="ev-label">Price-in：</span><span class="ev-val">~10%（市場幾乎未反映）</span></div>
+  <div class="ev-row"><span class="ev-label">潛在超額收益：</span><span class="ev-val">17.5% × 15% × (1-0.1) = <b>+2.4%</b></span></div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">第二次信心校準</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">壓力測試後信心更新</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>第一次（Step4）</th><th>第二次（Step5）</th><th>變化原因</th></tr>
+      <tr><td>H2 穩健成長</td><td>45%</td><td style="color:var(--bull)"><b>40%</b></td><td>盲點降級-5%（客戶身分+CB稀釋不明）</td></tr>
+      <tr><td>H1 高速成長</td><td>25%</td><td><b>22%</b></td><td>矽水膠實現機率50-75%但基期太低（1%）</td></tr>
+      <tr><td>H4 中國風險</td><td>15%</td><td style="color:var(--bear)"><b>18%</b></td><td>中國殺價已在發生（3Q-9%）、期望損失-5.5%</td></tr>
+      <tr><td>H5 矽水膠延遲</td><td>10%</td><td><b>12%</b></td><td>良率+客戶驗證為盲點，無法獨立驗證</td></tr>
+      <tr><td>H3 成長陷阱</td><td>5%</td><td><b>8%</b></td><td>客戶流失為無支撐假設，丁公司-90%為前例</td></tr>
+    </table>
+
+    <div class="tip info">
+      <b>第二次信心校準整合結論</b>
+      <p><b>資料→觀察</b>：壓力測試發現兩個隱藏弱點：(1)客戶流失是「無支撐假設」，且有前例（丁公司-90%）(2)下行EPS區間（8.3元）遠大於上行（19.1元），風險報酬不對稱。盲點降級-26%反映客戶身分/CB稀釋等關鍵資訊缺失。</p>
+      <p><b>觀察→推論</b>：催化劑期望收益（C1 +6.6% + C2 +6.3% + C3 +2.4% = +15.3%）vs 風險期望損失（R1 -6.1% + R2 -5.5% + R3 -5.6% = -17.2%）。風險期望值略大於催化劑，但差距不大。</p>
+      <p><b>推論→結論</b>：H2「穩健成長」仍為主假說（40%），但信心從Step4的45%下修5%。核心觀點不變——望隼是「成長中但非爆發性」公司，PE 15x 合理但非低估。<b>關鍵判斷</b>：若 2026 年矽水膠佔比升至 5%+（C1 觸發），H1 升級為主假說，估值上修至 PE 18-20x；若最大客戶流失或中國急劇惡化（R1/R2 觸發），下行至 PE 10-12x × EPS 8-10 = 80-120 元。<span class="fias-i">I</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  天機閣 — 推衍系統 / 投資分析引擎 v2.0（向量增強版）<br>
+  4771 望隼科技 | 第五步：假設壓力測試 | 2026-03-30
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>

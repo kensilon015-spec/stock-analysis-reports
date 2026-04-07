@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>7738 東聯互動 — 第六步：評審團交叉驗證</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- ============================================================
+     天機閣 — 第六步：八人評審團交叉驗證
+     標的：7738 東聯互動（EUI）
+     日期：2026-03-30
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 評審團專用 === */
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.12);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+.reviewer.risk-ctrl{border-left-color:var(--danger);background:rgba(194,124,110,.12)}
+.reviewer.risk-ctrl .r-name{color:var(--danger)}
+
+/* === Iker 逐項 === */
+.iker-item{display:flex;gap:8px;align-items:baseline;padding:2px 0;font-size:.82em;border-bottom:1px dashed var(--border)}
+.iker-item:last-child{border-bottom:none}
+.iker-id{flex-shrink:0;font-weight:700;color:var(--base);min-width:28px}
+.iker-name{flex-shrink:0;min-width:100px;font-weight:600;color:var(--txt)}
+.iker-assess{flex:1;color:var(--txt2)}
+.iker-data{flex-shrink:0;font-size:.75em;padding:1px 6px;border-radius:4px}
+.iker-data.ok{background:rgba(46,125,50,.25);color:#2e7d32}
+.iker-data.judge{background:rgba(184,150,12,.25);color:#b8960c}
+.iker-data.manual{background:rgba(198,40,40,.25);color:#c62828}
+
+/* === 校準進程表漸變色 === */
+.cal-row{display:flex;align-items:center;gap:0;margin:3px 0}
+.cal-stage{flex:0 0 120px;font-weight:600;font-size:.82em;color:var(--base)}
+.cal-bar{flex:1;height:22px;border-radius:4px;position:relative;overflow:hidden}
+.cal-bar .cal-fill{height:100%;border-radius:4px;transition:width .5s}
+.cal-bar .cal-label{position:absolute;right:6px;top:2px;font-size:.72em;font-weight:700;color:#fff}
+.cal-delta{flex:0 0 60px;text-align:center;font-size:.78em;font-weight:700}
+
+/* === 期望值表 === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 方法論徽章 === */
+.method-badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.7em;font-weight:700;margin-left:6px;vertical-align:middle}
+.method-badge.iker{background:rgba(107,159,114,.3);color:var(--accent)}
+.method-badge.ben{background:rgba(122,176,192,.3);color:var(--link)}
+.method-badge.hoda{background:rgba(212,176,48,.3);color:var(--gold)}
+
+/* === 偏誤清單 === */
+.bias-list{list-style:none;padding:0;margin:4px 0}
+.bias-list li{padding:4px 0 4px 22px;font-size:.82em;color:var(--txt2);position:relative;border-bottom:1px dashed var(--border)}
+.bias-list li:last-child{border-bottom:none}
+.bias-list li::before{content:'⚠';position:absolute;left:0;top:4px;font-size:.9em}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>7738 東聯互動 — 第六步：評審團交叉驗證</h1>
+    <div class="sub">八人評審團 × 三系統方法論 × 第三次信心校準</div>
+    <div class="desc">三大員工系統（Iker / BenTsai / 豁達）各自獨立分析後，由五角色評審團交叉驗證，完成第三次信心校準。風控官逐項檢查認知偏誤並給出最終建議。</div>
+    <div class="tags">
+        <span class="tag">Step 6 / 10</span>
+        <span class="tag">評審團</span>
+        <span class="tag">信心校準 #3</span>
+        <span class="tag">H1 → 58%</span>
+        <span class="tag">加權期望 +40.2%</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#sec-bg">一、標的背景摘要（前五步結論）</a>
+    <a href="#sec-method">二、三大員工系統方法論</a>
+    <a href="#sec-panel">三、五角色評審團逐層分析</a>
+    <a href="#sec-cal">四、第三次信心校準（校準進程表）</a>
+    <a href="#sec-ev">五、加權期望值與安全邊際</a>
+    <a href="#sec-final">六、評審團整合結論</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ====================================================================== -->
+<!-- 一、標的背景摘要 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-bg">一、標的背景摘要（前五步結論）</div>
+<div class="section-sub">供評審團快速掌握標的現況，所有數據來自第一至第五步分析</div>
+
+<div class="card">
+<h3>核心數據總覽</h3>
+<div class="card-body">
+
+<div class="grid3">
+    <div class="mini-card bull-card">
+        <div class="title">股價</div>
+        <div class="num" style="color:var(--bull)">180.5</div>
+        <div class="desc">市值 ~49 億</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">EPS（Q1-Q3）</div>
+        <div class="num" style="color:var(--bull)">11.58</div>
+        <div class="desc">2025 營收 5.65 億 YoY+30%</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">ACH 主假說 H1</div>
+        <div class="num" style="color:var(--neutral)">60%</div>
+        <div class="desc">壓力測試後（原65%→60%）</div>
+    </div>
+</div>
+
+<table>
+<tr><th>項目</th><th>數據</th><th>評估</th></tr>
+<tr><td>毛利率</td><td>55-57%</td><td><span class="light green"></span>高毛利 Fintech</td></tr>
+<tr><td>交易筆數市佔</td><td>&gt;40%</td><td><span class="light green"></span>絕對領先</td></tr>
+<tr><td>用戶市佔</td><td>27.7%</td><td><span class="light green"></span>穩步擴張</td></tr>
+<tr><td>護城河</td><td>窄→寬</td><td><span class="light yellow"></span>法規+先發+網路+有效規模+成本</td></tr>
+<tr><td>負債比</td><td>10%</td><td><span class="light green"></span>極低槓桿</td></tr>
+<tr><td>配息預估</td><td>10 元（殖利率 ~5.5%）</td><td><span class="light green"></span>現金流支撐</td></tr>
+<tr><td>外資持倉</td><td>0.35%</td><td><span class="light yellow"></span>法人幾乎零</td></tr>
+<tr><td>致命因子</td><td>A2 地下匯兌轉化速度</td><td><span class="light red"></span>關鍵不確定性</td></tr>
+<tr><td>已知風險</td><td>估值回調(IPO蜜月期)、Q2淨利率82.5%異常、董事長兼總經理</td><td><span class="light yellow"></span>需持續追蹤</td></tr>
+</table>
+
+</div>
+</div>
+
+<div class="tip info">
+<b>第一章整合結論</b>
+前五步的結論方向高度一致：東聯互動是台灣移工匯款 Fintech 的實質龍頭，基本面數據（毛利率、市佔、營收成長、現金流）全面正向。但三個黃燈不容忽視——致命因子 A2（地下匯兌轉化速度）、Q2 淨利率異常高達 82.5%（可能含一次性項目）、以及 IPO 僅 5 個月的歷史過短問題。這些構成了評審團需要深入檢驗的核心議題。資料層面「好到令人不安」，恰恰需要更嚴格的交叉驗證。
+</div>
+
+<!-- ====================================================================== -->
+<!-- 二、三大員工系統方法論 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-method">二、三大員工系統方法論</div>
+<div class="section-sub">Iker 四層框架 / BenTsai 五維分析 / 豁達 正負計分——三系統獨立輸出後由評審團整合</div>
+
+<!-- Iker -->
+<div class="card">
+<h3><span class="method-badge iker">Iker</span> Iker 四層框架分析</h3>
+<div class="card-body">
+
+<div class="iker-item">
+    <span class="iker-id">L1</span>
+    <span class="iker-name">產業面</span>
+    <span class="iker-assess">移工匯款市場供需結構性失衡（80%地下→正規），政策驅動持續 3-5 年。定價權強（費率 150 元無壓力），市場主流題材（Fintech + 普惠金融）。</span>
+    <span class="iker-data ok">極度有利</span>
+</div>
+<div class="iker-item">
+    <span class="iker-id">L2</span>
+    <span class="iker-name">個股受惠</span>
+    <span class="iker-assess">東聯為最直接受益者——交易量/營收/獲利三重正循環。營收能見度高（月營收可追蹤），商業模式已經驗證。</span>
+    <span class="iker-data ok">強勁</span>
+</div>
+<div class="iker-item">
+    <span class="iker-id">L3</span>
+    <span class="iker-name">籌碼面</span>
+    <span class="iker-assess">法人零持倉 = 未來買盤潛力。融資使用率低，大股東未減持，流動性低但正在改善。</span>
+    <span class="iker-data judge">中性偏正</span>
+</div>
+<div class="iker-item">
+    <span class="iker-id">L4</span>
+    <span class="iker-name">空間估算</span>
+    <span class="iker-assess">若 2026 EPS 18-20（+20-30% 成長）→ PE 15-20x 合理 → 目標價 270-400 → 現價 180 有 50-120% 上行空間。</span>
+    <span class="iker-data ok">空間充足</span>
+</div>
+
+<div class="tip good" style="margin-top:8px">
+<b>Iker 結論</b>
+四層全數通過。L1 產業面極度有利（供需失衡+政策驅動）；L2 個股直接受益且營收能見度高；L3 籌碼面法人零持倉代表未來買盤空間大；L4 在合理 PE 假設下上行空間 50-120%。整體判定：<strong>強烈正面</strong>。
+</div>
+
+</div>
+</div>
+
+<!-- BenTsai -->
+<div class="card">
+<h3><span class="method-badge ben">BenTsai</span> BenTsai 五維分析</h3>
+<div class="card-body">
+
+<table>
+<tr><th>維度</th><th>分析結果</th><th>信號</th></tr>
+<tr>
+    <td>CB 狙擊</td>
+    <td>公開說明書有 B011（CB 相關條款），需確認轉換價。若存在 CB，稀釋風險需列入考量。</td>
+    <td><span class="light yellow"></span>待確認</td>
+</tr>
+<tr>
+    <td>營收三階段</td>
+    <td>目前處於「爆發成長」階段（營收 YoY+30%），正朝「穩定成長」過渡。營收月月可追蹤是少見的能見度。</td>
+    <td><span class="light green"></span>正面</td>
+</tr>
+<tr>
+    <td>期望差</td>
+    <td>法說會指引 20-30% → 實際 30% → 略超預期。管理層謹慎指引有利於製造正面期望差。</td>
+    <td><span class="light green"></span>正面</td>
+</tr>
+<tr>
+    <td>內部人追蹤</td>
+    <td>吳侑勳持股穩定（利用他人名義 9.33%），未減持 → 管理層對前景有信心。</td>
+    <td><span class="light green"></span>正面</td>
+</tr>
+<tr>
+    <td>估值錨定</td>
+    <td>IPO 競拍均價 203.49 → 目前 180.5 → 低於 IPO 價 11%。是否為「被低估」信號？或 IPO 價本身就偏高？</td>
+    <td><span class="light yellow"></span>雙面刃</td>
+</tr>
+</table>
+
+<div class="tip info" style="margin-top:8px">
+<b>BenTsai 結論</b>
+五維中三維明確正面（營收階段、期望差、內部人），兩維需進一步確認（CB 條款、IPO 估值錨定）。CB 若轉換價低於現價，將成為潛在賣壓；IPO 價是否合理需更多同業比較。整體判定：<strong>正面但有保留</strong>。
+</div>
+
+</div>
+</div>
+
+<!-- 豁達 -->
+<div class="card">
+<h3><span class="method-badge hoda">豁達</span> 豁達正負計分體系</h3>
+<div class="card-body">
+
+<div class="grid2">
+<div>
+<p style="font-weight:700;color:var(--bull);font-size:.88em;margin-bottom:4px">正面指標（7/12 符合）</p>
+<table>
+<tr><th>指標</th><th>狀態</th></tr>
+<tr><td>營收連續成長</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>毛利率上升趨勢</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>EPS 連年成長</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>現金流強勁</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>低負債比</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>產業成長期</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+<tr><td>市佔率領先</td><td style="color:var(--bull);font-weight:700">符合</td></tr>
+</table>
+</div>
+<div>
+<p style="font-weight:700;color:var(--bear);font-size:.88em;margin-bottom:4px">負面指標（4/12 觸發）</p>
+<table>
+<tr><th>指標</th><th>扣分原因</th></tr>
+<tr><td>歷史過短</td><td style="color:var(--bear)">上市不足 3 年（2025/10 上櫃）</td></tr>
+<tr><td>治理瑕疵</td><td style="color:var(--bear)">董事長兼總經理</td></tr>
+<tr><td>業務集中</td><td style="color:var(--bear)">單一業務（移工匯款）</td></tr>
+<tr><td>流動性不足</td><td style="color:var(--bear)">股東僅 1,679 人、日均量低</td></tr>
+</table>
+</div>
+</div>
+
+<div style="text-align:center;margin:10px 0">
+    <div style="display:inline-block;background:var(--panel);border:2px solid var(--warn);border-radius:8px;padding:8px 24px">
+        <span style="font-size:.78em;color:var(--txt3)">豁達淨分</span><br>
+        <span style="font-size:1.8em;font-weight:900;color:var(--warn)">+3</span>
+        <span style="font-size:.78em;color:var(--txt3);display:block">（7 正面 - 4 負面 = 偏正面但非滿分）</span>
+    </div>
+</div>
+
+<div class="tip warn" style="margin-top:8px">
+<b>豁達結論</b>
+淨分 +3 屬於「偏正面但有隱憂」等級。7 項正面指標全部扎實（營收、毛利率、EPS、現金流、負債、產業、市佔），但 4 項負面指標中「歷史過短」和「業務集中」是結構性弱點，短期內無法改善。整體判定：<strong>可關注但需謹慎</strong>。
+</div>
+
+</div>
+</div>
+
+<div class="tip info">
+<b>第二章整合結論</b>
+三大系統獨立分析結果呈現高度一致方向：Iker 四層全數通過（強烈正面）、BenTsai 五維中三維正面（正面但有保留）、豁達淨分 +3（偏正面但非滿分）。<br><br>
+<strong>觀察</strong>：三系統在「產業趨勢有利」「基本面紮實」兩點上完全一致，分歧點集中在「估值是否已反映」和「歷史太短能否信賴」。<br>
+<strong>推論</strong>：方向一致性過高，可能意味著分析角度太相似（都是基本面導向），需要風控官從反面角度補充。<br>
+<strong>結論</strong>：三系統原始輸出為評審團提供了堅實的正面證據基礎，但「一致性太高」本身就是一個需要警惕的信號——市場上的共識往往是最危險的。後續評審團需特別加強反面論證。
+</div>
+
+<!-- ====================================================================== -->
+<!-- 三、五角色評審團逐層分析 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-panel">三、五角色評審團逐層分析</div>
+<div class="section-sub">產業分析師 → 個股研究員 → 籌碼分析師 → 策略長 → 風控官（逐層深化）</div>
+
+<!-- 角色 1：產業分析師 -->
+<div class="card">
+<h3>角色 1：產業分析師</h3>
+<div class="card-body">
+
+<div class="reviewer">
+    <span class="r-name">產業分析師</span>
+    <span class="r-layer">引用：Iker L1 + 產業研究</span>
+    <div class="r-verdict pass">結論：產業面極度有利 — 評分 9/10</div>
+</div>
+
+<details open>
+<summary>供需分析</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+移工人數持續增加（2025年在台移工約 75 萬人），每月匯款需求剛性且重複。地下匯兌占比約 80%，代表正規管道仍有 4 倍以上的潛在市場等待轉化。供需結構性失衡（需求遠大於正規供給）形成強勁的長期成長動力。
+</p>
+</details>
+
+<details>
+<summary>政策驅動力</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+金管會持續推動移工金融包容政策，打擊地下匯兌是長期方向。政策風向 3-5 年內不太可能逆轉（打擊非法是跨黨共識）。每一波地下匯兌查緝行動，都直接轉化為正規管道（東聯等）的新增交易量。
+</p>
+</details>
+
+<details>
+<summary>定價權評估</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+東聯每筆匯款手續費約 150 元，對移工而言占匯款金額比例極低（平均匯款 1-3 萬元，費率 0.5-1.5%），且遠低於銀行匯款（500-1,000 元以上）。定價權強勁——競爭者難以用更低價格搶客（已接近成本底線），且用戶對 150 元的敏感度極低。
+</p>
+</details>
+
+<div class="score-bar" style="margin-top:8px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">產業面評分</span>
+    <div class="bar"><div class="fill" style="width:90%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div>
+    <span class="val" style="color:var(--bull)">9/10</span>
+</div>
+
+</div>
+</div>
+
+<!-- 角色 2：個股研究員 -->
+<div class="card">
+<h3>角色 2：個股研究員</h3>
+<div class="card-body">
+
+<div class="reviewer">
+    <span class="r-name">個股研究員</span>
+    <span class="r-layer">引用：Iker L2 + BenTsai 營收三階段 & 期望差</span>
+    <div class="r-verdict pass">結論：個股基本面強勁，但需警惕成長放緩拐點 — 評分 8/10</div>
+</div>
+
+<details open>
+<summary>直接受惠程度</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+東聯是移工匯款正規化的最直接受益者——市佔第一（交易筆數 &gt;40%）、商業模式已驗證（營收穩定成長、毛利率 55-57%）。每一個從地下匯兌轉來的用戶，都幾乎是零邊際成本的增量營收。交易量/營收/獲利形成三重正循環。
+</p>
+</details>
+
+<details>
+<summary>營收階段判定</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+根據 BenTsai 營收三階段模型，東聯目前處於「爆發成長」→「穩定成長」的過渡期。2025 營收 YoY+30% 仍屬爆發期尾端。關鍵監測點：月營收 YoY 是否維持 &gt;20%——若連續兩個月低於 20%，則已正式進入穩定成長期，估值倍數應相應下調。
+</p>
+</details>
+
+<details>
+<summary>期望差分析</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+管理層法說會指引 20-30% 成長，實際交出 30% → 略超預期上緣。這種「謹慎指引+實際達標」的模式有利於持續製造正面期望差。但需注意：若未來某季度實際低於指引下緣（&lt;20%），市場修正可能非常劇烈（IPO 公司對業績不達標的懲罰特別大）。
+</p>
+</details>
+
+<div class="score-bar" style="margin-top:8px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">個股面評分</span>
+    <div class="bar"><div class="fill" style="width:80%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div>
+    <span class="val" style="color:var(--bull)">8/10</span>
+</div>
+
+</div>
+</div>
+
+<!-- 角色 3：籌碼分析師 -->
+<div class="card">
+<h3>角色 3：籌碼分析師</h3>
+<div class="card-body">
+
+<div class="reviewer">
+    <span class="r-name">籌碼分析師</span>
+    <span class="r-layer">引用：Iker L3 + BenTsai 內部人追蹤</span>
+    <div class="r-verdict cond">結論：籌碼面中性偏正，法人建倉是催化劑但時間不確定 — 評分 6/10</div>
+</div>
+
+<details open>
+<summary>法人持倉分析</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+外資僅 0.35%，投信幾乎零。這是 IPO 初期小型股的典型狀態。<strong>正面解讀</strong>：法人尚未進場 = 未來潛在買盤龐大，一旦開始建倉將帶動股價重估。<strong>負面解讀</strong>：法人不買可能代表流動性不足、研究覆蓋不夠、或認為市值太小不值得追蹤。兩種解讀都有道理，無法單獨判斷方向。
+</p>
+</details>
+
+<details>
+<summary>內部人動向</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+吳侑勳（董事長兼總經理）利用他人名義持股 9.33%，自 IPO 以來未減持。這是正面信號——管理層對公司前景有信心，且沒有急著在 IPO 後套現。但需持續追蹤：若出現任何減持動作（即使是小量），在流動性如此低的市場中，信號意義會被放大。
+</p>
+</details>
+
+<details>
+<summary>流動性雙面刃</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+股東僅 1,679 人，日均成交量偏低。<strong>上漲時</strong>：籌碼集中容易飆漲，少量買盤就能推高股價。<strong>下跌時</strong>：賣壓集中無人承接，跌幅可能遠超預期。對散戶而言，流動性風險意味著進出場都可能付出額外成本（滑價）。
+</p>
+</details>
+
+<div class="score-bar" style="margin-top:8px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">籌碼面評分</span>
+    <div class="bar"><div class="fill" style="width:60%;background:linear-gradient(90deg,var(--warn),var(--neutral))"></div></div>
+    <span class="val" style="color:var(--warn)">6/10</span>
+</div>
+
+</div>
+</div>
+
+<!-- 角色 4：策略長 -->
+<div class="card">
+<h3>角色 4：策略長</h3>
+<div class="card-body">
+
+<div class="reviewer">
+    <span class="r-name">策略長</span>
+    <span class="r-layer">引用：Iker L4 + BenTsai 估值錨定 + 豁達比較排名</span>
+    <div class="r-verdict cond">結論：估值面有吸引力，但需保守看待 — 評分 7.5/10</div>
+</div>
+
+<details open>
+<summary>估值推算</summary>
+<table>
+<tr><th>情境</th><th>EPS 假設</th><th>合理 PE</th><th>目標價</th><th>vs 現價 180.5</th></tr>
+<tr>
+    <td>保守</td>
+    <td>2025 全年 ~15.5（Q4 約 4 元）</td>
+    <td>12x</td>
+    <td>186</td>
+    <td style="color:var(--warn)">+3%</td>
+</tr>
+<tr>
+    <td>基準</td>
+    <td>2026 ~17（管理層指引+20%）</td>
+    <td>15x</td>
+    <td>255</td>
+    <td style="color:var(--bull)">+41%</td>
+</tr>
+<tr>
+    <td>樂觀</td>
+    <td>2026 ~19（管理層指引+30%）</td>
+    <td>18x</td>
+    <td>342</td>
+    <td style="color:var(--bull)">+90%</td>
+</tr>
+<tr>
+    <td>極樂觀</td>
+    <td>2026 ~20（超出指引上緣）</td>
+    <td>20x</td>
+    <td>400</td>
+    <td style="color:var(--bull)">+122%</td>
+</tr>
+</table>
+</details>
+
+<details>
+<summary>IPO 估值錨定效應</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+IPO 競拍均價 203.49 元，目前 180.5 元，低於 IPO 價 11%。BenTsai 指出這可能是「被低估」信號，但策略長認為需謹慎：IPO 競拍價反映的是市場對新股的「蜜月期溢價」，而非基本面合理價。低於 IPO 價不代表便宜，只代表蜜月期正在消退。真正的錨應該是 PE × EPS，而非 IPO 價。
+</p>
+</details>
+
+<details>
+<summary>PE 區間合理性</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+IPO 僅 5 個月，歷史太短無法建立可靠的 PE Band。參考同類型高成長 Fintech（營收 YoY+30%、毛利率 55%+）通常享有 15-25x PE。但東聯的特殊性在於：(1) 市場規模有天花板（台灣移工 75 萬人）；(2) 業務過度集中（單一產品線）。因此策略長認為合理 PE 應在 12-18x 之間，不宜給 20x 以上。
+</p>
+</details>
+
+<div class="score-bar" style="margin-top:8px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">估值面評分</span>
+    <div class="bar"><div class="fill" style="width:75%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div>
+    <span class="val" style="color:var(--bull)">7.5/10</span>
+</div>
+
+</div>
+</div>
+
+<!-- 角色 5：風控官 -->
+<div class="card">
+<h3>角色 5：風控官（最終審查）</h3>
+<div class="card-body">
+
+<div class="reviewer risk-ctrl">
+    <span class="r-name">風控官</span>
+    <span class="r-layer">橫跨所有層級，交叉驗證 + 認知偏誤檢查</span>
+    <div class="r-verdict cond">結論：給予黃燈 — 不反對但要求保守估值 + 分批建倉 — 評分 6/10</div>
+</div>
+
+<details open>
+<summary>資料缺口盤點</summary>
+<table>
+<tr><th>缺口項目</th><th>影響程度</th><th>說明</th></tr>
+<tr>
+    <td>歷史數據不足</td>
+    <td><span class="light red"></span>高</td>
+    <td>上市不足 1 年、上櫃僅 5 個月，無法建立可靠的歷史統計基準</td>
+</tr>
+<tr>
+    <td>同業比較困難</td>
+    <td><span class="light red"></span>高</td>
+    <td>主要競爭者（速匯金等）無公開財報，無法交叉驗證市佔數據</td>
+</tr>
+<tr>
+    <td>海外子公司透明度</td>
+    <td><span class="light yellow"></span>中</td>
+    <td>海外營運細節有限，關聯交易風險無法完全排除</td>
+</tr>
+<tr>
+    <td>Q2 淨利率異常</td>
+    <td><span class="light yellow"></span>中</td>
+    <td>82.5% 淨利率缺乏合理解釋，可能含一次性項目</td>
+</tr>
+</table>
+</details>
+
+<details open>
+<summary>認知偏誤檢查（5 項警告）</summary>
+<ul class="bias-list">
+    <li><strong>錨定偏誤</strong>：IPO 競拍價 203.49 元讓人覺得現價 180.5「便宜」，但 IPO 價未必是合理錨點。蜜月期溢價消退後，真正的底部可能更低。</li>
+    <li><strong>確認偏誤</strong>：高成長的數據太漂亮（營收+30%、毛利率55%+、市佔40%+），容易讓分析者選擇性忽略負面證據（如流動性風險、CB條款、業務集中度）。</li>
+    <li><strong>近因偏誤</strong>：近期數據全部正面（月營收創高、股價穩定），但公司歷史太短，我們看到的可能只是週期中最好的一段。</li>
+    <li><strong>倖存者偏誤</strong>：我們看到東聯成功，但看不到其他嘗試移工 Fintech 卻失敗的公司。成功案例的可複製性和護城河可能被高估。</li>
+    <li><strong>過度自信</strong>：ACH 信心從 65% 壓力測試後降至 60%，但三系統分析全部正面可能讓分析者回升信心。風控官認為 60% 可能仍偏高，建議再下調。</li>
+</ul>
+</details>
+
+<details>
+<summary>反面觀點（Devil's Advocate，至少 3 條）</summary>
+<div class="tip danger" style="margin:6px 0">
+<b>反面觀點 #1：高毛利引來競爭者</b>
+55-57% 的毛利率對金融業而言極為誘人。一旦市場規模被驗證，銀行（凱基、台新等已有移工匯款業務）和新進者將加速搶食。護城河「窄→寬」的判斷可能過於樂觀——法規門檻確實存在，但不代表現有銀行無法跨入。2-3年後市場可能從「獨占」變為「寡占」，毛利率承壓。
+</div>
+<div class="tip danger" style="margin:6px 0">
+<b>反面觀點 #2：IPO 前兩年數據美化是常態</b>
+公司在 IPO 前後有強烈動機美化財報（合法範圍內的會計選擇、費用遞延、收入提前認列等）。Q2 淨利率 82.5% 的異常高值可能正是此現象。需等到上市滿 3 年後，歷經完整景氣循環，數據才具參考性。前兩年的數據可信度應打 7 折。
+</div>
+<div class="tip danger" style="margin:6px 0">
+<b>反面觀點 #3：移工匯款天花板有限</b>
+台灣移工約 75 萬人，假設每人每月匯款一次、手續費 150 元 → 年市場天花板 = 75萬 × 12 × 150 = 13.5 億元。東聯目前營收 5.65 億，市佔 40%+，已接近天花板的 42%。成長空間不如想像中大——除非開拓海外市場或新業務線，否則 3-5 年內就會碰頂。高成長股一旦成長放緩，PE 壓縮速度非常快。
+</div>
+</details>
+
+<details>
+<summary>三系統交叉驗證</summary>
+<p style="font-size:.84em;color:var(--txt2)">
+<strong>Iker</strong>（強烈正面） × <strong>BenTsai</strong>（正面但有保留） × <strong>豁達</strong>（偏正面但非滿分） = 三系統方向一致。<br><br>
+風控官注意到：<strong>一致性太高反而可疑</strong>。三系統都是基本面導向的分析工具，在面對「基本面數據全面正向」的標的時，自然會得出相似結論。真正的考驗在於：這些正面數據是否可持續？是否存在我們無法觀測的隱藏風險？<br><br>
+<strong>風控官裁定</strong>：鑑於一致性偏誤風險，將三系統的共識結論信心下調 2 個百分點（60% → 58%），以反映「數據歷史太短+無法交叉驗證同業+認知偏誤風險」的不確定性。
+</p>
+</details>
+
+<details>
+<summary>豁達負面指標複審</summary>
+<table>
+<tr><th>負面指標</th><th>風控官複審意見</th><th>是否維持扣分</th></tr>
+<tr>
+    <td>歷史過短</td>
+    <td>上市 5 個月，這是最嚴重的結構性弱點。所有分析都建立在不到 2 年的財務數據上，統計基礎薄弱。</td>
+    <td style="color:var(--bear);font-weight:700">維持，加重</td>
+</tr>
+<tr>
+    <td>治理瑕疵</td>
+    <td>董事長兼總經理在小公司屬常態，但代表內控制衡不足。若發生治理問題，無內部糾錯機制。</td>
+    <td style="color:var(--warn);font-weight:700">維持</td>
+</tr>
+<tr>
+    <td>業務集中</td>
+    <td>100% 營收來自移工匯款相關業務。一旦政策轉向或市場結構改變，無備案。</td>
+    <td style="color:var(--bear);font-weight:700">維持，加重</td>
+</tr>
+<tr>
+    <td>流動性不足</td>
+    <td>1,679 名股東、低日均量。大額進出場將嚴重影響股價。散戶投資者需承擔額外流動性風險溢價。</td>
+    <td style="color:var(--warn);font-weight:700">維持</td>
+</tr>
+</table>
+</details>
+
+<div class="score-bar" style="margin-top:8px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">風控面評分</span>
+    <div class="bar"><div class="fill" style="width:60%;background:linear-gradient(90deg,var(--warn),var(--danger))"></div></div>
+    <span class="val" style="color:var(--warn)">6/10</span>
+</div>
+
+</div>
+</div>
+
+<!-- 五角色綜合雷達 -->
+<div class="card">
+<h3>五角色評分總覽</h3>
+<div class="card-body">
+
+<table>
+<tr><th>角色</th><th>評分</th><th>判定</th><th>關鍵觀點</th></tr>
+<tr>
+    <td>產業分析師</td>
+    <td style="color:var(--bull);font-weight:700">9/10</td>
+    <td><span class="light green"></span>極度有利</td>
+    <td>供需失衡+政策驅動 3-5 年，定價權強</td>
+</tr>
+<tr>
+    <td>個股研究員</td>
+    <td style="color:var(--bull);font-weight:700">8/10</td>
+    <td><span class="light green"></span>基本面強勁</td>
+    <td>直接受惠、營收能見度高、期望差正面</td>
+</tr>
+<tr>
+    <td>籌碼分析師</td>
+    <td style="color:var(--warn);font-weight:700">6/10</td>
+    <td><span class="light yellow"></span>中性偏正</td>
+    <td>法人零持倉=機會也是風險，流動性低</td>
+</tr>
+<tr>
+    <td>策略長</td>
+    <td style="color:var(--bull);font-weight:700">7.5/10</td>
+    <td><span class="light green"></span>有吸引力</td>
+    <td>PE 12-18x 合理，上行空間 41-90%</td>
+</tr>
+<tr>
+    <td style="color:var(--danger);font-weight:700">風控官</td>
+    <td style="color:var(--warn);font-weight:700">6/10</td>
+    <td><span class="light yellow"></span>黃燈</td>
+    <td>5項偏誤+歷史短+一致性可疑 → 保守為上</td>
+</tr>
+<tr style="background:var(--hover)">
+    <td style="font-weight:900;color:var(--base)">加權平均</td>
+    <td style="font-weight:900;color:var(--neutral)">7.3/10</td>
+    <td colspan="2" style="color:var(--txt2)">（產業 20% + 個股 25% + 籌碼 15% + 策略 20% + 風控 20%）</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<div class="tip warn">
+<b>第三章整合結論</b>
+五角色評審團從不同維度切入，產業分析師（9分）和個股研究員（8分）給予高度肯定，策略長（7.5分）認為估值有吸引力但需保守看待，籌碼分析師（6分）和風控官（6分）則持謹慎立場。<br><br>
+<strong>資料 → 觀察</strong>：高分集中在「產業+個股」（偏靜態基本面），低分集中在「籌碼+風控」（偏動態市場面）。這意味著東聯的「質」沒有問題，但「時」（進場時機）和「量」（買多少）需要謹慎拿捏。<br>
+<strong>推論</strong>：好公司不等於好投資。當前價格可能已部分反映了基本面利多，而流動性風險和歷史短的問題無法靠基本面彌補。<br>
+<strong>結論</strong>：加權平均 7.3/10 屬於「值得關注、可小量建倉、不宜重押」的等級。風控官的黃燈裁定合理——不是說不能投資，而是要用「保守估值+分批進場+嚴格停損」的紀律來管理風險。
+</div>
+
+<!-- ====================================================================== -->
+<!-- 四、第三次信心校準 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-cal">四、第三次信心校準（校準進程表）</div>
+<div class="section-sub">ACH → 壓力測試 → 評審團，三次校準追蹤信心變化軌跡</div>
+
+<div class="card">
+<h3>信心校準進程表</h3>
+<div class="card-body">
+
+<!-- 校準進程視覺化 -->
+<div style="margin:8px 0 12px">
+
+<!-- ACH -->
+<div class="cal-row">
+    <span class="cal-stage">ACH（第四步）</span>
+    <div class="cal-bar">
+        <div class="cal-fill" style="width:65%;background:linear-gradient(90deg,#4caf50,#66bb6a)"></div>
+        <span class="cal-label">65%</span>
+    </div>
+    <span class="cal-delta" style="color:var(--txt3)">基準</span>
+</div>
+
+<!-- 壓力測試 -->
+<div class="cal-row">
+    <span class="cal-stage">壓力測試（第五步）</span>
+    <div class="cal-bar">
+        <div class="cal-fill" style="width:60%;background:linear-gradient(90deg,#66bb6a,#ffc107)"></div>
+        <span class="cal-label">60%</span>
+    </div>
+    <span class="cal-delta" style="color:var(--danger)">-5%</span>
+</div>
+
+<!-- 評審團 -->
+<div class="cal-row">
+    <span class="cal-stage">評審團（第六步）</span>
+    <div class="cal-bar">
+        <div class="cal-fill" style="width:58%;background:linear-gradient(90deg,#ffc107,#ff9800)"></div>
+        <span class="cal-label">58%</span>
+    </div>
+    <span class="cal-delta" style="color:var(--danger)">-2%</span>
+</div>
+
+</div>
+
+<table>
+<tr><th>校準階段</th><th>H1 信心</th><th>變化</th><th>校準原因</th></tr>
+<tr>
+    <td>ACH（第四步）</td>
+    <td style="color:var(--bull);font-weight:700">65%</td>
+    <td>—</td>
+    <td>20 條證據強力支持強勁成長假說</td>
+</tr>
+<tr>
+    <td>壓力測試（第五步）</td>
+    <td style="color:var(--warn);font-weight:700">60%</td>
+    <td style="color:var(--danger)">-5%</td>
+    <td>A2 致命因子（地下匯兌轉化速度不確定）+ A6 淨利率疑慮 + 估值回調風險</td>
+</tr>
+<tr style="background:var(--hover)">
+    <td style="font-weight:700;color:var(--base)">評審團（第六步）</td>
+    <td style="font-weight:900;color:var(--warn)">58%</td>
+    <td style="color:var(--danger);font-weight:700">-2%</td>
+    <td>風控官黃燈（5 項認知偏誤 + 歷史過短 + 三系統一致性可疑 + 流動性風險）</td>
+</tr>
+</table>
+
+<!-- 各假說信心分布 -->
+<p style="font-size:.88em;font-weight:700;color:var(--base);margin-top:12px">各假說最終信心分布</p>
+<table>
+<tr><th>假說</th><th>描述</th><th>信心</th><th>視覺化</th></tr>
+<tr>
+    <td style="font-weight:700;color:var(--bull)">H1</td>
+    <td>強勁成長（移工匯款正規化持續推動）</td>
+    <td style="font-weight:700;color:var(--bull)">58%</td>
+    <td><div class="score-bar"><div class="bar"><div class="fill" style="width:58%;background:var(--bull)"></div></div></div></td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--neutral)">H2</td>
+    <td>溫和成長（成長放緩但仍正成長）</td>
+    <td style="font-weight:700;color:var(--neutral)">27%</td>
+    <td><div class="score-bar"><div class="bar"><div class="fill" style="width:27%;background:var(--neutral)"></div></div></div></td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--warn)">H3</td>
+    <td>停滯（競爭加劇+天花板接近）</td>
+    <td style="font-weight:700;color:var(--warn)">10%</td>
+    <td><div class="score-bar"><div class="bar"><div class="fill" style="width:10%;background:var(--warn)"></div></div></div></td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--danger)">H4</td>
+    <td>衰退（政策逆轉或重大治理問題）</td>
+    <td style="font-weight:700;color:var(--danger)">3%</td>
+    <td><div class="score-bar"><div class="bar"><div class="fill" style="width:3%;background:var(--danger)"></div></div></div></td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--danger)">H5</td>
+    <td>黑天鵝（法規禁止/重大弊案）</td>
+    <td style="font-weight:700;color:var(--danger)">2%</td>
+    <td><div class="score-bar"><div class="bar"><div class="fill" style="width:2%;background:var(--danger)"></div></div></div></td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<div class="tip info">
+<b>第四章整合結論</b>
+信心校準從 ACH 的 65% 經三次下調至 58%，累計下修 7 個百分點。每次下調都有明確原因：第一次（-5%）是致命因子和財報疑慮，第二次（-2%）是認知偏誤和資料品質問題。<br><br>
+<strong>觀察</strong>：58% 的 H1 信心仍然是最高假說，且 H1+H2 合計 85%，意味著「正成長」的整體信心仍然很高。真正的分歧在於「成長幅度」——是 30%+ 的爆發成長，還是 10-15% 的溫和成長？<br>
+<strong>推論</strong>：若實際成長落在 H2 區間（溫和 10-15%），目前 PE 約 11-12x 仍可接受，但上行空間將大幅收窄。投資決策的關鍵不在「會不會成長」（85% 信心是），而在「成長多快」以及「市場給多少倍」。<br>
+<strong>結論</strong>：58% 的信心水位足以支撐「小量試單」的決策，但不足以支撐「重倉」。第四次校準（第八步推演）可能帶來進一步調整。
+</div>
+
+<!-- ====================================================================== -->
+<!-- 五、加權期望值與安全邊際 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-ev">五、加權期望值與安全邊際</div>
+<div class="section-sub">基於信心分布的情境加權計算</div>
+
+<div class="card">
+<h3>四情境加權期望值</h3>
+<div class="card-body">
+
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">樂觀情境（H1, 58%）</div>
+        <div class="num" style="color:var(--bull)">300</div>
+        <div class="desc">上行 +66%　|　貢獻 +38.3%</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">基準情境（H2, 27%）</div>
+        <div class="num" style="color:var(--neutral)">220</div>
+        <div class="desc">上行 +22%　|　貢獻 +5.9%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">保守情境（H3, 10%）</div>
+        <div class="num" style="color:var(--warn)">150</div>
+        <div class="desc">下行 -17%　|　貢獻 -1.7%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">悲觀情境（H4+H5, 5%）</div>
+        <div class="num" style="color:var(--danger)">100</div>
+        <div class="desc">下行 -45%　|　貢獻 -2.3%</div>
+    </div>
+</div>
+
+<div style="text-align:center;margin:14px 0">
+    <div style="display:inline-block;background:var(--panel);border:2px solid var(--bull);border-radius:10px;padding:12px 32px">
+        <span style="font-size:.82em;color:var(--txt3)">加權期望值</span><br>
+        <span style="font-size:2.2em;font-weight:900;color:var(--bull)">+40.2%</span>
+        <span style="font-size:.78em;color:var(--txt3);display:block;margin-top:2px">= 58%×66% + 27%×22% + 10%×(-17%) + 5%×(-45%)</span>
+    </div>
+</div>
+
+<p style="font-size:.82em;color:var(--txt2)">
+<strong>解讀</strong>：+40.2% 的加權期望值代表「在目前信心分布下，長期持有的期望報酬率」。數值為正且幅度可觀，主要受 H1（58% × +66% = 38.3%）貢獻驅動。但需注意：這是機率加權後的「理論值」，實際結果只會落在其中一個情境，不會是加權平均。
+</p>
+
+</div>
+</div>
+
+<div class="card">
+<h3>安全邊際分析</h3>
+<div class="card-body">
+
+<table>
+<tr><th>估值情境</th><th>PE 假設</th><th>EPS 假設</th><th>合理價</th><th>安全邊際</th><th>風險評估</th></tr>
+<tr>
+    <td>保守</td>
+    <td>12x</td>
+    <td>15.5（2025 全年）</td>
+    <td style="font-weight:700">186</td>
+    <td style="color:var(--danger);font-weight:700">~3%</td>
+    <td><span class="light red"></span>幾乎無安全邊際</td>
+</tr>
+<tr>
+    <td>基準</td>
+    <td>15x</td>
+    <td>17（2026 預估）</td>
+    <td style="font-weight:700">255</td>
+    <td style="color:var(--bull);font-weight:700">~41%</td>
+    <td><span class="light green"></span>具備安全邊際</td>
+</tr>
+<tr>
+    <td>樂觀</td>
+    <td>18x</td>
+    <td>19（2026 預估）</td>
+    <td style="font-weight:700">342</td>
+    <td style="color:var(--bull);font-weight:700">~90%</td>
+    <td><span class="light green"></span>安全邊際充裕</td>
+</tr>
+</table>
+
+<div class="tip danger" style="margin-top:8px">
+<b>安全邊際關鍵警告</b>
+保守情境下（PE 12x × EPS 15.5 = 186），安全邊際僅約 3%——幾乎等於零。這意味著如果市場選擇用保守的角度看待東聯（畢竟歷史太短、流動性低），<strong>現價 180.5 幾乎沒有緩衝空間</strong>。只有在你相信成長會持續（H1 或 H2），且市場最終會給予更高估值倍數的前提下，現價才算「便宜」。
+</div>
+
+</div>
+</div>
+
+<div class="tip warn">
+<b>第五章整合結論</b>
+加權期望值 +40.2% 看似誘人，但深入拆解後發現：<br><br>
+<strong>資料 → 觀察</strong>：期望值高度依賴 H1 情境（貢獻 38.3%/40.2% = 95% 的正面期望）。若 H1 不成立，期望值暴降至 +1.9%（僅 H2 貢獻）。<br>
+<strong>推論</strong>：這是一個「高信念投資」——回報幾乎全部來自「相信強勁成長會持續」這一個假說。保守情境下安全邊際趨近於零，意味著做錯了沒有緩衝。<br>
+<strong>結論</strong>：投資決策歸結為一個問題：「你有多相信移工匯款正規化趨勢會持續 3-5 年？」如果答案是「很相信」（&gt;70% 信心），現價是不錯的進場點；如果只有 50-60% 信心，建議等待更明確的信號（如連續 2 季營收超出指引）或更低的價格（如 150-160 區間，提供 15-20% 安全邊際）。
+</div>
+
+<!-- ====================================================================== -->
+<!-- 六、評審團整合結論 -->
+<!-- ====================================================================== -->
+<div class="section-title" id="sec-final">六、評審團整合結論</div>
+<div class="section-sub">第六步最終裁定</div>
+
+<div class="card">
+<h3>評審團最終裁定</h3>
+<div class="card-body">
+
+<div class="tip good">
+<b>正面共識（三系統一致）</b>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:16px;margin-top:4px">
+    <li>東聯互動是台灣移工匯款 Fintech 的實質龍頭，基本面數據全面正向</li>
+    <li>產業趨勢（正規化取代地下匯兌）有 3-5 年以上持續性</li>
+    <li>毛利率、營收成長、現金流、負債比等指標全面健康</li>
+    <li>管理層未減持，期望差管理得當</li>
+</ul>
+</div>
+
+<div class="tip danger">
+<b>風控官黃燈警示</b>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:16px;margin-top:4px">
+    <li>歷史過短（IPO 僅 5 個月），所有分析建立在薄弱的統計基礎上</li>
+    <li>5 項認知偏誤風險（錨定/確認/近因/倖存者/過度自信）</li>
+    <li>三系統一致性過高，缺乏有效的反面驗證</li>
+    <li>保守情境下安全邊際趨近於零（PE 12x × EPS 15.5 = 186 ≈ 現價）</li>
+    <li>流動性風險：1,679 名股東、日均量低，進出場成本高</li>
+</ul>
+</div>
+
+<div class="tip warn" style="margin-top:10px">
+<b>最終裁定：黃燈 — 可小量建倉，不宜重押</b>
+<p style="font-size:.84em;color:var(--txt2);margin-top:4px">
+<strong>第三次信心校準結果</strong>：H1 58%（-2%），累計自 ACH 下修 7 個百分點。<br>
+<strong>加權期望值</strong>：+40.2%（主要由 H1 情境貢獻）。<br>
+<strong>建議策略</strong>：
+</p>
+<ol style="font-size:.84em;color:var(--txt2);padding-left:20px;margin-top:4px">
+    <li><strong>分批建倉</strong>：不在單一價位一次買足，分 2-3 批逐步建立部位</li>
+    <li><strong>保守估值</strong>：以 PE 12-15x 作為合理估值基準，不追逐樂觀情境的 18-20x</li>
+    <li><strong>月營收追蹤</strong>：每月檢視營收 YoY 是否維持 &gt;20%，連續兩月低於 20% 則降級</li>
+    <li><strong>停損紀律</strong>：若股價跌破 150（保守合理價的 81%），觸發停損離場</li>
+    <li><strong>等待催化劑</strong>：法人建倉、新業務線、海外擴張——任一催化劑出現前，維持小部位即可</li>
+</ol>
+</div>
+
+</div>
+</div>
+
+<div class="tip info">
+<b>第六章整合結論（全步驟總結）</b>
+評審團八人交叉驗證完成。三大員工系統方向一致看好東聯互動，五角色評審團加權平均 7.3/10。但風控官從認知偏誤、資料品質、流動性三個維度發出黃燈，將第三次信心校準壓至 58%（累計下修 7 個百分點）。<br><br>
+<strong>核心推論鏈</strong>：<br>
+產業面極度有利（9/10）→ 個股直接受惠（8/10）→ 但籌碼面中性（6/10）→ 估值有吸引力但需保守（7.5/10）→ 風控黃燈（6/10）→ 信心 58% → 加權期望 +40.2% → 安全邊際在保守情境近零。<br><br>
+<strong>最終定性</strong>：東聯互動是一家好公司（基本面紮實、產業趨勢有利），但在目前價位（180.5）不算便宜——安全邊際取決於對成長持續性的信念程度。建議策略為「分批建倉、不追高、等月營收持續驗證」，靜待第七步（完整天機錄）和第八步（推演引擎）的進一步深度分析。
+</div>
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-03-30　|　標的：7738 東聯互動（EUI）　|　步驟：第六步 評審團交叉驗證</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，進場前請審慎評估自身風險承受能力。</p>
+</div>
+
+</div>
+<script>
+// 全部展開/收合
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 預設全部收合
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+// 點擊 h3 切換
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

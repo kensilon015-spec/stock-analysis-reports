@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4771 望隼科技 — 第二步：FIAS 資料分級與深度分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--code-bg:#111;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.score-bar{height:8px;border-radius:4px;background:var(--border);margin:4px 0;overflow:hidden}
+.score-fill{height:100%;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>4771 望隼科技 — 第二步：FIAS 資料分級與深度分析</h1>
+  <div class="sub">VIZIONFOCUS INC. | 向量增強版（582段 BGE-M3）</div>
+  <div class="desc">分析日期：2026-03-30 | 向量搜尋 5 次 + 年報精讀 4 份 + 法說會 3 場</div>
+  <div class="tags">
+    <span class="tag">FIAS 四級分類</span>
+    <span class="tag">紅旗掃描 7 項</span>
+    <span class="tag">管理層誠信度</span>
+    <span class="tag">會計品質</span>
+  </div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">一、FIAS 資料分級統計</div>
+<div class="section-sub">所有收集資料依 事實(F)/推論(I)/假設(A)/推測(S) 四級分類</div>
+
+<div class="grid2">
+  <div class="mini-card bull-card"><div class="title">事實 (F)</div><div class="num">64%</div><div class="desc">信心權重 1.0 | 年報+finlab+官方資料</div></div>
+  <div class="mini-card neutral-card"><div class="title">推論 (I)</div><div class="num">22%</div><div class="desc">信心權重 0.75 | 法說會展望+產業趨勢</div></div>
+</div>
+<div class="grid2">
+  <div class="mini-card" style="border-left:4px solid var(--warn)"><div class="title">假設 (A)</div><div class="num">11%</div><div class="desc">信心權重 0.45 | 分析師目標/未驗證前提</div></div>
+  <div class="mini-card bear-card"><div class="title">推測 (S)</div><div class="num">3%</div><div class="desc">信心權重 0.15 | 毛利率預測/客戶推論</div></div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">FIAS 分級明細</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>資料來源</th><th>等級</th><th>權重</th><th>說明</th></tr>
+      <tr><td>年報五年財務摘要</td><td><span class="fias-f">F</span></td><td>1.0</td><td>勤業眾信查核簽證，108-112年完整</td></tr>
+      <tr><td>finlab 量化數據</td><td><span class="fias-f">F</span></td><td>1.0</td><td>TWSE 官方資料來源，24月營收+12季財務</td></tr>
+      <tr><td>MOPS 公開資訊</td><td><span class="fias-f">F</span></td><td>1.0</td><td>年報/公開說明書/重大訊息</td></tr>
+      <tr><td>法說會簡報數據</td><td><span class="fias-f">F</span></td><td>1.0</td><td>公司自行發布，與 finlab 交叉驗證一致</td></tr>
+      <tr><td>法說會管理層展望</td><td><span class="fias-i">I</span></td><td>0.75</td><td>前瞻性陳述，有歷史兌現紀錄佐證</td></tr>
+      <tr><td>國際產業研究報告</td><td><span class="fias-i">I</span></td><td>0.75</td><td>多家機構交叉比對（市場規模/CAGR）</td></tr>
+      <tr><td>新聞報導</td><td><span class="fias-i">I</span></td><td>0.75</td><td>鉅亨/數位時代/優分析，記者引述公司說法</td></tr>
+      <tr><td>分析師目標價</td><td><span class="fias-a">A</span></td><td>0.30</td><td>5人中位233元。依閣主規則降為0.30，僅作情緒指標</td></tr>
+      <tr><td>日本客戶推論</td><td><span class="fias-a">A</span></td><td>0.45</td><td>推論含 ReVIA/Ever Color 等品牌，未經確認</td></tr>
+      <tr><td>矽水膠毛利率提升</td><td><span class="fias-s">S</span></td><td>0.15</td><td>推測毛利率可從41%提升至43-46%，缺具體數據</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">二、五年財務趨勢（年報精讀 + finlab 交叉驗證）</div>
+<div class="section-sub">108-112年合併財報 + 2024-2025 finlab 季度資料</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">五年損益表（合併）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>年度</th><th>108(2019)</th><th>109(2020)</th><th>110(2021)</th><th>111(2022)</th><th>112(2023)</th></tr>
+      <tr><td>營收(百萬)</td><td>585</td><td>855</td><td>1,420</td><td>1,834</td><td>2,572</td></tr>
+      <tr><td>毛利(百萬)</td><td>186</td><td>289</td><td>492</td><td>697</td><td>1,025</td></tr>
+      <tr><td>毛利率</td><td>31.8%</td><td>33.8%</td><td>34.6%</td><td>38.0%</td><td>39.8%</td></tr>
+      <tr><td>營業利益(百萬)</td><td>81</td><td>149</td><td>317</td><td>366</td><td>832</td></tr>
+      <tr><td>營利率</td><td>13.8%</td><td>17.4%</td><td>22.3%</td><td>20.0%</td><td>32.3%</td></tr>
+      <tr><td>稅後淨利(百萬)</td><td>90</td><td>150</td><td>278</td><td>317</td><td>656</td></tr>
+      <tr><td>淨利率</td><td>15.4%</td><td>17.6%</td><td>19.6%</td><td>17.3%</td><td>25.5%</td></tr>
+      <tr><td>EPS(元)</td><td>2.49</td><td>2.94</td><td>4.64</td><td>6.02</td><td>10.77</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>2024全年</b>：營收 30.02 億(+17%)、EPS 11.81 元(+10%) <span class="fias-f">F</span></p>
+    <p><b>2025全年</b>：營收 34.87 億(+16%)、EPS 12.71 元(+8%) <span class="fias-f">F</span></p>
+    <p><b>CAGR（2021-2024）</b>：營收 28.34%、EPS 40.10% <span class="fias-f">F</span>（法說會簡報數據）</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">五年資產負債＋財務比率</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>年度</th><th>108</th><th>109</th><th>110</th><th>111</th><th>112</th></tr>
+      <tr><td>負債比</td><td>35.9%</td><td>40.9%</td><td>37.4%</td><td>37.0%</td><td style="color:var(--warn)">53.0%</td></tr>
+      <tr><td>流動比率</td><td>315%</td><td>346%</td><td>283%</td><td>287%</td><td style="color:var(--warn)">184%</td></tr>
+      <tr><td>速動比率</td><td>235%</td><td>269%</td><td>234%</td><td>244%</td><td style="color:var(--warn)">150%</td></tr>
+      <tr><td>利息保障</td><td>10.2x</td><td>22.3x</td><td>64.4x</td><td>41.6x</td><td>52.2x</td></tr>
+      <tr><td>ROE</td><td>12.2%</td><td>13.0%</td><td>17.9%</td><td>16.5%</td><td style="color:var(--bull)">32.3%</td></tr>
+      <tr><td>ROA</td><td>8.2%</td><td>8.2%</td><td>11.1%</td><td>10.6%</td><td style="color:var(--bull)">17.4%</td></tr>
+      <tr><td>AR週轉天數</td><td>111</td><td>124</td><td>115</td><td>94</td><td style="color:var(--bull)">74</td></tr>
+      <tr><td>存貨週轉天數</td><td>89</td><td>92</td><td>73</td><td>68</td><td style="color:var(--bull)">56</td></tr>
+    </table>
+    <div class="tip warn">
+      <b>財務結構觀察</b>
+      112年負債比從37%跳升至53%，流動比從287%降至184%——公司解釋為「籌措土地及設備資金，長期借款增加」。這與竹南新廠25億元投資計畫一致。利息保障倍數仍維持52x，短期償債無虞。但浮動利率負債從5.3億暴增至15.2億（+187%），利率敏感度大增。<span class="fias-f">F</span>
+    </div>
+    <div class="tip good">
+      <b>經營效率持續改善</b>
+      AR週轉天數從124天（109年）縮至74天（112年），存貨週轉天數從92天縮至56天，顯示營運效率顯著提升。應收帳款收得更快、存貨出得更快，是健康成長的訊號。<span class="fias-f">F</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">現金流量分析（112年度）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>金額（百萬）</th><th>說明</th></tr>
+      <tr><td>期初現金</td><td>919</td><td>—</td></tr>
+      <tr><td style="color:var(--bull)">營業活動</td><td style="color:var(--bull)">+959</td><td>獲利增加驅動，正現金流 <span class="fias-f">F</span></td></tr>
+      <tr><td style="color:var(--bear)">投資活動</td><td style="color:var(--bear)">-1,394</td><td>重大資本支出（購置廠房設備）<span class="fias-f">F</span></td></tr>
+      <tr><td>籌資活動</td><td>+325</td><td>長期借款淨流入 <span class="fias-f">F</span></td></tr>
+      <tr><td>期末現金</td><td>800</td><td>減少119百萬（-13%）</td></tr>
+      <tr><td><b>自由現金流</b></td><td style="color:var(--bear)"><b>-435</b></td><td>營業959 - 投資1,394 = -435 <span class="fias-i">I</span></td></tr>
+    </table>
+    <div class="tip warn">
+      <b>自由現金流為負</b>
+      營業現金流 +9.59 億強勁，但資本支出 13.94 億更大，自由現金流為 -4.35 億。這是典型的高速成長期公司現象——投資擴產（竹南新廠）消耗大量現金。需關注：(1)新廠完工後 FCF 何時轉正 (2)期間是否需要額外舉債或發CB。<span class="fias-i">I</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">ROE 下降之謎解析</h3>
+  <div class="card-body">
+    <p><b>年報 ROE vs finlab 季度 ROE 差異</b></p>
+    <table>
+      <tr><th>來源</th><th>時間</th><th>ROE</th><th>說明</th></tr>
+      <tr><td>年報（年度合併）</td><td>112年(2023)</td><td style="color:var(--bull)">32.3%</td><td>年報最高紀錄 <span class="fias-f">F</span></td></tr>
+      <tr><td>finlab（季度）</td><td>2024Q1</td><td>7.1%</td><td>開始下降 <span class="fias-f">F</span></td></tr>
+      <tr><td>finlab（季度）</td><td>2024Q4</td><td>4.8%</td><td>低點 <span class="fias-f">F</span></td></tr>
+      <tr><td>finlab（季度）</td><td>2025Q4</td><td>5.4%</td><td>微幅回升 <span class="fias-f">F</span></td></tr>
+    </table>
+    <div class="tip info">
+      <b>ROE 下降原因拆解</b>
+      <p>finlab 的 ROE 是<b>季度</b>數值（非年化），5.4% × 4 ≈ 21.6% 年化——仍算健康。但相比112年的32.3%確實下降了。</p>
+      <p><b>杜邦分析推論</b>：(1)淨利率：從25.5%降至24%左右（微降）(2)資產周轉率：因新廠投資致總資產膨脹，周轉率下降 (3)權益乘數：IPO+CB募資後，權益基礎大幅擴張。三者合力導致 ROE 下降，其中「股本膨脹+資產膨脹」為主因，不是獲利能力衰退。<span class="fias-i">I</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">三、台股紅旗掃描（7 項）</div>
+<div class="section-sub">向量搜尋 + 年報精讀交叉驗證</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">紅旗掃描結果</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>指標</th><th>門檻</th><th>望隼實際</th><th>結果</th></tr>
+      <tr>
+        <td>1</td><td>董監質押率</td><td>> 50%</td>
+        <td>0%（全部「無」）<span class="fias-f">F</span></td>
+        <td><span class="light green"></span>通過</td>
+      </tr>
+      <tr>
+        <td>2</td><td>會計師意見</td><td>非「無保留」</td>
+        <td>無保留意見（勤業眾信，5年一致）<span class="fias-f">F</span></td>
+        <td><span class="light green"></span>通過</td>
+      </tr>
+      <tr>
+        <td>3</td><td>近2年更換會計師</td><td>有更換</td>
+        <td>同事務所同會計師（劉裕祥、王兆群，109年起）<span class="fias-f">F</span></td>
+        <td><span class="light green"></span>通過</td>
+      </tr>
+      <tr>
+        <td>4</td><td>關係人交易佔營收</td><td>> 20%</td>
+        <td>年報未揭露重大關係人銷售交易；背書保證對象僅為子公司（江蘇視准）<span class="fias-f">F</span></td>
+        <td><span class="light green"></span>通過</td>
+      </tr>
+      <tr>
+        <td>5</td><td>背書保證 > 淨值50%</td><td>> 50%</td>
+        <td>對子公司背書 $1.88 億，佔淨值 10.51%（限額50%）<span class="fias-f">F</span></td>
+        <td><span class="light green"></span>通過</td>
+      </tr>
+      <tr>
+        <td>6</td><td>AR/存貨週轉天數</td><td>> 同業1.5倍</td>
+        <td>AR 74天、存貨 56天，趨勢持續改善中。同業精華(1565)AR約60-70天——望隼略高但在合理範圍 <span class="fias-i">I</span></td>
+        <td><span class="light yellow"></span>觀察</td>
+      </tr>
+      <tr>
+        <td>7</td><td>中國營收佔比</td><td>> 40%</td>
+        <td style="color:var(--danger)"><b>60.81%（112年）/ 47%（2025Q3法說會）</b><span class="fias-f">F</span></td>
+        <td><span class="light red"></span><b>觸發</b></td>
+      </tr>
+    </table>
+
+    <div class="tip danger">
+      <b>紅旗 #7：中國營收佔比 60.81%（112年）→ 47%（2025Q3）</b>
+      <p>112年年報中國佔營收 60.81%，遠超 40% 門檻。但 2025Q3 法說會數據顯示降至 47%（日本也升至 47%），代表地區分散化正在進行中。</p>
+      <p><b>觀察→推論</b>：中國比重下降主因：(1)日本市場高速成長(+43% YoY) (2)台灣/東南亞/歐洲新市場啟動 (3)中國市場3Q25 YoY -9%（下滑）。若趨勢持續，2026年中國佔比可能降至40%附近。但目前仍觸發紅旗。<span class="fias-i">I</span></p>
+    </div>
+
+    <div class="tip good">
+      <b>紅旗掃描總結：6/7 通過，1 項觸發</b>
+      <p>望隼在公司治理面（董監質押0%、會計師穩定、無保留意見）表現優良。唯一紅旗是中國營收集中度，但正在改善中。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">四、客戶集中度分析</div>
+<div class="section-sub">年報主要客戶資訊 + 向量搜尋增強</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">前四大客戶營收佔比</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>客戶</th><th>112年金額(百萬)</th><th>佔比</th><th>111年金額(百萬)</th><th>佔比</th><th>變化</th></tr>
+      <tr><td>甲公司</td><td>580</td><td>23%</td><td>242</td><td>13%</td><td style="color:var(--bull)">+140%</td></tr>
+      <tr><td>乙公司</td><td>529</td><td>21%</td><td>182</td><td>10%</td><td style="color:var(--bull)">+191%</td></tr>
+      <tr><td>丙公司</td><td>265</td><td>10%</td><td>285</td><td>16%</td><td style="color:var(--bear)">-7%</td></tr>
+      <tr><td>丁公司</td><td>19</td><td>1%</td><td>192</td><td>10%</td><td style="color:var(--bear)">-90%</td></tr>
+      <tr><td><b>前四大合計</b></td><td><b>1,392</b></td><td><b>55%</b></td><td><b>901</b></td><td><b>49%</b></td><td>+55%</td></tr>
+    </table>
+    <div class="tip warn">
+      <b>客戶集中度偏高且結構大幅變動</b>
+      <p>前四大客戶佔營收 55%（112年），且結構巨變——甲公司從13%升至23%（+140%），丁公司從10%降至1%（-90%）。這代表：(1)高度依賴少數大客戶 (2)客戶結構不穩定，單一客戶流失風險大。</p>
+      <p>但正面解讀：甲、乙公司同時大幅成長，代表望隼可能打進了新的大型品牌客戶。丁公司驟降可能是合約到期或品牌策略調整。<span class="fias-i">I</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">五、管理層誠信度驗證</div>
+<div class="section-sub">法說會承諾 vs 實際數字交叉比對</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">法說會數據交叉比對</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>法說會數據</th><th>finlab/年報實際</th><th>偏差</th><th>判定</th></tr>
+      <tr><td>2025Q3 營收</td><td>854百萬（簡報P4）</td><td>256,040+315,898+355,332+308,000千=~34.9億/年</td><td>< 1%</td><td><span class="light green"></span>一致</td></tr>
+      <tr><td>2025Q3 毛利率</td><td>40%（簡報P4）</td><td>40.01%（finlab）</td><td>0.01%</td><td><span class="light green"></span>一致</td></tr>
+      <tr><td>2025Q3 EPS</td><td>3.30元（簡報P4）</td><td>3.30元（finlab）</td><td>0%</td><td><span class="light green"></span>完全一致</td></tr>
+      <tr><td>2024全年 EPS</td><td>11.81元（簡報P5）</td><td>11.84元（finlab加總）</td><td>0.3%</td><td><span class="light green"></span>一致</td></tr>
+      <tr><td>日本地區營收佔比</td><td>47%（簡報P6）</td><td>34.15%（112年報）→47%（2025Q3）</td><td>—</td><td><span class="light green"></span>趨勢合理</td></tr>
+      <tr><td>產能</td><td>5,700萬片/月（簡報P3）</td><td>年報：竹南+江蘇合計</td><td>—</td><td><span class="light yellow"></span>未獨立驗證</td></tr>
+    </table>
+
+    <div class="tip good">
+      <b>誠信度評分：85/100（高）</b>
+      <p>法說會數據與 finlab/年報高度一致（偏差均 < 1%）。管理層在法說會中的數據表達精準，未發現誇大或模糊之處。產能數字無法獨立驗證但與業界規模合理。</p>
+      <p><b>加分項</b>：2024-2025年每年3場法說會，頻率高於同業平均（2場/年），資訊透明度佳。<span class="fias-i">I</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">年報承諾兌現追蹤</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>承諾（112年報）</th><th>兌現狀態</th><th>評分</th></tr>
+      <tr><td>113年營收持續成長</td><td>2024全年營收30.02億（+17%）✅</td><td style="color:var(--bull)">+10</td></tr>
+      <tr><td>在日本市場推出散光美瞳</td><td>法說會提及功能型鏡片佔17% ✅</td><td style="color:var(--bull)">+10</td></tr>
+      <tr><td>在中國推出高保濕材料水膠</td><td>法說會提及新品定位彩拋片需求強勁 ✅</td><td style="color:var(--bull)">+10</td></tr>
+      <tr><td>在台灣推出二代濾藍光鏡片</td><td>台灣營收佔比從4.88%升至6% ✅</td><td style="color:var(--bull)">+5</td></tr>
+      <tr><td>114年在中日美推矽水膠</td><td>2025Q3矽水膠佔比1%，中美耕耘中、日本2026出貨</td><td style="color:var(--warn)">0（進行中）</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>承諾兌現率：4/5 已兌現或進行中（80%），無方向性錯誤</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">六、會計品質與異常掃描</div>
+<div class="section-sub">向量搜尋「會計政策變更」「關係人交易」結果</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">會計品質檢查</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>檢查項目</th><th>結果</th><th>說明</th></tr>
+      <tr><td>會計師事務所</td><td><span class="light green"></span>勤業眾信（Deloitte）</td><td>四大之一，108-112年一致 <span class="fias-f">F</span></td></tr>
+      <tr><td>會計師意見</td><td><span class="light green"></span>無保留意見</td><td>五年一致，108年有加強調事項（正常）<span class="fias-f">F</span></td></tr>
+      <tr><td>會計政策變更</td><td><span class="light green"></span>無異常</td><td>僅 IFRS 標準更新（IAS 1/8/12），無自主變更 <span class="fias-f">F</span></td></tr>
+      <tr><td>關係人銷售交易</td><td><span class="light green"></span>無重大</td><td>向量搜尋未發現關係人銷售異常 <span class="fias-f">F</span></td></tr>
+      <tr><td>背書保證</td><td><span class="light yellow"></span>有，但合理</td><td>對子公司江蘇視准 $1.88億（淨值10.51%），在限額內 <span class="fias-f">F</span></td></tr>
+      <tr><td>或有負債/訴訟</td><td><span class="light yellow"></span>大股東相關</td><td>長華電材被頎邦科技求償NT$17.65億營業秘密案（尚繫屬中）<span class="fias-f">F</span></td></tr>
+      <tr><td>浮動利率暴險</td><td><span class="light yellow"></span>大幅增加</td><td>浮動利率負債 $15.2億（+187% vs 111年），利率+1%影響稅前淨利 <span class="fias-f">F</span></td></tr>
+    </table>
+
+    <div class="tip info">
+      <b>向量搜尋增強發現</b>
+      向量語意搜尋從年報原文中發現：(1)年報明確揭露重大會計判斷包含「金融資產估計減損」和「應收帳款預期信用損失」，均為標準做法 (2)會計估計假設之不確定性來源已充分揭露。整體會計品質良好，無異常訊號。
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">七、法說會產品與地區結構萃取（2025Q3）</div>
+<div class="section-sub">結構化數據，供後續步驟引用</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">地區營收結構演變</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>地區</th><th>112年報</th><th>2025Q3法說會</th><th>YoY（2025Q3）</th><th>趨勢</th></tr>
+      <tr><td>中國</td><td style="color:var(--danger)">60.81%</td><td style="color:var(--warn)">47%</td><td style="color:var(--bear)">-9%</td><td>下降中，消費轉弱</td></tr>
+      <tr><td>日本</td><td>34.15%</td><td style="color:var(--bull)">47%</td><td style="color:var(--bull)">+43%</td><td>大幅上升，主力成長</td></tr>
+      <tr><td>台灣</td><td>4.88%</td><td>6%</td><td>—</td><td>穩定微增</td></tr>
+      <tr><td>美國</td><td>0.12%</td><td>微量</td><td style="color:var(--bull)">+43%</td><td>基期低但成長快</td></tr>
+      <tr><td>東南亞</td><td>—</td><td>新進入</td><td style="color:var(--bull)">+53%</td><td>2025年開始出貨</td></tr>
+      <tr><td>歐洲</td><td>—</td><td>新進入</td><td>—</td><td>矽水膠耕耘中</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">產品組合結構（2025Q3）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>產品類別</th><th>3Q24佔比</th><th>3Q25佔比</th><th>變化</th><th>說明</th></tr>
+      <tr><td>透明片</td><td>41%</td><td>36%</td><td style="color:var(--bear)">-5pp</td><td>消費者轉向美瞳 <span class="fias-f">F</span></td></tr>
+      <tr><td>美瞳片</td><td>39%</td><td style="color:var(--bull)">46%</td><td style="color:var(--bull)">+7pp</td><td>新品定位彩拋片需求強勁 <span class="fias-f">F</span></td></tr>
+      <tr><td>功能型鏡片</td><td>19%</td><td>17%</td><td>-2pp</td><td>散光/濾藍光/多焦 <span class="fias-f">F</span></td></tr>
+      <tr><td>矽水膠鏡片</td><td>1%</td><td>1%</td><td>持平</td><td>中美耕耘中，日本2026出貨 <span class="fias-f">F</span></td></tr>
+    </table>
+    <div class="tip info">
+      <b>產品結構觀察</b>
+      美瞳片（彩色隱形眼鏡）已成為最大品類（46%），且佔比仍在上升。這與全球彩色片OEM市場CAGR 9.5%的趨勢一致。矽水膠目前僅1%，是2026年的主要看點——若日本出貨順利，佔比可望快速提升。<span class="fias-i">I</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">第二步整合結論</div>
+
+<div class="tip info">
+  <b>第二步整合結論</b>
+  <p><b>資料→觀察</b>：望隼的資料品質高——會計師Deloitte五年無保留意見、法說會數據與finlab偏差<1%、董監零質押。財務趨勢強勁：營收CAGR 28%、EPS CAGR 40%、經營效率持續改善（AR/存貨週轉天數下降）。</p>
+  <p><b>觀察→推論</b>：ROE從32%降至季度5.4%（年化~22%）的主因是IPO+CB後股本/資產膨脹，非獲利能力衰退。中國營收佔比從61%降至47%，地區分散化進行中但仍觸發紅旗。客戶集中度55%偏高且結構大幅變動（丁公司-90%），是潛在風險。</p>
+  <p><b>推論→結論</b>：望隼是一家<b>財務健康、管理透明、高速成長中</b>的公司。主要風險點有三：(1)中國市場依賴（觸發紅旗但改善中）(2)客戶集中且不穩定 (3)25億新廠投資致自由現金流為負+負債比跳升。這些風險需在第三步競爭力分析和第四步ACH中深入評估。</p>
+</div>
+
+<div class="card collapsed">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">向量搜尋使用紀錄</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>查詢主題</th><th>最高相似度</th><th>來源</th><th>發現</th></tr>
+      <tr><td>1</td><td>管理層承諾 目標 預期</td><td>0.585</td><td>112年報</td><td>員工認股權/董事會議事</td></tr>
+      <tr><td>2</td><td>會計政策變更 重大調整</td><td>0.611</td><td>112年報</td><td>標準IFRS更新，無自主變更</td></tr>
+      <tr><td>3</td><td>關係人交易 背書保證</td><td>0.647</td><td>110年報</td><td>對子公司背書$1.88億(10.51%)</td></tr>
+      <tr><td>4</td><td>或有負債 訴訟 專利</td><td>0.573</td><td>112年報</td><td>大股東長華電材被訴NT$17.65億</td></tr>
+      <tr><td>5</td><td>重大不確定性 風險</td><td>0.616</td><td>113年報</td><td>客戶集中風險+浮動利率暴險</td></tr>
+    </table>
+    <p style="margin-top:6px">向量庫：582段 / BGE-M3 1024維 / vector_store.npz 1.58MB</p>
+  </div>
+</div>
+
+<div class="footer">
+  天機閣 — 推衍系統 / 投資分析引擎 v2.0（向量增強版）<br>
+  4771 望隼科技 | 第二步：FIAS 資料分級與深度分析 | 2026-03-30
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>

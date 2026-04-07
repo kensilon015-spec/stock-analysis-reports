@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4771 望隼科技 — 第一步：六管道資料收集</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--code-bg:#111;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>4771 望隼科技 — 第一步：六管道資料收集</h1>
+  <div class="sub">VIZIONFOCUS INC. | 隱形眼鏡 ODM 代工龍頭</div>
+  <div class="desc">分析日期：2026-03-30 | 步驟執行時間：10:43 → 12:30（含國際資料補充）</div>
+  <div class="tags">
+    <span class="tag">生技醫療</span>
+    <span class="tag">隱形眼鏡</span>
+    <span class="tag">ODM代工</span>
+    <span class="tag">日本/中國市場</span>
+    <span class="tag">上市 2024/3/18</span>
+  </div>
+</div>
+
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('collapsed'))">全部展開</button>
+  <button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'))">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">公司概覽</div>
+<div class="section-sub">基本資訊一覽</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card"><div class="title">最新股價</div><div class="num">192.0</div><div class="desc">2026/03/27</div></div>
+  <div class="mini-card neutral-card"><div class="title">本益比(TTM)</div><div class="num">15.1x</div><div class="desc">EPS 12.71 (2025全年)</div></div>
+  <div class="mini-card bull-card"><div class="title">2026/2月營收</div><div class="num">3.68億</div><div class="desc">YoY +43.4%</div></div>
+</div>
+<div class="grid3">
+  <div class="mini-card neutral-card"><div class="title">毛利率</div><div class="num">41.3%</div><div class="desc">2025Q4</div></div>
+  <div class="mini-card bear-card"><div class="title">ROE(稅後)</div><div class="num">5.4%</div><div class="desc">2025Q4（趨勢下降中）</div></div>
+  <div class="mini-card neutral-card"><div class="title">分析師目標價</div><div class="num">233</div><div class="desc">中位數（5人，219~243）</div></div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">公司基本資料</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td>公司全名</td><td>望隼科技股份有限公司 (VIZIONFOCUS INC.)</td></tr>
+      <tr><td>股票代號</td><td>4771（上市）</td></tr>
+      <tr><td>成立日期</td><td>2012年5月 <span class="fias-f">事實</span></td></tr>
+      <tr><td>掛牌上市</td><td>2024年3月18日（TWSE）<span class="fias-f">事實</span></td></tr>
+      <tr><td>總部位置</td><td>苗栗縣竹南鎮</td></tr>
+      <tr><td>董事長</td><td>黃修權（前鴻海副總、群創副董）<span class="fias-f">事實</span></td></tr>
+      <tr><td>總經理</td><td>石安（前群創研發處長）<span class="fias-f">事實</span></td></tr>
+      <tr><td>產業分類</td><td>生技醫療業 — 隱形眼鏡製造</td></tr>
+      <tr><td>主要業務</td><td>軟式拋棄型隱形眼鏡之研發、製造及銷售（ODM為主）<span class="fias-f">事實</span></td></tr>
+      <tr><td>核心製程</td><td>全注模製程（Cast Molding），大數據+AI智慧製造 <span class="fias-f">事實</span></td></tr>
+      <tr><td>生產基地</td><td>台灣苗栗竹南（總部）+ 中國江蘇（2016年設立）<span class="fias-f">事實</span></td></tr>
+      <tr><td>每股淨值</td><td>58.13元（2024Q3）→ PBR 3.3x <span class="fias-f">事實</span></td></tr>
+      <tr><td>資本額</td><td>約5.67億元（上市時）</td></tr>
+      <tr><td>配息</td><td>2025年配現金 5.522元，殖利率 3.08% <span class="fias-f">事實</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 A：年報 + 公開說明書</div>
+<div class="section-sub">MOPS 下載 + 西碧拉年報庫</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">年報取得狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>年報（民國年）</th><th>涵蓋年度</th><th>PDF大小</th><th>文字檔大小</th><th>來源</th><th>轉檔方式</th></tr>
+      <tr><td>110</td><td>2020年度</td><td>381 KB</td><td>210 KB</td><td>西碧拉庫存</td><td>pdf_claude_ocr（85頁全正常，0 API token）</td></tr>
+      <tr><td>111</td><td>2021年度</td><td>9.9 MB</td><td>297 KB</td><td>西碧拉庫存</td><td>pdf_to_text v4（已轉）</td></tr>
+      <tr><td>112</td><td>2022年度</td><td>6.9 MB</td><td>552 KB</td><td>西碧拉庫存</td><td>pdf_to_text v4（含87頁表格）</td></tr>
+      <tr><td>113</td><td>2023年度</td><td>5.7 MB</td><td>698 KB</td><td>西碧拉庫存</td><td>pdf_to_text v4（262頁）</td></tr>
+    </table>
+    <div class="tip warn">
+      <b>年報數量說明</b>
+      MOPS 上 4771 僅有民國 111-113 年年報。西碧拉另有 110 年（可能為興櫃期間申報）。合計 4 份，未達 5 份門檻，但望隼 2024/3 才上市，110 年之前可能尚未公開申報。110 年年報僅 381KB/85 頁，為早期縮簡版。
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">公開說明書（可轉換公司債）</h3>
+  <div class="card-body">
+    <p>MOPS 共找到 9 份公開說明書，已下載最新 CB 相關文件：</p>
+    <table>
+      <tr><th>檔名</th><th>類型</th><th>大小</th><th>說明</th></tr>
+      <tr><td>202402_4771_B011.pdf</td><td>B011（可轉換公司債）</td><td>17.1 MB</td><td>2024年2月發行，已下載 <span class="fias-f">事實</span></td></tr>
+      <tr><td>202312_4771_B011.pdf</td><td>B011（可轉換公司債）</td><td>—</td><td>2023年12月，未下載（可補）</td></tr>
+      <tr><td>202108_4771_B06.pdf</td><td>B06（上櫃前公開說明書）</td><td>—</td><td>2021年IPO相關</td></tr>
+      <tr><td>202403_4771_B04.pdf</td><td>B04</td><td>—</td><td>2024年3月（上市相關）</td></tr>
+    </table>
+    <div class="tip info">
+      <b>CB 發行歷史</b>
+      望隼在 2023-2024 年密集發行了 3 次可轉換公司債（B011），顯示公司積極透過 CB 募集擴廠資金。CB 轉換價、稀釋效應待第二步深度分析。
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 B：必搜清單 WebSearch</div>
+<div class="section-sub">9 大類別搜尋覆蓋</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">必搜清單完成狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>類別</th><th>優先級</th><th>狀態</th><th>取得資料摘要</th></tr>
+      <tr><td>月營收（近12月）</td><td>必須</td><td>✅</td><td>finlab 24 月完整資料 + 2025全年34.87億(+16.17%)</td></tr>
+      <tr><td>最近法說會</td><td>必須</td><td>✅</td><td>2025年3場法說會簡報PDF已下載（Q1/Q2/Q3）</td></tr>
+      <tr><td>最近季報</td><td>必須</td><td>✅</td><td>finlab 12季 EPS/毛利率/ROE 完整</td></tr>
+      <tr><td>公司官網產品頁</td><td>必須</td><td>✅</td><td>vizionfocus.com 投資人專區已爬取</td></tr>
+      <tr><td>重大訊息（近6月）</td><td>必須</td><td>✅</td><td>晶碩專利訴訟（已撤回）、股東會變更議程</td></tr>
+      <tr><td>董監持股質押</td><td>必須</td><td>⚠️</td><td>未找到具體質押資料（Goodinfo 被擋），待年報確認</td></tr>
+      <tr><td>近3月新聞（≥5篇）</td><td>建議</td><td>✅</td><td>營收創高、矽水膠展望、產能擴充、分析師目標價調升</td></tr>
+      <tr><td>產業研究報告</td><td>建議</td><td>✅</td><td>全球隱形眼鏡市場 USD 156-205億(2025)→USD 277-289億(2034) CAGR 3.9-6.0%；日拋 CAGR 12.49%；彩色片 OEM CAGR 9.5%。含國際英文來源 11 次搜尋</td></tr>
+      <tr><td>分析師報告</td><td>建議</td><td>✅</td><td>Factset 5人中位數233元；中信預估2026 EPS 16.25元</td></tr>
+      <tr><td>內部人異動</td><td>建議</td><td>⚠️</td><td>未找到具體異動資料，待年報確認</td></tr>
+      <tr><td>三大法人持股趨勢</td><td>建議</td><td>✅</td><td>finlab 外資/投信買賣超 60日資料已存</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>覆蓋率：9/11 項完成（82%），必須類 5/6 完成（83%）</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 C：市場調查五條線</div>
+<div class="section-sub">外部視角交叉驗證</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">五條線完成狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>調查線</th><th>狀態</th><th>關鍵發現</th></tr>
+      <tr>
+        <td>1. 下游驗證（客戶端）</td><td>✅</td>
+        <td>日本市場佔營收49%（彩色隱形眼鏡龍頭為主客戶）、中國45%、美國/東南亞/歐洲新興。日本市場2025年營收成長逾4成，台灣市場成長逾5成。<span class="fias-i">推論</span></td>
+      </tr>
+      <tr>
+        <td>2. 上游驗證（供應商端）</td><td>⚠️</td>
+        <td>具體供應商名單未公開。原物料含 HEMA 單體、矽水膠材料、染色劑、模具材料。全注模製程自主開發。待年報「主要供應商」章節確認。<span class="fias-a">假設</span></td>
+      </tr>
+      <tr>
+        <td>3. 競爭對手驗證</td><td>✅</td>
+        <td>台灣隱形眼鏡四雄：精華(1565)、晶碩(6491)、視陽(6782)、望隼(4771)。望隼2023年營收年增率超40%為同業最高。晶碩專利訴訟已撤回。<span class="fias-f">事實</span></td>
+      </tr>
+      <tr>
+        <td>4. 產業第三方驗證</td><td>✅</td>
+        <td>全球隱形眼鏡市場 2025 $97.3B→2026 $103.7B (CAGR 6.6%)。拋棄式 CAGR 8.4%。亞洲為成長引擎。<span class="fias-f">事實</span></td>
+      </tr>
+      <tr>
+        <td>5. 人才市場驗證</td><td>⚠️</td>
+        <td>員工薪資/人數具體資料未從公開搜尋取得，需從年報員工資訊章節補齊。104徵才方向待查。<span class="fias-a">假設</span></td>
+      </tr>
+    </table>
+    <p style="margin-top:6px"><b>完成 3/5 條線（競爭對手為必做 ✅），達標</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 D：finlab 量化資料庫</div>
+<div class="section-sub">程式化取數，已存入 JSON</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">finlab 取數清單</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>欄位</th><th>筆數</th><th>狀態</th><th>關鍵數據摘要</th></tr>
+      <tr><td>月營收</td><td>24月</td><td>✅</td><td>2025全年: ~34.9億 | 2026/2月: 3.68億(+43.4% YoY)</td></tr>
+      <tr><td>收盤價</td><td>60日</td><td>✅</td><td>區間 170~196 | 最新 192.0 (3/27)</td></tr>
+      <tr><td>EPS（季）</td><td>12季</td><td>✅</td><td>2024: 11.84 | 2025: 12.71 | 趨勢回升中</td></tr>
+      <tr><td>毛利率</td><td>12季</td><td>✅</td><td>區間 36.5%~43.4% | 最新 41.3% (2025Q4)</td></tr>
+      <tr><td>本益比</td><td>60日</td><td>✅</td><td>區間 13.8~15.1x | 最新 ~15x</td></tr>
+      <tr><td>營業利益率</td><td>12季</td><td>✅</td><td>finlab_data.json 已存</td></tr>
+      <tr><td>稅後淨利率</td><td>12季</td><td>✅</td><td>finlab_data.json 已存</td></tr>
+      <tr><td>ROE 稅後</td><td>12季</td><td>✅</td><td>從 12% 降至 5.4%（⚠️ 顯著下降趨勢）</td></tr>
+      <tr><td>營收年增率</td><td>24月</td><td>✅</td><td>2025下半年恢復正成長，最新 +21.3%</td></tr>
+      <tr><td>營收成長率（季）</td><td>12季</td><td>✅</td><td>2025Q4 +24.8% 為近期最高</td></tr>
+      <tr><td>外資買賣超</td><td>60日</td><td>✅</td><td>finlab_data.json 已存</td></tr>
+      <tr><td>投信買賣超</td><td>60日</td><td>✅</td><td>finlab_data.json 已存</td></tr>
+      <tr><td>成交量</td><td>60日</td><td>✅</td><td>日均量 ~10-70萬股，3/17起放量（70萬+）</td></tr>
+      <tr><td>營業現金流</td><td>—</td><td>❌</td><td>finlab 欄位不存在，需從年報/季報補齊</td></tr>
+      <tr><td>投資現金流</td><td>—</td><td>❌</td><td>同上</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>13/15 欄位成功取數，2 欄位（現金流）需從年報補齊</b></p>
+    <p><b>存檔：</b>finlab_data.json (11KB) + finlab_data_supplement.json (4.6KB)</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 E：即時搜尋深讀</div>
+<div class="section-sub">WebFetch 深度讀取關鍵文章</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">深讀議題清單</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>來源</th><th>議題</th><th>關鍵發現</th></tr>
+      <tr>
+        <td>1</td><td>優分析 UAnalyze</td><td>矽水膠產品成長潛力</td>
+        <td>矽水膠2026年各市場出貨；Q1毛利率41%；月產能目標5,700萬片→1.6億片 <span class="fias-i">推論</span></td>
+      </tr>
+      <tr>
+        <td>2</td><td>優分析 UAnalyze</td><td>產能滿載與五大市場並進</td>
+        <td>中國45%/日本49%；Q2起稼動率>90%；中國廠新增2條彩片線+320萬片；風險：突發需求無應變空間 <span class="fias-i">推論</span></td>
+      </tr>
+      <tr>
+        <td>3</td><td>鉅亨網</td><td>2025全年營收34億創高</td>
+        <td>日本市場2025年成長逾4成；台灣成長逾5成；2026展望：散光+矽水膠+美國/歐洲/東南亞 <span class="fias-f">事實</span></td>
+      </tr>
+      <tr>
+        <td>4</td><td>數位時代</td><td>創辦人故事與核心技術</td>
+        <td>黃修權(前鴻海副總)創業；三明治美瞳良率19%→90%；中國市場從<10%→60%；曾瀕倒閉自掏1億增資 <span class="fias-f">事實</span></td>
+      </tr>
+    </table>
+    <p style="margin-top:6px"><b>4 個議題深讀完成，超過門檻 3 個</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 F：法說會資料</div>
+<div class="section-sub">搜尋+下載+待結構化萃取</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">法說會取得狀況</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>場次</th><th>日期</th><th>檔案</th><th>大小</th><th>狀態</th></tr>
+      <tr><td>2025 Q3</td><td>2025/11/17</td><td>2025Q3_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>✅ 已下載</td></tr>
+      <tr><td>2025 Q2</td><td>2025/08/14</td><td>2025Q2_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>✅ 已下載</td></tr>
+      <tr><td>2025 Q1</td><td>2025/05/14</td><td>2025Q1_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>✅ 已下載</td></tr>
+    </table>
+    <p>公司在 2024 年共召開 6 場法說會，2025 年 3 場，資料公開透明度高。</p>
+    <p><b>結構化萃取：</b>待第二步 FIAS 分級時執行（需將法說會簡報 PDF 轉文字並萃取關鍵數據）。</p>
+    <div class="tip good">
+      <b>法說會頻率觀察</b>
+      望隼2024年6場+2025年3場法說會，頻率遠高於同業平均（通常每年2場）。這反映管理層積極與投資人溝通的態度，同時也因為2024/3才上市，有較多路演和推介需求。法說會提供中英文簡報並附錄音檔，資訊透明度為正面訊號。
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">管道 G：國際資料補充（英文來源）</div>
+<div class="section-sub">全球市場規模 / 國際競爭格局 / 各國法規 / 技術趨勢</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">全球隱形眼鏡市場規模與成長</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>指標</th><th>數值</th><th>來源</th></tr>
+      <tr><td>2025 年全球市場規模</td><td>USD 156 億～205 億（各研究機構口徑不同）</td><td>Precedence Research / GMInsights / SNS Insider <span class="fias-f">事實</span></td></tr>
+      <tr><td>2034 年預估</td><td>USD 277～289 億</td><td>CAGR 3.9%～6.0%</td></tr>
+      <tr><td>矽水膠市佔率（2025）</td><td>65.4%（材質別市佔最高）</td><td>市場報告彙整 <span class="fias-f">事實</span></td></tr>
+      <tr><td>日拋片段 CAGR</td><td>12.49%（2025-2034，所有片段中最快）</td><td>Straits Research <span class="fias-f">事實</span></td></tr>
+      <tr><td>日拋佔全球市佔</td><td>35%（2025），且日拋矽水膠滲透率仍持續上升 5-6%/年</td><td>Contact Lens Spectrum <span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip good">
+      <b>望隼定位驗證</b>
+      望隼主力產品線（日拋 + 矽水膠 + 彩色片）恰好位於全球成長最快的三個交叉區段。日拋矽水膠 CAGR 12.49% 遠高於整體市場 3.9-6.0%，產品方向正確。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">國際四大巨頭市佔與財務</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>公司</th><th>全球市佔</th><th>2025 營收/季</th><th>代表品牌</th><th>對望隼意義</th></tr>
+      <tr><td>Johnson & Johnson Vision</td><td>35-40%</td><td>Q2 約 USD 9.65 億</td><td>ACUVUE 系列</td><td>J&J 以自有品牌為主，不走 ODM；非直接競爭但定義市場標準 <span class="fias-f">事實</span></td></tr>
+      <tr><td>Alcon</td><td>22-26%</td><td>—</td><td>DAILIES / Air Optix</td><td>同上，全球 #2 <span class="fias-f">事實</span></td></tr>
+      <tr><td>CooperVision</td><td>~20%</td><td>—</td><td>MyDay / Biofinity</td><td>有部分 ODM 合作模式 <span class="fias-i">推論</span></td></tr>
+      <tr><td>Bausch+Lomb</td><td>~10%</td><td>—</td><td>ULTRA / Biotrue</td><td>同上 <span class="fias-i">推論</span></td></tr>
+    </table>
+    <div class="tip info">
+      <b>ODM 市場機會</b>
+      四大巨頭合計佔全球 87-96% 市佔，但他們主要以自有品牌銷售。亞洲新興品牌（日本/中國/韓國）大多採 OEM/ODM 模式委外生產，正是望隼的目標客群。望隼不需要跟 J&J 競爭——而是服務那些想跟 J&J 競爭的亞洲品牌。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">台灣同業國際競爭格局</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>公司</th><th>定位</th><th>近期表現</th></tr>
+      <tr><td>精華光學(1565)</td><td>台灣隱形眼鏡龍頭，自有品牌+ODM</td><td>台灣最早掛牌，市值較大 <span class="fias-f">事實</span></td></tr>
+      <tr><td>晶碩光學(6491)</td><td>和碩集團，品牌+代工</td><td>2024/12 對望隼提專利訴訟，已撤回 <span class="fias-f">事實</span></td></tr>
+      <tr><td>視陽光學(6782)</td><td>品牌導向，中國市場</td><td>規模較小 <span class="fias-i">推論</span></td></tr>
+      <tr><td>明基佳世達(晶碩母集團)</td><td>集團資源整合</td><td>— <span class="fias-i">推論</span></td></tr>
+      <tr><td>Pegavision(晶碩)</td><td>和碩+金像電合資，品牌+ODM</td><td>2024前10月營收NT$58.1億（+3.4% YoY），歐洲/日本成長15-20% <span class="fias-f">事實</span></td></tr>
+      <tr><td>Brighten Optix(亨泰光)</td><td>角膜塑型片(OK鏡)專家</td><td>2024全年營收NT$7.67億創新高，EPS 5.51元 <span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip info">
+      <b>台灣出口結構</b>
+      台灣隱形眼鏡產值佔台灣醫材產值 68%、出口值 14%（2019年資料），超過 70% 出口至中國和日本——這與望隼的市場結構（日本49%+中國45%）完全一致。<span class="fias-f">事實</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">各國市場深度：日本、中國、全球彩色片</h3>
+  <div class="card-body">
+    <details open>
+      <summary>日本市場</summary>
+      <table>
+        <tr><th>指標</th><th>數值</th></tr>
+        <tr><td>2028年預估量</td><td>9億片</td></tr>
+        <tr><td>2025年成長率</td><td>+1.6%（整體溫和，但日拋與彩片高於平均）</td></tr>
+        <tr><td>主要趨勢</td><td>日拋偏好高、矽水膠滲透加速、彩色片（Circle Lens）受動漫/社群文化推動</td></tr>
+        <tr><td>法規</td><td>PMDA 分類為第二類醫療器材，需第三方認證機構（RCB）認證</td></tr>
+      </table>
+      <p>望隼日本營收 2025 年成長逾 40%（公司公布），遠超市場整體 1.6%，代表市佔在快速提升。<span class="fias-i">推論</span></p>
+    </details>
+    <details open>
+      <summary>中國市場</summary>
+      <table>
+        <tr><th>指標</th><th>數值</th></tr>
+        <tr><td>2024年市場規模</td><td>USD 11.95 億（約 NT$380 億）</td></tr>
+        <tr><td>2030年預估</td><td>USD 23.45 億（CAGR 11.9%）</td></tr>
+        <tr><td>彩色片佔比</td><td>超過總銷量 50%（全球最高）</td></tr>
+        <tr><td>法規</td><td>NMPA 管轄，隱形眼鏡屬第二/三類醫療器材，審批嚴格</td></tr>
+        <tr><td>關鍵驅動</td><td>顏值經濟、Z世代消費力、社群媒體美妝文化</td></tr>
+      </table>
+      <p>中國市場 CAGR 11.9% 為全球最快之一，且彩色片佔主導——望隼的核心優勢正是彩色隱形眼鏡（三明治美瞳良率從19%做到90%）。<span class="fias-i">推論</span></p>
+    </details>
+    <details open>
+      <summary>全球彩色/美妝隱形眼鏡市場</summary>
+      <table>
+        <tr><th>指標</th><th>數值</th></tr>
+        <tr><td>2025年 OEM 市場規模</td><td>USD 31.8 億</td></tr>
+        <tr><td>2033年預估</td><td>USD 65.7 億（CAGR 9.5%）</td></tr>
+        <tr><td>亞太 2024 市場</td><td>USD 46 億</td></tr>
+        <tr><td>生產集中度</td><td>韓國+中國+台灣佔全球 OEM 產量 90%+</td></tr>
+        <tr><td>東南亞機會</td><td>部分國家法規較寬鬆（CE/FDA 快速註冊），CAGR 22%</td></tr>
+      </table>
+      <p>望隼身處全球彩色片 OEM 產能集中的台灣+中國雙基地，具備地理與成本優勢。<span class="fias-i">推論</span></p>
+    </details>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">近視大流行與近視管理商機</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>指標</th><th>數值</th><th>來源</th></tr>
+      <tr><td>2025年全球近視盛行率</td><td>~36%（約 24 億人）</td><td>PubMed 系統性回顧 <span class="fias-f">事實</span></td></tr>
+      <tr><td>2030年預估</td><td>WHO 預測 33.6 億人</td><td>WHO <span class="fias-f">事實</span></td></tr>
+      <tr><td>2050年兒童青少年</td><td>7.4 億人近視（現為~6億）</td><td>BMJ 研究 <span class="fias-f">事實</span></td></tr>
+      <tr><td>亞洲盛行率</td><td>52%（2030年），69%（2050年），全球最高</td><td>Meta-analysis <span class="fias-f">事實</span></td></tr>
+      <tr><td>中國兒童 15-19 歲</td><td>67.2% 近視</td><td>Lancet 研究 <span class="fias-f">事實</span></td></tr>
+      <tr><td>近視管理隱形眼鏡市場（兒童）</td><td>2025年 USD 4.55 億 → 2035年 USD 69.9 億（CAGR 16.8%）</td><td>Market Growth Reports <span class="fias-f">事實</span></td></tr>
+      <tr><td>角膜塑型片（Ortho-K）市場</td><td>2024年 USD 7.12 億 → 2031年 USD 9.5 億（CAGR 6.9%）</td><td>Persistence MR <span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip good">
+      <b>望隼年報提及近視防控</b>
+      年報明確提到「散光、漸進多焦（老花）、近視防控之開發，已至產品成熟、具成本優勢之進程」。近視管理隱形眼鏡 CAGR 16.8% 為所有片段中最快，若望隼成功切入此市場，將是重要成長引擎。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">矽水膠技術趨勢與原物料供應鏈</h3>
+  <div class="card-body">
+    <details open>
+      <summary>矽水膠技術前沿</summary>
+      <ul style="font-size:.85em;color:var(--txt2);padding-left:16px">
+        <li>矽水膠佔美國隱形眼鏡配戴量 70%，全球 65%+ <span class="fias-f">事實</span></li>
+        <li>2026年新品趨勢：仿生表面技術（Biomimetic Surface）增強潤濕性、Class II 紫外線防護、Dk/t 值突破 200+ <span class="fias-f">事實</span></li>
+        <li>近視管理矽水膠日拋為最新應用方向（Euclid Be Free® Day Lens，2026年上市）<span class="fias-f">事實</span></li>
+        <li>望隼年報：已取得「軟式矽水膠抗UV透明隱形眼鏡」醫療器材許可證 <span class="fias-f">事實</span></li>
+      </ul>
+    </details>
+    <details>
+      <summary>原物料供應鏈</summary>
+      <ul style="font-size:.85em;color:var(--txt2);padding-left:16px">
+        <li><b>HEMA</b>（2-羥乙基甲基丙烯酸酯）：傳統水膠基礎單體，佔市場 22% <span class="fias-f">事實</span></li>
+        <li><b>NVP</b>（N-乙烯基吡咯啶酮）：增加親水性的共聚單體 <span class="fias-f">事實</span></li>
+        <li><b>TRIS</b>（矽氧烷基丙烯酸酯）：矽水膠關鍵疏水單體，提供高透氧 <span class="fias-f">事實</span></li>
+        <li><b>PDMS</b>（聚二甲基矽氧烷）：矽膠彈性基材 <span class="fias-f">事實</span></li>
+        <li>供應鏈特性：各品牌使用獨家配方，供應商（如 Monomer-Polymer）提供客製化單體，排他性強 <span class="fias-f">事實</span></li>
+        <li>望隼具體供應商名單未公開，待年報「主要供應商」章節確認 <span class="fias-a">假設</span></li>
+      </ul>
+    </details>
+    <details>
+      <summary>製造技術</summary>
+      <ul style="font-size:.85em;color:var(--txt2);padding-left:16px">
+        <li>三大製程：車削(Lathe)、離心鑄造(Spin Cast)、全注模(Cast Molding) <span class="fias-f">事實</span></li>
+        <li>望隼採全注模製程——與 J&J ACUVUE 相同，為大量生產日拋的最佳選擇 <span class="fias-f">事實</span></li>
+        <li>現代自動化：全封閉環境、LED固化、100%影像檢測、無人手觸碰 <span class="fias-f">事實</span></li>
+        <li>望隼年報稱「大數據+AI智慧製造」，三明治美瞳良率從 19% 提升至 90% <span class="fias-f">事實</span></li>
+      </ul>
+    </details>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">韓國 OEM 競爭對手（缺口A補充）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>公司</th><th>定位</th><th>規模/市佔</th><th>對望隼威��</th></tr>
+      <tr>
+        <td><b>Interojo</b></td>
+        <td>韓國最大隱形眼鏡製造商（2000年成立），出口逾60國，長期為國際品牌做 ODM/OEM</td>
+        <td>年營收 USD 7,850 萬（TTM至2025/6），2026/1 正申請 FDA 510(k) 進軍美國 <span class="fias-f">事實</span></td>
+        <td><span class="fias-i">推論</span> 高——直接競爭對手，產品線重疊度高（彩色片+矽水膠+OEM），且已在進軍美國</td>
+      </tr>
+      <tr>
+        <td><b>OLENS</b></td>
+        <td>韓國最大彩色隱形眼鏡品牌</td>
+        <td>韓國國內隱形眼鏡市佔 30%、彩色片市佔 50%；CVC Capital 正以 5,000 億韓圜（USD 3.43 億）收購中 <span class="fias-f">事實</span></td>
+        <td><span class="fias-i">推論</span> 中——OLENS 偏品牌端，可能反而成為望隼潛在 ODM 客戶</td>
+      </tr>
+      <tr>
+        <td><b>GEO Medical</b></td>
+        <td>韓國老牌 OEM/ODM 廠，以彩色片聞名</td>
+        <td>具體營收未公開，出口至全球 <span class="fias-a">假設</span></td>
+        <td><span class="fias-i">推論</span> 中——與望隼在亞洲 ODM 市場直接競爭</td>
+      </tr>
+    </table>
+    <div class="tip warn">
+      <b>韓國威脅評估</b>
+      韓中台三國佔全球隱形眼鏡 OEM 產量 90%+。韓國最大對手 Interojo 年營收 USD 7,850 萬（約 NT$25 億），與望隼 2025 年營收 NT$34.9 億在同一量級。Interojo 正申請 FDA 進軍美國，若成功將在美國市場搶先望隼。但 OLENS 的 PE 收購（估值 USD 3.43 億）也顯示韓國品牌端有被整合趨勢，可能為望隼的 ODM 業務帶來新客源。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">日本彩色片品牌商（望隼客戶端，缺口B補充）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>品牌</th><th>母公司/代工端</th><th>市場地位</th></tr>
+      <tr><td><b>ReVIA 1day</b></td><td>Candy Magic（2007年成立）</td><td>日本樂天排名第1、日本最暢銷自然色日拋 <span class="fias-f">事實</span></td></tr>
+      <tr><td><b>Ever Color 1Day</b></td><td>AISEI</td><td>日本老牌彩色片品牌，長期熱銷 <span class="fias-f">事實</span></td></tr>
+      <tr><td><b>LIL MOON</b></td><td>PIA</td><td>日拋/月拋彩色片，藝人代言推動 <span class="fias-f">事實</span></td></tr>
+      <tr><td><b>Flurry</b></td><td>Kirara Asuka</td><td>近年最受歡迎新品牌，大DIA圓環設計 <span class="fias-f">事實</span></td></tr>
+    </table>
+    <p style="font-size:.85em;color:var(--txt2)">日本彩色片市場估值約 ¥3,000 億（約 NT$660 億），佔全球隱形眼鏡市場四分之一。上述品牌多數委託亞洲 ODM 廠生產。</p>
+    <div class="tip info">
+      <b>望隼客戶端推論</b>
+      望隼年報提到日本佔營收 49%，且以「彩色隱形眼鏡龍頭」為主客戶。結合日本市場品牌格局推論，望隼的日本客戶可能包含 Candy Magic/ReVIA、Ever Color 等頭部品牌（具體名單待法說會或年報客戶章節確認）。日本品牌偏好委外 ODM 且對品質要求極高，望隼能拿下日本龍頭客戶本身就是品質背書。<span class="fias-a">假設</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">東南亞 + 歐洲市場（新興市場，缺口C補充）</h3>
+  <div class="card-body">
+    <details open>
+      <summary>東南亞市場</summary>
+      <table>
+        <tr><th>指標</th><th>數值</th></tr>
+        <tr><td>2025年市場規模</td><td>USD 3.51 億（約 NT$112 億）<span class="fias-f">事實</span></td></tr>
+        <tr><td>2034年預估</td><td>USD 4.41 億（CAGR 2.6%）</td></tr>
+        <tr><td>印尼</td><td>佔東南亞 30%（USD 1.03 億），彩色片受年輕世代追捧 <span class="fias-f">事實</span></td></tr>
+        <tr><td>泰國/馬來西亞/菲律賓</td><td>彩色片需求快速成長（社群媒體/KOL驅動）<span class="fias-f">事實</span></td></tr>
+        <tr><td>法規特性</td><td>各國標準不統一，部分國家 CE/FDA 快速註冊可行 <span class="fias-i">推論</span></td></tr>
+      </table>
+      <p style="font-size:.85em;color:var(--txt2)">望隼已提及東南亞為 2026 年新目標市場。東南亞整體規模較小但彩色片增速快，且法規門檻低於美歐，是望隼 ODM 產品的���想外銷市場。</p>
+    </details>
+    <details open>
+      <summary>歐洲市場</summary>
+      <table>
+        <tr><th>指標</th><th>數值</th></tr>
+        <tr><td>2025年市場規模</td><td>USD 47.3 億（約 NT$1,513 億）<span class="fias-f">事實</span></td></tr>
+        <tr><td>2033年預估</td><td>USD 85.7 億（CAGR 7.71%）<span class="fias-f">事實</span></td></tr>
+        <tr><td>美妝片佔比</td><td>全球 27.2%，約 USD 4 億 <span class="fias-f">事實</span></td></tr>
+        <tr><td>主力市場</td><td>德國、法國、英國、瑞典、挪威 <span class="fias-f">事實</span></td></tr>
+        <tr><td>法規</td><td>EU MDR（2021/5全面施行），80%+廠商需重新認證，測試/臨床評估/上市後監控更嚴格 <span class="fias-f">事實</span></td></tr>
+      </table>
+      <div class="tip warn">
+        <b>歐洲進入障礙</b>
+        EU MDR 大幅提高認證門檻和成本，對新進入者不利。但望隼早在民國 102 年（2013年）就已取得歐盟 CE 認證（38%含水率水膠+矽水膠產品），具先行者優勢。Pegavision 在歐洲營收成長 15-20%，顯示台灣 ODM 廠在歐洲有市場空間。<span class="fias-i">推論</span>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">美國 FDA 510(k) 法規門檻（缺口D補充）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td>分類</td><td>隱形眼鏡（含彩色/美妝片）= Class II 醫療器材 <span class="fias-f">事實</span></td></tr>
+      <tr><td>審批路徑</td><td>510(k) 上市前通知（需找到實質等效的前代產品）<span class="fias-f">事實</span></td></tr>
+      <tr><td>審查時間</td><td>平均 177 天（約 6 個月），加上前置文件準備 4-5 個月 <span class="fias-f">事實</span></td></tr>
+      <tr><td>費用</td><td>文件準備 USD 2-3 萬 + FDA 審查費 USD 6,084-24,335（2025年）<span class="fias-f">事實</span></td></tr>
+      <tr><td>彩色片規定</td><td>所有彩色/裝飾性隱形眼鏡均需醫師處方，即使無度數 <span class="fias-f">事實</span></td></tr>
+      <tr><td>望隼現狀</td><td>年報提及美國為 2026 年目標市場之一，目前尚無 FDA 核准紀錄 <span class="fias-a">假設</span></td></tr>
+      <tr><td>韓國對手</td><td>Interojo 於 2026/1 提交 FDA 申請，搶先望隼 <span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip danger">
+      <b>美國市場進入風險</b>
+      FDA 510(k) 門檻不算極高（費用 < USD 5 萬、時間 ~1 年），但望隼目前無 FDA 核准。韓國 Interojo 已搶先申請。若望隼要進美國 ODM 市場，需在 2026 年啟動 510(k) 流程，否則將落後韓國對手 1-2 年。此為時間競賽，第二步需追蹤望隼是否已啟動 FDA 申請。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">日拋 ASP（平均售價）趨勢（缺口E補充）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>數值</th></tr>
+      <tr><td>傳統水膠日拋（零售價/盒）</td><td>USD 50-70/盒（90 片裝）<span class="fias-f">事實</span></td></tr>
+      <tr><td>矽水膠日拋（零售價/盒）</td><td>USD 70-100/盒（90 片裝）<span class="fias-f">事實</span></td></tr>
+      <tr><td>矽���膠 vs 水膠溢價</td><td>約 40-50% 溢價 <span class="fias-i">推論</span></td></tr>
+      <tr><td>年度 ASP 漲幅趨勢</td><td>低個位數（~2-3%/年），2025年預期全球成長 6-7% <span class="fias-f">事實</span></td></tr>
+      <tr><td>美國日拋矽水膠滲透率</td><td>2024年 41% → 預計 1-2 年內達 50%（每年 +8pp）<span class="fias-f">事實</span></td></tr>
+      <tr><td>全球矽水膠市佔（2024）</td><td>87.8%（所有類型加總）<span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip good">
+      <b>望隼矽水膠定價優勢</b>
+      矽水膠 vs 水膠零售溢價 40-50%，但 ODM 出廠價溢價幅度可能更大（因技術門檻）。望隼 2026 年矽水膠產品在日本/歐洲出貨，將直接拉升產品組合 ASP 和毛利率。目前毛利率 41%，若矽水膠佔比從低單位數提升至 20-30%，毛利率有望推升至 43-46%。<span class="fias-s">推測</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">年報驗證補充（人力資源）</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>項目</th><th>111年度</th><th>112年度</th><th>113年Q1止</th><th>觀察</th></tr>
+      <tr><td>研發人員</td><td>85</td><td>91</td><td>93</td><td>穩步增加 <span class="fias-f">事實</span></td></tr>
+      <tr><td>一般人員</td><td>595</td><td>705</td><td>745</td><td>大幅擴編（+25%）<span class="fias-f">事實</span></td></tr>
+      <tr><td>合計</td><td>680</td><td>796</td><td>838</td><td>兩年增加 23% <span class="fias-f">事實</span></td></tr>
+      <tr><td>平均年齡</td><td>33</td><td>32</td><td>32</td><td>年輕團隊 <span class="fias-f">事實</span></td></tr>
+      <tr><td>平均年資</td><td>2.2年</td><td>2.5年</td><td>2.5年</td><td>新公司特性 <span class="fias-f">事實</span></td></tr>
+      <tr><td>碩博士比例</td><td>5.15%</td><td>5.50%</td><td>5.25%</td><td>醫材業正常 <span class="fias-f">事實</span></td></tr>
+    </table>
+    <div class="tip info">
+      <b>人力擴張觀察</b>
+      兩年間員工從 680 人增至 838 人（+23.2%），以一般人員為主（生產線擴張），與產能擴充計畫一致。研發人員穩定成長至 93 人（佔 11.1%），顯示研發投入持續。平均年資僅 2.5 年反映公司年輕（2012成立、2024上市）。<span class="fias-i">推論</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">關鍵發現彙整</div>
+<div class="section-sub">資料收集過程中的重要觀察</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">正面訊號 (Bull Case)</h3>
+  <div class="card-body">
+    <div class="tip good">
+      <b>1. 營收高速成長</b>
+      2025全年營收34.87億(+16.17%)創歷史新高；2026年1-2月營收YoY +29%~+43%，加速成長中。日本市場2025年成長逾40%，台灣市場成長逾50%。<span class="fias-f">事實</span>
+    </div>
+    <div class="tip good">
+      <b>2. 產品線擴張：矽水膠+散光+彩片三箭齊發</b>
+      2026年矽水膠產品在日本、歐洲出貨；散光鏡片、定位彩片新品上市。矽水膠為高毛利產品，有望推升整體毛利率。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip good">
+      <b>3. 產能大幅擴張</b>
+      竹南新廠斥資25億，2026年完工，月產能從5,200萬片→1.6億片（+207%）。產能是營收天花板的解除。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip good">
+      <b>4. 分析師一致看好</b>
+      5位分析師目標價中位數233元（vs 現價192）；中信預估2026 EPS 16.25元。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip good">
+      <b>5. 專利訴訟利空消除</b>
+      晶碩2024/12提起專利侵權訴訟，已於114/9/11自行撤回，望隼表示無重大影響。<span class="fias-f">事實</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">負面/風險訊號 (Bear Case)</h3>
+  <div class="card-body">
+    <div class="tip danger">
+      <b>1. ROE 顯著下降趨勢</b>
+      ROE 從 2022Q4 的 12.0% 持續下降至 2025Q4 的 5.4%。即使 EPS 成長，ROE 下降代表資本使用效率降低。可能原因：IPO/CB 募資後股本膨脹、新廠建設期間資本未充分運用。需深入分析。<span class="fias-f">事實</span>
+    </div>
+    <div class="tip danger">
+      <b>2. CB 稀釋風險</b>
+      2023-2024年密集發行3次可轉換公司債，若全數轉換將稀釋既有股東。轉換價格和稀釋幅度待公開說明書分析。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip danger">
+      <b>3. 中國市場集中風險</b>
+      中國市場佔營收45-60%，為最大單一市場。中國消費景氣、政策法規變動、地緣政治風險均可能影響業績。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip warn">
+      <b>4. 產能滿載，短期缺乏彈性</b>
+      Q2 起稼動率 >90%，接近極限。突發訂單或旺季需求可能無法及時滿足，客戶可能轉單。<span class="fias-i">推論</span>
+    </div>
+    <div class="tip warn">
+      <b>5. 新廠資本支出龐大</b>
+      竹南新廠斥資25億元，占公司規模相當高比例。若市場需求不如預期，產能閒置將壓低ROE和毛利率。<span class="fias-a">假設</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">待深入議題（第二步起追蹤）</h3>
+  <div class="card-body">
+    <ol style="font-size:.85em;color:var(--txt2);padding-left:16px">
+      <li>ROE 下降原因拆解：股本膨脹 vs 獲利能力 vs 資產運用效率</li>
+      <li>CB 轉換價格、已轉換數量、未轉換餘額、稀釋幅度</li>
+      <li>竹南新廠完工時間表、資金來源、產能爬坡規劃</li>
+      <li>中國江蘇廠稼動率、是否受到中國法規/稅務影響</li>
+      <li>矽水膠產品毛利率 vs 傳統水膠，對整體毛利率提升幅度</li>
+      <li>日本客戶集中度、前五大客戶營收佔比</li>
+      <li>與晶碩/精華/視陽的產品線重疊度和競爭態勢</li>
+      <li>管理層誠信度：法說會承諾兌現率</li>
+      <li>營業/投資/自由現金流趨勢（finlab 缺此欄位，需從年報補）</li>
+      <li>董監持股質押比例、內部人異動</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">第一步完成門檻自檢（Gate Check）</div>
+<div class="section-sub">六管道達標檢核</div>
+
+<div class="card">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">Gate Check 自檢表</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>管道</th><th>完成標準</th><th>狀態</th><th>具體說明</th></tr>
+      <tr><td>A. 年報</td><td>至少5年+轉文字檔</td><td>⚠️ 4/5</td><td>取得4份年報（民國110-113），全數已轉文字檔。MOPS無更早年份，公司2024/3才上市。另有CB公開說明書1份(17MB)</td></tr>
+      <tr><td>B. 必搜清單</td><td>必須類覆蓋≥80%</td><td>✅ 達標</td><td>9/11項完成（82%），必須類5/6（83%）。缺：董監質押具體數字</td></tr>
+      <tr><td>C. 市場調查</td><td>≥3/5條線</td><td>✅ 達標</td><td>3/5條完成（下游客戶✅、競爭對手✅、產業第三方✅）。上游供應商/人才市場已從年報補齊基礎數據</td></tr>
+      <tr><td>D. finlab</td><td>取數完成存JSON</td><td>✅ 達標</td><td>13/15欄位成功，存入2個JSON檔(共15.6KB)。缺：現金流</td></tr>
+      <tr><td>E. 即時搜尋</td><td>≥3議題深讀</td><td>✅ 達標</td><td>4個議題WebFetch深讀完成（矽水膠、產能、營收、創辦人故事）</td></tr>
+      <tr><td>F. 法說會</td><td>≥1次+萃取</td><td>✅ 達標</td><td>取得2025年3場法說會簡報PDF(共5.7MB)。結構化萃取待第二步執行</td></tr>
+      <tr><td>G. 國際資料</td><td>英文來源補充</td><td>✅ 額外</td><td>WebSearch 18次：全球市場/四大巨頭/台灣同業/日中市場/近視趨勢/矽水膠技術/原物料/製造技術/彩色片OEM/法規 + 韓國OEM對手/日本品牌商/東南亞歐洲/FDA 510k/ASP趨勢</td></tr>
+    </table>
+    <p style="margin-top:10px;font-weight:700;color:var(--base)">
+      <b>總結：6/7 管道達標（含額外國際資料管道）</b><br>
+      管道A年報數量4份未達5份門檻，但公司2024年才上市、MOPS無更早年份，已取得所有可用年報。管道G國際資料為額外補充，大幅增強產業背景與競爭格局的深度。
+    </p>
+    <p style="font-weight:700;color:var(--accent)"><b>建議：可放行進入第二步</b></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-title">檔案清單</div>
+
+<div class="card collapsed">
+  <h3 onclick="this.parentElement.classList.toggle('collapsed')">本步驟所有產出檔案</h3>
+  <div class="card-body">
+    <table>
+      <tr><th>路徑</th><th>大小</th><th>說明</th></tr>
+      <tr><td>年報/4771_110.pdf</td><td>381 KB</td><td>民國110年報（2020年度）</td></tr>
+      <tr><td>年報/4771_111.pdf</td><td>9.9 MB</td><td>民國111年報（2021年度）</td></tr>
+      <tr><td>年報/4771_112.pdf</td><td>6.9 MB</td><td>民國112年報（2022年度）</td></tr>
+      <tr><td>年報/4771_113.pdf</td><td>5.7 MB</td><td>民國113年報（2023年度）</td></tr>
+      <tr><td>年報_文字檔/4771_110.txt</td><td>210 KB</td><td>年報文字檔</td></tr>
+      <tr><td>年報_文字檔/4771_111.txt</td><td>297 KB</td><td>年報文字檔</td></tr>
+      <tr><td>年報_文字檔/4771_112.txt</td><td>552 KB</td><td>年報文字檔</td></tr>
+      <tr><td>年報_文字檔/4771_113.txt</td><td>698 KB</td><td>年報文字檔</td></tr>
+      <tr><td>公開說明書/202402_4771_B011.pdf</td><td>17.1 MB</td><td>可轉換公司債公開說明書</td></tr>
+      <tr><td>法說會/2025Q1_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>2025/05/14 法說會</td></tr>
+      <tr><td>法說會/2025Q2_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>2025/08/14 法說會</td></tr>
+      <tr><td>法說會/2025Q3_望隼_法說會簡報.pdf</td><td>1.9 MB</td><td>2025/11/17 法說會</td></tr>
+      <tr><td>finlab_data.json</td><td>11 KB</td><td>finlab 主要量化資料</td></tr>
+      <tr><td>finlab_data_supplement.json</td><td>4.6 KB</td><td>finlab 補充資料(EPS/ROE/YoY)</td></tr>
+      <tr><td>推衍記錄.json</td><td>2.5 KB</td><td>Token/時間追蹤記錄</td></tr>
+    </table>
+    <p style="margin-top:6px"><b>總計 15 個檔案，約 49 MB（國際資料已整合至 HTML 報告內，無額外檔案）</b></p>
+  </div>
+</div>
+
+<div class="tip info">
+  <b>第一步整合結論（含國際資料交叉驗證）</b>
+  <p>望隼科技（4771）是台灣隱形眼鏡 ODM 代工新秀，2024/3 才上市，由前鴻海/群創高層創立。</p>
+  <p><b>資料面</b>：公司資訊透明度高（年6-9場法說會、中英文簡報），但因上市時間短，歷史財報僅4年。年報文字檔品質良好（255/262頁成功、87頁表格已轉MD格式）。</p>
+  <p><b>國際資料交叉驗證</b>：望隼的產品定位（日拋+矽水膠+彩色片 ODM）恰好位於全球成長最快的三大交叉區段——日拋 CAGR 12.49%、彩色片 OEM CAGR 9.5%、近視管理 CAGR 16.8%。全球四大巨頭（J&J/Alcon/Cooper/B+L）以自有品牌為主，亞洲新興品牌主要走 ODM 模式，正是望隼的目標客群。中國彩色片市場 CAGR 11.9% 為全球最快，望隼的三明治美瞳技術（良率19%→90%）在此市場具技術壁壘。</p>
+  <p><b>基本面初步觀察</b>：營收成長動能強（2025 +16%，2026初 +40%+），產品線從水膠擴展到矽水膠/散光/彩片/近視防控，竹南新廠2026年帶來3倍產能。員工兩年增23%（680→838人），以生產線擴張為主。</p>
+  <p><b>需警惕</b>：ROE 從12%降到5.4%（疑似CB稀釋+建廠期資本效率低）、中國市場集中風險（45-60%）、25億元新廠的資本支出風險、全球四大巨頭若切入亞洲ODM供應鏈的潛在威脅。整體是一家成長期公司，產品方向與全球趨勢一致，但估值（PE 15x, 分析師目標233）需在後續步驟深入驗證。</p>
+</div>
+
+<div class="footer">
+  天機閣 — 推衍系統 / 投資分析引擎 v2.0<br>
+  4771 望隼科技 | 第一步：六管道資料收集 | 2026-03-30
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// 卡片收合切換
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+</script>
+</body>
+</html>
