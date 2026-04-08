@@ -71,7 +71,7 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="hero">
   <h1>天機閣 內部更新日誌</h1>
   <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-07</div>
-  <div class="ver">18 天 ｜ ~155 項工作 ｜ 14 案分析 ｜ 點擊項目展開詳細</div>
+  <div class="ver">18 天 ｜ ~165 項工作 ｜ 14 案分析 ｜ 點擊項目展開詳細</div>
 </div>
 
 <div class="ctrl">
@@ -86,14 +86,16 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="day">
 <div class="day-header">2026-04-07 <span class="day-badge new">NEW</span></div>
 
-<div class="item"><div class="item-title"><span class="tag core">核心</span>外網模組 v1.0→v1.1.1 建置</div><div class="item-desc">DDG + open-webSearch 聚合，免費 9 引擎統一入口，中文自動翻譯英文雙軌搜尋</div>
+<div class="item"><div class="item-title"><span class="tag core">核心</span>外網模組 v1.0→v1.2.1 建置</div><div class="item-desc">Serper(Google)優先+OWS補漏，雙Key自動切換，西碧拉關係鏈整合</div>
 <div class="item-detail">
-<p>路徑：<code>天機閣-外網模組/src/</code>（7 個 Python 檔案），入口 <code>search()</code> / <code>fetch()</code></p>
+<p>路徑：<code>天機閣-外網模組/src/</code>（8 個 Python 檔案），入口 <code>search()</code> / <code>fetch()</code></p>
 <table><tr><th>版本</th><th>變更</th></tr>
 <tr><td>v1.0</td><td>DDG + OWS(bing,ddg,brave) 聚合</td></tr>
 <tr><td>v1.1</td><td>DDG primp 品質劣化→移除</td></tr>
-<tr><td>v1.1.1</td><td>OWS 改 [brave,ddg,baidu]，動態評分，中英雙軌搜尋</td></tr></table>
-<p>聚合模式（非備援）：閣主要求「各管道都要收集再去重」。</p>
+<tr><td>v1.1.1</td><td>OWS 改 [brave,ddg,baidu]，動態評分，中英雙軌搜尋</td></tr>
+<tr><td>v1.2.0</td><td>整合 Serper.dev Google 搜尋 API，聚合管道 serper→ows</td></tr>
+<tr><td>v1.2.1</td><td>雙 Key 自動切換 + 西碧拉 <code>--engine external_web</code> 接入</td></tr></table>
+<p>Serper(Google)優先→OWS(brave/ddg/baidu)補漏。雙 Key 共 5,000 次 ~625 家。實測 &lt;10s（Chrome ~30s）</p>
 </div></div>
 
 <div class="item"><div class="item-title"><span class="tag core">核心</span>搜尋 API v3.0→v3.1 升級</div><div class="item-desc">五層→六層，新增外網聚合回退，Grep score 修正</div>
@@ -129,6 +131,42 @@ v3.1：檔名→向量→Grep→新檔案→外網聚合(免費)→WebSearch(最
 <div class="item"><div class="item-title"><span class="tag analysis">分析</span>2729 瓦城泰統 Steps 2-7 完成</div><div class="item-desc">EPS 三年連降 13.54→9.01→6.76，期望值 136.6 元，淨期望值 -21.7%</div></div>
 
 <div class="item"><div class="item-title"><span class="tag infra">基建</span>向量索引增量建構 + 規劃書盤點 + 天機 Wiki 規劃書</div><div class="item-desc">增量模式省 5hr / 規劃書 12 有效+31 歸檔 / Wiki 16 章 1530 行先擱置</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>全系統搜尋策略升級（18 檔案）</div><div class="item-desc">外網模組優先→WebSearch 備援，統一 SOP 在共用_搜尋程序.md</div>
+<div class="item-detail">
+<p>改動：6 Skill + 8 步驟指引 MD + 3 JSON 設定 + 1 新建共用搜尋程序</p>
+<p>核心：一處定義多處引用，未來改策略只改一個檔案。WebSearch 走訂閱盡量避免</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>審閱整合模組 v1.0→v2.0</div><div class="item-desc">新增 Phase B-1 複習發現機制，流程 A→B-1→B-2→C</div>
+<div class="item-detail">
+<p>修改：<code>共用_第七步_審閱整合模組.md</code> / <code>共用_步驟執行規則.md</code> / <code>投資分析.skill</code></p>
+<p>B-1 五類挖掘：跨章節連結 / 反面線索 / 微弱訊號 / 管理層語言 / 遺珠。C-6 規則標記 [複習新發現]</p>
+<p>設計：複習在審計之前→先找新東西，審計一併品管。共用模組台股/美股自動生效</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>每日執行 6 項修復 + 流程說明書</div><div class="item-desc">T4 DB locked / Selenium 重複失敗 / RSS 404 / PTT 看板 / finlab 欄位 / chromedriver 殘留</div>
+<div class="item-detail">
+<table><tr><th>Fix</th><th>內容</th></tr>
+<tr><td>A</td><td>T4 西碧拉 DB locked → WAL checkpoint + JSON 暫存佇列 + fast-fail</td></tr>
+<tr><td>B</td><td>Selenium Layer4 重複失敗 → <code>_browser_init_failed</code> 旗標</td></tr>
+<tr><td>C</td><td>RSS NHK(404)+WSJ(403) → Google News 代理 RSS</td></tr>
+<tr><td>D</td><td>PTT StockStudy/FinTech(404) 移除 + Stock 加重試</td></tr>
+<tr><td>E</td><td>finlab 欄位改名（外陸資→全體外資及陸資持股比率）</td></tr>
+<tr><td>F</td><td>chromedriver 殘留子目錄清理</td></tr></table>
+<p>效果：T4 卡 24min→5s / Selenium ERROR 20+→1 / RSS+PTT WARNING 消除</p>
+<p>新增：<code>每日執行流程說明書.html</code>（7 章完整文件）+ finlab 1.5.12→1.5.13</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>Gemini API 說明書 v1.0</div><div class="item-desc">11 章完整參考，8 模型×3 表格實測，五層備援鏈 3,540 RPD</div>
+<div class="item-detail">
+<p>五層備援：gemini-3.1-flash-lite→2.5-flash-lite→2.5-flash→gemma-4-31b→gemma-4-26b</p>
+<p>截斷根因：thinking token 吃 maxOutputTokens → 三管齊下解法</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>系統說明書 v3.0→v3.1</div><div class="item-desc">引擎 8+1→9+1 / 基礎設施三→四層 / 西碧拉 50 模組 + 新子系統章節</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>Discord Bot v3.0.2</div><div class="item-desc">深度調查額度 1→3 次/人/天 + 小天對話流程說明更新至 v3 架構</div></div>
 
 <div class="item"><div class="item-title"><span class="tag auto">自動化</span>系統維護</div><div class="item-desc">搜尋服務 10 殘留清除 / npx 絕對路徑 / OWS API 格式修正</div></div>
 
