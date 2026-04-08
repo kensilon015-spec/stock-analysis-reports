@@ -70,8 +70,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="outer">
 <div class="hero">
   <h1>天機閣 內部更新日誌</h1>
-  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-07</div>
-  <div class="ver">18 天 ｜ ~165 項工作 ｜ 14 案分析 ｜ 點擊項目展開詳細</div>
+  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-08</div>
+  <div class="ver">19 天 ｜ ~180 項工作 ｜ 15 案分析 ｜ 點擊項目展開詳細</div>
 </div>
 
 <div class="ctrl">
@@ -79,12 +79,81 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
   <button onclick="toggleAll(false)">全部收合</button>
 </div>
 
-<!-- ════════════════ Phase 3：品質深化（04-02 ~ 04-07）════════════════ -->
-<div class="phase">Phase 3：品質深化 + 外網模組（04-02 ~ 04-07）</div>
+<!-- ════════════════ Phase 3：品質深化（04-02 ~ 04-08）════════════════ -->
+<div class="phase">Phase 3：品質深化 + 外網模組（04-02 ~ 04-08）</div>
+
+<!-- 04-08 -->
+<div class="day">
+<div class="day-header">2026-04-08 <span class="day-badge new">NEW</span></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>產業鏈大規模擴充（六批次建邊）</div><div class="item-desc">6 批次作業完成，DB: 3,108 節點 / 4,345 邊（V2=4,304）</div>
+<div class="item-detail">
+<table><tr><th>批次</th><th>範圍</th><th>新增邊</th><th>方式</th></tr>
+<tr><td>orphan_batch_D</td><td>234 家公司</td><td>93 條</td><td>Serper 外網 2 維度 + 產業知識庫</td></tr>
+<tr><td>orphan_batch_E</td><td>231 家公司</td><td>13 條</td><td>DDG 初篩 → AI WebSearch 驗證</td></tr>
+<tr><td>orphan_batch_B</td><td>238 家公司</td><td>41 條</td><td>WebSearch v2 精確搜尋</td></tr>
+<tr><td>expand_batch_C</td><td>88 家公司</td><td>108 條</td><td>產業知識 + 外網補充 + 誤判修正 8 條</td></tr>
+<tr><td>expand_batch_D</td><td>88 家公司</td><td>20 條</td><td>外網模組一條龍（搜尋+prescan+filter+寫入）</td></tr>
+<tr><td>expand_batch_E</td><td>85 家公司</td><td>343 條</td><td>外網模組一條龍</td></tr></table>
+<p>舊 V2 驗證 C 批次：556 條全面驗證（516 通過 / 11 修正 / 29 降級 V0）</p>
+<p>新工具：<code>expand_batch_D_runner.py</code>、<code>expand_E_pipeline.py</code>、<code>unified_edge_searcher.py</code>、<code>unified_edge_writer.py</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>統一搜尋入口 tianji_search.py 上線</div><div class="item-desc">5 種搜尋管道歸一入口，4 模式（web/vector/auto/local）</div>
+<div class="item-detail">
+<p>路徑：<code>tianji_search.py</code>（根目錄，~170 行）</p>
+<p>五管道：外網模組 / 向量搜尋 / Chrome DDG / WebSearch / DuckDuckGo</p>
+<p>修改 6 個呼叫方：expand_batch_D_runner / expand_E_pipeline / verify_v1_edges / 天機閣_chrome_search / orphan_build_edges_D / build_edges_orphan_D</p>
+<p>端對端測試通過（web/vector/auto/local 四模式）</p>
+<p>對應規劃書：統一搜尋入口_規劃書 → 已完成</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>審閱整合模組 v2.0→v2.1</div><div class="item-desc">新增 C-7 報告清洗規則，公開報告零殘留內部術語</div>
+<div class="item-detail">
+<p>新建：<code>共用_報告清洗.md</code>（黑名單 + 改寫原則 + 驗收掃描檢查清單）</p>
+<p>修改：<code>共用_第七步_審閱整合模組.md</code> v2.0→v2.1（C-1~C-7）</p>
+<p>修改：<code>投資分析.skill</code> + <code>美股投資分析.skill</code> Phase C 描述更新</p>
+<p>設計：不另設 Phase D，Phase C 重寫時直接用公開語言，完成後輕量驗收掃描確認零殘留</p>
+<p>配套工具：<code>clean_reports.py</code>（批次清洗已有報告）</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag analysis">分析</span>采鈺 6789 — 第 15 案完整深度分析</div><div class="item-desc">第七步完整版 + 第八步推演版上線 GitHub Pages</div>
+<div class="item-detail">
+<p>報告路徑：<code>github-pages/天機錄/6789_采鈺/</code></p>
+<p>藏經閣路徑：<code>天機閣-藏經閣/天機錄/6789_采鈺/</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>啟動器備份按鈕 + --backup CLI 修復</div><div class="item-desc">備份按鈕改為直接呼叫封存工具，--backup 參數接上 subprocess</div>
+<div class="item-detail">
+<p>啟動器 v3.0：新增 <code>runArchiveTool()</code>，用 <code>writeLaunchBat</code> 啟動封存工具</p>
+<p>每日執行 <code>--backup</code>：從原本只印警告，改為用 subprocess 呼叫封存工具</p>
+<p>根因：2026-03-30 備份從 7z 改為封存工具後，--backup 只留了警告沒接上新工具</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>Gemini API Token 優化（三檔案五處）</div><div class="item-desc">減少 20~40% API 呼叫次數，thinkingBudget 限制不影響品質</div>
+<div class="item-detail">
+<table><tr><th>檔案</th><th>變更</th></tr>
+<tr><td>verify_all_gemini.py</td><td>BATCH_SIZE 20→25 + thinkingBudget=1024</td></tr>
+<tr><td>pdf_converter.py</td><td>batch_size 3→5 + thinking_budget=2048</td></tr>
+<tr><td>pdf_gemini_ocr.py</td><td>thinking_budget=2048</td></tr></table>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>規劃書全面盤點更新</div><div class="item-desc">工作清單 HTML / CCO v1.4 / 弱訊號 v1.3 / 12 份規劃書完成度檢查</div>
+<div class="item-detail">
+<p>新建：<code>天機閣_工作清單.html</code>（四級優先清單 + 進度條 + 建議執行路線）</p>
+<p>更新：因果收斂協調器_規劃書 v1.3→v1.4（產業鏈 4,071 邊 + 統一搜尋入口）</p>
+<p>更新：弱訊號收斂後續工作_規劃書 v1.2→v1.3（外網模組 v1.2.1 + 統一入口）</p>
+<p>整理：搜尋策略升級規劃書 → 已完成/、暫存檔清除，主目錄 9 份進行中</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>天機日報 2026-04-08 上線</div><div class="item-desc">每日快報 + 偵測報告產出並上傳 GitHub Pages</div></div>
+
+<div class="issue"><div class="issue-label">啟動器備份按鈕失效（封存工具改版後遺漏） <span class="issue-status resolved">已處理</span></div><div class="issue-fix">根因：03-30 改為封存工具後 --backup 參數只留警告訊息。已修復接上 subprocess</div></div>
+</div>
 
 <!-- 04-07 -->
 <div class="day">
-<div class="day-header">2026-04-07 <span class="day-badge new">NEW</span></div>
+<div class="day-header">2026-04-07</div>
 
 <div class="item"><div class="item-title"><span class="tag core">核心</span>外網模組 v1.0→v1.2.1 建置</div><div class="item-desc">Serper(Google)優先+OWS補漏，雙Key自動切換，西碧拉關係鏈整合</div>
 <div class="item-detail">
