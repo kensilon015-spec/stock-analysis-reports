@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機閣 — 天機日報</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--base:#3d3a36;--link:#5a7d8c;--danger:#c62828}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:720px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:20px 16px 16px;margin-bottom:16px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.85em;color:var(--danger);font-weight:600;margin-top:2px}
+.hero .desc{font-size:.78em;color:var(--txt3);margin-top:6px}
+.back{display:inline-block;padding:4px 14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:.8em;font-weight:600;color:var(--txt2);text-decoration:none;margin-bottom:12px;transition:background .15s}
+.back:hover{background:var(--border)}
+.report-list{margin:8px 0}
+.report-card{display:flex;align-items:center;gap:12px;padding:14px 18px;margin:6px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--txt);transition:transform .12s,box-shadow .12s}
+.report-card:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.07);background:rgba(255,255,255,.7)}
+.report-date{flex-shrink:0;font-size:1em;font-weight:900;color:var(--danger);min-width:110px}
+.report-info{flex:1}
+.report-title{font-size:.9em;font-weight:700;color:var(--base)}
+.report-meta{font-size:.75em;color:var(--txt3);margin-top:2px}
+.report-arrow{flex-shrink:0;font-size:1.2em;color:var(--txt3)}
+.empty{text-align:center;padding:40px;color:var(--txt3);font-size:.9em}
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="../index.html" class="back">← 返回首頁</a>
+<div class="hero">
+    <h1>天機日報</h1>
+    <div class="sub">因果收斂偵測 — 每日自動產出</div>
+    <div class="desc">多條獨立弱訊號同時指向同一方向 → 在市場還沒注意到之前偵測到</div>
+</div>
+
+<div class="report-list" id="report-list">
+    <div class="empty">載入中...</div>
+</div>
+
+<div class="footer">天機閣 — 天機日報 | 因果收斂協調器（CCO）自動產出</div>
+</div>
+
+<script>
+// 從同目錄掃描所有天機日報 HTML
+// GitHub Pages 無法列目錄，所以用 index.json 記錄
+fetch('index.json')
+    .then(r => r.json())
+    .then(reports => {
+        const list = document.getElementById('report-list');
+        if (!reports || reports.length === 0) {
+            list.innerHTML = '<div class="empty">尚無日報</div>';
+            return;
+        }
+        // 新的在上
+        reports.sort((a, b) => b.date.localeCompare(a.date));
+        list.innerHTML = reports.map(r => `
+            <a href="${r.file}" class="report-card">
+                <div class="report-date">${r.date}</div>
+                <div class="report-info">
+                    <div class="report-title">${r.title || '天機日報'}</div>
+                    <div class="report-meta">${r.alerts || 0} 個警報 · ${r.size || ''}</div>
+                </div>
+                <div class="report-arrow">→</div>
+            </a>
+        `).join('');
+    })
+    .catch(() => {
+        document.getElementById('report-list').innerHTML = '<div class="empty">尚無日報（index.json 不存在）</div>';
+    });
+</script>
+</body>
+</html>
