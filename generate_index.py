@@ -175,6 +175,10 @@ def generate_index():
     total_files, folder_html = generate_folder_html(folders)
     daily_reports = scan_daily_reports()
     daily_html = generate_daily_html(daily_reports)
+    daily_btn = (
+        f'<a href="天機日報/{daily_reports[0]["file"]}" style="display:inline-block;padding:6px 18px;background:#b8960c;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">天機日報</a>'
+        if daily_reports else ''
+    )
 
     # 讀取現有 index.html 的覆蓋率區塊（保留不動）
     existing_path = os.path.join(BASE, 'index.html')
@@ -275,6 +279,7 @@ details.folder>.folder-body{padding:2px 10px 10px}
     <a href="天機閣演講稿.html" style="display:inline-block;padding:6px 18px;background:#5a7d8c;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">演講稿</a>
     <a href="天機閣簡報.html" style="display:inline-block;padding:6px 18px;background:#7d5a6e;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">簡報</a>
     <a href="天機閣更新日誌.html" style="display:inline-block;padding:6px 18px;background:#3d3a36;color:#e0dcd4;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">更新日誌</a>
+    {daily_btn}
     </div>
 </div>
 <div class="section-head">
