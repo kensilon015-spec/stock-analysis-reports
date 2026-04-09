@@ -174,7 +174,6 @@ def generate_index():
     folders = scan_folders()
     total_files, folder_html = generate_folder_html(folders)
     daily_reports = scan_daily_reports()
-    daily_html = generate_daily_html(daily_reports)
     daily_btn = (
         '<a href="天機日報/index.html" style="display:inline-block;padding:6px 18px;background:#b8960c;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">天機日報</a>'
         if daily_reports else ''
@@ -293,7 +292,6 @@ details.folder>.folder-body{padding:2px 10px 10px}
 <div id="folder-tree">
 {folder_html}
 </div>
-{daily_html}
 {coverage_html}
 {footer_html}
 </div>
