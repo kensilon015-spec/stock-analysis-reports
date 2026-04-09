@@ -3,6 +3,12 @@
 天機閣 GitHub Pages 首頁自動生成器
 用法：python generate_index.py
 功能：掃描 天機錄/ 資料夾，自動生成 index.html 的報告清單
+
+【天機日報說明】
+天機日報 = 每日快報（統一名稱），同一份內容，兩個位置：
+  - 本地備份：天機閣-藏經閣/每日快報/{日期}_每日快報.html
+  - 公開發布：github-pages/天機日報/天機日報_YYYY-MM-DD.html
+主首頁只放 Hero 按鈕連到 天機日報/index.html，不在主頁列出個別日報。
 """
 import os, re
 from datetime import datetime
