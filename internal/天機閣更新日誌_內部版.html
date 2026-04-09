@@ -70,13 +70,66 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="outer">
 <div class="hero">
   <h1>天機閣 內部更新日誌</h1>
-  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-08</div>
-  <div class="ver">19 天 ｜ ~180 項工作 ｜ 15 案分析 ｜ 點擊項目展開詳細</div>
+  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-09</div>
+  <div class="ver">20 天 ｜ ~200 項工作 ｜ 15 案分析 ｜ 點擊項目展開詳細</div>
 </div>
 
 <div class="ctrl">
   <button onclick="toggleAll(true)">全部展開</button>
   <button onclick="toggleAll(false)">全部收合</button>
+</div>
+
+<!-- ════════════════ Phase 4：系統整合 + 搜尋品質（04-09 ~）════════════════ -->
+<div class="phase">Phase 4：系統整合 + 搜尋品質（04-09 ~）</div>
+
+<!-- 04-09 -->
+<div class="day">
+<div class="day-header">2026-04-09 <span class="day-badge new">NEW</span></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>服務管理器上線（service_manager.py 288 行）</div><div class="item-desc">統一管理 vector/api/bot 三服務，CLI 六指令</div>
+<div class="item-detail">
+<p>PID 單例鎖 + psutil 殭屍偵測。HTA 4 按鈕 + 根目錄 BAT + Bot BAT 全走管理器</p>
+<p>GPU 97%→50%（搜尋+索引共用單一 BGE-M3 模型）</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>搜尋服務合併索引建構</div><div class="item-desc">/rebuild 端點 + SearchPriorityLock + 共用模型</div>
+<div class="item-detail">
+<p>背景執行+並行保護（_rebuild_running 旗標）。搜尋永不等待，索引等搜尋完才替換</p>
+<p>T8 改 HTTP POST、3 個 trigger_rebuild 移除、6 個 DB 統一 WAL+busy_timeout 60s</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>清理：cli_runner -440 行 + 3 程式廢棄 + 索引 B 217MB 刪除</div><div class="item-desc">build_vector_index / build_single_rag / start_server 標記 .deprecated</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>副閣主路徑 1/2 改卡片直接回覆（25s→5s）</div><div class="item-desc">路徑 1 搜尋 API→/pages 報告清單；路徑 2 Sonnet 快速回答</div>
+<div class="item-detail">
+<p>URL 清洗白名單兩層保護（Markdown 超連結+裸 URL）+ 刪二次清洗</p>
+<p>Sonnet prompt 加「禁止裸網址」。contexts[:5]→[:12]</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>搜尋改並行 + FIXME 過濾</div><div class="item-desc">filename+vector+grep 同時跑合併排序；亂碼檔不進索引</div>
+<div class="item-detail">
+<p>檔名搜尋分數 0.95→0.50（不再壓過向量結果）</p>
+<p>DB 搜尋（SharedVectorLayer）移除，簡化架構，搜尋服務只走 FAISS</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag data">資料</span>FIXME 批次重轉：67 份中 40 份→OK</div><div class="item-desc">GID 映射修正 21,740 字元 + 數字修正。瓦城 2020~2023 全部 OK</div>
+<div class="item-detail">
+<p>仍 FIXME 26 份（掃描頁太多需 OCR）、跳過 1 份（無 PDF）</p>
+<p>pdf_to_text.py v5.1 no-ocr 模式，每份 25~150 秒</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>全系統模型統一（GPU 不再多重佔用）</div><div class="item-desc">搜尋服務 /encode 端點 + EmbeddingEngine 改走 API + batch_pipeline 改走 API</div>
+<div class="item-detail">
+<p>/encode：外部程式透過 HTTP 共用搜尋服務的 BGE-M3，一次最多 64 段</p>
+<p>hardware.py EmbeddingEngine：預設走 /encode，搜尋服務沒開才本地載模型（備援）</p>
+<p>7 個西碧拉模組自動統一（shared_vector_layer/data_manager/fear_memory/env_field/relation_classifier/weak_signal_trajectory/news_semantic_clustering）</p>
+<p>batch_pipeline.py --vector-only 改呼叫 /encode，不再自己載 SharedVectorLayer</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag ui">介面</span>圖表系統整合進報告模板</div><div class="item-desc">Chart.js 4.4 + ECharts 5.5 + 分欄 CSS + 互動流程圖 CSS</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>工作清單更新（28 完成 / 20 份規劃書歸檔）</div><div class="item-desc">服務管理器+副閣主路徑優化→已完成；搜尋品質→進行中</div></div>
+
 </div>
 
 <!-- ════════════════ Phase 3：品質深化（04-02 ~ 04-08）════════════════ -->
