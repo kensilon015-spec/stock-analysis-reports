@@ -114,10 +114,67 @@ def generate_folder_html(folders):
 
     return total_files, '\n'.join(html_parts)
 
+def scan_daily_reports():
+    """掃描天機日報資料夾，回傳日報清單（從 index.json 讀取）"""
+    daily_dir = os.path.join(BASE, '天機日報')
+    index_path = os.path.join(daily_dir, 'index.json')
+    reports = []
+
+    if os.path.exists(index_path):
+        import json
+        with open(index_path, 'r', encoding='utf-8') as f:
+            reports = json.load(f)
+    elif os.path.exists(daily_dir):
+        # 沒有 index.json 就掃描 .html 檔案
+        for fname in sorted(os.listdir(daily_dir), reverse=True):
+            if fname.endswith('.html') and fname != 'index.html':
+                fpath = os.path.join(daily_dir, fname)
+                mtime = os.path.getmtime(fpath)
+                size = os.path.getsize(fpath)
+                date_match = re.search(r'(\d{4}-\d{2}-\d{2})', fname)
+                reports.append({
+                    'date': date_match.group(1) if date_match else datetime.fromtimestamp(mtime).strftime('%Y-%m-%d'),
+                    'file': fname,
+                    'title': fname.replace('.html', ''),
+                    'size': f'{size/1024:.1f} KB' if size < 1048576 else f'{size/1048576:.1f} MB',
+                })
+
+    return reports
+
+def generate_daily_html(reports):
+    """生成天機日報區塊 HTML"""
+    if not reports:
+        return ''
+
+    rows = []
+    for r in reports:
+        alerts = r.get('alerts', '')
+        alerts_badge = f'<span style="background:#b8960c;color:#fff;padding:1px 6px;border-radius:4px;font-size:.65em;font-weight:700;margin-left:6px">{alerts} 則警報</span>' if alerts else ''
+        rows.append(
+            f'<a class="row" href="天機日報/{r["file"]}">'
+            f'<span class="tag" style="background:#5a7d8c">日報</span>'
+            f'<span class="row-title">{r.get("title", r["file"].replace(".html",""))}{alerts_badge}</span>'
+            f'<span class="row-time">{r["date"]}　{r.get("size","")}</span>'
+            f'</a>'
+        )
+
+    html = (
+        f'<div class="section-head">\n'
+        f'    <h2>天機日報</h2>\n'
+        f'    <span class="badge">{len(reports)}</span>\n'
+        f'</div>\n'
+        f'<div class="root-files">\n'
+        + '\n'.join(rows) + '\n'
+        f'</div>'
+    )
+    return html
+
 def generate_index():
     """生成完整 index.html"""
     folders = scan_folders()
     total_files, folder_html = generate_folder_html(folders)
+    daily_reports = scan_daily_reports()
+    daily_html = generate_daily_html(daily_reports)
 
     # 讀取現有 index.html 的覆蓋率區塊（保留不動）
     existing_path = os.path.join(BASE, 'index.html')
@@ -231,6 +288,7 @@ details.folder>.folder-body{padding:2px 10px 10px}
 <div id="folder-tree">
 {folder_html}
 </div>
+{daily_html}
 {coverage_html}
 {footer_html}
 </div>
