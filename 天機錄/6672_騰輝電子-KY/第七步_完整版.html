@@ -1863,9 +1863,60 @@ Phase B-1 新發現使淨期望值從 Phase A 的 -2.3% 進一步惡化至 -5.5%
     </div>
 </div>
 
-<!-- 決策情境樹圖 -->
-<div class="chart-box">
-    <div id="chartDecisionTree" style="width:100%;height:400px"></div>
+<!-- 決策建議流程圖（CSS .fnode 版） -->
+<div class="flow-container">
+<div class="flow-section-label">投資決策流程</div>
+
+<div class="flow-row" style="justify-content:center">
+    <div class="fnode highlight">
+        <div class="fn-name" style="color:var(--gold)">騰輝 6672 現價 155.5</div>
+        <div class="fn-sub">PE 32x | 評級 C+ | 信心 38 分</div>
+        <div class="tooltip">2026-04-09 收盤 155.5 元。PE 32x 超越歷史最高 28.4x，加權期望股價 122 元，現價溢價 27%。</div>
+    </div>
+</div>
+
+<div class="flow-arrow" style="text-align:center;color:var(--txt3);font-size:1.2em">&#9660;</div>
+<div style="text-align:center;font-size:.75em;color:var(--txt3);margin:-4px 0 4px">判斷：安全邊際？</div>
+
+<div class="flow-row">
+    <div class="fnode" style="border-color:var(--bull);flex:1">
+        <div class="fn-name" style="color:var(--bull)">&#10004; 回檔至 80-90 元</div>
+        <div class="fn-sub">PE 16-18x | 安全邊際 15-20%</div>
+        <div class="tooltip">合理買入區間。條件：Q1 EPS ≥1.5 + 毛利率 ≥33% + 泰國廠量產確認。風險報酬比 >2:1。</div>
+    </div>
+    <div class="fnode" style="border-color:var(--warn);flex:1">
+        <div class="fn-name" style="color:var(--warn)">&#9888; 回檔至 110-120 元</div>
+        <div class="fn-sub">PE 22-25x | 觀察區</div>
+        <div class="tooltip">可開始小量觀察。需確認：月營收 YoY 持續 >15%、毛利率回升至 33%+、外資轉為淨買超。風險報酬比 ~1:1。</div>
+    </div>
+    <div class="fnode" style="border-color:var(--bear);flex:1">
+        <div class="fn-name" style="color:var(--bear)">&#10060; 現價 155 元追高</div>
+        <div class="fn-sub">PE 32x | 不追高</div>
+        <div class="tooltip">PE 32x 歷史極端值，淨期望值為負。加權期望股價 122 元，現價溢價 27%。散戶瘋搶 + 爆量 = 典型過熱信號。</div>
+    </div>
+</div>
+
+<div class="flow-arrow" style="text-align:center;color:var(--txt3);font-size:1.2em">&#9660;</div>
+<div style="text-align:center;font-size:.75em;color:var(--txt3);margin:-4px 0 4px">已持有者</div>
+
+<div class="flow-row" style="justify-content:center">
+    <div class="fnode" style="border-color:var(--warn)">
+        <div class="fn-name" style="color:var(--warn)">部分獲利了結</div>
+        <div class="fn-sub">減持 1/3 | 停損設 130</div>
+        <div class="tooltip">股價已從低點 87 元漲 78%，短期獲利豐厚。建議至少減持 1/3 鎖住獲利。停損設 130 元（回到暴漲前水位）。Q1 季報後重新評估。</div>
+    </div>
+</div>
+
+<div class="flow-arrow" style="text-align:center;color:var(--txt3);font-size:1.2em">&#9660;</div>
+
+<div class="flow-row" style="justify-content:center">
+    <div class="fnode" style="border-color:var(--link)">
+        <div class="fn-name">關鍵觀察時點</div>
+        <div class="fn-sub">4/16 除息 | 5月 Q1 季報 | Q2 泰國廠</div>
+        <div class="tooltip">4/16 除息 3.35 元（填息壓力測試）→ 5月 Q1 季報（EPS 是否 >1.5？）→ Q2 泰國廠量產（最關鍵催化劑）。三個時點決定後續走向。</div>
+    </div>
+</div>
+
 </div>
 </details>
 
@@ -2069,83 +2120,7 @@ new Chart(document.getElementById('chartRadar'), {
     window.addEventListener('resize', function(){ chart.resize(); });
 })();
 
-// ======== 決策情境樹（ECharts Tree）========
-(function(){
-    var dom = document.getElementById('chartDecisionTree');
-    if(!dom) return;
-    var chart = echarts.init(dom, null, {renderer:'canvas'});
-
-    var data = {
-        name: '騰輝 6672\n現價 129',
-        itemStyle: { color: C.warn, borderColor: C.warn },
-        label: { color: C.base, fontWeight: 'bold', fontSize: 12 },
-        children: [
-            {
-                name: '樂觀 15%\nEPS 6.5 x PE 22\n= 143 元',
-                itemStyle: { color: C.bull, borderColor: C.bull },
-                label: { color: C.bull, fontSize: 10 },
-                children: [
-                    { name: '泰國廠如期\n+ AI 放量\n+ 軍工提升', itemStyle: { color: C.bull }, label: { color: C.txt2, fontSize: 9 } }
-                ]
-            },
-            {
-                name: '期望值 45%\nEPS 5.2 x PE 18\n= 93.6 元',
-                itemStyle: { color: C.accent, borderColor: C.accent },
-                label: { color: C.accent, fontSize: 10 },
-                children: [
-                    { name: 'CCL 漲價持續\n毛利率 32-33%\n泰國廠小量產', itemStyle: { color: C.accent }, label: { color: C.txt2, fontSize: 9 } }
-                ]
-            },
-            {
-                name: '保守 25%\nEPS 4.0 x PE 13\n= 52 元',
-                itemStyle: { color: C.warn, borderColor: C.warn },
-                label: { color: C.warn, fontSize: 10 },
-                children: [
-                    { name: '泰國廠延遲\n原物料壓縮\n漲價停止', itemStyle: { color: C.warn }, label: { color: C.txt2, fontSize: 9 } }
-                ]
-            },
-            {
-                name: '衰退 15%\nEPS 3.5 x PE 10\n= 35 元',
-                itemStyle: { color: C.bear, borderColor: C.bear },
-                label: { color: C.bear, fontSize: 10 },
-                children: [
-                    { name: '地緣政治衝擊\n需求反轉\nKY 治理問題', itemStyle: { color: C.bear }, label: { color: C.txt2, fontSize: 9 } }
-                ]
-            }
-        ]
-    };
-
-    chart.setOption({
-        backgroundColor: 'transparent',
-        title: { text: '投資決策情境樹', left: 'center', textStyle: { color: C.base, fontSize: 14, fontWeight: 'bold' } },
-        tooltip: { trigger: 'item', backgroundColor: '#222', borderColor: C.border, textStyle: { color: C.txt } },
-        series: [{
-            type: 'tree',
-            data: [data],
-            left: '8%', right: '8%', top: '14%', bottom: '14%',
-            orient: 'TB',
-            symbol: 'roundRect',
-            symbolSize: [120, 50],
-            edgeShape: 'polyline',
-            edgeForkPosition: '50%',
-            lineStyle: { color: C.border, width: 1.5 },
-            label: {
-                position: 'inside',
-                verticalAlign: 'middle',
-                align: 'center',
-                fontSize: 10,
-                color: C.txt2
-            },
-            leaves: {
-                label: { position: 'bottom', verticalAlign: 'top', align: 'center' }
-            },
-            expandAndCollapse: false,
-            animationDuration: 550,
-            animationDurationUpdate: 750
-        }]
-    });
-    window.addEventListener('resize', function(){ chart.resize(); });
-})();
+// （已移除 ECharts 決策樹，改用 CSS .fnode 流程圖）
 
 // ======== 全部展開/收合功能 ========
 function toggleAll(open) {
