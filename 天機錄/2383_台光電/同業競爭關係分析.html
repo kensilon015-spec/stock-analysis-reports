@@ -1,0 +1,4573 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CCL 銅箔基板四雄 — 產業競爭生態分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<!-- ============================================================
+     天機閣 — CCL 銅箔基板四雄 產業競爭生態分析 v1.0
+     第一層：產業生態認識（Ch1~Ch3）
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;
+  /* 公司專屬色 */
+  --co-a:#6b9f72;--co-b:#7ab0c0;--co-c:#d4b030;
+  --co-d:#d4887a;--co-e:#a78bfa;--co-f:#2dd4bf
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片（點擊展開/收合） === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+td.num{text-align:right;font-family:'Fira Code',monospace}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.part-title{font-size:1.3em;font-weight:900;color:var(--accent);margin:24px 0 6px;padding:12px 0 6px;border-top:3px solid var(--accent);text-align:center;letter-spacing:.08em}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 證據卡片 === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.score-bar .label{font-size:.82em;min-width:50px;color:var(--txt2)}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:8px 28px;border-radius:8px;font-size:.88em;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(107,159,114,.15);color:#6b9f72;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.2);letter-spacing:.05em}
+.toggle-btn:hover{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(107,159,114,.4)}
+
+/* === 互動類型標籤 === */
+.interact-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;margin:1px 2px}
+.interact-tag.compete{background:rgba(239,83,80,.2);color:var(--bear)}
+.interact-tag.coopete{background:rgba(212,160,23,.2);color:var(--warn)}
+.interact-tag.depend{background:rgba(122,176,192,.2);color:var(--neutral)}
+.interact-tag.monopoly{background:rgba(167,139,250,.2);color:var(--co-e)}
+.interact-tag.coexist{background:rgba(90,125,96,.2);color:var(--accent)}
+.interact-tag.substitute{background:rgba(194,124,110,.2);color:var(--danger)}
+.interact-tag.symbiosis{background:rgba(45,212,191,.2);color:var(--co-f)}
+
+/* === 對比條 === */
+.compare-bar{display:flex;align-items:center;gap:4px;margin:2px 0}
+.compare-bar .cb-label{font-size:.72em;min-width:28px;text-align:right;color:var(--txt3)}
+.compare-bar .cb-bar{height:8px;border-radius:4px}
+
+/* === 矩陣表格 === */
+.matrix-cell{text-align:center;font-weight:700;font-size:.9em}
+.cell-best{color:var(--bull);background:rgba(76,175,80,.1)}
+.cell-worst{color:var(--bear);background:rgba(239,83,80,.1)}
+.cell-mid{color:var(--warn)}
+.highlight-row td{background:rgba(107,159,114,.12);font-weight:600}
+
+/* === 左右分欄配置 === */
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+.data-chart-row .chart-col .chart-wrap{margin:0}
+@media(max-width:750px){.data-chart-row{grid-template-columns:1fr}}
+
+/* === 雙圖並排 === */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.chart-row .chart-wrap{margin:0}
+@media(max-width:750px){.chart-row{grid-template-columns:1fr}}
+
+/* === 互動圖表區 === */
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.chart-wrap .chart-title{font-size:.9em;font-weight:700;color:var(--base);margin-bottom:8px;text-align:center}
+.chart-wrap .chart-note{font-size:.78em;color:var(--txt3);margin-top:6px;text-align:center;font-style:italic}
+.chart-wrap canvas{max-width:100%}
+.chart-wrap .echart{width:100%}
+
+/* === 燈號儀表板 === */
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:600px){.dashboard-grid{grid-template-columns:1fr}}
+.dash-item{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.dash-item .dash-light{flex-shrink:0;width:18px;height:18px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,.3)}
+.dash-item .dash-light.green{background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.4)}
+.dash-item .dash-light.yellow{background:#ffc107;box-shadow:0 0 8px rgba(255,193,7,.4)}
+.dash-item .dash-light.red{background:#f44336;box-shadow:0 0 8px rgba(244,67,54,.4)}
+.dash-item .dash-info{flex:1}
+.dash-item .dash-name{font-weight:700;font-size:.88em;color:var(--base)}
+.dash-item .dash-val{font-size:.78em;color:var(--txt2)}
+.dash-item .dash-action{font-size:.72em;color:var(--txt3);font-style:italic}
+
+/* === 風險偵測卡 === */
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+.risk-card .rc-body{font-size:.82em;color:var(--txt2)}
+.risk-card .rc-row{display:flex;gap:12px;margin:3px 0;font-size:.82em}
+.risk-card .rc-label{font-weight:600;color:var(--base);min-width:80px;flex-shrink:0}
+
+/* === 分支樹（情境推演） === */
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:8px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--base);font-size:.88em}
+.fork-branches{display:grid;gap:8px;margin-top:4px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branches.b4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:700px){.fork-branches.b2,.fork-branches.b3,.fork-branches.b4{grid-template-columns:1fr}}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;position:relative}
+.fork-branch::before{content:'\25BC';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.7em}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fork-branch .fb-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:2px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2)}
+
+/* === 結論卡 === */
+.conclusion-box{background:linear-gradient(135deg,rgba(107,159,114,.08),rgba(90,125,140,.08));border:2px solid var(--accent);border-radius:12px;padding:16px 20px;margin:12px 0}
+.conclusion-box .cb-title{font-weight:900;font-size:1.1em;color:var(--base);margin-bottom:6px;text-align:center}
+.conclusion-box .cb-quote{font-size:.95em;color:var(--accent);font-weight:700;text-align:center;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:8px;line-height:1.6}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.toc .toc-part{color:var(--accent);font-weight:700;font-size:.88em;margin-top:6px;padding-top:4px;border-top:1px dashed var(--border)}
+.toc .toc-part:first-child{border-top:none;margin-top:0;padding-top:0}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+
+/* === 價值鏈流程圖 === */
+.value-chain{display:flex;align-items:center;gap:4px;margin:12px 0;flex-wrap:wrap;justify-content:center}
+.vc-node{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:120px}
+.vc-node .vc-title{font-weight:700;font-size:.82em;color:var(--base)}
+.vc-node .vc-detail{font-size:.72em;color:var(--txt3);margin-top:2px}
+.vc-arrow{color:var(--accent);font-size:1.2em;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- 分析日期浮動標籤 -->
+<div style="position:fixed;top:12px;right:20px;z-index:9999;background:rgba(60,55,45,0.95);color:#fff;padding:6px 16px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+  分析日期：2026-04-10 | 產業競爭生態分析
+</div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>CCL 銅箔基板四雄 — 產業競爭生態分析</h1>
+  <div class="sub">台光電 2383 vs 台燿 6274 vs 聯茂 6213 vs 騰輝 6672</div>
+  <div class="desc">三層架構（產業生態 → 競爭者解剖 → 投資決策），16 章完整分析。<br>從產業結構、商業互動、財務體質、定價權、管理層到賽局推演，全維度拆解 CCL 產業競爭生態。</div>
+  <div class="tags">
+    <span class="tag">產業競爭生態分析</span>
+    <span class="tag">銅箔基板 CCL</span>
+    <span class="tag">2026-04-10</span>
+    <span class="tag">天機閣 研究部</span>
+  </div>
+</div>
+
+<!-- ===== 快照總覽 ===== -->
+<div class="section-title">快照總覽</div>
+<div class="section-sub">關鍵比較指標一覽（數據截至 2026-04-10）</div>
+<div class="grid4">
+  <div class="mini-card" style="border-left:4px solid var(--co-a)">
+    <div class="title" style="color:var(--co-a)">台光電 2383</div>
+    <div class="num" style="color:var(--co-a)">70.6x</div>
+    <div class="desc">PE / 股價 2,885 / EPS 41.67</div>
+  </div>
+  <div class="mini-card" style="border-left:4px solid var(--co-b)">
+    <div class="title" style="color:var(--co-b)">台燿 6274</div>
+    <div class="num" style="color:var(--co-b)">56.3x</div>
+    <div class="desc">PE / 股價 683 / EPS 12.13</div>
+  </div>
+  <div class="mini-card" style="border-left:4px solid var(--co-c)">
+    <div class="title" style="color:var(--co-c)">聯茂 6213</div>
+    <div class="num" style="color:var(--co-c)">45.0x</div>
+    <div class="desc">PE / 股價 187 / EPS 4.16</div>
+  </div>
+  <div class="mini-card" style="border-left:4px solid var(--co-d)">
+    <div class="title" style="color:var(--co-d)">騰輝 6672</div>
+    <div class="num" style="color:var(--co-d)">26.6x</div>
+    <div class="desc">PE / 股價 129 / EPS 4.85</div>
+  </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+  <strong style="font-size:.88em;color:var(--base)">報告結構（三層架構 16 章）</strong>
+  <div class="toc-part">第一層：產業生態認識</div>
+  <a href="#ch1">第一章：產業全景與生命週期</a>
+  <a href="#ch2">第二章：產業結構分析（Porter 五力）</a>
+  <a href="#ch3">第三章：價值鏈與商業生態</a>
+  <div class="toc-part">第二層：競爭者解剖</div>
+  <a href="#ch4">第四章：競爭者總覽與量化評分</a>
+  <a href="#ch5">第五章：商業模式與獲利引擎</a>
+  <a href="#ch6">第六章：核心差異化能力競賽</a>
+  <a href="#ch7">第七章：市場佈局與市佔率動態</a>
+  <a href="#ch8">第八章：財務體質與營運槓桿</a>
+  <a href="#ch9">第九章：定價權與護城河深度分析</a>
+  <a href="#ch10">第十章：管理層品質與公司治理</a>
+  <div class="toc-part">第三層：投資決策</div>
+  <a href="#ch11">第十一章：估值比較</a>
+  <a href="#ch12">第十二章：風險矩陣與賽局推演</a>
+  <a href="#ch13">第十三章：法人持股與聰明錢動態</a>
+  <a href="#ch14">第十四章：投資選擇矩陣</a>
+  <a href="#ch15">第十五章：目標公司視角 — 攻防策略</a>
+  <a href="#ch16">第十六章：整合結論與動態監控儀表板</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+  <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+
+<!-- ====================================================================== -->
+<!--      第一層：產業生態認識                                                -->
+<!-- ====================================================================== -->
+<div class="part-title">第一層：產業生態認識</div>
+
+<!-- ============================================================ -->
+<!-- ===== 第一章：產業全景與生命週期 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch1">第一章：產業全景與生命週期</div>
+<div class="section-sub">這個產業現在在哪個階段？還有多少成長空間？</div>
+
+<div class="card">
+<h3>1.1 產業規模與成長趨勢</h3>
+<div class="card-body">
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>指標</th><th>數值</th><th>來源</th></tr>
+<tr><td>全球 CCL 市場規模</td><td class="num">~180 億美元（2025）</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>全球 CCL CAGR（5年）</td><td class="num">5~7%</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>AI PCB 高速基板 CAGR</td><td class="num">178%</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>AI PCB 市場規模（2024）</td><td class="num">31 億美元</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>AI PCB 市場規模（2027E）</td><td class="num">271 億美元</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>台灣 CCL 產業地位</td><td>全球供應鏈核心</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>傳統 CCL 生命週期</td><td>成熟期</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>AI 高速 CCL 生命週期</td><td>爆發成長期</td><td><span class="fias-a">A</span></td></tr>
+</table>
+<p style="margin-top:8px;font-size:.82em;color:var(--txt3)">CCL（Copper Clad Laminate）為 PCB 核心材料，AI 伺服器對低損耗、高頻特性的需求正在重新定義整個產業的成長軌跡。高盛預估 AI PCB 市場將從 2024 年的 31 億美元爆發至 2027 年的 271 億美元，CAGR 高達 178%。</p>
+</div>
+<div class="chart-col">
+<!-- 圖表：AI PCB 市場規模趨勢（ECharts） -->
+<div class="chart-wrap">
+  <div class="chart-title">AI PCB 市場規模趨勢（高盛預測，億美元）</div>
+  <div id="ch1-market-size" class="echart" style="height:300px"></div>
+  <div class="chart-note">資料來源：Goldman Sachs Research（2024~2027 預估值）</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>1.2 產業雙軌格局：傳統 CCL vs AI 高速 CCL</h3>
+<div class="card-body">
+<p>CCL 產業正處於一個關鍵的分水嶺——傳統 FR-4 基板已進入成熟期，價格競爭激烈、毛利率承壓；但 AI 驅動的高速低損耗 CCL 卻處於爆發成長的初期，技術門檻極高、ASP（平均售價）是傳統產品的 5~10 倍以上，形成截然不同的產業動態。</p>
+<table>
+<tr><th>維度</th><th>傳統 CCL（FR-4）</th><th>AI 高速 CCL（低損耗/超低損耗）</th></tr>
+<tr><td>生命週期</td><td>成熟期</td><td><b style="color:var(--bull)">爆發成長期</b></td></tr>
+<tr><td>市場規模成長</td><td class="num">CAGR 2~3%</td><td class="num"><b style="color:var(--bull)">CAGR 178%</b>（AI PCB 整體）</td></tr>
+<tr><td>競爭態勢</td><td>中國產能過剩、價格戰</td><td>技術壁壘極高、寡佔格局</td></tr>
+<tr><td>毛利率區間</td><td class="num">12~18%</td><td class="num"><b style="color:var(--bull)">25~35%+</b></td></tr>
+<tr><td>客戶認證週期</td><td>3~6 個月</td><td>12~18 個月</td></tr>
+<tr><td>主要玩家</td><td>建滔、生益、南亞</td><td><b style="color:var(--co-a)">台光電</b>、<b style="color:var(--co-b)">台燿</b>、Panasonic</td></tr>
+<tr><td>ASP 倍數</td><td>1x（基準）</td><td>5~10x+</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>1.3 產業週期與景氣特性</h3>
+<div class="card-body">
+<table>
+<tr><th>特性</th><th>評估</th><th>說明</th></tr>
+<tr><td>週期性</td><td><span class="light yellow"></span>中</td><td>CCL 跟隨電子產業景氣循環，但 AI 需求正在打破傳統週期——2024~2026 年即使消費性電子疲軟，AI 伺服器相關 CCL 需求仍逆勢爆發</td></tr>
+<tr><td>季節性</td><td><span class="light yellow"></span>有</td><td>傳統 Q3~Q4 為旺季（消費性電子拉貨），但 AI 訂單全年穩定出貨，淡旺季差異因 AI 佔比提高而逐漸模糊</td></tr>
+<tr><td>消耗品黏性</td><td><span class="light green"></span>高</td><td>CCL 為 PCB 核心材料，一旦通過認證（尤其伺服器級別），客戶極少更換供應商。轉換成本極高：重新認證需 12~18 個月</td></tr>
+<tr><td>法規密度</td><td><span class="light yellow"></span>中</td><td>環保法規（無鹵素、RoHS）為基本門檻，軍工領域（如騰輝 ITAR/QPL）法規密度極高</td></tr>
+<tr><td>技術變革速度</td><td><span class="light red"></span>快</td><td>訊號速率從 56Gbps（PCIe 5.0）→ 112Gbps（PCIe 6.0）→ 224Gbps（PCIe 7.0），每個世代都要求更低的介電常數（Dk）與介電損耗（Df），推動材料不斷迭代</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>1.4 產業成長驅動力與風險因子</h3>
+<div class="card-body">
+<div class="grid2">
+<div>
+<p style="font-weight:700;color:var(--bull);margin-bottom:6px">成長驅動力</p>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">F</span> AI 伺服器需求爆發</div>
+<div class="ev-d">NVIDIA GPU 平台從 M8（H100）→ M8+（H200）→ M9（B100/B200）→ M10（R100），每個世代對 CCL 層數與材料等級的要求都大幅提升。台光電 AI 營收佔比已達 60~63%，台燿 ELL/SLL 佔營收從 2021 年 10% 飆升至 2025 年 36%。</div>
+<div class="ev-s">出處：Phase 0 數據 / NVIDIA 平台路線圖</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">F</span> 800G → 1.6T 網路升級</div>
+<div class="ev-d">交換器從 800G 升級至 1.6T，驅動高速 CCL 需求倍增。網通基礎設施（伺服器/網通）佔聯茂營收高達 68%，顯示此驅動力已在實際營收中體現。</div>
+<div class="ev-s">出處：聯茂 FY2025 年報 / 產業報告</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 低軌衛星（LEO）</div>
+<div class="ev-d">SpaceX Starlink V3 衛星對高頻 CCL 需求量大，聯茂已通過 Starlink 認證，V3 量產將帶動高頻 CCL 需求。低軌衛星需要耐極端環境的特殊基板材料，進入門檻高。</div>
+<div class="ev-s">出處：聯茂 Phase 0 數據</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 車用電子（ADAS/EV）</div>
+<div class="ev-d">車用 CCL 要求高可靠度、耐溫、長壽命，認證週期更長（18~24 個月），但 ASP 與黏性皆高。聯茂車用佔營收 16%，騰輝在散熱金屬基板領域也有車用佈局。</div>
+<div class="ev-s">出處：聯茂、騰輝 Phase 0 數據</div>
+</div>
+</div>
+
+<div>
+<p style="font-weight:700;color:var(--bear);margin-bottom:6px">風險因子</p>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 中國產能過剩與價格戰</div>
+<div class="ev-d">中國 CCL 廠（建滔、生益科技）在傳統 FR-4 領域持續擴產，價格壓力已壓縮傳統產品毛利率。台光電中國產能佔 85%、聯茂佔 79%，地緣政治風險同時疊加。台光電已規劃 2027 年將中國佔比降至 65%。</div>
+<div class="ev-s">出處：Phase 0 數據</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 地緣政治風險</div>
+<div class="ev-d">美中科技脫鉤持續升級，出口管制可能影響在中國設廠的台灣 CCL 業者。四家公司均有大量中國產能（台光電 85%、聯茂 79%），產能分散化為當前最重要的戰略佈局（台燿泰國、聯茂泰國、台光電馬來西亞/美國）。</div>
+<div class="ev-s">出處：Phase 0 數據 / 產業動態</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 原物料價格波動</div>
+<div class="ev-d">銅箔與玻纖布為 CCL 主要原料，價格受國際銅價與供需影響。台光電掌控 70% 玻纖布供應，具備一定的成本控制優勢；台燿則透過日東紡績技術授權取得優先供應。其他廠商面臨更大的原料成本風險。</div>
+<div class="ev-s">出處：Phase 0 數據</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-a">A</span> 技術競爭與替代威脅</div>
+<div class="ev-d">長期而言，矽光子（Silicon Photonics）與光電互連（Co-Packaged Optics, CPO）技術可能部分替代傳統銅導線傳輸，減少高速 CCL 層數需求。但短中期（2026~2030）仍以銅導線為主流，光電互連預計 2030 年後才可能規模化。</div>
+<div class="ev-s">出處：產業技術預測</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 第一章整合結論 -->
+<div class="tip info">
+<b>第一章整合結論</b>
+<p><b>資料</b>：全球 CCL 市場約 180 億美元，傳統 CCL CAGR 僅 5~7%，但 AI PCB 高速基板 CAGR 高達 178%（31 億 → 271 億美元，2024~2027E）。台光電 AI 營收佔比已達 60~63%，台燿高速材料從 10% 飆升至 36%，聯茂基礎設施佔 68%。四家公司中國產能佔比均偏高（79~85%）。</p>
+<p><b>觀察</b>：CCL 產業正經歷「雙軌分裂」——傳統 FR-4 市場陷入成熟期的低毛利價格戰，而 AI 高速 CCL 市場則處於 S 曲線的急升段。兩條軌道的毛利率差距達 2~3 倍（12~18% vs 25~35%+），形成截然不同的競爭邏輯。同時，四家公司的中國產能集中度偏高，產能分散化成為共同挑戰。</p>
+<p><b>推論</b>：這種雙軌格局意味著 AI 高速 CCL 的技術認證能力將成為決定性的分水嶺。能搶到 NVIDIA 新平台認證的公司（目前台光電獨佔 M8/M9/M10）將享受極高的 ASP 與毛利率，未能跟上技術迭代的則被困在傳統市場的紅海。傳統週期性被 AI 需求打破，產業從「景氣循環股」向「成長股」轉變，但僅限於有 AI 認證的少數廠商。</p>
+<p><b>結論</b>：<b>（1）技術認證為王</b>：投資 CCL 的核心邏輯不是看產能規模，而是看 AI 平台認證的滲透度與獨佔性；<b>（2）雙軌定價</b>：傳統 CCL 業務為「拖累項」，AI CCL 為「成長引擎」，兩者比例決定公司估值等級；<b>（3）地緣風險已定價但未爆發</b>：中國產能集中度偏高是懸在頭上的系統性風險，產能分散化的執行速度將影響中長期估值。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 第二章：產業結構分析（Porter 五力） ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch2">第二章：產業結構分析（Porter 五力）</div>
+<div class="section-sub">誰掌握權力？利潤被誰搶走？瓶頸在哪？</div>
+
+<div class="card">
+<h3>2.1 Porter 五力量化評估</h3>
+<div class="card-body">
+<div class="data-chart-row">
+<div class="data-col">
+<p style="font-size:.88em;color:var(--base);font-weight:700;">五力綜合評分：3.4/5（對現有高速 CCL 廠商有利）</p>
+<table>
+<tr><th>力量</th><th>分數</th><th>評估</th></tr>
+<tr><td>現有競爭強度</td><td style="font-weight:700">2/5</td><td>高速 CCL 領域台光電獨大，競爭相對不激烈；傳統 CCL 則競爭慘烈</td></tr>
+<tr><td>新進入者威脅</td><td style="font-weight:700">4/5</td><td>認證壁壘 12~18 個月、資本門檻高、技術 know-how 累積需 5~10 年，進入極難</td></tr>
+<tr><td>替代品威脅</td><td style="font-weight:700">4/5</td><td>短中期無替代品，光電互連/矽光子為 2030 年後的長期威脅</td></tr>
+<tr><td>上游議價力</td><td style="font-weight:700">3/5</td><td>玻纖布/銅箔供應集中，但台光電掌控 70% 玻纖布，具反向議價優勢</td></tr>
+<tr><td>下游議價力</td><td style="font-weight:700">4/5</td><td>高速 CCL 供應稀缺，PCB 廠需排隊等料，下游議價力弱；傳統 CCL 下游議價力強</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">評分邏輯：5 分 = 完全有利（幾乎無威脅）、1 分 = 極不利（威脅嚴重）。本評分以高速 AI CCL 市場為主要視角。</p>
+</div>
+<div class="chart-col">
+<!-- 圖表：五力雷達圖（Chart.js） -->
+<div class="chart-wrap">
+  <div class="chart-title">Porter 五力分析雷達圖</div>
+  <div style="position:relative;height:300px;max-height:300px"><canvas id="ch2-porter-radar"></canvas></div>
+  <div class="chart-note">分數越高代表對 CCL 廠商越有利（威脅越低）</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>2.2 各力量詳細分析</h3>
+<div class="card-body">
+<details open>
+<summary>現有競爭強度 — 2/5（高速市場有利，傳統市場不利）</summary>
+<p style="font-size:.82em;color:var(--txt2)">
+<b>高速 AI CCL 市場</b>：台光電在高速無鹵 CCL 全球市佔超過 50%，HDI 材料全球市佔 70%，形成事實上的寡佔。NVIDIA M8 由台光電獨佔量產、M9 同樣獨佔，技術代差導致競爭者難以在短期內搶食。台燿正快速追趕（ELL/SLL 佔比從 10% 升至 36%），但仍與台光電有明顯差距。聯茂 M9 認證中（55% 機率通過，預計 2026H2），騰輝 AI CCL 佔營收僅 1.8%，最早 2027 年才有實質貢獻。<br><br>
+<b>傳統 FR-4 市場</b>：競爭者眾多（建滔、生益、南亞等），中國產能持續擴張導致價格戰，毛利率被壓縮至 12~18%，屬於典型的紅海市場。<br><br>
+<b>關鍵觀察</b>：同一產業的兩個子市場呈現截然不同的競爭格局，高速 CCL 的技術壁壘讓認證先行者享受超額利潤。
+</p>
+</details>
+
+<details>
+<summary>新進入者威脅 — 4/5（威脅低，壁壘極高）</summary>
+<p style="font-size:.82em;color:var(--txt2)">
+<b>認證壁壘</b>：伺服器級 CCL 的客戶認證週期 12~18 個月，軍工級（如騰輝 VT-901）更長達 2~3 年。認證不僅是技術驗證，更涉及產線一致性、品質管控體系。一旦通過認證，客戶極少更換。<br><br>
+<b>資本門檻</b>：建設一座中等規模 CCL 廠需投入 30~50 億台幣，高階產線（含特殊壓合設備、無塵室）投入更大。台光電六座廠區、聯茂六大基地月產能 570 萬張，規模經濟已形成。<br><br>
+<b>技術壁壘</b>：高速低損耗材料的配方（樹脂系統、填料比例、固化條件）為核心 know-how，需要多年研發累積。台光電專利數量為台灣 CCL 第一，台燿有日東紡績技術授權。新進者即使有資金，也缺乏配方經驗。<br><br>
+<b>例外</b>：中國國產替代政策可能催生新的競爭者（如生益科技在高速材料的佈局），但目前在最高端的 AI 伺服器級別仍有 2~3 年的技術落差。
+</p>
+</details>
+
+<details>
+<summary>替代品威脅 — 4/5（短中期幾乎無替代，長期存在）</summary>
+<p style="font-size:.82em;color:var(--txt2)">
+<b>短中期（2026~2030）</b>：CCL 作為 PCB 的核心基底材料，目前沒有成熟的替代方案。即使是最先進的 AI 伺服器，仍需要 CCL + 銅導線的傳統架構來傳輸訊號。每個 GPU 平台世代升級反而增加 CCL 的用量與等級要求。<br><br>
+<b>長期威脅（2030+）</b>：矽光子（Silicon Photonics）與共封裝光學元件（CPO, Co-Packaged Optics）可能在晶片到晶片的互連中取代部分銅導線傳輸，理論上會減少對最高速 CCL 的需求。但光電互連目前仍在實驗/早期量產階段，且 CCL 不會完全被取代——電源層、接地層、低速控制信號仍需要傳統基板。<br><br>
+<b>結論</b>：未來 5 年內，CCL 的地位極為穩固。投資人需關注 2030 年後的技術路線變化。
+</p>
+</details>
+
+<details>
+<summary>上游議價力 — 3/5（中等，因公司而異）</summary>
+<p style="font-size:.82em;color:var(--txt2)">
+<b>關鍵原料</b>：玻纖布（佔成本 ~25%）、電解銅箔（佔成本 ~30%）、環氧樹脂/特殊樹脂（佔成本 ~20%）。<br><br>
+<b>玻纖布</b>：全球供應集中於少數大廠。台光電掌控 70% 玻纖布供應（透過轉投資與長約），形成對競爭者的「卡脖子」優勢。台燿則透過日東紡績技術授權取得優先玻纖布供應，一定程度緩解此壓力。聯茂、騰輝在玻纖布的議價力相對較弱。<br><br>
+<b>電解銅箔</b>：供應商相對分散（金居、長春石化、日本三井等），但銅價受國際大宗商品價格波動影響，具系統性風險。<br><br>
+<b>特殊樹脂</b>：高速 CCL 所需的 PTFE/PPE 等特殊樹脂供應商有限，部分高端樹脂依賴日本供應，議價力偏高。<br><br>
+<b>台光電的獨特優勢</b>：透過垂直整合掌控玻纖布供應，不僅降低自身成本，還能限制競爭者的原料取得，形成結構性護城河。
+</p>
+</details>
+
+<details>
+<summary>下游議價力 — 4/5（高速 CCL 供不應求，下游議價力弱）</summary>
+<p style="font-size:.82em;color:var(--txt2)">
+<b>高速 CCL 市場</b>：供給端僅台光電、台燿等少數廠商能提供合格產品，下游 PCB 廠（如金像電、欣興、華通）需排隊等料。在 AI 伺服器供應鏈中，CCL 的稀缺性讓上游材料廠反而擁有定價權。NVIDIA 指定材料的慣例進一步強化了認證先行者的定價主導權。<br><br>
+<b>傳統 CCL 市場</b>：下游 PCB 廠選擇多，議價力較強，價格競爭激烈。<br><br>
+<b>客戶集中度</b>：台燿客戶集中度 <10%（六年一致，非常分散），降低了單一客戶的議價權。台光電因 NVIDIA 生態系的訂單集中度可能偏高，但技術獨佔性抵消了此風險。<br><br>
+<b>結論</b>：高速 CCL 市場的供需失衡讓材料廠罕見地擁有對下游的強勢定價權，這是投資邏輯中最重要的結構性優勢之一。
+</p>
+</details>
+</div>
+</div>
+
+<!-- 第二章整合結論 -->
+<div class="tip warn">
+<b>第二章整合結論</b>
+<p><b>資料</b>：五力綜合評分 3.4/5，其中新進入者威脅（4/5）與替代品威脅（4/5）對現有廠商最為有利，下游議價力（4/5）也因高速 CCL 供不應求而對廠商有利。現有競爭強度（2/5）顯示高速與傳統市場分裂嚴重。上游議價力（3/5）因公司而異——台光電掌控 70% 玻纖布形成結構性優勢。</p>
+<p><b>觀察</b>：Porter 五力分析揭示了一個核心事實——高速 AI CCL 市場的產業結構對已通過認證的現有廠商極為有利。高壁壘（認證 12~18 月、資本、技術）+ 無替代品 + 供不應求 = 超額利潤可持續。但這個有利結構僅限於「高速 CCL 子市場」的已認證廠商，傳統市場的結構完全相反。</p>
+<p><b>推論</b>：這個產業結構造就了極端的「贏者通吃」效應。台光電同時掌控上游原料（玻纖布）與下游認證（NVIDIA 獨佔），在五力中的四力都佔據結構性優勢，這解釋了其 29.8% 的高毛利率。台燿透過日東紡績技術授權與客戶分散化在部分力量中有所防禦。聯茂與騰輝則需要找到繞過台光電壁壘的路徑（Starlink 認證、軍工利基）。</p>
+<p><b>結論</b>：<b>（1）結構性利潤可持續</b>：高速 CCL 的產業結構支持現有領導者維持高毛利率至少至 2028 年，直到更多競爭者通過認證或光電互連開始規模化；<b>（2）台光電的五力優勢最全面</b>：同時掌控供給端（玻纖布）與需求端（NVIDIA 認證），形成五力互鎖的護城河；<b>（3）傳統 CCL 是價值陷阱</b>：任何仍高度依賴傳統 FR-4 的公司（聯茂毛利率 14.5% 暗示此問題）面臨結構性的利潤壓縮風險。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 第三章：價值鏈與商業生態 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch3">第三章：價值鏈與商業生態</div>
+<div class="section-sub">除了打架，他們之間還有哪些合作、依賴、微妙的關係？</div>
+
+<div class="card">
+<h3>3.1 產業價值鏈圖譜</h3>
+<div class="card-body">
+<p><span class="fias-i">I</span> CCL 產業的價值鏈從上游原料出發，經過 CCL 製造，再流入 PCB 加工，最終進入終端系統組裝。在 AI 時代，價值鏈中的利潤分配正在劇烈重組——高速 CCL 材料廠因技術稀缺性而攫取了更大比例的利潤。</p>
+
+<!-- 價值鏈流程圖 -->
+<div class="value-chain">
+  <div class="vc-node">
+    <div class="vc-title">玻纖布</div>
+    <div class="vc-detail">台玻/建滔<br>台光電掌控 70%</div>
+  </div>
+  <span class="vc-arrow">→</span>
+  <div class="vc-node">
+    <div class="vc-title">電解銅箔</div>
+    <div class="vc-detail">金居/長春石化<br>三井金屬</div>
+  </div>
+  <span class="vc-arrow">→</span>
+  <div class="vc-node" style="border:2px solid var(--accent)">
+    <div class="vc-title" style="color:var(--accent)">CCL 製造</div>
+    <div class="vc-detail" style="color:var(--txt)"><b>本報告標的</b><br>台光電/台燿/聯茂/騰輝</div>
+  </div>
+  <span class="vc-arrow">→</span>
+  <div class="vc-node">
+    <div class="vc-title">PCB 廠</div>
+    <div class="vc-detail">金像電/欣興<br>華通/健鼎</div>
+  </div>
+  <span class="vc-arrow">→</span>
+  <div class="vc-node">
+    <div class="vc-title">OEM/終端</div>
+    <div class="vc-detail">鴻海/廣達/NVIDIA<br>Microsoft/Google</div>
+  </div>
+</div>
+
+<table>
+<tr><th>環節</th><th>代表廠商</th><th>毛利率</th><th>進入門檻</th><th>本報告涵蓋</th></tr>
+<tr><td>上游 — 玻纖布</td><td>台玻、建滔、日東紡績</td><td class="num">15~20%</td><td>中</td><td>否（但台光電垂直整合）</td></tr>
+<tr><td>上游 — 電解銅箔</td><td>金居、長春石化、三井</td><td class="num">12~18%</td><td>中高</td><td>否</td></tr>
+<tr><td>上游 — 特殊樹脂</td><td>日立化成、住友、三菱瓦斯</td><td class="num">20~30%</td><td>高</td><td>否</td></tr>
+<tr><td><b style="color:var(--accent)">中游 — CCL 製造</b></td><td><b>台光電/台燿/聯茂/騰輝</b></td><td class="num"><b>14.5~32.2%</b></td><td><b>高</b></td><td><b>是</b></td></tr>
+<tr><td>下游 — PCB 製造</td><td>金像電、欣興、華通、健鼎</td><td class="num">18~25%</td><td>中高</td><td>否</td></tr>
+<tr><td>下游 — 系統組裝/終端</td><td>鴻海、廣達、NVIDIA、雲端大廠</td><td class="num">3~8%（組裝）/ 60%+（設計）</td><td>高</td><td>否</td></tr>
+</table>
+
+<div class="tip info">
+<b>價值鏈觀察</b>
+<p>CCL 在整個 AI 伺服器供應鏈中處於「咽喉位置」——PCB 無法沒有 CCL，而高速 CCL 的合格供應商極少。這使得 CCL 廠（尤其是台光電）的議價地位超越了其在價值鏈中的規模佔比。反觀 PCB 廠的毛利率（18~25%）雖然也不低，但競爭者更多、替代性更高。四家 CCL 廠的毛利率差距極大（14.5% ~ 32.2%），反映的正是各自在高速 vs 傳統產品線的佈局差異。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>3.2 商業互動關係矩陣</h3>
+<div class="card-body">
+<p>七種互動類型：
+  <span class="interact-tag compete">純競爭</span>
+  <span class="interact-tag coopete">合作競爭</span>
+  <span class="interact-tag depend">垂直依賴</span>
+  <span class="interact-tag monopoly">技術寡佔</span>
+  <span class="interact-tag coexist">市場區隔共存</span>
+  <span class="interact-tag substitute">替代威脅</span>
+  <span class="interact-tag symbiosis">生態共生</span>
+</p>
+
+<table>
+<tr>
+  <th>關係</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電</b></td>
+  <td>—</td>
+  <td><span class="interact-tag compete">純競爭</span></td>
+  <td><span class="interact-tag coopete">合作競爭</span></td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-b)"><b>台燿</b></td>
+  <td><span class="interact-tag compete">純競爭</span></td>
+  <td>—</td>
+  <td><span class="interact-tag compete">純競爭</span></td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-c)"><b>聯茂</b></td>
+  <td><span class="interact-tag coopete">合作競爭</span></td>
+  <td><span class="interact-tag compete">純競爭</span></td>
+  <td>—</td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝</b></td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+  <td><span class="interact-tag coexist">市場區隔</span></td>
+  <td>—</td>
+</tr>
+</table>
+
+<details open>
+<summary>商業互動關係詳細說明</summary>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-a)">台光電</span> vs <span style="color:var(--co-b)">台燿</span> — <span class="interact-tag compete">純競爭</span></div>
+<div class="ev-d">兩家在高速低損耗 CCL 市場形成最直接的競爭關係。台光電以 M8/M9/M10 的 NVIDIA 獨佔認證領先，AI 營收佔比 60~63%；台燿則透過 ELL/SLL 產品線快速追趕（佔比從 10% → 36%），瞄準非 NVIDIA 獨佔的高速 CCL 市場（AMD、Intel 平台以及其他高速網通應用）。兩家的技術路線相似（都走無鹵低損耗路線），客戶群有高度重疊，競爭性最強。台光電的玻纖布掌控（70%）對台燿構成供應鏈壓力，但台燿透過日東紡績技術授權緩解了部分劣勢。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-a)">台光電</span> vs <span style="color:var(--co-c)">聯茂</span> — <span class="interact-tag coopete">合作競爭</span></div>
+<div class="ev-d">聯茂是台光電的潛在 second source 候選人——下游 PCB 廠與終端客戶不希望高速 CCL 的供應完全集中在一家廠商，因此有動機扶植聯茂作為備援供應商。聯茂 M9 正在認證中（Phase 3，55% 機率通過），若通過將成為台光電在 NVIDIA 生態系的第一個競爭者。短期內兩家「合作」（聯茂填補台光電產能缺口）、長期則「競爭」（聯茂搶食台光電市佔）。聯茂 Prismark 全球高階特殊基板市佔率第一（16%），在非 AI 的高階基板領域已具備規模優勢。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-a)">台光電</span> vs <span style="color:var(--co-d)">騰輝</span> — <span class="interact-tag coexist">市場區隔共存</span></div>
+<div class="ev-d">台光電專注 AI 高速 CCL（佔營收 60~63%），騰輝則佔據散熱金屬基板（自稱全球第一）與軍工航太（VT-901 四大認證，佔營收 10%）兩個利基市場。兩家的核心市場幾乎不重疊——台光電不做金屬基板，騰輝的 AI CCL 佔營收僅 1.8%。這是典型的「各自在不同池塘裡當大魚」的共存關係。唯一可能的交集是未來騰輝若成功切入 AI CCL 市場（最早 2027 年），但規模極小，短中期不構成威脅。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-b)">台燿</span> vs <span style="color:var(--co-c)">聯茂</span> — <span class="interact-tag compete">純競爭</span></div>
+<div class="ev-d">兩家爭奪的是「非台光電獨佔的高速 CCL 訂單」——包括 AMD/Intel 平台的高速 CCL、高階網通設備、以及部分 NVIDIA 非獨佔材料。台燿以高速材料佔比快速上升（36%）且毛利率 22.8% 暫時領先聯茂（14.5%），但聯茂以全球產能規模（月產 570 萬張）與 Prismark 高階市佔第一回應。若聯茂 M9 認證通過，兩家的競爭將更加激烈。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-b)">台燿</span> vs <span style="color:var(--co-d)">騰輝</span> — <span class="interact-tag coexist">市場區隔共存</span></div>
+<div class="ev-d">台燿聚焦高速低損耗 CCL（消費性/伺服器/網通），騰輝聚焦散熱金屬基板與軍工航太。產品線不重疊、客戶群不重疊、技術路線不同。兩家之間沒有實質的競爭或合作關係。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> <span style="color:var(--co-c)">聯茂</span> vs <span style="color:var(--co-d)">騰輝</span> — <span class="interact-tag coexist">市場區隔共存</span></div>
+<div class="ev-d">聯茂做的是「大量、多元應用」的高階基板（伺服器 68%、汽車 16%），騰輝做的是「少量、高附加價值」的利基產品（散熱金屬基板、軍工）。兩家的商業模式邏輯截然不同——聯茂走規模經濟，騰輝走利基溢價。唯一的潛在交集在車用 CCL 領域，但聯茂車用主要做高多層板基材，騰輝做散熱金屬基板，產品形態不同。</div>
+</div>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>3.3 產業慣例與不成文規則</h3>
+<div class="card-body">
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 認證先行者優勢極強（Winner Takes Most）</div>
+<div class="ev-d">在伺服器 CCL 領域，第一家通過晶片平台認證的 CCL 廠商會被列為「優先供應商」（Primary Source），後續通過認證的僅為「備援供應商」（Second Source）。優先供應商通常拿到 60~80% 的訂單量，且 ASP 更高。這解釋了台光電在 M8/M9 的獨佔量產地位為何具有如此巨大的商業價值。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> ASP 隨技術世代穩定提升</div>
+<div class="ev-d">每個 GPU/交換器平台世代的升級都要求更高規格的 CCL 材料（更低 Dk/Df、更高層數），對應的 ASP 也隨之提升。從 FR-4 到低損耗、超低損耗、極低損耗，ASP 可相差 5~10 倍。這意味著只要能持續跟上技術迭代，CCL 廠不會面臨傳統電子零件的「每年降價」壓力。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 中國設廠是必要條件，但正在轉變</div>
+<div class="ev-d">過去十年，在中國設廠是 CCL 產業的基本門票（貼近 PCB 客戶、低成本優勢）。但 2024 年後，地緣政治風險推動「China+1」策略——台燿在泰國設廠（BOI 稅務優惠 8 年）、聯茂泰國新廠已投產、台光電在馬來西亞與美國佈局。產業慣例正從「中國必設」轉向「中國+東南亞/北美分散」。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> NVIDIA 指定材料的默契</div>
+<div class="ev-d">在 NVIDIA 高階 GPU 平台的設計中，NVIDIA 會在設計規範（Design Guide）中指定或建議特定 CCL 材料型號。雖然不是法律強制，但 PCB 廠為了確保良率和認證通過，幾乎不會偏離 NVIDIA 的建議。這形成了一種事實上的「指定材料壟斷」，台光電是目前最主要的受益者。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 不搶對方核心客戶的默契正在瓦解</div>
+<div class="ev-d">過去各 CCL 廠有一定的客戶區隔默契，但 AI 高速 CCL 的超額利潤打破了這個平衡。台燿正積極搶進台光電的高速 CCL 領域，聯茂透過 M9 認證試圖打入 NVIDIA 生態系。產業正從「各守地盤」走向「爭奪同一塊高利潤市場」。</div>
+</div>
+</div>
+</div>
+
+<!-- 第三章整合結論 -->
+<div class="tip good">
+<b>第三章整合結論</b>
+<p><b>資料</b>：商業互動矩陣顯示六對關係中，3 對為「市場區隔共存」、2 對為「純競爭」、1 對為「合作競爭」。台光電 vs 台燿競爭最激烈（同為高速 CCL 追逐者），台光電 vs 聯茂為合作競爭（second source 動態），騰輝與其他三家幾乎不重疊。價值鏈中 CCL 製造處於咽喉位置，毛利率差距達 14.5%~32.2%。產業慣例以認證先行者優勢、ASP 隨世代提升、NVIDIA 指定材料為核心遊戲規則。</p>
+<p><b>觀察</b>：四家公司的商業生態關係呈現明顯的「一超 + 一追 + 一候補 + 一獨立」格局。台光電是生態系的中心（掌控原料+認證+技術），台燿是最積極的追趕者，聯茂是被產業需要的候補（分散供應鏈風險），騰輝則在完全不同的利基市場獨立運作。騰輝與其他三家的「零交集」意味著其投資邏輯應該獨立評估，不應混為一談。</p>
+<p><b>推論</b>：認證先行者優勢（Winner Takes Most）與 NVIDIA 指定材料的產業慣例，解釋了為什麼台光電的毛利率（29.8%）遠高於聯茂（14.5%）——即使兩家都在做「CCL」，但台光電的 CCL 被 NVIDIA 指定，聯茂的 CCL 則大量用在毛利率更低的傳統/基礎設施領域。台燿的毛利率（22.8%）介於兩者之間，反映其正處於「從傳統向高速轉型」的過程中。騰輝的毛利率（32.2%）最高反而值得注意——軍工利基的溢價能力可能被市場低估（PE 僅 26.6x）。</p>
+<p><b>結論</b>：<b>（1）台光電是生態系中心</b>：掌控上游（玻纖布 70%）+ 下游（NVIDIA 認證獨佔），五力中四力有利，是生態系中最有結構性優勢的玩家，但估值也最高（PE 70.6x）；<b>（2）台燿是最佳追趕者</b>：日東紡績技術授權 + 客戶極度分散（<10%）+ 高速佔比快速攀升（10%→36%），在不依賴 NVIDIA 獨佔的情況下走出自己的路；<b>（3）聯茂是「結構性候補」</b>：產業需要 second source，M9 認證結果（2026H2）是關鍵催化劑，Starlink 為額外成長選項；<b>（4）騰輝是「被忽視的利基王」</b>：軍工+散熱的高毛利率組合被 PE 26.6x 低估，但 AI CCL 僅 1.8%，與其他三家不在同一個賽道上。</p>
+</div>
+
+
+<!-- Ch4 start -->
+<!-- ===================================================================
+     第二層：競爭者解剖（前半）Ch4 ~ Ch7
+     CCL 銅箔基板四雄 — 產業競爭生態分析 Part 2
+     天機閣 研究部 | 2026-04-10
+     =================================================================== -->
+
+<div class="part-title" id="layer2">第二層：競爭者解剖</div>
+
+<!-- ============================================================ -->
+<!-- Ch4：競爭者總覽與量化評分                                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch4">第四章：競爭者總覽與量化評分</div>
+<div class="section-sub">核心財務指標 × 八維度量化評分，四家一目了然</div>
+
+<!-- 4.1 核心財務指標總表 -->
+<div class="card">
+<h3>4.1 核心財務指標總表</h3>
+<div class="card-body">
+<p>以下彙整四家 CCL 廠 FY2025 核心財務數據，所有數字均來自各公司年報與公開財報。<span class="fias-f">FACT</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>指標</th>
+  <th style="color:var(--co-a)">台光電 2383</th>
+  <th style="color:var(--co-b)">台燿 6274</th>
+  <th style="color:var(--co-c)">聯茂 6213</th>
+  <th style="color:var(--co-d)">騰輝 6672</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>股價（元）</td><td class="num">2,885</td><td class="num">683</td><td class="num">187</td><td class="num">129</td></tr>
+<tr><td>本益比 PE（x）</td><td class="num" style="color:var(--bear)">70.6</td><td class="num" style="color:var(--bear)">56.3</td><td class="num" style="color:var(--warn)">45.0</td><td class="num" style="color:var(--bull)">26.6</td></tr>
+<tr><td>PEG</td><td class="num">1.45</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>EV/EBITDA（x）</td><td class="num">47.8</td><td class="num">—</td><td class="num">—</td><td class="num">13.3</td></tr>
+<tr><td>股價淨值比 PB（x）</td><td class="num">—</td><td class="num">10.59</td><td class="num">3.2</td><td class="num">2.7</td></tr>
+<tr><td>殖利率（%）</td><td class="num">0.57</td><td class="num">1.11</td><td class="num">1.10</td><td class="num" style="color:var(--bull)">2.60</td></tr>
+<tr><td>營收（億元）</td><td class="num" style="color:var(--bull)">943</td><td class="num">~400</td><td class="num">331</td><td class="num">42.6</td></tr>
+<tr><td>營收 YoY（%）</td><td class="num" style="color:var(--bull)">+46</td><td class="num" style="color:var(--bull)">+55.3*</td><td class="num">+12.7</td><td class="num">+0.8</td></tr>
+<tr><td>EPS（元）</td><td class="num" style="color:var(--bull)">41.67</td><td class="num">12.13</td><td class="num">4.16</td><td class="num">4.85</td></tr>
+<tr><td>EPS YoY（%）</td><td class="num">+50</td><td class="num">—</td><td class="num" style="color:var(--bull)">+124</td><td class="num" style="color:var(--bear)">-3.2</td></tr>
+<tr><td>毛利率（%）</td><td class="num" style="color:var(--bull)">29.8</td><td class="num">22.8</td><td class="num" style="color:var(--bear)">14.5</td><td class="num" style="color:var(--bull)">32.2</td></tr>
+<tr><td>ROE（%）</td><td class="num" style="color:var(--bull)">30.9</td><td class="num">26.0</td><td class="num" style="color:var(--bear)">7.2</td><td class="num">10.4</td></tr>
+<tr><td>負債比（%）</td><td class="num">—</td><td class="num">53.16</td><td class="num">44.3</td><td class="num" style="color:var(--bull)">28.6</td></tr>
+<tr><td>負債權益比</td><td class="num" style="color:var(--warn)">1.17</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>自由現金流</td><td class="num">—</td><td class="num" style="color:var(--bear)">-14.53億</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>R&D 佔營收（%）</td><td class="num">—</td><td class="num">2.67</td><td class="num">2.22</td><td class="num" style="color:var(--bull)">7.56</td></tr>
+</tbody>
+</table>
+<p style="font-size:.75em;color:var(--txt3)">* 台燿營收 YoY 為 FY2024 合併營收 341.8 億之成長率；FY2025 推估合併 ~400 億。「—」表示該指標在原始資料中無明確數值。<span class="fias-s">SOURCE: 各公司年報/財報</span></p>
+
+<details>
+<summary>速讀摘要：四家定位一句話</summary>
+<div class="grid2">
+  <div class="ev"><div class="ev-t" style="color:var(--co-a)">台光電：規模+技術雙冠王</div><div class="ev-d">營收 943 億最大、毛利率 29.8% 兼顧規模與獲利，ROE 30.9% 冠群。但 PE 70.6x 為四家最貴。</div></div>
+  <div class="ev"><div class="ev-t" style="color:var(--co-b)">台燿：高速追趕者</div><div class="ev-d">ELL/SLL 佔比 36% 爆發成長，客戶最分散、ROE 26%，但 FCF 為負且 PE 56.3x 不便宜。</div></div>
+  <div class="ev"><div class="ev-t" style="color:var(--co-c)">聯茂：規模撐場但利潤薄</div><div class="ev-d">營收 331 億全球第四，但毛利率僅 14.5%、ROE 7.2%。EPS YoY +124% 是低基期效應。</div></div>
+  <div class="ev"><div class="ev-t" style="color:var(--co-d)">騰輝：利基高毛利但成長停滯</div><div class="ev-d">毛利率 32.2% 最高、負債比 28.6% 最低、PE 26.6x 最便宜。但營收僅 42.6 億且 YoY +0.8%。</div></div>
+</div>
+</details>
+</div>
+</div>
+
+<!-- 4.2 八維度量化評分體系 -->
+<div class="card">
+<h3>4.2 八維度量化評分體系</h3>
+<div class="card-body">
+<p>以八大維度進行量化評分，每維度含 3~5 個子指標加權計算，滿分 100 分。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>維度（權重）</th>
+  <th>核心子指標</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>規模（15%）</b></td>
+  <td>營收/產能/全球市佔/廠區數</td>
+  <td class="num matrix-cell cell-best">95</td>
+  <td class="num">72</td>
+  <td class="num">68</td>
+  <td class="num matrix-cell cell-worst">22</td>
+</tr>
+<tr>
+  <td><b>獲利（15%）</b></td>
+  <td>毛利率/ROE/EPS成長/FCF</td>
+  <td class="num matrix-cell cell-best">90</td>
+  <td class="num">68</td>
+  <td class="num matrix-cell cell-worst">35</td>
+  <td class="num">62</td>
+</tr>
+<tr>
+  <td><b>成長（15%）</b></td>
+  <td>營收YoY/EPS YoY/AI佔比/新產能</td>
+  <td class="num matrix-cell cell-best">92</td>
+  <td class="num">78</td>
+  <td class="num">45</td>
+  <td class="num matrix-cell cell-worst">18</td>
+</tr>
+<tr>
+  <td><b>技術（12.5%）</b></td>
+  <td>世代領先/專利/R&D佔比/認證</td>
+  <td class="num matrix-cell cell-best">95</td>
+  <td class="num">70</td>
+  <td class="num">55</td>
+  <td class="num">48</td>
+</tr>
+<tr>
+  <td><b>護城河（12.5%）</b></td>
+  <td>轉換成本/獨佔認證/玻纖布/客戶鎖定</td>
+  <td class="num matrix-cell cell-best">92</td>
+  <td class="num">55</td>
+  <td class="num">42</td>
+  <td class="num">50</td>
+</tr>
+<tr>
+  <td><b>定價權（10%）</b></td>
+  <td>客戶議價/毛利率穩定度/產品差異化</td>
+  <td class="num matrix-cell cell-best">88</td>
+  <td class="num">58</td>
+  <td class="num matrix-cell cell-worst">32</td>
+  <td class="num">65</td>
+</tr>
+<tr>
+  <td><b>管理層（10%）</b></td>
+  <td>誠信度/執行力/策略清晰度/配息紀律</td>
+  <td class="num">72</td>
+  <td class="num matrix-cell cell-best">85</td>
+  <td class="num">60</td>
+  <td class="num">55</td>
+</tr>
+<tr>
+  <td><b>估值吸引力（10%）</b></td>
+  <td>PE百分位/PEG/淨期望值/安全邊際</td>
+  <td class="num matrix-cell cell-worst">25</td>
+  <td class="num">35</td>
+  <td class="num">42</td>
+  <td class="num matrix-cell cell-best">68</td>
+</tr>
+<tr class="highlight-row">
+  <td><b>加權總分</b></td>
+  <td>—</td>
+  <td class="num" style="color:var(--co-a);font-weight:900">82.3</td>
+  <td class="num" style="color:var(--co-b);font-weight:900">65.3</td>
+  <td class="num" style="color:var(--co-c);font-weight:900">46.4</td>
+  <td class="num" style="color:var(--co-d);font-weight:900">44.6</td>
+</tr>
+</tbody>
+</table>
+
+<details>
+<summary>評分方法論說明</summary>
+<p>每維度由 3~5 個量化子指標組成，各子指標在四家公司間做排名對標，轉換為 0~100 分數後加權匯總。具體權重配置：</p>
+<ul style="font-size:.82em;color:var(--txt2)">
+  <li><b>規模 15%</b>：營收絕對值 40% + 月產能 25% + 全球市佔 20% + 廠區數 15%</li>
+  <li><b>獲利 15%</b>：毛利率 30% + ROE 30% + EPS 成長 25% + FCF 正負 15%</li>
+  <li><b>成長 15%</b>：營收 YoY 30% + EPS YoY 25% + AI 營收佔比 25% + 新產能擴建 20%</li>
+  <li><b>技術 12.5%</b>：世代領先度 35% + 專利數 25% + R&D 佔比 25% + 關鍵認證 15%</li>
+  <li><b>護城河 12.5%</b>：轉換成本 30% + 獨佔認證 25% + 上游掌控 25% + 客戶鎖定 20%</li>
+  <li><b>定價權 10%</b>：客戶議價能力 35% + 毛利率穩定度 35% + 差異化程度 30%</li>
+  <li><b>管理層 10%</b>：誠信度 35% + 執行力 30% + 配息紀律 20% + 策略清晰度 15%</li>
+  <li><b>估值吸引力 10%</b>：PE 歷史百分位 30% + 淨期望值 30% + 安全邊際 25% + PEG 15%</li>
+</ul>
+<p style="font-size:.78em;color:var(--txt3)"><span class="fias-a">ANALYSIS</span> 評分為天機閣研究部基於上述量化指標的標準化計算結果，非主觀打分。</p>
+</details>
+
+<!-- 雷達圖 -->
+<div class="chart-wrap">
+  <div class="chart-title">四家 CCL 廠八維度量化雷達圖</div>
+  <div style="position:relative;height:400px"><canvas id="ch4-radar"></canvas></div>
+  <div class="chart-note">外圈為滿分 100；數值越靠外表示該維度越強</div>
+</div>
+
+<!-- 分數條視覺化 -->
+<p style="margin-top:10px"><b>加權總分排名</b></p>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-a)">台光電</span>
+  <div class="bar"><div class="fill" style="width:82.3%;background:var(--co-a)"></div></div>
+  <span class="val" style="color:var(--co-a)">82.3</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-b)">台燿</span>
+  <div class="bar"><div class="fill" style="width:65.3%;background:var(--co-b)"></div></div>
+  <span class="val" style="color:var(--co-b)">65.3</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-c)">聯茂</span>
+  <div class="bar"><div class="fill" style="width:46.4%;background:var(--co-c)"></div></div>
+  <span class="val" style="color:var(--co-c)">46.4</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-d)">騰輝</span>
+  <div class="bar"><div class="fill" style="width:44.6%;background:var(--co-d)"></div></div>
+  <span class="val" style="color:var(--co-d)">44.6</span>
+</div>
+
+</div>
+</div>
+
+<!-- Ch4 整合結論 -->
+<div class="tip warn">
+<b>第四章整合結論</b>
+<p><b>資料觀察</b>：台光電在 8 個維度中拿下 6 項第一（規模/獲利/成長/技術/護城河/定價權），加權總分 82.3 遙遙領先。但估值吸引力僅 25 分，是四家最低——市場已將其技術壟斷地位充分定價。<span class="fias-f">FACT</span></p>
+<p><b>推論</b>：台光電是「好公司但貴股票」的典型案例。台燿總分 65.3 居次，在管理層維度以 85 分領先所有人（誠信度 87/100、客戶分散度最佳），顯示其「穩健追趕者」定位。聯茂（46.4）與騰輝（44.6）總分接近，但結構完全不同——聯茂靠規模撐分但獲利/定價權極弱，騰輝靠估值吸引力與高毛利勉強持平但規模/成長幾乎墊底。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：投資選擇不是選「最強」而是選「被低估的強」。台光電的 82.3 分對應 PE 70.6x，市場已反映其實力；台燿 65.3 分對應 PE 56.3x，性價比略優但仍偏貴。真正的錯配機會可能在騰輝——若其軍工/車用利基市場啟動第二成長曲線，44.6 分對應 PE 26.6x 有重新定價空間。但前提是它必須證明成長性，目前營收 YoY +0.8% 說服力極弱。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch5：商業模式與獲利引擎                                      -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch5">第五章：商業模式與獲利引擎</div>
+<div class="section-sub">商業模式定位 × 客戶集中度 × 毛利率結構性差異</div>
+
+<!-- 5.1 商業模式定位圖 -->
+<div class="card">
+<h3>5.1 商業模式定位圖</h3>
+<div class="card-body">
+<p>四家 CCL 廠商業模式差異極大，從垂直整合巨頭到利基特殊材料商。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>維度</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>核心定位</b></td>
+  <td>垂直整合技術領袖</td>
+  <td>高速材料快速追趕者</td>
+  <td>規模化量產平台</td>
+  <td>利基特殊材料專家</td>
+</tr>
+<tr>
+  <td><b>核心業務</b></td>
+  <td>高速無鹵 CCL / HDI / 衛星</td>
+  <td>ELL/SLL 高速 CCL</td>
+  <td>特殊基板（全球市佔 16%）</td>
+  <td>散熱金屬基板 / 軍工 VT-901</td>
+</tr>
+<tr>
+  <td><b>收入結構</b></td>
+  <td>AI 63% / 傳統 37%</td>
+  <td>ELL/SLL 36% / 傳統 64%</td>
+  <td>基礎設施 68% / 汽車 16%</td>
+  <td>特殊材料 51.8% / 傳統 48.2%</td>
+</tr>
+<tr>
+  <td><b>垂直整合</b></td>
+  <td>玻纖布 70%<br>（最深度整合）</td>
+  <td>日東紡績技術授權<br>+ 優先供料</td>
+  <td>無上游整合</td>
+  <td>無上游整合</td>
+</tr>
+<tr>
+  <td><b>客戶層級</b></td>
+  <td>透過 PCB 廠間接服務<br>NVIDIA/Meta/Google/SpaceX</td>
+  <td>直供 PCB 廠<br>客戶分散 &lt;10%</td>
+  <td>直供 PCB 廠<br>基建/汽車為主</td>
+  <td>直供終端<br>Valeo/軍工客戶</td>
+</tr>
+<tr>
+  <td><b>經常性收入</b></td>
+  <td>高（M8 獨佔 = 持續出貨）</td>
+  <td>中高（認證通過 = 鎖定）</td>
+  <td>中（規模單但競爭多）</td>
+  <td>高（軍工認證 = 長約）</td>
+</tr>
+</tbody>
+</table>
+
+<!-- 商業模式象限圖 -->
+<div class="chart-wrap">
+  <div class="chart-title">商業模式定位象限圖（技術壁壘 × 營收規模）</div>
+  <div style="position:relative;height:350px"><canvas id="ch5-biz-scatter"></canvas></div>
+  <div class="chart-note">X 軸 = 技術壁壘（八維度技術分）；Y 軸 = 營收規模（億元）；氣泡大小 = 毛利率</div>
+</div>
+</div>
+</div>
+
+<!-- 5.2 客戶集中度風險 -->
+<div class="card">
+<h3>5.2 客戶集中度風險</h3>
+<div class="card-body">
+<p>客戶集中度是商業模式韌性的關鍵指標。前三大客戶佔比越高，單一客戶流失的衝擊越大。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>最大單一客戶佔比</th>
+  <th>前三大合計</th>
+  <th>分散程度</th>
+  <th>信號燈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電</b></td>
+  <td class="num">間接依賴 NVIDIA</td>
+  <td class="num">依賴 AI 供應鏈 63%</td>
+  <td>客戶分散但終端集中</td>
+  <td><span class="light yellow"></span>中度風險</td>
+</tr>
+<tr>
+  <td style="color:var(--co-b)"><b>台燿</b></td>
+  <td class="num">&lt;10%</td>
+  <td class="num">&lt;30%（推估）</td>
+  <td>六年一致最分散</td>
+  <td><span class="light green"></span>低風險</td>
+</tr>
+<tr>
+  <td style="color:var(--co-c)"><b>聯茂</b></td>
+  <td class="num">未揭露</td>
+  <td class="num">基建佔 68%</td>
+  <td>產業集中於基建</td>
+  <td><span class="light yellow"></span>中度風險</td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝</b></td>
+  <td class="num">蘇州廠獲利 &gt;100%</td>
+  <td class="num">未揭露</td>
+  <td>地域極度集中蘇州</td>
+  <td><span class="light red"></span>高度風險</td>
+</tr>
+</tbody>
+</table>
+
+<div class="tip info">
+<b>客戶集中度觀察</b>
+<p>台燿是唯一連續六年單一客戶佔比 &lt;10% 的公司，這代表任何一家 PCB 廠的訂單轉移對營收衝擊有限（&lt;10%）。<span class="fias-f">FACT</span><br>
+相對地，台光電雖然 PCB 客戶端分散（華通/健鼎/欣興等），但終端 AI 供應鏈佔營收 63%——本質上是「客戶分散、需求集中」，一旦 AI 資本支出放緩，63% 的營收都會受影響。<span class="fias-i">INSIGHT</span><br>
+騰輝最危險：蘇州廠獲利佔合併 &gt;100%（其他據點虧損），形同「一座工廠養全家」。<span class="fias-s">SIGNAL</span></p>
+</div>
+</div>
+</div>
+
+<!-- 5.3 獲利模式解析 -->
+<div class="card">
+<h3>5.3 獲利模式解析 — 毛利率差異的結構性原因</h3>
+<div class="card-body">
+<p>四家毛利率從 14.5% 到 32.2%，差距 17.7 個百分點，背後是完全不同的商業邏輯。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-d)">
+    <div class="ev-t" style="color:var(--co-d)">騰輝 32.2%（最高）</div>
+    <div class="ev-d">
+      <b>驅動因子：</b>特殊材料佔比 51.8%（散熱金屬基板+軍工 VT-901），技術門檻高+客製化程度高=議價權強。軍工 VT-901 需四大認證（IPC QPL/AS9100/NASA HATS/ITAR），進入障礙極高，定價溢價估計 30-50%。<br>
+      <b>但陷阱在於</b>：高毛利+零成長 = 市場已成熟的利基。營收 42.6 億 YoY +0.8% 表示利基市場已被充分填滿，無法靠現有產品線放量。
+    </div>
+    <div class="ev-s"><span class="fias-f">FACT</span> 毛利率 32.2% / 營收 42.6 億 / YoY +0.8%</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電 29.8%（次高）</div>
+    <div class="ev-d">
+      <b>驅動因子</b>三重結構：(1) 規模經濟——月產能 585 萬張是騰輝的 10 倍以上，固定成本攤薄；(2) 技術溢價——M8 獨佔量產+M9 NVIDIA 獨家，高速無鹵 CCL 全球市佔 &gt;50% 形成定價權；(3) 垂直整合——玻纖布自給 70%，關鍵原材料成本可控。<br>
+      <b>且持續上升</b>：AI 營收佔比從低於 50% 升至 63%，高階產品比重提升推動毛利率結構性上行。
+    </div>
+    <div class="ev-s"><span class="fias-f">FACT</span> 毛利率 29.8% / AI 佔比 63% / 玻纖布 70%</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿 22.8%（中等）</div>
+    <div class="ev-d">
+      <b>驅動因子</b>：正處於產品結構升級期——ELL/SLL 佔比從 FY2021 的 10% 躍升至 36%，高速材料比重提升帶動毛利率逐步改善。但目前 64% 營收仍來自傳統 CCL，整體毛利率被拉低。<br>
+      <b>潛力</b>：若 ELL/SLL 佔比 2027 年升至 50%+，毛利率有機會逼近 25-27%。日東紡績技術授權+優先玻纖布供應降低了追趕成本。
+    </div>
+    <div class="ev-s"><span class="fias-f">FACT</span> 毛利率 22.8% / ELL 佔比 10%→36%</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂 14.5%（最低）</div>
+    <div class="ev-d">
+      <b>結構性弱勢</b>：(1) 產品以基礎設施 CCL 為主（68% 營收），這是最紅海的市場，中國大陸廠商低價競爭激烈；(2) 無上游垂直整合，原材料成本全部外購；(3) 規模雖大（全球高階特殊基板市佔 16%）但定義的「特殊」偏向量產型而非高端技術型。<br>
+      <b>改善空間有限</b>：M9 認證中（Phase 3，55% 機率），若通過可提升高階佔比，但最快 2026H2，且不確定性高。
+    </div>
+    <div class="ev-s"><span class="fias-f">FACT</span> 毛利率 14.5% / 基建佔 68% / M9 Phase 3</div>
+  </div>
+</div>
+
+<!-- 毛利率比較柱狀圖 -->
+<div class="chart-wrap">
+  <div class="chart-title">FY2025 毛利率結構拆解</div>
+  <div style="position:relative;height:300px"><canvas id="ch5-margin-bar"></canvas></div>
+  <div class="chart-note">毛利率差距本質上反映的是定價權差距：技術壟斷 &gt; 利基認證 &gt; 追趕升級 &gt; 紅海量產</div>
+</div>
+
+</div>
+</div>
+
+<!-- Ch5 整合結論 -->
+<div class="tip info">
+<b>第五章整合結論</b>
+<p><b>資料 → 觀察</b>：四家毛利率差距 17.7 ppts（14.5%~32.2%），核心原因是「定價權階層」——技術壟斷（台光電 M8/M9 獨佔）&gt; 利基認證壁壘（騰輝軍工四大認證）&gt; 追趕中的結構升級（台燿 ELL 10→36%）&gt; 紅海規模競爭（聯茂基建 68%）。<span class="fias-f">FACT</span></p>
+<p><b>觀察 → 推論</b>：毛利率不只是「現在賺多少」，更是「未來能否持續賺」的預判指標。台光電 29.8% 且上升趨勢（AI 佔比持續擴大）最健康；騰輝 32.2% 雖最高但成長停滯，高毛利配零成長 = 成熟利基的天花板；台燿 22.8% 且 ELL 佔比快速爬升，是唯一毛利率有「結構性改善軌跡」的公司。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論 → 結論</b>：客戶集中度方面，台燿最健康（&lt;10% 六年一致），台光電「看似分散實則集中在 AI 供應鏈 63%」，騰輝「一座蘇州廠養全家」是最大結構性風險。商業模式韌性排序：台光電（垂直整合+獨佔）&gt; 台燿（分散+追趕）&gt; 聯茂（規模但薄利）&gt; 騰輝（高毛利但脆弱）。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch6：核心差異化能力競賽 + 產業題材受惠度評估                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch6">第六章：核心差異化能力競賽 + 產業題材受惠度評估</div>
+<div class="section-sub">高速低損耗 CCL 技術世代進度 × 五大產業題材受惠排序 × 情境推演</div>
+
+<!-- 6.1 核心差異化能力定義 -->
+<div class="card">
+<h3>6.1 核心差異化能力定義：高速低損耗 CCL 材料技術</h3>
+<div class="card-body">
+<p>CCL 產業的核心差異化能力 = <b>高速低損耗材料的世代推進能力</b>。從 M7 到 M10，每一代材料的介電損耗（Df）降低約 30-40%，傳輸速率提升約 2 倍，對應的認證週期 12~18 個月。<span class="fias-f">FACT</span></p>
+<p>能率先通過 NVIDIA/AMD 等 AI 晶片大廠的材料認證，就能獨佔該世代 12~24 個月的先行者紅利——這是 CCL 產業定價權的終極來源。<span class="fias-i">INSIGHT</span></p>
+
+<div class="grid2">
+  <div class="mini-card bull-card">
+    <div class="title">M8 世代（現役主力）</div>
+    <div class="num" style="color:var(--bull)">台光電獨佔</div>
+    <div class="desc">2024 量產 / 對應 400G-800G / NVIDIA H100/H200</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">M8+（1.6T 升級版）</div>
+    <div class="num" style="color:var(--bull)">台光電出貨中</div>
+    <div class="desc">2025 出貨 / 對應 1.6T 光通訊升級</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title">M9 世代（次世代）</div>
+    <div class="num" style="color:var(--neutral)">台光電 NVIDIA 獨家</div>
+    <div class="desc">對應 224G SerDes / GB300+ 平台</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">M10 世代（未來）</div>
+    <div class="num" style="color:var(--warn)">三家測試中</div>
+    <div class="desc">台光電+兩家競品測試中 / 對應 448G</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 6.2 各家佈局進度比較 -->
+<div class="card">
+<h3>6.2 各家高速材料佈局進度比較</h3>
+<div class="card-body">
+
+<table>
+<thead>
+<tr>
+  <th>世代/技術</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>M8 世代</b></td>
+  <td><span class="badge wide">獨佔量產</span></td>
+  <td><span class="badge narrow">ELL 量產中</span></td>
+  <td><span class="badge" style="background:var(--warn)">有出貨</span></td>
+  <td><span class="badge none">未涉足</span></td>
+</tr>
+<tr>
+  <td><b>M8+（1.6T）</b></td>
+  <td><span class="badge wide">出貨中</span></td>
+  <td><span class="badge" style="background:var(--warn)">認證中</span></td>
+  <td><span class="badge" style="background:var(--warn)">800G 有出</span></td>
+  <td><span class="badge none">無佈局</span></td>
+</tr>
+<tr>
+  <td><b>M9 世代</b></td>
+  <td><span class="badge wide">NVIDIA 獨家</span></td>
+  <td><span class="badge narrow">224G 已量產</span></td>
+  <td><span class="badge" style="background:var(--warn)">Phase 3 認證</span></td>
+  <td><span class="badge none">未涉足</span></td>
+</tr>
+<tr>
+  <td><b>M10 世代</b></td>
+  <td><span class="badge" style="background:var(--warn)">測試中</span></td>
+  <td><span class="badge" style="background:var(--txt3)">未揭露</span></td>
+  <td><span class="badge" style="background:var(--txt3)">未揭露</span></td>
+  <td><span class="badge none">未涉足</span></td>
+</tr>
+<tr>
+  <td><b>AI CCL 營收佔比</b></td>
+  <td class="num" style="color:var(--bull);font-weight:700">63%</td>
+  <td class="num" style="color:var(--neutral);font-weight:700">36%</td>
+  <td class="num" style="color:var(--txt3)">未明確</td>
+  <td class="num" style="color:var(--bear);font-weight:700">1.8%</td>
+</tr>
+<tr>
+  <td><b>Starlink 認證</b></td>
+  <td>低軌衛星 70%</td>
+  <td>—</td>
+  <td><span class="badge wide">認證通過</span></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><b>軍工認證</b></td>
+  <td>—</td>
+  <td>—</td>
+  <td>—</td>
+  <td><span class="badge wide">四大認證</span></td>
+</tr>
+</tbody>
+</table>
+
+<div class="tip good">
+<b>技術世代觀察</b>
+<p>台光電在 M8/M8+/M9 三代材料全部領先或獨佔，形成「三代連莊」的技術壟斷態勢。台燿的 ELL/224G 量產是除台光電外唯一在 M9 等級有實際出貨的競品，但規模和客戶級別仍有差距。聯茂 M9 認證 Phase 3 成功率 55% 是關鍵搖擺點——通過則躋身第二梯隊，失敗則在高速材料領域持續邊緣化。騰輝完全不在高速 AI CCL 這條賽道上。<span class="fias-a">ANALYSIS</span></p>
+</div>
+</div>
+</div>
+
+<!-- 6.3 R&D 與專利比較 -->
+<div class="card">
+<h3>6.3 R&D 投入與專利佈局比較</h3>
+<div class="card-body">
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr><th>公司</th><th>R&D 佔營收</th><th>R&D 金額（推估）</th><th>專利</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電</b></td>
+  <td class="num">—</td>
+  <td class="num">~30-40億（推估）</td>
+  <td>台灣 CCL 第一 / 全球第四</td>
+</tr>
+<tr>
+  <td style="color:var(--co-b)"><b>台燿</b></td>
+  <td class="num">2.67%</td>
+  <td class="num">~10.7億</td>
+  <td>日東紡績技術授權</td>
+</tr>
+<tr>
+  <td style="color:var(--co-c)"><b>聯茂</b></td>
+  <td class="num">2.22%</td>
+  <td class="num">~7.3億</td>
+  <td>Prismark 高階特殊基板 #1</td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝</b></td>
+  <td class="num" style="color:var(--bull)">7.56%</td>
+  <td class="num">~3.2億</td>
+  <td>軍工四大認證</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.78em;color:var(--txt3)">台光電 R&D 佔比未揭露，但營收 943 億 × 業界平均 3-4% ≈ 30-40 億，絕對金額遠超其他三家。騰輝 R&D 佔比 7.56% 最高但絕對金額最低（3.2 億），顯示「利基型研發」策略。<span class="fias-a">ANALYSIS</span></p>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">R&D 佔營收比 vs R&D 金額</div>
+  <div id="ch6-rd-chart" class="echart" style="height:320px"></div>
+  <div class="chart-note">佔比高不代表投入多——絕對金額才是研發實力</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- 6.4 產業題材受惠度評估（重點章節） -->
+<div class="card">
+<h3>6.4 產業題材受惠度評估（核心重點）</h3>
+<div class="card-body">
+<p>針對 CCL 產業五大核心題材，逐一評估四家公司的受惠排序與判斷依據。<span class="fias-a">ANALYSIS</span></p>
+
+<!-- 五大題材排名表 -->
+<table>
+<thead>
+<tr>
+  <th>產業題材</th>
+  <th style="color:var(--bull)">第一受惠</th>
+  <th>第二</th>
+  <th>第三</th>
+  <th style="color:var(--bear)">第四</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>AI 伺服器 CCL 需求爆發</b></td>
+  <td style="color:var(--co-a)"><b>台光電</b><br><span style="font-size:.72em">M8/M9獨佔，AI佔63%</span></td>
+  <td style="color:var(--co-b)"><b>台燿</b><br><span style="font-size:.72em">ELL 36%快速成長</span></td>
+  <td style="color:var(--co-c)"><b>聯茂</b><br><span style="font-size:.72em">M9認證中55%</span></td>
+  <td style="color:var(--co-d)"><b>騰輝</b><br><span style="font-size:.72em">AI僅1.8%</span></td>
+</tr>
+<tr>
+  <td><b>M8/M9/M10 世代升級</b></td>
+  <td style="color:var(--co-a)"><b>台光電</b><br><span style="font-size:.72em">M8獨佔→M9 NVIDIA獨家</span></td>
+  <td style="color:var(--co-b)"><b>台燿</b><br><span style="font-size:.72em">ELL/224G已量產</span></td>
+  <td style="color:var(--co-c)"><b>聯茂</b><br><span style="font-size:.72em">M9 Phase 3</span></td>
+  <td style="color:var(--co-d)"><b>騰輝</b><br><span style="font-size:.72em">尚未涉足</span></td>
+</tr>
+<tr>
+  <td><b>800G/1.6T 光通訊升級</b></td>
+  <td style="color:var(--co-a)"><b>台光電</b><br><span style="font-size:.72em">M8+ 1.6T出貨中</span></td>
+  <td style="color:var(--co-b)"><b>台燿</b><br><span style="font-size:.72em">1.6T材料認證中</span></td>
+  <td style="color:var(--co-c)"><b>聯茂</b><br><span style="font-size:.72em">800G材料有出貨</span></td>
+  <td style="color:var(--co-d)"><b>騰輝</b><br><span style="font-size:.72em">無佈局</span></td>
+</tr>
+<tr>
+  <td><b>中國去美化/國產替代</b></td>
+  <td style="color:var(--co-d)"><b>騰輝</b><br><span style="font-size:.72em">蘇州廠獲利&gt;100%，最本土化</span></td>
+  <td style="color:var(--co-c)"><b>聯茂</b><br><span style="font-size:.72em">中國79%產能</span></td>
+  <td style="color:var(--co-b)"><b>台燿</b><br><span style="font-size:.72em">常熟+中山，大陸獲利51%</span></td>
+  <td style="color:var(--co-a)"><b>台光電</b><br><span style="font-size:.72em">中國85%但正在分散</span></td>
+</tr>
+<tr>
+  <td><b>車用/EV 基板需求</b></td>
+  <td style="color:var(--co-d)"><b>騰輝</b><br><span style="font-size:.72em">金屬基板Valeo+IATF</span></td>
+  <td style="color:var(--co-c)"><b>聯茂</b><br><span style="font-size:.72em">汽車佔16%營收</span></td>
+  <td style="color:var(--co-a)"><b>台光電</b><br><span style="font-size:.72em">車用10-15%，ADAS</span></td>
+  <td style="color:var(--co-b)"><b>台燿</b><br><span style="font-size:.72em">佈局較少</span></td>
+</tr>
+</tbody>
+</table>
+
+<!-- 受惠矩陣熱力圖 -->
+<div class="chart-wrap">
+  <div class="chart-title">題材 × 公司 受惠矩陣熱力圖</div>
+  <div id="ch6-heatmap" class="echart" style="height:380px"></div>
+  <div class="chart-note">數值 = 受惠程度（4=第一受惠，1=最低受惠）；顏色越深 = 受惠度越高</div>
+</div>
+
+<!-- 情境推演 -->
+<p style="margin-top:12px"><b>情境推演：三條路徑下的受惠者排序</b></p>
+
+<div class="fork-tree">
+  <div class="fork-root"><span class="fork-node">CCL 產業未來 3 年情境分歧</span></div>
+  <div class="fork-branches b3">
+    <div class="fork-branch">
+      <span class="fb-label fb-bull">路徑 A：AI 需求持續 3 年+（機率 50%）</span>
+      <div class="fb-title">台光電 &gt; 台燿 &gt;&gt; 聯茂 &gt; 騰輝</div>
+      <div class="fb-desc">
+        AI 資本支出持續擴張，M9/M10 世代迭代加速。台光電技術獨佔+產能擴張（585→945 萬張）形成正循環，EPS 可達 55-65 元（PE 下修至 50x 仍有 upside）。台燿 ELL 佔比可望突破 50%，毛利率逼近 25%。聯茂若 M9 認證通過可分食部分訂單。騰輝 AI 佔比僅 1.8%，幾乎完全不受惠。
+      </div>
+    </div>
+    <div class="fork-branch">
+      <span class="fb-label fb-bear">路徑 B：AI 需求 2027 放緩（機率 30%）</span>
+      <div class="fb-title">騰輝 &gt; 聯茂 &gt; 台燿 &gt; 台光電</div>
+      <div class="fb-desc">
+        AI 資本支出見頂，高速 CCL 需求成長趨緩。台光電受傷最深——63% 營收暴露於 AI 供應鏈，PE 70.6x 將面臨劇烈修正（可能跌至 30-40x）。騰輝反而最穩——軍工/車用利基不受 AI 週期影響，PE 26.6x 提供下檔保護。聯茂的基建佔 68% 反成緩衝。
+      </div>
+    </div>
+    <div class="fork-branch">
+      <span class="fb-label fb-neutral">路徑 C：中國供應鏈自主化加速（機率 20%）</span>
+      <div class="fb-title">騰輝 &gt; 聯茂 &gt; 台燿 &gt; 台光電</div>
+      <div class="fb-desc">
+        中美科技脫鉤升級，中國推動 CCL 國產替代。騰輝蘇州廠全本土化、英籍 CEO 背景反成「非台資/非美資」的差異化。聯茂中國產能 79% 也受惠。台光電中國佔 85% 看似受惠但正主動分散（降至 65%），且可能被定位為「台資供應商」受到替代壓力。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tip warn">
+<b>情境推演整合觀察</b>
+<p>台光電在路徑 A（50% 機率）中是絕對贏家，但在路徑 B/C（合計 50% 機率）中都是最大輸家——這是典型的「高度集中押注」風險結構。期望值加權後，台光電仍是最強（路徑 A 的 upside 太大），但波動率也最大。<span class="fias-a">ANALYSIS</span><br>
+騰輝是唯一在路徑 B/C 都排第一的公司——這是「反脆弱」定位：AI 好它沒太多 upside，AI 不好它反而最穩。<span class="fias-i">INSIGHT</span></p>
+</div>
+</div>
+</div>
+
+<!-- Ch6 整合結論 -->
+<div class="tip good">
+<b>第六章整合結論</b>
+<p><b>資料 → 觀察</b>：高速低損耗材料技術是 CCL 產業的終極差異化能力。台光電 M8/M8+/M9 三代連莊獨佔，形成「認證壁壘 → 獨佔出貨 → 超額利潤 → 更多研發投入 → 下一代繼續領先」的正循環。台燿 ELL 10%→36% 的爆發成長是最值得關注的追趕軌跡。聯茂 M9 Phase 3（55% 機率）是決定它能否留在第二梯隊的關鍵賭注。騰輝完全不在高速 CCL 賽道上。<span class="fias-f">FACT</span></p>
+<p><b>觀察 → 推論</b>：五大產業題材中，AI 相關的三大題材（AI 伺服器/M8-M10 升級/光通訊）全部由台光電霸佔第一，台燿穩居第二。但「中國去美化」和「車用 EV」兩個題材的排序完全翻轉——騰輝和聯茂反而領先。這意味著產業題材的「風向切換」會導致四家公司的投資價值徹底重排。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論 → 結論</b>：投資 CCL 四雄本質上是在押注「哪個題材會主導未來 2-3 年」。若相信 AI 是確定性趨勢（路徑 A），台光電和台燿是唯二選擇，差別在於台光電已被充分定價（PE 70.6x）而台燿還有估值追趕空間。若擔心 AI 見頂或地緣風險升級（路徑 B/C），騰輝的「反脆弱」特性提供對沖價值。聯茂則處於尷尬的中間地帶——規模大但利潤薄、技術追趕中但不確定性高，需要 M9 認證通過才能定調。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch7：市場佈局與市佔率動態                                    -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch7">第七章：市場佈局與市佔率動態</div>
+<div class="section-sub">區域市場版圖 × 市佔率變遷 × China+1 地緣風險分散進度</div>
+
+<!-- 7.1 區域市場佈局比較 -->
+<div class="card">
+<h3>7.1 區域市場佈局比較</h3>
+<div class="card-body">
+<p>四家 CCL 廠的地理佈局差異極大，從「幾乎全亞洲」到「最全球化」。<span class="fias-f">FACT</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>區域</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>中國大陸</b></td>
+  <td class="num" style="color:var(--bear)">77%</td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--bear)">~79%（推估）</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td><b>亞洲（含中國）</b></td>
+  <td class="num">~92%</td>
+  <td class="num">85%（出口亞洲）</td>
+  <td class="num" style="color:var(--bear)">98%</td>
+  <td class="num">74%</td>
+</tr>
+<tr>
+  <td><b>台灣</b></td>
+  <td class="num">15%</td>
+  <td class="num">17%</td>
+  <td class="num">1.6%</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td><b>歐洲</b></td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td class="num">0.5%</td>
+  <td class="num" style="color:var(--bull)">19%</td>
+</tr>
+<tr>
+  <td><b>美洲</b></td>
+  <td class="num">~3%（Arlon）</td>
+  <td class="num">~1%</td>
+  <td class="num">—</td>
+  <td class="num">5%</td>
+</tr>
+<tr>
+  <td><b>全球化程度</b></td>
+  <td>中（分散中）</td>
+  <td>低（亞洲集中）</td>
+  <td>極低（亞洲 98%）</td>
+  <td style="color:var(--bull)"><b>最高</b>（歐洲19%+美5%）</td>
+</tr>
+</tbody>
+</table>
+
+<!-- 區域佈局比較圖 -->
+<div class="chart-wrap">
+  <div class="chart-title">區域營收分佈比較</div>
+  <div style="position:relative;height:300px"><canvas id="ch7-region-bar"></canvas></div>
+  <div class="chart-note">騰輝是唯一在歐洲有實質營收（19%）的 CCL 廠，反映軍工/車用客戶的全球化特性</div>
+</div>
+
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電：六廠全球佈局</div>
+    <div class="ev-d">台灣（總部）、昆山、中山、黃石（中國三廠）、馬來西亞（新廠）、美國 Arlon。中國產能佔 85%→目標降至 65%，馬來西亞+美國是分散主力。月產能 585→目標 945 萬張。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿：三廠 + 泰國避險</div>
+    <div class="ev-d">常熟、中山（中國兩廠）、泰國（BOI 8 年免稅）。泰國廠是 China+1 的關鍵落地，但大陸獲利佔比仍達 50.6%。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂：六基地但集中亞洲</div>
+    <div class="ev-d">六個生產基地月產能 570 萬張，但中國佔 79%。泰國新廠一期投產、二期 2026Q4，是最晚啟動 China+1 分散的一家。亞洲營收 98% 意味著幾乎沒有歐美市場。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-d)">
+    <div class="ev-t" style="color:var(--co-d)">騰輝：最全球化但規模最小</div>
+    <div class="ev-d">蘇州（主力）、泰國廠（2026Q2-Q3 投產）。雖然蘇州獲利佔 &gt;100%，但營收面歐洲 19% + 美洲 5% 是四家中最全球化的。軍工客戶（NATO 體系）本身就要求全球供貨。<span class="fias-f">FACT</span></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 7.2 市佔率動態 -->
+<div class="card">
+<h3>7.2 市佔率動態</h3>
+<div class="card-body">
+<p>CCL 產業正經歷「高速材料集中化」，台光電在高速無鹵 CCL 市場的市佔率三年翻倍。<span class="fias-f">FACT</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr><th>市佔指標</th><th>數據</th><th>趨勢</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電：高速無鹵 CCL</b></td>
+  <td class="num">28.4% → 40.1% → &gt;50%</td>
+  <td><span class="light green"></span>三年翻倍</td>
+</tr>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電：HDI CCL</b></td>
+  <td class="num">70%</td>
+  <td><span class="light green"></span>壟斷級</td>
+</tr>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電：低軌衛星 CCL</b></td>
+  <td class="num">70%</td>
+  <td><span class="light green"></span>壟斷級</td>
+</tr>
+<tr>
+  <td style="color:var(--co-c)"><b>聯茂：高階特殊基板</b></td>
+  <td class="num">16%（Prismark 全球第一）</td>
+  <td><span class="light yellow"></span>穩定</td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝：全球 CCL</b></td>
+  <td class="num">2%</td>
+  <td><span class="light yellow"></span>穩定</td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝：散熱金屬基板</b></td>
+  <td class="num">自稱全球第一</td>
+  <td><span class="light yellow"></span>利基壟斷</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">台光電高速無鹵 CCL 市佔率變遷</div>
+  <div id="ch7-share-area" class="echart" style="height:280px"></div>
+  <div class="chart-note">28.4%→40.1%→>50%：三年從挑戰者變壟斷者</div>
+</div>
+</div>
+</div>
+
+<div class="tip danger">
+<b>市佔率警訊</b>
+<p>台光電高速無鹵 CCL 市佔從 28.4% 飆升至 &gt;50%，接近壟斷門檻。歷史經驗顯示，市佔率超過 50% 的供應商通常會觸發客戶的「第二供應商培育」機制——NVIDIA/AMD 等大廠不會長期接受單一 CCL 供應商壟斷關鍵材料。這正是台燿、聯茂等追趕者的長期機會窗口。<span class="fias-s">SIGNAL</span></p>
+</div>
+</div>
+</div>
+
+<!-- 7.3 China+1 地緣風險分散進度 -->
+<div class="card">
+<h3>7.3 China+1 地緣風險分散進度</h3>
+<div class="card-body">
+<p>在中美科技脫鉤背景下，四家 CCL 廠的產能分散進度差異顯著。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>中國產能佔比</th>
+  <th>分散目標</th>
+  <th>關鍵佈局</th>
+  <th>進度評級</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="color:var(--co-a)"><b>台光電</b></td>
+  <td class="num" style="color:var(--bear)">85%</td>
+  <td class="num">→ 65%</td>
+  <td>馬來西亞新廠 + 美國 Arlon 擴產</td>
+  <td><span class="badge" style="background:var(--warn)">積極推進中</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-b)"><b>台燿</b></td>
+  <td class="num">~70%（推估）</td>
+  <td class="num">降低中</td>
+  <td>泰國 BOI 8 年免稅（已建廠）</td>
+  <td><span class="badge wide">最早落地</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-c)"><b>聯茂</b></td>
+  <td class="num" style="color:var(--bear)">79%</td>
+  <td class="num">分散中</td>
+  <td>泰國一期投產 / 二期 2026Q4</td>
+  <td><span class="badge" style="background:var(--warn)">起步中</span></td>
+</tr>
+<tr>
+  <td style="color:var(--co-d)"><b>騰輝</b></td>
+  <td class="num" style="color:var(--bear)">蘇州 &gt;100% 獲利</td>
+  <td class="num">分散中</td>
+  <td>泰國廠 2026Q2-Q3 投產</td>
+  <td><span class="badge" style="background:var(--warn)">剛起步</span></td>
+</tr>
+</tbody>
+</table>
+
+<!-- 分散進度排名 -->
+<p style="margin-top:8px"><b>China+1 分散進度排名（快 → 慢）</b></p>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-b)">台燿</span>
+  <div class="bar"><div class="fill" style="width:75%;background:var(--co-b)"></div></div>
+  <span class="val" style="color:var(--co-b)">泰國已建</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-a)">台光電</span>
+  <div class="bar"><div class="fill" style="width:60%;background:var(--co-a)"></div></div>
+  <span class="val" style="color:var(--co-a)">馬+美</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-c)">聯茂</span>
+  <div class="bar"><div class="fill" style="width:40%;background:var(--co-c)"></div></div>
+  <span class="val" style="color:var(--co-c)">泰國起步</span>
+</div>
+<div class="score-bar">
+  <span class="label" style="color:var(--co-d)">騰輝</span>
+  <div class="bar"><div class="fill" style="width:25%;background:var(--co-d)"></div></div>
+  <span class="val" style="color:var(--co-d)">泰國Q2-3</span>
+</div>
+
+<div class="grid2">
+  <div class="tip good">
+    <b>台燿分散最快</b>
+    <p>泰國廠享有 BOI 8 年免稅優惠，是四家中最早落地非中國產能的公司。ELL 高速材料在泰國廠的量產意味著不只是「避險分散」，更是「高價值產能外移」，戰略意義最高。<span class="fias-i">INSIGHT</span></p>
+  </div>
+  <div class="tip danger">
+    <b>騰輝分散最慢</b>
+    <p>蘇州廠獲利佔合併 &gt;100% 意味著騰輝在中國的地緣風險暴露最嚴重——不只是產能集中，而是「獲利全部集中」。泰國廠 2026Q2-Q3 才投產，至少要到 2027 才能貢獻有意義的獲利分散。在這之前，任何中國政策變動都可能直接衝擊騰輝 100% 的獲利來源。<span class="fias-s">SIGNAL</span></p>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch7 整合結論 -->
+<div class="tip warn">
+<b>第七章整合結論</b>
+<p><b>資料 → 觀察</b>：四家 CCL 廠的中國產能佔比均偏高（台光電 85%/聯茂 79%/台燿 ~70%/騰輝獲利 &gt;100%），但分散進度差異顯著。台燿泰國廠最早落地且享有 8 年免稅；台光電佈局最多元（馬來西亞+美國）但基數最大所以佔比下降慢；聯茂和騰輝起步最晚。<span class="fias-f">FACT</span></p>
+<p><b>觀察 → 推論</b>：市佔率動態揭示兩個並行趨勢——(1) 高速 CCL 市場正高速集中化（台光電 28.4%→&gt;50%），技術領先者贏家通吃；(2) 地理佈局正高速分散化（China+1），所有廠商都在往東南亞跑。這兩個趨勢的交叉意味著：誰能最快在「非中國」的地點量產「高速材料」，誰就在地緣風險中佔據最有利位置。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論 → 結論</b>：從這個角度看，台光電（馬來西亞新廠量產高速材料）和台燿（泰國廠量產 ELL）是最佳定位。聯茂的泰國廠目前以傳統 CCL 為主，高速材料尚未明確規劃。騰輝是全球化程度最高的一家（歐洲 19%），但這是「營收」全球化而非「產能」全球化——生產仍集中蘇州，形成「賣到全世界但在一個地方做」的脆弱結構。<span class="fias-i">INSIGHT</span><br>
+全球化真正的護城河不是「賣到哪裡」而是「在哪裡做」。台光電和台燿在「做的地方」分散得最積極，長期地緣風險抵禦力最強。<span class="fias-s">SIGNAL</span></p>
+</div>
+<!-- Ch7 end -->
+
+<!-- ============================================================ -->
+<!-- 圖表 JavaScript（Ch4~Ch7 全部圖表）                          -->
+<!-- ============================================================ -->
+
+<!-- Ch8 start -->
+<!-- ===================================================================
+     第二層：競爭者解剖（後半）Ch8 ~ Ch10
+     CCL 銅箔基板四雄 — 產業競爭生態分析 Part 3
+     天機閣 研究部 | 2026-04-10
+     =================================================================== -->
+
+<!-- ============================================================ -->
+<!-- Ch8：財務體質與營運槓桿                                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch8">第八章：財務體質與營運槓桿</div>
+<div class="section-sub">六維財務健康度 × 營運槓桿敏感度 × 財務人格定位</div>
+
+<!-- 8.1 財務健康度比較 -->
+<div class="card">
+<h3>8.1 財務健康度比較</h3>
+<div class="card-body">
+<p>以六項核心指標衡量四家 CCL 廠的財務體質，數據均來自 FY2024/FY2025 年報及公開財報。<span class="fias-f">FACT</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>指標</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>毛利率（%）</td>
+  <td class="num" style="color:var(--bull)">29.8</td>
+  <td class="num">22.8</td>
+  <td class="num" style="color:var(--bear)">14.5</td>
+  <td class="num" style="color:var(--bull)">32.2</td>
+</tr>
+<tr>
+  <td>營利率（%）</td>
+  <td class="num" style="color:var(--bull)">~20</td>
+  <td class="num">14.3</td>
+  <td class="num" style="color:var(--bear)">7.2</td>
+  <td class="num">9.4</td>
+</tr>
+<tr>
+  <td>淨利率（%）</td>
+  <td class="num" style="color:var(--bull)">~15</td>
+  <td class="num">11.1</td>
+  <td class="num" style="color:var(--bear)">~4.6</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td>ROE（%）</td>
+  <td class="num" style="color:var(--bull)">30.9</td>
+  <td class="num">26.0</td>
+  <td class="num" style="color:var(--bear)">7.2</td>
+  <td class="num">10.4</td>
+</tr>
+<tr>
+  <td>負債比（%）</td>
+  <td class="num" style="color:var(--warn)">—*</td>
+  <td class="num" style="color:var(--warn)">53.16</td>
+  <td class="num">44.3</td>
+  <td class="num" style="color:var(--bull)">28.6</td>
+</tr>
+<tr>
+  <td>FCF 品質</td>
+  <td class="num" style="color:var(--warn)">偏緊</td>
+  <td class="num" style="color:var(--bear)">-14.53億</td>
+  <td class="num">中等</td>
+  <td class="num" style="color:var(--warn)">-1.18億*</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">* 台光電負債權益比 1.17（非流動負債 YoY +205%，CB 未償 61 億）。騰輝 FCF TTM -1.18 億，但帳上現金+短投 144 億。<span class="fias-s">SOURCE: 各公司年報</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">六維財務健康度雷達圖</div>
+  <div style="position:relative;height:280px"><canvas id="ch8-radar"></canvas></div>
+  <div class="chart-note">標準化分數 0-100，越外圈越強</div>
+</div>
+</div>
+</div>
+
+<details>
+<summary>標準化計分方法說明</summary>
+<ul style="font-size:.82em;color:var(--txt2)">
+  <li><b>毛利率</b>：以 35% 為滿分基準，0% 為 0 分，線性插值</li>
+  <li><b>營利率</b>：以 25% 為滿分基準，0% 為 0 分</li>
+  <li><b>淨利率</b>：以 20% 為滿分基準，0% 為 0 分</li>
+  <li><b>ROE</b>：以 35% 為滿分基準，0% 為 0 分</li>
+  <li><b>負債比</b>：反向計分，20% 以下滿分，60% 以上 0 分（低負債＝好）</li>
+  <li><b>FCF 品質</b>：正 FCF 且穩定 = 90-100 / 微負或波動 = 30-50 / 大額負數 = 10-20</li>
+</ul>
+<p style="font-size:.78em;color:var(--txt3)"><span class="fias-a">ANALYSIS</span> 標準化計算確保六軸具可比性。</p>
+</details>
+</div>
+</div>
+
+<!-- 8.2 營運槓桿分析 -->
+<div class="card">
+<h3>8.2 營運槓桿分析</h3>
+<div class="card-body">
+<p>營運槓桿反映固定成本結構下，營收變動對 EPS 的放大效果。四家公司均處於不同程度的擴產期，固定成本佔比偏高，使 EPS 對營收敏感度加劇。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>CAPEX 概況</th>
+  <th>營收 +10%<br/>→ EPS 變動</th>
+  <th>營收 -10%<br/>→ EPS 變動</th>
+  <th>槓桿等級</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-left:3px solid var(--co-a)">
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td>FY2025 99億<br/>FY2026E 150-230億</td>
+  <td class="num" style="color:var(--bull)">+15~18%</td>
+  <td class="num" style="color:var(--bear)">-20~25%</td>
+  <td><span class="light red"></span><b>高</b></td>
+</tr>
+<tr style="border-left:3px solid var(--co-b)">
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td>泰國+常熟擴產<br/>FCF -14.53億</td>
+  <td class="num" style="color:var(--bull)">+14~17%</td>
+  <td class="num" style="color:var(--bear)">-18~22%</td>
+  <td><span class="light red"></span><b>高</b></td>
+</tr>
+<tr style="border-left:3px solid var(--co-c)">
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td>六基地 570萬張/月<br/>費用成長率僅營收63%</td>
+  <td class="num" style="color:var(--bull)">+25%以上</td>
+  <td class="num" style="color:var(--bear)">-15~18%</td>
+  <td><span class="light yellow"></span><b>中高</b>（正向有利）</td>
+</tr>
+<tr style="border-left:3px solid var(--co-d)">
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td>規模小、負債低<br/>泰國新廠 2026Q2-Q3</td>
+  <td class="num" style="color:var(--bull)">+12~15%</td>
+  <td class="num" style="color:var(--bear)">-12~15%</td>
+  <td><span class="light green"></span><b>中等</b></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">營收 ±10% 對 EPS 影響（%）</div>
+  <div style="position:relative;height:280px"><canvas id="ch8-leverage"></canvas></div>
+  <div class="chart-note">正值=EPS 成長幅度，負值=EPS 衰退幅度；不對稱越大＝槓桿越高</div>
+</div>
+</div>
+</div>
+
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂的隱藏優勢</div>
+    <div class="ev-d">營運費用成長率僅營收成長率的 63%，代表每多賺 1 元營收，有更大比例落入營業利益。若營收成長 10%，EPS 成長可達 25% 以上。這種「正向不對稱」是聯茂最被忽略的結構性優勢。<span class="fias-i">INSIGHT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電的雙刃劍</div>
+    <div class="ev-d">FY2026 CAPEX 上看 150-230 億，折舊從 18 億跳升至 28 億（+56%）。擴產成功 → EPS 爆發；但若 AI 伺服器需求不如預期，高固定成本將嚴重擠壓獲利——營收 -10% 可能導致 EPS -20~25%。<span class="fias-a">ANALYSIS</span></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 8.3 各家財務體質一句話 -->
+<div class="card">
+<h3>8.3 財務人格定位</h3>
+<div class="card-body">
+<p>將四家財務特徵濃縮為一句話人格描述，便於快速定位其風險/報酬特性。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid2">
+  <div class="mini-card bull-card">
+    <div class="title" style="color:var(--co-a)">台光電 2383</div>
+    <div class="num" style="font-size:1em;color:var(--co-a)">戰爭型財務</div>
+    <div class="desc">賺最多也花最多。ROE 30.9% 冠群，但 CAPEX 99→150-230 億、CB 未償 61 億、非流動負債 YoY +205%。擴產期現金流緊繃，是用未來換現在的典型做法。</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title" style="color:var(--co-b)">台燿 6274</div>
+    <div class="num" style="font-size:1em;color:var(--co-b)">轉型期財務</div>
+    <div class="desc">營運現金流被應收帳款增 40 億 + 存貨增 23 億吃掉，FCF -14.53 億。但毛利率 22.8% 趨勢向上，ELL 佔比 36% 持續提升。陣痛期值得觀察。</div>
+  </div>
+  <div class="mini-card">
+    <div class="title" style="color:var(--co-c)">聯茂 6213</div>
+    <div class="num" style="font-size:1em;color:var(--co-c)">安全牌財務</div>
+    <div class="desc">各項都中等偏下但沒有致命傷。M-Score -2.386（安全）、Z-Score 3.385（安全），應收帳款天數 153 天偏高但尚未惡化。營運費用控制是亮點。</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title" style="color:var(--co-d)">騰輝 6672</div>
+    <div class="num" style="font-size:1em;color:var(--co-d)">堡壘型財務</div>
+    <div class="desc">負債比 28.6%（四家最低）、流動比 355%、帳上現金+短投 144 億。但 FCF 波動率 253%（極高）、蘇州單廠獲利 >100%。堡壘很堅固，但地基只有一個點。</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch8 整合結論 -->
+<div class="tip warn">
+<b>第八章整合結論</b>
+<p><b>資料觀察</b>：四家 CCL 廠呈現截然不同的財務人格。台光電與台燿都處於激進擴產期，現金流承壓；聯茂各項指標平庸但穩定；騰輝帳面最安全卻有單廠集中度風險。<span class="fias-f">FACT</span></p>
+<p><b>推論一（營運槓桿的不對稱性）</b>：聯茂的營運費用成長率僅營收的 63%，代表它在景氣向上時 EPS 彈性最大（營收 +10% → EPS +25%），但向下時衰退幅度反而比台光電溫和。這是被 PE 45x 掩蓋的結構性優勢。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（擴產期的風險定價）</b>：台光電 CAPEX 從 99 億暴增至 150-230 億，折舊也從 18 億跳到 28 億。若 AI 伺服器滲透率不如預期，這筆固定成本將嚴重壓縮利潤。市場給 PE 70.6x 是在對賭擴產成功——但失敗的代價遠大於成功的報酬（不對稱風險）。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（騰輝的矛盾體質）</b>：騰輝負債比 28.6%、帳上現金 144 億，看似最安全；但蘇州廠獲利佔比 >100%（其他廠虧損靠它彌補）+ FCF 波動率 253%，代表其「堡壘」的地基極度集中。若蘇州遭遇地緣政治/產業衝擊，整座堡壘會動搖。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：從「財務風險調整後的投資價值」角度，台燿的轉型期雖然 FCF 為負，但應收帳款+存貨增加是營收高成長的自然結果（YoY +55.3%），屬於「成長的代價」而非「惡化的信號」。聯茂的安全牌體質+營運槓桿優勢，在產業景氣向上週期可能被嚴重低估。台光電的高槓桿需要 AI 需求持續驗證，騰輝則需要蘇州以外的第二獲利引擎啟動才能化解集中風險。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch9：定價權與護城河深度分析                                    -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch9">第九章：定價權與護城河深度分析</div>
+<div class="section-sub">五維定價權拆解 × 護城河寬度與侵蝕速度 × 結構性優勢可持續性</div>
+
+<!-- 9.1 定價權來源拆解 -->
+<div class="card">
+<h3>9.1 定價權來源拆解（五維 × 四家）</h3>
+<div class="card-body">
+<p>定價權分為五大來源維度，每維度 1-10 分評估。滿分代表該來源完全支撐溢價定價能力，1 分代表完全無此優勢。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>定價權來源</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>品牌溢價</b></td>
+  <td class="num matrix-cell cell-best">8</td>
+  <td class="num">5</td>
+  <td class="num matrix-cell cell-worst">4</td>
+  <td class="num">6</td>
+</tr>
+<tr>
+  <td><b>技術獨佔</b></td>
+  <td class="num matrix-cell cell-best">9</td>
+  <td class="num">6</td>
+  <td class="num matrix-cell cell-worst">4</td>
+  <td class="num">7</td>
+</tr>
+<tr>
+  <td><b>轉換成本</b></td>
+  <td class="num matrix-cell cell-best">9</td>
+  <td class="num">7</td>
+  <td class="num">7</td>
+  <td class="num">8</td>
+</tr>
+<tr>
+  <td><b>規模經濟</b></td>
+  <td class="num matrix-cell cell-best">9</td>
+  <td class="num">6</td>
+  <td class="num">7</td>
+  <td class="num matrix-cell cell-worst">3</td>
+</tr>
+<tr>
+  <td><b>網路效應</b></td>
+  <td class="num">2</td>
+  <td class="num">1</td>
+  <td class="num">1</td>
+  <td class="num">2</td>
+</tr>
+<tr class="highlight-row">
+  <td><b>加權平均</b></td>
+  <td class="num" style="color:var(--co-a);font-weight:900">7.8</td>
+  <td class="num" style="color:var(--co-b);font-weight:900">5.2</td>
+  <td class="num" style="color:var(--co-c);font-weight:900">4.5</td>
+  <td class="num" style="color:var(--co-d);font-weight:900">5.6</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">加權平均：品牌 15% / 技術獨佔 30% / 轉換成本 25% / 規模經濟 20% / 網路效應 10%。CCL 是 B2B 材料產業，網路效應天然弱，權重壓低。<span class="fias-a">ANALYSIS</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">定價權五維雷達圖</div>
+  <div style="position:relative;height:280px"><canvas id="ch9-pricing-radar"></canvas></div>
+  <div class="chart-note">越外圈定價權越強；台光電在技術獨佔+規模經濟雙項稱霸</div>
+</div>
+</div>
+</div>
+
+<details>
+<summary>各家定價權來源詳細拆解</summary>
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電：三重定價權堆疊</div>
+    <div class="ev-d">① M8/M9 獨佔 → 技術定價權 9 分（客戶無替代品，認證週期 12-18 個月）。② 玻纖布自製掌控 70% → 上游成本定價權（競爭對手需外購）。③ 41 國認證 + 月產能 585 萬張 → 規模經濟讓同業難以追趕。三重堆疊使其定價權在 CCL 產業中近乎獨一無二。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿：技術授權+客戶分散</div>
+    <div class="ev-d">日東紡績技術授權提供材料開發加速度，但並非獨佔。客戶 <10% 極分散 → 不依賴單一大客戶 → 議價地位較平衡。ELL 佔比提升至 36% 正在逐步建立高階材料的定價能力。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂：規模大但定價弱</div>
+    <div class="ev-d">Prismark 特殊基板全球 #1（16% 市佔），月產能 570 萬張不亞於台光電。但這些規模優勢無法轉化為定價權——毛利率 14.5% 與營利率 7.2% 顯示其產品同質化程度高，客戶視之為「可替代品」。定價能力 4.5/10，位居產業尾段。<span class="fias-i">INSIGHT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-d)">
+    <div class="ev-t" style="color:var(--co-d)">騰輝：利基壟斷+軍工鎖定</div>
+    <div class="ev-d">VT-901 四大國際認證（歐美軍規），客戶轉換成本極高（認證週期長達 17 年）。散熱金屬基板自稱全球 #1。在軍工/車用利基市場有近乎壟斷的定價權，但市場規模太小，無法用規模經濟壓低成本。<span class="fias-f">FACT</span></div>
+  </div>
+</div>
+</details>
+</div>
+</div>
+
+<!-- 9.2 護城河寬度與侵蝕速度 -->
+<div class="card">
+<h3>9.2 護城河寬度與侵蝕速度</h3>
+<div class="card-body">
+<p>護城河分析不只看「有沒有」，更要看「能撐多久」以及「裂縫在哪」。以下從寬度、深度、侵蝕速度三個面向評估。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>護城河寬度</th>
+  <th>核心來源</th>
+  <th>已知裂縫</th>
+  <th>侵蝕速度</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-left:3px solid var(--co-a)">
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td><span class="light green"></span><b>寬</b></td>
+  <td>M8 獨佔 + 玻纖布 70% + 41 國認證 + 規模經濟</td>
+  <td style="color:var(--warn)">M10 將有三家供應商（2027H2），獨佔地位面臨收窄</td>
+  <td><span class="light yellow"></span>中速（18-24 個月內 M10 競爭格局明朗化）</td>
+</tr>
+<tr style="border-left:3px solid var(--co-b)">
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td><span class="light yellow"></span><b>窄但擴寬中</b></td>
+  <td>日東紡授權 + ELL 36% 佔比 + 客戶極分散</td>
+  <td>技術授權非獨佔，若日東紡轉授他人則優勢消失</td>
+  <td><span class="light green"></span>慢速（ELL 佔比持續提升，護城河在加寬）</td>
+</tr>
+<tr style="border-left:3px solid var(--co-c)">
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td><span class="light yellow"></span><b>窄且靜態</b></td>
+  <td>規模（570 萬張/月）+ Prismark #1 + 13 個研發專案</td>
+  <td>毛利率 14.5% 顯示規模未轉化為定價權；M9 認證結果待定</td>
+  <td><span class="light yellow"></span>中速（取決於 M9 認證是否通過，成敗在此一舉）</td>
+</tr>
+<tr style="border-left:3px solid var(--co-d)">
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td><span class="light yellow"></span><b>窄但深</b></td>
+  <td>VT-901 軍規認證 17 年 + 散熱金屬基板 #1 + NATO 客戶</td>
+  <td>利基市場天花板低，營收 YoY +0.8% 反映成長極限</td>
+  <td><span class="light green"></span>極慢（軍工認證壁壘極高，短期內無人能進入）</td>
+</tr>
+</tbody>
+</table>
+
+<div class="grid2" style="margin-top:10px">
+  <div class="tip danger">
+    <b>台光電 M10 裂縫警示</b>
+    <p>M8/M9 獨佔是台光電護城河的核心。但 M10 時代（2027H2+），據產業資訊將有三家供應商通過認證。若 M10 佔伺服器 CCL 的主要需求，台光電的技術獨佔將從「唯一」變為「三選一」，定價權可能從 9 分降至 6-7 分。<span class="fias-a">ANALYSIS</span></p>
+    <p>這不代表台光電會失去優勢——先行者效應、產能規模、認證深度仍在。但「獨佔溢價」的消失將壓縮毛利率，PE 70.6x 目前隱含的「壟斷定價」假設需要重新檢視。<span class="fias-i">INSIGHT</span></p>
+  </div>
+  <div class="tip good">
+    <b>騰輝護城河的「深度」優勢</b>
+    <p>雖然騰輝護城河「窄」（僅限軍工/車用利基），但「深度」是四家中最突出的。軍工認證週期 17 年、VT-901 四大國際認證、NATO 體系客戶——這些壁壘不是用錢或時間就能複製的，需要地緣政治信任+長期合規紀錄。<span class="fias-f">FACT</span></p>
+    <p>投資意涵：騰輝不會被顛覆，但也很難爆發。它是「永續的小確幸」——殖利率 2.6% 四家最高，適合防禦型配置。<span class="fias-i">INSIGHT</span></p>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch9 整合結論 -->
+<div class="tip info">
+<b>第九章整合結論</b>
+<p><b>資料觀察</b>：定價權加權平均分數排序為台光電 7.8 > 騰輝 5.6 > 台燿 5.2 > 聯茂 4.5。但這個排序隱含一個重要差異——台光電的定價權高度依賴 M8/M9 技術獨佔，而騰輝的定價權來自軍工認證壁壘，兩者的「時效性」截然不同。<span class="fias-f">FACT</span></p>
+<p><b>推論一（定價權的時效差異）</b>：台光電的技術獨佔定價權有「賞味期限」——M10 三家供應商出現後（2027H2），其技術獨佔分數可能從 9 降至 6-7。反之，騰輝的軍工認證壁壘幾乎不會過期（認證週期 17 年，新競爭者進入需同等時間）。台光電是「高但遞減」，騰輝是「中等但恆久」。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（護城河與毛利率的矛盾）</b>：聯茂 Prismark 特殊基板全球 #1（16% 市佔），但毛利率僅 14.5%，這說明「市佔率 ≠ 定價權」。聯茂的規模優勢被產品同質化抵消——客戶有太多替代選擇。相比之下，台光電雖然也有規模，但差異化產品（M8/M9）才是其 29.8% 毛利率的真正支撐。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（台燿的護城河轉型窗口）</b>：台燿是唯一護城河在「主動擴寬」的公司——ELL 佔比從低個位數提升至 36%，意味著其高階材料比例快速攀升。若 ELL 佔比在 FY2026 突破 45-50%，其定價權可能從目前的 5.2 提升至 6.5-7.0，屆時護城河評級應從「窄」上修為「中等」。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：定價權分析揭露了 PE 估值的合理性差異。台光電 PE 70.6x 定價了「獨佔」，但 M10 風險暗示 2027H2 後這個溢價可能縮水。騰輝 PE 26.6x 定價了「不成長」，但其護城河深度保證了防禦價值不會消失。台燿是四家中「定價權改善斜率最陡」的——若 ELL 佔比繼續提升，目前 PE 56.3x 在 FY2026 可能反而變得合理。聯茂的定價權困境（規模大但沒溢價）是其估值被壓制的根本原因，M9 認證結果將是扭轉的關鍵。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch10：管理層品質與公司治理                                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch10">第十章：管理層品質與公司治理</div>
+<div class="section-sub">管理層評估矩陣 × 資本配置效率 × 股東利益一致性</div>
+
+<!-- 10.1 管理層評估矩陣 -->
+<div class="card">
+<h3>10.1 管理層評估矩陣</h3>
+<div class="card-body">
+<p>管理層品質從六個維度進行橫向比較，分數為天機閣基於公開資訊的標準化評估。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>維度</th>
+  <th style="color:var(--co-a)">台光電 2383</th>
+  <th style="color:var(--co-b)">台燿 6274</th>
+  <th style="color:var(--co-c)">聯茂 6213</th>
+  <th style="color:var(--co-d)">騰輝 6672</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>CEO / 董事長</b></td>
+  <td>董定宇<br/><span style="font-size:.75em;color:var(--txt3)">（董事長兼總經理）</span></td>
+  <td>辛家族<br/><span style="font-size:.75em;color:var(--txt3)">（持股 12.3%）</span></td>
+  <td>蔡馨暳 / 陳進財<br/><span style="font-size:.75em;color:var(--txt3)">（董事長+總經理分設）</span></td>
+  <td>鍾健人<br/><span style="font-size:.75em;color:var(--txt3)">（英籍 CEO）</span></td>
+</tr>
+<tr>
+  <td><b>誠信度</b></td>
+  <td class="num" style="color:var(--warn)">75/100<br/><span style="font-size:.72em">配息承諾落差扣分</span></td>
+  <td class="num matrix-cell cell-best">87/100<br/><span style="font-size:.72em">零訴訟零質押六年</span></td>
+  <td class="num">70/100<br/><span style="font-size:.72em">中規中矩</span></td>
+  <td class="num" style="color:var(--bull)">90/100<br/><span style="font-size:.72em">但結構特殊</span></td>
+</tr>
+<tr>
+  <td><b>承諾兌現率</b></td>
+  <td class="num" style="color:var(--bear)">偏低<br/><span style="font-size:.72em">配息率 36-40%<br/>（承諾 50-60%）</span></td>
+  <td class="num" style="color:var(--bull)">高<br/><span style="font-size:.72em">配息率 79%<br/>（業界最慷慨）</span></td>
+  <td class="num">中等<br/><span style="font-size:.72em">庫藏股註銷加分</span></td>
+  <td class="num">中高<br/><span style="font-size:.72em">殖利率 2.6%<br/>四家最高</span></td>
+</tr>
+<tr>
+  <td><b>資本配置紀律</b></td>
+  <td class="num" style="color:var(--warn)">激進<br/><span style="font-size:.72em">CAPEX 150-230 億<br/>CB 61 億</span></td>
+  <td class="num">穩健偏積極<br/><span style="font-size:.72em">泰國+常熟<br/>有節奏地擴</span></td>
+  <td class="num" style="color:var(--bull)">保守務實<br/><span style="font-size:.72em">R&D +26% YoY<br/>13 個專案</span></td>
+  <td class="num" style="color:var(--bull)">極保守<br/><span style="font-size:.72em">負債比 28.6%<br/>現金 144 億</span></td>
+</tr>
+<tr>
+  <td><b>董監質押</b></td>
+  <td class="num" style="color:var(--bull)">0%</td>
+  <td class="num" style="color:var(--bull)">0%（六年）</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td><b>股東利益一致性</b></td>
+  <td class="num">中<br/><span style="font-size:.72em">外資 27%<br/>員工人均營收↑</span></td>
+  <td class="num matrix-cell cell-best">高<br/><span style="font-size:.72em">辛家 12.3%<br/>零質押+高配息</span></td>
+  <td class="num">中高<br/><span style="font-size:.72em">2022 買回 2000 萬股<br/>並註銷</span></td>
+  <td class="num" style="color:var(--warn)">特殊<br/><span style="font-size:.72em">Alpha Victor 25%<br/>開曼註冊</span></td>
+</tr>
+<tr>
+  <td><b>公司治理特殊風險</b></td>
+  <td>董事長兼總經理<br/>（權力集中）</td>
+  <td style="color:var(--bull)">無重大風險<br/>（管理層最乾淨）</td>
+  <td>董事長+總經理分設<br/>（治理架構佳）</td>
+  <td style="color:var(--warn)">英籍 CEO + 開曼註冊<br/>+ Alpha Victor 25%<br/>（結構複雜）</td>
+</tr>
+</tbody>
+</table>
+
+<details>
+<summary>各家管理層深度點評</summary>
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電 — 董定宇：「願景型」領導</div>
+    <div class="ev-d">技術判斷力極強（M8/M9 佈局精準），但配息紀律是最大扣分項——對外承諾配息率 50-60%，實際僅 36-40%。投資人信任被消耗。董事長兼總經理的權力集中架構也有治理隱憂。外資持股 27% 代表國際機構法人的認可，但也意味著外資拋售時股價波動加劇。<span class="fias-a">ANALYSIS</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿 — 辛家族：「紀律型」領導</div>
+    <div class="ev-d">六年零訴訟、零質押，配息率 79% 是四家中最慷慨。辛家持股 12.3% 確保家族與股東利益高度一致。管理層最乾淨、誠信度 87/100 四家第二高（僅次於騰輝 90/100，但騰輝有結構複雜的扣分）。在治理面，台燿是四家中的「模範生」。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂 — 蔡馨暳/陳進財：「穩健型」領導</div>
+    <div class="ev-d">董事長+總經理分設是較佳的治理架構。2022 年買回 2,000 萬股並註銷，明確表達對股東利益的重視。R&D 投入從 FY2023 的 9 個專案擴增至 13 個（+44%），研發費用 YoY +26%，顯示管理層認知到技術升級的迫切性。中規中矩但有加分項。<span class="fias-f">FACT</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-d)">
+    <div class="ev-t" style="color:var(--co-d)">騰輝 — 鍾健人：「國際型」領導但結構特殊</div>
+    <div class="ev-d">英籍 CEO 帶來國際化視野（歐洲營收 19% 四家最高、NATO 客戶），誠信度 90/100 是四家最高。但三個結構性特殊點需注意：① 開曼註冊（法律管轄不在台灣）② Alpha Victor 持股 25%（大股東影響力）③ R&D 人員僅 83 人（碩士 1、博士 0），研發投入佔比 7.56% 雖高但人才結構偏弱。<span class="fias-a">ANALYSIS</span></div>
+  </div>
+</div>
+</details>
+</div>
+</div>
+
+<!-- 10.2 資本配置效率 -->
+<div class="card">
+<h3>10.2 資本配置效率</h3>
+<div class="card-body">
+<p>ROE 是衡量管理層運用股東資本效率的核心指標，但需結合 CAPEX 紀律與配息政策綜合判斷。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>指標</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>ROE（%）</b></td>
+  <td class="num matrix-cell cell-best">30.9</td>
+  <td class="num">26.0</td>
+  <td class="num matrix-cell cell-worst">7.2</td>
+  <td class="num">10.4</td>
+</tr>
+<tr>
+  <td><b>配息率（%）</b></td>
+  <td class="num" style="color:var(--bear)">36-40</td>
+  <td class="num" style="color:var(--bull)">79</td>
+  <td class="num">含股票股利</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td><b>殖利率（%）</b></td>
+  <td class="num">0.57</td>
+  <td class="num">1.11</td>
+  <td class="num">1.10</td>
+  <td class="num" style="color:var(--bull)">2.60</td>
+</tr>
+<tr>
+  <td><b>CAPEX 強度</b></td>
+  <td class="num" style="color:var(--bear)">最激進<br/><span style="font-size:.72em">150-230 億</span></td>
+  <td class="num">積極<br/><span style="font-size:.72em">泰國+常熟</span></td>
+  <td class="num">穩健<br/><span style="font-size:.72em">泰國新廠</span></td>
+  <td class="num" style="color:var(--bull)">最保守<br/><span style="font-size:.72em">泰國小廠</span></td>
+</tr>
+<tr>
+  <td><b>CB/稀釋風險</b></td>
+  <td class="num" style="color:var(--warn)">CB 61 億未償</td>
+  <td class="num" style="color:var(--bull)">無</td>
+  <td class="num" style="color:var(--bull)">無</td>
+  <td class="num" style="color:var(--warn)">CB 稀釋 13.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">ROE vs 配息率散佈圖</div>
+  <div style="position:relative;height:280px"><canvas id="ch10-roe-div"></canvas></div>
+  <div class="chart-note">右上角＝高 ROE 高配息（最優）；台燿 ROE 26% + 配息 79% 最具股東利益一致性</div>
+</div>
+</div>
+</div>
+
+<div class="grid2" style="margin-top:8px">
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電：高 ROE 但低回饋</div>
+    <div class="ev-d">ROE 30.9% 代表每 100 元股東資本創造 30.9 元淨利，效率極高。但配息率僅 36-40%（承諾 50-60%），大量盈餘保留用於 CAPEX 擴產。若擴產成功 → ROE 維持高位 → 股東長期獲益；若失敗 → 保留盈餘被浪費 → 股東雙重損失（沒拿到股利+資本效率下降）。<span class="fias-a">ANALYSIS</span></div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿：最佳股東利益一致性</div>
+    <div class="ev-d">ROE 26% 搭配 79% 配息率，代表管理層在維持高資本效率的同時，慷慨地將大部分盈餘回饋股東。辛家持股 12.3% 確保家族利益與小股東完全一致。在四家中，台燿是「言行一致」程度最高的管理層。<span class="fias-i">INSIGHT</span></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch10 整合結論 -->
+<div class="tip good">
+<b>第十章整合結論</b>
+<p><b>資料觀察</b>：管理層品質排序為台燿（誠信 87 + 零質押六年 + 配息 79%）> 騰輝（誠信 90 但結構特殊）> 聯茂（中規中矩+庫藏股加分）> 台光電（技術判斷強但配息失信）。這個排序與 ROE 排序（台光電 > 台燿 > 騰輝 > 聯茂）完全不同，顯示「賺錢能力」與「治理品質」是兩個獨立維度。<span class="fias-f">FACT</span></p>
+<p><b>推論一（配息紀律的信號意義）</b>：台光電配息率 36-40%（承諾 50-60%）是一個值得警惕的信號。管理層選擇保留盈餘而非兌現承諾，代表兩種可能：① 擴產資金需求超預期（正面解讀：需求太好以至於必須加速擴廠）② 對未來現金流信心不足（負面解讀：擔心 FCF 不夠用所以留錢在手上）。無論哪種，「說一套做一套」對管理層信用是減分的。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（騰輝治理結構的雙面性）</b>：騰輝誠信度 90/100 四家最高，但「開曼註冊 + 英籍 CEO + Alpha Victor 25%」的結構在台灣資本市場是非典型的。這種結構賦予管理層極大自由度——如果管理層優秀，自由度是效率的來源；如果管理層有問題，小股東幾乎沒有制衡工具。目前鍾健人的實績（殖利率 2.6% 四家最高、軍工認證佈局精準）是正面的，但投資人需要持續監控。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（聯茂的隱藏加分）</b>：聯茂看似平庸，但 2022 年買回 2,000 萬股並註銷+R&D 專案數從 9 個增至 13 個（+44%）+研發費用 YoY +26%，這些動作顯示管理層有自知之明——知道自己的問題在哪（毛利率低、技術落後），並正在用行動改變。這種「自我修正能力」比「天生優秀」更有長期價值。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：將管理層品質納入估值考量後，台燿的投資吸引力上升（治理最優 + ROE 第二 + 護城河擴寬中），台光電的風險溢價應上調（技術壟斷仍在但配息失信+高槓桿擴產），騰輝適合「信任但驗證」策略（誠信高但結構特殊需持續追蹤），聯茂適合「等待催化劑」策略（管理層在修正中，M9 認證通過就是催化劑）。<span class="fias-i">INSIGHT</span></p>
+</div>
+<!-- Ch10 end -->
+
+<!-- ============================================================ -->
+<!-- 圖表 JavaScript                                               -->
+<!-- ============================================================ -->
+
+<!-- Ch11 start -->
+<!-- ===================================================================
+     第三層：投資決策 Ch11 ~ Ch16
+     CCL 銅箔基板四雄 — 產業競爭生態分析 Part 4
+     天機閣 研究部 | 2026-04-10
+     =================================================================== -->
+
+<div class="part-title" id="layer3">第三層：投資決策</div>
+
+<!-- ============================================================ -->
+<!-- Ch11：估值比較                                                 -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch11">第十一章：估值比較</div>
+<div class="section-sub">橫向估值指標 × 市場定價邏輯 × 合理價 vs 現價落差分析</div>
+
+<!-- 11.1 橫向估值比較 -->
+<div class="card">
+<h3>11.1 橫向估值比較</h3>
+<div class="card-body">
+<p>以五項核心估值指標進行四家橫向比較。所有數據均為 2026-04-10 收盤價基礎，PE 以 FY2025 實際 EPS 計算。<span class="fias-f">FACT</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>估值指標</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>股價（元）</b></td>
+  <td class="num">2,885</td>
+  <td class="num">683</td>
+  <td class="num">187</td>
+  <td class="num">129</td>
+</tr>
+<tr>
+  <td><b>PE（x）</b></td>
+  <td class="num" style="color:var(--bear)">70.6</td>
+  <td class="num" style="color:var(--bear)">56.3</td>
+  <td class="num" style="color:var(--warn)">45.0</td>
+  <td class="num" style="color:var(--bull)">26.6</td>
+</tr>
+<tr>
+  <td><b>PEG</b></td>
+  <td class="num" style="color:var(--warn)">1.45</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td><b>EV/EBITDA（x）</b></td>
+  <td class="num" style="color:var(--bear)">47.8</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--bull)">13.3</td>
+</tr>
+<tr>
+  <td><b>PB（x）</b></td>
+  <td class="num" style="color:var(--bear)">22.9</td>
+  <td class="num" style="color:var(--bear)">10.59</td>
+  <td class="num" style="color:var(--warn)">3.2</td>
+  <td class="num">2.7</td>
+</tr>
+<tr>
+  <td><b>殖利率（%）</b></td>
+  <td class="num" style="color:var(--bear)">0.57</td>
+  <td class="num">1.11</td>
+  <td class="num">1.10</td>
+  <td class="num" style="color:var(--bull)">2.60</td>
+</tr>
+<tr class="highlight-row">
+  <td><b>估值評語</b></td>
+  <td style="color:var(--bear)">極度偏貴</td>
+  <td style="color:var(--bear)">偏貴</td>
+  <td style="color:var(--warn)">偏貴</td>
+  <td style="color:var(--warn)">相對便宜<br/>但仍偏貴</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">PEG 僅台光電有明確成長率可計算（FY2025 EPS YoY +50%，Forward PE ~45-48x）；其餘三家缺乏可靠共識預估故標「—」。<span class="fias-s">SOURCE: 各公司年報/券商報告</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">核心估值指標分組柱狀圖</div>
+  <div id="ch11-valuation-bar" class="echart" style="height:320px"></div>
+  <div class="chart-note">PE / PB / 殖利率三軸對比；柱狀越高＝估值越貴（殖利率越低越貴）</div>
+</div>
+</div>
+</div>
+
+<details>
+<summary>估值相對位置：歷史百分位</summary>
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>目前 PE</th>
+  <th>歷史均值 PE</th>
+  <th>歷史百分位</th>
+  <th>偏離幅度</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-left:3px solid var(--co-a)">
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td class="num">70.6x</td>
+  <td class="num">15-30x</td>
+  <td class="num" style="color:var(--bear)">~99%</td>
+  <td class="num" style="color:var(--bear)">+135~370%</td>
+</tr>
+<tr style="border-left:3px solid var(--co-b)">
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td class="num">56.3x</td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--bear)">偏高</td>
+  <td class="num">—</td>
+</tr>
+<tr style="border-left:3px solid var(--co-c)">
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td class="num">45.0x</td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--bear)">99%</td>
+  <td class="num" style="color:var(--bear)">歷史最高區</td>
+</tr>
+<tr style="border-left:3px solid var(--co-d)">
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td class="num">26.6x</td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--warn)">偏高</td>
+  <td class="num">—</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.78em;color:var(--txt3)"><span class="fias-a">ANALYSIS</span> 台光電與聯茂的 PE 均處於歷史 99% 百分位，代表市場已極度樂觀定價。即使基本面持續改善，在此估值水位追進的下行風險遠大於上行空間。</p>
+</details>
+</div>
+</div>
+
+<!-- 11.2 各家市場定價邏輯 -->
+<div class="card">
+<h3>11.2 各家市場定價邏輯</h3>
+<div class="card-body">
+<p>PE 只是數字，更重要的是理解市場「為什麼」願意給這個 PE。每家的定價邏輯截然不同，反映了不同的成長敘事。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid2">
+  <div class="ev" style="border-left:3px solid var(--co-a)">
+    <div class="ev-t" style="color:var(--co-a)">台光電 PE 70.6x —「AI 時代的英特爾材料」</div>
+    <div class="ev-d">市場定價邏輯：M8/M9 技術獨佔 + AI 伺服器 CCL 需求爆發 → 「台積電有代工壟斷，台光電有材料壟斷」。FY2026E EPS 預估 60-64 元，Forward PE 降至 45-48x，但仍遠高於歷史均值 15-30x。<b>隱含假設：AI CCL 需求將維持 3-5 年 40%+ CAGR，且台光電技術壟斷不被打破。</b><span class="fias-a">ANALYSIS</span></div>
+    <div class="ev-s">風險：任何一個假設不成立 → PE 回歸 30-40x → 股價 -40~55%</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-b)">
+    <div class="ev-t" style="color:var(--co-b)">台燿 PE 56.3x —「追趕者的成長故事」</div>
+    <div class="ev-d">市場定價邏輯：ELL 佔比 36% 且持續攀升 + 營收 YoY +55.3% → 「高成長追趕者值得高估值」。客戶極分散（最大客戶 <10%）降低單一客戶風險。管理層誠信度最高（87/100，零質押六年）。<b>隱含假設：ELL 佔比能在 2-3 年內突破 50%，毛利率持續提升。</b><span class="fias-a">ANALYSIS</span></div>
+    <div class="ev-s">風險：若 ELL 佔比成長停滯或台光電 M10 繼續獨佔 → 「追趕者」敘事崩塌</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-c)">
+    <div class="ev-t" style="color:var(--co-c)">聯茂 PE 45.0x —「M9 認證的期待溢價」</div>
+    <div class="ev-d">市場定價邏輯：Prismark 特殊基板全球 #1 + M9 認證預期（55% 機率通過）+ EPS YoY +124%（低基期反彈）→ 「規模王即將打通技術關卡」。但 PE 45x 已處於歷史 99% 百分位。<b>隱含假設：M9 認證將在 2026H2 通過，帶動毛利率從 14.5% 提升至 18%+。</b><span class="fias-a">ANALYSIS</span></div>
+    <div class="ev-s">風險：M9 認證失敗（45% 機率）→ 股價回到 120-130 區間</div>
+  </div>
+  <div class="ev" style="border-left:3px solid var(--co-d)">
+    <div class="ev-t" style="color:var(--co-d)">騰輝 PE 26.6x —「利基堡壘的折價」</div>
+    <div class="ev-d">市場定價邏輯：PE 四家最低，但「最便宜 ≠ 最值得買」。營收 YoY +0.8%（四家唯一停滯）、AI CCL 僅佔 1.8%、規模僅 42.6 億——市場給予「不成長折價」。2026/03 月營收 YoY +32.7%（24 個月新高）提供短期動能，但可持續性待驗證。<b>隱含假設：軍工+車用利基能維持毛利率 32.2%，AI 轉型 2027+ 才有實質貢獻。</b><span class="fias-a">ANALYSIS</span></div>
+    <div class="ev-s">CB 稀釋 13.3% 是隱藏成本，除息日 2026-04-16 即將到來</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 11.3 合理價 vs 現價一覽 -->
+<div class="card">
+<h3>11.3 合理價 vs 現價一覽</h3>
+<div class="card-body">
+<p>彙整各估值模型結果，與現價比較。<b>結論：四家無一例外，全部偏貴。</b><span class="fias-a">ANALYSIS</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>現價</th>
+  <th>合理價區間</th>
+  <th>ACH 加權目標</th>
+  <th>溢價幅度</th>
+  <th>ACH 信心</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-left:3px solid var(--co-a)">
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td class="num">2,885</td>
+  <td class="num">2,200-2,400</td>
+  <td class="num">2,208</td>
+  <td class="num" style="color:var(--bear)">+20~31%</td>
+  <td class="num" style="color:var(--bear)">40%</td>
+</tr>
+<tr style="border-left:3px solid var(--co-b)">
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td class="num">683</td>
+  <td class="num">395-485</td>
+  <td class="num">493</td>
+  <td class="num" style="color:var(--bear)">+38~73%</td>
+  <td class="num" style="color:var(--bear)">33%</td>
+</tr>
+<tr style="border-left:3px solid var(--co-c)">
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td class="num">187</td>
+  <td class="num">125-135</td>
+  <td class="num">138.1</td>
+  <td class="num" style="color:var(--bear)">+35~50%</td>
+  <td class="num" style="color:var(--bear)">23%</td>
+</tr>
+<tr style="border-left:3px solid var(--co-d)">
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td class="num">129</td>
+  <td class="num">85-105</td>
+  <td class="num">82</td>
+  <td class="num" style="color:var(--bear)">+23~52%</td>
+  <td class="num" style="color:var(--bear)">C+</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">ACH = Analytic Confidence Hierarchy（分析信心層級法），加權各估值模型結果。「溢價幅度」= 現價相對合理價區間上/下緣的偏離。<span class="fias-a">ANALYSIS</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">現價 vs 合理價落差圖</div>
+  <div style="position:relative;height:280px"><canvas id="ch11-fair-gap"></canvas></div>
+  <div class="chart-note">紅色柱 = 現價；綠色區間 = 合理價範圍；全部都在合理區間之上</div>
+</div>
+</div>
+</div>
+
+<div class="tip danger">
+<b>全面溢價警示</b>
+<p>四家 CCL 廠的現價全部高於 ACH 合理價上緣 20% 以上。這代表即使最樂觀的估值模型，也無法在目前價位找到安全邊際。投資人若在此價位進場，實質上是在「做多市場情緒」而非「做多基本面」。<span class="fias-i">INSIGHT</span></p>
+</div>
+</div>
+</div>
+
+<!-- Ch11 整合結論 -->
+<div class="tip warn">
+<b>第十一章整合結論</b>
+<p><b>資料觀察</b>：四家 CCL 廠的 PE 分佈從 26.6x（騰輝）到 70.6x（台光電），全部高於各自歷史均值。台光電與聯茂更處於歷史 99% 百分位。殖利率最高的騰輝僅 2.6%，最低的台光電只有 0.57%，四家均無法提供足夠的現金流回報。<span class="fias-f">FACT</span></p>
+<p><b>推論一（PE 的定價敘事差異）</b>：台光電 70.6x 定價的是「技術壟斷+AI 爆發」，台燿 56.3x 定價的是「高速追趕」，聯茂 45.0x 定價的是「M9 翻身期待」，騰輝 26.6x 定價的是「不成長折價」。四種完全不同的敘事，代表四種不同的風險結構——台光電與聯茂的風險在於敘事破滅（技術壟斷被打破/M9 失敗），台燿的風險在於成長減速，騰輝的風險在於敘事永遠不改善。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（Forward PE 的陷阱）</b>：台光電 FY2026E Forward PE 45-48x 看似「便宜了」，但歷史均值 15-30x 意味著即使 EPS 成長 50%，估值仍需要「AI 持續爆發 3-5 年」的假設來支撐。一旦 AI 伺服器建置週期結束或進入庫存調整，PE 回歸的速度會比 EPS 下滑更快。這就是「成長股估值陷阱」——用未來的高成長合理化現在的高 PE，但高成長本身就是最不確定的變數。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（殖利率訊號）</b>：四家殖利率全部低於定存利率（~1.5%），代表市場完全以「資本利得」而非「現金流」來定價這些股票。這是典型的成長股特徵，但問題是——騰輝營收 YoY +0.8% 根本不是成長股，卻也只有 2.6% 殖利率，這暗示連「最便宜的」騰輝都有估值修正空間。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：<b>從估值角度，四家都不具備進場的安全邊際。</b>這不代表基本面有問題——台光電的技術壟斷、台燿的高速成長、聯茂的規模優勢、騰輝的利基防禦都是真實的。問題在於「好公司 ≠ 好股票」——目前的價格已經把未來 2-3 年的樂觀預期全部透支。如果一定要選，合理價與現價落差最小的台光電（溢價 +20-31%）反而是安全邊際相對最好的，因為其成長確定性最高。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch12：風險矩陣與賽局推演                                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch12">第十二章：風險矩陣與賽局推演</div>
+<div class="section-sub">六維風險矩陣 × 脆弱度排名 × 賽局情境分岔推演 × 風險期望損失量化</div>
+
+<!-- 12.1 風險矩陣 -->
+<div class="card">
+<h3>12.1 風險矩陣（六維度 × 四家）</h3>
+<div class="card-body">
+<p>以六大風險維度評估四家 CCL 廠，信號燈代表風險水位：<span class="light green"></span>低風險、<span class="light yellow"></span>中風險、<span class="light red"></span>高風險。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>風險維度</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>成長風險</b></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">AI 需求明確</span></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">ELL 擴張中</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">等 M9 催化</span></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">營收停滯</span></td>
+</tr>
+<tr>
+  <td><b>技術風險</b></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">M10 獨佔存疑</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">日東紡授權非獨佔</span></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">M9 45%失敗率</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">AI CCL 仍初期</span></td>
+</tr>
+<tr>
+  <td><b>市場風險</b></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">AI 週期性風險</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">供應鏈競爭</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">同質化競爭</span></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">利基市場穩定</span></td>
+</tr>
+<tr>
+  <td><b>財務風險</b></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">CB 61 億+高 CAPEX</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">FCF -14.53 億</span></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">Z-Score 安全</span></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">負債比 28.6%</span></td>
+</tr>
+<tr>
+  <td><b>估值風險</b></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">PE 70.6x 歷史極端</span></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">PE 56.3x 溢價過多</span></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">PE 45x 99%百分位</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">PE 26.6x 相對低</span></td>
+</tr>
+<tr>
+  <td><b>客戶集中風險</b></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">前三大佔比偏高</span></td>
+  <td><span class="light green"></span>低<br/><span style="font-size:.72em;color:var(--txt3)">最大客戶 <10%</span></td>
+  <td><span class="light yellow"></span>中<br/><span style="font-size:.72em;color:var(--txt3)">中等集中</span></td>
+  <td><span class="light red"></span>高<br/><span style="font-size:.72em;color:var(--txt3)">蘇州廠 >100% 獲利</span></td>
+</tr>
+<tr class="highlight-row">
+  <td><b>紅燈數</b></td>
+  <td class="num">1</td>
+  <td class="num">1</td>
+  <td class="num" style="color:var(--bear)">2</td>
+  <td class="num">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 12.2 脆弱度排名 -->
+<div class="card">
+<h3>12.2 脆弱度排名</h3>
+<div class="card-body">
+<p>脆弱度 = 風險實現時的損害程度 × 復原難度。10 分最脆弱，1 分最堅韌。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid4">
+  <div class="mini-card bear-card">
+    <div class="title" style="color:var(--co-c)">聯茂 6213</div>
+    <div class="num" style="font-size:1.8em;color:var(--bear)">6/10</div>
+    <div class="desc">最脆弱：毛利率 14.5% 為四家最低，PE 45x 在歷史 99% 百分位，成敗繫於 M9 一役。若 M9 失敗，毫無退路。</div>
+  </div>
+  <div class="mini-card neutral-card">
+    <div class="title" style="color:var(--co-b)">台燿 6274</div>
+    <div class="num" style="font-size:1.8em;color:var(--warn)">5/10</div>
+    <div class="desc">中等偏高：擴產期 FCF -14.53 億，財務壓力真實存在。PE 56.3x 需要 ELL 持續放量才能支撐。</div>
+  </div>
+  <div class="mini-card">
+    <div class="title" style="color:var(--co-d)">騰輝 6672</div>
+    <div class="num" style="font-size:1.8em;color:var(--neutral)">4/10</div>
+    <div class="desc">中等偏低：營收停滯但財務堡壘型體質（負債 28.6%，帳上現金 144 億），軍工護城河極深。</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title" style="color:var(--co-a)">台光電 2383</div>
+    <div class="num" style="font-size:1.8em;color:var(--bull)">3/10</div>
+    <div class="desc">最堅韌：技術+規模雙重護城河，ROE 30.9%，客戶鎖定最強。但估值已充分反映——跌下來不是因為脆弱，而是因為太貴。</div>
+  </div>
+</div>
+
+<p style="margin-top:8px;font-size:.82em;color:var(--txt2)"><span class="fias-i">INSIGHT</span> 脆弱度排名與 PE 排名呈現「剪刀差」：最脆弱的聯茂 PE 反而不是最高的，最堅韌的台光電 PE 卻是最高的。這說明市場的定價邏輯並非基於「下行保護」，而是基於「上行潛力」——高估值買的是夢想，低脆弱度提供的是保險。兩者是不同維度。</p>
+</div>
+</div>
+
+<!-- 12.3 賽局推演 -->
+<div class="card">
+<h3>12.3 賽局推演（情境分岔樹）</h3>
+<div class="card-body">
+<p>以兩大關鍵情境進行賽局推演，分析不同結果對四家的連鎖影響。<span class="fias-a">ANALYSIS</span></p>
+
+<!-- 情境一 -->
+<div class="fork-tree">
+<div class="fork-root">
+  <span class="fork-node">情境一：M10 認證歸屬（2027H2）</span>
+</div>
+<div class="fork-branches b2">
+  <div class="fork-branch">
+    <span class="fb-label fb-bull">台光電獨佔</span>
+    <div class="fb-title">M10 台光電再獨家（機率 ~25%）</div>
+    <div class="fb-desc">
+      <p style="margin:3px 0"><b style="color:var(--co-a)">台光電</b>：PE 維持 60-70x，EPS 再跳升 → 股價目標 3,500+</p>
+      <p style="margin:3px 0"><b style="color:var(--co-b)">台燿</b>：追趕者敘事崩塌，PE 壓縮至 30-35x → 股價 -30~40%</p>
+      <p style="margin:3px 0"><b style="color:var(--co-c)">聯茂</b>：M9 意義大幅降低（下一代已被壟斷），PE → 20-25x</p>
+      <p style="margin:3px 0"><b style="color:var(--co-d)">騰輝</b>：影響有限（利基市場獨立運作）</p>
+    </div>
+  </div>
+  <div class="fork-branch">
+    <span class="fb-label fb-neutral">三家均通過</span>
+    <div class="fb-title">M10 三家供應商（機率 ~60%）</div>
+    <div class="fb-desc">
+      <p style="margin:3px 0"><b style="color:var(--co-a)">台光電</b>：獨佔溢價消失，PE 壓縮至 35-45x → 股價 -25~35%；但先行者+規模優勢仍在</p>
+      <p style="margin:3px 0"><b style="color:var(--co-b)">台燿</b>：正式進入 M10 供應鏈，營收+毛利率雙升 → PE 可能維持或微升</p>
+      <p style="margin:3px 0"><b style="color:var(--co-c)">聯茂</b>：若同時通過 M9+M10 → 從「規模王」升級為「全方位供應商」</p>
+      <p style="margin:3px 0"><b style="color:var(--co-d)">騰輝</b>：可能間接受惠（CCL 供應分散 → 價格競爭 → 利基市場相對價值提升）</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 情境二 -->
+<div class="fork-tree" style="margin-top:16px">
+<div class="fork-root">
+  <span class="fork-node">情境二：AI 伺服器建置週期</span>
+</div>
+<div class="fork-branches b3">
+  <div class="fork-branch">
+    <span class="fb-label fb-bull">持續爆發</span>
+    <div class="fb-title">AI CAPEX 維持高成長<br/>（機率 ~40%）</div>
+    <div class="fb-desc">
+      <p style="margin:3px 0">四家均受惠，台光電+台燿最顯著</p>
+      <p style="margin:3px 0">CCL 漲價循環啟動 → 毛利率全面提升</p>
+      <p style="margin:3px 0">估值可能維持高位 12-18 個月</p>
+    </div>
+  </div>
+  <div class="fork-branch">
+    <span class="fb-label fb-neutral">溫和調整</span>
+    <div class="fb-title">庫存調整 1-2 季<br/>（機率 ~40%）</div>
+    <div class="fb-desc">
+      <p style="margin:3px 0">台光電：CAPEX 高槓桿曝險 → EPS -20~25%</p>
+      <p style="margin:3px 0">台燿：成長減速但 ELL 持續 → 緩衝較佳</p>
+      <p style="margin:3px 0">聯茂/騰輝：營運槓桿不對稱性顯現</p>
+    </div>
+  </div>
+  <div class="fork-branch">
+    <span class="fb-label fb-bear">泡沫破裂</span>
+    <div class="fb-title">AI 投資大幅縮減<br/>（機率 ~20%）</div>
+    <div class="fb-desc">
+      <p style="margin:3px 0">四家 PE 全面壓縮至歷史均值</p>
+      <p style="margin:3px 0">台光電 2,885 → 1,100-1,200（-58~62%）</p>
+      <p style="margin:3px 0">騰輝堡壘型體質最抗跌，但也難逃 -20~30%</p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 12.4 風險期望損失 -->
+<div class="card">
+<h3>12.4 風險期望損失</h3>
+<div class="card-body">
+<p>將各家風險依機率加權後的預期損失量化。期望損失 = 各風險事件機率 × 影響幅度的加總。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>公司</th>
+  <th>催化劑<br/>期望收益</th>
+  <th>風險<br/>期望損失</th>
+  <th>淨期望值</th>
+  <th>風險報酬比</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-left:3px solid var(--co-a)">
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td class="num" style="color:var(--bull)">+22.43%</td>
+  <td class="num" style="color:var(--bear)">-38.75%</td>
+  <td class="num" style="color:var(--bear);font-weight:700">-16.32%</td>
+  <td class="num" style="color:var(--bear)">0.58x</td>
+</tr>
+<tr style="border-left:3px solid var(--co-b)">
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td class="num" style="color:var(--bull)">+27.5%*</td>
+  <td class="num" style="color:var(--bear)">-38.7%</td>
+  <td class="num" style="color:var(--bear);font-weight:700">-11.2%</td>
+  <td class="num" style="color:var(--bear)">0.71x</td>
+</tr>
+<tr style="border-left:3px solid var(--co-c)">
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td class="num" style="color:var(--bull)">+16.5%</td>
+  <td class="num" style="color:var(--bear)">-22.3%</td>
+  <td class="num" style="color:var(--bear);font-weight:700">-5.8%</td>
+  <td class="num" style="color:var(--warn)">0.74x</td>
+</tr>
+<tr style="border-left:3px solid var(--co-d)">
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td class="num" style="color:var(--bull)">+14.8%*</td>
+  <td class="num" style="color:var(--bear)">-20.3%*</td>
+  <td class="num" style="color:var(--bear);font-weight:700">-5.5%</td>
+  <td class="num" style="color:var(--warn)">0.73x</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">* 台燿、騰輝的催化劑/風險數據為天機閣綜合推估。淨期望值 = 催化劑期望收益 + 風險期望損失。風險報酬比 = 催化劑期望收益 / |風險期望損失|，<1x 代表風險大於報酬。<span class="fias-a">ANALYSIS</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">風險報酬甜甜圈圖</div>
+  <div style="position:relative;height:280px"><canvas id="ch12-risk-donut"></canvas></div>
+  <div class="chart-note">每家公司的催化劑（綠）vs 風險（紅）佔比；紅色越大代表風險敞口越高</div>
+</div>
+</div>
+</div>
+
+<div class="tip danger">
+<b>全面負期望值</b>
+<p>四家 CCL 廠的淨期望值全部為負（-5.5% 至 -16.32%），風險報酬比全部 <1x。這代表在目前價位，即使所有已知催化劑全部實現，其期望收益仍無法覆蓋風險期望損失。台光電的風險報酬最差（0.58x），主因估值壓縮的期望損失高達 -8.75%。聯茂和騰輝的期望值相對溫和（-5.5% ~ -5.8%），因為其催化劑與風險的規模都較小。<span class="fias-a">ANALYSIS</span></p>
+</div>
+</div>
+</div>
+
+<!-- Ch12 整合結論 -->
+<div class="tip info">
+<b>第十二章整合結論</b>
+<p><b>資料觀察</b>：風險矩陣顯示聯茂（6/10）和騰輝（各 2 個紅燈）脆弱度最高，但原因截然不同——聯茂脆弱在「技術+估值」，騰輝脆弱在「成長+客戶集中」。台光電紅燈僅 1 個（估值）但那個唯一的紅燈可能是致命的——PE 70.6x 在歷史 99% 百分位。<span class="fias-f">FACT</span></p>
+<p><b>推論一（賽局的非對稱性）</b>：M10 認證歸屬是整個 CCL 產業未來 18 個月最重要的單一變數。若台光電再度獨佔（25% 機率），台燿和聯茂的估值將遭受嚴重打擊；但若三家均通過（60% 機率），台光電反而承受最大壓力——獨佔溢價消失，PE 可能從 70x 壓縮至 35-45x。這是一個「贏家通吃 or 全體均分」的賽局，沒有中間地帶。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（風險期望損失的信號）</b>：四家淨期望值全部為負，且最好的聯茂/騰輝也只有 -5.5%~-5.8%，代表在目前價位沒有任何一家能提供正的期望報酬。這是一個非常強烈的「等待」信號——不是不好，而是不划算。等到估值回歸至合理區間（台光電 2,200-2,400 / 台燿 395-485 / 聯茂 125-135 / 騰輝 85-105），淨期望值才可能翻正。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（騰輝的防禦價值）</b>：在所有賽局情境中，騰輝受到的連帶衝擊最小——無論 M10 歸誰、AI 週期如何變化，其軍工利基市場都不受直接影響。脆弱度 4/10 搭配 PE 26.6x 和殖利率 2.6%，使其成為「CCL 產業最佳避險配置」。但「避險」不等於「成長」——不要對騰輝有超額報酬的期待。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：風險矩陣與賽局推演共同指向一個核心結論——<b>目前的 CCL 族群估值已經把「最樂觀情境」的收益全部 price-in，但「最悲觀情境」的損失幾乎完全沒被定價</b>。這種不對稱性是典型的泡沫末期特徵。投資人應該把時間花在「確認進場價位」而非「選擇哪一家」——因為在目前價位，選誰都不划算。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch13：法人持股與聰明錢動態                                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch13">第十三章：法人持股與聰明錢動態</div>
+<div class="section-sub">三大法人持股結構 × 近期買賣超動態 × 聰明錢信號解讀</div>
+
+<!-- 13.1 三大法人持股比較 -->
+<div class="card">
+<h3>13.1 三大法人持股比較</h3>
+<div class="card-body">
+<p>外資持股比例反映國際法人對公司的認可程度，近期買賣超則揭露短期資金流向。<span class="fias-f">FACT</span></p>
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<thead>
+<tr>
+  <th>項目</th>
+  <th style="color:var(--co-a)">台光電</th>
+  <th style="color:var(--co-b)">台燿</th>
+  <th style="color:var(--co-c)">聯茂</th>
+  <th style="color:var(--co-d)">騰輝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>外資持股比</b></td>
+  <td class="num" style="color:var(--bull)">~27%</td>
+  <td class="num">~7.9%</td>
+  <td class="num">偏低</td>
+  <td class="num">偏低</td>
+</tr>
+<tr>
+  <td><b>重要外資股東</b></td>
+  <td style="font-size:.78em">國際大型機構</td>
+  <td style="font-size:.78em">挪威央行 2.8%<br/>亞伯丁 2.7%</td>
+  <td style="font-size:.78em">—</td>
+  <td style="font-size:.78em">—</td>
+</tr>
+<tr>
+  <td><b>近 20 日外資動態</b></td>
+  <td class="num" style="color:var(--bear)">淨賣 314 萬股</td>
+  <td class="num" style="color:var(--warn)">調節中</td>
+  <td class="num" style="color:var(--warn)">偏空</td>
+  <td class="num" style="color:var(--bear)">淨賣 ~120 萬股</td>
+</tr>
+<tr>
+  <td><b>投信動態</b></td>
+  <td class="num" style="color:var(--warn)">—</td>
+  <td class="num" style="color:var(--warn)">—</td>
+  <td class="num">—</td>
+  <td class="num">零買賣</td>
+</tr>
+<tr>
+  <td><b>評審團態度</b></td>
+  <td class="num">—</td>
+  <td class="num" style="color:var(--bear)">6 不買 : 2 中立 : 0 買入</td>
+  <td class="num">分析師共識 133<br/><span style="font-size:.72em">(9 位，低於現價 29%)</span></td>
+  <td class="num" style="color:var(--warn)">C+ 評級</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">台燿外資中特別值得注意：挪威央行（主權基金）+ 亞伯丁（長線價值型基金）的組合，反映國際長線資金對其治理品質的認可。<span class="fias-s">SOURCE: 公開資訊觀測站/各公司年報</span></p>
+</div>
+
+<div class="chart-col">
+<div class="chart-wrap">
+  <div class="chart-title">外資持股與近期動態</div>
+  <div style="position:relative;height:280px"><canvas id="ch13-foreign"></canvas></div>
+  <div class="chart-note">柱狀=外資持股比（%）；紅色標記=近 20 日淨賣方向</div>
+</div>
+</div>
+</div>
+
+<div class="grid2" style="margin-top:8px">
+  <div class="tip danger">
+    <b>全面調節信號</b>
+    <p>四家 CCL 廠近 20 日外資全部呈現賣超或調節態勢。台光電淨賣 314 萬股最明顯，騰輝淨賣 ~120 萬股次之。這可能反映：① 法人認為 CCL 族群整體估值過熱 ② 資金輪動至其他 AI 供應鏈環節 ③ 提前因應 Q2 庫存調整風險。<span class="fias-a">ANALYSIS</span></p>
+  </div>
+  <div class="tip info">
+    <b>台燿的聰明錢信號</b>
+    <p>台燿外資僅 7.9% 看似偏低，但質量高於數量——挪威央行（全球最大主權基金，長線 ESG 取向）+ 亞伯丁（價值型基金），這兩家的持股代表「治理品質受國際認可」。相較之下，台光電 27% 外資以短線交易型居多，在估值過熱時可能成為賣壓來源。<span class="fias-i">INSIGHT</span></p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- Ch13 整合結論 -->
+<div class="tip warn">
+<b>第十三章整合結論</b>
+<p><b>資料觀察</b>：四家法人持股差異極大（台光電 27% vs 騰輝/聯茂偏低），但近期動態卻高度一致——全部在調節賣出。台燿的外資雖然比例低，但挪威央行+亞伯丁的長線持股品質是四家中最好的。騰輝投信零買賣，代表本土法人對其完全無興趣。<span class="fias-f">FACT</span></p>
+<p><b>推論一（聰明錢的共識信號）</b>：四家同步被外資調節是一個非常強的族群性信號——不是個別公司的問題，而是整個 CCL 產業被認為「估值過熱」。當聰明錢集體撤退時，散戶的追漲將缺乏機構買盤支撐，一旦出現利空催化劑（如 AI 訂單調整、產能過剩信號），股價修正速度會很快。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（台光電的外資賣壓風險）</b>：台光電外資 27% 是雙刃劍。順風時外資買進推升股價（過去一年從 ~1,500 漲到 2,885），但逆風時 27% 的外資如果持續減碼，賣壓將非常沉重。近 20 日淨賣 314 萬股已是警訊。以 PE 70.6x 的估值，任何負面消息都可能觸發外資加速減碼。<span class="fias-i">INSIGHT</span></p>
+<p><b>結論</b>：法人動態佐證了第十一章的估值結論——四家都偏貴，連機構法人也在減碼。在法人買盤回流之前，個人投資人不宜逆勢追價。值得監控的觸發點：① 台光電外資持股跌破 25% → 賣壓加速信號 ② 台燿挪威央行/亞伯丁加碼 → 長線價值確認信號 ③ 投信開始建倉聯茂/騰輝 → 本土法人認可信號。<span class="fias-a">ANALYSIS</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch14：投資選擇矩陣                                             -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch14">第十四章：投資選擇矩陣</div>
+<div class="section-sub">四種投資風格 × 四家公司適配度 × 組合策略建議</div>
+
+<!-- 14.1 投資風格矩陣 -->
+<div class="card">
+<h3>14.1 四種投資風格 × 四家適配度</h3>
+<div class="card-body">
+<p>不同投資風格對應不同的選股邏輯。以下將四種主流投資風格與四家 CCL 廠進行適配度分析。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>投資風格</th>
+  <th>首選</th>
+  <th>次選</th>
+  <th>避開</th>
+  <th>選擇邏輯</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>價值型</b><br/><span style="font-size:.72em;color:var(--txt3)">低估值+高股息+低風險</span></td>
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td>—</td>
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td style="font-size:.82em">PE 26.6x 最低 + 殖利率 2.6% 最高 + 負債 28.6% 最低。但坦白說，PE 26.6x 對一家零成長公司仍偏貴。台光電 PE 70.6x 完全不符合價值型邏輯。</td>
+</tr>
+<tr>
+  <td><b>成長型</b><br/><span style="font-size:.72em;color:var(--txt3)">高成長+技術領先+AI 趨勢</span></td>
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td style="font-size:.82em">AI CCL 佔比最高 + M8/M9 獨佔 + EPS YoY +50% + 營收 YoY +46%。台燿 ELL 36% 是追趕者首選。騰輝營收 YoY +0.8% 完全不是成長股。</td>
+</tr>
+<tr>
+  <td><b>穩健型</b><br/><span style="font-size:.72em;color:var(--txt3)">治理+分散+穩定成長</span></td>
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td style="color:var(--co-d);font-weight:700">騰輝</td>
+  <td style="color:var(--co-c);font-weight:700">聯茂</td>
+  <td style="font-size:.82em">管理層最佳（誠信 87/100、零質押六年、配息 79%）+ 客戶最分散（<10%）+ ELL 技術上升。聯茂 M9 成敗繫於單一事件，不穩健。</td>
+</tr>
+<tr>
+  <td><b>技術信仰型</b><br/><span style="font-size:.72em;color:var(--txt3)">押注技術壟斷+認證壁壘</span></td>
+  <td style="color:var(--co-a);font-weight:700">台光電</td>
+  <td style="color:var(--co-b);font-weight:700">台燿</td>
+  <td>—</td>
+  <td style="font-size:.82em">M8/M9 獨佔 + 41 國認證 + 玻纖布 70% 自製。台燿有日東紡技術授權加速開發。聯茂和騰輝缺乏明確的技術壟斷敘事。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 14.2 組合策略 -->
+<div class="card">
+<h3>14.2 組合策略建議</h3>
+<div class="card-body">
+<p>若投資人希望在 CCL 產業中建立配置部位，以下三套組合策略各有不同的風險收益特性。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid3">
+  <div class="risk-card">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--bull)">組合 A：AI 成長 + 利基防禦</span>
+      <span class="rc-level medium">攻防兼備</span>
+    </div>
+    <div class="rc-body">
+      <div class="rc-row"><span class="rc-label">配置</span><span style="color:var(--co-a)">台光電 50%</span> + <span style="color:var(--co-d)">騰輝 50%</span></div>
+      <div class="rc-row"><span class="rc-label">邏輯</span>台光電吃 AI 紅利高成長，騰輝提供防禦底部。覆蓋成長+價值兩端。</div>
+      <div class="rc-row"><span class="rc-label">上行情境</span>AI 持續爆發 → 台光電帶動；騰輝月營收持續轉強 → 額外驚喜。</div>
+      <div class="rc-row"><span class="rc-label">下行情境</span>AI 泡沫 → 台光電重挫 -40% 但騰輝僅 -15~20%，組合跌幅被緩衝。</div>
+      <div class="rc-row"><span class="rc-label" style="color:var(--warn)">注意</span>兩家目前都偏貴，建議等台光電 <2,400 + 騰輝 <105 再建倉。</div>
+    </div>
+  </div>
+
+  <div class="risk-card">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--neutral)">組合 B：追趕者雙押</span>
+      <span class="rc-level high">積極型</span>
+    </div>
+    <div class="rc-body">
+      <div class="rc-row"><span class="rc-label">配置</span><span style="color:var(--co-b)">台燿 60%</span> + <span style="color:var(--co-c)">聯茂 40%</span></div>
+      <div class="rc-row"><span class="rc-label">邏輯</span>押注追趕者翻身——台燿 ELL 持續放量+聯茂 M9 通過認證。M9 結果是最大催化劑。</div>
+      <div class="rc-row"><span class="rc-label">上行情境</span>M9 通過+M10 多家 → 台燿聯茂雙雙受惠，PE 擴張+EPS 成長雙引擎。</div>
+      <div class="rc-row"><span class="rc-label">下行情境</span>M10 台光電獨佔 → 追趕者敘事崩塌，台燿 -30~40%、聯茂 -35~45%。</div>
+      <div class="rc-row"><span class="rc-label" style="color:var(--warn)">注意</span>高風險組合，需要 M9/M10 認證結果驗證。建議台燿 <485 + 聯茂 <135 再啟動。</div>
+    </div>
+  </div>
+
+  <div class="risk-card">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--bear)">組合 C：全部不買，等回檔</span>
+      <span class="rc-level low">最理性</span>
+    </div>
+    <div class="rc-body">
+      <div class="rc-row"><span class="rc-label">配置</span>現金 100%</div>
+      <div class="rc-row"><span class="rc-label">邏輯</span>四家淨期望值全部為負，風險報酬比全部 <1x。在機率上，等待是最優策略。</div>
+      <div class="rc-row"><span class="rc-label">觸發條件</span>台光電 <2,200 / 台燿 <485 / 聯茂 <135 / 騰輝 <105 → 進場信號。</div>
+      <div class="rc-row"><span class="rc-label">機會成本</span>若 AI CCL 繼續飆漲 20~30%，將踏空。但以目前估值，踏空比套牢健康。</div>
+      <div class="rc-row"><span class="rc-label" style="color:var(--bull)">核心理念</span><b>好公司 ≠ 好股票。四家都是好公司，但目前沒有一家是好股票。</b></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch14 整合結論 -->
+<div class="tip good">
+<b>第十四章整合結論</b>
+<p><b>資料觀察</b>：四種投資風格對應了四種截然不同的首選——價值型選騰輝、成長型選台光電、穩健型選台燿、技術信仰型選台光電。沒有任何一家公司在所有風格中都是首選，也沒有任何一家在所有風格中都被避開，反映了 CCL 四雄各自擁有不同的優勢維度。<span class="fias-f">FACT</span></p>
+<p><b>推論一（組合 A 的攻防邏輯）</b>：台光電+騰輝的組合覆蓋了「AI 成長」和「利基防禦」兩個極端——AI 爆發時台光電帶頭衝，AI 回調時騰輝的軍工利基提供緩衝。這是四家中互補性最強的配對。但兩者的關聯性低也代表「同漲同跌」的機率低——需要接受一端表現好時，另一端可能拖後腿。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論二（組合 B 的賭局性質）</b>：台燿+聯茂的組合本質上是在賭「追趕者翻身」。如果 M9 通過+M10 多家，這個組合的回報將是四個方案中最高的。但如果 M10 台光電再度獨佔，這兩家會同步重挫——相關性太高，分散效果幾乎為零。這不是投資組合，更像是對同一個事件的加倍下注。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論三（組合 C 的理性價值）</b>：在四家淨期望值全部為負的情況下，「不買」在數學上是最優解。但投資不只是數學——如果投資人有「參與 CCL 產業」的策略性需求（例如產業研究、分批建倉），可以用極小部位（總資金 5% 以內）先觀察，等回檔再加碼。重點是不要因為 FOMO（害怕錯過）而在估值頂部重壓。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：<b>組合 C（等回檔）是目前最理性的策略。</b>如果非要在 CCL 產業中建倉，組合 A（台光電+騰輝）的攻防平衡最佳，但需要等到台光電 <2,400 + 騰輝 <105 才有足夠的安全邊際。組合 B 只適合對 M9/M10 有強烈信念的投資人，且必須嚴格控管部位大小。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch15：目標公司視角 — 攻防策略                                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch15">第十五章：目標公司視角 — 攻防策略</div>
+<div class="section-sub">各公司最大威脅 × 最強防禦 × 攻防策略總覽</div>
+
+<!-- 15.1 各公司最大威脅 -->
+<div class="card">
+<h3>15.1 各公司最大威脅</h3>
+<div class="card-body">
+<p>以整體產業生態為視角，分析每家公司面臨的單一最大威脅及其可能的連鎖影響。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid2">
+  <div class="risk-card" style="border-left:3px solid var(--co-a)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-a)">台光電最大威脅</span>
+      <span class="rc-level fatal">致命級</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bear);margin-bottom:4px">估值壓縮：PE 從 70x 回歸 30-40x</p>
+      <div class="rc-row"><span class="rc-label">觸發條件</span>M10 認證被多家分享 / AI 伺服器訂單放緩 / 外資持續減碼</div>
+      <div class="rc-row"><span class="rc-label">影響量級</span>股價從 2,885 跌至 1,200-1,600 區間（-40~55%）</div>
+      <div class="rc-row"><span class="rc-label">機率評估</span>60%（M10 三家通過機率）× 部分影響已開始（外資淨賣 314 萬股）</div>
+      <div class="rc-row"><span class="rc-label">連鎖效應</span>台光電估值壓縮將帶動整個 CCL 族群 PE 下修，因為它是定錨股</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-b)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-b)">台燿最大威脅</span>
+      <span class="rc-level high">高風險</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bear);margin-bottom:4px">台光電技術持續獨佔 → 永遠的 Second Tier</p>
+      <div class="rc-row"><span class="rc-label">觸發條件</span>M10 台光電再度獨家 / 日東紡技術授權不再續約 / ELL 佔比成長放緩</div>
+      <div class="rc-row"><span class="rc-label">影響量級</span>PE 從 56.3x 壓縮至 25-30x → 股價 -40~55%</div>
+      <div class="rc-row"><span class="rc-label">機率評估</span>25%（M10 獨佔機率）+ 10%（日東紡轉授權風險）</div>
+      <div class="rc-row"><span class="rc-label">連鎖效應</span>若台燿被確認為 second tier，聯茂也連帶受害（追趕者群體估值下修）</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-c)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-c)">聯茂最大威脅</span>
+      <span class="rc-level fatal">致命級</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bear);margin-bottom:4px">M9 認證失敗 → 股價回到 120-130</p>
+      <div class="rc-row"><span class="rc-label">觸發條件</span>M9 認證在 2026H2 未通過（45% 機率）</div>
+      <div class="rc-row"><span class="rc-label">影響量級</span>PE 從 45x 壓縮至 20-25x → 股價 120-130（-33~36%）</div>
+      <div class="rc-row"><span class="rc-label">機率評估</span>45%（M9 失敗機率明確）</div>
+      <div class="rc-row"><span class="rc-label">連鎖效應</span>聯茂將被重新定位為「規模大但技術平庸」的純代工廠，毛利率 14.5% 成為天花板</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-d)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-d)">騰輝最大威脅</span>
+      <span class="rc-level high">高風險</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bear);margin-bottom:4px">營收長期停滯 → AI 轉型失敗 → 估值進一步壓縮</p>
+      <div class="rc-row"><span class="rc-label">觸發條件</span>AI CCL 佔比長期停留 <5% / 蘇州廠受地緣衝擊 / 月營收 YoY 回到負成長</div>
+      <div class="rc-row"><span class="rc-label">影響量級</span>PE 從 26.6x 壓縮至 15-18x → 股價 75-90（-30~42%）</div>
+      <div class="rc-row"><span class="rc-label">機率評估</span>40%（AI 轉型 2027 前無突破的機率）</div>
+      <div class="rc-row"><span class="rc-label">連鎖效應</span>有限——騰輝的利基市場相對獨立，其他三家不受影響</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 15.2 各公司最強防禦 -->
+<div class="card">
+<h3>15.2 各公司最強防禦</h3>
+<div class="card-body">
+<p>每家公司都有其獨特的防禦機制，即使面臨最大威脅也能提供一定的下行保護。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="grid2">
+  <div class="risk-card" style="border-left:3px solid var(--co-a)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-a)">台光電最強防禦</span>
+      <span class="rc-level low">堅固</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bull);margin-bottom:4px">三重護城河：M8 獨佔 + 玻纖布自製 70% + 41 國認證</p>
+      <div class="rc-row"><span class="rc-label">核心價值</span>即使 M10 失去獨佔，M8/M9 的既有訂單仍能持續 2-3 年。玻纖布自製讓成本結構永遠優於競爭者。41 國認證代表客戶轉換成本極高——即使有更便宜的替代品，認證流程需 12-18 個月。</div>
+      <div class="rc-row"><span class="rc-label">防禦力</span>估值可能壓縮 40-55%，但「底部」仍遠高於同業（EPS 60+ × PE 30x = 1,800+）</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-b)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-b)">台燿最強防禦</span>
+      <span class="rc-level low">堅固</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bull);margin-bottom:4px">管理層品質 + 客戶極分散 + 高配息紀律</p>
+      <div class="rc-row"><span class="rc-label">核心價值</span>誠信度 87/100（四家最佳治理）、零質押六年、配息率 79%、最大客戶 <10%。即使技術追趕失敗，這些結構性優勢確保公司不會「爆掉」——管理層不會亂花錢、客戶不會集體流失、股東持續獲得現金回報。</div>
+      <div class="rc-row"><span class="rc-label">防禦力</span>即使 PE 壓縮至 25-30x，高配息仍提供 2-3% 殖利率底線</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-c)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-c)">聯茂最強防禦</span>
+      <span class="rc-level medium">中等</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--neutral);margin-bottom:4px">規模壁壘 + 營運槓桿正向不對稱 + 13 個研發專案</p>
+      <div class="rc-row"><span class="rc-label">核心價值</span>Prismark 特殊基板全球 #1（16% 市佔）、月產能 570 萬張、六大基地。規模本身就是壁壘——即使技術落後，低成本大量供應的能力確保不會被市場淘汰。營運費用成長率僅營收 63% → 景氣向上時 EPS 彈性極大。</div>
+      <div class="rc-row"><span class="rc-label">防禦力</span>M9 失敗 → 回到「安全但平庸」的狀態，股價 120-130 但不至於更低</div>
+    </div>
+  </div>
+
+  <div class="risk-card" style="border-left:3px solid var(--co-d)">
+    <div class="rc-header">
+      <span class="rc-title" style="color:var(--co-d)">騰輝最強防禦</span>
+      <span class="rc-level low">堅固</span>
+    </div>
+    <div class="rc-body">
+      <p style="font-weight:700;color:var(--bull);margin-bottom:4px">財務堡壘 + 軍工認證壁壘 17 年 + 散熱金屬基板全球 #1</p>
+      <div class="rc-row"><span class="rc-label">核心價值</span>負債比 28.6% 四家最低、帳上現金+短投 144 億（足以買下自己半個市值）、VT-901 四大國際認證（17 年壁壘）。即使 AI 轉型完全失敗，軍工+車用利基仍可維持毛利率 32.2%。NATO 客戶不會因為 AI 起落而改變採購。</div>
+      <div class="rc-row"><span class="rc-label">防禦力</span>在最壞情境下仍有每年 4.85 元 EPS × PE 15x = 73 元的硬底</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Ch15 整合結論 -->
+<div class="tip info">
+<b>第十五章整合結論</b>
+<p><b>資料觀察</b>：四家公司的最大威脅與最強防禦呈現鮮明的「攻守特性」差異。台光電攻擊力最強（M8/M9 獨佔+AI 成長）但估值壓縮是致命軟肋；台燿管理層+治理是最佳防禦但技術追趕是最大不確定性；聯茂一切繫於 M9（45% 失敗率不低）；騰輝防禦堅如磐石但缺乏進攻武器。<span class="fias-f">FACT</span></p>
+<p><b>推論一（攻防不對稱性）</b>：台光電的護城河最寬（脆弱度 3/10），但最大威脅的影響最嚴重（-40~55%），這看似矛盾但其實合理——護城河保護的是「基本面」，而估值壓縮攻擊的是「市場情緒」。一家公司可以基本面完好但股價腰斬，因為市場從 PE 70x 回到 30-40x。反之，騰輝的護城河較窄（4/10），但因為 PE 只有 26.6x，估值壓縮的空間反而較小。這揭示了一個重要教訓：<b>護城河寬度不等於下跌保護——估值高度才是下行風險的主要來源。</b><span class="fias-i">INSIGHT</span></p>
+<p><b>推論二（防禦力的時效差異）</b>：台光電的防禦力來自「技術獨佔」，有明確的賞味期限（M10 出現後遞減）；台燿的防禦力來自「管理品質+分散化」，幾乎沒有到期日；騰輝的防禦力來自「軍工認證壁壘 17 年」，是四家中最持久的。投資人在選擇時應考慮「防禦力能撐多久」而非只看「防禦力有多強」。長期持有的投資人應優先考慮台燿和騰輝的結構性防禦，而非台光電的週期性技術壟斷。<span class="fias-a">ANALYSIS</span></p>
+<p><b>結論</b>：從攻防策略角度，四家公司可分為兩組——「進攻型」（台光電+台燿，技術驅動成長但估值風險高）和「防禦型」（聯茂+騰輝，基本面穩但缺乏爆發力）。投資人的選擇本質上是在「高賠率+高風險」與「低賠率+低風險」之間取捨。在目前所有人都偏貴的情況下，防禦型的安全邊際相對較好——因為跌下來的空間較小，等到合理價的距離也較短。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Ch16：整合結論與動態監控儀表板                                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch16">第十六章：整合結論與動態監控儀表板</div>
+<div class="section-sub">四家定位總結 × 三大產業趨勢判斷 × 六項監控信號 × 最終投資結論</div>
+
+<!-- 16.1 各公司定位與護城河總結 -->
+<div class="card">
+<h3>16.1 各公司定位與護城河總結</h3>
+<div class="card-body">
+<p>經過前十五章的多維度分析，將四家 CCL 廠的定位、護城河、估值與投資特性做最終彙整。<span class="fias-a">ANALYSIS</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>維度</th>
+  <th style="color:var(--co-a)">台光電 2383</th>
+  <th style="color:var(--co-b)">台燿 6274</th>
+  <th style="color:var(--co-c)">聯茂 6213</th>
+  <th style="color:var(--co-d)">騰輝 6672</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><b>產業定位</b></td>
+  <td style="color:var(--co-a)">一超（霸主）</td>
+  <td style="color:var(--co-b)">一追（追趕者）</td>
+  <td style="color:var(--co-c)">一候補（等待翻身）</td>
+  <td style="color:var(--co-d)">一獨立（利基堡壘）</td>
+</tr>
+<tr>
+  <td><b>護城河寬度</b></td>
+  <td><span class="badge wide">寬</span></td>
+  <td><span class="badge narrow">窄但擴寬中</span></td>
+  <td><span class="badge narrow">窄且靜態</span></td>
+  <td><span class="badge narrow">窄但深</span></td>
+</tr>
+<tr>
+  <td><b>脆弱度</b></td>
+  <td class="num" style="color:var(--bull)">3/10</td>
+  <td class="num" style="color:var(--warn)">5/10</td>
+  <td class="num" style="color:var(--bear)">6/10</td>
+  <td class="num">4/10</td>
+</tr>
+<tr>
+  <td><b>PE（x）</b></td>
+  <td class="num" style="color:var(--bear)">70.6</td>
+  <td class="num" style="color:var(--bear)">56.3</td>
+  <td class="num" style="color:var(--warn)">45.0</td>
+  <td class="num" style="color:var(--bull)">26.6</td>
+</tr>
+<tr>
+  <td><b>合理價區間</b></td>
+  <td class="num">2,200-2,400</td>
+  <td class="num">395-485</td>
+  <td class="num">125-135</td>
+  <td class="num">85-105</td>
+</tr>
+<tr>
+  <td><b>淨期望值</b></td>
+  <td class="num" style="color:var(--bear)">-16.32%</td>
+  <td class="num" style="color:var(--bear)">-11.2%</td>
+  <td class="num" style="color:var(--warn)">-5.8%</td>
+  <td class="num" style="color:var(--warn)">-5.5%</td>
+</tr>
+<tr>
+  <td><b>管理層品質</b></td>
+  <td>75/100</td>
+  <td style="color:var(--bull)">87/100</td>
+  <td>70/100</td>
+  <td>90/100*</td>
+</tr>
+<tr>
+  <td><b>一句話定位</b></td>
+  <td style="font-size:.78em">AI 材料壟斷者<br/>但估值透支</td>
+  <td style="font-size:.78em">最佳風險報酬<br/>追趕者</td>
+  <td style="font-size:.78em">規模王等待<br/>M9 翻身</td>
+  <td style="font-size:.78em">被忽視的<br/>利基堡壘</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.72em;color:var(--txt3)">* 騰輝誠信度 90/100 四家最高，但因開曼註冊+英籍 CEO+Alpha Victor 25% 的特殊結構，實際治理保護力需打折。<span class="fias-a">ANALYSIS</span></p>
+</div>
+</div>
+
+<!-- 16.2 產業趨勢下的贏家和輸家 -->
+<div class="card">
+<h3>16.2 產業趨勢下的贏家和輸家</h3>
+<div class="card-body">
+<p>三大產業趨勢將決定未來 2-3 年 CCL 四雄的命運分歧。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="risk-card" style="border-left:3px solid var(--bull);margin-bottom:8px">
+<div class="rc-header">
+  <span class="rc-title">趨勢一：AI CCL 需求持續爆發</span>
+  <span class="rc-level low">確定性高（80%+）</span>
+</div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">趨勢描述</span>全球 AI 伺服器出貨量持續攀升，帶動高階 CCL（ELL/UHSLL）需求爆發。1.6T → 3.2T 升級驅動 CCL 用量翻倍。</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bull)">贏家</span><b style="color:var(--co-a)">台光電</b>（AI CCL 佔比最高，M8/M9 獨佔）> <b style="color:var(--co-b)">台燿</b>（ELL 36% 快速攀升）> <b style="color:var(--co-c)">聯茂</b>（若 M9 通過）</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bear)">相對輸家</span><b style="color:var(--co-d)">騰輝</b>（AI CCL 僅 1.8%，幾乎無法受惠此趨勢）</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:3px solid var(--warn);margin-bottom:8px">
+<div class="rc-header">
+  <span class="rc-title">趨勢二：1.6T → 3.2T 技術升級</span>
+  <span class="rc-level medium">確定性中高（65%）</span>
+</div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">趨勢描述</span>伺服器交換器從 1.6T 升級至 3.2T，需要更高等級的 CCL 材料（M10+），認證門檻更高，供應商格局重新洗牌。</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bull)">贏家</span><b style="color:var(--co-a)">台光電</b>（先行者優勢）+ <b style="color:var(--co-b)">台燿</b>（若取得 M10 認證，將正式進入一線供應商行列）</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bear)">相對輸家</span><b style="color:var(--co-c)">聯茂</b>（若 M9 都沒過，M10 更無望）+ <b style="color:var(--co-d)">騰輝</b>（技術路線不同，無法參與）</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:3px solid var(--neutral)">
+<div class="rc-header">
+  <span class="rc-title">趨勢三：中國供應鏈自主化</span>
+  <span class="rc-level medium">確定性中（50%）</span>
+</div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">趨勢描述</span>中國 CCL 廠（生益科技、南亞新材等）加速自主化，在中低階 CCL 市場形成替代威脅。但高階 AI CCL 短期內仍難以追趕。</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bull)">受益者</span><b style="color:var(--co-a)">台光電</b>（高階市場護城河深，中國短期追不上）+ <b style="color:var(--co-d)">騰輝</b>（軍工認證壁壘，中國廠無法取代）</div>
+  <div class="rc-row"><span class="rc-label" style="color:var(--bear)">受威脅者</span><b style="color:var(--co-c)">聯茂</b>（中低階產品同質化高，直面中國廠價格競爭）+ <b style="color:var(--co-b)">台燿</b>（常熟廠雖在中國但中國客戶轉向自主供應鏈的風險存在）</div>
+</div>
+</div>
+
+<div class="tip info" style="margin-top:8px">
+<b>趨勢交叉分析</b>
+<p>將三大趨勢的贏家/輸家交叉比對：<b style="color:var(--co-a)">台光電在三個趨勢中都是贏家</b>（但估值已充分反映）；<b style="color:var(--co-d)">騰輝在趨勢一是輸家但在趨勢三是受益者</b>（軍工壁壘抗中國替代）；<b style="color:var(--co-c)">聯茂在趨勢二和趨勢三都是輸家</b>（技術+價格雙重壓力），M9 認證通過是翻轉的唯一機會；<b style="color:var(--co-b)">台燿在趨勢一和二是贏家</b>，但在趨勢三有暴露面。<span class="fias-a">ANALYSIS</span></p>
+</div>
+</div>
+</div>
+
+<!-- 16.3 動態監控儀表板 -->
+<div class="card">
+<h3>16.3 動態監控儀表板</h3>
+<div class="card-body">
+<p>以下六項關鍵指標構成 CCL 四雄的動態監控儀表板，每項指標附帶觸發條件與行動建議。<span class="fias-a">ANALYSIS</span></p>
+
+<div class="dashboard-grid">
+  <div class="dash-item">
+    <div class="dash-light yellow"></div>
+    <div class="dash-info">
+      <div class="dash-name" style="color:var(--co-a)">台光電 M10 認證進度</div>
+      <div class="dash-val">目前狀態：研發/送樣中，結果預計 2027H2</div>
+      <div class="dash-action">觸發：獨佔確認 → 加碼台光電 / 三家通過 → 台光電 PE 下修至 35-45x</div>
+    </div>
+  </div>
+
+  <div class="dash-item">
+    <div class="dash-light yellow"></div>
+    <div class="dash-info">
+      <div class="dash-name" style="color:var(--co-c)">聯茂 M9 認證結果</div>
+      <div class="dash-val">目前狀態：認證進行中，預計 2026H2 揭曉（55% 通過機率）</div>
+      <div class="dash-action">觸發：通過 → 聯茂 PE 擴張+毛利率改善 / 失敗 → 股價回到 120-130</div>
+    </div>
+  </div>
+
+  <div class="dash-item">
+    <div class="dash-light green"></div>
+    <div class="dash-info">
+      <div class="dash-name" style="color:var(--co-b)">台燿 ELL 佔營收比</div>
+      <div class="dash-val">目前狀態：36%，每季追蹤（上升中）</div>
+      <div class="dash-action">觸發：突破 45-50% → 護城河從「窄」上修為「中等」，定價權提升至 6.5-7.0</div>
+    </div>
+  </div>
+
+  <div class="dash-item">
+    <div class="dash-light green"></div>
+    <div class="dash-info">
+      <div class="dash-name" style="color:var(--co-d)">騰輝月營收趨勢</div>
+      <div class="dash-val">目前狀態：2026/03 YoY +32.7%（24 個月新高），動能轉強中</div>
+      <div class="dash-action">觸發：連續 3 個月 YoY >20% → 確認轉強信號 / 回到 <5% → 動能消退</div>
+    </div>
+  </div>
+
+  <div class="dash-item">
+    <div class="dash-light red"></div>
+    <div class="dash-info">
+      <div class="dash-name">全球 AI CCL 供需比</div>
+      <div class="dash-val">目前狀態：需求 > 供給（偏緊），但四家均在擴產中</div>
+      <div class="dash-action">觸發：Prismark 季報顯示供給過剩 → 全面 PE 壓縮風險 / 持續緊缺 → 漲價循環</div>
+    </div>
+  </div>
+
+  <div class="dash-item">
+    <div class="dash-light red"></div>
+    <div class="dash-info">
+      <div class="dash-name">四家 PE 回歸進度</div>
+      <div class="dash-val">目前狀態：全部偏貴，距合理區間 20-73% 溢價</div>
+      <div class="dash-action">觸發：任一家跌入合理價區間 → 進場信號。目前最接近的是台光電（溢價 +20-31%）</div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 16.4 最終整合結論 -->
+<div class="card">
+<h3>16.4 最終整合結論</h3>
+<div class="card-body">
+
+<div class="conclusion-box">
+<div class="cb-title">CCL 銅箔基板四雄 — 產業競爭生態分析 最終結論</div>
+<div class="cb-quote">「一超一追一候補一獨立」的格局正在固化，<br/>但四家的命運分歧點就在接下來的 18 個月</div>
+
+<div style="margin-top:12px">
+
+<!-- 結論一 -->
+<div class="tip info" style="margin-bottom:8px">
+<b>一、產業格局：「一超一追一候補一獨立」正在固化</b>
+<p><b>資料基礎</b>：台光電營收 943 億 > 台燿 ~400 億 > 聯茂 331 億 >> 騰輝 42.6 億。技術定價權 7.8 > 5.6 > 5.2 > 4.5。ROE 30.9% > 26.0% > 10.4% > 7.2%。<span class="fias-f">FACT</span></p>
+<p><b>觀察</b>：台光電在規模、技術、獲利三個維度全面領先，且差距在擴大而非縮小。台燿是唯一正在縮小差距的追趕者（ELL 佔比從低個位數升至 36%），但追趕速度能否快過台光電的護城河加寬速度仍是未知數。聯茂空有規模（Prismark #1），但毛利率 14.5% 暴露了「大而不強」的本質。騰輝則走了一條完全不同的路——軍工利基、小而精、自成體系。<span class="fias-a">ANALYSIS</span></p>
+<p><b>推論</b>：這四個位置在未來 2-3 年內幾乎不可能互換。台光電不會被追上（除非犯重大錯誤），台燿只能從追趕者升級到「強追趕者」但不會變成霸主，聯茂的翻身需要 M9 這種結構性催化劑，騰輝的利基路線不會與其他三家交叉。格局已固化。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- 結論二 -->
+<div class="tip warn" style="margin-bottom:8px">
+<b>二、命運分歧：四條不同的路</b>
+<p><b style="color:var(--co-a)">台光電</b>：吃 AI 紅利最多（M8/M9 獨佔 + 營收 +46% + EPS +50%），但估值已透支到 2027-2028 年的預期。PE 70.6x 在歷史 99% 百分位，淨期望值 -16.32% 是四家最差。<b>基本面最好，但目前是最不划算的投資。</b>估值壓縮風險 -40~55% 是懸在頭上的達摩克利斯之劍。<span class="fias-a">ANALYSIS</span></p>
+<p><b style="color:var(--co-b)">台燿</b>：是四家中「風險調整後報酬最好」的追趕者。管理層最佳（87/100 誠信、79% 配息、零質押六年）、客戶最分散（<10%）、ELL 佔比持續攀升。PE 56.3x 偏貴但護城河正在擴寬。進場區 395-485 距目前 683 仍有 -29~42% 的距離。<b>最值得長期追蹤，但現在不是買點。</b><span class="fias-a">ANALYSIS</span></p>
+<p><b style="color:var(--co-c)">聯茂</b>：一切繫於 M9 認證——55% 通過機率下，是一個「略偏正面但賭注極大」的情境。通過 → 規模王技術升級，毛利率從 14.5% 提升至 18%+，PE 擴張；失敗 → 回到 120-130 區間，確認「大而不強」的定位。<b>不適合穩健型投資人，只適合對 M9 有獨立判斷的產業研究者。</b><span class="fias-i">INSIGHT</span></p>
+<p><b style="color:var(--co-d)">騰輝</b>：被市場忽視的利基堡壘。毛利率 32.2% 四家最高、負債 28.6% 四家最低、殖利率 2.6% 四家最高、軍工認證 17 年壁壘。2026/03 月營收 YoY +32.7% 是短期亮點，但 AI CCL 僅 1.8%，最早 2027 才有實質貢獻。<b>是「CCL 產業保險股」——不會大漲，但最難大跌。</b>CB 稀釋 13.3% 和除息日 2026-04-16 是近期需留意的事件。<span class="fias-a">ANALYSIS</span></p>
+</div>
+
+<!-- 結論三 -->
+<div class="tip danger" style="margin-bottom:8px">
+<b>三、投資建議：四家都偏貴，等回檔是最理性的策略</b>
+<p><b>核心邏輯</b>：四家淨期望值全部為負（-5.5% 至 -16.32%），風險報酬比全部 <1x（0.58x 至 0.74x），外資全部在調節。在數學上、在資金流上、在估值上，沒有任何一家在目前價位提供正的期望報酬。<span class="fias-f">FACT</span></p>
+<p><b>如果一定要選</b>：<b style="color:var(--co-b)">台燿</b>（進場區 395-485，距現價 -29~42%）和<b style="color:var(--co-d)">騰輝</b>（合理區 85-105，距現價 -19~34%）的安全邊際相對最好。原因：台燿有管理層品質+護城河擴寬作為下檔支撐；騰輝有財務堡壘+軍工壁壘作為硬底。兩者在最壞情境下的跌幅（-30~40%）小於台光電（-40~55%）和聯茂（-33~45%）。<span class="fias-a">ANALYSIS</span></p>
+<p><b>建議進場價位</b>：<br/>
+<span style="color:var(--co-a)">台光電</span> < 2,200 元（Forward PE ~35x，仍有成長溢價但安全邊際浮現）<br/>
+<span style="color:var(--co-b)">台燿</span> < 485 元（約 PE 32-35x，若 ELL 佔比持續攀升則有 PE 擴張空間）<br/>
+<span style="color:var(--co-c)">聯茂</span> < 135 元（分析師共識 133 附近，M9 結果前的合理對價）<br/>
+<span style="color:var(--co-d)">騰輝</span> < 105 元（PE ~21x，配合殖利率 3%+ 提供足夠安全邊際）<br/>
+<span class="fias-i">INSIGHT</span></p>
+</div>
+
+<!-- 結論四 -->
+<div class="tip good">
+<b>四、最重要的單一變數：M10 認證歸屬</b>
+<p>在所有分析維度中，<b>M10 認證歸屬</b>是影響力最大的單一變數。它決定了：<span class="fias-a">ANALYSIS</span></p>
+<ul style="font-size:.88em;color:var(--txt2);margin:4px 0 4px 18px">
+  <li><b>台光電的獨佔期能持續多久</b>（PE 70.6x 的唯一合理性基礎）</li>
+  <li><b>台燿能否從追趕者升級為一線供應商</b>（進入 M10 = 身份質變）</li>
+  <li><b>聯茂的 M9 意義有多大</b>（若 M10 已是下一代標準，M9 只是過渡品）</li>
+  <li><b>整個 CCL 產業的競爭格局</b>（獨佔 vs 寡占，定價權歸誰）</li>
+</ul>
+<p>預計 2027H2 明朗化。在此之前，所有 CCL 投資都帶有「認證歸屬不確定性」的隱含風險。建議投資人在 M10 結果出爐前，控管 CCL 族群總曝險在投資組合的 10% 以內。<span class="fias-i">INSIGHT</span></p>
+</div>
+
+</div>
+</div>
+
+<div style="text-align:center;margin-top:12px;padding:8px;font-size:.78em;color:var(--txt3);border-top:1px solid var(--border)">
+  天機閣 研究部 | CCL 銅箔基板四雄 — 產業競爭生態分析 | 分析日期：2026-04-10<br/>
+  本報告僅供研究參考，不構成投資建議。投資人應獨立判斷，自負盈虧。
+</div>
+
+</div>
+</div>
+
+<!-- Ch16 整合結論（整份報告最終總結） -->
+<div class="tip warn">
+<b>第十六章整合結論（全文總結）</b>
+<p><b>資料觀察</b>：經過 16 章的全維度分析——從產業結構、商業互動、供應鏈、技術認證、財務體質、定價權、管理層、估值、風險矩陣、法人動態到賽局推演——得出的核心發現是：CCL 四雄的基本面各有優劣，但估值全面偏貴，沒有一家在目前價位提供正的期望報酬。<span class="fias-f">FACT</span></p>
+<p><b>推論一（「好公司 ≠ 好股票」的完美案例）</b>：台光電是一家優秀的公司（ROE 30.9%、M8/M9 獨佔、41 國認證），但 PE 70.6x 讓它成為一檔危險的股票。同理，騰輝是一座堅固的財務堡壘（負債 28.6%、現金 144 億、軍工 17 年壁壘），但 PE 26.6x 對一家零成長公司來說仍然不便宜。CCL 四雄是教科書級的「估值泡沫尚未破裂但安全邊際已消失」案例。<span class="fias-i">INSIGHT</span></p>
+<p><b>推論二（時間是最好的朋友）</b>：四家公司的基本面都在改善或至少維持——台光電 AI 需求持續、台燿 ELL 擴張、聯茂 M9 進行中、騰輝月營收轉強。問題純粹在於估值。而估值回歸只需要兩個條件之一：① 時間推移讓 EPS 成長追上股價（Forward PE 自然下降）② 市場情緒轉向觸發價格修正。前者需要 12-18 個月的耐心，後者可能在任何時候發生。無論哪種，等到合理價再進場的風險報酬都遠優於現在追價。<span class="fias-a">ANALYSIS</span></p>
+<p><b>最終結論</b>：<b>格局已定，勝負未分，但價格已超前。</b>CCL 產業的長期故事是好的（AI 驅動、技術升級、認證壁壘），但短期價格已經把所有好消息都定價完畢。最聰明的策略是——建立監控清單、設定進場價位、等待市場給你一個價格合理的機會。在那之前，研究的價值遠大於交易的價值。<span class="fias-i">INSIGHT</span></p>
+</div>
+<!-- Ch16 end -->
+
+<!-- ============================================================ -->
+<!-- 圖表 JavaScript                                               -->
+<!-- ============================================================ -->
+
+<!-- 預留錨點 -->
+
+
+
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+  天機閣 研究部 | CCL 銅箔基板四雄 — 產業競爭生態分析 | 2026-04-10<br>
+  天機閣 研究部 | 完整版 16 章 | 分析日期 2026-04-10
+</div>
+
+</div><!-- .wrap -->
+
+<!-- ============================================================ -->
+<!-- ===== JavaScript：圖表初始化 + 收合控制 ===== -->
+<!-- ============================================================ -->
+<script>
+// ===== 卡片收合 =====
+document.querySelectorAll('.card h3').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('collapsed'));
+});
+
+// ===== 全部展開/收合 =====
+function toggleAll(collapse) {
+  document.querySelectorAll('.card').forEach(c => {
+    if (collapse) c.classList.add('collapsed');
+    else c.classList.remove('collapsed');
+  });
+}
+
+// ===== ECharts：AI PCB 市場規模趨勢 =====
+(function(){
+  var dom = document.getElementById('ch1-market-size');
+  if(!dom) return;
+  var chart = echarts.init(dom, 'dark');
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
+      formatter: function(params) {
+        var bar = params[0];
+        var line = params[1];
+        return bar.name + '<br/>'
+          + '<span style="color:' + bar.color + '">■</span> 市場規模：' + bar.value + ' 億美元<br/>'
+          + '<span style="color:' + line.color + '">●</span> YoY 成長率：' + line.value + '%';
+      }
+    },
+    legend: {
+      data: ['市場規模（億美元）', 'YoY 成長率（%）'],
+      textStyle: { color: '#b8b0a5', fontSize: 11 },
+      top: 0
+    },
+    grid: { left: 50, right: 50, top: 40, bottom: 30 },
+    xAxis: {
+      type: 'category',
+      data: ['2024', '2025E', '2026E', '2027E'],
+      axisLine: { lineStyle: { color: '#3a3a3a' } },
+      axisLabel: { color: '#b8b0a5' }
+    },
+    yAxis: [
+      {
+        type: 'value',
+        name: '億美元',
+        nameTextStyle: { color: '#7a7268', fontSize: 10 },
+        axisLine: { lineStyle: { color: '#3a3a3a' } },
+        axisLabel: { color: '#b8b0a5' },
+        splitLine: { lineStyle: { color: '#2a2a2a' } }
+      },
+      {
+        type: 'value',
+        name: 'YoY %',
+        nameTextStyle: { color: '#7a7268', fontSize: 10 },
+        axisLine: { lineStyle: { color: '#3a3a3a' } },
+        axisLabel: { color: '#b8b0a5', formatter: '{value}%' },
+        splitLine: { show: false }
+      }
+    ],
+    series: [
+      {
+        name: '市場規模（億美元）',
+        type: 'bar',
+        data: [31, 86, 165, 271],
+        barWidth: '45%',
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#6b9f72' },
+            { offset: 1, color: '#3d6b44' }
+          ]),
+          borderRadius: [4, 4, 0, 0]
+        },
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}',
+          color: '#e8e4dc',
+          fontSize: 12,
+          fontWeight: 700
+        }
+      },
+      {
+        name: 'YoY 成長率（%）',
+        type: 'line',
+        yAxisIndex: 1,
+        data: [null, 177, 92, 64],
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { color: '#d4b030', width: 2 },
+        itemStyle: { color: '#d4b030' },
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
+          color: '#d4b030',
+          fontSize: 10,
+          fontWeight: 600
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', function(){ chart.resize(); });
+})();
+
+// ===== Chart.js：Porter 五力雷達圖 =====
+(function(){
+  var ctx = document.getElementById('ch2-porter-radar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['現有競爭\n（對廠商有利度）', '新進入者\n壁壘高度', '替代品\n威脅低度', '上游議價\n（廠商優勢）', '下游議價\n（廠商優勢）'],
+      datasets: [
+        {
+          label: '高速 AI CCL 市場',
+          data: [2, 4, 4, 3, 4],
+          backgroundColor: 'rgba(107,159,114,0.2)',
+          borderColor: '#6b9f72',
+          borderWidth: 2,
+          pointBackgroundColor: '#6b9f72',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        },
+        {
+          label: '傳統 FR-4 市場',
+          data: [1, 2, 4, 2, 2],
+          backgroundColor: 'rgba(212,136,122,0.15)',
+          borderColor: '#d4887a',
+          borderWidth: 2,
+          borderDash: [5,5],
+          pointBackgroundColor: '#d4887a',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 5,
+          min: 0,
+          ticks: {
+            stepSize: 1,
+            color: '#7a7268',
+            backdropColor: 'transparent',
+            font: { size: 10 }
+          },
+          grid: { color: '#3a3a3a' },
+          angleLines: { color: '#3a3a3a' },
+          pointLabels: {
+            color: '#e0dcd4',
+            font: { size: 11, weight: 600 }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 } },
+          position: 'bottom'
+        }
+      }
+    }
+  });
+})();
+</script>
+
+<script>
+// ===== Ch4：八維度雷達圖（Chart.js）=====
+(function(){
+  var ctx = document.getElementById('ch4-radar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['規模\n(15%)', '獲利\n(15%)', '成長\n(15%)', '技術\n(12.5%)', '護城河\n(12.5%)', '定價權\n(10%)', '管理層\n(10%)', '估值吸引力\n(10%)'],
+      datasets: [
+        {
+          label: '台光電 2383',
+          data: [95, 90, 92, 95, 92, 88, 72, 25],
+          backgroundColor: 'rgba(107,159,114,0.15)',
+          borderColor: '#6b9f72',
+          borderWidth: 2,
+          pointBackgroundColor: '#6b9f72',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        },
+        {
+          label: '台燿 6274',
+          data: [72, 68, 78, 70, 55, 58, 85, 35],
+          backgroundColor: 'rgba(122,176,192,0.12)',
+          borderColor: '#7ab0c0',
+          borderWidth: 2,
+          pointBackgroundColor: '#7ab0c0',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        },
+        {
+          label: '聯茂 6213',
+          data: [68, 35, 45, 55, 42, 32, 60, 42],
+          backgroundColor: 'rgba(212,176,48,0.1)',
+          borderColor: '#d4b030',
+          borderWidth: 2,
+          pointBackgroundColor: '#d4b030',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        },
+        {
+          label: '騰輝 6672',
+          data: [22, 62, 18, 48, 50, 65, 55, 68],
+          backgroundColor: 'rgba(212,136,122,0.1)',
+          borderColor: '#d4887a',
+          borderWidth: 2,
+          borderDash: [5,5],
+          pointBackgroundColor: '#d4887a',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          min: 0,
+          ticks: {
+            stepSize: 20,
+            color: '#7a7268',
+            backdropColor: 'transparent',
+            font: { size: 10 }
+          },
+          grid: { color: '#3a3a3a' },
+          angleLines: { color: '#3a3a3a' },
+          pointLabels: {
+            color: '#e0dcd4',
+            font: { size: 10, weight: 600 }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 } },
+          position: 'bottom'
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch5：商業模式象限圖（Chart.js bubble）=====
+(function(){
+  var ctx = document.getElementById('ch5-biz-scatter');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [
+        {
+          label: '台光電',
+          data: [{ x: 95, y: 943, r: 18 }],
+          backgroundColor: 'rgba(107,159,114,0.5)',
+          borderColor: '#6b9f72',
+          borderWidth: 2
+        },
+        {
+          label: '台燿',
+          data: [{ x: 70, y: 400, r: 14 }],
+          backgroundColor: 'rgba(122,176,192,0.5)',
+          borderColor: '#7ab0c0',
+          borderWidth: 2
+        },
+        {
+          label: '聯茂',
+          data: [{ x: 55, y: 331, r: 10 }],
+          backgroundColor: 'rgba(212,176,48,0.5)',
+          borderColor: '#d4b030',
+          borderWidth: 2
+        },
+        {
+          label: '騰輝',
+          data: [{ x: 48, y: 42.6, r: 19 }],
+          backgroundColor: 'rgba(212,136,122,0.5)',
+          borderColor: '#d4887a',
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { display: true, text: '技術壁壘（分）', color: '#b8b0a5', font: { size: 11 } },
+          min: 30, max: 100,
+          ticks: { color: '#7a7268' },
+          grid: { color: '#3a3a3a' }
+        },
+        y: {
+          title: { display: true, text: '營收規模（億元）', color: '#b8b0a5', font: { size: 11 } },
+          min: 0, max: 1100,
+          ticks: { color: '#7a7268' },
+          grid: { color: '#3a3a3a' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 } },
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var d = ctx.raw;
+              var names = { 0: '台光電', 1: '台燿', 2: '聯茂', 3: '騰輝' };
+              var margins = { 0: '29.8%', 1: '22.8%', 2: '14.5%', 3: '32.2%' };
+              return names[ctx.datasetIndex] + '：技術 ' + d.x + ' 分 / 營收 ' + d.y + '億 / 毛利率 ' + margins[ctx.datasetIndex];
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch5：毛利率柱狀圖（Chart.js）=====
+(function(){
+  var ctx = document.getElementById('ch5-margin-bar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['騰輝 6672', '台光電 2383', '台燿 6274', '聯茂 6213'],
+      datasets: [{
+        label: 'FY2025 毛利率（%）',
+        data: [32.2, 29.8, 22.8, 14.5],
+        backgroundColor: ['rgba(212,136,122,0.7)', 'rgba(107,159,114,0.7)', 'rgba(122,176,192,0.7)', 'rgba(212,176,48,0.7)'],
+        borderColor: ['#d4887a', '#6b9f72', '#7ab0c0', '#d4b030'],
+        borderWidth: 2,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      scales: {
+        x: {
+          min: 0, max: 40,
+          ticks: { color: '#7a7268', callback: function(v){ return v + '%'; } },
+          grid: { color: '#3a3a3a' }
+        },
+        y: {
+          ticks: { color: '#e0dcd4', font: { size: 12, weight: 600 } },
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return '毛利率：' + ctx.raw + '%'; }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch6：R&D 分組柱狀圖（ECharts）=====
+(function(){
+  var dom = document.getElementById('ch6-rd-chart');
+  if(!dom) return;
+  var chart = echarts.init(dom, null, { renderer: 'canvas' });
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: {
+      data: ['R&D 佔營收（%）', 'R&D 金額（億元）'],
+      textStyle: { color: '#b8b0a5', fontSize: 11 },
+      bottom: 0
+    },
+    grid: { left: '8%', right: '8%', top: '10%', bottom: '18%' },
+    xAxis: {
+      type: 'category',
+      data: ['台光電', '台燿', '聯茂', '騰輝'],
+      axisLabel: { color: '#e0dcd4', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: '#3a3a3a' } }
+    },
+    yAxis: [
+      {
+        type: 'value',
+        name: '佔營收 %',
+        nameTextStyle: { color: '#b8b0a5', fontSize: 10 },
+        axisLabel: { color: '#7a7268', formatter: '{value}%' },
+        splitLine: { lineStyle: { color: '#3a3a3a' } }
+      },
+      {
+        type: 'value',
+        name: '金額（億）',
+        nameTextStyle: { color: '#b8b0a5', fontSize: 10 },
+        axisLabel: { color: '#7a7268' },
+        splitLine: { show: false }
+      }
+    ],
+    series: [
+      {
+        name: 'R&D 佔營收（%）',
+        type: 'bar',
+        data: [
+          { value: 3.5, itemStyle: { color: '#6b9f72' } },
+          { value: 2.67, itemStyle: { color: '#7ab0c0' } },
+          { value: 2.22, itemStyle: { color: '#d4b030' } },
+          { value: 7.56, itemStyle: { color: '#d4887a' } }
+        ],
+        barWidth: '30%',
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
+          color: '#e8e4dc',
+          fontSize: 11,
+          fontWeight: 700
+        }
+      },
+      {
+        name: 'R&D 金額（億元）',
+        type: 'bar',
+        yAxisIndex: 1,
+        data: [
+          { value: 35, itemStyle: { color: 'rgba(107,159,114,0.4)' } },
+          { value: 10.7, itemStyle: { color: 'rgba(122,176,192,0.4)' } },
+          { value: 7.3, itemStyle: { color: 'rgba(212,176,48,0.4)' } },
+          { value: 3.2, itemStyle: { color: 'rgba(212,136,122,0.4)' } }
+        ],
+        barWidth: '30%',
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}億',
+          color: '#b8b0a5',
+          fontSize: 10
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', function(){ chart.resize(); });
+})();
+
+// ===== Ch6：受惠矩陣熱力圖（ECharts）=====
+(function(){
+  var dom = document.getElementById('ch6-heatmap');
+  if(!dom) return;
+  var chart = echarts.init(dom, null, { renderer: 'canvas' });
+
+  var companies = ['台光電', '台燿', '聯茂', '騰輝'];
+  var themes = ['AI 伺服器', 'M8/M9/M10 升級', '800G/1.6T 光通訊', '中國去美化', '車用/EV'];
+
+  // data: [公司索引, 題材索引, 受惠度]
+  var data = [
+    [0, 0, 4], [1, 0, 3], [2, 0, 2], [3, 0, 1],
+    [0, 1, 4], [1, 1, 3], [2, 1, 2], [3, 1, 1],
+    [0, 2, 4], [1, 2, 3], [2, 2, 2], [3, 2, 1],
+    [0, 3, 1], [1, 3, 2], [2, 3, 3], [3, 3, 4],
+    [0, 4, 2], [1, 4, 1], [2, 4, 3], [3, 4, 4]
+  ];
+
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+      formatter: function(params) {
+        return companies[params.data[0]] + ' × ' + themes[params.data[1]] +
+               '<br/>受惠度：' + params.data[2] + '/4' +
+               (params.data[2] === 4 ? ' (第一受惠)' : params.data[2] === 1 ? ' (最低)' : '');
+      }
+    },
+    grid: { left: '16%', right: '12%', top: '8%', bottom: '18%' },
+    xAxis: {
+      type: 'category',
+      data: companies,
+      axisLabel: { color: '#e0dcd4', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: '#3a3a3a' } },
+      splitArea: { show: false }
+    },
+    yAxis: {
+      type: 'category',
+      data: themes,
+      axisLabel: { color: '#e0dcd4', fontSize: 10, fontWeight: 500 },
+      axisLine: { lineStyle: { color: '#3a3a3a' } },
+      splitArea: { show: false }
+    },
+    visualMap: {
+      min: 1,
+      max: 4,
+      calculable: false,
+      orient: 'horizontal',
+      left: 'center',
+      bottom: 0,
+      itemWidth: 16,
+      itemHeight: 10,
+      textStyle: { color: '#b8b0a5', fontSize: 10 },
+      inRange: {
+        color: ['#3a3a3a', '#5a6b5c', '#6b9f72', '#4caf50']
+      },
+      text: ['第一受惠', '最低']
+    },
+    series: [{
+      type: 'heatmap',
+      data: data,
+      label: {
+        show: true,
+        formatter: function(params) {
+          var ranks = ['', '4th', '3rd', '2nd', '1st'];
+          return ranks[params.data[2]];
+        },
+        color: '#e8e4dc',
+        fontSize: 12,
+        fontWeight: 700
+      },
+      itemStyle: {
+        borderColor: '#252525',
+        borderWidth: 2,
+        borderRadius: 4
+      }
+    }]
+  });
+  window.addEventListener('resize', function(){ chart.resize(); });
+})();
+
+// ===== Ch7：區域營收分佈比較（Chart.js stacked bar）=====
+(function(){
+  var ctx = document.getElementById('ch7-region-bar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['台光電', '台燿', '聯茂', '騰輝'],
+      datasets: [
+        {
+          label: '中國大陸',
+          data: [77, 50, 79, 60],
+          backgroundColor: 'rgba(239,83,80,0.6)',
+          borderColor: '#ef5350',
+          borderWidth: 1
+        },
+        {
+          label: '台灣',
+          data: [15, 17, 1.6, 2],
+          backgroundColor: 'rgba(107,159,114,0.6)',
+          borderColor: '#6b9f72',
+          borderWidth: 1
+        },
+        {
+          label: '其他亞洲',
+          data: [0, 18, 17.4, 12],
+          backgroundColor: 'rgba(122,176,192,0.6)',
+          borderColor: '#7ab0c0',
+          borderWidth: 1
+        },
+        {
+          label: '歐洲',
+          data: [0, 0, 0.5, 19],
+          backgroundColor: 'rgba(167,139,250,0.6)',
+          borderColor: '#a78bfa',
+          borderWidth: 1
+        },
+        {
+          label: '美洲',
+          data: [3, 1, 0, 5],
+          backgroundColor: 'rgba(212,176,48,0.6)',
+          borderColor: '#d4b030',
+          borderWidth: 1
+        },
+        {
+          label: '其他',
+          data: [5, 14, 1.5, 2],
+          backgroundColor: 'rgba(90,90,90,0.5)',
+          borderColor: '#666',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color: '#e0dcd4', font: { size: 12, weight: 600 } },
+          grid: { display: false }
+        },
+        y: {
+          stacked: true,
+          max: 100,
+          ticks: { color: '#7a7268', callback: function(v){ return v + '%'; } },
+          grid: { color: '#3a3a3a' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 10 } },
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.dataset.label + '：' + ctx.raw + '%'; }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch7：台光電高速無鹵 CCL 市佔率變遷（ECharts 面積圖）=====
+(function(){
+  var dom = document.getElementById('ch7-share-area');
+  if(!dom) return;
+  var chart = echarts.init(dom, null, { renderer: 'canvas' });
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis' },
+    grid: { left: '10%', right: '6%', top: '10%', bottom: '14%' },
+    xAxis: {
+      type: 'category',
+      data: ['FY2022', 'FY2023', 'FY2024', 'FY2025'],
+      axisLabel: { color: '#e0dcd4', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#3a3a3a' } }
+    },
+    yAxis: {
+      type: 'value',
+      name: '市佔率 %',
+      nameTextStyle: { color: '#b8b0a5', fontSize: 10 },
+      max: 60,
+      min: 0,
+      axisLabel: { color: '#7a7268', formatter: '{value}%' },
+      splitLine: { lineStyle: { color: '#3a3a3a' } }
+    },
+    series: [
+      {
+        name: '台光電 高速無鹵 CCL 市佔',
+        type: 'line',
+        data: [22, 28.4, 40.1, 52],
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(107,159,114,0.5)' },
+              { offset: 1, color: 'rgba(107,159,114,0.05)' }
+            ]
+          }
+        },
+        lineStyle: { color: '#6b9f72', width: 3 },
+        itemStyle: { color: '#6b9f72' },
+        symbol: 'circle',
+        symbolSize: 8,
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
+          color: '#6b9f72',
+          fontSize: 12,
+          fontWeight: 700
+        },
+        markLine: {
+          data: [{ yAxis: 50, name: '壟斷門檻' }],
+          lineStyle: { color: '#ef5350', type: 'dashed', width: 1.5 },
+          label: { formatter: '壟斷門檻 50%', color: '#ef5350', fontSize: 10 }
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', function(){ chart.resize(); });
+})();
+</script>
+<script>
+// ===== Ch8：六維財務健康度雷達圖 =====
+(function(){
+  var ctx = document.getElementById('ch8-radar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['毛利率', '營利率', '淨利率', 'ROE', '負債比(反向)', 'FCF品質'],
+      datasets: [
+        {
+          label: '台光電',
+          data: [85, 80, 75, 88, 45, 40],
+          borderColor: '#6b9f72',
+          backgroundColor: 'rgba(107,159,114,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#6b9f72',
+          pointRadius: 4
+        },
+        {
+          label: '台燿',
+          data: [65, 57, 56, 74, 42, 20],
+          borderColor: '#7ab0c0',
+          backgroundColor: 'rgba(122,176,192,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#7ab0c0',
+          pointRadius: 4
+        },
+        {
+          label: '聯茂',
+          data: [41, 29, 23, 21, 60, 50],
+          borderColor: '#d4b030',
+          backgroundColor: 'rgba(212,176,48,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#d4b030',
+          pointRadius: 4
+        },
+        {
+          label: '騰輝',
+          data: [92, 38, 35, 30, 88, 35],
+          borderColor: '#d4887a',
+          backgroundColor: 'rgba(212,136,122,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#d4887a',
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0,
+          max: 100,
+          ticks: { stepSize: 20, color: '#7a7268', backdropColor: 'transparent', font: { size: 9 } },
+          grid: { color: '#3a3a3a' },
+          angleLines: { color: '#3a3a3a' },
+          pointLabels: { color: '#e0dcd4', font: { size: 11, weight: 600 } }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' },
+          position: 'bottom'
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch8：營收 ±10% 對 EPS 影響（分組長條圖）=====
+(function(){
+  var ctx = document.getElementById('ch8-leverage');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['台光電', '台燿', '聯茂', '騰輝'],
+      datasets: [
+        {
+          label: '營收 +10% → EPS 變動（%）',
+          data: [16.5, 15.5, 25, 13.5],
+          backgroundColor: ['rgba(107,159,114,0.7)', 'rgba(122,176,192,0.7)', 'rgba(212,176,48,0.7)', 'rgba(212,136,122,0.7)'],
+          borderColor: ['#6b9f72', '#7ab0c0', '#d4b030', '#d4887a'],
+          borderWidth: 1
+        },
+        {
+          label: '營收 -10% → EPS 變動（%）',
+          data: [-22.5, -20, -16.5, -13.5],
+          backgroundColor: ['rgba(107,159,114,0.35)', 'rgba(122,176,192,0.35)', 'rgba(212,176,48,0.35)', 'rgba(212,136,122,0.35)'],
+          borderColor: ['#6b9f72', '#7ab0c0', '#d4b030', '#d4887a'],
+          borderWidth: 1,
+          borderDash: [3, 3]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#e0dcd4', font: { size: 12, weight: 600 } },
+          grid: { display: false }
+        },
+        y: {
+          ticks: { color: '#7a7268', callback: function(v){ return v + '%'; } },
+          grid: { color: '#3a3a3a' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 10 } },
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.dataset.label + '：' + ctx.raw + '%'; }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch9：定價權五維雷達圖 =====
+(function(){
+  var ctx = document.getElementById('ch9-pricing-radar');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['品牌溢價', '技術獨佔', '轉換成本', '規模經濟', '網路效應'],
+      datasets: [
+        {
+          label: '台光電',
+          data: [8, 9, 9, 9, 2],
+          borderColor: '#6b9f72',
+          backgroundColor: 'rgba(107,159,114,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#6b9f72',
+          pointRadius: 4
+        },
+        {
+          label: '台燿',
+          data: [5, 6, 7, 6, 1],
+          borderColor: '#7ab0c0',
+          backgroundColor: 'rgba(122,176,192,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#7ab0c0',
+          pointRadius: 4
+        },
+        {
+          label: '聯茂',
+          data: [4, 4, 7, 7, 1],
+          borderColor: '#d4b030',
+          backgroundColor: 'rgba(212,176,48,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#d4b030',
+          pointRadius: 4
+        },
+        {
+          label: '騰輝',
+          data: [6, 7, 8, 3, 2],
+          borderColor: '#d4887a',
+          backgroundColor: 'rgba(212,136,122,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#d4887a',
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0,
+          max: 10,
+          ticks: { stepSize: 2, color: '#7a7268', backdropColor: 'transparent', font: { size: 9 } },
+          grid: { color: '#3a3a3a' },
+          angleLines: { color: '#3a3a3a' },
+          pointLabels: { color: '#e0dcd4', font: { size: 11, weight: 600 } }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' },
+          position: 'bottom'
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch10：ROE vs 配息率散佈圖 =====
+(function(){
+  var ctx = document.getElementById('ch10-roe-div');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: '台光電',
+          data: [{ x: 30.9, y: 38 }],
+          backgroundColor: '#6b9f72',
+          borderColor: '#6b9f72',
+          pointRadius: 10,
+          pointHoverRadius: 13
+        },
+        {
+          label: '台燿',
+          data: [{ x: 26.0, y: 79 }],
+          backgroundColor: '#7ab0c0',
+          borderColor: '#7ab0c0',
+          pointRadius: 10,
+          pointHoverRadius: 13
+        },
+        {
+          label: '聯茂',
+          data: [{ x: 7.2, y: 50 }],
+          backgroundColor: '#d4b030',
+          borderColor: '#d4b030',
+          pointRadius: 10,
+          pointHoverRadius: 13
+        },
+        {
+          label: '騰輝',
+          data: [{ x: 10.4, y: 55 }],
+          backgroundColor: '#d4887a',
+          borderColor: '#d4887a',
+          pointRadius: 10,
+          pointHoverRadius: 13
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { display: true, text: 'ROE（%）', color: '#b8b0a5', font: { size: 12 } },
+          min: 0,
+          max: 40,
+          ticks: { color: '#7a7268', callback: function(v){ return v + '%'; } },
+          grid: { color: '#3a3a3a' }
+        },
+        y: {
+          title: { display: true, text: '配息率（%）', color: '#b8b0a5', font: { size: 12 } },
+          min: 0,
+          max: 100,
+          ticks: { color: '#7a7268', callback: function(v){ return v + '%'; } },
+          grid: { color: '#3a3a3a' }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#b8b0a5', font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' },
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.dataset.label + '：ROE ' + ctx.raw.x + '% / 配息率 ' + ctx.raw.y + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
+<script>
+// ===== Ch11：核心估值指標分組柱狀圖（ECharts） =====
+(function(){
+  var dom = document.getElementById('ch11-valuation-bar');
+  if(!dom) return;
+  var chart = echarts.init(dom, null, {renderer:'canvas'});
+  var option = {
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { data: ['台光電','台燿','聯茂','騰輝'], top: 0, textStyle: { color: '#b8b0a5', fontSize: 11 } },
+    grid: { left: 50, right: 20, top: 40, bottom: 30 },
+    xAxis: { type: 'category', data: ['PE (x)','PB (x)','殖利率 (%)'], axisLabel: { color: '#b8b0a5', fontSize: 11 }, axisLine: { lineStyle: { color: '#3a3a3a' } } },
+    yAxis: { type: 'value', axisLabel: { color: '#7a7268', fontSize: 10 }, splitLine: { lineStyle: { color: '#3a3a3a' } } },
+    series: [
+      { name: '台光電', type: 'bar', data: [70.6, 22.9, 0.57], itemStyle: { color: '#6b9f72' }, barGap: '10%' },
+      { name: '台燿', type: 'bar', data: [56.3, 10.59, 1.11], itemStyle: { color: '#7ab0c0' } },
+      { name: '聯茂', type: 'bar', data: [45.0, 3.2, 1.10], itemStyle: { color: '#d4b030' } },
+      { name: '騰輝', type: 'bar', data: [26.6, 2.7, 2.60], itemStyle: { color: '#d4887a' } }
+    ]
+  };
+  chart.setOption(option);
+  window.addEventListener('resize', function(){ chart.resize(); });
+})();
+
+// ===== Ch11：現價 vs 合理價落差圖（Chart.js） =====
+(function(){
+  var ctx = document.getElementById('ch11-fair-gap');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['台光電','台燿','聯茂','騰輝'],
+      datasets: [
+        {
+          label: '合理價下緣',
+          data: [2200, 395, 125, 85],
+          backgroundColor: 'rgba(76,175,80,0.4)',
+          borderColor: '#4caf50',
+          borderWidth: 1
+        },
+        {
+          label: '合理價上緣',
+          data: [200, 90, 10, 20],
+          backgroundColor: 'rgba(76,175,80,0.25)',
+          borderColor: '#4caf50',
+          borderWidth: 1
+        },
+        {
+          label: '現價（超出部分）',
+          data: [485, 198, 52, 24],
+          backgroundColor: 'rgba(239,83,80,0.5)',
+          borderColor: '#ef5350',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true, ticks: { color: '#b8b0a5', font: { size: 11 } }, grid: { display: false } },
+        y: { stacked: true, ticks: { color: '#7a7268', font: { size: 10 } }, grid: { color: '#3a3a3a' } }
+      },
+      plugins: {
+        legend: { labels: { color: '#b8b0a5', font: { size: 10 } } },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              var ds = context.dataset.label;
+              if(ds === '合理價下緣') return '合理價下緣: ' + context.raw;
+              if(ds === '合理價上緣') return '合理價上緣差額: +' + context.raw;
+              return '超出合理價: +' + context.raw;
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch12：風險報酬甜甜圈圖（Chart.js） =====
+(function(){
+  var ctx = document.getElementById('ch12-risk-donut');
+  if(!ctx) return;
+
+  var companies = ['台光電','台燿','聯茂','騰輝'];
+  var catalysts = [22.43, 27.5, 16.5, 14.8];
+  var risks = [38.75, 38.7, 22.3, 20.3];
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [
+        '台光電-催化劑','台光電-風險',
+        '台燿-催化劑','台燿-風險',
+        '聯茂-催化劑','聯茂-風險',
+        '騰輝-催化劑','騰輝-風險'
+      ],
+      datasets: [{
+        data: [22.43, 38.75, 27.5, 38.7, 16.5, 22.3, 14.8, 20.3],
+        backgroundColor: [
+          'rgba(107,159,114,0.7)', 'rgba(107,159,114,0.25)',
+          'rgba(122,176,192,0.7)', 'rgba(122,176,192,0.25)',
+          'rgba(212,176,48,0.7)', 'rgba(212,176,48,0.25)',
+          'rgba(212,136,122,0.7)', 'rgba(212,136,122,0.25)'
+        ],
+        borderColor: [
+          '#6b9f72','#6b9f72',
+          '#7ab0c0','#7ab0c0',
+          '#d4b030','#d4b030',
+          '#d4887a','#d4887a'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '40%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              var l = context.label;
+              var v = context.parsed;
+              if(l.includes('催化劑')) return l + ': +' + v + '%';
+              return l + ': -' + v + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ===== Ch13：外資持股與近期動態（Chart.js） =====
+(function(){
+  var ctx = document.getElementById('ch13-foreign');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['台光電','台燿','聯茂','騰輝'],
+      datasets: [
+        {
+          label: '外資持股比（%）',
+          data: [27, 7.9, 4, 3],
+          backgroundColor: ['rgba(107,159,114,0.6)','rgba(122,176,192,0.6)','rgba(212,176,48,0.6)','rgba(212,136,122,0.6)'],
+          borderColor: ['#6b9f72','#7ab0c0','#d4b030','#d4887a'],
+          borderWidth: 2,
+          borderRadius: 4,
+          yAxisID: 'y'
+        },
+        {
+          label: '近20日淨買賣（萬股）',
+          type: 'bar',
+          data: [-314, -80, -50, -120],
+          backgroundColor: 'rgba(239,83,80,0.4)',
+          borderColor: '#ef5350',
+          borderWidth: 1,
+          borderRadius: 4,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#b8b0a5', font: { size: 11 } }, grid: { display: false } },
+        y: { position: 'left', title: { display: true, text: '持股比（%）', color: '#7a7268', font: { size: 10 } }, ticks: { color: '#7a7268', font: { size: 10 } }, grid: { color: '#3a3a3a' }, min: 0, max: 35 },
+        y1: { position: 'right', title: { display: true, text: '淨買賣（萬股）', color: '#ef5350', font: { size: 10 } }, ticks: { color: '#ef5350', font: { size: 10 } }, grid: { display: false }, min: -400, max: 100 }
+      },
+      plugins: {
+        legend: { labels: { color: '#b8b0a5', font: { size: 10 } } }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
