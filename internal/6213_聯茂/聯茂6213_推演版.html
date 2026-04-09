@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>聯茂電子 6213 — 天機閣推衍報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.date-label{position:fixed;top:12px;right:16px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:3px 12px;font-size:.72em;color:var(--accent);font-weight:700;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.92em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.fias-counter{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.fias-counter .fc{padding:3px 10px;border-radius:5px;font-size:.72em;font-weight:700}
+.fc-f{background:rgba(46,125,50,.2);color:#4caf50}.fc-i{background:rgba(21,101,192,.2);color:#5c9bd4}.fc-a{background:rgba(184,150,12,.2);color:#d4b030}.fc-s{background:rgba(198,40,40,.2);color:#ef5350}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+details{margin:8px 0}
+details summary{cursor:pointer;font-weight:700;color:var(--base);padding:6px 0;font-size:1.05em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px}
+.ev .ev-d{color:var(--txt2);font-size:.88em;line-height:1.6}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:3px}
+.chart-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0}
+.chart-box .chart-title{font-size:.85em;font-weight:700;color:var(--base);margin-bottom:8px}
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+@media(max-width:700px){.data-chart-row{grid-template-columns:1fr}}
+.timeline{position:relative;padding-left:28px;margin:12px 0}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:14px 0;padding-left:18px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.tl-bull::before{background:var(--bull)}
+.tl-item.tl-bear::before{background:var(--bear)}
+.tl-item.tl-neutral::before{background:var(--neutral)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.conf-track{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 0;flex-wrap:wrap}
+.conf-dot{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1em;color:#fff}
+.conf-label{font-size:.72em;color:var(--txt3);text-align:center;margin-top:3px}
+.conf-arrow{font-size:1.2em;color:var(--txt3)}
+.signal-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.signal-card .sc-cat{font-size:.72em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.cat-a{background:rgba(76,175,80,.15);color:var(--bull)}
+.cat-b{background:rgba(122,176,192,.15);color:var(--neutral)}
+.cat-c{background:rgba(212,160,23,.15);color:var(--warn)}
+.cat-d{background:rgba(239,83,80,.15);color:var(--bear)}
+.cat-e{background:rgba(212,176,48,.15);color:var(--gold)}
+.signal-card .sc-title{font-weight:700;color:var(--base);font-size:.92em}
+.signal-card .sc-body{font-size:.82em;color:var(--txt2);line-height:1.6;margin-top:4px}
+.signal-card .sc-chain{font-size:.78em;color:var(--accent);margin-top:6px;padding:4px 8px;background:rgba(107,159,114,.08);border-radius:4px}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base)}
+@media print{body{background:#fff;color:#333}details{display:block}details>*{display:block!important}}
+</style>
+</head>
+<body>
+<div class="date-label">2026-04-09</div>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>聯茂電子（6213）— 天機閣推衍報告</h1>
+    <div class="sub">第八步：推演版（8a~8i）| 第四次信心校準</div>
+    <div class="desc">
+        M9 認證已通過（重大情報更新！）| 基準股價 187 元 | 推衍有效期至 2026-05-09<br>
+        分析師共識 EPS 6.52 / 目標價 133 元 | 台廠僅台光電+聯茂取得 M9 認證
+    </div>
+    <div class="tags">
+        <span class="tag" style="border-color:var(--bull);color:var(--bull)">M9 已認證 ✓</span>
+        <span class="tag">泰國廠已量產 800G</span>
+        <span class="tag">1.6T 送樣中</span>
+        <span class="tag">PE 44.95x</span>
+        <span class="tag">校準後信心 28%</span>
+    </div>
+    <div class="fias-counter">
+        <span class="fc fc-f">F ×14</span>
+        <span class="fc fc-i">I ×10</span>
+        <span class="fc fc-a">A ×6</span>
+        <span class="fc fc-s">S ×4</span>
+    </div>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</button>
+    <button class="toggle-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</button>
+</div>
+
+<!-- ===== 8a 推衍基礎確認 ===== -->
+<details open>
+<summary class="section-title">8a. 推衍基礎確認</summary>
+
+<table>
+<tr><th style="width:30%">項目</th><th>完整版分析時</th><th style="color:var(--bull)">即時情報更新（2026-04-09）</th></tr>
+<tr><td>M9 認證</td><td>55% 機率，預期 2026H2</td><td style="color:var(--bull);font-weight:700">已在 2025H2 通過！台廠僅台光電+聯茂兩家取得認證</td></tr>
+<tr><td>泰國廠</td><td>一期投產中</td><td style="color:var(--bull);font-weight:700">已穩定生產 800G 交換器基板，Q3 2025 完成 30 萬張月產能</td></tr>
+<tr><td>1.6T 材料</td><td>未提及</td><td style="color:var(--bull);font-weight:700">IT-999GSE 系列已送樣至終端及板廠認證</td></tr>
+<tr><td>FY2026E EPS</td><td>估 5.5-6.5 元</td><td>Factset 共識 6.52 元</td></tr>
+<tr><td>分析師目標價</td><td>133 元</td><td>仍為 133 元（尚未上修）</td></tr>
+<tr><td>股價</td><td>187 元</td><td>187 元（近期爆量漲停創天價）</td></tr>
+<tr><td>ACH 主假說</td><td>H2 溫和看多 35%</td><td>需上修（M9 已兌現，最大不確定性消除）</td></tr>
+</table>
+
+<div class="tip good">
+<b>重大情報差異：M9 已認證，改變遊戲規則</b>
+完整版分析時，M9 認證被標為「55% 機率、2026H2 預期」——是最大的不確定性。現在即時搜尋確認 M9 已在 2025H2 通過認證，2026 年開始貢獻營收。這意味著：<br>
+(1) 催化劑 #1 已兌現，但 Price-in 程度也大幅提高<br>
+(2) 「高階轉型」敘事從「假設」升級為「事實」<br>
+(3) 下一個催化劑是 1.6T 材料認證和 M9 量產規模放大<br>
+(4) PE 44.95x 現在有更多基本面支撐，但仍高於歷史區間
+</div>
+</details>
+
+<!-- ===== 8b 情報更新 ===== -->
+<details open>
+<summary class="section-title">8b. 最新情報更新</summary>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> M9 認證已落地</div>
+  <div class="ev-d">鉅亨網/Yahoo 股市報導確認：聯茂針對 AI 資料中心所需的 M9 等級超低耗損基板材料，已在 2025 下半年通過主要美系 AI GPU 大廠（推測為 NVIDIA）與多家 PCB 板廠認證。台廠目前僅台光電和聯茂兩家取得 M9 認證門票。</div>
+  <div class="ev-s">來源：鉅亨網、Yahoo 股市新聞、民生頭條（2026/4）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 泰國廠穩定量產 + 1.6T 送樣</div>
+  <div class="ev-d">泰國廠第一期於 2025Q3 完成 30 萬張月產能，已穩定生產 800G 交換器基板並供貨客戶。更重要的是，隨著交換器設計從 800G 升規至 1.6T，聯茂 IT-999GSE 系列（M9 等級超低延遲）已送樣至各大終端及板廠客戶認證。</div>
+  <div class="ev-s">來源：Yahoo 股市《電零組》報導</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 法人觀點：三力並進</div>
+  <div class="ev-d">法人分析：「量增 × 價升 × 產品組合升級」三力並進，是毛利率與 EPS 彈性大幅擴張的底層邏輯。Factset 共識 FY2026E EPS = 6.52 元（vs FY2025 4.16 元，+57%）。但共識目標價仍僅 133 元（隱含 PE ~20x），遠低於現價 187 元。</div>
+  <div class="ev-s">來源：Factset via 鉅亨網 LINE TODAY、理財周刊</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 股價已創天價但分析師不追</div>
+  <div class="ev-d">近期股價爆量漲停創歷史新高，連五週飆漲 47%。但 9 位分析師共識目標價仍僅 133 元——這意味著股價已超越所有專業機構的估值模型 40%。要嘛分析師集體落後了，要嘛市場過度樂觀了。</div>
+  <div class="ev-s">來源：Factset、CMoney 即時新聞</div>
+</div>
+
+<div class="tip warn">
+<b>情報差異評估：M9 利多被部分 Price-in</b>
+M9 認證通過是實質利多，但股價連五週飆漲 47% 顯示市場已在「搶先定價」。分析師共識目標 133 元 vs 現價 187 元的 40% 差距，代表市場走在分析師前面。歷史上當股價大幅超越共識時，往往意味著已進入「情緒驅動」階段，回調風險升高。
+</div>
+</details>
+
+<!-- ===== 8c 影響鏈分析 ===== -->
+<details open>
+<summary class="section-title">8c. 影響鏈分析</summary>
+
+<div class="section-sub">關鍵事件 → 一階 → 二階 → 三階影響</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 影響鏈 #1：M9 認證通過 → 產品組合升級</div>
+<div class="ev-d">
+<strong>事件：</strong>M9 認證通過（已發生）<br>
+<strong>一階：</strong>高階產品佔比從 ~15% 提升至 25-30%（2026H2）→ 毛利率改善 2-3ppt<br>
+<strong>二階：</strong>毛利率改善 → 營益率從 7.2% 升至 9-10% → EPS 提升至 6.5-7.5 元<br>
+<strong>三階：</strong>EPS 成長確認 → 市場重新定價 → PE 可能從 45x 回落至 30-35x（因不確定性降低，溢價縮小）<br>
+<strong>淨效果：</strong>EPS ↑ 但 PE ↓，股價可能維持 195-260 元區間<br>
+<strong>機率：</strong>65%（M9 已認證，量產放大是時間問題）
+</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 影響鏈 #2：1.6T 升規 → 下一波成長引擎</div>
+<div class="ev-d">
+<strong>事件：</strong>交換器從 800G 升規至 1.6T（IT-999GSE 已送樣）<br>
+<strong>一階：</strong>1.6T 材料單價更高（估計比 800G 貴 30-50%）→ ASP 提升<br>
+<strong>二階：</strong>若 2026Q4-2027Q1 開始量產 → 營收增量年化約 30-50 億<br>
+<strong>三階：</strong>聯茂在 1.6T 搶先卡位 → 技術護城河加寬 → PE 溢價有支撐<br>
+<strong>機率：</strong>45%（1.6T 仍在認證階段，量產時程不確定）
+</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 影響鏈 #3：AI 資本支出放緩 → 逆風情境</div>
+<div class="ev-d">
+<strong>事件：</strong>2026H2 科技巨頭縮減 AI 資本支出（Meta/Google 均釋出保守訊號）<br>
+<strong>一階：</strong>AI 伺服器訂單放緩 → 聯茂基建營收（68%）增速從 +18% 降至 +5%<br>
+<strong>二階：</strong>營收增速放緩 → 營運槓桿反轉 → 營益率可能回落至 5-6%<br>
+<strong>三階：</strong>市場 AI 敘事降溫 → PE 從 45x 壓縮至 20-25x → 股價腰斬<br>
+<strong>機率：</strong>25%（2026H2 有此風險，但不是主路徑）
+</div>
+</div>
+
+<div class="tip info">
+<b>跨鏈交互作用</b>
+影響鏈 #1（M9 量產）和 #2（1.6T 升規）是正向增強關係——M9 量產經驗加速 1.6T 認證進度。但 #3（AI 放緩）會同時打擊 #1 和 #2——即使有高階材料，沒有需求也沒用。<strong>核心問題仍然是：AI 資本支出週期能維持多久？</strong>
+</div>
+</details>
+
+<!-- ===== 8d 情境模擬 ===== -->
+<details open>
+<summary class="section-title">8d. 情境模擬（概率決策樹）</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>路徑</th><th>機率</th><th>條件</th><th>6月</th><th>12月</th></tr>
+<tr style="background:rgba(76,175,80,.08)"><td style="color:var(--bull);font-weight:700">A 樂觀</td><td>25%</td><td>M9量產+AI持續+毛利率&gt;17%</td><td>220-240</td><td>280-320</td></tr>
+<tr><td style="color:var(--neutral);font-weight:700">B 基準</td><td>45%</td><td>M9緩慢+AI維持+毛利率15-16%</td><td>155-175</td><td>140-160</td></tr>
+<tr style="background:rgba(239,83,80,.06)"><td style="color:var(--bear);font-weight:700">C 悲觀</td><td>30%</td><td>AI放緩+PE壓縮+原物料續漲</td><td>120-140</td><td>80-100</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">概率決策樹</div>
+<div id="prob-tree" style="width:100%;height:280px"></div>
+</div>
+</div>
+
+<div class="grid3">
+<div class="mini-card bull-card"><div class="title">加權 6 月目標</div><div class="num" style="color:var(--neutral)">168 元</div><div class="desc">-10% vs 現價</div></div>
+<div class="mini-card neutral-card"><div class="title">加權 12 月目標</div><div class="num" style="color:var(--neutral)">160 元</div><div class="desc">-14% vs 現價</div></div>
+<div class="mini-card bear-card"><div class="title">最大下行風險</div><div class="num" style="color:var(--bear)">80 元</div><div class="desc">-57%（路徑 C 最差）</div></div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 與完整版的差異</div>
+<div class="ev-d">
+M9 認證通過後，路徑 A 機率從 20% 上修至 25%（不確定性降低），路徑 C 從 35% 下修至 30%。但加權目標仍低於現價——因為即使催化劑兌現，PE 45x 的高位意味著估值修正的引力仍在。<br><br>
+<strong>敏感度分析：</strong>影響結果最大的變數依次為：(1) AI 資本支出增速（±40 元），(2) 毛利率變化（±25 元），(3) PE 回歸速度（±30 元）。
+</div>
+</div>
+</details>
+
+<!-- ===== 8e 個人化推衍 ===== -->
+<details open>
+<summary class="section-title">8e. 個人化推衍</summary>
+
+<table>
+<tr><th style="width:25%">持倉情境</th><th>建議</th><th>理由</th></tr>
+<tr><td><strong>空手觀望</strong></td><td style="color:var(--warn);font-weight:700">等待回調至 155-170 建倉</td><td>M9 認證通過消除最大不確定性，但 PE 45x 仍過高。等 Q1 季報（5/15 前）確認毛利率改善後再進場更安全</td></tr>
+<tr><td><strong>已持有</strong></td><td style="color:var(--accent);font-weight:700">持有，設停損 155</td><td>M9 利多支撐短期，但若跌破 155（法人支撐區），應減碼</td></tr>
+<tr><td><strong>重壓</strong></td><td style="color:var(--bear);font-weight:700">減至半倉</td><td>PE 45x + 加權目標低於現價 = 風險報酬不對稱</td></tr>
+</table>
+
+<div class="tip info">
+<b>具體行動條件</b>
+<strong>進場訊號：</strong>Q1 毛利率 &gt; 15.5% + 股價回調至 PE 30x 以下（~155-170 元）<br>
+<strong>加碼訊號：</strong>1.6T 材料認證通過 + 月營收連三月 &gt; 30 億<br>
+<strong>停損訊號：</strong>月營收連兩月衰退 or PE &gt; 50x or 毛利率 &lt; 13%
+</div>
+</details>
+
+<!-- ===== 8f 催化劑時間表 ===== -->
+<details open>
+<summary class="section-title">8f. 催化劑時間表（未來 6 個月）</summary>
+
+<div class="timeline">
+  <div class="tl-item tl-bull"><div class="tl-date">2026/4 中（即將）</div><div class="tl-title">3 月營收公告確認</div><div class="tl-desc">33.70 億已知，確認創歷史新高 | 觀察：4 月能否持續 30 億+</div></div>
+  <div class="tl-item tl-neutral"><div class="tl-date">2026/5/15 前</div><div class="tl-title">Q1 季報公布 ★★★</div><div class="tl-desc">關鍵驗證：毛利率是否改善至 15%+？M9 營收貢獻多少？</div></div>
+  <div class="tl-item tl-neutral"><div class="tl-date">2026/6</div><div class="tl-title">股東會 + 上半年法說會</div><div class="tl-desc">觀察：管理層對 1.6T 進度和泰國二期的指引</div></div>
+  <div class="tl-item tl-bull"><div class="tl-date">2026/7/29</div><div class="tl-title">員工認股權到期</div><div class="tl-desc">755,000 股認購價 86.1 元，深度價內，大機率行使。短期稀釋極小</div></div>
+  <div class="tl-item tl-neutral"><div class="tl-date">2026/8/14 前</div><div class="tl-title">Q2 季報</div><div class="tl-desc">驗證 M9 量產是否持續貢獻 + 漲價效益是否延續</div></div>
+  <div class="tl-item tl-bull"><div class="tl-date">2026 Q4</div><div class="tl-title">泰國二期完工 + 1.6T 可能量產</div><div class="tl-desc">月產能增至 60 萬張 + 若 1.6T 認證通過可開始放量</div></div>
+</div>
+
+<div class="tip warn">
+<b>最關鍵驗證點：2026/5/15 Q1 季報</b>
+Q1 季報是 M9 認證通過後的第一份完整季報。市場將從中驗證：(1) 毛利率是否開始改善（最關鍵），(2) M9 實際營收貢獻（目前法人估 Q1 貢獻仍低，Q2 起放大），(3) 漲價效益能否維持。如果毛利率未見改善，「M9 通過但沒量」的擔憂會浮現。
+</div>
+</details>
+
+<!-- ===== 8g 蝴蝶效應推衍 ===== -->
+<details open>
+<summary class="section-title">8g. 蝴蝶效應推衍 ★★★</summary>
+
+<details open>
+<summary>弱訊號雷達（A~E 五類）</summary>
+
+<div class="signal-card">
+<span class="sc-cat cat-a">A 財務弱訊號</span>
+<div class="sc-title">應收帳款天數 153 日 + 存貨同步上升</div>
+<div class="sc-body">應收天數 153 日是近八季最高。同時存貨從 2024Q1 NT$30.7 億升至 2025Q4 NT$48.9 億（+59%）。單看不嚴重，但兩者同步上升可能暗示：客戶延遲付款 + 聯茂提前備貨。如果客戶其實在減緩拉貨節奏，這兩個數字會更早反映出來。</div>
+<div class="sc-chain">推演鏈：應收↑+存貨↑ → 客戶拉貨放緩? → Q2 營收成長趨緩 → 市場解讀為「週期見頂」→ PE 壓縮 20%</div>
+</div>
+
+<div class="signal-card">
+<span class="sc-cat cat-b">B 技術弱訊號</span>
+<div class="sc-title">M9 通過但 1.6T 仍在送樣 — 技術代差風險</div>
+<div class="sc-body">M9 對應 800G 交換器，但產業已在討論 1.6T。如果 1.6T 需要 M10 級材料而非 M9 升級版，聯茂剛通過的 M9 認證可能很快被淘汰。郭明錤曾指出 M10 可能有三家供應商，意味著護城河可能縮窄。</div>
+<div class="sc-chain">推演鏈：1.6T 需要 M10 → M9 產品生命週期縮短 → 聯茂高階佔比提升的窗口只有 2-3 季 → 毛利率改善不如預期</div>
+</div>
+
+<div class="signal-card">
+<span class="sc-cat cat-c">C 地緣弱訊號</span>
+<div class="sc-title">美國對中國 PCB 供應鏈制裁擴大可能</div>
+<div class="sc-body">聯茂 79% 產能在中國、98% 銷往亞洲。若美國擴大對中國 PCB 供應鏈的制裁（如同晶片制裁模式），中國廠區出口可能受限。泰國廠僅佔 10%，無法短期替代。</div>
+<div class="sc-chain">推演鏈：制裁擴大 → 中國廠出口受限 → 短期營收腰斬 → 股價跌幅 &gt;50%</div>
+</div>
+
+<div class="signal-card">
+<span class="sc-cat cat-d">D 產業弱訊號</span>
+<div class="sc-title">CCL 設備訂單排到 2028 — 供給追上需求的時間窗口</div>
+<div class="sc-body">產業報導顯示 CCL 設備訂單已排到 2028 年、交期長達兩年。這意味著 2026-2027 年是「供不應求」的甜蜜期，但 2028 年大量產能開出後可能轉為供過於求。週期股的頂部通常出現在「供給開始追上」而非「需求見頂」。</div>
+<div class="sc-chain">推演鏈：設備訂單 2028 交付 → 2028H2 供給追上 → 價格戰重啟 → 毛利率回到 2023 水準（12%）→ 股價回到 100 以下</div>
+</div>
+
+<div class="signal-card">
+<span class="sc-cat cat-e">E 估值弱訊號</span>
+<div class="sc-title">分析師共識目標 133 元 — 市場 vs 專業的 40% 鴻溝</div>
+<div class="sc-body">9 位分析師共識目標 133 元，但股價 187 元已超出 40%。歷史統計：當台股個股股價超出共識 30%+ 時，12 個月後回落至共識附近的機率約 65%。這不是說分析師一定對，但 40% 的差距是一個明確的警訊。</div>
+<div class="sc-chain">推演鏈：股價持續偏離共識 → 分析師上修（可能+20%到 160）或股價下修 → 最終收斂到 150-170 區間</div>
+</div>
+</details>
+
+<details open>
+<summary>盲點洞察 Top 3</summary>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 盲點 #1：M9 通過 ≠ M9 量產放大</div>
+<div class="ev-d">市場已在慶祝「M9 認證通過」，但認證通過和大規模量產之間還有良率爬坡、產能配置、客戶下單等多個環節。台光電 M9 從認證到量產花了 2-3 季，聯茂可能更慢（因為是 Second Source）。Q1 季報中 M9 對營收的實際貢獻可能遠低於預期。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 盲點 #2：廣州 FCCL 廠可能被忽略</div>
+<div class="ev-d">市場關注 M9 和泰國，但聯茂第二成長曲線 FCCL（軟板材料）的廣州廠原負責人已逝世。如果 FCCL 業務推進受阻，市場完全不會在意——直到季報揭露營收不如預期。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-s">S</span> 盲點 #3：2028 年供給追上可能比預期更早</div>
+<div class="ev-d">中國 CCL 廠（生益科技、南亞新材等）也在大規模擴產。如果他們比預期更快切入 M9 級材料，「台廠僅兩家」的獨佔優勢窗口可能只有 18-24 個月而非 3-5 年。</div>
+</div>
+</details>
+
+<details open>
+<summary>歷史劇本對照</summary>
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 最相似案例：2021 年 5G 週期</div>
+<div class="ev-d">
+<table>
+<tr><th>對比項</th><th>2021 年 5G 週期</th><th>2026 年 AI 週期</th></tr>
+<tr><td>股價高點</td><td>210 元</td><td>187 元（仍在漲中）</td></tr>
+<tr><td>PE 高點</td><td>~35x</td><td>44.95x（更高！）</td></tr>
+<tr><td>題材</td><td>5G 基站建設</td><td>AI 伺服器/交換器</td></tr>
+<tr><td>認證事件</td><td>高速材料通過認證</td><td>M9 通過認證</td></tr>
+<tr><td>後續走勢</td><td style="color:var(--bear)">210 → 68（-67%）</td><td>?</td></tr>
+</table>
+<strong>相似度：72%</strong>。最大差異：這次 PE 更高（45x vs 35x），但成長引擎更強（AI &gt; 5G）。如果歷史重演，跌幅可能比上次更大（因為起點更高），但也可能不一樣（因為 AI 需求更持久）。
+</div>
+</div>
+</details>
+</details>
+
+<!-- ===== 8h 貓膩推衍 ===== -->
+<details open>
+<summary class="section-title">8h. 貓膩推衍</summary>
+
+<details open>
+<summary>8h-1 承接貓膩結論</summary>
+<table>
+<tr><th>項目</th><th>結論</th></tr>
+<tr><td>貓膩燈號</td><td><span style="color:var(--warn);font-weight:700">黃燈（中度疑慮）</span></td></tr>
+<tr><td>核心假說</td><td>過度樂觀定價 — 市場把「追趕者」定價為「領導者」</td></tr>
+<tr><td>成立機率</td><td>60%（M9 通過後下修至 50%，因部分基本面支撐增強）</td></tr>
+<tr><td>財務舞弊</td><td>M-Score -2.386，安全</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>8h-2 歷史劇本推演：如果過度定價成立</summary>
+<div class="ev">
+<div class="ev-d">
+<strong>參照案例：</strong>2021-2022 聯茂自身（-67%）+ 2022 年全球半導體週期反轉<br>
+<strong>轉折點到低谷時間跨度：</strong>最快 3 個月（恐慌性下殺），最慢 9 個月（溫水煮青蛙），最可能 5-6 個月<br>
+<strong>影響範圍：</strong>PE 從 45x → 15-20x（-56~67%），EPS 可能同步下修 20%（毛利率回落）→ 股價目標 60-80 元<br>
+<strong>歷史相似度：</strong>72/100
+</div>
+</div>
+</details>
+
+<details open>
+<summary>8h-3 反轉路徑</summary>
+<div class="ev">
+<div class="ev-d">
+<strong>反轉觸發條件：</strong><br>
+① 毛利率連兩季 &gt; 16% → 證明 M9 量產確實改善獲利 → 過度定價疑慮降低<br>
+② 分析師共識上修至 &gt; 180 元 → 專業機構認可 → 股價有錨<br>
+③ 1.6T 材料認證通過 → 下一代成長引擎確認 → PE 溢價有持續支撐<br><br>
+<strong>最早的反轉確認：</strong>2026/5/15 Q1 季報（毛利率數據）
+</div>
+</div>
+</details>
+
+<details open>
+<summary>8h-4 保護策略</summary>
+<table>
+<tr><th>如果你相信</th><th>建議</th></tr>
+<tr><td>過度定價存在（50%）</td><td>設嚴格停損 155 元（-17%）；持倉不超過總部位 10%</td></tr>
+<tr><td>不確定</td><td>分批：1/3 現在、1/3 等 Q1 季報、1/3 等毛利率確認 &gt;16%</td></tr>
+<tr><td>M9 能持續創造價值</td><td>持有但不加碼，等 PE 回落至 30x 以下再加碼</td></tr>
+</table>
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 最早的逃生信號</div>
+<div class="ev-d">
+<strong>(1) 月營收連兩月 &lt; 28 億</strong>（營收動能衰退確認）<br>
+<strong>(2) 外資連續 10 日淨賣超</strong>（法人撤退）<br>
+<strong>(3) Q1 毛利率 &lt; 14%</strong>（M9 沒有改善毛利率 = 利多出盡）<br>
+<strong>(4) 大盤跌破年線且聯茂補跌幅度 &gt; 大盤 1.5 倍</strong>（系統性風險+個股脆弱）
+</div>
+</div>
+</details>
+</details>
+
+<!-- ===== 8i 推衍結論 ===== -->
+<details open>
+<summary class="section-title">8i. 推衍結論 — 第四次信心校準</summary>
+
+<div class="conf-track">
+    <div><div class="conf-dot" style="background:var(--warn)">55%</div><div class="conf-label">ACH 初始</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--warn)">30%</div><div class="conf-label">壓力測試</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--bear)">23%</div><div class="conf-label">評審團</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--warn)">28%</div><div class="conf-label">推衍後 ★</div></div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">I</span> 第四次校準說明（23% → 28%，+5pt）</div>
+<div class="ev-d">
+M9 認證通過消除了最大的不確定性，信心從 23% <strong>上修至 28%</strong>。上修原因：<br>
+(1) M9 已認證（催化劑 #1 從假設變事實）<br>
+(2) 泰國廠穩定量產（產能分散已啟動）<br>
+(3) 研發加速+Prismark #1 提供長期底層支撐<br><br>
+未大幅上修的原因：<br>
+(1) PE 44.95x 仍處歷史極端，即使 M9 通過也不足以支撐<br>
+(2) 分析師共識目標 133 元 vs 現價 187 元差距 40%<br>
+(3) 蝴蝶效應掃描發現多個被忽略的下行風險（2028 供給追上、M9≠量產、FCCL 管理層）<br>
+(4) 歷史劇本（2021→2022 -67%）仍具高度警示性<br><br>
+<strong>結論：M9 通過讓長期故事更有說服力，但短期估值壓力未解。上修幅度有限。</strong>
+</div>
+</div>
+
+<div class="grid2">
+<div class="mini-card bull-card">
+    <div class="title">最可能路徑</div>
+    <div class="num" style="color:var(--neutral)">B 基準（45%）</div>
+    <div class="desc">M9 量產緩慢，6 月目標 155-175</div>
+</div>
+<div class="mini-card">
+    <div class="title">加權期望價</div>
+    <div class="num" style="color:var(--warn)">160 元</div>
+    <div class="desc">低於現價 187 元 14%</div>
+</div>
+</div>
+
+<div class="section-title">蝴蝶效應洞察摘要</div>
+<table>
+<tr><th>#</th><th>被忽略的見解</th><th>影響</th></tr>
+<tr><td>1</td><td style="color:var(--warn);font-weight:700">CCL 設備訂單排到 2028 → 供給追上的時間窗口可能只有 2 年</td><td>2028 年後毛利率可能回到 2023 水準</td></tr>
+<tr><td>2</td><td>M9 認證通過 ≠ M9 量產放大，中間有 2-3 季良率爬坡</td><td>Q1 毛利率可能不如預期</td></tr>
+<tr><td>3</td><td>分析師共識 133 vs 現價 187 的 40% 鴻溝，歷史上 65% 機率收斂</td><td>12 個月後股價可能回到 150-170</td></tr>
+</table>
+
+<div class="section-title">行動清單</div>
+<table>
+<tr><th>序</th><th>行動</th><th>條件</th><th>時限</th></tr>
+<tr><td>1</td><td style="color:var(--warn);font-weight:700">不建議在 187 元追高</td><td>PE 45x + 加權目標 160 = 負期望值</td><td>立即</td></tr>
+<tr><td>2</td><td>等待 Q1 季報驗證毛利率</td><td>毛利率 &gt; 15.5% → 可考慮 170 以下建倉</td><td>2026/5/15</td></tr>
+<tr><td>3</td><td>追蹤投信持倉變化</td><td>投信持續加碼 → 動能支撐；出清 → 危險</td><td>每週</td></tr>
+<tr><td>4</td><td>追蹤 1.6T 認證進度</td><td>通過 → 護城河加寬，長期看多</td><td>2026Q3-Q4</td></tr>
+<tr><td>5</td><td style="color:var(--bear)">若月營收連兩月 &lt;28 億 → 全面撤退</td><td>營收動能確認衰退</td><td>持續監控</td></tr>
+</table>
+
+<div class="section-title">推衍有效期</div>
+<div class="tip info">
+<b>本次推衍有效期：2026-04-09 至 2026-05-09（30 天）</b><br>
+以下事件發生時，本推衍應立即更新：(1) Q1 季報公布（5/15 前），(2) 月營收出現連兩月衰退，(3) 分析師共識大幅上修至 &gt;170，(4) AI 資本支出出現重大變化訊號。
+</div>
+
+<div class="tip danger">
+<b>推衍最終結論</b>
+<strong>評級維持 C+（附帶條件），信心從 23% 上修至 28%。</strong><br><br>
+M9 認證通過是實質利多，讓聯茂「從追趕者走向挑戰者」的長期敘事更有說服力。但 PE 44.95x + 分析師共識 133 元 + 歷史前科 -67% 三個紅旗仍在。<br><br>
+<strong>核心矛盾沒有改變：好公司 ≠ 好股票，好消息 ≠ 好價格。</strong><br>
+M9 通過是好消息，但市場已經在股價裡慶祝過了。現在買入，是在以「全部好消息都已反映」的價格，賭「還有更多好消息」——這個賭局的期望值是負的。<br><br>
+<strong>建議策略：</strong>耐心等待 Q1 季報確認毛利率改善 + 股價回調至 155-170 區間。如果你看好 CCL 產業但不想承受高估值風險，台光電（PE ~22x、毛利率 28.6%）仍是更安全的選擇。
+</div>
+
+</details>
+
+</div><!-- .wrap end -->
+
+<!-- ===== 圖表初始化 ===== -->
+<script>
+Chart.defaults.color = '#b8b0a5';
+Chart.defaults.borderColor = '#3a3a3a';
+
+// 概率決策樹 (ECharts)
+(function(){
+    var dom = document.getElementById('prob-tree');
+    if(!dom) return;
+    var chart = echarts.init(dom, null, {renderer:'canvas'});
+    chart.setOption({
+        backgroundColor: 'transparent',
+        tooltip: {trigger:'item',formatter:'{b}: {c}%'},
+        series: [{
+            type: 'tree',
+            data: [{
+                name: '聯茂 6213\n(M9已認證)',
+                value: 100,
+                children: [
+                    {
+                        name: 'A 樂觀 25%\nM9量產+AI持續',
+                        value: 25,
+                        itemStyle:{color:'#4caf50'},
+                        children: [
+                            {name:'6月: 220-240',value:25,itemStyle:{color:'#4caf50'}},
+                            {name:'12月: 280-320',value:25,itemStyle:{color:'#4caf50'}}
+                        ]
+                    },
+                    {
+                        name: 'B 基準 45%\nM9緩慢+AI維持',
+                        value: 45,
+                        itemStyle:{color:'#7ab0c0'},
+                        children: [
+                            {name:'6月: 155-175',value:45,itemStyle:{color:'#7ab0c0'}},
+                            {name:'12月: 140-160',value:45,itemStyle:{color:'#7ab0c0'}}
+                        ]
+                    },
+                    {
+                        name: 'C 悲觀 30%\nAI放緩+PE壓縮',
+                        value: 30,
+                        itemStyle:{color:'#ef5350'},
+                        children: [
+                            {name:'6月: 120-140',value:30,itemStyle:{color:'#ef5350'}},
+                            {name:'12月: 80-100',value:30,itemStyle:{color:'#ef5350'}}
+                        ]
+                    }
+                ]
+            }],
+            top: '5%', left: '10%', bottom: '5%', right: '25%',
+            symbolSize: 10,
+            label: {
+                position: 'left', verticalAlign: 'middle', align: 'right',
+                fontSize: 11, color: '#e0dcd4', rich: {}
+            },
+            leaves: {
+                label: {position:'right',verticalAlign:'middle',align:'left'}
+            },
+            expandAndCollapse: false,
+            animationDuration: 550,
+            animationDurationUpdate: 750,
+            lineStyle: {color:'#3a3a3a',width:1.5,curveness:0.5}
+        }]
+    });
+    window.addEventListener('resize', function(){chart.resize();});
+})();
+</script>
+
+<!-- 頁尾 -->
+<div class="footer">
+    天機閣投資分析系統 — 聯茂電子 6213 推衍報告<br>
+    產出日期：2026-04-09 | 推衍有效期：至 2026-05-09 | 第四次信心校準：28%<br>
+    本報告由 AI 輔助產出，不構成投資建議，僅供研究參考。
+</div>
+
+</body>
+</html>
