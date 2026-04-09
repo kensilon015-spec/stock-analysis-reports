@@ -176,7 +176,7 @@ def generate_index():
     daily_reports = scan_daily_reports()
     daily_html = generate_daily_html(daily_reports)
     daily_btn = (
-        f'<a href="天機日報/{daily_reports[0]["file"]}" style="display:inline-block;padding:6px 18px;background:#b8960c;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">天機日報</a>'
+        '<a href="天機日報/index.html" style="display:inline-block;padding:6px 18px;background:#b8960c;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">天機日報</a>'
         if daily_reports else ''
     )
 
@@ -272,7 +272,7 @@ details.folder>.folder-body{padding:2px 10px 10px}
 <body>
 <div class="wrap">
 <div class="hero">
-    <h1>天機閣</h1>
+    <h1 onclick="(function(el){{el._c=(el._c||0)+1;clearTimeout(el._t);el._t=setTimeout(function(){{el._c=0;}},600);if(el._c>=3){{window.location='internal/index.html';el._c=0;}}}})(this)" style="cursor:default">天機閣</h1>
     <div class="sub">推衍系統 / 情報中心 / 投資分析</div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px">
     <a href="天機閣服務介紹.html" style="display:inline-block;padding:6px 18px;background:#5a7d60;color:#fff;border-radius:8px;font-size:.82em;font-weight:600;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">核心服務介紹</a>
