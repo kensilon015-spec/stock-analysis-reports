@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="zh-TW"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>查詢 20260409 1124</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- ============================================================
+     天機閣 — 天機錄報告通用模板（深色版 v1）
+     深色配色版本，適合長時間閱讀
+     v2 更新：全部展開/收合按鈕 + 預設收合 + 評審團樣式
+     修改日期：2026-03-20
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片（點擊展開/收合） === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.fias-i-promise{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25);border-left:2px solid #b8960c}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 估值區塊 === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 評審團專用 === */
+.reviewer{border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;background:rgba(90,125,96,.04);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+.iker-item{display:flex;gap:8px;align-items:baseline;padding:2px 0;font-size:.82em;border-bottom:1px dashed var(--border)}
+.iker-item:last-child{border-bottom:none}
+.iker-id{flex-shrink:0;font-weight:700;color:var(--base);min-width:28px}
+.iker-name{flex-shrink:0;min-width:100px;font-weight:600;color:var(--txt)}
+.iker-assess{flex:1;color:var(--txt2)}
+.iker-data{flex-shrink:0;font-size:.75em;padding:1px 6px;border-radius:4px}
+.iker-data.ok{background:rgba(46,125,50,.25);color:#2e7d32}
+.iker-data.judge{background:rgba(184,150,12,.25);color:#b8960c}
+.iker-data.manual{background:rgba(198,40,40,.25);color:#c62828}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 風險情報驗證卡 === */
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+.risk-card .rc-body{font-size:.82em;color:var(--txt2)}
+.risk-card .rc-row{display:flex;gap:12px;margin:3px 0;font-size:.82em}
+.risk-card .rc-label{font-weight:600;color:var(--base);min-width:80px;flex-shrink:0}
+
+/* === 分岔因果樹（CSS 版，≤15節點） === */
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:8px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--base);font-size:.88em}
+.fork-branches{display:grid;gap:8px;margin-top:4px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;position:relative}
+.fork-branch::before{content:'▼';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.7em}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fork-branch .fb-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:2px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 列印（展開所有卡片） === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head><body><div class="wrap"><div class="hero"><h1>查詢 20260409 1124</h1><div class="sub">天機閣深度調查</div></div><div class="toggle-bar"><button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(function(c){c.classList.remove('collapsed')})">全部展開</button><button class="toggle-btn" onclick="document.querySelectorAll('.card').forEach(function(c){c.classList.add('collapsed')})">全部收合</button></div><p>根據已有的線上報告資料，悠遊卡（6035）共有 <b>9 份</b>報告，以下是可瀏覽的報告清單：<b>悠遊卡（6035）報告列表：</b></p>
+<p>1. [第一步 資料收集 — 悠遊卡](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<p>2. [第三步 競爭力分析 — 悠遊卡](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<p>3. [第七步 完整版 — 悠遊卡](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<p>以上三份是從已知檔名可確認的報告，其餘 6 份因檔名未完整列出，建議直接到天機錄首頁的 [6035 悠遊卡專區](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏] 查看完整列表。</p>
+<p><b>重點報告推薦：</b> 第七步完整版（2026-04-06）是最完整的質化分析報告，涵蓋 13 章結構，包括公司概覽、催化劑、風險偵測、估值分析與投資結論。</p>
+<hr>
+<p>📄 <b>報告連結</b></p>
+<ul>
+<li>[第一步_資料收集_6035_悠遊卡_2026-04-05.html](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<li>[第七步_完整版_6035_悠遊卡_2026-04-06.html](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<li>[第三步_競爭力分析_6035_悠遊卡_2026-04-06.html](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<li>[第九步_追蹤回饋_6035_悠遊卡_2026-04-06.html](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+<li>[第二步_FIAS分級_6035_悠遊卡_2026-04-06.html](https://kensilon015-spec.github.io/stock-analysis-reports/[已隱藏]
+</ul>
+<hr>
+<p>⚖️ *免責聲明：本內容僅供研究參考，不構成任何投資建議或買賣推薦。投資有風險，決策請自行判斷。*</p><div class="footer">天機閣 — 僅供研究參考，不構成投資建議</div></div><script>document.querySelectorAll(".card h3").forEach(function(h3){h3.addEventListener("click",function(){h3.parentElement.classList.toggle("collapsed")})});</script><div style="margin-top:2em;padding:1em;border-top:2px solid #d4a574;color:#999;font-size:0.85em;text-align:center;">⚖️ 免責聲明：本內容僅供研究參考，不構成任何投資建議或買賣推薦。投資有風險，決策請自行判斷。</div></body></html>
