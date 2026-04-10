@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>騰輝電子-KY (6672) — 天機閣推衍報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<!-- ============================================================
+     天機閣 — 第八步 推演版報告
+     騰輝電子-KY (6672)
+     推衍日期：2026-04-09
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.hero .alert-box{margin:10px auto;max-width:600px;padding:10px 16px;border:2px solid var(--danger);border-radius:8px;background:rgba(194,124,110,.22);color:var(--danger);font-weight:700;font-size:.92em;text-align:center;animation:pulse-border 2s infinite}
+@keyframes pulse-border{0%,100%{border-color:var(--danger)}50%{border-color:#ff6b6b}}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.tag.hot{border-color:var(--danger);color:var(--danger);background:rgba(194,124,110,.12)}
+
+/* === 右上角日期 === */
+.date-badge{position:fixed;top:12px;right:16px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:.72em;color:var(--accent);font-weight:700;z-index:999;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+td.up{color:var(--bull);font-weight:700}
+td.down{color:var(--bear);font-weight:700}
+td.hot{color:var(--danger);font-weight:700}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 證據卡 === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.tl-danger::before{background:var(--danger)}
+.tl-item.tl-warn::before{background:var(--warn)}
+.tl-item.tl-bull::before{background:var(--bull)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 分欄佈局（圖表 + 資料） === */
+.data-chart-row{display:flex;gap:12px;margin:8px 0;align-items:flex-start}
+.data-chart-row .data-col{flex:1;min-width:0}
+.data-chart-row .chart-col{flex:1;min-width:260px;max-width:420px}
+@media(max-width:720px){.data-chart-row{flex-direction:column}.data-chart-row .chart-col{max-width:100%}}
+
+/* === 概率路徑 === */
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:6px 0;position:relative;overflow:hidden}
+.path-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.path-card.path-bull::before{background:var(--bull)}
+.path-card.path-bear::before{background:var(--bear)}
+.path-card.path-neutral::before{background:var(--neutral)}
+.path-card.path-danger::before{background:var(--danger)}
+.path-card.path-gold::before{background:var(--gold)}
+.path-card .path-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.path-card .path-name{font-weight:700;color:var(--base);font-size:.92em}
+.path-card .path-prob{font-size:.78em;font-weight:700;padding:2px 8px;border-radius:4px}
+.path-card .path-target{font-size:.85em;font-weight:700;margin:2px 0}
+.path-card .path-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+
+<!-- 右上角日期 -->
+<div class="date-badge">推衍日期：2026-04-09</div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>騰輝電子-KY (6672) — 天機閣推衍報告</h1>
+    <div class="sub">推衍日期 2026-04-09 / 基準股價 155.5 元 / PE 32x / 推衍有效期至 2026-05-09</div>
+    <div class="desc">第八步 推演版（8a～8i）— 基於第一至第七步分析結果，整合 OSINT 情報進行多路徑推衍</div>
+    <div class="alert-box">
+        ⚠ 高度警示：股價兩日暴漲 20.5%（129→155.5），PE 32x 已突破歷史極值 28.4x，進入未知估值領域
+    </div>
+    <div class="tags">
+        <span class="tag hot">PE 32x 歷史新高</span>
+        <span class="tag hot">兩日 +20.5%</span>
+        <span class="tag">CCL 族群狂飆</span>
+        <span class="tag">特殊材料 &gt;50%</span>
+        <span class="tag">泰國廠 Q2</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#s8a">8a. 推衍基礎確認</a>
+    <a href="#s8b">8b. OSINT 情報更新（4/9 重大變動）</a>
+    <a href="#s8c">8c. 影響鏈分析</a>
+    <a href="#s8d">8d. 情境模擬（概率樹，5 條路徑）</a>
+    <a href="#s8e">8e. 個人化推衍</a>
+    <a href="#s8f">8f. 催化劑時間表</a>
+    <a href="#s8g">8g. 蝴蝶效應推衍</a>
+    <a href="#s8h">8h. 貓膩推衍</a>
+    <a href="#s8i">8i. 推衍結論 + 第四次信心校準</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8a. 推衍基礎確認                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">回溯關鍵事實，確認推衍起點</div>
+
+<div class="card">
+<h3>基礎數據總覽</h3>
+<div class="card-body">
+
+<div class="grid3">
+    <div class="mini-card bear-card">
+        <div class="title">FY2025 EPS</div>
+        <div class="num" style="color:var(--base)">4.85 元</div>
+        <div class="desc">Q1:1.05 / Q2:1.24 / Q3:1.17 / Q4:1.39</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">FY2025 毛利率</div>
+        <div class="num" style="color:var(--base)">32.2%</div>
+        <div class="desc">較 FY2024 下滑 ~2pp</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">3月營收 YoY</div>
+        <div class="num" style="color:var(--bull)">+32.7%</div>
+        <div class="desc">4.81 億，創近 24 月新高</div>
+    </div>
+</div>
+
+<details open>
+<summary>關鍵事實清單</summary>
+<table>
+<tr><th>項目</th><th>數據</th><th>FIAS</th><th>推衍意義</th></tr>
+<tr><td>FY2025 EPS</td><td>4.85 元</td><td><span class="fias-f">F</span></td><td>PE 基底。以 155.5 元算 = 32x</td></tr>
+<tr><td>FY2025 毛利率</td><td>32.2%（Q4）</td><td><span class="fias-f">F</span></td><td>與 FY2024 持平，漲價尚未反映</td></tr>
+<tr><td>特殊材料營收佔比</td><td>&gt;50%</td><td><span class="fias-i">I</span></td><td>高毛利護城河，但具體數字未公開</td></tr>
+<tr><td>泰國廠進度</td><td>Q2 量產</td><td><span class="fias-i">I</span></td><td>最關鍵催化劑，貢獻 Q3 開始顯現</td></tr>
+<tr><td>CB 募資</td><td>10 億元</td><td><span class="fias-f">F</span></td><td>資金到位，但稀釋風險 ~14%</td></tr>
+<tr><td>全球 CCL 市佔</td><td>~2%</td><td><span class="fias-a">A</span></td><td>小型玩家，議價能力有限</td></tr>
+<tr><td>FY2025 營業利益率</td><td>9.4%（全年平均）</td><td><span class="fias-f">F</span></td><td>Q3/Q4 回升至 10.6%/10.8%</td></tr>
+<tr><td>負債比率</td><td>28.6%（Q4）</td><td><span class="fias-f">F</span></td><td>財務結構穩健</td></tr>
+</table>
+</details>
+
+<div class="ev">
+    <div class="ev-t">ev-8a-01：FY2025 獲利基底確認</div>
+    <div class="ev-d">EPS 4.85 元，ROE 10.4%（四季合計），營收呈現 Q4→Q1 加速成長趨勢（Q4 YoY+6.5%→1月+10.3%→2月+29.3%→3月+32.7%）。成長斜率明確向上。</div>
+    <div class="ev-s">來源：finlab_data.json / 公開資訊觀測站</div>
+</div>
+
+<div class="tip info">
+    <b>8a 整合結論</b>
+    基本面確實在改善（營收加速、毛利率止穩、營業利益率回升），但 <strong>FY2025 的 EPS 4.85 元無法支撐 32x PE</strong>。推衍的核心問題是：FY2026 的 EPS 能否大幅跳升至 6+ 元，讓估值回到合理區間？這取決於 CCL 漲價能否順利轉嫁、泰國廠是否如期量產。基底已確認，進入情報更新。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8b. OSINT 情報更新                                            -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8b">8b. OSINT 情報更新（4/9 重大變動）</div>
+<div class="section-sub">兩日暴漲 20.5%，CCL 族群全面狂飆</div>
+
+<div class="card">
+<h3>情報比對表：第七步 vs 最新</h3>
+<div class="card-body">
+
+<table>
+<tr><th>項目</th><th>第七步數據 (4/8)</th><th>最新 (4/9)</th><th>變化</th><th>含義</th></tr>
+<tr><td>股價</td><td>129.0 元</td><td class="hot">155.5 元</td><td class="up">+20.5%（兩日）</td><td>爆量上漲，散戶搶進</td></tr>
+<tr><td>PE（TTM）</td><td>26.6x</td><td class="hot">32.1x</td><td class="up">超越歷史最高 28.4x</td><td>進入未知估值領域</td></tr>
+<tr><td>CCL 漲價</td><td>建滔 Q1 漲 50%</td><td class="hot">4月再漲 15-25%</td><td class="up">漲價循環加速</td><td>台光電引領族群漲價</td></tr>
+<tr><td>台光電股價</td><td>—</td><td class="hot">3,170 元新天價</td><td class="up">族群龍頭創高</td><td>比價效應帶動 CCL 全面飆漲</td></tr>
+<tr><td>4 大戰略材料</td><td>玻纖布缺貨 30 週</td><td class="hot">銅箔/玻纖/石英布/鑽針全缺</td><td class="up">缺貨範圍擴大</td><td>供應鏈瓶頸加劇</td></tr>
+<tr><td>成交量</td><td>~373 萬股</td><td class="hot">~978 萬股（估計）</td><td class="up">爆量 2.6 倍</td><td>散戶大量湧入</td></tr>
+<tr><td>投信持股</td><td>0 張</td><td>0 張</td><td>—</td><td>法人完全未參與</td></tr>
+<tr><td>外資動向</td><td>近 20 日淨賣超</td><td>持續賣超</td><td class="down">賣超</td><td>外資不認同此估值</td></tr>
+</table>
+
+<div class="ev">
+    <div class="ev-t">ev-8b-01：族群比價效應驅動短期暴漲</div>
+    <div class="ev-d">台光電（2383）4/9 股價衝至 3,170 元新天價，台燿（6274）、聯茂（6213）同步亮燈漲停。騰輝作為族群中「低價 CCL 股」被資金追捧，但其全球市佔僅 2%，與台光電（全球前三）的基本面差距巨大。此輪漲勢的驅動力更多是資金面的比價效應，而非騰輝自身基本面的突破。</div>
+    <div class="ev-s">來源：4/9 盤面觀察 / 新聞報導</div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">ev-8b-02：法人態度冷淡，散戶主導行情</div>
+    <div class="ev-d">投信近 20 日持股 0 張（完全未參與）、外資近 20 日有 12 天淨賣超（合計賣超約 -317 萬股）。在股價暴漲的同時法人持續出貨，這是典型的「散戶行情」訊號。歷史經驗顯示，散戶主導的暴漲行情回檔速度通常也很快。</div>
+    <div class="ev-s">來源：finlab_data.json 外資買賣超</div>
+</div>
+
+<div class="tip danger">
+    <b>8b 整合結論</b>
+    <strong>資料→觀察</strong>：股價兩日暴漲 20.5%、PE 衝至 32x 超越歷史最高、成交量爆增 2.6 倍，但外資持續賣超、投信完全缺席。<br>
+    <strong>觀察→推論</strong>：這是一輪由 CCL 族群比價效應 + 散戶搶進驅動的短期暴漲，而非基本面突然質變。騰輝的基本面確實在改善（營收加速、CCL 漲價受惠），但 32x PE 已完全 price in 了最樂觀的情境。<br>
+    <strong>推論→結論</strong>：<span style="color:var(--danger);font-weight:700">當前股價已透支未來 2-3 季的成長預期</span>。即使 FY2026 EPS 成長至 6 元（+24%），155.5 元仍對應 26x PE（接近歷史最高）。任何低於預期的數據都可能引發劇烈回檔。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8c. 影響鏈分析                                                -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">三條關鍵因果鏈 × FIAS 標記</div>
+
+<div class="card">
+<h3>鏈 1：CCL 漲價 → 騰輝營收成長 <span class="fias-f">F</span><span class="fias-i">I</span></h3>
+<div class="card-body">
+<p style="margin-bottom:6px"><strong>因果路徑：</strong></p>
+<p>CCL 4 月漲價 15-25% <span class="fias-f">F</span> → 騰輝產品均價提升 → Q2 月營收可能達 5 億+ <span class="fias-a">A</span> → 若 Q2 EPS 達 1.5-1.8 元 → TTM EPS 可上修至 5.5-6.0 元 <span class="fias-a">A</span></p>
+
+<details open>
+<summary>營收趨勢佐證</summary>
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>月份</th><th>營收（千元）</th><th>YoY</th></tr>
+<tr><td>2025/10</td><td>338,399</td><td>+1.1%</td></tr>
+<tr><td>2025/11</td><td>361,529</td><td>+5.1%</td></tr>
+<tr><td>2025/12</td><td>357,953</td><td>+6.5%</td></tr>
+<tr><td>2026/01</td><td>382,732</td><td class="up">+10.3%</td></tr>
+<tr><td>2026/02</td><td>409,757</td><td class="up">+29.3%</td></tr>
+<tr><td>2026/03</td><td>355,411</td><td>+4.5%</td></tr>
+<tr><td>2026/04（估）</td><td class="hot">480,659</td><td class="up">+32.7%</td></tr>
+</table>
+<p style="font-size:.75em;color:var(--txt3);margin-top:4px">* 4 月為申報數據，實際為 3 月營收</p>
+</div>
+<div class="chart-col">
+<canvas id="chartRevenue" height="220"></canvas>
+</div>
+</div>
+</details>
+
+<div class="ev">
+    <div class="ev-t">ev-8c-01：營收成長斜率加速</div>
+    <div class="ev-d">從 YoY +1.1%（10月）加速至 +32.7%（4月申報/3月實際），連續 7 個月成長。但需注意 3 月營收 3.55 億較 2 月 4.10 億有明顯月減（-13.3%），YoY 高增長部分歸因於去年同期基期偏低（2025/3 月僅 3.40 億）。</div>
+    <div class="ev-s">來源：finlab_data.json 月營收</div>
+</div>
+
+<div class="tip good">
+    <b>鏈 1 結論</b>
+    營收成長趨勢確立，CCL 漲價對頂線有正面推升。但能否完全轉嫁漲價至毛利率提升，仍需觀察 Q1 季報（5 月公布）。目前毛利率 32.2% 尚未顯現漲價效果（2025Q4），<strong>若 Q1 毛利率能回升至 34%+</strong>，則確認漲價轉嫁成功，營收成長鏈有效。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>鏈 2：族群效應 → 估值泡沫風險 <span class="fias-a">A</span><span class="fias-s">S</span></h3>
+<div class="card-body">
+<p style="margin-bottom:6px"><strong>因果路徑：</strong></p>
+<p>台光電破 3,170 <span class="fias-f">F</span> → CCL 全族群比價效應 <span class="fias-a">A</span> → 騰輝作為「低價 CCL 股」被搶進 → PE 從 26.6x 暴衝至 32x <span class="fias-f">F</span> → 脫離基本面支撐 → 泡沫風險 <span class="fias-s">S</span></p>
+
+<details open>
+<summary>PE 歷史比較</summary>
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>指標</th><th>數值</th><th>評估</th></tr>
+<tr><td>當前 PE</td><td class="hot">32.1x</td><td>歷史新高 ⚠</td></tr>
+<tr><td>一年最高 PE</td><td>28.4x</td><td>已突破</td></tr>
+<tr><td>一年平均 PE</td><td>19.3x</td><td>當前溢價 66%</td></tr>
+<tr><td>一年最低 PE</td><td>11.1x</td><td>對應 ~54 元</td></tr>
+<tr><td>合理 PE 區間</td><td>16-22x</td><td>對應 78-107 元</td></tr>
+</table>
+</div>
+<div class="chart-col">
+<canvas id="chartPE" height="220"></canvas>
+</div>
+</div>
+</details>
+
+<div class="ev">
+    <div class="ev-t">ev-8c-02：PE 32x 在 CCL 族群中的定位</div>
+    <div class="ev-d">台光電 PE ~25x（市佔全球前三、EPS 穩定 120+）、聯茂 PE ~18x、台燿 PE ~22x。騰輝以全球市佔僅 2%、EPS 4.85 元的基本面，卻享有族群最高的 PE 倍數（32x），顯示市場給予的是「成長幻想溢價」而非基本面合理估值。</div>
+    <div class="ev-s">來源：盤面比較分析</div>
+</div>
+
+<div class="tip danger">
+    <b>鏈 2 結論</b>
+    騰輝的 PE 32x 是 CCL 族群中最高的，但其基本面（市佔、規模、獲利穩定度）卻是族群中相對弱的。這代表 <strong>市場定價已包含極度樂觀的成長預期</strong>。一旦族群比價效應退潮（例如台光電回檔），騰輝作為「跟風標的」回檔幅度可能更大。歷史上類似的族群比價行情，落後股的回檔通常達 30-50%。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>鏈 3：缺貨效應 → 結構性轉變 or 透支需求 <span class="fias-i">I</span><span class="fias-s">S</span></h3>
+<div class="card-body">
+<p style="margin-bottom:6px"><strong>因果路徑（分岔）：</strong></p>
+<p><strong>路徑 A（結構性）：</strong>4 大材料缺貨 → 客戶簽長約鎖料 → 訂單能見度提升至 H2 → 營收成長持續性強</p>
+<p><strong>路徑 B（透支型）：</strong>4 大材料缺貨 → 客戶恐慌拉貨 → Q2 營收暴增但透支 Q3-Q4 需求 → 缺貨解除後需求驟降</p>
+
+<div class="ev">
+    <div class="ev-t">ev-8c-03：缺貨持續性的歷史參考</div>
+    <div class="ev-d">2021 年 PCB 材料大缺貨，CCL 價格飆漲 60-80%，騰輝 2021 EPS 達 6.07 元（歷史新高）。但 2022 年缺貨解除後 EPS 驟降至 5.01 元（-17%），2023 年更降至 5.16 元。此次缺貨規模（4 大材料同時）雖更廣，但需警惕類似的需求透支效應。</div>
+    <div class="ev-s">來源：歷史財報比對</div>
+</div>
+
+<div class="tip warn">
+    <b>鏈 3 結論</b>
+    缺貨確實有利短期營收，但 <strong>缺貨是雙面刃</strong>：一方面推升短期業績，另一方面可能透支未來需求。以 2021-2022 的經驗來看，缺貨行情的「甜蜜期」通常持續 2-3 季，之後進入修正。目前缺貨才剛擴大，短期（Q2-Q3）對騰輝有利，但 2026H2 以後需密切觀察庫存水位。
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8d. 情境模擬                                                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8d">8d. 情境模擬（概率樹，5 條路徑）</div>
+<div class="section-sub">加權期望股價：122.0 元 — 低於現價 155.5 約 22%</div>
+
+<div class="card">
+<h3>五條推衍路徑</h3>
+<div class="card-body">
+
+<!-- 全寬概率樹（ECharts） -->
+<div id="echartsTree" style="width:100%;height:420px;margin:8px 0"></div>
+
+<div class="path-card path-gold">
+    <div class="path-header">
+        <span class="path-name">路徑 A：黃金情境</span>
+        <span class="path-prob" style="background:rgba(76,175,80,.2);color:var(--bull)">概率 30%</span>
+    </div>
+    <div class="path-target" style="color:var(--bull)">目標價 180 元（+15.8%）</div>
+    <div class="path-desc">
+        泰國廠 Q2 如期量產 + CCL 持續漲價至 H2 + 軍工/車用大單落地 → FY2026 EPS 6.5 元 × PE 28x = 182 元<br>
+        <span style="color:var(--txt3);font-size:.8em">前提：Q1 毛利率 ≥34%、泰國廠 6 月順利出貨、CCL 漲價持續 3 季以上</span>
+    </div>
+</div>
+
+<div class="path-card path-neutral">
+    <div class="path-header">
+        <span class="path-name">路徑 B：穩健成長</span>
+        <span class="path-prob" style="background:rgba(122,176,192,.2);color:var(--neutral)">概率 25%</span>
+    </div>
+    <div class="path-target" style="color:var(--neutral)">目標價 130 元（-16.4%）</div>
+    <div class="path-desc">
+        泰國廠小延遲（Q3 量產）+ CCL 漲幅 Q3 收窄 + 特殊材料穩定成長 → FY2026 EPS 5.5 元 × PE 22x = 121 元，股價回檔至 130 附近<br>
+        <span style="color:var(--txt3);font-size:.8em">前提：基本面持續改善但不如市場預期樂觀</span>
+    </div>
+</div>
+
+<div class="path-card path-bear">
+    <div class="path-header">
+        <span class="path-name">路徑 C：均值回歸</span>
+        <span class="path-prob" style="background:rgba(239,83,80,.15);color:var(--bear)">概率 25%</span>
+    </div>
+    <div class="path-target" style="color:var(--bear)">目標價 95 元（-38.9%）</div>
+    <div class="path-desc">
+        PE 從 32x 修正至歷史均值 19x + EPS 持平 5.0 元 → 5.0 × 19 = 95 元<br>
+        <span style="color:var(--txt3);font-size:.8em">前提：CCL 漲價效果不如預期、缺貨 Q3 緩解、族群比價效應退潮</span>
+    </div>
+</div>
+
+<div class="path-card path-danger">
+    <div class="path-header">
+        <span class="path-name">路徑 D：泡沫破裂</span>
+        <span class="path-prob" style="background:rgba(239,83,80,.15);color:var(--bear)">概率 15%</span>
+    </div>
+    <div class="path-target" style="color:var(--bear)">目標價 65 元（-58.2%）</div>
+    <div class="path-desc">
+        CCL 漲價 H2 反轉 + 缺貨解除 + 泰國廠延遲 + 需求透支效應浮現 → FY2026 EPS 4.5 元 × PE 14x = 63 元<br>
+        <span style="color:var(--txt3);font-size:.8em">前提：2021-2022 劇本重演，景氣循環下行</span>
+    </div>
+</div>
+
+<div class="path-card path-danger">
+    <div class="path-header">
+        <span class="path-name">路徑 E：黑天鵝</span>
+        <span class="path-prob" style="background:rgba(198,40,40,.2);color:#c62828">概率 5%</span>
+    </div>
+    <div class="path-target" style="color:var(--bear)">目標價 35 元（-77.5%）</div>
+    <div class="path-desc">
+        地緣政治衝擊（蘇州廠受影響 / 兩岸局勢）+ KY 公司治理風險爆發 → FY2026 EPS 3.0 元 × PE 12x = 36 元<br>
+        <span style="color:var(--txt3);font-size:.8em">前提：極端事件，概率低但衝擊巨大</span>
+    </div>
+</div>
+
+<div style="background:var(--panel);border:2px solid var(--warn);border-radius:8px;padding:12px 16px;margin:10px 0;text-align:center">
+    <div style="font-size:.82em;color:var(--txt3)">加權期望股價計算</div>
+    <div style="font-size:.78em;color:var(--txt2);margin:4px 0">180×30% + 130×25% + 95×25% + 65×15% + 35×5%</div>
+    <div style="font-size:1.5em;font-weight:900;color:var(--warn)">= 122.0 元</div>
+    <div style="font-size:.85em;color:var(--danger);font-weight:700;margin-top:4px">現價 155.5 元高於加權期望 27.5%</div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">ev-8d-01：概率分配邏輯</div>
+    <div class="ev-d">路徑 A 給予 30% 而非更高，因為即使 CCL 漲價利多確認，泰國廠如期量產+軍工大單同時落地的機率並非壓倒性。路徑 B+C 合計 50%，反映「成長但不如預期 + 估值修正」是最可能的結果。路徑 D 的 15% 反映缺貨行情歷史上都有「事後修正」的規律。路徑 E 保留 5% 給 KY 公司結構性風險。</div>
+    <div class="ev-s">來源：推衍模型</div>
+</div>
+
+<div class="tip danger">
+    <b>8d 整合結論</b>
+    <strong>資料→觀察</strong>：五條路徑中，只有路徑 A（30%）的目標價高於現價，其餘四條（合計 70%）目標價均低於現價。加權期望股價 122 元，低於現價 27.5%。<br>
+    <strong>觀察→推論</strong>：市場目前的定價隱含了路徑 A 幾乎確定會實現的假設，但實際概率僅 30%。這代表市場處於「定價偏離」狀態。<br>
+    <strong>推論→結論</strong>：<span style="color:var(--danger);font-weight:700">以概率加權的期望值來看，現價買入的預期報酬為負（-22%）</span>。只有在投資人極度看好路徑 A 且願意承擔 70% 機率下的虧損，追高才有合理性。對穩健型投資人而言，風險報酬比極差。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8e. 個人化推衍                                                -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">針對閣主投資風格的情境分析</div>
+
+<div class="card">
+<h3>閣主情境分析</h3>
+<div class="card-body">
+
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">當前持倉狀態</div>
+        <div class="num" style="color:var(--base);font-size:1em">觀望中</div>
+        <div class="desc">尚未建倉</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">投資風格</div>
+        <div class="num" style="color:var(--base);font-size:1em">穩健波段</div>
+        <div class="desc">重視安全邊際</div>
+    </div>
+</div>
+
+<details open>
+<summary>策略建議矩陣</summary>
+<table>
+<tr><th>情境</th><th>建議</th><th>理由</th></tr>
+<tr><td><strong>現在追高？</strong></td><td style="color:var(--bear);font-weight:700">不建議</td><td>PE 32x 歷史新高，加權期望價 122 元低於現價 27%</td></tr>
+<tr><td><strong>回檔至 130 買入？</strong></td><td style="color:var(--warn);font-weight:700">需觀察</td><td>PE ~27x 仍偏高，但已回到暴漲前水位。需搭配 Q1 季報確認成長</td></tr>
+<tr><td><strong>回檔至 110-120？</strong></td><td style="color:var(--accent);font-weight:700">可考慮</td><td>PE 23-25x，接近合理上緣。若 Q1 EPS ≥1.5 則風險可控</td></tr>
+<tr><td><strong>理想買點 90-100？</strong></td><td style="color:var(--bull);font-weight:700">積極布局</td><td>PE 19-21x，安全邊際充足，即使路徑 C 也不虧</td></tr>
+<tr><td><strong>已持有？</strong></td><td style="color:var(--warn);font-weight:700">部分獲利了結</td><td>至少減持 1/3，鎖定利潤。留底倉參與路徑 A 可能</td></tr>
+</table>
+</details>
+
+<div class="ev">
+    <div class="ev-t">ev-8e-01：追高的歷史代價</div>
+    <div class="ev-d">騰輝 2021/9 月也曾出現類似暴漲（從 85 衝至 135，PE 一度達 22x），之後半年內回檔至 78 元（-42%）。當時的暴漲同樣由 CCL 漲價 + 缺貨驅動。歷史不會完全重演，但模式極為相似。</div>
+    <div class="ev-s">來源：歷史股價分析</div>
+</div>
+
+<div class="tip warn">
+    <b>8e 整合結論</b>
+    <strong>核心建議：不追高，等回檔</strong>。閣主為穩健波段風格，追高 PE 32x 的股票與風格不符。建議設定三個觀察價位：(1) 130 元觀察不動作 (2) 110-120 元小量試單 (3) 90-100 元積極布局。最重要的催化劑確認點是 5 月的 Q1 季報——若 Q1 EPS ≥ 1.5 元且毛利率 ≥ 34%，則可在回檔時更積極。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8f. 催化劑時間表                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">近期重要事件與潛在影響評估</div>
+
+<div class="card">
+<h3>關鍵催化劑時間軸</h3>
+<div class="card-body">
+
+<div class="timeline">
+    <div class="tl-item tl-danger">
+        <div class="tl-date">2026/04/16（7 天後）</div>
+        <div class="tl-title">除息 3.35 元 <span class="fias-f">F</span></div>
+        <div class="tl-desc">殖利率 2.15%（以 155.5 元計算）。除息後參考價 ~152 元。<strong>短期利空</strong>：高檔除息填息壓力大，且法人可能在除息前後加速出貨。歷史上騰輝填息天數不定（2024 年除息後約 30 天完成填息）。</div>
+    </div>
+    <div class="tl-item tl-warn">
+        <div class="tl-date">2026/04 月底</div>
+        <div class="tl-title">4 月營收公布 <span class="fias-f">F</span></div>
+        <div class="tl-desc">若月營收突破 5 億元（YoY 預估 +30%+），確認 CCL 漲價轉嫁成功。但市場可能已 price in，「符合預期」不一定推升股價。</div>
+    </div>
+    <div class="tl-item tl-bull">
+        <div class="tl-date">2026/05 月中</div>
+        <div class="tl-title">Q1 季報公布（最關鍵）<span class="fias-f">F</span></div>
+        <div class="tl-desc"><strong>關鍵觀察</strong>：EPS 是否 ≥ 1.5 元（vs Q1'25 的 1.05）、毛利率是否 ≥ 34%、營業利益率是否 ≥ 12%。若三項全達標 → 路徑 A 概率上修；若不及預期 → 殺估值風險。</div>
+    </div>
+    <div class="tl-item tl-bull">
+        <div class="tl-date">2026/Q2（6月前後）</div>
+        <div class="tl-title">泰國廠量產（最大催化劑）<span class="fias-i">I</span></div>
+        <div class="tl-desc">管理層承諾 Q2 量產。若如期 → 產能擴增 30%+ → Q3 起營收將有量的貢獻（不只是價的提升）。若延遲 → 市場信心受挫，路徑 B/C 概率上升。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/08 月</div>
+        <div class="tl-title">Q2 法說會 + 半年報 <span class="fias-f">F</span></div>
+        <div class="tl-desc">確認泰國廠實際貢獻、管理層對 H2 展望。若 H1 EPS ≥ 3.0 → FY2026 EPS 6+ 可期 → 路徑 A 確認。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/H2</div>
+        <div class="tl-title">管理層預期營運明顯成長 <span class="fias-i">I</span></div>
+        <div class="tl-desc">泰國廠 + CCL 漲價 + 特殊材料三重引擎。但需觀察 CCL 漲價是否已反轉、缺貨是否緩解。</div>
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">ev-8f-01：除息後的關鍵窗口</div>
+    <div class="ev-d">4/16 除息後至 5 月中 Q1 季報公布，這 30 天是「真空期」——沒有重大基本面催化劑，股價可能回吐部分漲幅。這也是觀察市場信心的重要窗口：若除息後快速填息 → 多頭強勢；若持續走弱 → 暴漲行情結束。</div>
+    <div class="ev-s">來源：催化劑推衍</div>
+</div>
+
+<div class="tip info">
+    <b>8f 整合結論</b>
+    近期最重要的兩個催化劑是 <strong>(1) 4/16 除息表現</strong> 和 <strong>(2) 5 月中 Q1 季報</strong>。除息後的走勢是短期風向標，Q1 季報則是決定性的基本面驗證。建議在 Q1 季報公布前不做重大倉位決策。如果 Q1 季報超越預期（EPS ≥ 1.5、毛利率 ≥ 34%），且股價已回檔至 120 以下，那將是進場的理想時機。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8g. 蝴蝶效應推衍                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8g">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">三個可能被市場忽略的弱訊號</div>
+
+<div class="card">
+<h3>弱訊號 1：歐洲營收萎縮 + VT UK 虧損</h3>
+<div class="card-body">
+
+<p><span class="fias-f">F</span> 歐洲營收佔比從 21%（FY2024）降至 18.6%（FY2025），VT UK 子公司持續虧損。</p>
+
+<div class="ev">
+    <div class="ev-t">ev-8g-01：歐洲市場持續失血</div>
+    <div class="ev-d">騰輝的歐洲佈局主要瞄準軍工/國防客戶，但 VT UK 連年虧損顯示打入歐洲供應鏈的進度不如預期。若歐洲國防客戶縮減採購（例如預算重分配、轉向本地供應商），「軍工成長敘事」的可信度將大幅下降。目前市場給予騰輝的估值溢價中，有一部分來自「特殊材料/軍工」的成長想像。</div>
+    <div class="ev-s">來源：FY2025 年報 / 營收區域分析</div>
+</div>
+
+<div class="tip warn">
+    <b>蝴蝶效應推衍</b>
+    若歐洲國防預算重新分配 → VT UK 訂單進一步萎縮 → 歐洲佔比跌至 15% 以下 → 市場質疑「軍工概念」→ 估值溢價修正。觸發機率：<strong>中等（20-30%）</strong>。監控指標：Q1/Q2 歐洲區營收變化。
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>弱訊號 2：管理層持股極低</h3>
+<div class="card-body">
+
+<p><span class="fias-f">F</span> 執行長持股僅 73,500 股（市值約 1,143 萬元），佔股本比例極低。</p>
+
+<div class="ev">
+    <div class="ev-t">ev-8g-02：利益綁定不足的治理風險</div>
+    <div class="ev-d">KY 公司（境外控股）本身就有治理透明度較低的結構性問題。執行長持股僅 73,500 股（以 155.5 元計算 = 1,143 萬元），對一家市值 111 億元的公司而言比例極低。這意味管理層與股東的利益綁定不足——公司做好做壞，對管理層個人財富的影響有限。歷史上多起 KY 公司弊案（康友-KY、淘帝-KY）都有類似的特徵。</div>
+    <div class="ev-s">來源：公開資訊觀測站 / 持股明細</div>
+</div>
+
+<div class="tip warn">
+    <b>蝴蝶效應推衍</b>
+    管理層低持股 + KY 架構 → 若出現財報重編/審計意見保留 → 股價可能腰斬以上。觸發機率：<strong>低（5-10%）</strong>，但衝擊巨大。監控指標：季報公布時間是否延遲、會計師事務所是否更換。
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>弱訊號 3：營收 YoY 高增長的基期效應</h3>
+<div class="card-body">
+
+<p><span class="fias-f">F</span> 2026/3 月營收 YoY +32.7%，但去年同期僅 3.40 億（偏低基期）。</p>
+
+<div class="ev">
+    <div class="ev-t">ev-8g-03：基期效應將在 Q2 反轉</div>
+    <div class="ev-d">去年（2025 年）的營收高點在 Q2（4月 3.72 億、5月 3.93 億），這意味今年 Q2 的 YoY 基期將明顯墊高。若 4 月營收 4.8 億（YoY +29%），看似高成長；但 5 月若營收 4.5 億，YoY 可能降至 +15% 左右。<strong>YoY 成長率放緩本身就可能被市場解讀為「成長見頂」</strong>，即使絕對值仍在成長。</div>
+    <div class="ev-s">來源：finlab_data.json 月營收比對</div>
+</div>
+
+<div class="tip warn">
+    <b>蝴蝶效應推衍</b>
+    Q2 基期墊高 → YoY 成長率從 30%+ 降至 15-20% → 媒體標題「騰輝成長放緩」→ 市場恐慌拋售 → PE 修正。觸發機率：<strong>高（60-70%）</strong>。這不是壞事（公司仍在成長），但市場對高估值股票的成長放緩容忍度極低。
+</div>
+
+</div>
+</div>
+
+<div class="tip info">
+    <b>8g 整合結論</b>
+    三個弱訊號的共同指向：<strong>市場對騰輝的樂觀預期過度集中在「CCL 漲價 + 缺貨」這個單一敘事上</strong>，忽略了歐洲失血、治理風險、基期效應等潛在利空。尤其弱訊號 3（基期效應導致 YoY 放緩）幾乎必然發生，且可能在 Q2 成為壓垮高估值的最後一根稻草。建議將此納入等待回檔的理由之一。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8h. 貓膩推衍                                                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">承接第七步：有疑點需觀察</div>
+
+<div class="card">
+<h3><span class="light yellow"></span> 貓膩風險評估：有疑點需觀察</h3>
+<div class="card-body">
+
+<details open>
+<summary>暴漲背後的疑慮</summary>
+<table>
+<tr><th>疑點</th><th>現象</th><th>嚴重度</th><th>解讀</th></tr>
+<tr><td>兩日暴漲 20.5%</td><td>129→155.5，成交量爆增至 ~978 萬股</td><td class="hot">高</td><td>極短時間大幅拉升，是否有特定人士配合消息面推動？</td></tr>
+<tr><td>外資持續賣超</td><td>近 20 日有 12 天賣超，合計 -317 萬股</td><td style="color:var(--warn);font-weight:700">中</td><td>外資不認同此估值，散戶接盤</td></tr>
+<tr><td>投信零持股</td><td>連續 20 日持股 0 張</td><td style="color:var(--warn);font-weight:700">中</td><td>專業法人完全不參與，非典型的健康多頭</td></tr>
+<tr><td>KY 架構風險</td><td>境外控股，資訊透明度較低</td><td style="color:var(--warn);font-weight:700">中</td><td>歷史上 KY 弊案頻傳（康友、淘帝、凱羿）</td></tr>
+<tr><td>管理層低持股</td><td>執行長僅 73,500 股</td><td style="color:var(--warn);font-weight:700">中</td><td>利益綁定不足，行為動機存疑</td></tr>
+<tr><td>Q4 營業現金流轉負</td><td>-1.03 億（前季 +1.32 億）</td><td style="color:var(--warn);font-weight:700">中</td><td>可能是擴廠資本支出或營運資金變動，需 Q1 確認</td></tr>
+</table>
+</details>
+
+<div class="ev">
+    <div class="ev-t">ev-8h-01：康友-KY 教訓</div>
+    <div class="ev-d">康友-KY（6452）2020 年初股價 200+ 元，PE 也曾因「高成長故事」被推至高位。2020/7 月爆發財報造假，股價暴跌至 10 元以下（跌幅 &gt;95%）。騰輝目前沒有明確的造假跡象，但 KY 架構 + 管理層低持股 + 極端估值的組合，與歷史上出問題的 KY 公司有相似模式。</div>
+    <div class="ev-s">來源：歷史案例分析</div>
+</div>
+
+<div class="tip danger">
+    <b>8h 整合結論</b>
+    <strong>目前沒有發現明確的造假或內線交易證據</strong>，貓膩評級維持「有疑點需觀察」。但暴漲行情疊加以下因素令人不安：(1) 法人全面不參與 (2) KY 架構透明度低 (3) 管理層持股極少 (4) Q4 現金流異常轉負。<br>
+    <strong>保護策略</strong>：若已持有，<span style="color:var(--danger);font-weight:700">設定停損 130 元</span>（回到暴漲前水位），不留幻想。觀察 4/16 除息後的量價關係——若除息後量縮價跌破 140，則暴漲行情大概率已結束。
+</div>
+
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8i. 推衍結論 + 第四次信心校準                                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8i">8i. 推衍結論 + 第四次信心校準</div>
+<div class="section-sub">最終判斷與行動建議</div>
+
+<div class="card">
+<h3>最可能路徑與加權期望</h3>
+<div class="card-body">
+
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">最可能路徑</div>
+        <div class="num" style="color:var(--warn);font-size:1em">B+C 混合（50%）</div>
+        <div class="desc">股價在 95-130 區間震盪</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">加權期望股價</div>
+        <div class="num" style="color:var(--warn)">122 元</div>
+        <div class="desc">低於現價 155.5 元約 22%</div>
+    </div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>第四次信心校準</h3>
+<div class="card-body">
+
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>項目</th><th>Step4<br>ACH</th><th>Step5<br>壓力測試</th><th>Step6<br>評審團</th><th>Step8<br>推衍</th></tr>
+<tr><td><strong>信心分</strong></td><td>50</td><td>48</td><td>45</td><td class="hot">38</td></tr>
+<tr><td><strong>期望股價</strong></td><td>99 元</td><td>95 元</td><td>90 元</td><td style="color:var(--warn);font-weight:700">122 元</td></tr>
+<tr><td><strong>主要考量</strong></td><td>假設競爭</td><td>極端壓力</td><td>多方質疑</td><td style="font-size:.8em">CCL 漲價上修 EPS<br>但 PE 極端偏高</td></tr>
+</table>
+
+<div style="margin-top:8px">
+<p style="font-size:.84em;color:var(--txt2)"><strong>信心分變化解讀：</strong></p>
+<p style="font-size:.82em;color:var(--txt2)">信心分從 45（Step6）降至 <strong>38</strong>，原因是 PE 32x 已超越歷史極值，市場定價隱含了過度樂觀的預期。任何低於預期的數據都將引發劇烈修正。</p>
+<p style="font-size:.82em;color:var(--txt2)">但期望股價從 90 上修至 <strong>122</strong>，原因是 CCL 漲價+營收加速+泰國廠確實提升了 EPS 成長的可能性。基本面在改善，只是股價跑得比基本面更快。</p>
+</div>
+</div>
+<div class="chart-col">
+<canvas id="chartConfidence" height="260"></canvas>
+</div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">ev-8i-01：信心分與期望股價背離的意義</div>
+    <div class="ev-d">信心分下降（38）但期望股價上修（122），這代表一個矛盾但合理的判斷：「公司變好了，但股價更貴了」。基本面改善（EPS 成長預期上修）→ 期望股價上調；但估值泡沫（PE 32x）→ 信心下降。結論是：<strong>好公司，但不是好價格</strong>。</div>
+    <div class="ev-s">來源：四次校準比較分析</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>最終行動建議</h3>
+<div class="card-body">
+
+<div style="background:rgba(194,124,110,.12);border:2px solid var(--danger);border-radius:8px;padding:14px 18px;margin:8px 0">
+<p style="font-size:1em;font-weight:900;color:var(--danger);margin-bottom:8px">核心結論：好公司、壞價格 — 不追高</p>
+<table>
+<tr><th style="width:30%">行動</th><th>具體建議</th></tr>
+<tr><td style="color:var(--bear);font-weight:700">1. 空手觀望</td><td><strong>不追高</strong>。PE 32x 是歷史極端值，加權期望價 122 元低於現價 27%。等待回檔。</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">2. 等待區間</td><td><strong>110-120 元</strong>（PE 23-25x），搭配 Q1 季報確認後再做決策。</td></tr>
+<tr><td style="color:var(--bull);font-weight:700">3. 理想買點</td><td><strong>90-100 元</strong>（PE 19-21x），安全邊際充足。即使路徑 C 實現也不虧損。</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">4. 已持有者</td><td><strong>考慮部分獲利了結</strong>（至少減持 1/3）。停損設 130 元。留底倉參與路徑 A 可能性。</td></tr>
+</table>
+</div>
+
+<div class="grid3">
+    <div class="mini-card bear-card">
+        <div class="title">推衍有效期</div>
+        <div class="num" style="color:var(--base);font-size:.9em">至 2026-05-09</div>
+        <div class="desc">Q1 季報公布後需重新推衍</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">下次校準觸發</div>
+        <div class="num" style="color:var(--base);font-size:.9em">Q1 季報公布</div>
+        <div class="desc">EPS/毛利率/現金流</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">立即警示條件</div>
+        <div class="num" style="color:var(--danger);font-size:.9em">PE &gt; 35x</div>
+        <div class="desc">或單日跌幅 &gt; 7%</div>
+    </div>
+</div>
+
+<div class="tip danger">
+    <b>8i 最終整合結論</b>
+    <strong>資料→觀察</strong>：騰輝基本面確實在改善（營收加速、CCL 漲價受惠、泰國廠即將量產），但股價在兩天內暴漲 20.5% 至 155.5 元，PE 32x 超越歷史極值。法人全面不參與，散戶主導行情。<br>
+    <strong>觀察→推論</strong>：市場定價已完全反映路徑 A（黃金情境），但路徑 A 的實現概率僅 30%。加權期望股價 122 元低於現價 27%，風險報酬比極差。<br>
+    <strong>推論→結論</strong>：<span style="color:var(--danger);font-weight:700">這是一檔「好公司、壞價格」的典型案例</span>。基本面值得追蹤，但當前估值不值得追高。信心分降至 38（四次校準最低），反映的不是對公司的悲觀，而是對估值泡沫的警惕。<br>
+    <strong>行動綱領</strong>：等待 Q1 季報（5 月）+ 股價回檔至 110-120 區間，雙重條件滿足後再考慮進場。
+</div>
+
+</div>
+</div>
+
+<!-- ===== 頁尾 ===== -->
+
+<!-- CROSS_LINKS_START -->
+<!-- CROSS_LINKS_END -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 第八步推演版</p>
+    <p>報告日期：2026-04-09 / 基準股價：155.5 元 / 推衍有效期：至 2026-05-09</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，過去績效不代表未來表現。</p>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// ===== 全域常數（只宣告一次）=====
+const C = {
+    bull: '#4caf50', bear: '#ef5350', warn: '#d4a017', neutral: '#7ab0c0',
+    accent: '#6b9f72', base: '#e8e4dc', txt2: '#b8b0a5', txt3: '#7a7268',
+    panel: '#252525', border: '#3a3a3a', gold: '#d4b030', danger: '#d4887a'
+};
+
+// ===== 全部展開/收合 =====
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 預設全部展開
+document.querySelectorAll('.card').forEach(function(c){ /* 預設展開不做事 */ });
+// 點擊 h3 切換
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+
+// ===== Chart.js：營收趨勢（分欄）=====
+(function(){
+    var ctx = document.getElementById('chartRevenue');
+    if(!ctx) return;
+    new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['10月','11月','12月','1月','2月','3月','4月(申報)'],
+            datasets: [{
+                label: '月營收（億元）',
+                data: [3.38, 3.62, 3.58, 3.83, 4.10, 3.55, 4.81],
+                backgroundColor: [C.neutral, C.neutral, C.neutral, C.bull, C.bull, C.neutral, C.bear],
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: '月營收趨勢（億元）', color: C.base, font: { size: 13, weight: 'bold' } }
+            },
+            scales: {
+                x: { ticks: { color: C.txt3, font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.06)' } },
+                y: { ticks: { color: C.txt3, font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.06)' }, min: 2.5, max: 5.5 }
+            }
+        }
+    });
+})();
+
+// ===== Chart.js：PE 趨勢（分欄）=====
+(function(){
+    var ctx = document.getElementById('chartPE');
+    if(!ctx) return;
+    var dates = ['3/9','3/10','3/11','3/12','3/13','3/16','3/17','3/18','3/19','3/20','3/23','3/24','3/25','3/26','3/27','3/30','3/31','4/1','4/2','4/7','4/9'];
+    var peData = [19.39,20.0,20.71,20.69,21.1,20.72,21.13,21.03,23.09,25.36,24.33,26.7,26.39,26.91,27.11,26.49,25.88,26.8,26.7,26.6,32.1];
+    new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'PE（TTM）',
+                    data: peData,
+                    borderColor: C.danger,
+                    backgroundColor: 'rgba(212,136,122,.15)',
+                    fill: true,
+                    tension: .3,
+                    pointRadius: 2,
+                    pointBackgroundColor: function(context){
+                        return context.dataIndex === peData.length-1 ? C.bear : C.danger;
+                    },
+                    pointRadius: function(context){
+                        return context.dataIndex === peData.length-1 ? 6 : 2;
+                    },
+                    borderWidth: 2
+                },
+                {
+                    label: '一年平均 PE (19.3x)',
+                    data: Array(dates.length).fill(19.3),
+                    borderColor: C.accent,
+                    borderDash: [6,3],
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                },
+                {
+                    label: '歷史最高 PE (28.4x)',
+                    data: Array(dates.length).fill(28.4),
+                    borderColor: C.warn,
+                    borderDash: [6,3],
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: C.txt3, font: { size: 9 }, boxWidth: 12 } },
+                title: { display: true, text: 'PE 走勢 — 32x 突破歷史極值', color: C.base, font: { size: 13, weight: 'bold' } }
+            },
+            scales: {
+                x: { ticks: { color: C.txt3, font: { size: 8 }, maxRotation: 45 }, grid: { color: 'rgba(255,255,255,.06)' } },
+                y: { ticks: { color: C.txt3, font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.06)' }, min: 15, max: 35 }
+            }
+        }
+    });
+})();
+
+// ===== Chart.js：信心校準折線圖（分欄）=====
+(function(){
+    var ctx = document.getElementById('chartConfidence');
+    if(!ctx) return;
+    new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Step4\nACH','Step5\n壓力測試','Step6\n評審團','Step8\n推衍'],
+            datasets: [
+                {
+                    label: '信心分',
+                    data: [50, 48, 45, 38],
+                    borderColor: C.danger,
+                    backgroundColor: 'rgba(212,136,122,.2)',
+                    fill: true,
+                    tension: .3,
+                    pointRadius: 5,
+                    pointBackgroundColor: [C.warn, C.warn, C.warn, C.bear],
+                    borderWidth: 2.5,
+                    yAxisID: 'y'
+                },
+                {
+                    label: '期望股價（元）',
+                    data: [99, 95, 90, 122],
+                    borderColor: C.accent,
+                    backgroundColor: 'rgba(107,159,114,.2)',
+                    fill: false,
+                    tension: .3,
+                    pointRadius: 5,
+                    pointBackgroundColor: [C.neutral, C.neutral, C.neutral, C.accent],
+                    borderWidth: 2.5,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: C.txt3, font: { size: 10 }, boxWidth: 12 } },
+                title: { display: true, text: '四次信心校準趨勢', color: C.base, font: { size: 13, weight: 'bold' } }
+            },
+            scales: {
+                x: { ticks: { color: C.txt3, font: { size: 9 } }, grid: { color: 'rgba(255,255,255,.06)' } },
+                y: {
+                    type: 'linear', position: 'left',
+                    title: { display: true, text: '信心分', color: C.danger, font: { size: 10 } },
+                    ticks: { color: C.danger, font: { size: 10 } },
+                    grid: { color: 'rgba(255,255,255,.06)' },
+                    min: 20, max: 60
+                },
+                y1: {
+                    type: 'linear', position: 'right',
+                    title: { display: true, text: '期望股價（元）', color: C.accent, font: { size: 10 } },
+                    ticks: { color: C.accent, font: { size: 10 } },
+                    grid: { drawOnChartArea: false },
+                    min: 60, max: 140
+                }
+            }
+        }
+    });
+})();
+
+// ===== ECharts：概率樹（全寬）=====
+(function(){
+    var dom = document.getElementById('echartsTree');
+    if(!dom) return;
+    var chart = echarts.init(dom, 'dark');
+    var option = {
+        backgroundColor: 'transparent',
+        tooltip: { trigger: 'item', formatter: '{b}' },
+        series: [{
+            type: 'tree',
+            data: [{
+                name: '騰輝電子 6672\n基準價 155.5',
+                children: [
+                    {
+                        name: 'A 黃金情境 (30%)\n目標 180 元',
+                        itemStyle: { color: '#4caf50' },
+                        lineStyle: { color: '#4caf50', width: 3 },
+                        label: { color: '#4caf50' },
+                        children: [{
+                            name: 'EPS 6.5 × PE 28\n= 182 元',
+                            itemStyle: { color: '#4caf50' },
+                            label: { color: '#a5d6a7', fontSize: 10 }
+                        }]
+                    },
+                    {
+                        name: 'B 穩健成長 (25%)\n目標 130 元',
+                        itemStyle: { color: '#7ab0c0' },
+                        lineStyle: { color: '#7ab0c0', width: 2.5 },
+                        label: { color: '#7ab0c0' },
+                        children: [{
+                            name: 'EPS 5.5 × PE 22\n= 121 元',
+                            itemStyle: { color: '#7ab0c0' },
+                            label: { color: '#90caf9', fontSize: 10 }
+                        }]
+                    },
+                    {
+                        name: 'C 均值回歸 (25%)\n目標 95 元',
+                        itemStyle: { color: '#d4a017' },
+                        lineStyle: { color: '#d4a017', width: 2.5 },
+                        label: { color: '#d4a017' },
+                        children: [{
+                            name: 'EPS 5.0 × PE 19\n= 95 元',
+                            itemStyle: { color: '#d4a017' },
+                            label: { color: '#ffe082', fontSize: 10 }
+                        }]
+                    },
+                    {
+                        name: 'D 泡沫破裂 (15%)\n目標 65 元',
+                        itemStyle: { color: '#ef5350' },
+                        lineStyle: { color: '#ef5350', width: 2 },
+                        label: { color: '#ef5350' },
+                        children: [{
+                            name: 'EPS 4.5 × PE 14\n= 63 元',
+                            itemStyle: { color: '#ef5350' },
+                            label: { color: '#ef9a9a', fontSize: 10 }
+                        }]
+                    },
+                    {
+                        name: 'E 黑天鵝 (5%)\n目標 35 元',
+                        itemStyle: { color: '#c62828' },
+                        lineStyle: { color: '#c62828', width: 1.5 },
+                        label: { color: '#c62828' },
+                        children: [{
+                            name: 'EPS 3.0 × PE 12\n= 36 元',
+                            itemStyle: { color: '#c62828' },
+                            label: { color: '#ef9a9a', fontSize: 10 }
+                        }]
+                    }
+                ]
+            }],
+            top: '5%', left: '12%', bottom: '5%', right: '18%',
+            symbol: 'roundRect', symbolSize: [10, 10],
+            orient: 'LR',
+            expandAndCollapse: false,
+            label: {
+                position: 'right', verticalAlign: 'middle', align: 'left',
+                fontSize: 11, color: '#e8e4dc', fontWeight: 'bold',
+                fontFamily: 'Inter, Noto Sans TC'
+            },
+            lineStyle: { color: '#555', width: 1.5, curveness: 0.5 },
+            itemStyle: { color: '#6b9f72', borderColor: '#3a3a3a' },
+            leaves: {
+                label: { position: 'right', verticalAlign: 'middle', align: 'left' }
+            },
+            animationDuration: 800,
+            animationDurationUpdate: 500
+        }]
+    };
+    chart.setOption(option);
+    window.addEventListener('resize', function(){ chart.resize(); });
+})();
+</script>
+
+</body>
+</html>

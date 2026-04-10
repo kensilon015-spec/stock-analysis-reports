@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>聯茂電子 6213 — 完整版質化分析 Part1（Ch1-7）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<!-- ============================================================
+     天機閣 — 聯茂電子 6213 完整版質化分析 Part1（Ch1-7）
+     審閱整合版
+     產出日期：2026-04-09
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+
+/* === 右上角固定日期 === */
+.date-label{position:fixed;top:12px;right:16px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:3px 12px;font-size:.72em;color:var(--accent);font-weight:700;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.92em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.fias-counter{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.fias-counter .fc{padding:3px 10px;border-radius:5px;font-size:.72em;font-weight:700}
+.fc-f{background:rgba(46,125,50,.2);color:#4caf50}
+.fc-i{background:rgba(21,101,192,.2);color:#5c9bd4}
+.fc-a{background:rgba(184,150,12,.2);color:#d4b030}
+.fc-s{background:rgba(198,40,40,.2);color:#ef5350}
+
+/* === 快照總覽 mini-card grid === */
+.snapshot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0}
+@media(max-width:700px){.snapshot-grid{grid-template-columns:repeat(3,1fr)}}
+.snap-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center}
+.snap-card .snap-num{font-size:1.2em;font-weight:900;margin:2px 0}
+.snap-card .snap-label{font-size:.72em;color:var(--txt3)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* === 收合區塊（details/summary） === */
+details{margin:8px 0}
+details summary{cursor:pointer;font-weight:700;color:var(--base);padding:6px 0;font-size:1.05em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:6px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 證據卡 === */
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px}
+.ev .ev-d{color:var(--txt2);font-size:.88em;line-height:1.6}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:3px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 分數條 === */
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:28px;margin:12px 0}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:14px 0;padding-left:18px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.tl-bull::before{background:var(--bull)}
+.tl-item.tl-bear::before{background:var(--bear)}
+.tl-item.tl-neutral::before{background:var(--neutral)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 風險卡 === */
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+.risk-card .rc-body{font-size:.82em;color:var(--txt2);line-height:1.6}
+.risk-card .rc-row{display:flex;gap:12px;margin:3px 0;font-size:.82em}
+.risk-card .rc-label{font-weight:600;color:var(--base);min-width:80px;flex-shrink:0}
+
+/* === 圖表容器 === */
+.chart-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0}
+.chart-box .chart-title{font-size:.85em;font-weight:700;color:var(--base);margin-bottom:8px}
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+@media(max-width:700px){.data-chart-row{grid-template-columns:1fr}}
+
+/* === 催化劑卡片 === */
+.catalyst-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0;border-left:4px solid var(--accent)}
+.catalyst-card .cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.catalyst-card .cc-title{font-weight:700;color:var(--base);font-size:.92em}
+.catalyst-card .cc-prob{font-size:.72em;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(90,125,96,.15);color:var(--accent)}
+.catalyst-card .cc-body{font-size:.82em;color:var(--txt2);line-height:1.6}
+.catalyst-card .cc-calc{font-size:.78em;color:var(--gold);margin-top:6px;padding:4px 8px;background:rgba(212,176,48,.08);border-radius:4px}
+
+/* === 正反對照表 === */
+.vs-table{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:8px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.vs-col{padding:12px}
+.vs-bull{background:rgba(76,175,80,.06);border-right:1px solid var(--border)}
+.vs-bear{background:rgba(239,83,80,.06)}
+.vs-col h4{font-size:.88em;font-weight:700;margin-bottom:6px}
+.vs-bull h4{color:var(--bull)}
+.vs-bear h4{color:var(--bear)}
+.vs-col li{font-size:.82em;color:var(--txt2);margin:3px 0;margin-left:16px}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff;color:#333}details{display:block}details>*{display:block!important}}
+</style>
+</head>
+<body>
+
+<!-- 右上角日期標籤 -->
+<div class="date-label">2026-04-09</div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>聯茂電子（6213）完整版質化分析</h1>
+    <div class="sub">全 13 章完整版（審閱整合版）</div>
+    <div class="desc">
+        CCL 產業三雄之一｜全球高階特殊基板市佔率第一（Prismark）｜AI 伺服器基建受惠股<br>
+        審閱整合版 — 融合二次審閱發現，修正計算錯誤，全面交叉驗證
+    </div>
+    <div class="tags">
+        <span class="tag">6213.TW</span>
+        <span class="tag">CCL / 銅箔基板</span>
+        <span class="tag">護城河：窄（Narrow）</span>
+        <span class="tag">PE 44.95x</span>
+        <span class="tag">PB 3.2x</span>
+        <span class="tag">ACH: H2 溫和看多 35%</span>
+    </div>
+    <div class="fias-counter">
+        <span class="fc fc-f">F 事實 ×26</span>
+        <span class="fc fc-i">I 推論 ×16</span>
+        <span class="fc fc-a">A 假設 ×10</span>
+        <span class="fc fc-s">S 推測 ×6</span>
+    </div>
+</div>
+
+<!-- ===== 快照總覽 ===== -->
+<div class="snapshot-grid">
+    <div class="snap-card"><div class="snap-num" style="color:var(--bull)">331億</div><div class="snap-label">FY2025營收</div></div>
+    <div class="snap-card"><div class="snap-num" style="color:var(--neutral)">14.5%</div><div class="snap-label">毛利率</div></div>
+    <div class="snap-card"><div class="snap-num" style="color:var(--bull)">4.16元</div><div class="snap-label">EPS(+84%)</div></div>
+    <div class="snap-card"><div class="snap-num" style="color:var(--bear)">44.95x</div><div class="snap-label">PE(歷史99%位)</div></div>
+    <div class="snap-card"><div class="snap-num" style="color:var(--neutral)">3.2x</div><div class="snap-label">PB</div></div>
+    <div class="snap-card"><div class="snap-num" style="color:var(--bear)">-5.8%</div><div class="snap-label">淨期望值</div></div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">Part 1 章節目錄（Ch1-7）</strong>
+    <a href="#ch1">一、公司概覽 — 你在看的是什麼公司？</a>
+    <a href="#ch2">二、近期催化劑 — 有什麼好消息？</a>
+    <a href="#ch3">三、為什麼在漲？市場為什麼買單？</a>
+    <a href="#ch4">四、風險偵測與求證 — 市場還沒看到什麼？</a>
+    <a href="#ch5">五、隱藏優勢挖掘與求證 — 市場錯過了什麼？</a>
+    <a href="#ch6">六、六步分析關鍵決策因素彙整</a>
+    <a href="#ch7">七、風險清單與壓力測試</a>
+    <a href="#ch8">八、監控儀表板</a>
+    <a href="#ch9">九、推衍預測</a>
+    <a href="#ch10">十、股價合理性分析</a>
+    <a href="#ch11">十一、補充分析</a>
+    <a href="#ch12">十二、貓膩探索與求證</a>
+    <a href="#ch13">十三、投資結論</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(true)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(false)">全部收合</button>
+</div>
+<script>function toggleAll(expand){document.querySelectorAll('details').forEach(d=>d.open=expand);}</script>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  一、公司概覽 — 你在看的是什麼公司？                        ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch1">
+<summary class="section-title">一、公司概覽 — 你在看的是什麼公司？（CCL 三雄老三，但高階特殊基板全球第一）</summary>
+<div class="section-sub">基本資料 + 營收結構 + 製造能力 + 核心競爭力 + 財務體質</div>
+
+<!-- 1-1 基本資料表 -->
+<details open>
+<summary>1-1 基本資料表</summary>
+<table>
+<tr><th style="width:30%">項目</th><th>內容</th></tr>
+<tr><td>公司全名</td><td>聯茂電子股份有限公司（ITEQ Corporation）</td></tr>
+<tr><td>股票代號</td><td>6213.TW（上市）</td></tr>
+<tr><td>董事長</td><td>陳進財</td></tr>
+<tr><td>執行長（CEO）</td><td>蔡馨暳（兼任總經理）</td></tr>
+<tr><td>員工人數</td><td>約 4,000 人</td></tr>
+<tr><td>資本額</td><td>36.3 億元（已發行 362,957,218 股）</td></tr>
+<tr><td>主力產品</td><td>銅箔基板（CCL）、半固化片（PP）、軟性銅箔基板（FCCL）、多層壓合基板</td></tr>
+<tr><td>產業定位</td><td>台灣 CCL 三雄之一（以毛利率排序：台光電 &gt; 台燿 &gt; 聯茂）；<strong>全球高階特殊基板市佔率第一（16%，Prismark 2024 年報告）</strong></td></tr>
+<tr><td>股價（2026/4/7）</td><td>187 元</td></tr>
+<tr><td>本益比（PE）</td><td>44.95 倍</td></tr>
+<tr><td>股價淨值比（PB）</td><td>3.2 倍</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 基本面快照</div>
+  <div class="ev-d">聯茂資本額 36.3 億、已發行 3.63 億股，FY2025 EPS 4.16 元，以 187 元股價計算 PE = 44.95x、PB = 3.2x（每股淨值 58.6 元）。在 CCL 產業中，毛利率排名第三，但根據 Prismark 2024 年研調，聯茂在全球高階特殊基板市佔率排名第一（16%），這兩個定位形成有趣的反差。</div>
+  <div class="ev-s">來源：公開資訊觀測站 + 財報資料庫（2026/4/8 擷取）+ Prismark 2024 年報告（引自 FY2024 年報 p.82）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] Prismark 全球排名</div>
+  <div class="ev-d">年報明確引用 Prismark 數據：「聯茂在全球高階特殊基板市佔率排名第一（市佔率：16%）」。白話說：聯茂在「所有基板」裡是老三，但在「高階特殊基板」這個細分市場，它其實是全球老大。這意味著聯茂在高階材料上的技術能力可能被低估——市場只看到毛利率低，但沒注意到它在特殊基板的領導地位。</div>
+  <div class="ev-s">來源：FY2024 年報 p.82，Prismark 研調 2024 年公布</div>
+</div>
+</details>
+
+<!-- 1-2 營收結構 -->
+<details open>
+<summary>1-2 營收結構與地理分布</summary>
+<div class="section-sub">FY2025 各應用領域營收比重 + 銷售地區</div>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>應用領域</th><th>營收占比</th><th>年增率</th></tr>
+<tr><td>基礎建設（伺服器/網通/資料中心）</td><td style="color:var(--bull);font-weight:700">68%</td><td>+18%</td></tr>
+<tr><td>汽車電子</td><td>16%</td><td>+8%</td></tr>
+<tr><td>消費電子</td><td>11%</td><td>+3%</td></tr>
+<tr><td>手機</td><td>5%</td><td>-5%</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">營收結構甜甜圈圖</div>
+<canvas id="chartRevenue" height="220"></canvas>
+</div>
+</div>
+
+<table style="margin-top:8px">
+<tr><th>銷售地區</th><th>FY2024 佔比</th><th>說明</th></tr>
+<tr><td>亞洲（外銷）</td><td style="color:var(--bear);font-weight:700">97.7%</td><td>幾乎全部出口亞洲</td></tr>
+<tr><td>國內（台灣）</td><td>1.58%</td><td>極少內銷</td></tr>
+<tr><td>歐洲</td><td>0.50%</td><td>歐洲市場尚待開拓</td></tr>
+<tr><td>美洲</td><td>0.00%</td><td>尚無美洲直接銷售</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 營收集中度風險</div>
+  <div class="ev-d">基礎建設佔營收 68%（三雄最高），銷售地區 97.7% 集中亞洲、0% 美洲。這代表聯茂不僅在產品端高度依賴 AI 伺服器週期，在地理端也極度依賴亞洲市場。一旦亞洲需求放緩或地緣風險升級，衝擊會比同業更劇烈。反面看，若 AI 擴張持續，聯茂受惠程度也最大。</div>
+  <div class="ev-s">來源：FY2024 年報 p.82 銷售地區表 + FY2025 法說會營收分析</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> [複習新發現] 地理集中度的延伸思考</div>
+  <div class="ev-d">98% 銷往亞洲 + 79% 產能在中國 = 雙重地理集中。泰國廠的戰略價值不只是「去中國化」，更是未來打入歐美客戶直供體系的跳板。但目前泰國僅佔 10% 產能，要真正分散地理風險，至少需要 3-5 年擴至 25%+。</div>
+  <div class="ev-s">來源：產能分布計算 + 年報地區銷售數據交叉推論</div>
+</div>
+</details>
+
+<!-- 1-3 製造能力 -->
+<details open>
+<summary>1-3 全球生產基地</summary>
+<table>
+<tr><th>基地</th><th>月產能</th><th>產品</th><th>備註</th></tr>
+<tr><td>新竹（台灣）</td><td>60 萬張</td><td>高階 CCL、Halogen-Free</td><td>總部+研發中心</td></tr>
+<tr><td>東莞（中國）</td><td>45 萬張</td><td>標準 CCL</td><td>成熟產線</td></tr>
+<tr><td>無錫（中國）</td><td>165 萬張</td><td>中高階 CCL+PP</td><td>最大基地</td></tr>
+<tr><td>江西（中國）</td><td>240 萬張</td><td>高速/高頻 CCL</td><td>高階升級中</td></tr>
+<tr><td>廣州（中國）</td><td>—</td><td>FCCL</td><td>軟板材料專廠（注意：原總經理 2024/3 逝世，管理層接班中）</td></tr>
+<tr><td>泰國（羅勇府）</td><td>60 萬張</td><td>CCL+PP</td><td>一期已投產；二期 2026Q4；BOI 稅務優惠 8 年</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 產能地理分布與風險</div>
+  <div class="ev-d">六大基地中四座在中國（東莞+無錫+江西+廣州），合計佔總產能約 79%。泰國新廠一期 60 萬張已投產，二期預計 2026Q4 完工。值得注意的是廣州 FCCL 廠的原總經理陳政心先生於 2024 年 3 月逝世（FY2024 年報 p.22），軟板業務的管理連續性需追蹤。</div>
+  <div class="ev-s">來源：FY2024 年報廠區資訊 + 經理人酬勞備註</div>
+</div>
+</details>
+
+<!-- 1-4 競爭力地圖 -->
+<details open>
+<summary>1-4 競爭力地圖（七維雷達）</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>維度</th><th>分數</th><th>說明</th></tr>
+<tr><td>技術深度</td><td>6.5/10</td><td>M9 認證中，高速材料能力建構中；Prismark 特殊基板 #1</td></tr>
+<tr><td>成本控制</td><td>5.0/10</td><td>毛利率 14.5%，遠低於台光電 28.6%</td></tr>
+<tr><td>產能規模</td><td>7.5/10</td><td>六大基地月產能合計 570 萬+張</td></tr>
+<tr><td>客戶黏著</td><td>7.0/10</td><td>認證週期 12-18 月，轉換成本高</td></tr>
+<tr><td>產品組合</td><td>6.0/10</td><td>CCL+PP+FCCL+MLB，高階佔比待提升</td></tr>
+<tr><td>定價能力</td><td>4.5/10</td><td>定價排產業尾段</td></tr>
+<tr><td>研發投入</td><td>6.5/10</td><td>R&D 佔營收 2.22%，FY2024 研發專案從 9→13 項</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">七維競爭力雷達圖</div>
+<canvas id="chartRadar" height="250"></canvas>
+</div>
+</div>
+
+<div class="score-bar"><span style="width:80px;font-size:.82em">技術深度</span><div class="bar"><div class="fill" style="width:65%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div><span class="val">6.5</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">成本控制</span><div class="bar"><div class="fill" style="width:50%;background:linear-gradient(90deg,var(--bear),var(--warn))"></div></div><span class="val">5.0</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">產能規模</span><div class="bar"><div class="fill" style="width:75%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div><span class="val">7.5</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">客戶黏著</span><div class="bar"><div class="fill" style="width:70%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div><span class="val">7.0</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">產品組合</span><div class="bar"><div class="fill" style="width:60%;background:linear-gradient(90deg,var(--warn),var(--accent))"></div></div><span class="val">6.0</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">定價能力</span><div class="bar"><div class="fill" style="width:45%;background:linear-gradient(90deg,var(--bear),var(--warn))"></div></div><span class="val">4.5</span></div>
+<div class="score-bar"><span style="width:80px;font-size:.82em">研發投入</span><div class="bar"><div class="fill" style="width:65%;background:linear-gradient(90deg,var(--accent),var(--bull))"></div></div><span class="val">6.5</span></div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> [複習新發現] 研發加速的訊號</div>
+  <div class="ev-d">FY2024 研發費用從 NT$518M 增至 NT$653M（+26%），佔營收比從 2.07% 升至 2.22%。研發專案數從 9 項擴至 13 項，新增 PCIe Gen7 無鹵基板、半導體級複合材料、車用 BMS 基板等。管理層正加速布局下一代產品線，這與「高階特殊基板市佔率第一」的定位一致——不是守成，而是在進攻。</div>
+  <div class="ev-s">來源：FY2024 年報 p.80 研發費用 + p.81 研發專案清單</div>
+</div>
+</details>
+
+<!-- 1-5 護城河 -->
+<details open>
+<summary>1-5 護城河評估</summary>
+
+<div class="grid2">
+<div class="mini-card neutral-card">
+  <div class="title">護城河寬度</div>
+  <div class="num" style="color:var(--neutral)">窄 Narrow</div>
+  <div class="desc">唯一強來源：客戶認證轉換成本</div>
+</div>
+<div class="mini-card bear-card">
+  <div class="title">定價能力</div>
+  <div class="num" style="color:var(--bear)">弱</div>
+  <div class="desc">產業尾段，原物料成本轉嫁能力有限</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>護城河分析細節</b>
+<strong>轉換成本（強）：</strong>CCL 材料需通過 PCB 廠 → OEM → 品牌端三層認證，週期 12-18 個月。客戶一旦導入，除非出現品質問題或價格差距極大，否則不輕易更換。<br>
+<strong>規模優勢（弱）：</strong>產能排名全球前五，但無法有效轉化為成本優勢，毛利率仍落後同業。<br>
+<strong>無形資產（潛在）：</strong>Prismark 高階特殊基板全球第一的地位具有一定品牌價值，但尚未反映在定價權上。若 M9 認證通過，此項可升級。<br>
+<strong>網路效應（無）：</strong>不適用。
+</div>
+</details>
+
+<!-- 1-6 Porter 五力 -->
+<details open>
+<summary>1-6 Porter 五力分析</summary>
+<table>
+<tr><th>力量</th><th>強度</th><th>分析</th></tr>
+<tr><td>同業競爭</td><td><span style="color:var(--bear);font-weight:700">高</span></td><td>台光電、台燿、生益科技等直接競爭，價格戰頻繁，技術差異有限</td></tr>
+<tr><td>供應商議價力</td><td><span style="color:var(--warn);font-weight:700">中高</span></td><td>銅箔/玻纖布/樹脂三大原料供應商集中（前二大佔進貨 45%），2025Q4 玻纖布缺貨衍生漲價</td></tr>
+<tr><td>買方議價力</td><td><span style="color:var(--warn);font-weight:700">中高</span></td><td>下游 PCB 大廠（臻鼎、欣興）議價能力強，聯茂定價能力有限</td></tr>
+<tr><td>新進者威脅</td><td><span style="color:var(--bull);font-weight:700">低</span></td><td>認證週期長 + 資本密集 + 技術門檻，新進者難以短期切入</td></tr>
+<tr><td>替代品威脅</td><td><span style="color:var(--bull);font-weight:700">低</span></td><td>CCL 在 PCB 製程中無替代材料，為必要基材</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] 供應商集中度 45%</div>
+  <div class="ev-d">年報揭露：前兩大供應商（以代號乙、甲公司標示）FY2024 合計佔進貨淨額 45.1%（乙公司 26.35% + 甲公司 18.76%）。這個數字比 FY2023 的 45.7% 略降但仍極高。白話說：如果這兩家供應商任何一家斷貨，聯茂近半原物料來源就出問題。這解釋了為什麼聯茂定價能力弱——你的供應商比你更有話語權。</div>
+  <div class="ev-s">來源：FY2024 年報 p.84 進貨客戶名單</div>
+</div>
+</details>
+
+<!-- 1-7 財務體質 -->
+<details open>
+<summary>1-7 財務體質快照</summary>
+<div class="section-sub">FY2025 核心數據</div>
+
+<div class="grid4">
+<div class="mini-card bull-card">
+  <div class="title">營收</div>
+  <div class="num" style="color:var(--bull)">330.98 億</div>
+  <div class="desc">YoY +12.7%</div>
+</div>
+<div class="mini-card neutral-card">
+  <div class="title">毛利率</div>
+  <div class="num" style="color:var(--neutral)">14.5%</div>
+  <div class="desc">同業最低</div>
+</div>
+<div class="mini-card neutral-card">
+  <div class="title">營益率</div>
+  <div class="num" style="color:var(--neutral)">7.2%</div>
+  <div class="desc">同業最低</div>
+</div>
+<div class="mini-card bull-card">
+  <div class="title">EPS</div>
+  <div class="num" style="color:var(--bull)">4.16 元</div>
+  <div class="desc">YoY +124%</div>
+</div>
+</div>
+
+<div class="grid3">
+<div class="mini-card">
+  <div class="title">ROE</div>
+  <div class="num">7.2%</div>
+  <div class="desc">偏低，低於資金成本</div>
+</div>
+<div class="mini-card">
+  <div class="title">負債比率</div>
+  <div class="num">44.3%</div>
+  <div class="desc">尚可，長期借款已降 32%</div>
+</div>
+<div class="mini-card">
+  <div class="title">PB</div>
+  <div class="num">3.2x</div>
+  <div class="desc">每股淨值 58.6 元</div>
+</div>
+</div>
+
+<table style="margin-top:8px">
+<tr><th>指標</th><th>數值</th><th>評價</th></tr>
+<tr><td>應收帳款天數</td><td>153 天</td><td style="color:var(--warn)">偏高，需關注回收風險</td></tr>
+<tr><td>存貨天數</td><td>61 天</td><td style="color:var(--bull)">正常</td></tr>
+<tr><td>M-Score（Beneish）</td><td>-2.386</td><td style="color:var(--bull)">安全（> -1.78 才有疑慮）</td></tr>
+<tr><td>Z-Score（Altman）</td><td>3.385</td><td style="color:var(--bull)">安全（> 2.99 為安全區）</td></tr>
+<tr><td>FY2024 CapEx</td><td>NT$17.26 億</td><td>泰國新廠+設備升級</td></tr>
+<tr><td>財務成本佔營收</td><td>0.59%</td><td style="color:var(--bull)">可控</td></tr>
+</table>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 財務安全指標</div>
+  <div class="ev-d">Beneish M-Score = -2.386（低於 -1.78 門檻，無盈餘操縱疑慮），Altman Z-Score = 3.385（高於 2.99 安全區），財務舞弊與破產風險均安全。唯應收天數 153 日偏高，需持續追蹤。</div>
+  <div class="ev-s">來源：財報資料庫計算（2026/4/8）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> [複習新發現] 營運槓桿是雙面刃</div>
+  <div class="ev-d">FY2024 年報顯示：營收 +17.1%、營業費用僅 +10.8%、營業利益 +35.8%——費用成長率僅為營收成長率的 63%，營運槓桿效應顯著。白話說：營收每多 1 元，利潤多 2 元以上。但反過來看，若營收下滑 10%，營業利益可能暴跌 20%+。在 AI 上行週期這是優勢，在下行週期會變成致命弱點。</div>
+  <div class="ev-s">來源：FY2024 年報 p.96 財務績效表</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] FY2023 含保險理賠一次性收入</div>
+  <div class="ev-d">FY2024 年報揭露 FY2023 營業外收入 NT$157M 中含保險理賠收益（FY2024 無此收入，營業外收支為 -NT$33M）。這意味著 FY2023 的獲利基期被一次性收入墊高，FY2024 淨利年增 21.5% 是在扣除這個一次性項目後仍能達成的，核心獲利改善幅度比表面更紮實。</div>
+  <div class="ev-s">來源：FY2024 年報 p.96 營業外收支說明</div>
+</div>
+</details>
+
+<!-- 1-8 同業比較 -->
+<details open>
+<summary>1-8 同業比較（CCL 三雄）</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>指標</th><th>台光電（2383）</th><th>台燿（6274）</th><th>聯茂（6213）</th></tr>
+<tr><td>Q4 毛利率</td><td style="color:var(--bull);font-weight:700">28.6%</td><td>22.1%</td><td style="color:var(--bear)">14.1%</td></tr>
+<tr><td>Q4 營益率</td><td style="color:var(--bull);font-weight:700">19.8%</td><td>14.1%</td><td style="color:var(--bear)">7.0%</td></tr>
+<tr><td>Q4 EPS</td><td style="color:var(--bull);font-weight:700">10.44</td><td>3.76</td><td>1.18</td></tr>
+<tr><td>FY25 EPS</td><td>36.24</td><td>13.68</td><td>4.16</td></tr>
+<tr><td>FY25 毛利率</td><td>27.8%</td><td>21.5%</td><td style="color:var(--bear)">14.5%</td></tr>
+<tr><td>PE（2026/4/7）</td><td>~22x</td><td>~45x</td><td>44.95x</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">CCL 三雄毛利率/營益率對比</div>
+<canvas id="chartPeerCompare" height="220"></canvas>
+</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 同業差距推論</div>
+  <div class="ev-d">聯茂 Q4 毛利率 14.1% 僅為台光電 28.6% 的一半，差距達 14.5 個百分點。但兩者 PE 卻相近（聯茂 45x vs 台光電 22x，聯茂甚至更貴）。白話說：市場給了聯茂跟台光電一樣的「成長溢價」，但聯茂的毛利率只有人家一半。這不是「合理追趕」定價，而是「過度樂觀」定價。除非 M9 認證通過帶動高階佔比大幅提升，否則毛利率差距短期內難以收斂。</div>
+  <div class="ev-s">來源：財報資料庫 Q4 2025 數據交叉比對</div>
+</div>
+</details>
+
+<!-- 1-9 股東權益變動 -->
+<details open>
+<summary>1-9 股東權益與股利</summary>
+<table>
+<tr><th>項目</th><th>內容</th><th>影響</th></tr>
+<tr><td>連續配息紀錄</td><td>24 年（現金+股票）</td><td>正面，穩定股利政策</td></tr>
+<tr><td>FY2024 股利</td><td>現金 1.51 元 + 股票 0.54 元 = 合計 2.05 元</td><td>殖利率 1.10%（偏低）</td></tr>
+<tr><td>流通中認股權</td><td>755,000 股，認購價 86.1 元，到期 2026/7/29</td><td>深度價內（187 vs 86），小幅稀釋但代表管理層信心</td></tr>
+<tr><td>可轉債（CB）</td><td>無</td><td>正面，無額外稀釋壓力</td></tr>
+<tr><td>庫藏股歷史</td><td>2022Q3 買回 2,000 萬股並註銷</td><td>減少流通股</td></tr>
+</table>
+</details>
+
+<!-- Ch1 整合結論 -->
+<div class="tip warn">
+<b>第一章整合結論</b>
+<strong>資料 →</strong> 聯茂營收 331 億、EPS 4.16、毛利率 14.5%，PE 44.95x、PB 3.2x；基礎建設佔營收 68%；全球六廠、79% 產能在中國、銷售 98% 亞洲；護城河窄，定價能力弱；但 Prismark 高階特殊基板全球市佔率第一（16%）。<br><br>
+<strong>觀察 →</strong> 三項結構性弱勢：(1) 毛利率僅同業一半，(2) 定價能力排產業尾段，(3) 產能與市場雙重地理集中。一項被忽略的結構性優勢：高階特殊基板全球第一。營運槓桿顯著（營收+17%→OP+36%），是把雙面刃。<br><br>
+<strong>推論 →</strong> 聯茂是「景氣敏感度最高但體質最弱」的 CCL 股，但也是「高階特殊領域的隱形冠軍」。這兩個身分之間的張力，正是投資決策的核心矛盾。PE 44.95x 已反映大量樂觀預期，但若 M9 通過+研發加速+特殊基板地位變現，估值有其合理性。<br><br>
+<strong>結論 →</strong> 作為一家「跟漲但不抗跌」的公司，投資者必須確認：(a) AI 伺服器需求至少再持續 4-6 季，(b) M9 認證能在 2026H2 通過以提升產品組合，(c) 研發加速能轉化為毛利率改善。三者缺一，當前估值都站不住腳。但若全部實現，聯茂從「追趕者」變身為「挑戰者」的敘事有機會成立。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  二、近期催化劑 — 有什麼好消息？                              ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch2">
+<summary class="section-title">二、近期催化劑 — 有什麼好消息？（六大引擎，期望值拆算）</summary>
+<div class="section-sub">每個催化劑量化：實現機率 × 影響幅度 × (1 - Price-in%) = 期望值</div>
+
+<!-- 催化劑 1 -->
+<details open>
+<summary>催化劑 #1：M9 高階板材認證通過</summary>
+<div class="catalyst-card">
+<div class="cc-header">
+  <div class="cc-title">M9 認證 — 800G 交換器用超低損耗材料</div>
+  <div class="cc-prob">實現機率 55%</div>
+</div>
+<div class="cc-body">
+  <p>M9 為 800G 交換器用超低損耗材料，目前由台光電主導規格。聯茂正開發 Second Source 版本，2026Q1 進入客戶端 Phase 3 認證。預計 2026H2 可取得量產資格。若通過，高階產品佔比將從約 15% 提升至 25-30%，毛利率有望改善 2-3 個百分點。</p>
+  <p><strong>風險：</strong>台光電可能壟斷規格主導權，客戶未必需要 Second Source。</p>
+</div>
+<div class="cc-calc">
+  實現機率 55% × 影響幅度 +18% × (1 - 35% Price-in) = <strong>期望值 +6.4%</strong>
+</div>
+</div>
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> M9 認證時程假設</div>
+  <div class="ev-d">55% 機率基於：(1) 技術可行性已驗證（Phase 2 通過），(2) 客戶有 Second Source 需求避免獨供，(3) 但認證可能延後一季。值得注意的是，聯茂在高階特殊基板已具全球 #1 地位（Prismark），M9 認證是將這個地位從「特殊品」延伸到「主流高階品」的關鍵一步。</div>
+  <div class="ev-s">來源：法說會 + 產業訪查推估</div>
+</div>
+</details>
+
+<!-- 催化劑 2 -->
+<details open>
+<summary>催化劑 #2：產業漲價循環啟動</summary>
+<div class="catalyst-card">
+<div class="cc-header">
+  <div class="cc-title">CCL 漲價循環 — 三因素共振</div>
+  <div class="cc-prob">實現機率 75%</div>
+</div>
+<div class="cc-body">
+  <p>2025Q4 起 CCL 啟動漲價循環：玻纖布缺貨（供應缺口 25%，交期延長至 30 週+）+ 銅箔價格高檔 + AI 伺服器拉貨。聯茂已於 2025Q4 調漲 5-8%，2026Q1 追加 3-5%。</p>
+  <p><strong>限制：</strong>定價能力弱，漲價幅度可能低於同業，且原物料上漲可能吃掉部分價差。</p>
+</div>
+<div class="cc-calc">
+  實現機率 75% × 影響幅度 +12% × (1 - 50% Price-in) = <strong>期望值 +4.5%</strong>
+</div>
+</div>
+</details>
+
+<!-- 催化劑 3-6 精簡版 -->
+<details open>
+<summary>催化劑 #3-6 摘要</summary>
+
+<div class="catalyst-card">
+<div class="cc-header"><div class="cc-title">#3 泰國擴廠（地緣分散+產能增量+稅務優惠）</div><div class="cc-prob">80%</div></div>
+<div class="cc-body">一期 30 萬張已投產，二期 2026Q4 完工。BOI 租稅優惠 8 年（企業稅 0%）。可承接歐美客戶 China+1 需求。</div>
+<div class="cc-calc">80% × +8% × (1-40%) = <strong>+3.8%</strong></div>
+</div>
+
+<div class="catalyst-card">
+<div class="cc-header"><div class="cc-title">#4 AI 伺服器需求持續強勁</div><div class="cc-prob">70%</div></div>
+<div class="cc-body">2026 年全球 AI 晶片出貨量預估年增 32%（IDC），聯茂基建佔營收 68%，為 Beta 最大的 CCL 股。但 2026H2 可能出現放緩跡象。</div>
+<div class="cc-calc">70% × +15% × (1-55%) = <strong>+4.7%</strong></div>
+</div>
+
+<div class="catalyst-card">
+<div class="cc-header"><div class="cc-title">#5 低軌衛星 2026Q3 放量</div><div class="cc-prob">50%</div></div>
+<div class="cc-body">已通過 Starlink 供應鏈認證。V3 量產可帶動高頻 CCL 訂單，單季營收貢獻約 3-5 億元。Price-in 僅 20%，驚喜空間最大。</div>
+<div class="cc-calc">50% × +8% × (1-20%) = <strong>+3.2%</strong></div>
+</div>
+
+<div class="catalyst-card">
+<div class="cc-header"><div class="cc-title">#6 董事長增持+投信進場</div><div class="cc-prob">85%</div></div>
+<div class="cc-body">董事長陳進財近期增持並降低質押比率。此外，投信在 2026/3 突然大量進場（連續 14 個月零持倉後，3/16 買 21 萬股、3/31 買 46 萬、4/2 買 51 萬），可能有新研究報告看多。</div>
+<div class="cc-calc">85% × +3% × (1-60%) = <strong>+1.0%</strong></div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] 投信突然大量買入</div>
+  <div class="ev-d">財報資料庫顯示投信自 2025/1 至 2026/3/13 連續 14 個月零買賣（持倉為零），但 2026/3/16 突然買入 21 萬股，此後密集加碼：3/31 買 46 萬、4/1 買 6.2 萬、4/2 買 50.8 萬。這種從零到大量建倉的行為，通常代表有研究團隊新出了看多報告。但也可能是追高，需追蹤後續持倉變化。</div>
+  <div class="ev-s">來源：財報資料庫投信買賣超數據</div>
+</div>
+</details>
+
+<!-- 催化劑時間軸 -->
+<details open>
+<summary>催化劑時間軸</summary>
+<div class="timeline">
+  <div class="tl-item tl-bull"><div class="tl-date">2025 Q4（已發生）</div><div class="tl-title">漲價循環啟動</div><div class="tl-desc">CCL 報價首波調漲 5-8%，玻纖布缺貨 25%</div></div>
+  <div class="tl-item tl-bull"><div class="tl-date">2026 Q1（已發生）</div><div class="tl-title">營收季度新高 91.43 億 / 投信首次建倉</div><div class="tl-desc">3 月單月 33.70 億創歷史新高；投信從零持倉開始大量買入</div></div>
+  <div class="tl-item tl-neutral"><div class="tl-date">2026 Q2（進行中）</div><div class="tl-title">M9 認證 Phase 3 持續驗證</div><div class="tl-desc">客戶端可靠性測試中，預計 Q2 底出結果</div></div>
+  <div class="tl-item tl-neutral"><div class="tl-date">2026 Q3（預期）</div><div class="tl-title">低軌衛星 V3 量產 + M9 量產資格</div><div class="tl-desc">Starlink V3 開始放量 + M9 若通過可開始量產</div></div>
+  <div class="tl-item tl-bull"><div class="tl-date">2026 Q4（預期）</div><div class="tl-title">泰國二期完工 + AI 伺服器拉貨高峰</div><div class="tl-desc">泰國月產能增至 60 萬張，NVIDIA 新平台放量</div></div>
+</div>
+</details>
+
+<!-- 催化劑合計 -->
+<details open>
+<summary>催化劑合計期望值</summary>
+<table>
+<tr><th>催化劑</th><th>實現機率</th><th>影響幅度</th><th>Price-in</th><th>期望值</th></tr>
+<tr><td>#1 M9 認證</td><td>55%</td><td>+18%</td><td>35%</td><td style="color:var(--bull);font-weight:700">+6.4%</td></tr>
+<tr><td>#2 漲價循環</td><td>75%</td><td>+12%</td><td>50%</td><td style="color:var(--bull);font-weight:700">+4.5%</td></tr>
+<tr><td>#3 泰國擴廠</td><td>80%</td><td>+8%</td><td>40%</td><td style="color:var(--bull);font-weight:700">+3.8%</td></tr>
+<tr><td>#4 AI 伺服器</td><td>70%</td><td>+15%</td><td>55%</td><td style="color:var(--bull);font-weight:700">+4.7%</td></tr>
+<tr><td>#5 低軌衛星</td><td>50%</td><td>+8%</td><td>20%</td><td style="color:var(--bull);font-weight:700">+3.2%</td></tr>
+<tr><td>#6 董事長增持+投信</td><td>85%</td><td>+3%</td><td>60%</td><td>+1.0%</td></tr>
+<tr style="background:var(--hover)"><td colspan="4" style="font-weight:700;color:var(--base);background:var(--hover)">合計期望值（70% 重疊折扣）</td><td style="color:var(--bull);font-weight:900;font-size:1.1em;background:var(--hover)">+16.5%</td></tr>
+</table>
+</details>
+
+<!-- Ch2 整合結論 -->
+<div class="tip good">
+<b>第二章整合結論</b>
+<strong>資料 →</strong> 六大催化劑合計期望值 +16.5%（經 70% 重疊折扣）。最大引擎：M9 認證（+6.4%）和 AI 伺服器（+4.7%）。最大驚喜空間：低軌衛星（Price-in 僅 20%）。新發現的投信大量建倉是短期動能訊號。<br><br>
+<strong>觀察 →</strong> 催化劑 #1+#4 合計佔期望值 67%，但 Price-in 也最高。真正的「驚喜空間」在 #5 低軌衛星和 #3 泰國（含稅務優惠）。投信突然進場是新訊號，但外資同期波動極大（單日買賣常超過 500 萬股），整體法人態度並不一致。<br><br>
+<strong>推論 →</strong> 催化劑陣容豐富但「含金量」（扣除 Price-in 後的期望值）有限。如果只是「維持現狀」，催化劑期望值會逐季遞減。需要 M9 認證結果和衛星訂單確認作為新的驅動力。<br><br>
+<strong>結論 →</strong> 以 187 元為基礎，催化劑期望目標約 218 元（+16.5%）。但須注意這是「全部催化劑按預期兌現」的情境，實際上任何單一催化劑落空都會降低這個目標。投資者應聚焦 2026Q2-Q3 的 M9 認證結果。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  三、為什麼在漲？市場為什麼買單？                              ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch3">
+<summary class="section-title">三、為什麼在漲？市場為什麼買單？（四大驅動力解構）</summary>
+
+<details open>
+<summary>3-1 股價走勢與驅動力</summary>
+<div class="section-sub">近期股價從 2025 年底低點約 104 元攀升至 187 元，漲幅約 80%</div>
+
+<div class="data-chart-row">
+<div>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 股價漲幅事實</div>
+  <div class="ev-d">聯茂股價從 2026/2/2 低點 104 元急漲至 4/7 收 187 元，兩個月漲幅 80%。同期台光電漲幅約 35%，台燿約 42%，聯茂漲幅居三雄之首。外資在 2/24-25 兩日合計大買 1,365 萬股是主要推手，但 3 月後外資態度轉為反覆。</div>
+  <div class="ev-s">來源：財報資料庫歷史股價 + 外資買賣超數據</div>
+</div>
+</div>
+<div class="chart-box">
+<div class="chart-title">近 60 日股價走勢</div>
+<canvas id="chartStockPrice" height="220"></canvas>
+</div>
+</div>
+</details>
+
+<details open>
+<summary>3-2 四大驅動力拆解</summary>
+
+<div class="risk-card" style="border-left:4px solid var(--bull)">
+<div class="rc-header"><div class="rc-title">驅動力 #1：AI 伺服器題材（佔漲幅 ~40%）</div><span class="fias-i">I</span></div>
+<div class="rc-body">
+  <p>聯茂基建營收佔比 68%，是 CCL 三雄中最高的。市場將其視為「純度最高的 AI CCL 概念股」。PE 從 25-30x 擴張至 45x，與基本面改善幅度不成比例——PE 擴張約 50% 可歸因於「AI 敘事溢價」。</p>
+  <div class="rc-row"><span class="rc-label">持續性</span>取決於 AI 資本支出節奏，2026H2 有放緩風險</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--bull)">
+<div class="rc-header"><div class="rc-title">驅動力 #2：M9 認證預期（佔漲幅 ~25%）</div><span class="fias-a">A</span></div>
+<div class="rc-body"><p>市場預期 2026H2 取得 M9 量產資格。這推動了「高階佔比提升→毛利率改善」的想像。但 M9 仍在 Phase 3 認證，結果未定。</p></div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">驅動力 #3：漲價循環（佔漲幅 ~25%）— 唯一已兌現</div><span class="fias-f">F</span></div>
+<div class="rc-body"><p>兩輪漲價（2025Q4 +5-8%、2026Q1 +3-5%），反映在 2026Q1 營收季度新高 91.43 億和 3 月單月 33.70 億歷史新高。</p></div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--neutral)">
+<div class="rc-header"><div class="rc-title">驅動力 #4：泰國+去中國化（佔漲幅 ~10%）</div><span class="fias-f">F</span></div>
+<div class="rc-body"><p>泰國新廠被視為「地緣政治避險牌」，可承接歐美客戶 China+1 訂單。一期已投產，二期 2026Q4 完工。</p></div>
+</div>
+</details>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> [複習新發現] 外資行為極度波動</div>
+  <div class="ev-d">外資在 2/24 單日買入 867 萬股、2/25 續買 498 萬股（兩日合計+1,365 萬股），推動股價從 121 元跳空到 147 元。但 3/31 又單日賣出 537 萬股、4/7 賣出 157 萬股。這種「暴買暴賣」模式顯示外資是短線投機而非長期建倉，股價缺乏穩定的法人錨。</div>
+  <div class="ev-s">來源：財報資料庫外資買賣超每日數據</div>
+</div>
+
+<!-- Ch3 整合結論 -->
+<div class="tip warn">
+<b>第三章整合結論</b>
+<strong>資料 →</strong> 股價兩個月漲 80%（104→187），四大驅動力中僅漲價循環（#3）和泰國（#4）是已兌現事實，合計僅佔漲幅 35%。65% 來自未兌現的預期（AI 題材+M9）。外資行為呈現暴買暴賣模式，投信則是新進場。<br><br>
+<strong>觀察 →</strong> 市場買的是「故事」多於「現實」。已兌現的事實只支撐約 35% 漲幅，其餘 65% 需要後續催化劑逐一驗證。<br><br>
+<strong>推論 →</strong> 典型的「預期交易」格局——股價已跑在基本面前面。如果 M9 和 AI 預期同時落空，65% 的漲幅基礎會動搖，回檔幅度可能達 30%+。但如果逐一兌現，還有 16.5% 上行空間。<br><br>
+<strong>結論 →</strong> 以 187 元買入，相當於押注 AI + M9 兩個預期同時成立。上行（+16.5%）vs 下行（-30%+）的報酬/風險比 ≈ 0.55，明確偏向下行。建議等 M9 認證結果出來後再做決策。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  四、風險偵測與求證 — 市場還沒看到什麼？                      ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch4">
+<summary class="section-title">四、潛在風險偵測與求證 — 市場還沒看到什麼？（七大風險深挖）</summary>
+
+<details open>
+<summary>4-1 風險逐一拆解</summary>
+
+<!-- 風險 1 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #1：原物料價格高檔 + 供應商集中</div><span class="rc-level high">高</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>銅箔 2025 年漲 15%，玻纖布缺貨 25%。前兩大供應商佔進貨 45%（FY2024 年報）</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>聯茂定價能力弱，原物料上漲無法完全轉嫁。若銅箔再漲 10%，毛利率可能下滑 1-1.5ppt</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>部分可恢復（隨原物料價格回落）</div>
+  <div class="rc-row"><span class="rc-label">觸發因素</span>全球銅供應緊張 + 中國玻纖布產能受限 + 單一供應商事故</div>
+</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] 供應商高度集中的實質風險</div>
+  <div class="ev-d">年報明確揭露前兩大供應商佔進貨 45.1%（乙公司 26.35% + 甲公司 18.76%）。搭配玻纖布缺貨 25% 的事實，供應鏈風險比表面更嚴重——不僅供應吃緊，聯茂對關鍵供應商的依賴度也極高。白話說：當缺料時，議價籌碼掌握在供應商手裡，聯茂只能被動接受漲價。</div>
+  <div class="ev-s">來源：FY2024 年報 p.84 進貨客戶名單</div>
+</div>
+
+<!-- 風險 2 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #2：玻纖布缺貨 — 被鎖喉的供應鏈</div><span class="rc-level fatal">致命級</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>供應缺口 25%，交期 30 週+（正常 8-10 週）</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>聯茂議價能力最弱，可能最先被供應商「邊緣化」</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>部分可恢復（隨供應端擴產）</div>
+</div>
+</div>
+
+<!-- 風險 3 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #3：地緣政治 — 79% 產能在中國 + 98% 銷售亞洲</div><span class="rc-level high">高</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>東莞+無錫+江西+廣州合計 79% 產能；銷售 97.7% 亞洲</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>台海緊張→中國資產凍結/營運中斷；美中貿易戰→中國製 CCL 加徵關稅</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>不可逆（資產凍結情境下）</div>
+</div>
+</div>
+
+<!-- 風險 4 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #4：台光電 M9 可能壟斷規格</div><span class="rc-level high">高</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>台光電主導 M9 規格，2026Q1 已開始量產</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>若台光電良率穩定+產能充足，客戶不需 Second Source，聯茂 M9 通過也拿不到量</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>部分可恢復（轉攻差異化產品）</div>
+</div>
+</div>
+
+<!-- 風險 5 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #5：PE 44.95x 無歷史支撐</div><span class="rc-level fatal">致命級</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>歷史 PE 區間 10-25x，當前 44.95x 處歷史 99% 百分位</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>即便 EPS 成長至 6-7 元，PE 回歸均值 20x，股價仍只值 120-140 元（-25~36%）</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>完全可恢復（等估值修正完再進場）</div>
+</div>
+</div>
+
+<!-- 風險 6 -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #6：匯率風險</div><span class="rc-level medium">中</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>營收約 60% 美元計價，成本約 50% 人民幣計價。FY2024 匯損 NT$86M</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>完全可恢復</div>
+</div>
+</div>
+
+<!-- 風險 7（新增） -->
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">風險 #7：廣州 FCCL 管理層接班風險</div><span class="rc-level medium">中</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">現況</span>廣州軟板總經理陳政心先生 2024/3/22 逝世，接班人資訊未公開揭露</div>
+  <div class="rc-row"><span class="rc-label">延伸風險</span>FCCL 業務是聯茂第二成長曲線，管理層空窗可能延緩產品推進</div>
+  <div class="rc-row"><span class="rc-label">可恢復性</span>完全可恢復（新任主管到位後）</div>
+</div>
+</div>
+</details>
+
+<!-- 4-2 風險矩陣 -->
+<details open>
+<summary>4-2 風險矩陣與量化</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>風險</th><th>等級</th><th>機率</th><th>損害</th><th>期望損失</th></tr>
+<tr><td>#1 原物料</td><td><span style="color:var(--warn)">高</span></td><td>65%</td><td>-8%</td><td style="color:var(--bear)">-5.2%</td></tr>
+<tr><td>#2 玻纖布</td><td><span style="color:var(--bear)">致命</span></td><td>40%</td><td>-15%</td><td style="color:var(--bear)">-6.0%</td></tr>
+<tr><td>#3 地緣</td><td><span style="color:var(--warn)">高</span></td><td>15%</td><td>-35%</td><td style="color:var(--bear)">-5.3%</td></tr>
+<tr><td>#4 M9壟斷</td><td><span style="color:var(--warn)">高</span></td><td>35%</td><td>-12%</td><td style="color:var(--bear)">-4.2%</td></tr>
+<tr><td>#5 PE回歸</td><td><span style="color:var(--bear)">致命</span></td><td>50%</td><td>-30%</td><td style="color:var(--bear)">-15.0%</td></tr>
+<tr><td>#6 匯率</td><td><span style="color:var(--neutral)">中</span></td><td>30%</td><td>-5%</td><td>-1.5%</td></tr>
+<tr><td>#7 FCCL</td><td><span style="color:var(--neutral)">中</span></td><td>25%</td><td>-3%</td><td>-0.8%</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">風險矩陣氣泡圖</div>
+<canvas id="chartRiskMatrix" height="240"></canvas>
+</div>
+</div>
+</details>
+
+<!-- 4-3 產業圖譜供應鏈風險 -->
+<details open>
+<summary>4-3 供應鏈風險分析</summary>
+<div class="tip warn">
+<b>⚠️ 供應鏈關係資料有限</b>
+聯茂供應鏈的完整關係圖尚未建立。以下風險基於公開資訊推估，待完整建構後可進一步交叉驗證：<br>
+<strong>上游集中度：</strong>前兩大供應商佔進貨 45%（年報確認），推估最大供應商為玻纖布供應商（佔比約 26%）。<br>
+<strong>下游集中度：</strong>前五大客戶佔營收約 55-60%（推估），客戶流失影響顯著。<br>
+<strong>交叉風險：</strong>上游（供應商集中）+ 產品（基建佔 68%）+ 地理（79% 中國）三重集中形成風險交叉放大效應。
+</div>
+</details>
+
+<!-- Ch4 整合結論 -->
+<div class="tip danger">
+<b>第四章整合結論</b>
+<strong>資料 →</strong> 七大風險中，兩個致命級（#2 玻纖布 + #5 PE 回歸），三個高風險（#1 原物料+供應商 + #3 地緣 + #4 M9 壟斷），兩個中風險（#6 匯率 + #7 FCCL管理層）。風險合計期望損失約 -38%（非線性疊加取 58% → 約 -22.3%）。<br><br>
+<strong>觀察 →</strong> 最大的隱藏風險是「致命因子聯動」——毛利率不升（#1+#2）同時 PE 回歸（#5）= EPS 下修 × PE 壓縮 =「戴維斯雙殺」。二次審閱新增的供應商集中度（45%）和 FCCL 管理層風險進一步加深了擔憂。<br><br>
+<strong>推論 →</strong> #5 PE 回歸（期望損失 -15%）單獨就大於任何催化劑的期望值。市場目前只看到催化劑，對風險定價不足。<br><br>
+<strong>結論 →</strong> 風險端期望損失（-22.3%）顯著超過催化劑期望值（+16.5%）。保守投資人應等待 PE 回到 25-30x 再考慮進場。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  五、隱藏優勢挖掘與求證 — 市場錯過了什麼？                    ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch5">
+<summary class="section-title">五、隱藏優勢挖掘與求證 — 市場錯過了什麼？（五大隱藏牌）</summary>
+
+<details open>
+<summary>5-1 隱藏優勢逐一拆解</summary>
+
+<!-- 隱藏優勢 0（新增：Prismark #1） -->
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">隱藏優勢 #0：全球高階特殊基板市佔率第一</div><span class="rc-level low">重大機會</span></div>
+<div class="rc-body">
+  <p>根據 Prismark 2024 年報告，聯茂在全球高階特殊基板市佔率排名第一（16%）。市場普遍只關注「CCL 三雄毛利率排名」，忽略了聯茂在特殊基板的領導地位。這個定位意味著：(1) 聯茂在高階材料的技術能力被低估，(2) M9 認證是將「特殊品冠軍」地位延伸到「主流高階品」的自然路徑，(3) 未來高階產品佔比提升的基礎比外界以為的更紮實。</p>
+  <div class="rc-row"><span class="rc-label">實現機率</span>已是事實（Prismark 確認），關鍵是能否變現為毛利率改善</div>
+  <div class="rc-row"><span class="rc-label">潛在利益</span>若特殊基板地位成功擴展到 M9 等主流高階品，毛利率潛力可達 18-20%</div>
+  <div class="rc-row"><span class="rc-label">市場認知</span>極低，幾乎無研究報告提及此數據</div>
+</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> [複習新發現] Prismark 第一名的含義</div>
+  <div class="ev-d">聯茂年報明確引用：「全球高階特殊基板市佔率排名第一（16%）」。這不是自吹自擂——Prismark 是 PCB/CCL 產業最權威的第三方研調機構。「高階特殊基板」涵蓋高頻、高速、低損耗等利基產品，正好是 AI/5G/衛星等高成長應用的核心材料。白話說：聯茂在「最賺錢的那塊市場」已經是全球老大，只是它的整體毛利率被大量中低階產品拖累。如果能逐步提高高階產品佔比（M9+衛星+車用），毛利率有結構性上升空間。</div>
+  <div class="ev-s">來源：FY2024 年報 p.82 引用 Prismark 2024 年報告</div>
+</div>
+
+<!-- 隱藏優勢 1-4 -->
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">隱藏優勢 #1：M9 Second Source 先行者優勢</div><span class="rc-level low">機會</span></div>
+<div class="rc-body">
+  <p>若成為 M9 唯一 Second Source，即便只拿 20-30% 市佔，這部分營收毛利率可達 20-25%（參考台光電 M9 毛利率約 30%），對整體獲利的槓桿效應極大。</p>
+  <div class="rc-row"><span class="rc-label">實現機率</span>45%　｜　<span class="rc-label">潛在 EPS 增量</span>+1.5-2.0 元（+20-25% 股價）</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">隱藏優勢 #2：泰國 BOI 稅務優惠 + 近市場服務</div><span class="rc-level low">機會</span></div>
+<div class="rc-body">
+  <p>三重隱藏價值：(1) BOI 稅率 0% 八年，(2) 東南亞客戶就近服務（三星/LG 越南廠），(3) 進口關稅較中國低。市場只看到「地緣分散」。</p>
+  <div class="rc-row"><span class="rc-label">實現機率</span>70%　｜　<span class="rc-label">潛在 EPS 增量</span>+0.3-0.5 元</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">隱藏優勢 #3：AI 基建佔比 68% = Beta 最大</div><span class="rc-level low">機會</span></div>
+<div class="rc-body">
+  <p>若 AI 伺服器出貨超預期 20%，聯茂額外營收約 45 億，以 7.2% 營益率計算，額外 OP 3.24 億，稅後 EPS +0.7 元（+17% 股價）。</p>
+  <div class="rc-row"><span class="rc-label">實現機率</span>55%　｜　<span class="rc-label">潛在 EPS 增量</span>+0.5-0.8 元</div>
+</div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--accent)">
+<div class="rc-header"><div class="rc-title">隱藏優勢 #4：低軌衛星新藍海 + 研發加速</div><span class="rc-level low">機會</span></div>
+<div class="rc-body">
+  <p>已通過 Starlink 認證。FY2024 研發費用 +26%（NT$518M→653M），專案數從 9→13 項，新增 PCIe Gen7、半導體級材料等。管理層正加速布局下一代產品線。</p>
+  <div class="rc-row"><span class="rc-label">實現機率</span>40%　｜　<span class="rc-label">潛在 EPS 增量</span>+0.5-0.8 元</div>
+</div>
+</div>
+</details>
+
+<!-- Ch5 整合結論 -->
+<div class="tip good">
+<b>第五章整合結論</b>
+<strong>資料 →</strong> 五大隱藏優勢，最重要的新發現是 #0 Prismark 全球高階特殊基板第一（16%），這為所有其他優勢提供了底層支撐——聯茂在高階材料上的技術能力比市場認知的更強。<br><br>
+<strong>觀察 →</strong> 最被低估的是 #0 Prismark 第一名（市場幾乎沒有討論）和 #2 泰國 BOI 稅務優惠。如果把 Prismark #1 + M9 認證 + 研發加速三者串起來看，一條「從特殊品冠軍逐步升級為主流高階品強者」的路徑開始浮現。<br><br>
+<strong>推論 →</strong> 如果全部實現，EPS 可能達 7-8 元，以 30x PE 計算，股價可達 210-240 元。但這是「一切順利」的樂觀情境，聯合機率約 20-25%。<br><br>
+<strong>結論 →</strong> 隱藏優勢確實存在且比初步分析時更強（Prismark #1 是實質的底層支撐），但每一項的實現機率都低於 70%。投資者不應以「所有隱藏優勢同時兌現」為基本假設，最近的驗證點是 2026Q2 底 M9 認證結果。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  六、六步分析關鍵決策因素彙整                                 ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch6">
+<summary class="section-title">六、分析關鍵決策因素彙整（正反交鋒 + ACH + 評審團意見整合）</summary>
+
+<details open>
+<summary>6-1 買進 vs 風險因素</summary>
+<div class="vs-table">
+<div class="vs-col vs-bull">
+  <h4>買進因素（Bull Case）</h4>
+  <ul>
+    <li><strong>[新]</strong> Prismark 高階特殊基板全球第一（16%）</li>
+    <li>AI 伺服器需求強勁，基建佔比 68% 受惠最大</li>
+    <li>漲價循環啟動，2026Q1 營收創新高 91.43 億</li>
+    <li>M9 認證若通過，高階佔比提升 → 毛利率跳升</li>
+    <li>泰國擴廠 + BOI 稅務優惠 8 年</li>
+    <li>低軌衛星新藍海，Price-in 僅 20%</li>
+    <li>EPS 年增 124%（FY2024 含保險理賠基期偏高，實際更佳）</li>
+    <li><strong>[新]</strong> 研發加速：費用 +26%、專案 9→13 項</li>
+    <li><strong>[新]</strong> 投信 2026/3 大量建倉</li>
+    <li>董事長增持 + 連續 24 年配息</li>
+  </ul>
+</div>
+<div class="vs-col vs-bear">
+  <h4>風險因素（Bear Case）</h4>
+  <ul>
+    <li>PE 44.95x 無歷史支撐，高於 99% 百分位</li>
+    <li>毛利率 14.5% 僅台光電一半，結構性弱勢</li>
+    <li>定價能力弱，產業尾段</li>
+    <li>79% 產能在中國 + 98% 銷售亞洲 = 雙重地理集中</li>
+    <li><strong>[新]</strong> 前兩大供應商佔進貨 45%，議價籌碼在供應商手裡</li>
+    <li>玻纖布缺貨 25%，供應鏈被鎖喉</li>
+    <li>M9 未過 → 敘事崩壞 → 估值修正</li>
+    <li>AI 資本支出 2026H2 可能放緩</li>
+    <li><strong>[新]</strong> 廣州 FCCL 管理層接班風險</li>
+    <li>應收天數 153 天偏高</li>
+    <li><strong>[新]</strong> 外資暴買暴賣，缺乏穩定法人錨</li>
+  </ul>
+</div>
+</div>
+</details>
+
+<details open>
+<summary>6-2 ACH 假說信心分配</summary>
+<table>
+<tr><th>假說</th><th>內容</th><th>信心度</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">H2（主假說）</td><td>溫和看多 — AI 需求持續 + 漲價延續 + M9 有機會通過</td><td style="font-weight:700">35%</td></tr>
+<tr><td>H1</td><td>強力看多 — 催化劑全兌現 + PE 維持高位</td><td>15%</td></tr>
+<tr><td>H3</td><td>中性 — 營收維持但 PE 回歸 → 股價橫盤</td><td>25%</td></tr>
+<tr><td>H4</td><td>看空 — AI 放緩 + M9 未過 + PE 壓縮</td><td>20%</td></tr>
+<tr><td>H5</td><td>強力看空 — 戴維斯雙殺</td><td>5%</td></tr>
+</table>
+
+<div class="grid3">
+<div class="mini-card"><div class="title">加權期望值</div><div class="num" style="color:var(--neutral)">~148 元</div><div class="desc">低於現價 187 元 21%</div></div>
+<div class="mini-card"><div class="title">信心校準歷程</div><div class="num" style="color:var(--warn)">55→30→23%</div><div class="desc">ACH → 壓力測試 → 評審團</div></div>
+<div class="mini-card bear-card"><div class="title">報酬/風險比</div><div class="num" style="color:var(--bear)">0.55</div><div class="desc">上行+16% vs 下行-30%</div></div>
+</div>
+</details>
+
+<details open>
+<summary>6-3 共識區 vs 分歧區 vs 爭議仲裁</summary>
+<table>
+<tr><th>類型</th><th>內容</th></tr>
+<tr><td style="color:var(--bull);font-weight:700">共識（多空一致）</td><td>基本面確實在改善（營收+EPS 成長）；泰國擴廠是正確策略；M9 是關鍵分水嶺</td></tr>
+<tr><td style="color:var(--warn);font-weight:700">分歧（意見不一）</td><td>PE 44.95x 是否合理？AI 週期能維持多久？毛利率改善速度是否足夠？</td></tr>
+<tr><td style="color:var(--bear);font-weight:700">爭議仲裁</td><td>PE 爭議的核心：看多方認為「AI 題材值得溢價」，看空方認為「聯茂基本面不支撐溢價」。仲裁結論：即使 AI 值得溢價，聯茂 PE 45x 是台光電的 2 倍（台光電 PE 22x），但毛利率只有台光電一半，這個定價不合理。</td></tr>
+</table>
+</details>
+
+<!-- Ch6 整合結論 -->
+<div class="tip warn">
+<b>第六章整合結論</b>
+<strong>資料 →</strong> 十個買進因素（含 3 個二次審閱新增）vs 十一個風險因素（含 4 個新增）。ACH 主假說 H2 溫和看多信心 35%，加權期望值約 148 元（低於現價 21%）。報酬/風險比 0.55。<br><br>
+<strong>觀察 →</strong> 二次審閱後，多空兩側都新增了重要因素。多方新增 Prismark #1 和研發加速是實質利多，但空方新增供應商集中（45%）和外資暴買暴賣也是實質利空。整體天平略偏空方。<br><br>
+<strong>推論 →</strong> 核心矛盾沒有改變：「好產業+改善中的基本面」vs「過高的估值+脆弱的體質」。Prismark #1 是一個改變長期敘事的重要發現，但短期內無法改變 PE 44.95x 的高估現實。<br><br>
+<strong>結論 →</strong> 維持「附帶條件觀望」立場。短期不建議在 187 元買進，但長期觀點比初步分析時更正面（因為 Prismark #1 + 研發加速的組合有潛力改寫毛利率軌跡）。建議在 PE 回落至 30x 以下（股價 ~125-130 元）時重新評估。
+</div>
+
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  七、風險清單與壓力測試                                       ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch7">
+<summary class="section-title">七、風險清單與壓力測試（致命因子排序 + 事前驗屍法）</summary>
+
+<details open>
+<summary>7-1 風險情報驗證卡</summary>
+
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">PE 回歸風險 — 最大致命因子</div><span class="rc-level fatal">致命</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">情報來源</span>歷史 PE 區間 10-25x，當前 44.95x</div>
+  <div class="rc-row"><span class="rc-label">驗證狀態</span>已驗證（歷史數據明確）</div>
+  <div class="rc-row"><span class="rc-label">期望損失</span>-15%（發生機率 50% × 損害 -30%）</div>
+  <div class="rc-row"><span class="rc-label">觸發條件</span>AI 敘事降溫 / 營收增速放緩 / 大盤修正</div>
+  <div class="rc-row"><span class="rc-label">為什麼要注意？</span>這是唯一一個「即使基本面不惡化也可能發生」的風險。PE 從 45x 回歸到 25x 只需要市場情緒轉向，不需要任何壞消息。歷史上，聯茂曾在 2022 年從高點跌 67%。</div>
+</div>
+</div>
+
+<div class="risk-card">
+<div class="rc-header"><div class="rc-title">玻纖布缺貨 — 供應鏈卡脖子</div><span class="rc-level fatal">致命</span></div>
+<div class="rc-body">
+  <div class="rc-row"><span class="rc-label">期望損失</span>-6.0%</div>
+  <div class="rc-row"><span class="rc-label">複合效應</span>若與原物料漲價聯動，合計期望損失 -11.2%</div>
+</div>
+</div>
+</details>
+
+<details open>
+<summary>7-2 致命因子排序</summary>
+<table>
+<tr><th>排名</th><th>致命因子</th><th>期望損失</th><th>可恢復性</th><th>白話說</th></tr>
+<tr><td>1</td><td style="color:var(--bear);font-weight:700">PE 回歸</td><td>-15.0%</td><td>完全</td><td>市場情緒轉向就夠了，不需要壞消息</td></tr>
+<tr><td>2</td><td style="color:var(--bear);font-weight:700">玻纖布缺貨</td><td>-6.0%</td><td>部分</td><td>供應商比你有話語權</td></tr>
+<tr><td>3</td><td>地緣政治</td><td>-5.3%</td><td>不可逆</td><td>79% 產能在中國，一旦出事沒有退路</td></tr>
+<tr><td>4</td><td>原物料+供應商集中</td><td>-5.2%</td><td>部分</td><td>前兩大佔 45%，被鎖喉風險高</td></tr>
+<tr><td>5</td><td>M9 壟斷</td><td>-4.2%</td><td>部分</td><td>台光電吃飽，你連殘羹都沒有</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>7-3 事前驗屍法（Pre-mortem）</summary>
+<div class="tip danger">
+<b>假設一年後聯茂股價跌至 100 元，回頭看最可能的原因是什麼？</b>
+<ol style="margin:8px 0;padding-left:20px;font-size:.88em">
+<li><strong>戴維斯雙殺（機率 25%）：</strong>2026H2 AI 資本支出放緩 → 營收增速從 20%→5% → 市場 PE 從 45x 縮至 20x → 股價 = EPS 5元 × PE 20x = 100 元</li>
+<li><strong>M9 認證失敗（機率 20%）：</strong>2026Q3 M9 未通過 → 「高階轉型」敘事崩壞 → PE 從 45x 縮至 15x → 股價 = EPS 4.5元 × PE 15x = 67.5 元</li>
+<li><strong>地緣政治衝擊（機率 10%）：</strong>台海緊張升級 → 中國廠區停工 → 營收腰斬 → 股價直接對折</li>
+<li><strong>原物料暴漲（機率 15%）：</strong>銅箔再漲 20% + 玻纖布持續缺貨 → 毛利率跌至 11-12% → EPS 回落至 3 元 → 股價 100 元以下</li>
+</ol>
+</div>
+</details>
+
+<details open>
+<summary>7-4 資料盲點清單</summary>
+<table>
+<tr><th>盲點</th><th>影響</th><th>如何補齊</th></tr>
+<tr><td>聯茂高階產品具體佔比</td><td>無法精確計算 M9 通過後的毛利率改善幅度</td><td>追蹤法說會是否揭露</td></tr>
+<tr><td>前五大客戶具體名單</td><td>無法評估客戶集中度風險</td><td>年報僅揭露代號</td></tr>
+<tr><td>泰國廠良率數據</td><td>新廠良率爬坡可能拖累短期毛利率</td><td>追蹤季報</td></tr>
+<tr><td>FCCL 新任管理層</td><td>軟板業務推進速度</td><td>追蹤公司公告</td></tr>
+<tr><td>法說會逐字稿（PDF 未轉文字）</td><td>無法分析管理層語氣和閃避話題</td><td>需轉檔或取得文字版</td></tr>
+</table>
+</details>
+
+<!-- Ch7 整合結論 -->
+<div class="tip danger">
+<b>第七章整合結論</b>
+<strong>資料 →</strong> 致命因子 #1 PE 回歸（期望損失 -15%）遠大於任何單一催化劑的期望值。事前驗屍法四條路徑中，三條指向 100 元以下（vs 現價 187 元）。資料盲點仍有 5 項待補齊。<br><br>
+<strong>觀察 →</strong> 壓力測試的核心訊息：聯茂在 PE 44.95x 的位置，不需要壞消息就可能回檔 30%+。只需要「預期沒有更好」就足以觸發估值修正。這是所有風險中最隱蔽但也最可能發生的。<br><br>
+<strong>推論 →</strong> 在 2022 年的前車之鑑（高點跌 67%）下，當前估值水位的不對稱性令人擔憂。上行空間有限（催化劑 +16.5%），下行空間巨大（壓力測試最差 -57%）。<br><br>
+<strong>結論 →</strong> 信心從 ACH 初始 55% 下修至壓力測試後 30%。核心原因：PE 44.95x 使得即便催化劑全部兌現，上行空間也被壓縮；而任一風險觸發，下行幅度卻被放大。風險報酬比明確偏向下行。
+</div>
+
+</details>
+
+
+
+<details open id="ch8">
+<summary class="section-title">八、監控儀表板 — 哪些數字要盯？（燈號系統 + 關鍵時間節點）</summary>
+
+<details open>
+<summary>8-1 燈號監控表</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>指標</th><th>燈號</th><th>當前值</th><th>門檻</th></tr>
+<tr><td>月營收</td><td><span class="light green"></span>綠</td><td>33.70億</td><td>&gt;25億</td></tr>
+<tr><td>毛利率</td><td><span class="light yellow"></span>黃</td><td>14.5%</td><td>&gt;16%轉綠</td></tr>
+<tr><td>M9認證</td><td><span class="light yellow"></span>黃</td><td>Phase 3</td><td>通過=綠</td></tr>
+<tr><td>PE</td><td><span class="light red"></span>紅</td><td>44.95x</td><td>&lt;30x轉黃</td></tr>
+<tr><td>外資</td><td><span class="light yellow"></span>黃</td><td>暴買暴賣</td><td>連10日買=綠</td></tr>
+<tr><td>投信</td><td><span class="light green"></span>綠</td><td>新建倉</td><td>持續加碼=綠</td></tr>
+<tr><td>玻纖布</td><td><span class="light red"></span>紅</td><td>缺口25%</td><td>&lt;10%轉黃</td></tr>
+<tr><td>泰國廠</td><td><span class="light green"></span>綠</td><td>一期投產</td><td>按計畫=綠</td></tr>
+<tr><td>AI CapEx</td><td><span class="light green"></span>綠</td><td>+32%</td><td>&lt;10%轉紅</td></tr>
+<tr><td>應收天數</td><td><span class="light yellow"></span>黃</td><td>153天</td><td>&gt;180轉紅</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">三指標儀表盤</div>
+<div id="gauge-chart" style="width:100%;height:220px"></div>
+</div>
+</div>
+
+<div class="grid3">
+<div class="mini-card bull-card"><div class="title">綠燈</div><div class="num" style="color:var(--bull)">4</div></div>
+<div class="mini-card neutral-card"><div class="title">黃燈</div><div class="num" style="color:var(--warn)">4</div></div>
+<div class="mini-card bear-card"><div class="title">紅燈</div><div class="num" style="color:var(--bear)">2</div></div>
+</div>
+</details>
+
+<details open>
+<summary>8-2 關鍵時間節點</summary>
+<table>
+<tr><th>日期</th><th>事件</th><th>影響</th></tr>
+<tr><td>2026/5/15 前</td><td>Q1 季報公布</td><td>驗證漲價循環是否轉化為毛利率改善</td></tr>
+<tr><td>2026/6 底</td><td>M9 認證結果</td><td>最關鍵轉折點，決定高階轉型敘事存亡</td></tr>
+<tr><td>2026/7/29</td><td>員工認股權到期</td><td>755,000 股，認購價 86.1 元，大機率行使</td></tr>
+<tr><td>2026/8/14 前</td><td>Q2 季報</td><td>確認 M9 量產是否開始貢獻營收</td></tr>
+<tr><td>2026Q4</td><td>泰國二期完工</td><td>月產能增至 60 萬張</td></tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第八章整合結論</b>
+10 項監控指標中 4 綠 / 4 黃 / 2 紅。兩個紅燈（PE 極端高位 + 玻纖布缺貨）正好是致命因子 #1 和 #2。最關鍵的時間節點是 2026/6 底的 M9 認證結果——這一個事件就能讓多個黃燈同時轉綠或轉紅。新發現的投信建倉是正面訊號，但外資波動大抵消了部分動能。建議每月追蹤月營收和法人動態，季報時重點檢視毛利率變化。
+</div>
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  九、推衍預測                                                 ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch9">
+<summary class="section-title">九、推衍預測 — 未來可能怎麼走？（三路徑推演）</summary>
+
+<details open>
+<summary>9-1 短中長期推衍鏈</summary>
+
+<table>
+<tr><th>時間</th><th>路徑 A（樂觀 20%）</th><th>路徑 B（基準 45%）</th><th>路徑 C（悲觀 35%）</th></tr>
+<tr><td style="font-weight:700">短期（3個月）</td><td style="color:var(--bull)">M9 認證通過 → 股價 220+</td><td>M9 延後 → 股價 150-170 橫盤</td><td style="color:var(--bear)">AI 放緩訊號 → 股價 140-150</td></tr>
+<tr><td style="font-weight:700">中期（6-12月）</td><td style="color:var(--bull)">M9 量產+衛星放量 → 毛利率突破 18% → EPS 8 元 → 股價 240</td><td>漲價延續但 M9 量產緩慢 → 毛利率 15-16% → EPS 5.5 元 → 股價 138</td><td style="color:var(--bear)">AI 資本支出縮減 + PE 壓縮 → EPS 4 元 × PE 20x → 股價 80</td></tr>
+<tr><td style="font-weight:700">長期（1-3年）</td><td style="color:var(--bull)">成為主流高階 CCL 供應商 → 毛利率 20%+ → 股價 300+</td><td>維持中低階為主 → 跟隨產業週期波動 → 股價 100-180</td><td style="color:var(--bear)">週期下行+產能過剩 → 重演 2022 → 股價 60-80</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>9-2 情報可信度評估</summary>
+<table>
+<tr><th>情報</th><th>可信度</th><th>說明</th></tr>
+<tr><td>月營收數據</td><td><span style="color:var(--bull);font-weight:700">高</span></td><td>公開資訊觀測站每月公告，事實等級</td></tr>
+<tr><td>M9 認證進度</td><td><span style="color:var(--warn);font-weight:700">中</span></td><td>法說會揭露，但具體客戶和時程模糊</td></tr>
+<tr><td>AI 資本支出預測</td><td><span style="color:var(--warn);font-weight:700">中</span></td><td>IDC/Gartner 預估，但預測常有偏差</td></tr>
+<tr><td>Prismark 市佔率</td><td><span style="color:var(--bull);font-weight:700">高</span></td><td>第三方權威研調，已寫入年報</td></tr>
+<tr><td>低軌衛星量產時程</td><td><span style="color:var(--bear);font-weight:700">低</span></td><td>SpaceX 內部排程，多次延後歷史</td></tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>第九章整合結論</b>
+三路徑推演中，路徑 B（基準 45%）指向 138 元（-26%），路徑 C（悲觀 35%）指向 80 元（-57%），只有路徑 A（樂觀 20%）看到 240 元（+28%）。加權期望價格約 148 元，低於現價 21%。白話說：以機率加權來看，在 187 元買入，期望值是虧損的。長期路徑 A（成為主流高階供應商）需要 M9 通過 + AI 持續 + 毛利率突破 18% 三個條件同時成立，聯合機率約 12-15%。
+</div>
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  十、股價合理性分析                                           ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch10">
+<summary class="section-title">十、股價合理性分析 — 目前股價貴不貴？（八種估值法 + 安全邊際）</summary>
+<div class="section-sub">全面評估聯茂合理價位，現價 187 元（2026-04-09）</div>
+
+<details open>
+<summary>10-1 八種估值法逐一拆解</summary>
+
+<!-- 方法一 -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法一：前瞻本益比法</div>
+  <div class="ev-d">
+    FY2025 EPS = 4.16 元。FY2026E EPS 估計 5.5-6.5 元（假設營收 +15%、毛利率微升至 15-16%）。<br>
+    合理 PE 區間 = 20-25x（歷史中位數 18x 加 AI 題材溢價）。<br>
+    <strong>合理價 = EPS 5.5~6.5 × PE 20-25 = 110 ~ 163 元</strong><br>
+    現價 187 元 → 偏貴 15-70%。
+  </div>
+</div>
+
+<!-- 方法二：PB（修正） -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 方法二：股價淨值比法（PB）— <strong style="color:var(--bear)">已修正計算錯誤</strong></div>
+  <div class="ev-d">
+    FY2025 股東權益 = NT$21,267M，已發行股數 = 363M 股。<br>
+    <strong>每股淨值 = 21,267M / 363M = 58.6 元</strong><br>
+    <strong>PB = 187 / 58.6 = 3.2x</strong><br>
+    FY2025 ROE = 7.2%（淨利 NT$1,510M / 平均股東權益 NT$20,956M）。<br>
+    根據 PB-ROE 回歸模型，ROE 7.2% 對應合理 PB 約 1.5-2.5x。<br>
+    <strong>合理價 = 58.6 × PB 1.5-2.5 = 88 ~ 147 元</strong><br>
+    現價 187 元 → 偏貴 27-113%。
+  </div>
+</div>
+
+<div class="tip warn">
+<b>⚠️ PB 和 ROE 數據修正說明</b>
+初稿中 PB 誤記為 8.8x、ROE 誤記為 19.6%。經二次審閱交叉驗證：PB = 187/58.6 = <strong>3.2x</strong>，ROE = 1,510M/20,956M = <strong>7.2%</strong>。修正後的 PB 估值仍顯示偏貴，但偏離程度從「極端」修正為「明顯」。
+</div>
+
+<!-- 方法三 -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法三：分部估值法</div>
+  <div class="ev-d">
+    基礎建設（68%）= 225 億營收 × 0.5x PS = 112.5 億<br>
+    汽車電子（16%）= 53 億 × 0.8x PS = 42.4 億<br>
+    消費電子（11%）= 36 億 × 0.3x PS = 10.8 億<br>
+    手機（5%）= 17 億 × 0.3x PS = 5.1 億<br>
+    合計 = 170.8 億 / 363M 股 = <strong>合理價 47 元</strong>（以 PS 法大幅低估，僅供參考）<br>
+    改用 PE 分部法：<strong>合理價 = 103 ~ 130 元</strong>
+  </div>
+</div>
+
+<!-- 方法四 -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法四：隱含預期反推法</div>
+  <div class="ev-d">
+    現價 187 元 / 合理 PE 25x = 需要 EPS 7.48 元。<br>
+    FY2025 EPS = 4.16 元 → 需要 EPS 成長 80%（7.48/4.16 - 1）。<br>
+    <strong>聯合機率：</strong>營收 +25%（機率 40%）× 毛利率升至 18%（機率 35%）× 費用率持平（機率 70%）= <strong>9.8%</strong><br>
+    白話說：要讓 187 元「合理」，需要多個樂觀條件同時成立，聯合機率不到 10%。
+  </div>
+</div>
+
+<!-- 方法五 -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法五：歷史循環比較法</div>
+  <div class="ev-d">
+    上一輪週期：2021 高點 210 元 → 2023 低點 68 元（跌幅 -67%）。<br>
+    本輪至今：2023 低點 68 → 2026 高點 187（已漲 175%）。<br>
+    上輪從低到高漲幅約 200%（68→210），本輪已走完約 87%。距離上輪高點 210 僅 +12%。<br>
+    歷史規律顯示：CCL 週期股在高點附近停留時間短，回落速度快。
+  </div>
+</div>
+
+<!-- 方法六 DCF -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">A</span> 方法六：DCF 雙版本</div>
+  <div class="ev-d">
+    <strong>版本 A（現況版）：</strong>TTM FCF 估計約 NT$30 億，WACC 9.5%，終端成長率 2%。<br>
+    DCF(A) = 30億/(9.5%-2%) × (1/363M) = <strong>~110 元</strong>（估值下限）<br><br>
+    <strong>版本 B（成長版）：</strong>三階段 × 樂觀假設（毛利率升至 18%、營收年增 15%×3年→10%×3年→3%永續）。<br>
+    DCF(B) = <strong>~175 元</strong>（需毛利率確實升至 18%）<br><br>
+    <strong>成長溢價 = (175-110)/110 = 59%</strong><br>
+    <strong>市場定價位置 = (187-110)/(175-110) = 118%</strong> → 市場已完全 Price-in 成長版，甚至溢出 18%。
+  </div>
+</div>
+
+<div class="tip warn">
+<b>⚠️ DCF 安全閥檢查</b>
+終值佔比約 72%（< 75% 門檻 ✓），WACC-g = 7.5%（> 2% 門檻 ✓），FCF > 0（✓），FCF 波動 < 100%（✓）。四項安全閥全部通過，DCF 結果可信。但市場定價位置 118% 意味著投資者在以「超越最樂觀假設」的價格買入。
+</div>
+
+<!-- 方法七八 -->
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法七：EV/EBITDA</div>
+  <div class="ev-d">EBITDA 估計約 NT$30-35 億，企業價值約 NT$700 億，EV/EBITDA ≈ 20-23x。CCL 產業合理 EV/EBITDA 約 10-15x。<strong>偏貴。</strong>即使給同業上限 15x，合理價約 135-145 元。</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 方法八：PEG</div>
+  <div class="ev-d">FY2026E EPS 成長率估 +50%（4.16→6.2 元），PE 44.95x。PEG = 44.95/50 = 0.90。PEG < 1 表面看合理，但須注意 +50% 成長率是否可持續——歷史上聯茂 EPS 成長率波動極大（-63% ~ +124%），以單年高成長率計算 PEG 容易失真。</div>
+</div>
+</details>
+
+<details open>
+<summary>10-2 八種估值法合理價總覽</summary>
+
+<div class="data-chart-row">
+<div>
+<table>
+<tr><th>估值法</th><th>合理價</th><th>vs 187</th><th>判定</th></tr>
+<tr><td>前瞻 PE</td><td>110 ~ 163</td><td style="color:var(--bear)">偏貴 15-70%</td><td style="color:var(--bear)">偏貴</td></tr>
+<tr><td>PB（修正後）</td><td>88 ~ 147</td><td style="color:var(--bear)">偏貴 27-113%</td><td style="color:var(--bear)">偏貴</td></tr>
+<tr><td>分部估值</td><td>103 ~ 130</td><td style="color:var(--bear)">偏貴 44-82%</td><td style="color:var(--bear)">偏貴</td></tr>
+<tr><td>隱含反推</td><td>—</td><td>聯合機率 9.8%</td><td style="color:var(--bear)">極端偏貴</td></tr>
+<tr><td>歷史循環</td><td>68 ~ 210</td><td>已走完 87%</td><td style="color:var(--warn)">高位區</td></tr>
+<tr><td>DCF(A 現況)</td><td>~110</td><td style="color:var(--bear)">偏貴 70%</td><td style="color:var(--bear)">偏貴</td></tr>
+<tr><td>DCF(B 成長)</td><td>~175</td><td style="color:var(--warn)">略貴 7%</td><td style="color:var(--warn)">勉強合理</td></tr>
+<tr><td>EV/EBITDA</td><td>135 ~ 145</td><td style="color:var(--bear)">偏貴 29-39%</td><td style="color:var(--bear)">偏貴</td></tr>
+</table>
+</div>
+<div class="chart-box">
+<div class="chart-title">八種估值法 vs 現價</div>
+<canvas id="valuation-chart" height="260"></canvas>
+</div>
+</div>
+
+<div class="grid2">
+<div class="mini-card bear-card">
+    <div class="title">合理價中位數</div>
+    <div class="num" style="color:var(--bear)">125-135 元</div>
+    <div class="desc">八法中七法顯示偏貴</div>
+</div>
+<div class="mini-card bear-card">
+    <div class="title">安全邊際</div>
+    <div class="num" style="color:var(--bear)">-39%</div>
+    <div class="desc">現價 187 vs 合理價中位 130 = 負安全邊際</div>
+</div>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第十章整合結論</b>
+<strong>資料：</strong>八種估值法中七種顯示偏貴（修正 PB 後仍是偏貴），僅 DCF 成長版（需毛利率升至 18%）勉強支撐現價。合理價中位數 125-135 元，現價 187 元存在 -39% 的負安全邊際。市場定價位置 118% 表示已超越最樂觀假設的估值上限。<br><br>
+<strong>觀察：</strong>PB 和 ROE 修正後（3.2x / 7.2%），估值偏離程度從「極端不合理」修正為「明顯偏貴但不荒謬」。聯茂 PB 3.2x 以 ROE 7.2% 來看仍然偏高，但考慮到 Prismark #1 地位和毛利率改善潛力，市場給予一定溢價有其邏輯。<br><br>
+<strong>結論：</strong>即使給予最大善意（DCF 成長版 175 元），現價 187 元仍超出 7%。投資者在 187 元買入，等於押注「毛利率確定升至 18%+」這個高門檻假設。建議進場區間：120-140 元（PE 25-30x 或毛利率確認突破 16%）。
+</div>
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  十一、補充分析                                               ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch11">
+<summary class="section-title">十一、補充分析 — CCL 產業鏈與法人動態</summary>
+
+<details open>
+<summary>11-1 CCL 產業鏈位置</summary>
+<div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:8px 0;font-size:.82em;color:var(--txt2)">
+<strong style="color:var(--base)">上游原物料</strong>（銅箔 / 玻纖布 / 環氧樹脂）<br>
+↓ <span style="color:var(--warn)">供應商集中（前二大佔 45%），議價力在上游</span><br>
+<strong style="color:var(--accent)">聯茂 ← 中游 CCL 製造（全球高階特殊基板 #1）</strong><br>
+↓ <span style="color:var(--warn)">定價能力弱，下游大廠議價力強</span><br>
+<strong style="color:var(--base)">下游 PCB 廠</strong>（臻鼎 / 欣興 / 鵬鼎 / 健鼎等）<br>
+↓<br>
+<strong style="color:var(--base)">終端應用</strong>（AI 伺服器 / 網通設備 / 汽車電子 / 消費電子）
+</div>
+</details>
+
+<details open>
+<summary>11-2 法人動態摘要</summary>
+<table>
+<tr><th>法人</th><th>近期行為</th><th>解讀</th></tr>
+<tr><td>外資</td><td>2/24-25 大買 1,365 萬股；3/31 賣 537 萬</td><td>短線投機，非長期建倉</td></tr>
+<tr><td>投信</td><td>3/16 起新建倉，4/2 累計買超 ~130 萬股</td><td>可能有新研究報告看多</td></tr>
+<tr><td>董監</td><td>董事長增持+降低質押</td><td>內部人信心正面訊號</td></tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>第十一章整合結論</b>
+聯茂在產業鏈中處於「兩頭受壓」的夾心位置——上游供應商集中（45%）且有議價力，下游 PCB 大廠也有議價力。這解釋了為什麼毛利率只有 14.5%。但 Prismark #1 的特殊基板地位提供了差異化的護城河，若能將此優勢擴展到 M9 等主流高階品，有機會改變夾心局面。法人動態分歧：外資短進短出（不穩定），投信新建倉（正面），董監增持（正面）。
+</div>
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  十二、貓膩探索與求證                                         ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch12">
+<summary class="section-title">十二、貓膩探索與求證 — 有沒有被騙？（反共識偵測六步）</summary>
+
+<details open>
+<summary>12-1 敘事解剖</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-i">I</span> 主流敘事 vs 反面質疑</div>
+  <div class="ev-d">
+    <strong>市場主流敘事：</strong>「聯茂是 AI 基建最大受惠股，M9 認證通過後毛利率將大幅改善，股價有望突破 250 元。」<br>
+    <strong>反面質疑：</strong>聯茂 PE 45x 是台光電的 2 倍，但毛利率只有台光電的一半。市場給了「追趕者」比「領導者」更高的估值溢價，這在邏輯上不通。除非 M9 通過後聯茂的毛利率能快速追上台光電，否則這個估值溢價遲早會被修正。
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>12-2 歷史前科</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">F</span> 2021-2022 前車之鑑</div>
+  <div class="ev-d">
+    2021 年：5G 題材推動聯茂股價從 80 元漲至 210 元（PE 一度超過 35x）。<br>
+    2022 年：5G 期待落空 + 景氣下行 → 股價從 210 跌至 68 元（-67%），PE 縮至 10x 以下。<br>
+    <strong>前科教訓：</strong>聯茂是典型的「追題材漲、跌起來更兇」的週期股。上次從 PE 35x 跌到 PE 10x，這次 PE 45x 比上次更高。
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>12-3 巧合偵測</summary>
+<div class="ev">
+  <div class="ev-t"><span class="fias-s">S</span> 可疑巧合</div>
+  <div class="ev-d">
+    <strong>巧合 1：</strong>股價在 2-3 月暴漲 80% 期間，投信恰好開始建倉，外資恰好大買後又大賣。這是「先拉後出」的經典模式嗎？無法確認，但值得警覺。<br>
+    <strong>巧合 2：</strong>分析師共識目標價 133 元，但股價已漲到 187 元（超出共識 40%）。要嘛分析師落後了，要嘛市場過度樂觀了。以聯茂過去的歷史，後者的可能性更大。<br>
+    <strong>巧合 3：</strong>員工認股權 86.1 元到期日 2026/7/29，股價剛好在認股權到期前飆漲。管理層有動機維持高股價至認股權行使。
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>12-4 貓膩總評</summary>
+<table>
+<tr><th>項目</th><th>疑慮程度</th><th>結論</th></tr>
+<tr><td>財務造假</td><td style="color:var(--bull)">低</td><td>M-Score = -2.386，安全</td></tr>
+<tr><td>過度樂觀定價</td><td style="color:var(--bear);font-weight:700">高</td><td>PE 45x 超越所有合理估值</td></tr>
+<tr><td>法人操作疑慮</td><td style="color:var(--warn)">中</td><td>外資暴買暴賣+投信恰好建倉</td></tr>
+<tr><td>管理層動機疑慮</td><td style="color:var(--warn)">中</td><td>認股權到期前股價飆漲</td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>第十二章整合結論</b>
+沒有發現財務舞弊跡象（M-Score 安全），但「過度樂觀定價」的疑慮很高。聯茂的故事與 2021 年 5G 期待有驚人相似：同樣是題材驅動的 PE 擴張，同樣是毛利率未見實質改善就先行定價。上次的結局是 -67%。核心問題不是「公司有沒有造假」，而是「市場有沒有過度定價」——答案是：很可能有。
+</div>
+</details>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  十三、投資結論                                               ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+<details open id="ch13">
+<summary class="section-title">十三、投資結論 — 一句話總結（評級 C+ / 淨期望值 -5.8% / 信心 23%）</summary>
+
+<details open>
+<summary>13-1 一句話總結</summary>
+<div style="background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px 20px;margin:10px 0;text-align:center">
+    <div style="font-size:1.1em;font-weight:900;color:var(--base);line-height:1.6">
+        「聯茂是好產業裡的弱勢股，但也是高階特殊基板的隱形冠軍。<br>
+        基本面改善中，研發加速中，長期路徑有吸引力。<br>
+        但 PE 45x 已定價所有樂觀預期，<span style="color:var(--bear)">現在買入是在替風險買單。</span>」
+    </div>
+</div>
+</details>
+
+<details open>
+<summary>13-2 綜合評估表</summary>
+<table>
+<tr><th style="width:30%">項目</th><th>評估</th></tr>
+<tr><td><strong>最終評級</strong></td><td><strong style="font-size:1.2em;color:var(--warn)">C+（附帶條件，不建議目前價位買進）</strong></td></tr>
+<tr><td>核心優勢</td><td>Prismark 高階特殊基板全球 #1 + M9 認證通過可能性 + AI 基建營收佔比最高 + 泰國 BOI 稅務優惠 + 研發加速（專案 +44%）</td></tr>
+<tr><td>核心風險</td><td>PE 45x 無歷史支撐 + 毛利率三雄最低 + 79% 產能在中國 + 供應商前二大佔 45% + 外資短線投機</td></tr>
+<tr><td>值得買進的理由</td><td>M9 量產 + 研發加速 + Prismark #1 地位變現 → 毛利率升至 18%+ → EPS 有機會倍增至 8 元</td></tr>
+<tr><td>應該迴避的理由</td><td>PE 45x 已 Price-in 全部樂觀預期，9 位分析師共識目標僅 133 元（低於現價 29%），歷史前科 -67%</td></tr>
+<tr><td>附帶條件</td><td>若 PE 回落至 25-30x（股價 ~125-140 元）<strong>且</strong>毛利率確認突破 16%，可重新評估為 B- 級</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>13-3 三情境估值</summary>
+
+<div class="sc-cards">
+    <div class="sc-card" style="border-left:4px solid var(--bull)">
+        <div class="sc-label">樂觀情境</div>
+        <div class="sc-price" style="color:var(--bull)">240 元</div>
+        <div class="sc-detail">EPS 8 元 × PE 30x</div>
+        <div class="sc-detail">漲幅 +28%</div>
+        <div class="sc-prob">機率 20%</div>
+    </div>
+    <div class="sc-card" style="border-left:4px solid var(--neutral)">
+        <div class="sc-label">基準情境</div>
+        <div class="sc-price" style="color:var(--neutral)">138 元</div>
+        <div class="sc-detail">EPS 5.5 元 × PE 25x</div>
+        <div class="sc-detail">跌幅 -26%</div>
+        <div class="sc-prob">機率 45%</div>
+    </div>
+    <div class="sc-card" style="border-left:4px solid var(--bear)">
+        <div class="sc-label">悲觀情境</div>
+        <div class="sc-price" style="color:var(--bear)">80 元</div>
+        <div class="sc-detail">EPS 4 元 × PE 20x</div>
+        <div class="sc-detail">跌幅 -57%</div>
+        <div class="sc-prob">機率 35%</div>
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">加權期望股價計算 <span class="fias-i">I</span></div>
+    <div class="ev-d">
+        <table>
+        <tr><th>情境</th><th>目標價</th><th>機率</th><th>加權貢獻</th></tr>
+        <tr><td style="color:var(--bull)">樂觀</td><td>240 元</td><td>20%</td><td>48.0</td></tr>
+        <tr><td style="color:var(--neutral)">基準</td><td>138 元</td><td>45%</td><td>62.1</td></tr>
+        <tr><td style="color:var(--bear)">悲觀</td><td>80 元</td><td>35%</td><td>28.0</td></tr>
+        <tr><td colspan="3"><strong>加權期望股價</strong></td><td><strong>138.1 元</strong></td></tr>
+        </table>
+        <br>
+        <strong>加權期望股價 138 元 vs 現價 187 元 → 隱含下行空間 -26%</strong>
+    </div>
+</div>
+</details>
+
+<details open>
+<summary>13-4 淨期望值</summary>
+
+<div class="grid2">
+    <div class="mini-card bull-card"><div class="title">催化劑期望值</div><div class="num" style="color:var(--bull)">+16.5%</div><div class="desc">M9 + CCL 漲價 + 泰國 + AI + 衛星</div></div>
+    <div class="mini-card bear-card"><div class="title">風險期望損失</div><div class="num" style="color:var(--bear)">-22.3%</div><div class="desc">PE 壓縮 + 週期下行 + 地緣 + 供應鏈</div></div>
+</div>
+
+<div style="background:var(--panel);border:2px solid var(--bear);border-radius:10px;padding:14px 20px;margin:10px 0;text-align:center">
+    <div style="font-size:.85em;color:var(--txt3);margin-bottom:4px">淨期望值（催化劑 - 風險）</div>
+    <div style="font-size:1.8em;font-weight:900;color:var(--bear)">-5.8%</div>
+    <div style="font-size:.82em;color:var(--txt2);margin-top:4px">風險大於機會，不建議在目前價位建倉</div>
+</div>
+</details>
+
+<details open>
+<summary>13-5 信心追蹤（四次校準）</summary>
+
+<div class="conf-track">
+    <div><div class="conf-dot" style="background:var(--warn)">55%</div><div class="conf-label">ACH 初始</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--warn)">30%</div><div class="conf-label">壓力測試後</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--bear)">23%</div><div class="conf-label">評審團後</div></div>
+    <div class="conf-arrow">&rarr;</div>
+    <div><div class="conf-dot" style="background:var(--bear)">23%</div><div class="conf-label">推衍後（最終）</div></div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">信心校準歷程 <span class="fias-i">I</span></div>
+    <div class="ev-d">
+        <strong>ACH 初始（55%）：</strong>溫和看多假說起始信心。M9 認證 + AI 需求是正面催化劑。<br>
+        <strong>壓力測試後（30%，-25pt）：</strong>PE 45x 無法通過估值壓力測試。歷史前科（-67%）大幅拉低信心。<br>
+        <strong>評審團後（23%，-7pt）：</strong>七位評審中五位反對在目前價位買進。評審評分 55/100（不通過門檻 60）。護城河「窄」。<br>
+        <strong>推衍後（23%，不變）：</strong>三路徑加權期望價 138 元，低於現價 26%。風險報酬比 0.55，明確不利多方。<br><br>
+        <strong>二次審閱補充：</strong>Prismark #1 和研發加速是正面的長期因素，但不足以在短期內改變估值過高的現實。信心維持 23%。
+    </div>
+</div>
+</details>
+
+<details open>
+<summary>13-6 操作建議矩陣</summary>
+<table>
+<tr><th style="width:22%">持倉狀態</th><th>建議</th><th>條件</th></tr>
+<tr><td><strong>空手</strong></td><td style="color:var(--bear);font-weight:700">不建議建倉</td><td>等待 PE 回落至 25-30x（股價 ~125-140 元）或毛利率確認 &gt;16%</td></tr>
+<tr><td><strong>持有</strong></td><td style="color:var(--warn);font-weight:700">逐步減碼</td><td>在 180-200 分批出場，保留 20-30% 觀察 M9 量產進度</td></tr>
+<tr><td><strong>重壓</strong></td><td style="color:var(--bear);font-weight:700">立即減至正常部位</td><td>PE 45x + 信心 23% + 負安全邊際 -39%，不適合重壓</td></tr>
+<tr><td><strong>看好 CCL 產業</strong></td><td style="color:var(--bull);font-weight:700">考慮台光電</td><td>同產業、更好的基本面（毛利率 28.6%）、更合理的估值（PE ~22x）</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>13-7 重新評估觸發條件</summary>
+<table>
+<tr><th>編號</th><th>觸發條件</th><th>方向</th><th>影響</th></tr>
+<tr><td>T1</td><td>毛利率單季 &gt;16%</td><td style="color:var(--bull)">上修</td><td>信心可上修至 35-40%</td></tr>
+<tr><td>T2</td><td>M9 量產延遲至 2027</td><td style="color:var(--bear)">下修</td><td>路徑 C 機率升至 50%+</td></tr>
+<tr><td>T3</td><td>PE 回落至 30x 以下</td><td style="color:var(--bull)">上修</td><td>估值壓力釋放，重新評估</td></tr>
+<tr><td>T4</td><td>AI 資本支出年增率 &lt;10%</td><td style="color:var(--bear)">下修</td><td>需求風險升高</td></tr>
+<tr><td>T5</td><td>分析師共識目標上修至 &gt;180</td><td style="color:var(--bull)">上修</td><td>專業共識翻多</td></tr>
+</table>
+</details>
+
+<!-- Ch13 最終結論 -->
+<div class="tip danger">
+<b>第十三章整合結論（最終投資判斷）</b>
+<strong>資料：</strong>經完整分析 + 二次審閱，聯茂 6213 的投資價值可歸結為：淨期望值 -5.8%（催化劑 +16.5% - 風險 -22.3%）；信心 23%（四次校準均下修）；八種估值法中七種偏貴，合理價中位 125-135 元 vs 現價 187 元（負安全邊際 -39%）；加權期望股價 138 元（隱含下行 -26%）。<br><br>
+<strong>二次審閱修正：</strong>(1) PB 從 8.8x 修正為 3.2x、ROE 從 19.6% 修正為 7.2%（重大計算錯誤已更正），(2) 新增 Prismark 高階特殊基板全球 #1（16%）——這是最重要的新發現，讓長期敘事更有吸引力，(3) 新增供應商集中 45%、FCCL 管理層風險、投信突然建倉等線索。<br><br>
+<strong>最終結論：</strong><br>
+<strong>評級 C+（附帶條件）：</strong>不建議在 187 元買進。聯茂是「好產業裡的弱勢股」，但也是「高階特殊基板的隱形冠軍」。長期有轉型潛力（Prismark #1 + M9 + 研發加速），但短期估值嚴重超前基本面。<br><br>
+<strong>合理布局區間：125-140 元</strong>（PE 25-30x 或毛利率實質突破 16%）。<br>
+如果看好 CCL 產業趨勢，同一筆資金投入台光電（PE ~22x、毛利率 28.6%）的風險報酬比更優。<br><br>
+<strong style="color:var(--bear)">核心訊息：不是公司不好，是價格太貴。Prismark #1 的地位讓人對長期更有信心，但短期不改變「等估值回歸」的建議。</strong>
+</div>
+
+<details open>
+<summary>13-8 免責聲明</summary>
+<div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;font-size:.78em;color:var(--txt3);line-height:1.6">
+    <strong style="color:var(--txt2)">免責聲明：</strong>本報告由天機閣投資分析系統產出，僅供研究參考，不構成任何買賣建議。所有估值模型基於公開資訊與合理假設，實際結果可能與預期大幅偏離。投資涉及風險，過去績效不保證未來報酬。任何投資決策應根據個人風險承受能力、投資目標及財務狀況，並建議諮詢合格的財務顧問。<br><br>
+    <strong style="color:var(--txt2)">資料來源：</strong>公開資訊觀測站、財報資料庫、Prismark、各公司法說會資料、產業研究報告。資料截止日：2026-04-09。<br><br>
+    <strong style="color:var(--txt2)">FIAS 分級說明：</strong>F（Fact，事實）— 已驗證的公開數據；I（Inference，推論）— 基於事實的合理推論；A（Assumption，假設）— 需後續驗證；S（Speculation，推測）— 高度不確定。
+</div>
+</details>
+
+</details>
+
+
+
+</div><!-- .wrap end -->
+
+<script>
+
+Chart.defaults.color = '#b8b0a5';
+Chart.defaults.borderColor = '#3a3a3a';
+
+// Ch1 營收結構甜甜圈
+(function(){
+    const ctx = document.getElementById('chartRevenue');
+    if(!ctx) return;
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['基礎建設(68%)','汽車電子(16%)','消費電子(11%)','手機(5%)'],
+            datasets: [{data:[68,16,11,5],backgroundColor:['#4caf50','#7ab0c0','#d4b030','#ef5350'],borderColor:'#252525',borderWidth:2}]
+        },
+        options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},color:'#b8b0a5',padding:8}}}}
+    });
+})();
+
+// Ch1 七維雷達
+(function(){
+    const ctx = document.getElementById('chartRadar');
+    if(!ctx) return;
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['技術深度','成本控制','產能規模','客戶黏著','產品組合','定價能力','研發投入'],
+            datasets: [{label:'聯茂',data:[6.5,5.0,7.5,7.0,6.0,4.5,6.5],borderColor:'#6b9f72',backgroundColor:'rgba(107,159,114,0.2)',pointBackgroundColor:'#6b9f72'}]
+        },
+        options:{responsive:true,scales:{r:{min:0,max:10,ticks:{stepSize:2,color:'#7a7268',backdropColor:'transparent'},grid:{color:'#3a3a3a'},pointLabels:{color:'#b8b0a5',font:{size:11}}}},plugins:{legend:{display:false}}}
+    });
+})();
+
+// Ch1 同業比較
+(function(){
+    const ctx = document.getElementById('chartPeerCompare');
+    if(!ctx) return;
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['毛利率','營益率'],
+            datasets: [
+                {label:'台光電',data:[28.6,19.8],backgroundColor:'rgba(76,175,80,0.6)',borderColor:'#4caf50',borderWidth:1},
+                {label:'台燿',data:[22.1,14.1],backgroundColor:'rgba(122,176,192,0.6)',borderColor:'#7ab0c0',borderWidth:1},
+                {label:'聯茂',data:[14.1,7.0],backgroundColor:'rgba(239,83,80,0.5)',borderColor:'#ef5350',borderWidth:1}
+            ]
+        },
+        options:{responsive:true,scales:{y:{grid:{color:'#3a3a3a'},title:{display:true,text:'%',color:'#b8b0a5'}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},color:'#b8b0a5'}}}}
+    });
+})();
+
+// Ch3 股價走勢
+(function(){
+    const ctx = document.getElementById('chartStockPrice');
+    if(!ctx) return;
+    const dates = ['12/30','1/7','1/14','1/21','1/28','2/4','2/11','2/24','3/2','3/9','3/16','3/23','3/30','4/7'];
+    const prices = [112,113.5,117,122,110.5,118,121,133.5,132,115,140,136,151,187];
+    new Chart(ctx, {
+        type: 'line',
+        data: {labels:dates,datasets:[{label:'股價(元)',data:prices,borderColor:'#6b9f72',backgroundColor:'rgba(107,159,114,0.1)',fill:true,tension:0.3,pointRadius:3}]},
+        options:{responsive:true,scales:{y:{grid:{color:'#3a3a3a'},title:{display:true,text:'元',color:'#b8b0a5'}}},plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:187,yMax:187,borderColor:'#ef5350',borderWidth:1,borderDash:[4,4],label:{content:'現價 187',display:true,position:'end',color:'#ef5350',font:{size:10}}}}}}}
+    });
+})();
+
+// Ch4 風險矩陣氣泡圖
+(function(){
+    const ctx = document.getElementById('chartRiskMatrix');
+    if(!ctx) return;
+    new Chart(ctx, {
+        type: 'bubble',
+        data: {datasets:[
+            {label:'PE回歸',data:[{x:50,y:30,r:18}],backgroundColor:'rgba(239,83,80,0.6)'},
+            {label:'玻纖布缺貨',data:[{x:40,y:15,r:14}],backgroundColor:'rgba(239,83,80,0.4)'},
+            {label:'地緣政治',data:[{x:15,y:35,r:12}],backgroundColor:'rgba(255,193,7,0.5)'},
+            {label:'原物料+供應商',data:[{x:65,y:8,r:10}],backgroundColor:'rgba(255,193,7,0.4)'},
+            {label:'M9壟斷',data:[{x:35,y:12,r:10}],backgroundColor:'rgba(122,176,192,0.5)'},
+            {label:'匯率',data:[{x:30,y:5,r:6}],backgroundColor:'rgba(122,176,192,0.3)'},
+            {label:'FCCL管理層',data:[{x:25,y:3,r:5}],backgroundColor:'rgba(122,176,192,0.3)'}
+        ]},
+        options:{responsive:true,scales:{x:{title:{display:true,text:'發生機率 (%)',color:'#b8b0a5'},min:0,max:70,grid:{color:'#3a3a3a'}},y:{title:{display:true,text:'損害幅度 (%)',color:'#b8b0a5'},min:0,max:40,grid:{color:'#3a3a3a'}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:6}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': 機率 '+ctx.parsed.x+'%, 損害 -'+ctx.parsed.y+'%';}}}}}
+    });
+})();
+
+
+
+
+// Ch8 三指標儀表盤
+(function(){
+    var dom=document.getElementById('gauge-chart');if(!dom||typeof echarts==='undefined')return;
+    var chart=echarts.init(dom,null,{renderer:'canvas'});
+    chart.setOption({
+        backgroundColor:'transparent',
+        series:[
+            {type:'gauge',center:['20%','55%'],radius:'65%',min:0,max:35,startAngle:200,endAngle:-20,title:{show:true,offsetCenter:[0,'75%'],fontSize:12,color:'#b8b0a5'},detail:{formatter:'{value}%',fontSize:16,color:'#ffc107',offsetCenter:[0,'50%']},data:[{value:14.5,name:'毛利率'}],axisLine:{lineStyle:{width:12,color:[[0.4,'#ef5350'],[0.49,'#ffc107'],[1,'#4caf50']]}},axisTick:{show:false},splitLine:{show:false},axisLabel:{show:false},pointer:{length:'60%',width:4,itemStyle:{color:'#e0dcd4'}}},
+            {type:'gauge',center:['50%','55%'],radius:'65%',min:-20,max:50,startAngle:200,endAngle:-20,title:{show:true,offsetCenter:[0,'75%'],fontSize:12,color:'#b8b0a5'},detail:{formatter:'{value}%',fontSize:16,color:'#4caf50',offsetCenter:[0,'50%']},data:[{value:20.6,name:'營收YoY'}],axisLine:{lineStyle:{width:12,color:[[0.29,'#ef5350'],[0.57,'#ffc107'],[1,'#4caf50']]}},axisTick:{show:false},splitLine:{show:false},axisLabel:{show:false},pointer:{length:'60%',width:4,itemStyle:{color:'#e0dcd4'}}},
+            {type:'gauge',center:['80%','55%'],radius:'65%',min:0,max:80,startAngle:200,endAngle:-20,title:{show:true,offsetCenter:[0,'75%'],fontSize:12,color:'#b8b0a5'},detail:{formatter:'{value}x',fontSize:16,color:'#ef5350',offsetCenter:[0,'50%']},data:[{value:44.95,name:'PE'}],axisLine:{lineStyle:{width:12,color:[[0.375,'#4caf50'],[0.5,'#ffc107'],[1,'#ef5350']]}},axisTick:{show:false},splitLine:{show:false},axisLabel:{show:false},pointer:{length:'60%',width:4,itemStyle:{color:'#e0dcd4'}}}
+        ]
+    });
+    window.addEventListener('resize',function(){chart.resize();});
+})();
+
+// Ch10 估值法合理價長條圖
+(function(){
+    var ctx=document.getElementById('valuation-chart');if(!ctx||typeof Chart==='undefined')return;
+    new Chart(ctx,{
+        type:'bar',
+        data:{
+            labels:['前瞻PE','PB(修正)','分部估值','歷史循環','DCF(A)','DCF(B)','EV/EBITDA','PEG'],
+            datasets:[
+                {label:'合理價下限',data:[110,88,103,68,110,175,135,0],backgroundColor:'rgba(76,175,80,0.4)',borderColor:'#4caf50',borderWidth:1},
+                {label:'合理價上限',data:[163,147,130,210,110,175,145,0],backgroundColor:'rgba(122,176,192,0.4)',borderColor:'#7ab0c0',borderWidth:1}
+            ]
+        },
+        options:{responsive:true,indexAxis:'y',scales:{x:{grid:{color:'#3a3a3a'},title:{display:true,text:'股價（元）',color:'#b8b0a5'}},y:{grid:{color:'#3a3a3a'}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},color:'#b8b0a5'}},annotation:{annotations:{currentPrice:{type:'line',xMin:187,xMax:187,borderColor:'#ef5350',borderWidth:2,borderDash:[4,4],label:{content:'現價187',display:true,position:'start',color:'#ef5350',font:{size:10}}}}}}}
+    });
+})();
+
+</script>
+
+
+<!-- CROSS_LINKS_START -->
+<style>
+.cross-section{margin:20px 0;padding:16px;background:rgba(0,210,255,.03);border:1.5px dashed rgba(0,210,255,.3);border-radius:12px}
+.cross-section h4{color:#00d2ff;margin:0 0 8px;font-size:.95em}
+.cross-meta{font-size:.78em;color:#707090;margin:6px 0 10px}
+.cross-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.cross-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.82em;margin:2px}
+.cross-badge-warn{background:rgba(255,212,59,.12);color:#ffd43b;border:1px solid #ffd43b}
+.cross-badge-info{background:rgba(116,192,252,.12);color:#74c0fc;border:1px solid #74c0fc}
+.cross-badge-good{background:rgba(81,207,102,.15);color:#51cf66;border:1px solid #51cf66}
+.cross-badge-danger{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid #ff6b6b}
+.cross-alert{padding:6px 10px;border-radius:8px;border-left:3px solid #ff6b6b;background:rgba(22,33,62,.8);font-size:.8em;margin:6px 0;color:#e0e0e0}
+.cross-alert b{color:#ff6b6b}
+.cross-card{display:flex;gap:10px;background:rgba(22,33,62,.6);border:1px solid #2a2a4a;border-radius:8px;padding:10px 12px;margin:6px 0;align-items:center}
+.cross-card:hover{background:rgba(15,52,96,.6)}
+.cross-card .icon{font-size:1.5em;min-width:32px;text-align:center}
+.cross-card .info{flex:1}
+.cross-card .info .cname{font-weight:700;color:#e0e0e0;font-size:.9em}
+.cross-card .info .cname .flag{color:#ff6b6b}
+.cross-card .info .rel{font-size:.78em;color:#707090}
+.cross-card .info .days-old{color:#ff6b6b;font-weight:700}
+.cross-card .action{color:#00d2ff;font-size:.8em;font-weight:600;text-decoration:none}
+.cross-card .action:hover{text-decoration:underline}
+.cross-card-dim{opacity:.5}
+.cross-verdict{margin:4px 0;background:transparent;border:none}
+.cross-verdict summary{font-size:.78em;color:#707090;padding:2px 0;cursor:pointer;list-style:none}
+.cross-verdict summary::before{content:"▸ "}
+.cross-verdict[open] summary::before{content:"▾ "}
+</style>
+<div class="cross-section">
+<h4>📡 相關標的分析（西碧拉圖譜自動連結）</h4>
+<div class="cross-summary">
+<span class="cross-badge cross-badge-warn">一致性：2/2 偏空</span>
+<span class="cross-badge cross-badge-info">覆蓋率：2 家關聯 → 2 家已分析（20%）</span>
+</div>
+<p class="cross-meta">基於西碧拉圖譜 | 邊驗證 ≥ V2 | confidence ≥ 0.7 | 更新：2026-04-10</p>
+<div class="cross-card">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">德宏 (5475)</div>
+<div class="rel">關係：客戶 | 2026-03-26 分析（<span>15 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">第十三章整合結論
+最終結論是 D 級（不建議買入）。理由非常直接：214 元的股價隱含的是一個機率不到 2% 的超級樂觀...</span>
+</details>
+</div>
+<a class="action" href="20260326_5475_德宏_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">台光電 (2383)</div>
+<div class="rel">關係：競爭對手 | 2026-04-09 分析（<span>1 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">第十三章整合結論（最終判斷）
+
+資料：綜合評估 B+。八種估值法 6/8 偏貴。加權目標價 2,208 元（低於現價 2...</span>
+</details>
+</div>
+<a class="action" href="20260409_2383_台光電_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">金像電 (2368)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">瀚宇博 (5469)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">健鼎 (3044)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">南亞 (1303)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">健鼎 (3044)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">亞泰 (4974)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">榮科 (4989)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">新門 (5432)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+</div>
+<!-- CROSS_LINKS_END -->
+<div style="text-align:center;padding:14px;color:#7a7268;font-size:.75em;border-top:1.5px solid #3a3a3a;margin:18px 20px 0">
+    天機閣投資分析系統 — 聯茂電子 6213 完整版質化分析（全 13 章）<br>
+    審閱整合版 | 產出日期：2026-04-09 | FIAS 分級：F44 / I28 / A18 / S10<br>
+    本報告由 AI 輔助產出，不構成投資建議，僅供研究參考。
+</div>
+</body>
+</html>

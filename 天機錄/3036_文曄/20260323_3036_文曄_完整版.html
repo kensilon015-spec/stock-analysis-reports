@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>文曄科技(3036) 第七步：決策輸出</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:880px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+ul{margin-left:20px;font-size:.84em}
+ol{margin-left:20px;font-size:.84em}
+.bar-container{background:#ddd;border-radius:4px;height:18px;margin:4px 0;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:.72em;font-weight:700;color:#fff}
+.score-box{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.9em;margin:4px 2px}
+.score-bull{background:rgba(46,125,50,.15);color:var(--bull);border:1px solid var(--bull)}
+.score-bear{background:rgba(198,40,40,.15);color:var(--bear);border:1px solid var(--bear)}
+.score-warn{background:rgba(212,160,23,.12);color:var(--warn);border:1px solid var(--warn)}
+.score-neutral{background:rgba(90,125,140,.12);color:var(--neutral);border:1px solid var(--neutral)}
+.traffic-light{display:inline-block;width:18px;height:18px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.light-red{background:#c62828;box-shadow:0 0 6px rgba(198,40,40,.5)}
+.light-yellow{background:#f9a825;box-shadow:0 0 6px rgba(249,168,37,.5)}
+.light-green{background:#2e7d32;box-shadow:0 0 6px rgba(46,125,50,.5)}
+.moat-bar{height:12px;border-radius:3px;margin:3px 0}
+.verdict-box{background:var(--panel);border:2px solid var(--border);border-radius:10px;padding:14px 18px;margin:10px 0}
+.verdict-box h3{color:var(--base);margin-bottom:6px;font-size:1em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<h1>文曄科技 (3036)</h1>
+<div class="sub">第七步：決策輸出</div>
+<div class="desc">天機閣深度調查 v3.0 — A 基本面 | B 護城河 | C 股價合理性 | D 貓膩探索求證</div>
+<div class="tags">
+<span class="tag">信心校準第 4 次（最終）</span>
+<span class="tag">分析日：2026-03-23</span>
+<span class="tag">股價：254 元</span>
+</div>
+</div>
+
+<!-- ===== A. 基本面分析 ===== -->
+<div class="section-title">A. 基本面分析</div>
+<div class="section-sub">深度閱讀所有原始資料，交叉比對 5 管道數據</div>
+
+<details open>
+<summary>A-1. 獲利能力</summary>
+<table>
+<tr><th>指標</th><th>2024 全年</th><th>2025 全年</th><th>2026Q1 指引</th><th>趨勢判讀</th></tr>
+<tr><td>營收（億元）</td><td>9,602</td><td>11,779（+23%）</td><td>4,600~4,900（+92% YoY）</td><td style="color:var(--bull);">強勁成長（含 Future）</td></tr>
+<tr><td>EPS（元）</td><td>8.13</td><td>11.61（+43%）</td><td>4.49~5.14</td><td style="color:var(--bull);">創歷史新高</td></tr>
+<tr><td>毛利率</td><td>3.74%</td><td>4.04%</td><td>3.2~3.3%</td><td style="color:var(--bear);">結構性下滑</td></tr>
+<tr><td>營業利益率</td><td>1.58%</td><td>1.77%</td><td>1.75~1.85%</td><td style="color:var(--neutral);">持平</td></tr>
+<tr><td>稅後淨利率</td><td>0.95%</td><td>1.15%</td><td>~1.25%</td><td style="color:var(--bull);">小幅提升</td></tr>
+<tr><td>ROE（年化）</td><td>9.97%</td><td>14.1%</td><td>—</td><td style="color:var(--bull);">改善中</td></tr>
+</table>
+
+<div class="tip warn"><b>關鍵矛盾：營收爆發 vs 毛利率壓縮</b>
+文曄 2025 年營收年增 23%、EPS 年增 43%，展現強勁成長動能。但毛利率從 2014 年高峰 5.74% 持續下滑至 2026Q1 指引的 3.2~3.3%，<b>十二年間幾乎腰斬</b>。這是「以量換價」的典型通路商困境 — 營收越大但每元營收賺得越少。<br><br>
+<b>數據佐證</b>：Q4 營收 3,421 億超標 12%，但毛利率 3.74% 未達 4.1~4.2% 的指引下緣。管理層解釋為 AI 低毛利產品出貨比重高於預期。
+</div>
+</details>
+
+<details open>
+<summary>A-2. 資產負債表健康度</summary>
+<table>
+<tr><th>指標</th><th>2024Q4</th><th>2025Q4</th><th>變化</th><th>評等</th></tr>
+<tr><td>負債比率</td><td>74.82%</td><td>77.64%</td><td>+2.82%</td><td style="color:var(--bear);">偏高</td></tr>
+<tr><td>流動比率</td><td>146.46</td><td>125.43</td><td>-21.03</td><td style="color:var(--warn);">惡化</td></tr>
+<tr><td>速動比率</td><td>79.18</td><td>55.10</td><td>-24.08</td><td style="color:var(--bear);">警戒線</td></tr>
+<tr><td>存貨（億元）</td><td>1,609</td><td>2,598</td><td>+61.4%</td><td style="color:var(--bear);">暴增</td></tr>
+<tr><td>應收帳款（億元）</td><td>1,421</td><td>1,700</td><td>+19.6%</td><td style="color:var(--warn);">偏高</td></tr>
+<tr><td>營業現金流 Q4（億元）</td><td>+188.5</td><td><b>-21.9</b></td><td>轉負</td><td style="color:var(--bear);">嚴重</td></tr>
+</table>
+
+<div class="tip danger"><b>三個紅旗同時亮起</b>
+<ol>
+<li><b>存貨暴增 +159%（8Q）</b>：從 2024Q1 的 1,004 億增至 2025Q4 的 2,598 億，增速遠超營收增速（同期 +23%）。存貨/營收比嚴重失衡。</li>
+<li><b>營業現金流 Q4 轉負 -21.9 億</b>：大量備貨吃掉現金，若 AI 需求放緩將面臨存貨減損風險。</li>
+<li><b>速動比率 55.1（<100）</b>：扣除存貨後的短期償債能力已低於安全線，且連續 8 季惡化。</li>
+</ol>
+<b>財務長解釋</b>：AI 相關產品備貨需求增加，屬正常營運行為。但<b>歷史教訓</b>：存貨暴增而管理層輕描淡寫，往往是週期反轉前的訊號。
+</div>
+</details>
+
+<details open>
+<summary>A-3. 成長動能 — EPS 季度趨勢</summary>
+<table>
+<tr><th></th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>全年</th></tr>
+<tr><td><b>2024</b></td><td>1.57</td><td>1.70</td><td>2.54</td><td>2.28</td><td>8.13</td></tr>
+<tr><td><b>2025</b></td><td>2.42</td><td>2.28</td><td>3.40</td><td>3.50</td><td>11.61</td></tr>
+<tr><td><b>2026E</b></td><td>4.49~5.14</td><td>—</td><td>—</td><td>—</td><td>13.33（FactSet 中位數）</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);">Q1 指引年增 86~112%，若達標將是 EPS 最爆發的一季。法人 2026 全年中位數 13.33 元（+15% YoY），CMoney 樂觀估 15.02 元。</p>
+
+<div class="tip good"><b>成長動能評分：7/10</b>
+<b>正面</b>：(1) Q1 指引營收年增 92%，EPS 4.49~5.14 元將創單季紀錄；(2) 資料中心佔比從 36%→58%，結構性轉型進行中；(3) Gartner 上修資料中心半導體 CAGR 至 25.7%。<br>
+<b>負面</b>：(1) 毛利率持續下滑壓縮 EPS 增幅；(2) AI capex 增速從 73% 降至 36%，加速度放緩；(3) 大聯大 Q1 僅 +8% 暗示非 AI 通路需求疲弱。
+</div>
+</details>
+
+<details open>
+<summary>A-4. 基本面綜合評分</summary>
+<table>
+<tr><th>面向</th><th>評分</th><th>說明</th></tr>
+<tr><td>獲利成長</td><td><span class="score-box score-bull">8/10</span></td><td>營收+EPS 雙位數成長，AI 驅動結構性需求</td></tr>
+<tr><td>獲利品質</td><td><span class="score-box score-warn">4/10</span></td><td>毛利率下滑、現金流轉負、存貨失控</td></tr>
+<tr><td>財務穩定</td><td><span class="score-box score-bear">3/10</span></td><td>負債 77.6%、速動比 55、存貨佔比過高</td></tr>
+<tr><td>產業位置</td><td><span class="score-box score-bull">8/10</span></td><td>全球 #1 IC 通路商，400+原廠，25K+客戶</td></tr>
+<tr><td><b>基本面總分</b></td><td><span class="score-box score-warn">5.75/10</span></td><td><b>成長動能強勁但品質堪慮</b></td></tr>
+</table>
+</details>
+
+<!-- ===== B. 護城河評估 ===== -->
+<div class="section-title">B. 護城河評估</div>
+<div class="section-sub">六維度護城河分析 + Porter 五力</div>
+
+<details open>
+<summary>B-1. 護城河六維度</summary>
+<table>
+<tr><th>維度</th><th>強度</th><th>說明</th></tr>
+<tr><td>規模經濟</td><td><div class="bar-container"><div class="bar-fill" style="width:75%;background:var(--accent)">75%</div></div></td><td>全球 #1，營收破兆。規模帶來議價能力和成本攤平，但通路商規模優勢有限（毛利率仍僅 3~4%）</td></tr>
+<tr><td>轉換成本</td><td><div class="bar-container"><div class="bar-fill" style="width:55%;background:var(--warn)">55%</div></div></td><td>長期合作關係 + 技術支援綁定。但客戶可同時使用多家通路商，轉換成本中等</td></tr>
+<tr><td>定價能力</td><td><div class="bar-container"><div class="bar-fill" style="width:15%;background:var(--bear)">15%</div></div></td><td>幾乎為零。原廠定價、客戶議價，通路商僅賺取微薄價差。TI 直銷證明原廠可隨時繞過通路商</td></tr>
+<tr><td>網路效應</td><td><div class="bar-container"><div class="bar-fill" style="width:45%;background:var(--warn)">45%</div></div></td><td>「一站式購足」平台效應：代理線越多→客戶越方便→吸引更多原廠。但效應有限，不如軟體平台</td></tr>
+<tr><td>無形資產</td><td><div class="bar-container"><div class="bar-fill" style="width:25%;background:var(--bear)">25%</div></div></td><td>無專利、無品牌溢價、無特許經營權。代理權可被隨時收回（TI 先例）</td></tr>
+<tr><td>成本優勢</td><td><div class="bar-container"><div class="bar-fill" style="width:30%;background:var(--bear)">30%</div></div></td><td>規模帶來的採購折扣有限。通路商本質是中間人，成本結構與競爭對手高度同質化</td></tr>
+</table>
+
+<div class="verdict-box">
+<h3>護城河評級：<span class="score-box score-warn">Narrow Moat（窄護城河）</span></h3>
+<p style="font-size:.84em;color:var(--txt2);">
+文曄的護城河主要來自<b>規模</b>（全球 #1）和<b>轉換成本</b>（長期合作關係）。但通路商本質是中間人，無定價能力、無專利保護、代理權可被收回。<br><br>
+<b>護城河持久性風險</b>：(1) 原廠直銷趨勢（TI 前例）；(2) AI 大型客戶可直接向原廠採購；(3) 毛利率結構性下滑暗示競爭優勢在縮小。<br><br>
+<b>vs GOOGL/5234 比較</b>：GOOGL 擁有深護城河（搜尋壟斷+資料+品牌），5234 擁有窄護城河（技術壁壘）。文曄的護城河最淺，本質是靠規模和關係而非技術或品牌。
+</p>
+</div>
+</details>
+
+<details open>
+<summary>B-2. Porter 五力分析</summary>
+<table>
+<tr><th>力量</th><th>強度</th><th>說明</th></tr>
+<tr><td>供應商議價力</td><td style="color:var(--bear);">極高</td><td>原廠掌握定價權，可隨時終止代理（TI 案例）。文曄 400+ 原廠分散了集中度，但核心 AI 原廠（NVIDIA/AMD/Broadcom）議價力仍極強</td></tr>
+<tr><td>客戶議價力</td><td style="color:var(--bear);">高</td><td>大型 ODM/OEM/CSP 有多管道採購能力。資料中心佔營收 58%，大客戶集中度高</td></tr>
+<tr><td>同業競爭</td><td style="color:var(--warn);">中高</td><td>全球四大通路商（文曄/大聯大/Arrow/Avnet），大聯大營收差距僅 76 億。價格戰空間極小（毛利率僅 3~4%）</td></tr>
+<tr><td>替代品威脅</td><td style="color:var(--bear);">高</td><td>原廠直銷是最大替代威脅。電商化/數位平台（如 Digi-Key、Mouser）也在侵蝕傳統通路</td></tr>
+<tr><td>新進入者威脅</td><td style="color:var(--safe);">低</td><td>規模壁壘極高，新進入者幾乎不可能與兆元營收的通路商競爭</td></tr>
+</table>
+
+<div class="tip warn"><b>五力結論</b>
+通路商處於產業鏈中「被兩面夾擊」的位置：上游原廠議價力極強，下游大客戶也能壓價。唯一的防禦是規模效應和「不可或缺的中間人」定位，但 TI 直銷證明這個定位可以被繞過。
+</div>
+</details>
+
+<!-- ===== C. 股價合理性分析 ===== -->
+<div class="section-title">C. 股價合理性分析</div>
+<div class="section-sub">多維度估值 — 本益比/歷史區間/法人目標價/合理區間</div>
+
+<details open>
+<summary>C-1. 本益比估值</summary>
+<table>
+<tr><th>指標</th><th>數值</th><th>比較基準</th><th>評判</th></tr>
+<tr><td>TTM 本益比</td><td><b>26.24x</b></td><td>同業均值 10~18x</td><td style="color:var(--bear);">嚴重偏高</td></tr>
+<tr><td>2026E Forward PE（FactSet 13.33 元）</td><td><b>19.1x</b></td><td>通路股歷史 8~12x</td><td style="color:var(--bear);">偏高</td></tr>
+<tr><td>2026E Forward PE（CMoney 15.02 元）</td><td><b>16.9x</b></td><td>通路股歷史 8~12x</td><td style="color:var(--warn);">仍高於歷史</td></tr>
+<tr><td>股價淨值比</td><td><b>3.02x</b></td><td>通路股通常 1~2x</td><td style="color:var(--bear);">偏高</td></tr>
+<tr><td>殖利率</td><td>2.36%</td><td>通路股通常 3~5%</td><td style="color:var(--warn);">偏低</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>C-2. 法人目標價比較</summary>
+<table>
+<tr><th>來源</th><th>目標價</th><th>vs 現價 254 元</th><th>日期</th></tr>
+<tr><td>FactSet 共識</td><td>223.5 元</td><td style="color:var(--bear);">-12.0%（已超越）</td><td>2026-02</td></tr>
+<tr><td>Fintel 平均</td><td>172.0 元</td><td style="color:var(--bear);">-32.3%（已超越）</td><td>2026-03</td></tr>
+<tr><td>富邦證券</td><td>181 元</td><td style="color:var(--bear);">-28.7%（已超越）</td><td>2025-11</td></tr>
+<tr><td>國泰期貨</td><td>178 元</td><td style="color:var(--bear);">-29.9%（已超越）</td><td>2025</td></tr>
+<tr><td>華南投顧</td><td>166 元</td><td style="color:var(--bear);">-34.6%（已超越）</td><td>2025</td></tr>
+<tr><td>外資機構（最高）</td><td>243 元</td><td style="color:var(--bear);">-4.3%（已超越）</td><td>2026</td></tr>
+</table>
+
+<div class="tip danger"><b>股價已超越所有已知分析師目標價</b>
+現價 254 元超越 FactSet 最新共識 223.5 元達 13.7%。最樂觀的外資目標價 243 元也已被突破。在沒有法人喊價支撐的情況下，股價完全由市場情緒驅動。<br><br>
+<b>歷史對照</b>：股價在 2 個月內從 156 元漲至 254 元（+63%），距 250 天均價 137.33 元偏離 +85%。
+</div>
+</details>
+
+<details open>
+<summary>C-3. 合理股價估算</summary>
+<table>
+<tr><th>估算方法</th><th>假設</th><th>合理價</th></tr>
+<tr><td>歷史 PE 上緣（18x）× 2026E EPS</td><td>18x × 13.33</td><td>240 元</td></tr>
+<tr><td>歷史 PE 中位（12x）× 2026E EPS</td><td>12x × 13.33</td><td>160 元</td></tr>
+<tr><td>成長股 PEG=1 估值</td><td>PE = EPS 增速 15%</td><td>15x × 13.33 = 200 元</td></tr>
+<tr><td>樂觀情境（CMoney EPS × 18x）</td><td>18x × 15.02</td><td>270 元</td></tr>
+<tr><td>悲觀情境（12x × FactSet 低估 12.05）</td><td>12x × 12.05</td><td>145 元</td></tr>
+</table>
+
+<div class="verdict-box">
+<h3>股價合理性判斷：<span class="score-box score-bear">偏高（安全邊際不足）</span></h3>
+<p style="font-size:.84em;color:var(--txt2);">
+合理價區間估算：<b>160~240 元</b>（中位數約 200 元）<br>
+現價 254 元位於合理區間上緣之上，<b>安全邊際為負值</b>。<br><br>
+<b>若 2026 EPS 達 13.33 元</b>：Forward PE 19.1x，仍高於通路股歷史區間上緣（18x）<br>
+<b>若 2026 EPS 達 15.02 元（最樂觀）</b>：Forward PE 16.9x，勉強合理但缺乏安全邊際<br>
+<b>若 2026 EPS 僅 12.05 元（最保守）</b>：Forward PE 21.1x，嚴重高估<br><br>
+<b>結論</b>：在 254 元買入的風險報酬比不佳。即使最樂觀情境兌現，上行空間約 6%（至 270 元），但下行空間達 37%（至 160 元）。
+</p>
+</div>
+</details>
+
+<!-- ===== D. 貓膩探索求證 ===== -->
+<div class="section-title">D. 貓膩探索求證（反共識偵測引擎 v2.1）</div>
+<div class="section-sub">六步框架：敘事解剖 → 歷史前科 → 巧合偵測 → 反轉假說 → 利益追蹤 → 財務品質</div>
+
+<details open>
+<summary>D-1. 敘事解剖（Narrative Forensics）</summary>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>主流敘事</td><td>「文曄受益 AI 資料中心爆發，併購 Future 後躍升全球 #1 IC 通路商，營收破兆、EPS 創新高，成長才剛開始」</td></tr>
+<tr><td>誰在說</td><td>公司管理層（法說會 8.5/10 信心）、成長股投資者、AI 主題基金</td></tr>
+<tr><td>誰受益</td><td>管理層（持股增值）、外資/投信（持有大量部位）、AI 供應鏈分析師</td></tr>
+<tr><td>什麼數據支撐</td><td>Q1 營收指引 +92%、資料中心佔比 58%、Gartner CAGR 25.7%</td></tr>
+<tr><td>什麼被忽略</td><td>毛利率 12 年腰斬（5.74%→3.2%）、存貨 +159%、現金流轉負、PE 26x 超越所有目標價</td></tr>
+</table>
+<div class="tip warn"><b>敘事紅旗：4 個</b>
+市場完全聚焦「營收成長」而忽略「獲利品質惡化」。典型的「量的故事掩蓋質的問題」。</div>
+</details>
+
+<details open>
+<summary>D-2. 歷史前科搜查（Criminal Record Check）</summary>
+<ul>
+<li><b>管理層前科</b>：鄭文宗無違法紀錄。2020 年大聯大收購風波時曾增持 6,277 張護盤，持股提高至 12.03%。</li>
+<li><b>公司前科</b>：未發現文曄遭主管機關裁罰的公開紀錄。</li>
+<li><b>併購關聯事件</b>：2017 年併購宣昶時，宣昶方人員涉內線交易（非文曄管理層所為），兩人緩刑。</li>
+<li><b>產業前科</b>：台灣 IC 通路業未有聯合行為或反壟斷紀錄（與 DRAM 產業不同）。</li>
+</ul>
+<div class="tip good"><b>前科清白：0 個紅旗</b>
+管理層誠信度較高，鄭文宗有增持護盤歷史。董監質押比僅 2.33%，極低。</div>
+</details>
+
+<details open>
+<summary>D-3. 巧合偵測（Coincidence Detector）</summary>
+<ul>
+<li><b>同業同步行為</b>：文曄/大聯大 2021 年 8 月同步營收創高，可合理歸因於上游晶圓代工漲價傳導。</li>
+<li><b>定價權歸屬</b>：IC 通路商是代理人而非定價者，價格由原廠決定。通路商之間不存在聯合定價的結構基礎。</li>
+<li><b>2022 年鄭文宗發言</b>：「IDM 廠 Q1 調漲 10%」— 明確指出價格決定權在原廠手中。</li>
+</ul>
+<div class="tip good"><b>無不當同步行為：0 個紅旗</b>
+通路商同步漲價是上游傳導結果，非主動聯合行為。結構上不具備壟斷定價能力。</div>
+</details>
+
+<details open>
+<summary>D-4. 反轉假說 + 即時求證（Inversion Hypothesis）</summary>
+
+<p style="font-size:.84em;margin-bottom:6px"><b>核心問題</b>：如果「AI 驅動文曄持續高成長」的敘事是錯的，真相可能是什麼？</p>
+
+<table>
+<tr><th>反轉路徑</th><th>即時證據</th><th>機率</th><th>影響</th></tr>
+<tr><td><b>AI capex 增速放緩</b><br>CSP 資本支出從 +73% 降至 +36%</td><td>Futurum 報告：2026 年 AI capex $660~690B（+36%），加速度已放緩。Fortune：市場開始質疑 AI 投資回報率。鴻海股價承壓因 AI 伺服器放緩。</td><td style="color:var(--warn);">中</td><td style="color:var(--bear);">高</td></tr>
+<tr><td><b>原廠直銷（TI 2.0）</b><br>NVIDIA/AMD 轉向直銷</td><td>TI 2020 年收回代理權衝擊文曄 20% 營收的歷史先例。UBS：AI 去中間化已成 2026 年市場焦點。</td><td style="color:var(--safe);">低-中</td><td style="color:var(--bear);">極高</td></tr>
+<tr><td><b>毛利率跌破 3%</b><br>AI 佔比升至 65%+ 壓縮利潤</td><td>毛利率 12 年趨勢：5.74%→3.2%。管理層承認 AI 產品毛利率低於公司均值。Q4 已 miss 毛利率指引。</td><td style="color:var(--warn);">中高</td><td style="color:var(--warn);">中</td></tr>
+</table>
+
+<div class="tip danger"><b>反轉假說紅旗：3 個</b>
+最值得警惕的是 <b>AI capex 增速放緩</b> — 這不是「需求消失」而是「需求增速減速」，但對估值的壓縮效果同樣巨大。文曄 254 元的估值已 price in「持續加速成長」，一旦加速度放緩，PE 倍數壓縮將導致股價回調。
+</div>
+</details>
+
+<details open>
+<summary>D-5. 利益追蹤（Follow the Money）</summary>
+<table>
+<tr><th>追蹤項目</th><th>結果</th><th>燈號</th></tr>
+<tr><td>董監質押比</td><td>2.33%（極低）</td><td><span class="traffic-light light-green"></span>正常</td></tr>
+<tr><td>鄭文宗持股變化</td><td>透過紹陽投資持股 7.34%，2020 年曾增持護盤</td><td><span class="traffic-light light-green"></span>正面</td></tr>
+<tr><td>內部人減持</td><td>未發現異常減持紀錄</td><td><span class="traffic-light light-green"></span>正常</td></tr>
+<tr><td>外資動向（近 20 日）</td><td>多數交易日買超，3 月合計買超約 900 萬股</td><td><span class="traffic-light light-green"></span>正面</td></tr>
+<tr><td>投信動向（近 20 日）</td><td>持續買超，3 月合計買超約 1,200 萬股</td><td><span class="traffic-light light-green"></span>正面</td></tr>
+<tr><td>自營商動向（近 20 日）</td><td>自行買賣偏空，避險部位波動大</td><td><span class="traffic-light light-yellow"></span>中性</td></tr>
+<tr><td>GDR+ECB 股本稀釋</td><td>$7.39 億美元募資，稀釋 5.6~7.7%</td><td><span class="traffic-light light-yellow"></span>注意</td></tr>
+</table>
+
+<div class="tip good"><b>利益追蹤紅旗：1 個（GDR/ECB 稀釋）</b>
+管理層利益與股東高度一致。鄭文宗有增持紀錄、質押比極低、無異常減持。唯一注意點是 GDR+ECB 的 5.6~7.7% 股本稀釋，但此為策略性操作（以 0% 利率 ECB 取代 5.1% 特別股股息），長期對股東有利。
+</div>
+</details>
+
+<details open>
+<summary>D-6. 貓膩總評</summary>
+
+<div class="verdict-box">
+<h3>貓膩燈號：<span class="traffic-light light-yellow"></span><span class="score-box score-warn">黃燈（需持續觀察）</span></h3>
+<p style="font-size:.84em;color:var(--txt2);">
+
+<b>紅旗總計：10 個</b>（敘事 4 + 前科 0 + 巧合 0 + 反轉 3 + 利益 1 + 財務 2）<br><br>
+
+<b>核心貓膩嫌疑</b>：<br>
+文曄不是「壞公司在做壞事」，而是「好公司的估值泡沫風險」。管理層誠信度高（前科清白、增持護盤、低質押），但市場敘事可能過度樂觀：<br>
+(1) 用「AI 驅動結構性成長」的故事來合理化通路股 26x PE<br>
+(2) 忽視毛利率 12 年腰斬的結構性惡化<br>
+(3) 忽視存貨暴增 +159% 和現金流轉負的紅旗<br>
+(4) AI capex 增速已開始放緩（+73%→+36%）<br><br>
+
+<b>不是貓膩的部分</b>：<br>
+(1) 管理層無舞弊跡象 → 可排除「造假」風險<br>
+(2) 無同業聯合行為 → 可排除「壟斷操縱」風險<br>
+(3) 內部人無異常減持 → 可排除「內部人先跑」風險<br><br>
+
+<b>真正的風險是「估值過度反映」</b>：市場給予通路商科技股等級的估值（PE 26x），但本質仍是毛利率 3% 的中間人。一旦 AI 成長敘事動搖（capex 減速、原廠直銷），估值回歸通路股傳統區間（PE 10~12x）的風險巨大。
+</p>
+</div>
+
+<table>
+<tr><th>監控指標</th><th>門檻</th><th>頻率</th></tr>
+<tr><td>Q1 實際毛利率</td><td>&lt;3.2% → 紅旗升級</td><td>Q1 季報（4 月底）</td></tr>
+<tr><td>存貨/營收比</td><td>持續上升 → 減損風險</td><td>每季</td></tr>
+<tr><td>營業現金流</td><td>連續 2Q 為負 → 嚴重警告</td><td>每季</td></tr>
+<tr><td>AI capex 增速</td><td>降至 +20% 以下 → 需求轉弱</td><td>CSP 財報季</td></tr>
+<tr><td>原廠代理權異動</td><td>任何主要原廠公告 → 立即評估</td><td>即時</td></tr>
+<tr><td>鄭文宗持股變化</td><td>減持 &gt;1% → 警告</td><td>每月</td></tr>
+</table>
+</details>
+
+<!-- ===== 第七步綜合結論 ===== -->
+<div class="section-title">第七步綜合結論 — 信心校準第 4 次</div>
+
+<details open>
+<summary>信心最終校準</summary>
+<table>
+<tr><th>假說</th><th>第 3 次（評審團後）</th><th>第 4 次（決策輸出後）</th><th>變動原因</th></tr>
+<tr><td>H1 牛市</td><td>20%</td><td style="color:var(--warn);">15%</td><td>-5%：估值無安全邊際 + 所有目標價已被超越</td></tr>
+<tr><td>H2 溫和正面</td><td>35%</td><td style="color:var(--bull);">35%</td><td>持平：AI 需求仍在但增速放緩，最可能情境</td></tr>
+<tr><td>H3 中性偏空</td><td>30%</td><td style="color:var(--warn);">33%</td><td>+3%：毛利率惡化+存貨+現金流紅旗支持</td></tr>
+<tr><td>H4 熊市</td><td>15%</td><td>17%</td><td>+2%：估值極端高估增加暴跌風險</td></tr>
+</table>
+
+<div class="tip danger"><b>第七步最終判斷</b>
+<ol>
+<li><b>不建議在 254 元追買</b>：PE 26x、超越所有目標價、2 月漲 63%、安全邊際為負。風險報酬比極差（上行 ~6% vs 下行 ~37%）。</li>
+<li><b>合理進場區間：180~220 元</b>（對應 Forward PE 13.5~16.5x），需等待回調。</li>
+<li><b>AI 基本面是真的</b>：資料中心 CAGR 25.7%、NVIDIA 需求 1 兆美元、Q1 指引 +92% — 文曄確實受惠。但「好公司 ≠ 好股票」，價格太高什麼都不好。</li>
+<li><b>最需關注</b>：2026Q1 毛利率實際值（門檻 3.2%）+ 存貨是否開始去化 + AI capex 增速是否進一步放緩。</li>
+<li><b>已持有者</b>：建議在 Q1 季報出爐前設定停損（成本 -15%），並減碼至投資組合的 3% 以下。</li>
+</ol>
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+<span class="score-box score-warn">基本面：5.75/10</span>
+<span class="score-box score-warn">護城河：Narrow Moat</span>
+<span class="score-box score-bear">估值：偏高（安全邊際不足）</span>
+<span class="score-box score-warn">貓膩：黃燈</span>
+<span class="score-box score-warn">最終信心：H2 溫和正面 35% | H3 偏空 33%</span>
+</div>
+</details>
+
+
+<!-- CROSS_LINKS_START -->
+<style>
+.cross-section{margin:20px 0;padding:16px;background:rgba(0,210,255,.03);border:1.5px dashed rgba(0,210,255,.3);border-radius:12px}
+.cross-section h4{color:#00d2ff;margin:0 0 8px;font-size:.95em}
+.cross-meta{font-size:.78em;color:#707090;margin:6px 0 10px}
+.cross-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.cross-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.82em;margin:2px}
+.cross-badge-warn{background:rgba(255,212,59,.12);color:#ffd43b;border:1px solid #ffd43b}
+.cross-badge-info{background:rgba(116,192,252,.12);color:#74c0fc;border:1px solid #74c0fc}
+.cross-badge-good{background:rgba(81,207,102,.15);color:#51cf66;border:1px solid #51cf66}
+.cross-badge-danger{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid #ff6b6b}
+.cross-alert{padding:6px 10px;border-radius:8px;border-left:3px solid #ff6b6b;background:rgba(22,33,62,.8);font-size:.8em;margin:6px 0;color:#e0e0e0}
+.cross-alert b{color:#ff6b6b}
+.cross-card{display:flex;gap:10px;background:rgba(22,33,62,.6);border:1px solid #2a2a4a;border-radius:8px;padding:10px 12px;margin:6px 0;align-items:center}
+.cross-card:hover{background:rgba(15,52,96,.6)}
+.cross-card .icon{font-size:1.5em;min-width:32px;text-align:center}
+.cross-card .info{flex:1}
+.cross-card .info .cname{font-weight:700;color:#e0e0e0;font-size:.9em}
+.cross-card .info .cname .flag{color:#ff6b6b}
+.cross-card .info .rel{font-size:.78em;color:#707090}
+.cross-card .info .days-old{color:#ff6b6b;font-weight:700}
+.cross-card .action{color:#00d2ff;font-size:.8em;font-weight:600;text-decoration:none}
+.cross-card .action:hover{text-decoration:underline}
+.cross-card-dim{opacity:.5}
+.cross-verdict{margin:4px 0;background:transparent;border:none}
+.cross-verdict summary{font-size:.78em;color:#707090;padding:2px 0;cursor:pointer;list-style:none}
+.cross-verdict summary::before{content:"▸ "}
+.cross-verdict[open] summary::before{content:"▾ "}
+</style>
+<div class="cross-section">
+<h4>📡 相關標的分析（西碧拉圖譜自動連結）</h4>
+<div class="cross-summary">
+<span class="cross-badge cross-badge-info">覆蓋率：15 家關聯 → 0 家已分析</span>
+</div>
+<p class="cross-meta">基於西碧拉圖譜 | 邊驗證 ≥ V2 | confidence ≥ 0.7 | 更新：2026-04-10</p>
+<div class="cross-card cross-card-dim">
+<div class="icon">💰</div>
+<div class="info">
+<div class="cname">FUTURE_ELECTRONICS (GLOBAL_FUTURE_ELECTRONICS)</div>
+<div class="rel">關係：投資者 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">益登 (3048)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">Broadcom (AVGO)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">Skyworks (SWKS)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">聯發科 (2454)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">大聯大 (3702)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">🤝</div>
+<div class="info">
+<div class="cname">Broadcom (AVGO)</div>
+<div class="rel">關係：合作夥伴 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">🤝</div>
+<div class="info">
+<div class="cname">Skyworks (SWKS)</div>
+<div class="rel">關係：合作夥伴 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">🤝</div>
+<div class="info">
+<div class="cname">Marvell (MRVL)</div>
+<div class="rel">關係：合作夥伴 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">🤝</div>
+<div class="info">
+<div class="cname">INTL_NXP (INTL_NXP)</div>
+<div class="rel">關係：合作夥伴 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<p class="cross-meta">...還有 5 個關聯標的尚未分析</p>
+</div>
+<!-- CROSS_LINKS_END -->
+<!-- Footer -->
+<div style="margin-top:20px;padding-top:12px;border-top:1.5px solid var(--border);font-size:.78em;color:var(--txt3);text-align:center;">
+天機閣深度調查 v3.0 — 第七步：決策輸出<br>
+文曄科技 (3036) | 分析日：2026-03-23 | 股價：254 元<br>
+A 基本面 5.75/10 | B Narrow Moat | C 安全邊際不足 | D 黃燈<br>
+信心校準第 4 次：H2(35%) H3(33%) H4(17%) H1(15%)<br>
+合理價區間：180~240 元 | 建議進場區間：180~220 元
+</div>
+
+</div>
+</body>
+</html>

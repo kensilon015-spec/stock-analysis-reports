@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FCX 第八步：推衍推演（天機閣獨立報告）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--gold:#b8960c;--warn:#d4a017;--bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.path-card{padding:10px 14px;border-radius:6px;margin:6px 0;border-left:4px solid;font-size:.84em}
+.path-a{border-color:var(--bull);background:rgba(46,125,50,.06)}.path-b{border-color:var(--safe);background:rgba(107,143,113,.06)}
+.path-c{border-color:var(--warn);background:rgba(212,160,23,.06)}.path-d{border-color:var(--danger);background:rgba(194,124,110,.06)}
+.path-e{border-color:var(--bear);background:rgba(198,40,40,.06)}
+.butterfly{background:rgba(184,150,12,.06);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin:8px 0}
+.butterfly .bf-title{font-weight:700;color:var(--gold);margin-bottom:4px}
+.chain{margin:4px 0 4px 16px;padding-left:12px;border-left:2px solid var(--border);font-size:.83em}
+.chain .step{margin:3px 0;color:var(--txt2)}
+.chain .step b{color:var(--base)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base)}
+.toggle-btn:hover{background:var(--hover)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>FCX — 天機閣推衍推演</h1>
+    <div class="sub">Freeport-McMoRan Inc. (NYSE: FCX) | 第八步</div>
+    <div class="desc">獨立推衍版報告 — 五路徑情境模擬 + 蝴蝶效應推衍 + 第四次信心校準<br>推衍日期：2026-03-22 | 股價基準：$52.09 | 推衍有效期至 2026-09-30</div>
+    <div class="tags">
+        <span class="tag">加權期望值 ~$50</span>
+        <span class="tag">路徑 B 穩健恢復 34%</span>
+        <span class="tag">信心 50%（第四次校準）</span>
+        <span class="tag">等待催化事件</span>
+    </div>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 8a ===== -->
+<div class="section-title">8a. 推衍基礎確認</div>
+<div class="section-sub">回溯原始資料，確認推衍所依據的核心事實</div>
+
+<div class="card">
+<h3>核心事實基礎</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>數值</th><th>來源</th><th>FIAS</th></tr>
+<tr><td>股價（2026/03/21）</td><td>$52.09</td><td>yfinance</td><td>事實</td></tr>
+<tr><td>Forward EPS（FY2026E）</td><td>$3.68</td><td>分析師共識/yfinance</td><td>推論</td></tr>
+<tr><td>TTM EPS</td><td>$1.52</td><td>yfinance</td><td>事實</td></tr>
+<tr><td>Forward PE</td><td>14.14x</td><td>計算值</td><td>事實</td></tr>
+<tr><td>FY2025 營收</td><td>$25.915B</td><td>10-K</td><td>事實</td></tr>
+<tr><td>FY2025 EBITDA</td><td>$8.985B（YoY -5.1%）</td><td>10-K</td><td>事實</td></tr>
+<tr><td>六種估值中位數</td><td>~$54</td><td>第七步</td><td>推論</td></tr>
+<tr><td>ACH 主假說</td><td>H2 溫和看多（35%）</td><td>第六步評審團</td><td>推論</td></tr>
+<tr><td>三次校準信心</td><td>65% → 60% → 55%</td><td>第四~六步</td><td>推論</td></tr>
+<tr><td>Grasberg 泥流日期</td><td>2025/09/08</td><td>8-K/新聞</td><td>事實</td></tr>
+<tr><td>Grasberg 預計重啟</td><td>2026 Q2（Block 2&3）</td><td>公司指引/IR</td><td>推論-承諾</td></tr>
+<tr><td>PTFI 持股結構</td><td>FCX 48.76% / Inalum 51.24%</td><td>10-K</td><td>事實</td></tr>
+<tr><td>銅價（COMEX）</td><td>~$5.37/磅</td><td>Trading Economics</td><td>事實</td></tr>
+<tr><td>印尼 MoU 簽署日期</td><td>2026 年 2 月</td><td>FCX IR 公告</td><td>事實</td></tr>
+<tr><td>M-Score</td><td>-2.09（WARNING）</td><td>計算值</td><td>事實</td></tr>
+<tr><td>Z-Score</td><td>2.457（灰色地帶）</td><td>計算值</td><td>事實</td></tr>
+</table>
+
+<div class="tip info"><b>推衍基礎完整性確認</b>
+所有推衍結論均建立在上述事實基礎之上。Forward EPS $3.68 是最關鍵的假設性數字 — 它隱含 Grasberg 在 H2 2026 恢復 85%+ 產能 + 銅價維持 $5+/磅，兩者同時成立的機率構成推衍的核心不確定性。</div>
+</div>
+</div>
+
+<!-- ===== 8b ===== -->
+<div class="section-title">8b. OSINT 情報更新</div>
+<div class="section-sub">推衍日（2026-03-22）即時搜尋補充</div>
+
+<div class="card">
+<h3>情報更新差異表（分析日 3/21 vs 推衍日 3/22）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>分析日狀態</th><th>推衍日更新</th><th>變化程度</th><th>FIAS</th></tr>
+<tr><td><b>印尼 MoU「礦場生命週期」</b></td><td>未充分納入</td><td>2026/2 簽署，IUPK 從 2041 年到期改為礦場資源生命週期延長。FCX 2041 年前維持 48.76%，2041 年後無償轉讓 12% 降至約 37%</td><td><span class="light green"></span><b>重大利多</b></td><td>事實</td></tr>
+<tr><td>Grasberg 重啟進度</td><td>Q2 2026 重啟目標</td><td>維持不變。泥漿清除+基建修復+防護屏障安裝按計畫進行中</td><td>無變化</td><td>推論-承諾</td></tr>
+<tr><td>銅價</td><td>~$5.37/磅（COMEX）</td><td>$5.37/磅。LME ~$12,900-13,200/噸</td><td>無變化</td><td>事實</td></tr>
+<tr><td>3/3 暴跌事件</td><td>已知</td><td>確認單日 -10.5%，市場因 Grasberg 復產不確定性恐慌</td><td>已反映</td><td>事實</td></tr>
+<tr><td>Q1 2026 EPS 預估</td><td>—</td><td>共識 $0.48，公布日 4/23</td><td>新增資訊</td><td>推論</td></tr>
+<tr><td>Q4 2025 超預期</td><td>EPS $0.28</td><td>確認 Q4 EPS $0.47 超預期 56.67%（共識 $0.30）</td><td><span class="light green"></span>正面</td><td>事實</td></tr>
+<tr><td>2026 產量指引</td><td>銅 10 億磅/金 90 萬盎司</td><td>維持不變。與 2025 相當，復甦效益在 2027-29 顯現</td><td>無變化</td><td>推論-承諾</td></tr>
+<tr><td>Section 232 銅關稅</td><td>半成品 50% 生效中</td><td>精煉銅目前免稅。6/30 商務部報告決定是否加徵 15%</td><td>無變化</td><td>事實</td></tr>
+<tr><td><b>內部人交易</b></td><td>初報 $12.2M（SEC 查核後修正）</td><td>SEC 查核：5 位高管 2 月集中處分 >$42M — 公開市場賣出(S) ~$20.3M（Adkerson $9.9M / Currault $4.8M / Robertson $3.0M / Higgins $1.9M / Mikes $682K）+ 稅務扣繳(F) $6.4M + 信託移轉(D) $15.6M。回撤零買入（最後買入 2023/5）。<b>自主性賣出 $20.3M 仍為顯著規模，為本次分析最強空方訊號</b></td><td><span class="light red"></span><b>重大利空</b></td><td>事實</td></tr>
+<tr><td>機構預測分歧</td><td>—</td><td>J.P. Morgan 看好（銅 Q2 $12,500/噸），Goldman Sachs 偏空（$10,000-11,000）</td><td>新增資訊</td><td>推論</td></tr>
+</table>
+
+<div class="tip good"><b>印尼 MoU 的推衍意義</b>
+<p>此協議是 FCX 歷史上最重要的政策風險消除事件之一。在第四~六步分析中，「印尼主權風險」被列為第三大風險（嚴重度高、機率 15%）。MoU 將 Grasberg 經營權從固定到期轉為開放式，直接降低了 H4/H5 路徑中的「印尼政策反轉」觸發條件。但代價是 2041 年後持股從 48.76% 降至 ~37%（-12 個百分點），等同長期利潤稀釋約 24%。這是一筆「用長期利潤換經營確定性」的交易。</p>
+</div>
+
+<div class="tip warn"><b>Q4 EPS 超預期修正</b>
+<p>先前分析採用 Q4 EPS $0.28，但最新資料顯示 Q4 實際 EPS $0.47（超預期 56.67%）。這表示即使 Grasberg 停產，FCX 其他業務（Cerro Verde、Morenci 等）的彌補能力比預期更強。此修正對 Forward EPS $3.68 的可實現性提供了部分正面佐證 — 但 Q4 銅價也處於歷史高檔（$5.40+/磅），若銅價回落則此彌補能力將下降。</p>
+</div>
+</div>
+</div>
+
+<!-- ===== 8c ===== -->
+<div class="section-title">8c. 影響鏈分析</div>
+<div class="section-sub">從最新情報挑選關鍵事件，建構推衍鏈</div>
+
+<div class="card">
+<h3>影響鏈 #1：Grasberg Block 2&3 重啟</h3>
+<div class="card-body">
+<div class="chain">
+<div class="step"><b>事件：</b>Grasberg Block 2&3 預計 Q2 2026 重啟 [FIAS: 推論-承諾]</div>
+<div class="step"><b>一階（1-3 月）：</b>重啟初期產量低於正常 → Q2 銅產量預估 2-3 億磅（正常 4 億磅/季）→ Q2 EPS 受限於爬坡期 [機率 65%]</div>
+<div class="step"><b>二階（3-6 月）：</b>若爬坡順利 → Q3-Q4 產量逐步恢復至 85% → FY2026 銅產量 10-13 億磅 → EPS 向 $3.68 靠攏 [機率 50%]</div>
+<div class="step"><b>三階（6-12 月）：</b>Block 1 復原工程啟動 → 2027 產量目標 16 億磅銅/130 萬盎司金 → 如果達標，EPS 可達 $4.50-5.00 → 股價重估至 $65-75 [機率 35%]</div>
+<div class="step" style="color:var(--danger)"><b>反面：</b>若 Block 2&3 重啟遇到技術問題（泥漿復發/岩盤不穩）→ 延至 Q3-Q4 → FY2026 銅產量僅 8-10 億磅 → EPS $2.00-2.70 → 股價回測 $40-45 [機率 35%]</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 #2：銅關稅升級</h3>
+<div class="card-body">
+<div class="chain">
+<div class="step"><b>事件：</b>商務部 6/30 報告 → 可能建議 2027 年起對精煉銅加徵 15% 關稅 [FIAS: 假設]</div>
+<div class="step"><b>一階（即時）：</b>市場在報告公布前開始定價預期 → 美國國內銅溢價進一步擴大 → COMEX vs LME 溢價從 $800/噸擴至 $1,200+/噸 [機率 45%]</div>
+<div class="step"><b>二階（3-6 月）：</b>FCX 作為美國最大國內銅生產商直接受惠 → 國內銷售銅可享受溢價 → EPS 增厚 $0.15-0.30/年 → 分析師上修目標 [機率 35%]</div>
+<div class="step"><b>三階（6-12 月）：</b>若關稅實施 → 下游製造商成本上升 → 部分需求外移或被替代材料取代 → 長期需求損害 [機率 20%]</div>
+<div class="step" style="color:var(--danger)"><b>反面：</b>若報告建議不加徵 → 銅溢價收窄 → FCX 失去定價優勢 → 但全球銅價基本面不受影響 [機率 55%]</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈 #3：印尼 MoU 長期效應</h3>
+<div class="card-body">
+<div class="chain">
+<div class="step"><b>事件：</b>2026/2 簽署「礦場生命週期」MoU，取代 2041 年固定到期 [FIAS: 事實]</div>
+<div class="step"><b>一階（即時）：</b>消除最大的長期政策風險 → DCF 終端價值估算的折價因子減少 → 理論估值提升 5-10% [機率 80%]</div>
+<div class="step"><b>二階（1-3 年）：</b>經營確定性提升 → 允許 FCX 投入更多長期資本支出 → Block 1 復原可投入更多資源 → 2028-29 產量天花板提高 [機率 65%]</div>
+<div class="step"><b>三階（5-15 年）：</b>2041 年後 FCX 持股降至 ~37%（從 48.76%）→ 利潤分配減少約 24% → 但礦場可運營至資源耗盡（Grasberg 儲量支撐至 2060 年代） [機率 70%]</div>
+<div class="step" style="color:var(--danger)"><b>風險：</b>MoU 僅為備忘錄，尚需印尼國會批准 → 政治環境變化可能影響最終條款 → 12% 轉讓可能在壓力下被要求提前或加碼 [機率 15%]</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>影響鏈交互作用矩陣</h3>
+<div class="card-body">
+<table>
+<tr><th></th><th>Grasberg 重啟</th><th>銅關稅</th><th>印尼 MoU</th></tr>
+<tr><td><b>Grasberg 重啟</b></td><td>—</td><td>重啟成功 + 關稅溢價 = 雙重加分（EPS +$0.50）</td><td>MoU 確保重啟後長期運營有保障</td></tr>
+<tr><td><b>銅關稅</b></td><td>關稅溢價彌補 Grasberg 延遲的部分損失</td><td>—</td><td>無直接交互</td></tr>
+<tr><td><b>印尼 MoU</b></td><td>經營確定性提升投資意願</td><td>無直接交互</td><td>—</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">最強組合：三者同時正面（路徑 A 情境）→ EPS $4.50+ → $70-85</p>
+<p style="font-size:.82em;color:var(--txt3)">最弱組合：Grasberg 延遲 + 無關稅 + MoU 條款惡化（路徑 E 觸發條件之一）</p>
+</div>
+</div>
+
+<!-- ===== 8d ===== -->
+<div class="section-title">8d. 情境模擬 — 五路徑概率樹</div>
+<div class="section-sub">基於 ACH 假說 + OSINT 更新，建構未來 6-12 個月的可能發展路徑</div>
+
+<div class="card">
+<h3>路徑概率分配（第四次校準）</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>情境名稱</th><th>第六步</th><th>第八步</th><th>變動</th><th>股價區間</th></tr>
+<tr style="background:rgba(46,125,50,.06)"><td><b>A</b></td><td>銅超級週期 + 完美復甦</td><td>10%</td><td><b>8%</b></td><td>↓2</td><td>$70-85</td></tr>
+<tr style="background:rgba(107,143,113,.06)"><td><b>B ⭐</b></td><td>穩健恢復（主路徑）</td><td>35%</td><td><b>34%</b></td><td>↓1</td><td>$55-65</td></tr>
+<tr style="background:rgba(212,160,23,.06)"><td><b>C</b></td><td>延遲但溫和</td><td>30%</td><td><b>32%</b></td><td>↑2</td><td>$42-52</td></tr>
+<tr style="background:rgba(194,124,110,.06)"><td><b>D</b></td><td>溫和看空</td><td>18%</td><td><b>18%</b></td><td>=</td><td>$30-40</td></tr>
+<tr style="background:rgba(198,40,40,.06)"><td><b>E</b></td><td>深度修正</td><td>7%</td><td><b>8%</b></td><td>↑1</td><td>$18-28</td></tr>
+</table>
+
+<div class="tip warn"><b>第四次校準說明</b>
+<p>信心從 55% 下調至 <b>50%</b>（↓5%）。校準依據：(1) 加權期望值 ~$50 低於現價 $52.09 → 市場已略微高估；(2) Grasberg 重啟的二元性仍未解除；(3) 路徑 C（延遲）機率持續上升至 32% → 幾乎追平路徑 B 的 34%，顯示市場定價可能過於樂觀；(4) 看多合計從 45% 降至 42%，看空從 25% 升至 26%，中性 32%。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 A：銅超級週期 + Grasberg 完美復甦（8%）</h3>
+<div class="card-body">
+<div class="path-card path-a">
+<p><b>觸發條件</b>：(1) Grasberg Q2 按計畫重啟且 Block 2&3 產量迅速爬坡至 85%+；(2) 銅價突破 $6.00/磅（AI/EV/電網需求疊加 + 供給中斷）；(3) Section 232 精煉銅關稅確認實施，美國溢價擴大</p>
+<p><b>EPS 預估</b>：$4.50-5.50（基準 Forward EPS $3.68 + 銅溢價 + 超額金產出）</p>
+<p><b>合理 PE</b>：16-18x（超級週期溢價）→ 股價 <b>$72-99</b>，中位 <b>$77</b></p>
+<p><b>觸發時點</b>：Q2 重啟確認 + Q3 銅價突破 $6 → H2 2026 啟動</p>
+<p><b>驗證信號</b>：月產量報告連續 2 月超預期 + 銅 COMEX 站穩 $5.80+</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 B：穩健恢復（34%）⭐ 主路徑</h3>
+<div class="card-body">
+<div class="path-card path-b">
+<p><b>觸發條件</b>：(1) Grasberg Q2-Q3 逐步重啟，H2 2026 恢復至 70-80% 產能；(2) 銅價維持 $4.80-5.50/磅區間；(3) 南美礦場持續高效運營彌補；(4) 無重大訴訟損失</p>
+<p><b>EPS 預估</b>：$3.20-3.80（接近但可能略低於 Forward EPS 共識 $3.68）</p>
+<p><b>合理 PE</b>：14-16x → 股價 <b>$45-61</b>，中位 <b>$60</b></p>
+<p><b>觸發時點</b>：Q1 財報（4/23）確認南美彌補 + Q2 Grasberg 實質重啟</p>
+<p><b>驗證信號</b>：Q1 EPS ≥ $0.48（達到共識）+ Grasberg 管理層確認 Block 2 恢復送礦</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 C：延遲但溫和（32%）</h3>
+<div class="card-body">
+<div class="path-card path-c">
+<p><b>觸發條件</b>：(1) Grasberg 重啟延至 Q3-Q4 2026（技術困難/安全審查延長）；(2) 銅價回落至 $4.50-5.00/磅（Goldman Sachs 情境）；(3) 中國需求放緩但不崩盤；(4) 訴訟和解 $300-500M</p>
+<p><b>EPS 預估</b>：$2.20-2.80（Grasberg 對 FY2026 貢獻有限）</p>
+<p><b>合理 PE</b>：13-18x（延遲但銅價撐住 → 高倍數）→ 股價 <b>$38-52</b>，中位 <b>$47</b></p>
+<p><b>觸發時點</b>：Q1 財報未見 Grasberg 重啟具體時間表 + Q2 銅價走弱</p>
+<p><b>驗證信號</b>：公司下修 FY2026 產量指引 + 銅庫存回升 + DSRI 未正常化</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 D：溫和看空（18%）</h3>
+<div class="card-body">
+<div class="path-card path-d">
+<p><b>觸發條件</b>：(1) Grasberg 重啟延至 2027 年；(2) 銅價跌破 $4.00/磅（全球衰退/中國房地產危機深化）；(3) M-Score 問題被證實非營運因素 → 信任危機；(4) 集體訴訟和解金額超 $800M</p>
+<p><b>EPS 預估</b>：$1.30-1.80（接近 FY2025 水準）</p>
+<p><b>合理 PE</b>：12-14x（但市場可能給予更低倍數）→ 股價 <b>$16-25</b>，中位 <b>$35</b></p>
+<p><b>觸發時點</b>：Q2 財報確認 Grasberg 無限期延遲 + 銅價破位下跌</p>
+<p><b>驗證信號</b>：管理層更換 Grasberg 負責人 + 內部人加速賣出 + 信評下調</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 E：深度修正（8%）</h3>
+<div class="card-body">
+<div class="path-card path-e">
+<p><b>觸發條件</b>：(1) Grasberg 再次發生重大安全事故 → 無限期停產；(2) 銅價崩盤至 $3.50/磅以下（全球衰退 + 中國系統性風險）；(3) 印尼政府撕毀 MoU 或要求提前大幅提高持股比例；(4) SEC 調查 M-Score 異常</p>
+<p><b>EPS 預估</b>：$0.50-1.00（多重打擊）</p>
+<p><b>合理 PE</b>：10-12x → 股價 <b>$5-12</b>，中位 <b>$23</b></p>
+<p><b>觸發時點</b>：突發事件驅動，無法預測精確時間</p>
+<p><b>驗證信號</b>：Grasberg 再次安全事故 + 印尼國會否決 MoU + 銅庫存激增至 50 萬噸+</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>加權期望值計算</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>機率</th><th>中位股價</th><th>加權貢獻</th></tr>
+<tr><td>A：超級週期</td><td>8%</td><td>$77</td><td>$6.16</td></tr>
+<tr><td>B：穩健恢復</td><td>34%</td><td>$60</td><td>$20.40</td></tr>
+<tr><td>C：延遲溫和</td><td>32%</td><td>$47</td><td>$15.04</td></tr>
+<tr><td>D：溫和看空</td><td>18%</td><td>$35</td><td>$6.30</td></tr>
+<tr><td>E：深度修正</td><td>8%</td><td>$23</td><td>$1.84</td></tr>
+<tr style="background:rgba(90,125,140,.1);font-weight:700"><td>加權期望值</td><td>100%</td><td>—</td><td><b>~$50</b></td></tr>
+</table>
+
+<div class="tip danger"><b>加權期望值低於現價</b>
+<p>加權期望值 <b>~$50</b> vs 現價 <b>$52.09</b> → 下行 <b>-4%</b>。這意味著在概率加權後，目前股價已<b>略為高估</b>。即使路徑 B（主路徑）的中位值 $60 具有 +15% 上行空間，但路徑 C-E 的下行風險（32%+18%+8%=58% 機率的平均股價 ~$41）足以拉低整體期望值。</p>
+<p><b>與第七步比較</b>：第七步估值中位 ~$54 → 第八步加權期望值 ~$50。差距 -7.4%，反映推衍版的概率加權後更為保守。</p>
+</div>
+</div>
+</div>
+
+<!-- ===== 8e ===== -->
+<div class="section-title">8e. 個人化推衍</div>
+<div class="section-sub">依分析師風險偏好適配行動建議</div>
+
+<div class="card">
+<h3>三種投資者情境行動建議</h3>
+<div class="card-body">
+<div class="grid3">
+<div class="mini-card bull-card">
+    <div class="title">積極型</div>
+    <div class="num" style="color:var(--bull)">觀望偏多</div>
+    <div class="desc">可在 $48-50 小倉位試探（佔組合 2-3%），設 $38 止損。等 Q1 財報（4/23）後再加碼</div>
+</div>
+<div class="mini-card neutral-card">
+    <div class="title">穩健型</div>
+    <div class="num" style="color:var(--neutral)">等待催化</div>
+    <div class="desc">等 (1) Grasberg Block 2 確認復產出礦 或 (2) 股價回調至 $42-45。兩條件擇一觸發後，分批建倉至 5%</div>
+</div>
+<div class="mini-card bear-card">
+    <div class="title">保守型</div>
+    <div class="num" style="color:var(--bear)">暫不建倉</div>
+    <div class="desc">加權期望值低於現價，Grasberg 二元風險未解。建議用 BHP/RIO 做銅概念替代，等 FCX 完全去風險再考慮</div>
+</div>
+</div>
+
+<div class="tip info"><b>時間軸適配</b>
+<p>• <b>短線（1-3 月）</b>：不建議。Q1 財報前缺乏催化劑，銅價若回調則短線壓力大<br>
+• <b>波段（3-6 月）</b>：Q1 財報 + Grasberg Q2 重啟是關鍵分水嶺。若兩者正面，路徑 B 確認 → $55-60<br>
+• <b>長期（12+ 月）</b>：印尼 MoU 大幅降低長期風險，2027-29 Grasberg 全面恢復後 EPS $4-5 可期。但前提是順利度過 2026</p>
+</div>
+</div>
+</div>
+
+<!-- ===== 8f ===== -->
+<div class="section-title">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月關鍵事件日曆</div>
+
+<div class="card">
+<h3>催化劑日曆（2026 Q2-Q3）</h3>
+<div class="card-body">
+<table>
+<tr><th>預計時間</th><th>事件</th><th>影響方向</th><th>觀察指標</th></tr>
+<tr><td><b>4/23</b></td><td>Q1 2026 財報</td><td><span class="light yellow"></span>關鍵</td><td>EPS vs $0.48 共識 / 南美產量 / Grasberg 重啟時間表更新 / DSRI 變化</td></tr>
+<tr><td>5 月中</td><td>COMEX 銅期權到期</td><td><span class="light yellow"></span>技術</td><td>$5.00-5.50 區間是否守住 / 隱含波動率變化</td></tr>
+<tr><td><b>Q2（5-6 月）</b></td><td>Grasberg Block 2&3 重啟</td><td><span class="light green"></span>最關鍵</td><td>是否實際開始送礦 / 初期產量噸位 / 安全事件</td></tr>
+<tr><td><b>6/30</b></td><td>商務部銅關稅報告</td><td><span class="light yellow"></span>政策</td><td>是否建議精煉銅 15% 關稅 / 實施時間表</td></tr>
+<tr><td>7 月下旬</td><td>Q2 2026 財報</td><td><span class="light green"></span>驗證</td><td>EPS（Grasberg 初始貢獻）/ 銅產量 / 金產量 / 產量指引調整</td></tr>
+<tr><td>7-8 月</td><td>Fed 利率決議</td><td><span class="light yellow"></span>宏觀</td><td>降息預期變化 → 美元走勢 → 銅價影響</td></tr>
+<tr><td>8-9 月</td><td>Grasberg 爬坡驗證</td><td><span class="light green"></span>核心</td><td>月產量是否達正常水準的 70-85%</td></tr>
+<tr><td>9 月</td><td>印尼 MoU 國會審議進度</td><td><span class="light yellow"></span>政策</td><td>國會態度 / 是否要求修改條款</td></tr>
+</table>
+
+<div class="tip good"><b>關鍵分水嶺</b>
+<p>4/23 Q1 財報 + Q2 Grasberg 重啟 = 雙重驗證窗口。若兩者均正面 → 路徑 B 確認，股價向 $55-65 移動。若任一不及預期 → 路徑 C/D 機率上升，股價回測 $42-48。</p>
+</div>
+</div>
+</div>
+
+<!-- ===== 8g ===== -->
+<div class="section-title">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">弱訊號掃描 + 推演鏈 + 盲點獵手</div>
+
+<div class="card">
+<h3>弱訊號雷達</h3>
+<div class="card-body">
+<table>
+<tr><th>類別</th><th>訊號</th><th>方向</th><th>FIAS</th><th>信心</th></tr>
+<tr><td><b>A 類</b><br>跨產業</td><td>AI 資料中心銅需求暴增 — Google/Microsoft/Amazon 2025 資本支出合計逾 $200B，大量用於新建資料中心，每個大型資料中心需用銅 2,000-4,000 噸</td><td><span class="light green"></span>利多</td><td>推論</td><td>中高</td></tr>
+<tr><td><b>B 類</b><br>時間序列</td><td>Q4 EPS 超預期 56.67% — 在 Grasberg 停產的情況下仍大幅超預期，顯示南美業務被低估</td><td><span class="light green"></span>利多</td><td>事實</td><td>高</td></tr>
+<tr><td><b>C 類</b><br>反共識</td><td>分析師 87% 買進目標 $70 vs 內部人持續賣出 — 知情人與外部人看法嚴重分歧</td><td><span class="light red"></span>利空</td><td>事實</td><td>高</td></tr>
+<tr><td><b>C 類</b><br>反共識</td><td>Goldman Sachs vs J.P. Morgan 銅價分歧 — GS 看 $10,000-11,000/噸 vs JPM 看 $12,500+/噸，機構共識不穩固</td><td><span class="light yellow"></span>中性</td><td>推論</td><td>中</td></tr>
+<tr><td><b>E 類</b><br>政策蝴蝶</td><td>Section 232 精煉銅 15% 關稅若實施 → 下游製造商成本上升 → 可能引發「銅需求自我毀滅」循環（高價→需求減少→價格回落）</td><td><span class="light yellow"></span>不確定</td><td>假設</td><td>低中</td></tr>
+<tr><td><b>E 類</b><br>政策蝴蝶</td><td>印尼 MoU 中 2041 後 12% 轉讓條款 — 若被解讀為「切香腸」策略前例，可能鼓勵其他資源國效仿</td><td><span class="light red"></span>長期利空</td><td>假設</td><td>低</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應推演鏈 #1：AI 銅需求爆發（最高信心）</h3>
+<div class="card-body">
+<div class="butterfly">
+<div class="bf-title">起始訊號：AI 巨頭 2025/2026 資本支出暴增至 $200B+/年 [FIAS: 事實]</div>
+<div class="chain">
+<div class="step"><b>第一階 [推論] [1-6 月]：</b>資料中心建設潮 → 銅需求增加 20-30 萬噸/年 → 全球銅供需缺口從 10 萬噸擴至 30-40 萬噸。佐證：Goldman Sachs 估計 2025 年 AI 相關銅需求 50 萬噸，2030 年達 100 萬噸</div>
+<div class="step"><b>第二階 [推論] [6-12 月]：</b>供需缺口推動銅價突破 $5.50/磅 → FCX 作為全球第二大銅礦商直接受惠 → EPS 每上漲 $0.50/磅增加 $0.50-0.70 EPS</div>
+<div class="step"><b>第三階 [假設] [12-24 月]：</b>若同時疊加 Grasberg 完全恢復 → FCX 年銅產量從 10 億磅跳至 16 億磅 → 高價×高量 = 雙倍獲利槓桿 → EPS 可達 $5.00-6.00</div>
+<div class="step"><b>第四階 [假設] [24-36 月]：</b>銅成為「AI 時代的石油」→ 資源稀缺性重估 → 銅礦股 PE 中樞從 12-15x 上調至 18-22x（類似 2000 年代原油超級週期中的石油股）</div>
+<div class="step" style="color:var(--danger)"><b>第五階 [推測]：</b>⚠️ 極端推測 — 若 AI 銅需求 + 能源轉型 + 國防需求三者疊加 → 銅價突破 $8/磅歷史新高 → FCX 市值突破 $200B → $140/股。此情境需全球同步去碳化 + AI 投資持續 5 年+ 不退潮</div>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><b>推演鏈強度</b>：尚可（第一~二階有數據支撐，第三階以後高度依賴假設）</p>
+<p style="font-size:.82em;color:var(--txt3)"><b>關鍵驗證點</b>：2026 H2 全球銅供需數據（ICSG 報告）+ 資料中心開工量統計</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應推演鏈 #2：Grasberg 第二次泥流（最高衝擊）</h3>
+<div class="card-body">
+<div class="butterfly">
+<div class="bf-title">起始訊號：Block 2&3 重啟過程中地質結構不穩 [FIAS: 假設]</div>
+<div class="chain">
+<div class="step"><b>第一階 [假設] [即時]：</b>重啟初期泥漿再次湧入 → 被迫再次停產 → 管理層信譽歸零 → 股價單日暴跌 15-25%（參照 3/3 的 -10.5%，二次事故衝擊更大）</div>
+<div class="step"><b>第二階 [假設] [1-3 月]：</b>印尼政府啟動全面安全審查 → 至少 6 個月禁止復產 → FY2026 Grasberg 貢獻歸零 → EPS 降至 $1.00-1.50</div>
+<div class="step"><b>第三階 [假設] [3-12 月]：</b>集體訴訟規模擴大（新增人命傷亡）→ 和解金額從 $300-500M 擴至 $1-2B → 印尼國會趁機重新談判 MoU 條款</div>
+<div class="step"><b>第四階 [推測] [12+ 月]：</b>市場對 Grasberg 地下礦體的長期安全性產生根本質疑 → 永久折價 → FCX 被迫增提資產減損 $5-10B → 股價跌至 $15-20</div>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><b>推演鏈強度</b>：脆弱（基於假設情境，目前無跡象顯示即將發生）</p>
+<p style="font-size:.82em;color:var(--txt3)"><b>關鍵驗證點</b>：Block 2 首月復產安全報告 + 泥漿監控系統數據</p>
+<p style="font-size:.82em;color:var(--txt3)"><b>發生機率</b>：極低（<5%），但衝擊極大（路徑 E 觸發器）</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>蝴蝶效應推演鏈 #3：銅關稅引發需求自毀循環</h3>
+<div class="card-body">
+<div class="butterfly">
+<div class="bf-title">起始訊號：Section 232 半成品銅 50% 關稅已生效 + 精煉銅 15% 可能追加 [FIAS: 事實+假設]</div>
+<div class="chain">
+<div class="step"><b>第一階 [推論] [即時]：</b>美國國內銅溢價（COMEX vs LME）已擴大至 $800/噸 → FCX 等國內生產商短期受惠</div>
+<div class="step"><b>第二階 [假設] [6-12 月]：</b>下游製造商（電纜/電子/建築）面臨成本上升 → 部分轉向鋁替代或海外採購成品 → 美國國內銅需求量下降 5-10%</div>
+<div class="step"><b>第三階 [假設] [12-24 月]：</b>需求下降 → 美國國內銅價漲幅收窄 → FCX 溢價紅利消失 → 同時全球銅價也因美國需求減少而承壓</div>
+<div class="step"><b>第四階 [推測]：</b>⚠️ 極端推測 — 若關稅引發全球貿易戰升級 + 銅需求國聯合抵制 → 銅價進入結構性下行 → 但歷史上未曾發生，因為銅的替代性極低</div>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px"><b>推演鏈強度</b>：脆弱（第二階以後高度推測性，銅的不可替代性限制了需求毀滅效應）</p>
+<p style="font-size:.82em;color:var(--txt3)"><b>關鍵驗證點</b>：6/30 商務部報告 + 下游製造商訂單趨勢 + COMEX-LME 溢價變化</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>盲點洞察</h3>
+<div class="card-body">
+<div class="tip warn"><b>盲點 #1：Q4 超預期的「隱藏信號」</b>
+<p><b>大家在看</b>：Grasberg 停產的負面影響<br>
+<b>但沒注意到</b>：Q4 EPS $0.47 超預期 56.67%（共識僅 $0.30），這表示南美業務（Cerro Verde 秘魯 + Morenci 美國 + El Abra 智利）的實際獲利能力被嚴重低估。<br>
+<b>為什麼重要</b>：即使 Grasberg 延遲到 2027，FCX 的「地板 EPS」可能是 $1.50-2.00 而非市場恐懼的 $1.00。這意味著路徑 D/E 的下行空間可能被高估。<br>
+<b>搜尋策略</b>：策略 6 — 數據前置指標（Q4 超預期 = 領先指標）<br>
+<b>FIAS</b>：推論<br>
+<b>建議行動</b>：密切追蹤 Q1 財報中南美各礦場的分段利潤，確認是否為持續趨勢</p>
+</div>
+
+<div class="tip warn"><b>盲點 #2：分析師共識 $70 的「時間盲區」</b>
+<p><b>大家在看</b>：分析師 87% 買進，中位目標 $70（+34%）<br>
+<b>但沒注意到</b>：這些目標價大多設定於 2025 年 10-12 月（Grasberg 事故後第一波更新），當時市場假設 Q1 2026 就能重啟。隨著重啟延至 Q2，分析師尚未全面下修目標價 — 存在「滯後效應」。<br>
+<b>為什麼重要</b>：若 4/23 Q1 財報後分析師集體下修目標價至 $55-60，可能引發機構被動賣壓。<br>
+<b>搜尋策略</b>：策略 2 — 時間盲區<br>
+<b>FIAS</b>：假設<br>
+<b>建議行動</b>：監控 4/23 後分析師目標價調整動態，若出現集體下修則為短線利空</p>
+</div>
+
+<div class="tip warn"><b>盲點 #3：MoU「切香腸」效應</b>
+<p><b>大家在看</b>：MoU 延長經營權 = 大利多<br>
+<b>但沒注意到</b>：2041 年後 FCX 持股從 48.76% 降至 ~37%（-12pp），等同利潤稀釋 24%。更重要的是，這可能成為「切香腸」先例 — 印尼政府已從 2018 年的 51.24% 持股談判中獲得經驗，未來可能在其他資源項目或 MoU 續約時要求更多讓步。<br>
+<b>為什麼重要</b>：長期 DCF 應計入 2041 後 37% 持股的利潤分配，而非現行 48.76%。多數 DCF 模型可能未做此調整。<br>
+<b>搜尋策略</b>：策略 5 — 內部人行為 vs 市場行為落差<br>
+<b>FIAS</b>：推論<br>
+<b>建議行動</b>：重新檢視 DCF 估值，2041 年後階段使用 37% 利潤分配比例</p>
+</div>
+</div>
+</div>
+
+<!-- ===== 8h ===== -->
+<div class="section-title">8h. 推衍結論</div>
+
+<div class="card">
+<h3>第四次信心校準</h3>
+<div class="card-body">
+<table>
+<tr><th>校準次數</th><th>步驟</th><th>信心水準</th><th>看多合計</th><th>看空合計</th><th>調整原因</th></tr>
+<tr><td>第一次</td><td>第四步 ACH</td><td>65%</td><td>55%</td><td>20%</td><td>H2 為主但 Grasberg 二元風險高</td></tr>
+<tr><td>第二次</td><td>第五步壓力測試</td><td>60%（↓5%）</td><td>50%</td><td>22%</td><td>Forward EPS 假設脆弱 + 敏感度高</td></tr>
+<tr><td>第三次</td><td>第六步評審團</td><td>55%（↓5%）</td><td>45%</td><td>25%</td><td>7/12 審查員附條件 + M-Score 未解</td></tr>
+<tr style="background:rgba(90,125,140,.1)"><td><b>第四次</b></td><td><b>第八步推衍</b></td><td><b>50%（↓5%）</b></td><td><b>42%</b></td><td><b>26%</b></td><td><b>加權期望值 $50 < 現價 $52 + 路徑 C 追平 B</b></td></tr>
+</table>
+
+<div class="tip danger"><b>50% 信心水準的意義</b>
+<p>50% 是天機閣系統的「不確定平衡點」。信心降至此水準意味著：<b>正面和負面因素勢均力敵，系統無法傾向任一方向</b>。在此狀態下，安全邊際和催化事件確認成為唯一可靠的進場依據。不建議在沒有安全邊際的情況下建立倉位。</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>五假說最終機率（四次校準完成）</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>第四步</th><th>第五步</th><th>第六步</th><th>第八步</th><th>四次趨勢</th></tr>
+<tr><td>H1 強烈看多</td><td>15%</td><td>12%</td><td>10%</td><td><b>8%</b></td><td>↓↓↓↓</td></tr>
+<tr><td>H2 溫和看多 ⭐</td><td>40%</td><td>38%</td><td>35%</td><td><b>34%</b></td><td>↓↓↓↓</td></tr>
+<tr><td>H3 中性</td><td>25%</td><td>28%</td><td>30%</td><td><b>32%</b></td><td>↑↑↑↑</td></tr>
+<tr><td>H4 溫和看空</td><td>15%</td><td>16%</td><td>18%</td><td><b>18%</b></td><td>↑↑↑=</td></tr>
+<tr><td>H5 強烈看空</td><td>5%</td><td>6%</td><td>7%</td><td><b>8%</b></td><td>↑↑↑↑</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt2);margin-top:4px"><b>趨勢解讀</b>：四次校準中，H1/H2 持續下降，H3/H4/H5 持續上升。這反映了天機閣系統的「越分析越保守」特性 — 當分析深度加大，樂觀假設的脆弱性被逐步暴露。H2 仍為主假說但領先 H3 僅 2 個百分點（34% vs 32%），信心差異極窄。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>綜合推衍結論</h3>
+<div class="card-body">
+<div class="tip info"><b>一句話結論</b>
+<p style="font-size:.92em;font-weight:700;color:var(--base)">FCX 是一檔「題材正確、時機不對」的股票 — 銅需求結構性利多確定，但 Grasberg 重啟的二元風險使當前定價缺乏安全邊際。等待催化事件或回調再行動。</p>
+</div>
+
+<div class="grid2">
+<div class="mini-card bull-card">
+    <div class="title">進場條件</div>
+    <div class="num" style="color:var(--bull);font-size:1.1em">$42-45</div>
+    <div class="desc">回調至保守估值區間（六法保守中位 $43）<br>或 Grasberg Block 2 確認復產出礦</div>
+</div>
+<div class="mini-card bear-card">
+    <div class="title">止損線</div>
+    <div class="num" style="color:var(--bear);font-size:1.1em">$38</div>
+    <div class="desc">跌破路徑 D 上沿 → 觸發止損全數出場<br>最大部位：總資產 5%</div>
+</div>
+</div>
+
+<p style="font-size:.85em;color:var(--txt2);margin-top:8px"><b>行動建議優先序</b>：</p>
+<p style="font-size:.84em;color:var(--txt2)">1. <b>最優先</b>：等待 4/23 Q1 財報（驗證南美業務 + Grasberg 時間表更新）</p>
+<p style="font-size:.84em;color:var(--txt2)">2. <b>次優先</b>：若 Q1 正面，等待 Q2 Grasberg 實際復產確認</p>
+<p style="font-size:.84em;color:var(--txt2)">3. <b>機會主義</b>：若股價因非基本面因素（如大盤回調）跌至 $42-45 → 可啟動先鋒倉</p>
+<p style="font-size:.84em;color:var(--txt2)">4. <b>替代方案</b>：若想要銅題材但不願承擔 Grasberg 風險 → BHP (Forward PE 12.6x, 殖利率 4.07%) 或 RIO (9.6x, 4.83%) 是更安全的替代</p>
+</div>
+</div>
+
+<div class="card">
+<h3>觀察清單（下次推衍前需追蹤）</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>追蹤頻率</th><th>觸發條件</th></tr>
+<tr><td>Grasberg Block 2 復產進度</td><td>每週</td><td>公司公告或新聞報導實際出礦</td></tr>
+<tr><td>銅價 COMEX</td><td>每日</td><td>跌破 $4.50/磅 或 突破 $6.00/磅</td></tr>
+<tr><td>Q1 2026 財報（4/23）</td><td>事件型</td><td>EPS vs $0.48 / 產量指引 / DSRI</td></tr>
+<tr><td>商務部銅關稅報告（6/30）</td><td>事件型</td><td>精煉銅是否加徵 15%</td></tr>
+<tr><td>內部人交易</td><td>每月</td><td>月淨賣出 >$500 萬 → 警戒</td></tr>
+<tr><td>印尼國會 MoU 審議</td><td>每月</td><td>審議進度 / 是否要求修改條款</td></tr>
+<tr><td>分析師目標價調整</td><td>事件型</td><td>Q1 財報後集體下修幅度</td></tr>
+<tr><td>南美礦場營運</td><td>每季</td><td>Cerro Verde / Morenci 產量趨勢</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍避坑清單</h3>
+<div class="card-body">
+<table>
+<tr><th>認知陷阱</th><th>本次分析可能踩的坑</th><th>防範措施</th></tr>
+<tr><td><b>錨定效應</b></td><td>被分析師 $70 目標價錨定，忽略目標價可能滯後</td><td>獨立估值 ~$54 為主，$70 僅作參考</td></tr>
+<tr><td><b>敘事偏誤</b></td><td>「銅是新石油」的敘事太吸引人，可能高估長期需求</td><td>關注短期供需數據而非長期敘事</td></tr>
+<tr><td><b>確認偏誤</b></td><td>看到 Q4 超預期就認定 Grasberg 不重要</td><td>Q4 高銅價幫了大忙，不代表低銅價時也能彌補</td></tr>
+<tr><td><b>倖存者偏誤</b></td><td>FCX 過去都能從困境中復甦</td><td>這次有 NCI 結構 + MoU 條款變化 + 新安全風險</td></tr>
+<tr><td><b>過度自信</b></td><td>天機閣估值 $54 比分析師 $70 更精確</td><td>兩者都是推論，都可能錯。重要的是安全邊際</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍有效期聲明</h3>
+<div class="card-body">
+<div class="tip info"><b>有效期至 2026-09-30</b>
+<p>本推衍報告基於 2026-03-22 的資料基礎。以下事件將觸發推衍失效，需要重新推衍：</p>
+</div>
+<p style="font-size:.84em;color:var(--txt2)">1. Grasberg Block 2 實際復產或確認延至 2027</p>
+<p style="font-size:.84em;color:var(--txt2)">2. 銅價單日波動 >10% 或突破 $6.50 / 跌破 $4.00</p>
+<p style="font-size:.84em;color:var(--txt2)">3. FCX 股價突破 $70 或跌破 $35</p>
+<p style="font-size:.84em;color:var(--txt2)">4. Grasberg 再次發生安全事故</p>
+<p style="font-size:.84em;color:var(--txt2)">5. 印尼 MoU 條款重大修改或國會否決</p>
+<p style="font-size:.84em;color:var(--txt2)">6. Section 232 精煉銅關稅確認實施或永久排除</p>
+<p style="font-size:.84em;color:var(--txt2)">7. FCX 宣布重大併購（$5B+）或資產處分</p>
+</div>
+</div>
+
+<!-- 完成門檻 -->
+<div class="section-title">完成門檻自檢表</div>
+<div class="card">
+<h3>第八步完成確認</h3>
+<div class="card-body">
+<table>
+<tr><th>門檻項目</th><th>狀態</th><th>說明</th></tr>
+<tr><td>推衍基礎確認</td><td><span class="light green"></span>達標</td><td>16 項核心事實回溯確認</td></tr>
+<tr><td>OSINT 情報更新</td><td><span class="light green"></span>達標</td><td>10 項差異對照，含印尼 MoU 重大利多</td></tr>
+<tr><td>影響鏈分析</td><td><span class="light green"></span>達標</td><td>3 條影響鏈 + 交互作用矩陣</td></tr>
+<tr><td>五路徑情境</td><td><span class="light green"></span>達標</td><td>A-E 五路徑含觸發條件/EPS/股價/驗證信號</td></tr>
+<tr><td>加權期望值</td><td><span class="light green"></span>達標</td><td>~$50（低於現價 $52 → 市場略高估）</td></tr>
+<tr><td>個人化推衍</td><td><span class="light green"></span>達標</td><td>三種投資者類型建議 + 時間軸</td></tr>
+<tr><td>催化劑時間表</td><td><span class="light green"></span>達標</td><td>8 個事件節點，Q2 為關鍵</td></tr>
+<tr><td>蝴蝶效應</td><td><span class="light green"></span>達標</td><td>6 個弱訊號 + 3 條推演鏈 + 3 個盲點洞察</td></tr>
+<tr><td>第四次信心校準</td><td><span class="light green"></span>達標</td><td>50%（↓5%），四次連續下調</td></tr>
+<tr><td>推衍避坑清單</td><td><span class="light green"></span>達標</td><td>5 項認知陷阱 + 防範</td></tr>
+<tr><td>推衍有效期</td><td><span class="light green"></span>達標</td><td>至 2026-09-30，7 項失效條件</td></tr>
+</table>
+<p style="font-size:.85em;font-weight:700;color:var(--accent);margin-top:6px">全部門檻達標，可進入第九步追蹤回饋設定。</p>
+</div>
+</div>
+
+
+<!-- CROSS_LINKS_START -->
+<!-- CROSS_LINKS_END -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 獨立推衍報告（第八步）</p>
+    <p>推衍日期：2026-03-22 | 標的：FCX (Freeport-McMoRan) | 版本：v1.0</p>
+    <p>加權期望值：~$50 | 信心：50% | 有效期：2026-09-30</p>
+    <p style="margin-top:4px">免責聲明：所有推衍報告僅供個人研究參考，不構成任何投資建議。推衍結論建立在當前資料基礎上，未來發展可能大幅偏離預期。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

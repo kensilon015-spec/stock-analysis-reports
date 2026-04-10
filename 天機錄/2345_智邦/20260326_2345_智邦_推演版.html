@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智邦(2345) Step 8 — 推演版</title>
+<style>
+:root {
+  --bg-deep: #1a1410;
+  --bg-card: #2a2218;
+  --bg-card-hover: #332a1f;
+  --warm-brown: #c9a96e;
+  --gold-text: #e8dcc8;
+  --gold-dim: #a89878;
+  --accent-green: #7ecf8a;
+  --accent-red: #e07070;
+  --accent-blue: #6eb8d4;
+  --accent-orange: #e0a050;
+  --border-brown: #4a3c28;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg-deep); color:var(--gold-text); font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif; line-height:1.7; padding:20px; max-width:960px; margin:0 auto; }
+h1 { text-align:center; color:var(--warm-brown); font-size:1.8em; border-bottom:2px solid var(--border-brown); padding-bottom:12px; margin-bottom:24px; }
+h2 { color:var(--warm-brown); font-size:1.3em; margin:20px 0 10px; border-left:4px solid var(--warm-brown); padding-left:12px; }
+h3 { color:var(--gold-dim); font-size:1.1em; margin:14px 0 8px; }
+details { background:var(--bg-card); border:1px solid var(--border-brown); border-radius:8px; margin:12px 0; }
+summary { background:var(--bg-card-hover); color:var(--warm-brown); font-weight:bold; padding:12px 16px; cursor:pointer; border-radius:8px; list-style:none; }
+summary::before { content:"▸ "; }
+details[open]>summary::before { content:"▾ "; }
+details>div { padding:12px 16px; }
+table { width:100%; border-collapse:collapse; margin:10px 0; }
+th,td { border:1px solid var(--border-brown); padding:8px 12px; text-align:left; }
+th { background:var(--bg-card-hover); color:var(--warm-brown); }
+td { color:var(--gold-text); }
+.ev-card { background:linear-gradient(135deg,#2a221a,#332a1f); border-left:4px solid var(--accent-blue); border-radius:6px; padding:10px 14px; margin:8px 0; font-size:0.92em; }
+.ev-card .ev-label { color:var(--accent-blue); font-weight:bold; font-size:0.85em; }
+.tip { border-radius:8px; padding:12px 16px; margin:12px 0; font-size:0.95em; }
+.tip.info { background:#1a2a30; border-left:4px solid var(--accent-blue); }
+.tip.good { background:#1a2a1a; border-left:4px solid var(--accent-green); }
+.tip.warn { background:#2a2a1a; border-left:4px solid var(--accent-orange); }
+.tip.danger { background:#2a1a1a; border-left:4px solid var(--accent-red); }
+.tag { display:inline-block; padding:2px 10px; border-radius:12px; font-size:0.82em; margin:2px 4px; font-weight:bold; }
+.tag-green { background:#1a3a1a; color:var(--accent-green); border:1px solid var(--accent-green); }
+.tag-red { background:#3a1a1a; color:var(--accent-red); border:1px solid var(--accent-red); }
+.tag-blue { background:#1a2a3a; color:var(--accent-blue); border:1px solid var(--accent-blue); }
+.tag-orange { background:#3a2a1a; color:var(--accent-orange); border:1px solid var(--accent-orange); }
+.highlight { color:var(--warm-brown); font-weight:bold; }
+.num-up { color:var(--accent-green); font-weight:bold; }
+.num-down { color:var(--accent-red); font-weight:bold; }
+.chain-box { background:var(--bg-card); border:1px solid var(--border-brown); border-radius:8px; padding:14px 18px; margin:10px 0; }
+.chain-arrow { color:var(--accent-orange); font-weight:bold; }
+.scenario { border-radius:8px; padding:14px 18px; margin:10px 0; }
+.scenario-a { background:#1a2a1a; border:2px solid var(--accent-green); }
+.scenario-b { background:#1a2a30; border:2px solid var(--accent-blue); }
+.scenario-c { background:#2a2a1a; border:2px solid var(--accent-orange); }
+.scenario-d { background:#2a1a1a; border:2px solid var(--accent-red); }
+.prob-bar { height:20px; border-radius:4px; margin:4px 0; display:inline-block; }
+footer { text-align:center; color:var(--gold-dim); font-size:0.82em; margin-top:40px; padding-top:16px; border-top:1px solid var(--border-brown); }
+</style>
+</head>
+<body>
+
+<h1>天機閣 ── 智邦科技(2345) Step 8：推演版</h1>
+
+<div class="tip info">
+<b>推演引擎 v2.0</b>：從基礎數據出發，經 OSINT 即時驗證、影響鏈推導、多情境機率加權，最終輸出概率加權期望價格與操作建議。<br>
+<b>分析日期</b>：2026-03-26 ｜ <b>分析時股價</b>：<span class="highlight">1,675 元</span>
+</div>
+
+<!-- ==================== 8a 基礎資料 ==================== -->
+<details open>
+<summary>8a — 基礎資料錨定</summary>
+<div>
+
+<table>
+<tr><th>指標</th><th>數值</th><th>備註</th></tr>
+<tr><td>2025 全年 EPS</td><td><span class="num-up">47.13 元</span></td><td>YoY +119%，歷史新高</td></tr>
+<tr><td>2025 毛利率</td><td><span class="num-down">17.0%</span></td><td>較 2024 年 21.2% 下滑 4.2ppt</td></tr>
+<tr><td>白牌交換器市佔</td><td><span class="num-up">49%</span></td><td>全球第一，第二名 Edgecore ~15%</td></tr>
+<tr><td>本益比 (TTM)</td><td>35.5x</td><td>歷史區間 15-40x</td></tr>
+<tr><td>分析時股價</td><td>1,675 元</td><td>2026-03-26 收盤價</td></tr>
+<tr><td>PEG Ratio</td><td><span class="num-up">0.30</span></td><td>PE 35.5 / EPS 成長率 119% = 極低</td></tr>
+</table>
+
+<div class="ev-card">
+<div class="ev-label">EV-基礎</div>
+EPS 47.13 元為歷史新高，但毛利率從 21.2% 降至 17.0%，反映 AI 加速卡（低毛利高營收）佔比提升的結構性變化。PEG 0.30 顯示估值相對成長率偏低，但需觀察成長是否可持續。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8b OSINT ==================== -->
+<details open>
+<summary>8b — OSINT 即時情報驗證</summary>
+<div>
+
+<table>
+<tr><th>情報來源</th><th>關鍵數據</th><th>驗證狀態</th></tr>
+<tr><td>2026/2 月營收</td><td><span class="num-up">236 億元，YoY +83%</span></td><td><span class="tag tag-green">已驗證</span></td></tr>
+<tr><td>AI 加速卡營收</td><td><span class="num-up">YoY +361%</span></td><td><span class="tag tag-green">已驗證</span></td></tr>
+<tr><td>1.6T 交換器進度</td><td>2026 Q1 就緒，H2 量產</td><td><span class="tag tag-orange">追蹤中</span></td></tr>
+<tr><td>CSP 擴建 capex</td><td>Meta/Google/Amazon 持續加碼</td><td><span class="tag tag-green">已驗證</span></td></tr>
+<tr><td>800G→1.6T 升級週期</td><td>ASP 提升 1.5-2x</td><td><span class="tag tag-orange">待驗證</span></td></tr>
+</table>
+
+<div class="ev-card">
+<div class="ev-label">EV-OSINT</div>
+2026/2 營收 236 億元（+83%）延續強勁成長動能。AI 加速卡年增 361% 確認 AI 基建需求未見放緩。1.6T 交換器 Q1 就緒為下一波成長引擎，但量產出貨時程仍需追蹤。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8c 影響鏈 ==================== -->
+<details open>
+<summary>8c — 因果影響鏈推導</summary>
+<div>
+
+<h3>影響鏈 1：AI Capex 驅動需求（正向）</h3>
+<div class="chain-box">
+AI capex 持續增加 <span class="chain-arrow">→</span> CSP（雲端服務商）擴建資料中心 <span class="chain-arrow">→</span> 白牌交換器需求大幅上升 <span class="chain-arrow">→</span> 智邦營收持續高成長 <span class="chain-arrow">→</span> <span class="num-down">但毛利率因 AI 加速卡（低毛利）佔比提升而壓縮</span><br>
+<b>結論</b>：營收成長確定性高，但「增收不增利」風險需密切關注。
+</div>
+
+<h3>影響鏈 2：800G→1.6T 技術升級（爆發）</h3>
+<div class="chain-box">
+800G→1.6T 升級週期啟動 <span class="chain-arrow">→</span> 單台 ASP 提升 1.5-2 倍 <span class="chain-arrow">→</span> 營收跳升式成長 <span class="chain-arrow">→</span> <span class="num-up">若毛利率穩住（1.6T 初期毛利較佳）</span> <span class="chain-arrow">→</span> EPS 爆發性成長<br>
+<b>結論</b>：1.6T 量產是股價向上的最大催化劑，2026 H2 為關鍵驗證時點。
+</div>
+
+<h3>影響鏈 3：毛利率持續惡化（風險）</h3>
+<div class="chain-box">
+AI 加速卡佔比持續攀升 <span class="chain-arrow">→</span> 毛利率繼續下滑至 15% 以下 <span class="chain-arrow">→</span> 市場擔憂「組裝廠」定位 <span class="chain-arrow">→</span> <span class="num-down">PE 壓縮至 20-25x</span> <span class="chain-arrow">→</span> 股價修正<br>
+<b>結論</b>：毛利率是多空交戰的核心指標。跌破 15% 將觸發估值重新定價。
+</div>
+
+<div class="tip warn">
+<b>8c 整合結論</b><br>
+三條影響鏈形成「成長確定 + 毛利承壓 + 1.6T 待驗」的格局。營收高成長已是市場共識（已反映在 35.5x PE），未來股價方向取決於毛利率能否在 1.6T 時代觸底回升。若毛利穩住→EPS 爆發→股價新高；若毛利續降→PE 壓縮→股價修正。這不是「會不會成長」的問題，而是「成長的品質如何」。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8d 多情境推演 ==================== -->
+<details open>
+<summary>8d — 多情境推演與機率加權</summary>
+<div>
+
+<h3>情境 A：AI 超級週期 + 毛利反彈 <span class="tag tag-green">機率 20%</span></h3>
+<div class="scenario scenario-a">
+<b>假設</b>：1.6T 提前量產、毛利率觸底回升至 19-20%、CSP capex 超預期<br>
+<b>推導</b>：2026E 營收 3,200 億 × 毛利 19% = 608 億毛利 → 稅後淨利 ~260 億 → <span class="num-up">EPS 65 元</span><br>
+<b>估值</b>：PE 35x × EPS 65 = <span class="num-up">目標價 2,275 元</span>（潛在報酬 +36%）<br>
+<b>觸發條件</b>：Q2 毛利率 > 18%、1.6T 提前出貨、CSP capex 上修
+</div>
+
+<h3>情境 B：穩定成長 + 毛利持平 <span class="tag tag-blue">機率 40%（基準情境）</span></h3>
+<div class="scenario scenario-b">
+<b>假設</b>：AI 需求穩定成長、毛利率維持 16-17%、1.6T 如期 H2 量產<br>
+<b>推導</b>：2026E 營收 2,800 億 × 毛利 17% = 476 億毛利 → 稅後淨利 ~220 億 → <span class="highlight">EPS 55 元</span><br>
+<b>估值</b>：PE 30x × EPS 55 = <span class="highlight">目標價 1,650 元</span>（潛在報酬 -1.5%）<br>
+<b>觸發條件</b>：營收維持 +50% 以上、毛利率 16-17% 區間、1.6T 按時程推進
+</div>
+
+<h3>情境 C：成長放緩 + 毛利惡化 <span class="tag tag-orange">機率 25%</span></h3>
+<div class="scenario scenario-c">
+<b>假設</b>：CSP capex 增速放緩、競爭加劇（Edgecore 搶單）、毛利率降至 15%<br>
+<b>推導</b>：2026E 營收 2,200 億 × 毛利 15% = 330 億毛利 → 稅後淨利 ~160 億 → <span class="num-down">EPS 40 元</span><br>
+<b>估值</b>：PE 25x × EPS 40 = <span class="num-down">目標價 1,000 元</span>（潛在虧損 -40%）<br>
+<b>觸發條件</b>：月營收年增降至 30% 以下、毛利率跌破 16%、訂單能見度下降
+</div>
+
+<h3>情境 D：AI 泡沫破裂 <span class="tag tag-red">機率 15%</span></h3>
+<div class="scenario scenario-d">
+<b>假設</b>：CSP 大幅削減 capex、AI 投資回報率不如預期、庫存修正<br>
+<b>推導</b>：2026E 營收 1,400 億 × 毛利 14% = 196 億毛利 → 稅後淨利 ~100 億 → <span class="num-down">EPS 25 元</span><br>
+<b>估值</b>：PE 18x × EPS 25 = <span class="num-down">目標價 450 元</span>（潛在虧損 -73%）<br>
+<b>觸發條件</b>：多家 CSP 同時宣布削減 capex、AI 相關營收季減 > 20%
+</div>
+
+<h3>概率加權期望價</h3>
+<table>
+<tr><th>情境</th><th>機率</th><th>目標價</th><th>加權貢獻</th></tr>
+<tr><td>A：AI 超級週期</td><td>20%</td><td>2,275 元</td><td>455 元</td></tr>
+<tr><td>B：穩定成長（基準）</td><td>40%</td><td>1,650 元</td><td>660 元</td></tr>
+<tr><td>C：成長放緩</td><td>25%</td><td>1,000 元</td><td>250 元</td></tr>
+<tr><td>D：AI 泡沫</td><td>15%</td><td>450 元</td><td>67.5 元</td></tr>
+<tr style="background:var(--bg-card-hover);"><td colspan="3"><b>概率加權期望價</b></td><td><b style="color:var(--warm-brown); font-size:1.2em;">1,433 元</b></td></tr>
+</table>
+
+<div class="tip warn">
+<b>8d 整合結論</b><br>
+概率加權期望價 <b>1,433 元</b>，低於當前股價 1,675 元約 <span class="num-down">14.4%</span>。這意味著市場目前的定價已包含了部分樂觀預期。基準情境（40%機率）的目標價 1,650 元與現價幾乎持平，顯示現價已充分反映「穩定成長」的情境。要賺到超額報酬，需要情境 A 實現（毛利反彈+1.6T 爆發），但這僅有 20% 機率。<b>風險報酬不對稱</b>：向上空間有限（+36%），向下風險較大（-40% 至 -73%）。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8e 個人化 ==================== -->
+<details>
+<summary>8e — 個人化風險偏好調整</summary>
+<div>
+
+<table>
+<tr><th>投資者類型</th><th>建議操作</th><th>理由</th></tr>
+<tr><td>積極成長型</td><td><span class="num-up">小量建倉，追蹤 1.6T 進度</span></td><td>願意承擔毛利風險，押注 AI 超級週期</td></tr>
+<tr><td><b>穩健投資者（預設）</b></td><td><span class="highlight">等回檔至 1,300-1,400 元建倉</span></td><td>期望價 1,433 元，需 15% 安全邊際</td></tr>
+<tr><td>保守價值型</td><td><span class="num-down">觀望，等毛利率觸底確認</span></td><td>毛利率趨勢未反轉前，估值基礎不穩</td></tr>
+</table>
+
+<div class="ev-card">
+<div class="ev-label">EV-個人化</div>
+以穩健投資者角度，1,675 元買入的期望報酬為負（期望價 1,433 元），建議等待回檔至 1,300-1,400 元區間建倉，屆時安全邊際約 5-10%。若毛利率在 Q2 確認觸底回升，可適度提前進場。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8f 時間表 ==================== -->
+<details>
+<summary>8f — 關鍵時間節點</summary>
+<div>
+
+<table>
+<tr><th>預計日期</th><th>事件</th><th>重要性</th><th>觀察重點</th></tr>
+<tr><td>2026/04/15</td><td>Q1 季報</td><td><span class="tag tag-orange">高</span></td><td>毛利率是否止穩、AI 加速卡營收佔比</td></tr>
+<tr><td>2026/06/15</td><td>法說會</td><td><span class="tag tag-orange">高</span></td><td>管理層對 1.6T 量產與毛利率展望</td></tr>
+<tr><td>2026/07/01</td><td>1.6T 量產驗證</td><td><span class="tag tag-red">極高</span></td><td>是否如期出貨、初期良率與 ASP</td></tr>
+<tr><td>2026/09/15</td><td>H1 半年報</td><td><span class="tag tag-orange">高</span></td><td>上半年 EPS 是否支撐全年 55+ 元預估</td></tr>
+</table>
+
+<div class="ev-card">
+<div class="ev-label">EV-時間表</div>
+最關鍵的驗證時點在 2026/07 的 1.6T 量產——這是情境 A 與情境 B/C 的分水嶺。在此之前的 Q1 季報與法說會則是毛利率趨勢的中期觀察窗口。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8g 第四次校準 ==================== -->
+<details>
+<summary>8g — 第四次信心校準（推衍推演）</summary>
+<div>
+
+<p>經過基礎錨定（8a）→ OSINT 驗證（8b）→ 影響鏈推導（8c）→ 多情境推演（8d）後，重新校準各假說的信心水準：</p>
+
+<table>
+<tr><th>假說</th><th>內容</th><th>信心度</th><th>較 Step 5 變化</th></tr>
+<tr><td><b>H2（基準）</b></td><td>穩定成長 + 毛利壓力</td><td><span class="highlight">36%</span></td><td>↑ 原主要假說，OSINT 驗證毛利持續承壓</td></tr>
+<tr><td><b>H1</b></td><td>AI 超級週期 + 毛利反彈</td><td><span class="num-up">29%</span></td><td>↑ 營收持續超預期、1.6T 可能提早催化</td></tr>
+<tr><td><b>H3</b></td><td>成長放緩 + 競爭加劇</td><td>19%</td><td>→ 目前無明確跡象，維持</td></tr>
+<tr><td><b>H4</b></td><td>AI capex 修正</td><td><span class="num-down">11%</span></td><td>↓ CSP 持續加碼，短期無修正跡象</td></tr>
+<tr><td><b>H5</b></td><td>結構性風險（毛利崩塌）</td><td>5%</td><td>→ 尾部風險，維持低機率</td></tr>
+</table>
+
+<div class="tip info">
+<b>校準結論</b><br>
+H2（穩定成長+毛利壓力）維持為最高機率假說（36%），但 H1（超級週期）的信心度上升至 29%，兩者合計 65%，顯示市場對智邦的看法偏正面但分歧。關鍵區別在於毛利率能否反轉——這將在 Q1-Q2 季報中逐步明朗。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8h 貓膩探索 ==================== -->
+<details>
+<summary>8h — 貓膩探索與求證</summary>
+<div>
+
+<h3>綠燈判定：基本面紮實 <span class="tag tag-green">綠燈</span></h3>
+
+<table>
+<tr><th>貓膩檢查項</th><th>結果</th><th>說明</th></tr>
+<tr><td>營收品質</td><td><span class="tag tag-green">通過</span></td><td>營收來自全球前五大 CSP 真實訂單，非一次性業務</td></tr>
+<tr><td>利潤操縱</td><td><span class="tag tag-green">通過</span></td><td>毛利率下滑與產品結構變化一致，非人為調整</td></tr>
+<tr><td>關係人交易</td><td><span class="tag tag-green">通過</span></td><td>主要客戶為 Meta、Google 等國際企業，無異常關聯交易</td></tr>
+<tr><td>現金流品質</td><td><span class="tag tag-green">通過</span></td><td>營業現金流與獲利同步成長，應收帳款周轉正常</td></tr>
+<tr><td>管理層誠信</td><td><span class="tag tag-green">通過</span></td><td>歷年財報預測與實際差異在合理範圍，無重大調整</td></tr>
+<tr><td>隱藏負債</td><td><span class="tag tag-green">通過</span></td><td>負債比適中，無異常表外項目</td></tr>
+</table>
+
+<div class="ev-card">
+<div class="ev-label">EV-貓膩</div>
+智邦的財務數據品質良好，營收成長有真實訂單支撐（全球前五大 CSP），毛利率下滑的原因透明且可追蹤（產品結構改變），現金流健康。<b>這是一間「真實成長」的公司，不是靠財務工程堆出來的數字。</b>主要風險在於估值與成長持續性，而非財務誠信。
+</div>
+
+</div>
+</details>
+
+<!-- ==================== 8i 推演結論 ==================== -->
+<details open>
+<summary>8i — 推演最終結論</summary>
+<div>
+
+<div class="tip good">
+<b>核心判斷：智邦是三檔中基本面最強的標的</b><br>
+<ul style="margin:8px 0 0 20px;">
+<li><b>EPS 47 元 + 市佔 49% + 真實成長</b>：這三個硬指標在台股網通族群中無人能及</li>
+<li><b>PEG 0.30</b>：以 119% 的 EPS 成長率來看，35.5x PE 並不算貴</li>
+<li><b>綠燈基本面</b>：營收品質、現金流、管理層誠信全數通過</li>
+</ul>
+</div>
+
+<div class="tip warn">
+<b>估值現實：1,675 元在合理區間偏上</b><br>
+<ul style="margin:8px 0 0 20px;">
+<li><b>概率加權期望價 1,433 元</b>，現價溢價 16.9%</li>
+<li>基準情境目標價 1,650 元，與現價幾乎持平 → 已反映穩定成長預期</li>
+<li>要賺超額報酬需仰賴情境 A（毛利反彈+1.6T 爆發），機率僅 20%</li>
+<li><b>風險報酬不對稱</b>：上行空間 +36%，下行風險 -40%~-73%</li>
+</ul>
+</div>
+
+<div class="tip info">
+<b>操作建議</b><br>
+<ul style="margin:8px 0 0 20px;">
+<li><b>理想建倉區間</b>：<span class="highlight">1,300 — 1,400 元</span>（期望價附近，約 15-20% 安全邊際）</li>
+<li><b>加碼區間</b>：1,100 — 1,300 元（對應情境 B-C 之間）</li>
+<li><b>停損線</b>：1,000 元以下（情境 C 確認）</li>
+<li><b>關鍵催化劑</b>：2026/07 的 1.6T 量產驗證 → 若成功，上修目標至 2,000+</li>
+</ul>
+</div>
+
+<div class="tip good">
+<b>第八步整合結論</b><br>
+<b>資料</b>：EPS 47 元（+119%）、毛利 17%（↓4ppt）、市佔 49%、營收 +83%、PEG 0.30<br>
+<b>觀察</b>：增收不增利（毛利壓縮）vs 真實高成長（PEG 極低），市場已部分定價<br>
+<b>推論</b>：現價反映「穩定成長」情境，要賺超額報酬需毛利反轉（僅 20% 機率）；向下風險大於向上空間<br>
+<b>結論</b>：<b>B+ 級好公司，好標的但不是好價格。</b>建議等待 1,300-1,400 元回檔建倉，或等 2026/07 的 1.6T 量產驗證後再決定。不急，好公司會給機會。
+</div>
+
+</div>
+</details>
+
+
+<!-- CROSS_LINKS_START -->
+<style>
+.cross-section{margin:20px 0;padding:16px;background:rgba(0,210,255,.03);border:1.5px dashed rgba(0,210,255,.3);border-radius:12px}
+.cross-section h4{color:#00d2ff;margin:0 0 8px;font-size:.95em}
+.cross-meta{font-size:.78em;color:#707090;margin:6px 0 10px}
+.cross-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.cross-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.82em;margin:2px}
+.cross-badge-warn{background:rgba(255,212,59,.12);color:#ffd43b;border:1px solid #ffd43b}
+.cross-badge-info{background:rgba(116,192,252,.12);color:#74c0fc;border:1px solid #74c0fc}
+.cross-badge-good{background:rgba(81,207,102,.15);color:#51cf66;border:1px solid #51cf66}
+.cross-badge-danger{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid #ff6b6b}
+.cross-alert{padding:6px 10px;border-radius:8px;border-left:3px solid #ff6b6b;background:rgba(22,33,62,.8);font-size:.8em;margin:6px 0;color:#e0e0e0}
+.cross-alert b{color:#ff6b6b}
+.cross-card{display:flex;gap:10px;background:rgba(22,33,62,.6);border:1px solid #2a2a4a;border-radius:8px;padding:10px 12px;margin:6px 0;align-items:center}
+.cross-card:hover{background:rgba(15,52,96,.6)}
+.cross-card .icon{font-size:1.5em;min-width:32px;text-align:center}
+.cross-card .info{flex:1}
+.cross-card .info .cname{font-weight:700;color:#e0e0e0;font-size:.9em}
+.cross-card .info .cname .flag{color:#ff6b6b}
+.cross-card .info .rel{font-size:.78em;color:#707090}
+.cross-card .info .days-old{color:#ff6b6b;font-weight:700}
+.cross-card .action{color:#00d2ff;font-size:.8em;font-weight:600;text-decoration:none}
+.cross-card .action:hover{text-decoration:underline}
+.cross-card-dim{opacity:.5}
+.cross-verdict{margin:4px 0;background:transparent;border:none}
+.cross-verdict summary{font-size:.78em;color:#707090;padding:2px 0;cursor:pointer;list-style:none}
+.cross-verdict summary::before{content:"▸ "}
+.cross-verdict[open] summary::before{content:"▾ "}
+</style>
+<div class="cross-section">
+<h4>📡 相關標的分析（西碧拉圖譜自動連結）</h4>
+<div class="cross-summary">
+<span class="cross-badge cross-badge-warn">一致性：1/1 偏多</span>
+<span class="cross-badge cross-badge-info">覆蓋率：1 家關聯 → 1 家已分析（20%）</span>
+</div>
+<div class="cross-alert"><b>🚩 矛盾偵測</b> 客戶 Alphabet(GOOGL) 結論方向與本報告相反 — 建議檢視邏輯一致性</div>
+<p class="cross-meta">基於西碧拉圖譜 | 邊驗證 ≥ V2 | confidence ≥ 0.7 | 更新：2026-04-10</p>
+<div class="cross-card">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname"> <span class="flag">🚩</span>Alphabet (GOOGL)</div>
+<div class="rel">關係：客戶 | 2026-03-22 分析（<span>19 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-good">偏多</span> 
+<span style="font-size:.8em;color:#b0b0c0">免責聲明
+本報告由 AI 分析系統（天機閣推衍系統 v2.0）生成，所有數據來源已標註，但可能存在計算誤差或資訊延遲。本...</span>
+ <span style="font-size:.75em;color:#ff6b6b">⚠ 與本報告方向相反</span>
+</details>
+</div>
+<a class="action" href="20260322_GOOGL_Alphabet_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">Cisco (Cisco)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">🏢</div>
+<div class="info">
+<div class="cname">緯穎 (6669)</div>
+<div class="rel">關係：子公司 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">明泰 (3380)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">盛達 (3027)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+</div>
+<!-- CROSS_LINKS_END -->
+<footer>
+天機閣 ── 推演引擎 v2.0 ｜ 智邦科技(2345) 第八步推演版 ｜ 2026-03-26<br>
+本報告由 AI 生成，僅供研究參考，不構成投資建議。
+</footer>
+
+</body>
+</html>

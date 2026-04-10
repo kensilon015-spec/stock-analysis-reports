@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M31(6643) 第八步 — 推演版 | 天機閣</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;--txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;--accent:#5a7d60;--food:#c27c6e;--play:#6b8f71;--base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;--code-bg:#2c2a26;--warn:#b8860b;--info:#5a7d8c}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8;padding:0}
+.wrap{max-width:820px;margin:0 auto;padding:32px 24px}
+
+.hero{text-align:center;padding:32px 20px 26px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero h1{font-size:2.1em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.88em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tag{padding:4px 14px;border-radius:8px;font-size:.8em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+.label{display:inline-block;font-size:.72em;padding:4px 12px;border-radius:8px;font-weight:700;margin-bottom:14px;letter-spacing:.5px;color:#fff}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.card h3{font-size:1.1em;font-weight:700;margin-bottom:8px;color:var(--base)}
+
+details{margin:18px 0}
+details>summary{cursor:pointer;font-size:1.15em;font-weight:700;color:var(--base);padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;list-style:none;position:relative;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'';position:absolute;right:18px;top:50%;transform:translateY(-50%) rotate(0deg);border:5px solid transparent;border-left:7px solid var(--txt3);transition:transform .2s}
+details[open]>summary::before{transform:translateY(-50%) rotate(90deg)}
+details>summary:hover{background:var(--hover)}
+details>.content{padding:16px 18px;border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;background:var(--panel)}
+
+.tip{padding:12px 16px;border-radius:8px;margin:12px 0;border-left:3px solid;font-size:.88em}
+.tip.danger{border-color:var(--food);background:rgba(194,124,110,.1);color:var(--txt)}
+.tip.danger b{color:var(--food);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08);color:var(--txt)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(184,134,11,.08);color:var(--txt)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--info);background:rgba(90,125,140,.08);color:var(--txt)}
+.tip.info b{color:var(--info);display:block;margin-bottom:2px}
+
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.85em;position:relative;border-left:3px solid var(--accent)}
+.ev .ev-tag{display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff;margin-right:6px}
+.ev .ev-F{background:var(--accent)}
+.ev .ev-I{background:var(--link)}
+.ev .ev-A{background:var(--warn)}
+.ev .ev-S{background:var(--food)}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85em;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+th{background:var(--table-header);color:#faf9f7;padding:10px 14px;text-align:left;font-weight:600}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+.chain{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:14px 0}
+.chain h4{color:var(--base);font-size:1em;margin-bottom:8px}
+.chain .arrow{color:var(--accent);font-weight:700;margin:4px 0;font-size:.9em}
+.chain .meta{display:flex;gap:16px;margin-top:10px;font-size:.82em;color:var(--txt3)}
+.chain .meta span{padding:3px 10px;border-radius:6px;background:rgba(0,0,0,.04);border:1px solid var(--border)}
+
+.path-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:14px 0}
+.path-card h4{font-size:1em;font-weight:700;margin-bottom:6px}
+.path-card .prob{display:inline-block;font-size:.78em;padding:3px 10px;border-radius:6px;font-weight:700;color:#fff;margin-bottom:8px}
+.path-card ul{margin:6px 0 0 18px;font-size:.88em;color:var(--txt2)}
+.path-card li{margin-bottom:4px}
+
+.confidence-bar{display:flex;height:28px;border-radius:8px;overflow:hidden;margin:10px 0;font-size:.75em;font-weight:700;color:#fff;text-align:center}
+.confidence-bar>div{display:flex;align-items:center;justify-content:center}
+
+.footer{text-align:center;padding:24px;color:var(--txt3);font-size:.8em;border-top:1px solid var(--border);margin-top:32px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+    <h1>M31(6643) 推演版報告</h1>
+    <div class="sub">第八步 — 推衍引擎 8a~8i</div>
+    <div class="desc">基於第一步至第七步分析成果，進行多路徑情境推演與蝴蝶效應探測</div>
+    <div class="tags">
+        <span class="tag">M31 Technology | 矽智財 IP</span>
+        <span class="tag">股價 480 元（2026/03/27）</span>
+        <span class="tag">評審 5.5/10</span>
+        <span class="tag">推衍有效期至 2026/05/15</span>
+    </div>
+</div>
+
+<!-- ==================== 8a 推衍基礎確認 ==================== -->
+<details open>
+<summary>8a. 推衍基礎確認</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">回溯第一步到第七步的關鍵事實，確認推衍的起點資料可靠性。</p>
+
+    <table>
+    <tr><th>關鍵事實</th><th>來源</th><th>FIAS</th><th>推衍意義</th></tr>
+    <tr>
+        <td>2025 全年營收 17.82 億創歷史新高</td>
+        <td>月營收累計</td>
+        <td><span class="ev-tag ev-F" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">F</span></td>
+        <td>成長趨勢確立，但成長率趨緩</td>
+    </tr>
+    <tr>
+        <td>Q4 2025 EPS 2.38 元，由虧轉盈</td>
+        <td>季度財報</td>
+        <td><span class="ev-tag ev-F" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">F</span></td>
+        <td>谷底反轉信號，但需確認持續性</td>
+    </tr>
+    <tr>
+        <td>權利金佔比 14.9%，目標 20%</td>
+        <td>法說會</td>
+        <td><span class="ev-tag ev-I" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">I</span></td>
+        <td>商業模式升級的關鍵指標</td>
+    </tr>
+    <tr>
+        <td>EDA 費用 5 年膨脹 5.5 倍</td>
+        <td>年報</td>
+        <td><span class="ev-tag ev-F" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">F</span></td>
+        <td>利潤侵蝕主因，壓縮營益率</td>
+    </tr>
+    <tr>
+        <td>中國營收佔比 43.3%</td>
+        <td>年報</td>
+        <td><span class="ev-tag ev-F" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">F</span></td>
+        <td>地緣風險的致命因子</td>
+    </tr>
+    <tr>
+        <td>全球 IP 市場佔有率 0.56%</td>
+        <td>年報</td>
+        <td><span class="ev-tag ev-F" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">F</span></td>
+        <td>小而美 vs 小而危的雙面性</td>
+    </tr>
+    <tr>
+        <td>ACH 主假說：H2 溫和復甦 34%</td>
+        <td>Step 4-6</td>
+        <td><span class="ev-tag ev-I" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">I</span></td>
+        <td>推衍基線情境</td>
+    </tr>
+    <tr>
+        <td>評審 綜合評分 5.5/10</td>
+        <td>Step 6 評審團</td>
+        <td><span class="ev-tag ev-I" style="display:inline-block;font-size:.7em;padding:2px 8px;border-radius:6px;font-weight:700;color:#fff">I</span></td>
+        <td>中等偏低，不支持積極操作</td>
+    </tr>
+    </table>
+
+    <div class="ev">
+        <span class="ev-tag ev-F">F</span><span class="ev-tag ev-I">I</span>
+        <b>FIAS 品質評估</b>：8 項關鍵事實中，5 項為 F 級（事實確認），3 項為 I 級（推論）。推衍基礎的事實根基堅實，但推論部分（權利金目標、ACH 機率、評審 評分）需持續驗證。
+    </div>
+
+    <div class="tip info">
+        <b>8a 整合結論</b>
+        推衍基礎確認完成。M31 處於「谷底反轉初期」階段，核心事實清楚：營收創新高但成長趨緩、EPS 剛轉正、權利金尚未達標、EDA 成本高企、中國曝險偏高。這些事實共同指向一個結論：<b>基本面正在改善，但改善的速度和幅度仍有不確定性</b>。推衍將以 H2（溫和復甦 34%）為基線展開。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8b OSINT 情報更新 ==================== -->
+<details open>
+<summary>8b. OSINT 情報更新（截至 2026/03/27）</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">比對分析初始時點與最新驗證資訊，標記有意義的變動。</p>
+
+    <table>
+    <tr><th>項目</th><th>初始值</th><th>最新值（03/27）</th><th>變動方向</th><th>推衍含義</th></tr>
+    <tr>
+        <td>股價</td>
+        <td>486.5 元</td>
+        <td>480 元（今日 +5.26%）</td>
+        <td style="color:var(--txt3)">近期 456-505 震盪</td>
+        <td>市場猶豫不決，多空拉鋸</td>
+    </tr>
+    <tr>
+        <td>2026/02 營收</td>
+        <td>—</td>
+        <td>164,752 千元（YoY +1.8%）</td>
+        <td style="color:var(--warn)">成長趨緩</td>
+        <td>YoY 僅 +1.8%，低於預期，需關注 3 月能否回升</td>
+    </tr>
+    <tr>
+        <td>地緣風險</td>
+        <td>中等</td>
+        <td>2027/06 起美國可能對中國半導體加稅</td>
+        <td style="color:var(--food)">新增風險</td>
+        <td>中長期隱患，影響中國客戶下單意願</td>
+    </tr>
+    <tr>
+        <td>先進製程權利金</td>
+        <td>僅知 3nm</td>
+        <td>2-8nm 全線權利金已啟動</td>
+        <td style="color:var(--accent)">正面擴大</td>
+        <td>權利金來源比預期更廣泛</td>
+    </tr>
+    <tr>
+        <td>AI 需求滲透</td>
+        <td>特定客戶</td>
+        <td>滲透所有設計專案</td>
+        <td style="color:var(--accent)">結構性利多</td>
+        <td>AI 不只是單點需求，已成為 IP 採購的標配</td>
+    </tr>
+    <tr>
+        <td>出口管制（IP 授權）</td>
+        <td>不確定</td>
+        <td>尚未被納入管制（已驗證）</td>
+        <td style="color:var(--accent)">暫時利好</td>
+        <td>短期安全，但需持續監控政策動向</td>
+    </tr>
+    </table>
+
+    <div class="ev">
+        <span class="ev-tag ev-F">F</span>
+        <b>情報差異淨影響</b>：正面因子（2-8nm 權利金擴大、AI 結構性需求、IP 暫未被管制）略大於負面因子（2 月營收成長趨緩、2027 加稅風險），但 2 月營收 YoY 僅 +1.8% 是一個需要密切關注的弱訊號。
+    </div>
+
+    <div class="tip warn">
+        <b>8b 整合結論</b>
+        情報更新後的淨影響為「中性偏正」。2-8nm 全線權利金啟動比原先預估更廣，這強化了 H2（溫和復甦）的路徑。但 2 月營收 YoY 僅 +1.8% 發出了成長動能不足的警訊 — 若 3 月營收（預計 4/10 公告）未能回到 YoY >10%，H3（原地踏步）的機率會顯著上升。<b>資料 → 觀察 → 推論 → 結論</b>：2-8nm 權利金比預期廣（正面）+ 2 月營收動能弱（負面）→ 互相抵消 → 維持 H2 為基線但下調信心 → 3 月營收將是近期最關鍵驗證點。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8c 影響鏈分析 ==================== -->
+<details open>
+<summary>8c. 影響鏈分析（推衍方法一）</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">從關鍵事件出發，推演一階、二階、三階影響，並評估跨鏈交互效應。</p>
+
+    <!-- 影響鏈 1 -->
+    <div class="chain">
+        <h4>影響鏈 1：3nm/2nm 量產放大 → 權利金爆發</h4>
+        <p style="font-size:.88em;color:var(--txt2);margin-bottom:8px"><b>起始事件</b>：台積電 3nm 量產規模持續放大，2nm 進入試產</p>
+        <div class="arrow">→ 一階影響：M31 的 3nm/2nm IP 權利金按出貨量計費，被動收入隨量產規模自然成長</div>
+        <div class="arrow">→ 二階影響：權利金佔營收比從 15% → 20% → 25%，營收結構從「一次性授權」轉向「經常性收入」</div>
+        <div class="arrow">→ 三階影響：資本市場將 M31 重新歸類為「recurring revenue」模式，PE 倍數從目前 40-60x 重估至 80-100x</div>
+        <div class="meta">
+            <span>機率：65%</span>
+            <span>影響：EPS +2~4 元/年</span>
+            <span>時間窗口：2026H2 - 2027</span>
+        </div>
+    </div>
+
+    <!-- 影響鏈 2 -->
+    <div class="chain">
+        <h4>影響鏈 2：中國出口管制升級</h4>
+        <p style="font-size:.88em;color:var(--txt2);margin-bottom:8px"><b>起始事件</b>：美國將半導體 IP 授權正式納入出口管制清單</p>
+        <div class="arrow">→ 一階影響：中國客戶（佔營收 43.3%）的新授權案全面中斷</div>
+        <div class="arrow">→ 二階影響：已簽約的權利金可能繼續收取（存量合約），但新授權凍結導致營收成長引擎熄火</div>
+        <div class="arrow">→ 三階影響：M31 被迫加速轉向日本、歐洲、印度等非中國市場，短期 1-2 年出現營收缺口</div>
+        <div class="meta">
+            <span>機率：20%</span>
+            <span>影響：營收 -30~40%</span>
+            <span>時間窗口：不確定（政策驅動）</span>
+        </div>
+    </div>
+
+    <!-- 影響鏈 3 -->
+    <div class="chain">
+        <h4>影響鏈 3：EDA 費用持續膨脹</h4>
+        <p style="font-size:.88em;color:var(--txt2);margin-bottom:8px"><b>起始事件</b>：Synopsys/Cadence EDA 長約到期後再次大幅提價</p>
+        <div class="arrow">→ 一階影響：研發費用率從目前 68% 進一步升至 80% 以上</div>
+        <div class="arrow">→ 二階影響：營益率被壓縮至 0% 附近，公司陷入「有營收無利潤」的泥淖</div>
+        <div class="arrow">→ 三階影響：為控制成本被迫縮減先進製程（2nm/1.4nm）研發投入 → 競爭力下降 → 客戶轉向 Synopsys/Cadence 自有 IP</div>
+        <div class="meta">
+            <span>機率：30%</span>
+            <span>影響：EPS -3~5 元</span>
+            <span>時間窗口：長約到期時</span>
+        </div>
+    </div>
+
+    <div class="tip danger">
+        <b>跨鏈交互效應（最壞情境）</b>
+        若影響鏈 2（出口管制升級）+ 影響鏈 3（EDA 費用膨脹）同時發生 → 營收萎縮 + 成本膨脹 = 雙面夾擊 → 對應 H4「結構性衰退」情境（機率 11%）。在此情境下，M31 可能面臨生存危機，股價恐跌至 150-250 元。
+    </div>
+
+    <div class="tip good">
+        <b>跨鏈交互效應（最好情境）</b>
+        若影響鏈 1（權利金爆發）順利推進 + 影響鏈 2 未發生 + 影響鏈 3 透過 AI-EDA 工具緩解 → 對應 H1「強勢反轉」情境（機率 22%）。在此情境下，2027 年 EPS 可達 10-16 元，股價有機會回到 600-900 元。
+    </div>
+
+    <div class="tip info">
+        <b>8c 整合結論</b>
+        三條影響鏈的機率加權淨效應：影響鏈 1（正面 65%）力道最強但需時間兌現；影響鏈 2（負面 20%）是黑天鵝型風險，機率不高但衝擊致命；影響鏈 3（負面 30%）是慢性病，持續侵蝕但不會突然致命。<b>推論</b>：三條鏈中，影響鏈 1 是唯一能讓 M31 脫離平庸的正面催化劑，但它的兌現需要 2-4 季。在等待期間，影響鏈 2 和 3 隨時可能惡化。因此，<b>時間是 M31 投資者的朋友（權利金累積），也是敵人（風險累積）</b>。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8d 情境模擬 ==================== -->
+<details open>
+<summary>8d. 情境模擬（推衍方法二）</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">基於 ACH 五假說，展開四條主要路徑的量化模擬。</p>
+
+    <!-- 路徑 A -->
+    <div class="path-card" style="border-left:3px solid var(--accent)">
+        <h4>路徑 A：溫和復甦（基線情境）</h4>
+        <span class="prob" style="background:var(--accent)">機率 34%</span>
+        <ul>
+            <li><b>2026 營收</b>：20-22 億元（YoY +12~23%）</li>
+            <li><b>權利金佔比</b>：18%</li>
+            <li><b>EPS</b>：5-8 元</li>
+            <li><b>合理股價區間</b>：400-560 元</li>
+            <li><b>觸發條件</b>：Q1 營收 YoY >5%、權利金佔比回升至 >16%</li>
+            <li><b>驗證時點</b>：2026/05 Q1 季報</li>
+        </ul>
+    </div>
+
+    <!-- 路徑 B -->
+    <div class="path-card" style="border-left:3px solid var(--play)">
+        <h4>路徑 B：強勢反轉</h4>
+        <span class="prob" style="background:var(--play)">機率 22%</span>
+        <ul>
+            <li><b>2026 營收</b>：24-26 億元（YoY +35~46%）</li>
+            <li><b>權利金佔比</b>：20% 以上</li>
+            <li><b>EPS</b>：10-16 元</li>
+            <li><b>合理股價區間</b>：600-900 元</li>
+            <li><b>觸發條件</b>：連續 3 個月營收 YoY >30%、公告大型新客戶</li>
+            <li><b>驗證時點</b>：2026/08 Q2 季報</li>
+        </ul>
+    </div>
+
+    <!-- 路徑 C -->
+    <div class="path-card" style="border-left:3px solid var(--warn)">
+        <h4>路徑 C：原地踏步</h4>
+        <span class="prob" style="background:var(--warn)">機率 23%</span>
+        <ul>
+            <li><b>2026 營收</b>：17-19 億元（YoY -5~+7%）</li>
+            <li><b>權利金佔比</b>：15-16%</li>
+            <li><b>EPS</b>：2-4 元</li>
+            <li><b>合理股價區間</b>：300-450 元</li>
+            <li><b>觸發條件</b>：Q1 營收 YoY <0%、EDA 費用未降</li>
+            <li><b>驗證時點</b>：2026/05 Q1 季報</li>
+        </ul>
+    </div>
+
+    <!-- 路徑 D -->
+    <div class="path-card" style="border-left:3px solid var(--food)">
+        <h4>路徑 D：下行風險</h4>
+        <span class="prob" style="background:var(--food)">機率 21%</span>
+        <ul>
+            <li><b>2026 營收</b>：<16 億元</li>
+            <li><b>主因</b>：中國客戶流失或出口管制衝擊</li>
+            <li><b>EPS</b>：<2 元（可能虧損）</li>
+            <li><b>合理股價區間</b>：200-350 元</li>
+            <li><b>觸發條件</b>：出口管制升級、核心人才流失、大客戶抽單</li>
+            <li><b>驗證時點</b>：政策發布時即刻反應</li>
+        </ul>
+    </div>
+
+    <!-- 概率決策樹 -->
+    <div class="card">
+        <h3>概率決策樹</h3>
+        <pre style="font-family:'Fira Code',monospace;font-size:.82em;color:var(--txt2);line-height:1.9;overflow-x:auto">
+M31 現況（480 元，評審 5.5）
+ |
+ |-- [34%] 路徑 A：溫和復甦
+ |    |-- Q1 營收 YoY >5%？
+ |    |    |-- 是 → 維持 A，目標 400-560
+ |    |    |-- 否 → 降級至 C
+ |
+ |-- [22%] 路徑 B：強勢反轉
+ |    |-- 連 3 月 YoY >30%？
+ |    |    |-- 是 → 確認 B，目標 600-900
+ |    |    |-- 否 → 降級至 A
+ |
+ |-- [23%] 路徑 C：原地踏步
+ |    |-- EDA 費用下降？權利金 >16%？
+ |    |    |-- 是 → 升級至 A
+ |    |    |-- 否 → 維持 C，目標 300-450
+ |
+ |-- [21%] 路徑 D：下行風險
+      |-- 出口管制或客戶流失？
+           |-- 是 → 確認 D，目標 200-350
+           |-- 否 → 升級至 C
+        </pre>
+    </div>
+
+    <div class="tip info">
+        <b>8d 整合結論</b>
+        四條路徑的機率加權期望股價 = 34%×480 + 22%×750 + 23%×375 + 21%×275 = <b>約 470 元</b>，與目前股價 480 元幾乎一致。<b>資料 → 觀察 → 推論 → 結論</b>：期望值接近現價 → 市場定價合理 → 目前股價既非明顯低估也非高估 → 沒有安全邊際 → 不適合積極進場，但也不需要恐慌出場。決定性的路徑分歧將在 Q1 季報（2026/05）揭曉。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8e 個人化推衍 ==================== -->
+<details open>
+<summary>8e. 個人化推衍</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">依分析師可能的持倉狀態，提供三種情境下的具體行動建議。</p>
+
+    <!-- 情境 1 -->
+    <div class="card">
+        <h3>情境一：觀望中（最可能）</h3>
+        <div class="tip info">
+            <b>建議策略</b>
+            <ul style="margin:6px 0 0 18px">
+                <li>耐心等待 380-420 元買入區間，或等 Q1 季報數據驗證</li>
+                <li>最關鍵觀察指標：3 月營收（4/10 公告）+ Q1 權利金佔比（5 月季報）</li>
+                <li>若 3 月營收 YoY >10% → 可開始研究建倉計畫</li>
+                <li>若 3 月營收 YoY <0% → 繼續觀望，等更便宜的價格</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 情境 2 -->
+    <div class="card">
+        <h3>情境二：已持有少量部位</h3>
+        <div class="tip warn">
+            <b>建議策略</b>
+            <ul style="margin:6px 0 0 18px">
+                <li>不急著加碼，目前股價在機率加權期望值附近，沒有加碼的迫切性</li>
+                <li>設定停損價位：380 元（距現價 -21%），跌破代表 H4 可能成真</li>
+                <li>等 Q1 季報確認路徑 A/B 後再考慮加碼</li>
+                <li>若 Q1 EPS >1 元且權利金 >16% → 加碼至目標部位</li>
+                <li>若 Q1 EPS <0 → 考慮減碼，重新評估</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 情境 3 -->
+    <div class="card">
+        <h3>情境三：考慮長線佈局（2-3 年）</h3>
+        <div class="tip good">
+            <b>建議策略：分批進場</b>
+            <ul style="margin:6px 0 0 18px">
+                <li>第一批（1/3 資金）：420 元以下開始建倉</li>
+                <li>第二批（1/3 資金）：380 元附近加碼（若有機會）</li>
+                <li>第三批（1/3 資金）：等 Q2 季報（2026/08）確認趨勢後投入</li>
+                <li>長線邏輯：2nm 權利金 2027-2028 大爆發 + Chiplet 結構性需求</li>
+                <li>長線停損：300 元（代表 H4 結構性衰退確認）</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="tip info">
+        <b>8e 整合結論</b>
+        無論哪種情境，核心邏輯一致：<b>目前股價處於期望值附近，沒有足夠的安全邊際支持積極行動</b>。最佳策略是等待 — 等 3 月營收或 Q1 季報提供方向性訊號。急躁進場的風險大於耐心等待的機會成本。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8f 催化劑時間表 ==================== -->
+<details open>
+<summary>8f. 催化劑時間表</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">未來 9 個月的關鍵事件與對應觀察指標。</p>
+
+    <table>
+    <tr><th>預計日期</th><th>事件</th><th>預期影響</th><th>關鍵觀察指標</th></tr>
+    <tr>
+        <td><b>2026/04/10</b></td>
+        <td>3 月營收公告</td>
+        <td>若 YoY >10% → 正面信號</td>
+        <td>金額是否超過去年同期 1.62 億？</td>
+    </tr>
+    <tr>
+        <td><b>2026/05 中旬</b></td>
+        <td>Q1 季報公告</td>
+        <td>路徑 A/B vs C/D 的分水嶺</td>
+        <td>權利金佔比 >16%？營益率 >10%？</td>
+    </tr>
+    <tr>
+        <td><b>2026/06</b></td>
+        <td>股東會 + 配息公告</td>
+        <td>配息金額反映管理層信心</td>
+        <td>配息 >3 元 = 正面訊號</td>
+    </tr>
+    <tr>
+        <td><b>2026/06 下旬</b></td>
+        <td>COMPUTEX 台北國際電腦展</td>
+        <td>可能展示 AI/Chiplet 相關 IP</td>
+        <td>有無新客戶或新技術合作公告？</td>
+    </tr>
+    <tr>
+        <td><b>2026/08</b></td>
+        <td>Q2 季報公告</td>
+        <td>全年趨勢的關鍵驗證點</td>
+        <td>權利金佔比 >18%？EPS 持續正？</td>
+    </tr>
+    <tr>
+        <td><b>2026/09</b></td>
+        <td>台積電技術論壇（OIP）</td>
+        <td>2nm 生態系進展</td>
+        <td>M31 是否出席展示 2nm IP？</td>
+    </tr>
+    <tr>
+        <td><b>2026/11</b></td>
+        <td>Q3 季報公告</td>
+        <td>全年趨勢確認</td>
+        <td>營收 YoY 是否持續正成長？</td>
+    </tr>
+    <tr>
+        <td><b>2027/01</b></td>
+        <td>2026 全年營收確認</td>
+        <td>路徑最終確認</td>
+        <td>是否突破 20 億大關？</td>
+    </tr>
+    </table>
+
+    <div class="tip danger">
+        <b>黑天鵝監控清單（不定時）</b>
+        <ul style="margin:6px 0 0 18px">
+            <li>美國出口管制擴大至 IP 授權 → 中國營收即刻衝擊</li>
+            <li>2027/06 美國對中國半導體加稅 → 中國客戶下單量萎縮</li>
+            <li>Synopsys/Cadence 推出同級 IP 產品正面競爭 → 價格戰</li>
+            <li>核心研發人才流失至中國競爭對手 → 技術優勢崩塌</li>
+        </ul>
+    </div>
+
+    <div class="tip info">
+        <b>8f 整合結論</b>
+        催化劑時間表顯示，<b>最近的關鍵驗證點是 2026/04/10 的 3 月營收公告</b>（距今僅 14 天），其次是 2026/05 的 Q1 季報。在此之前的任何買入/賣出決策都帶有較高的不確定性。建議在 4/10 之後根據 3 月營收數據重新評估路徑機率。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8g 蝴蝶效應推衍 ==================== -->
+<details open>
+<summary>8g. 蝴蝶效應推衍（推衍方法八）</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">掃描主流分析師未關注的弱訊號，推演可能的蝴蝶效應鏈。</p>
+
+    <h4 style="margin:16px 0 10px;color:var(--base)">弱訊號掃描</h4>
+
+    <div class="ev" style="border-left-color:var(--food)">
+        <span class="ev-tag ev-A">A 類</span>
+        <b>數據異常</b>：2024/11 營收暴跌至 6,937 萬（MoM -52%），但 12 月即反彈至 1.28 億。表面看像客戶流失，實際可能是案件認列時間差（IP 授權金認列依合約里程碑，不是每月平均）。<b>推衍意義</b>：M31 的月營收波動度極大，不宜用單月數據判斷趨勢，至少需要看季度。
+    </div>
+
+    <div class="ev" style="border-left-color:var(--warn)">
+        <span class="ev-tag ev-I">B 類</span>
+        <b>敘事轉變</b>：投資論壇出現「跌落神壇」「法說會又變法會」等極度悲觀敘事。歷史經驗顯示，當散戶共識達到極端悲觀時，往往是反轉的前兆（但不是立即反轉，通常需要 1-2 季基本面驗證）。<b>推衍意義</b>：市場情緒已充分反映壞消息，若出現正面催化劑，反彈力道可能超預期。
+    </div>
+
+    <div class="ev" style="border-left-color:var(--accent)">
+        <span class="ev-tag ev-I">C 類</span>
+        <b>結構變化</b>：Chiplet 架構興起 — 一顆傳統 SoC 被拆分成多個 chiplet，每個 chiplet 之間需要高速介面 IP（如 UCIe、PCIe、HBM controller）進行互連。這意味著<b>每顆 SoC 的 IP 需求量可能從 1 組變成 3-5 組</b>。M31 的高速介面 IP 正好處於這個風口。<b>推衍意義</b>：這是一個被市場嚴重低估的結構性利多。
+    </div>
+
+    <div class="ev" style="border-left-color:var(--warn)">
+        <span class="ev-tag ev-A">D 類</span>
+        <b>關係變化</b>：摩爾線程（中國 GPU 新創，2022 年與 M31 簽約）若被美國制裁，M31 損失一個客戶但免除法律風險。反之，若摩爾線程成功量產，權利金收入將顯著增加。<b>推衍意義</b>：中國 AI 晶片客戶是雙面刃。
+    </div>
+
+    <div class="ev" style="border-left-color:var(--accent)">
+        <span class="ev-tag ev-F">E 類</span>
+        <b>時間窗口</b>：台積電 2nm 製程 2026 年開始試產，M31 已簽約成為 2nm IP 供應商。若量產順利，2027-2028 年的權利金將進入大爆發期。<b>推衍意義</b>：這是 M31 最大的長期選擇權。
+    </div>
+
+    <h4 style="margin:24px 0 10px;color:var(--base)">蝴蝶效應推演鏈 Top 3</h4>
+
+    <!-- 蝴蝶 1 -->
+    <div class="chain" style="border-left:3px solid var(--accent)">
+        <h4>蝴蝶效應 #1：Chiplet 架構全面爆發</h4>
+        <div class="arrow">Chiplet 成為主流封裝架構（2026-2028）</div>
+        <div class="arrow">→ 每顆 SoC 需要 3-5 倍的高速介面 IP blocks（UCIe、D2D、SerDes）</div>
+        <div class="arrow">→ M31 高速介面 IP 授權量暴增（不只是新客戶，現有客戶也需追加）</div>
+        <div class="arrow">→ 授權金 + 權利金雙引擎啟動</div>
+        <div class="arrow">→ 2027 年營收有機會突破 30 億元（目前 17.8 億的 1.7 倍）</div>
+        <div class="meta">
+            <span>觸發機率：35%</span>
+            <span>影響量級：極大</span>
+            <span>時間：2027-2028</span>
+        </div>
+        <div class="tip good" style="margin-top:10px">
+            <b>洞察</b>：這是目前多數分析師模型中<b>尚未納入</b>的情境。如果 Chiplet 普及速度超預期，M31 的營收天花板會被大幅上修。
+        </div>
+    </div>
+
+    <!-- 蝴蝶 2 -->
+    <div class="chain" style="border-left:3px solid var(--warn)">
+        <h4>蝴蝶效應 #2：中國 AI 晶片自主化加速</h4>
+        <div class="arrow">美國制裁迫使中國 AI 晶片設計公司加速自主化</div>
+        <div class="arrow">→ 中國客戶大量採購 M31 IP（替代被制裁的 Synopsys/Cadence IP）</div>
+        <div class="arrow">→ M31 中國營收佔比從 43% 升至 50%+</div>
+        <div class="arrow">→ 短期營收爆發，但地緣風險同步升高（雙面刃）</div>
+        <div class="arrow">→ 若後續 IP 授權也被管制 → 中國營收一夕歸零</div>
+        <div class="meta">
+            <span>觸發機率：25%</span>
+            <span>影響量級：大（雙面刃）</span>
+            <span>時間：2026-2027</span>
+        </div>
+        <div class="tip warn" style="margin-top:10px">
+            <b>洞察</b>：短期甜蜜、長期致命。中國 AI 晶片自主化對 M31 是「毒蘋果」— 吃了營收好看，但依賴度越高、被管制時的衝擊越大。
+        </div>
+    </div>
+
+    <!-- 蝴蝶 3 -->
+    <div class="chain" style="border-left:3px solid var(--link)">
+        <h4>蝴蝶效應 #3：AI 驅動 EDA 革命</h4>
+        <div class="arrow">AI-EDA 工具（如 Synopsys DSO.ai、Cadence Cerebrus）大幅降低 IP 驗證成本</div>
+        <div class="arrow">→ M31 若率先導入 AI-EDA → 研發效率大增、同樣人力產出更多 IP</div>
+        <div class="arrow">→ 研發費用率從 68% 降至 50-55%</div>
+        <div class="arrow">→ 營益率回升至 25-30%</div>
+        <div class="arrow">→ EPS 在營收不變的情況下也能倍增</div>
+        <div class="meta">
+            <span>觸發機率：20%</span>
+            <span>影響量級：中大</span>
+            <span>時間：2027-2028</span>
+        </div>
+        <div class="tip good" style="margin-top:10px">
+            <b>洞察</b>：EDA 費用是 M31 最大的利潤侵蝕因子。如果 AI-EDA 能有效降低成本，等於同時解決了利潤問題和研發效率問題。但此路徑需要 M31 管理層有前瞻性佈局。
+        </div>
+    </div>
+
+    <div class="tip warn">
+        <b>8g 整合結論</b>
+        弱訊號掃描發現一個被嚴重低估的結構性利多：<b>Chiplet 架構的 IP 倍增效應</b>。這不是「可能會發生」而是「正在發生」— Intel、AMD、NVIDIA 都已採用 Chiplet，問題只在普及速度。若 Chiplet 在 2027-2028 全面普及，M31 的高速介面 IP 需求可能倍增，這是目前市場定價中完全沒有反映的選擇權。<br><br>
+        但同時，中國 AI 晶片自主化是一個「甜蜜的陷阱」— 短期營收好看但長期風險累積。<b>推論</b>：M31 的長期價值取決於兩個變數的賽跑：（1）Chiplet + 2nm 權利金能否在（2）中國風險爆發前兌現。如果（1）先到 → 股價 700+；如果（2）先到 → 股價 250-。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8h 貓膩推衍 ==================== -->
+<details open>
+<summary>8h. 貓膩推衍</summary>
+<div class="content">
+    <p style="color:var(--txt2);font-size:.9em;margin-bottom:12px">承接第七步第十二章貓膩探索結論，推衍其對未來股價的影響。</p>
+
+    <h4 style="margin:16px 0 10px;color:var(--base)">貓膩燈號回顧</h4>
+
+    <table>
+    <tr><th>貓膩項目</th><th>燈號</th><th>說明</th></tr>
+    <tr>
+        <td>「100% 毛利率」的會計假象</td>
+        <td style="color:var(--warn);font-weight:700">黃燈</td>
+        <td>真實成本藏在研發費用中，毛利率數字無實質意義。投資人若被「100% 毛利」吸引買入，等於踩進認知陷阱。</td>
+    </tr>
+    <tr>
+        <td>「台積電合作夥伴」可能被過度解讀</td>
+        <td style="color:var(--accent);font-weight:700">綠燈</td>
+        <td>M31 確實是台積電 IP 聯盟成員，但這不等於獨家或優先地位。Synopsys、Cadence 同為成員且市佔率遠大於 M31。</td>
+    </tr>
+    <tr>
+        <td>管理層曾跳票</td>
+        <td style="color:var(--warn);font-weight:700">黃燈</td>
+        <td>2024 年法說會承諾未達成，市場信任度受損。需要 2-3 季連續達標才能重建。</td>
+    </tr>
+    <tr>
+        <td>「股價 -70% = 便宜」是錨定偏誤</td>
+        <td style="color:var(--food);font-weight:700">紅燈</td>
+        <td>從歷史高點 1525 元跌至 480 元看似便宜，但若以基本面估值（EPS × 合理 PE），目前股價並不便宜。</td>
+    </tr>
+    </table>
+
+    <h4 style="margin:24px 0 10px;color:var(--base)">歷史劇本比對</h4>
+
+    <div class="card">
+        <h3>最相似案例：智原科技(3035) 2018-2020</h3>
+        <table>
+        <tr><th>比較維度</th><th>智原(3035)</th><th>M31(6643)</th></tr>
+        <tr><td>公司定位</td><td>台灣 ASIC/IP 公司</td><td>台灣矽智財 IP 公司</td></tr>
+        <tr><td>股價高低點</td><td>高峰 220 → 低谷 38（-83%）</td><td>高峰 1525 → 低谷 361（-76%）</td></tr>
+        <tr><td>營收衰退幅度</td><td>從高峰衰退約 30%</td><td>2024 獲利大衰但營收仍成長</td></tr>
+        <tr><td>復甦時間</td><td>約 3 年（2018-2021）</td><td>待觀察（目前剛開始）</td></tr>
+        <tr><td>最終結局</td><td>2021 年股價回 200+，復甦成功</td><td>待定</td></tr>
+        </table>
+        <p style="font-size:.88em;color:var(--txt2);margin-top:10px"><b>相似度：65%</b>。關鍵差異：M31 有先進製程佈局（3nm/2nm），智原偏成熟製程；M31 權利金收入潛力更大。但 M31 的 EDA 成本壓力遠大於智原。</p>
+    </div>
+
+    <h4 style="margin:24px 0 10px;color:var(--base)">可能的敗因探討</h4>
+
+    <div class="tip danger">
+        <b>敗因 #1：權利金神話破滅</b>
+        如果 3nm/2nm 量產規模不如預期（例如台積電產能被 Apple/NVIDIA 壟斷，M31 客戶排不到產能），權利金收入可能長期停在 15% 以下。此時 M31 只是一家「高成本、低利潤的 IP 設計公司」，不值得目前的 PE 倍數。
+    </div>
+
+    <div class="tip danger">
+        <b>敗因 #2：管理層再次跳票</b>
+        2024 年法說會承諾未兌現的記憶猶新。如果 2026 年再次出現「權利金佔比遲遲無法提升」或「新客戶公告落空」，市場將對管理層完全失去信任，股價可能跌破 300 元。
+    </div>
+
+    <div class="tip danger">
+        <b>敗因 #3：中國風險突然爆發</b>
+        IP 授權被納入出口管制 → 43% 營收一夕蒸發 → 公司被迫大規模裁員重組 → 2-3 年恢復期 → 股價可能跌至 150 元。
+    </div>
+
+    <h4 style="margin:24px 0 10px;color:var(--base)">反轉路徑</h4>
+
+    <div class="tip good">
+        <b>信任重建條件</b>
+        若連續 2 季 EPS >2 元 + 權利金佔比 >18% → 管理層兌現承諾 → 市場信任重建 → 股價可能回到 600 元以上。這是從「貓膩存疑」轉為「貓膩解除」的關鍵門檻。
+    </div>
+
+    <h4 style="margin:24px 0 10px;color:var(--base)">保護策略</h4>
+
+    <div class="card">
+        <table>
+        <tr><th>身份</th><th>策略</th><th>停損</th></tr>
+        <tr>
+            <td>持有者</td>
+            <td>停損設 380 元（距現價 -21%），跌破代表 H4 可能成真</td>
+            <td style="color:var(--food);font-weight:700">380 元</td>
+        </tr>
+        <tr>
+            <td>觀望者</td>
+            <td>等 Q1 季報（2026/05）確認後才進場，不猜底</td>
+            <td>—</td>
+        </tr>
+        </table>
+    </div>
+
+    <div class="tip warn">
+        <b>8h 整合結論</b>
+        貓膩推衍的核心結論：M31 最大的貓膩不在財務造假或技術灌水，而在<b>「管理層承諾的可靠度」</b>。2024 年跳票的記憶讓市場處於「不見兔子不撒鷹」狀態。<b>資料 → 觀察 → 推論 → 結論</b>：管理層 2024 跳票（事實）→ 市場信任處於低谷（觀察）→ 需要連續 2-3 季兌現才能重建（推論）→ 這意味著即使基本面改善，股價的反應也會延遲，投資人需要額外的耐心和較長的持有時間。歷史劇本（智原 3035）顯示復甦是可能的，但需要 2-3 年。
+    </div>
+</div>
+</details>
+
+<!-- ==================== 8i 推衍結論 ==================== -->
+<details open>
+<summary>8i. 推衍結論</summary>
+<div class="content">
+
+    <h4 style="margin:10px 0;color:var(--base)">最可能路徑</h4>
+    <div class="tip info">
+        <b>H2 溫和復甦（34%）</b>
+        2026 年 EPS 5-8 元，權利金佔比升至 18%，營收 20-22 億元。股價合理區間 400-560 元。目前 480 元處於區間中段，既非低估也非高估。
+    </div>
+
+    <h4 style="margin:20px 0 10px;color:var(--base)">蝴蝶效應核心洞察</h4>
+    <div class="tip good">
+        <b>Chiplet 架構 = 被嚴重低估的長期利多</b>
+        每顆 SoC 拆分為多個 chiplet → 高速介面 IP 需求倍增 → M31 正好處於風口。若 2027-2028 年 Chiplet 全面普及，M31 營收天花板會被大幅上修。這是目前市場定價中<b>完全沒有反映</b>的隱藏選擇權。
+    </div>
+
+    <h4 style="margin:20px 0 10px;color:var(--base)">貓膩核心摘要</h4>
+    <div class="tip warn">
+        <b>管理層承諾可靠度 = 最大不確定因子</b>
+        2024 年跳票記憶猶新，市場需要 2-3 季持續交付才能重建信任。投資人要有心理準備：即使基本面改善，股價反應也會延遲。
+    </div>
+
+    <h4 style="margin:20px 0 10px;color:var(--base)">行動建議</h4>
+    <div class="card">
+        <table>
+        <tr><th>建議</th><th>條件</th><th>目標/停損</th></tr>
+        <tr>
+            <td><b>觀望為主</b></td>
+            <td>等 Q1 季報（2026/05）數據驗證</td>
+            <td>—</td>
+        </tr>
+        <tr>
+            <td style="color:var(--accent)">可小量建倉</td>
+            <td>Q1 EPS >1 元 + 權利金 >16%</td>
+            <td>買入區間 420-480，停損 380</td>
+        </tr>
+        <tr>
+            <td style="color:var(--food)">迴避</td>
+            <td>Q1 EPS <0 或權利金持續下滑</td>
+            <td>等更低價位或放棄</td>
+        </tr>
+        </table>
+    </div>
+
+    <h4 style="margin:20px 0 10px;color:var(--base)">第四次信心校準（推衍後最終）</h4>
+
+    <div class="confidence-bar">
+        <div style="width:22%;background:var(--play)">H1 22%</div>
+        <div style="width:34%;background:var(--accent)">H2 34%</div>
+        <div style="width:23%;background:var(--warn)">H3 23%</div>
+        <div style="width:11%;background:var(--food)">H4 11%</div>
+        <div style="width:10%;background:var(--table-header)">H5 10%</div>
+    </div>
+
+    <table>
+    <tr><th>假說</th><th>內容</th><th>機率</th><th>推衍後調整</th></tr>
+    <tr><td>H1</td><td>強勢反轉（營收 +35%，EPS 10-16）</td><td>22%</td><td>維持（Chiplet 利多尚未反映）</td></tr>
+    <tr><td>H2</td><td>溫和復甦（營收 +12-23%，EPS 5-8）</td><td>34%</td><td>維持（基線情境，2月營收略弱但不改趨勢）</td></tr>
+    <tr><td>H3</td><td>原地踏步（營收 -5~+7%，EPS 2-4）</td><td>23%</td><td>維持（2月營收 YoY +1.8% 支持此路徑）</td></tr>
+    <tr><td>H4</td><td>結構性衰退（中國管制 + EDA膨脹）</td><td>11%</td><td>維持（IP 暫未被管制，但 2027 加稅為新增風險）</td></tr>
+    <tr><td>H5</td><td>黑天鵝（核心人才流失 / 技術斷層）</td><td>10%</td><td>維持（無新證據）</td></tr>
+    </table>
+
+    <div class="ev">
+        <span class="ev-tag ev-I">I</span>
+        <b>校準說明</b>：與第六步評審團結論一致，推衍過程未發現需要大幅修正的新資訊。2 月營收略弱（+1.8%）稍微增加 H3 的可能性，但 2-8nm 全線權利金啟動稍微增加 H1/H2 的可能性，兩者互相抵消。
+    </div>
+
+    <h4 style="margin:20px 0 10px;color:var(--base)">推衍有效期</h4>
+    <div class="tip info">
+        <b>有效期：2026/03/27 ~ 2026/05/15</b><br>
+        Q1 季報公布後（預計 2026/05 中旬），本推衍報告的路徑機率需重新校準。屆時的關鍵驗證指標：Q1 EPS、權利金佔比、營益率。
+    </div>
+
+    <div class="tip warn">
+        <b>8i 最終整合結論</b>
+        M31(6643) 處於「谷底反轉的驗證期」。推衍引擎的核心結論：<br><br>
+        <b>1. 定價合理</b>：機率加權期望股價約 470 元，與現價 480 元幾乎一致，市場定價精準。<br>
+        <b>2. 沒有安全邊際</b>：目前價位進場，只有在路徑 B（22%）實現時才有超額報酬。<br>
+        <b>3. 隱藏選擇權</b>：Chiplet 架構的 IP 倍增效應是被市場忽略的長期利多，但兌現期在 2027-2028。<br>
+        <b>4. 核心風險</b>：管理層信任度低 + 中國曝險高 + EDA 成本壓力大，三重壓力短期難解。<br>
+        <b>5. 最佳策略</b>：觀望等待 Q1 季報（2026/05），用數據而非預期來決策。<br><br>
+        <b>一句話總結</b>：M31 是一家有長期潛力但短期看不清的公司，目前的合理策略是「等待驗證，不追不逃」。
+    </div>
+</div>
+</details>
+
+<!-- ==================== FOOTER ==================== -->
+
+<!-- CROSS_LINKS_START -->
+<style>
+.cross-section{margin:20px 0;padding:16px;background:rgba(0,210,255,.03);border:1.5px dashed rgba(0,210,255,.3);border-radius:12px}
+.cross-section h4{color:#00d2ff;margin:0 0 8px;font-size:.95em}
+.cross-meta{font-size:.78em;color:#707090;margin:6px 0 10px}
+.cross-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.cross-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.82em;margin:2px}
+.cross-badge-warn{background:rgba(255,212,59,.12);color:#ffd43b;border:1px solid #ffd43b}
+.cross-badge-info{background:rgba(116,192,252,.12);color:#74c0fc;border:1px solid #74c0fc}
+.cross-badge-good{background:rgba(81,207,102,.15);color:#51cf66;border:1px solid #51cf66}
+.cross-badge-danger{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid #ff6b6b}
+.cross-alert{padding:6px 10px;border-radius:8px;border-left:3px solid #ff6b6b;background:rgba(22,33,62,.8);font-size:.8em;margin:6px 0;color:#e0e0e0}
+.cross-alert b{color:#ff6b6b}
+.cross-card{display:flex;gap:10px;background:rgba(22,33,62,.6);border:1px solid #2a2a4a;border-radius:8px;padding:10px 12px;margin:6px 0;align-items:center}
+.cross-card:hover{background:rgba(15,52,96,.6)}
+.cross-card .icon{font-size:1.5em;min-width:32px;text-align:center}
+.cross-card .info{flex:1}
+.cross-card .info .cname{font-weight:700;color:#e0e0e0;font-size:.9em}
+.cross-card .info .cname .flag{color:#ff6b6b}
+.cross-card .info .rel{font-size:.78em;color:#707090}
+.cross-card .info .days-old{color:#ff6b6b;font-weight:700}
+.cross-card .action{color:#00d2ff;font-size:.8em;font-weight:600;text-decoration:none}
+.cross-card .action:hover{text-decoration:underline}
+.cross-card-dim{opacity:.5}
+.cross-verdict{margin:4px 0;background:transparent;border:none}
+.cross-verdict summary{font-size:.78em;color:#707090;padding:2px 0;cursor:pointer;list-style:none}
+.cross-verdict summary::before{content:"▸ "}
+.cross-verdict[open] summary::before{content:"▾ "}
+</style>
+<div class="cross-section">
+<h4>📡 相關標的分析（西碧拉圖譜自動連結）</h4>
+<div class="cross-summary">
+<span class="cross-badge cross-badge-warn">一致性：1/1 偏空</span>
+<span class="cross-badge cross-badge-info">覆蓋率：1 家關聯 → 1 家已分析（16%）</span>
+</div>
+<p class="cross-meta">基於西碧拉圖譜 | 邊驗證 ≥ V2 | confidence ≥ 0.7 | 更新：2026-04-10</p>
+<div class="cross-card">
+<div class="icon">🤝</div>
+<div class="info">
+<div class="cname">台積電 (2330)</div>
+<div class="rel">關係：合作夥伴 | 2026-03-29 分析（<span>12 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">第十三章整合結論（全報告最終結論）
+資料：12 章分析匯總 — 評審 8.5/10、寬護城河、加權目標價 1,976（+...</span>
+</details>
+</div>
+<a class="action" href="20260329_2330_台積電_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">Qualcomm (QCOM)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">聯發科 (2454)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">力旺 (3529)</div>
+<div class="rel">關係：競爭對手 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">芯測 (6786)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">💰</div>
+<div class="info">
+<div class="cname">芯測 (6786)</div>
+<div class="rel">關係：投資者 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+</div>
+<!-- CROSS_LINKS_END -->
+<div class="footer">
+    天機閣推衍引擎 | M31(6643) 第八步推演版 | 產出時間：2026-03-27 | 有效期至 2026-05-15<br>
+    本報告基於公開資訊推衍，不構成投資建議。投資有風險，決策需自負。
+</div>
+
+</div>
+</body>
+</html>

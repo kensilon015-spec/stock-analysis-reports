@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SNDK 推衍推演 — 天機閣</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#d6d0c8;--panel:#e6e1da;--hover:#cfc9c0;--border:#b8b0a5;
+  --txt:#2c2a26;--txt2:#4a453e;--txt3:#7a7268;
+  --accent:#5a7d60;--danger:#c27c6e;--safe:#6b8f71;
+  --base:#3d3a36;--link:#5a7d8c;--table-header:#5c564e;
+  --code-bg:#2c2a26;--gold:#b8960c;--warn:#d4a017;
+  --bull:#2e7d32;--bear:#c62828;--neutral:#5a7d8c
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#faf9f7;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.1)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.08)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.08)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.08)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.1)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.1)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.1)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.1)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+/* 路徑視覺 */
+.path-card{border-left:4px solid;padding:12px 14px;margin:6px 0;border-radius:0 8px 8px 0;background:var(--panel)}
+.path-card.p1{border-color:var(--bull)}.path-card.p2{border-color:var(--accent)}.path-card.p3{border-color:var(--warn)}.path-card.p4{border-color:var(--danger)}.path-card.p5{border-color:#555}
+.path-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.path-name{font-weight:900;font-size:.95em}.path-prob{font-weight:700;font-size:.9em;padding:2px 8px;border-radius:12px;color:#fff}
+.p1 .path-prob{background:var(--bull)}.p2 .path-prob{background:var(--accent)}.p3 .path-prob{background:var(--warn)}.p4 .path-prob{background:var(--danger)}.p5 .path-prob{background:#555}
+.timeline-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.timeline-item:last-child{border-bottom:none}
+.tl-date{flex-shrink:0;min-width:90px;font-weight:700;font-size:.82em;color:var(--base)}
+.tl-event{flex:1;font-size:.84em}
+.tl-importance{flex-shrink:0;font-size:.72em;padding:2px 6px;border-radius:4px;font-weight:700}
+.tl-importance.critical{background:rgba(198,40,40,.15);color:var(--danger)}
+.tl-importance.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.tl-importance.medium{background:rgba(90,125,140,.15);color:var(--link)}
+.chain{margin:6px 0;padding:8px 12px;background:rgba(90,125,96,.04);border-radius:6px;border:1px solid var(--border)}
+.chain-step{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.84em}
+.chain-arrow{color:var(--accent);font-weight:900;font-size:1.1em}
+.chain-prob{font-size:.72em;padding:1px 6px;border-radius:4px;font-weight:700;background:rgba(90,125,96,.12);color:var(--accent)}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>SNDK (SanDisk) 推衍推演</h1>
+    <div class="sub">天機閣推衍三法 — 第八步情境模擬</div>
+    <div class="desc">基於第一至七步分析結果，運用影響鏈分析、情境模擬、個人化推衍三大方法，<br>推演SNDK未來6-12個月的可能路徑與行動建議</div>
+    <div class="tags">
+        <span class="tag">分析日 2026-03-22</span>
+        <span class="tag">現價 $709.71</span>
+        <span class="tag">有效至 FQ3財報後</span>
+        <span class="tag">概率加權預期值 $664</span>
+    </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#sec1">一、推衍總覽與核心結論</a>
+    <a href="#sec2">二、情報更新（10條關鍵情報）</a>
+    <a href="#sec3">三、差異監控表</a>
+    <a href="#sec4">四、影響鏈分析（5條影響鏈）</a>
+    <a href="#sec5">五、情境模擬（5條未來路徑）</a>
+    <a href="#sec6">六、概率加權估值</a>
+    <a href="#sec7">七、個人化推衍（3種情境建議）</a>
+    <a href="#sec8">八、催化劑時間表（6個月）</a>
+    <a href="#sec9">九、推衍結論與行動指引</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 一、總覽 ===== -->
+<div class="section-title" id="sec1">一、推衍總覽與核心結論</div>
+<div class="section-sub">天機閣信心經三次校準的演變軌跡</div>
+
+<div class="grid3">
+    <div class="mini-card neutral-card">
+        <div class="title">概率加權預期值</div>
+        <div class="num">$664</div>
+        <div class="desc">vs 現價$710（-6.5%）</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">最可能路徑</div>
+        <div class="num" style="font-size:1em">轉型中等成長</div>
+        <div class="desc">機率35%，$600-800</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">風險傾斜</div>
+        <div class="num" style="font-size:1em">下行略大</div>
+        <div class="desc">下行45% vs 上行20%</div>
+    </div>
+</div>
+
+<div class="card collapsed">
+<h3>信心校準演變（ACH → 壓力測試 → 推衍）</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>ACH原始</th><th>壓力測試後</th><th>推衍後</th><th>變化</th></tr>
+<tr><td><strong>H1</strong> AI超級週期</td><td>45%</td><td>32%</td><td>20%</td><td style="color:var(--danger)">-25pp</td></tr>
+<tr><td><strong>H3</strong> 轉型中等成長</td><td>30%</td><td>33%</td><td>35%</td><td style="color:var(--bull)">+5pp</td></tr>
+<tr><td><strong>H2</strong> NAND週期見頂</td><td>15%</td><td>18%</td><td>34%</td><td style="color:var(--danger)">+19pp</td></tr>
+<tr><td><strong>H4</strong> 黑天鵝</td><td>10%</td><td>12%</td><td>11%</td><td>+1pp</td></tr>
+</table>
+<div class="tip warn">
+<b>校準核心結論</b>
+原始ACH中H1（AI超級週期）45%佔絕對主導。經壓力測試+推衍推演後，H3（轉型成長35%）和H2（週期見頂34%）幾乎並列為主假說。H1降至20%——反映路徑條件更嚴格（需企業SSD+AI+NAND三個條件同時成立）。<br><br>
+<strong>關鍵轉折</strong>：Micron FQ3消費端下修10-15%是ACH時未納入的新資訊，是信心變化的最大驅動力。
+</div>
+</div>
+</div>
+
+<!-- ===== 二、情報更新 ===== -->
+<div class="section-title" id="sec2">二、情報更新</div>
+<div class="section-sub">分析期間（2026-03-21~22）取得的10條關鍵情報</div>
+
+<div class="card collapsed">
+<h3>關鍵情報清單（10條 · 6F + 4I）</h3>
+<div class="card-body">
+<table>
+<tr><th>ID</th><th>情報</th><th>FIAS</th><th>影響</th></tr>
+<tr><td><strong>INF-01</strong></td><td>Micron FQ3：營收$238.6億(+196% YoY)，但PC/手機NAND需求下修10-15%</td><td><span class="fias-f">F</span></td><td style="color:var(--danger)">高</td></tr>
+<tr><td><strong>INF-02</strong></td><td>NAND Q1合約價季增55-60%，超原預測33-38%</td><td><span class="fias-i">I</span></td><td style="color:var(--bull)">高</td></tr>
+<tr><td><strong>INF-03</strong></td><td>Samsung NAND價格6個月漲100%，主動提價20-30%</td><td><span class="fias-i">I</span></td><td style="color:var(--bull)">高</td></tr>
+<tr><td><strong>INF-04</strong></td><td>BlackRock減持SNDK約40%，Vanguard/State Street增持</td><td><span class="fias-f">F</span></td><td>中</td></tr>
+<tr><td><strong>INF-05</strong></td><td>WDC完成最後750萬股次級發售，定價$545/股</td><td><span class="fias-f">F</span></td><td>中</td></tr>
+<tr><td><strong>INF-06</strong></td><td>Kioxia合資延長至2034年，支付$11.65億</td><td><span class="fias-f">F</span></td><td style="color:var(--bull)">正面</td></tr>
+<tr><td><strong>INF-07</strong></td><td>日本3月7.3級地震接近北上廠區（未損害）</td><td><span class="fias-f">F</span></td><td>低</td></tr>
+<tr><td><strong>INF-08</strong></td><td>BiCS10 332層量產提前至2026年，K2 Fab2已啟動</td><td><span class="fias-f">F</span></td><td style="color:var(--bull)">正面</td></tr>
+<tr><td><strong>INF-09</strong></td><td>Enterprise SSD 30TB TLC單價漲257%（$3,062→$11,000+）</td><td><span class="fias-i">I</span></td><td style="color:var(--bull)">高</td></tr>
+<tr><td><strong>INF-10</strong></td><td>淨現金$9.36億，比目標提前6個月</td><td><span class="fias-f">F</span></td><td style="color:var(--bull)">正面</td></tr>
+</table>
+<div class="tip info">
+<b>情報品質</b>
+10條情報中6條為事實級（F）、4條為推論級（I），無假設或推測。可靠度9條A級、1條B級。整體情報品質高。
+</div>
+</div>
+</div>
+
+<!-- ===== 三、差異監控表 ===== -->
+<div class="section-title" id="sec3">三、差異監控表</div>
+<div class="section-sub">分析日 vs 下次驗證的關鍵變化追蹤</div>
+
+<div class="card collapsed">
+<h3>5大關鍵差異追蹤</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>分析時狀態</th><th>下次觸發</th><th>監控指標</th></tr>
+<tr><td><strong>NAND合約價</strong></td><td>Q1季增55-60%</td><td>Q2數據（4月初）</td><td>季增>30%=強、<15%=弱</td></tr>
+<tr><td><strong>消費端需求</strong></td><td>Micron下修10-15%</td><td>SanDisk FQ3實際數字</td><td>客戶端+消費端營收變化</td></tr>
+<tr><td><strong>企業SSD</strong></td><td>2家認證中，零營收</td><td>FQ3法說會</td><td>雲端佔比是否從26.6%升</td></tr>
+<tr><td><strong>機構持倉</strong></td><td>BlackRock -40%</td><td>13F（5月中）</td><td>前10大淨增減方向</td></tr>
+<tr><td><strong>Samsung策略</strong></td><td>減產提價中</td><td>Q1法說會（4月下旬）</td><td>投片量指引+HBM分配</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 四、影響鏈分析 ===== -->
+<div class="section-title" id="sec4">四、影響鏈分析</div>
+<div class="section-sub">天機閣推衍方法一 — 5條關鍵事件影響鏈</div>
+
+<div class="card collapsed">
+<h3>IC-1：Micron消費端下修 → NAND缺口收窄 → 毛利率見頂</h3>
+<div class="card-body">
+<div class="chain">
+<div class="chain-step"><strong>事件</strong>：Micron FQ3下修PC/手機NAND需求10-15% <span class="fias-f">F</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 一階：消費級SSD需求增速從+12%降至+5% <span class="chain-prob">80%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 二階：供需缺口收窄5pp→2-3pp，Q2合約價漲幅收窄至15-25% <span class="chain-prob">60%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 三階：SanDisk FQ4毛利率見頂回落至55-60%，EPS開始下調 <span class="chain-prob">45%</span></div>
+</div>
+<div class="tip warn">
+<b>交互作用</b>
+與IC-2（Samsung策略）交互：若Samsung同時增產，效應倍增；若Samsung維持減產，消費端軟化的影響被部分抵消。SanDisk 68%營收來自消費/客戶端，此鏈的衝擊不可忽視。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>IC-2：Samsung歷史性策略反轉 → NAND價格崩跌</h3>
+<div class="card-body">
+<div class="chain">
+<div class="chain-step"><strong>觸發</strong>：Samsung歷史上3次在高價期後反轉（2008/2012/2018） <span class="fias-i">I</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 一階：Samsung增加NAND投片量10-20%或停止提價 <span class="chain-prob">25%（6M內）</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 二階：合約價3-6月內跌20-35%，毛利率回落至35-45% <span class="chain-prob">20%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 三階：EPS從$87→$30-45，Forward PE重估至15-20x，股價-35-50% <span class="chain-prob">15%</span></div>
+</div>
+<div class="tip danger">
+<b>核心風險</b>
+Samsung的NAND策略是所有路徑中最具決定性的單一變數。目前Samsung因HBM利潤更高而不攻NAND，但若HBM飽和，邏輯將反轉。Samsung Q1法說會（4月下旬）是最關鍵的觀察窗口。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>IC-3：Stargate企業SSD認證成功 → 估值重估</h3>
+<div class="card-body">
+<div class="chain">
+<div class="chain-step"><strong>事件</strong>：128TB QLC PCIe Gen5 SSD通過認證並出貨 <span class="fias-i">I</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 一階：雲端營收佔比從26.6%→30-35% <span class="chain-prob">55%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 二階：更多超大規模客戶啟動認證，進入加速期 <span class="chain-prob">40%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 三階：估值從「大宗商品股」轉為「AI儲存成長股」，PE 12-15x <span class="chain-prob">30%</span></div>
+</div>
+<div class="tip good">
+<b>交互作用</b>
+與IC-1互補：企業SSD成長可對沖消費端萎縮，降低營收組合風險。這是區分路徑1（超級週期）和路徑2（中等成長）的關鍵變數。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>IC-4：AI CapEx持續超預期 → NAND估值框架轉變</h3>
+<div class="card-body">
+<div class="chain">
+<div class="chain-step"><strong>持續中</strong>：超大規模客戶AI CapEx合計超$2,500億/年 <span class="fias-i">I</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 一階：資料中心NAND年增60-70%，單台AI伺服器用量3x <span class="chain-prob">70%（6M）</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 二階：超大規模客戶轉向LTA，NAND價格底部墊高 <span class="chain-prob">50%</span></div>
+<div class="chain-step"><span class="chain-arrow">→</span> 三階：NAND從週期大宗商品重新定位為AI基礎設施必需品 <span class="chain-prob">25%</span></div>
+</div>
+<div class="tip info">
+<b>注意</b>
+AI CapEx越強，Samsung越不可能攻NAND（HBM利潤更高）。但DeepSeek等開源模型可能降低AI推論硬體需求，長期影響待觀察。歷史先例：2000年.com泡沫電信CapEx持續上調直到突然停止。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>IC-5：FQ3財報 — 所有影響鏈的匯聚點</h3>
+<div class="card-body">
+<div class="grid3">
+<div class="mini-card bull-card">
+<div class="title">超預期</div>
+<div class="num" style="font-size:.9em">50%</div>
+<div class="desc">營收>$48B、毛利率>67%<br>→ 股價$800-900</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">符合預期</div>
+<div class="num" style="font-size:.9em">35%</div>
+<div class="desc">營收$44-48B、毛利率64-67%<br>→ 股價橫盤</div>
+</div>
+<div class="mini-card bear-card">
+<div class="title">低於預期</div>
+<div class="num" style="font-size:.9em">15%</div>
+<div class="desc">營收<$44B 或 毛利率<64%<br>→ 股價-15-25%</div>
+</div>
+</div>
+<div class="tip warn">
+<b>匯聚點分析</b>
+FQ3是所有影響鏈的交匯處——消費端是否軟化（IC-1）、企業SSD是否出貨（IC-3）、毛利率是否見頂（IC-2），都會在FQ3中揭露。<strong>FQ3是推衍推演中最關鍵的驗證事件</strong>。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>跨鏈交互分析 — 最危險/最有利/最可能組合</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>最危險組合</b>
+IC-1（消費端軟化）+ IC-2（Samsung反轉）= NAND價格崩跌 + 毛利率暴降 → 股價<strong>-40~50%</strong>
+</div>
+<div class="tip good">
+<b>最有利組合</b>
+IC-3（企業SSD成功）+ IC-4（AI需求持續）= 營收組合優化 + 估值重估 → 股價<strong>+40~60%</strong>
+</div>
+<div class="tip info">
+<b>最可能組合（35%）</b>
+IC-1部分發生 + IC-4持續 + IC-3緩慢推進 = 消費端壓力被AI需求部分抵消，毛利率從峰值回落但維持高位 → 股價<strong>區間震盪$600-800</strong>
+</div>
+<p style="margin-top:6px"><strong>關鍵分歧點</strong>：2026Q2-Q3的NAND合約價走勢將決定未來12個月方向</p>
+</div>
+</div>
+
+<!-- ===== 五、情境模擬 ===== -->
+<div class="section-title" id="sec5">五、情境模擬 — 5條未來路徑</div>
+<div class="section-sub">天機閣推衍方法二 — 基於ACH假說建構概率樹</div>
+
+<div class="card collapsed">
+<h3>路徑1：AI儲存超級週期實現（20%）</h3>
+<div class="card-body">
+<div class="path-card p1">
+<div class="path-header">
+<span class="path-name">路徑1 — AI儲存超級週期</span>
+<span class="path-prob">20%</span>
+</div>
+<p><strong>對應假說</strong>：H1 ｜ <strong>股價區間</strong>：$900 - $1,500 ｜ <strong>預期報酬</strong>：+27% 至 +111%</p>
+</div>
+<p style="margin-top:8px"><strong>觸發條件（全部需成立）</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li>FQ3超預期（營收>$48億，毛利率>67%）</li>
+<li>Stargate認證成功並開始貢獻營收</li>
+<li>NAND合約價Q2維持季增>30%</li>
+<li>超大規模客戶Q1 AI CapEx指引上調</li>
+</ul>
+<p style="margin-top:6px"><strong>演進過程</strong></p>
+<table>
+<tr><th>時間</th><th>演進</th></tr>
+<tr><td>3個月</td><td>FQ3超預期→分析師大幅上修目標價→股價$800-900</td></tr>
+<tr><td>6個月</td><td>企業SSD營收佔比>30%→估值轉為AI成長股→PE 12-15x</td></tr>
+<tr><td>12個月</td><td>年化EPS $80-100→股價$960-1,500→市值突破$1,500億</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.82em;color:var(--txt3)"><strong>敏感變數</strong>：企業SSD認證結果是區分路徑1和路徑2的關鍵</p>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>路徑2：轉型期穩健成長（35%）— 最可能路徑</h3>
+<div class="card-body">
+<div class="path-card p2">
+<div class="path-header">
+<span class="path-name">路徑2 — 轉型中等成長 ★最可能</span>
+<span class="path-prob">35%</span>
+</div>
+<p><strong>對應假說</strong>：H3 ｜ <strong>股價區間</strong>：$600 - $800 ｜ <strong>預期報酬</strong>：-15% 至 +13%</p>
+</div>
+<p style="margin-top:8px"><strong>觸發條件</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li>FQ3符合或略超指引</li>
+<li>Stargate認證進度緩慢但持續</li>
+<li>NAND合約價漲幅收窄至15-25%但不反轉</li>
+<li>消費端溫和軟化（下修5-10%）</li>
+</ul>
+<table>
+<tr><th>時間</th><th>演進</th></tr>
+<tr><td>3個月</td><td>FQ3符合預期→股價維持$650-780區間</td></tr>
+<tr><td>6個月</td><td>毛利率從67%小幅回落至55-60%→市場消化正常化預期</td></tr>
+<tr><td>12個月</td><td>企業SSD逐步放量→年化EPS $55-70→PE 10-12x</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.82em;color:var(--txt3)"><strong>敏感變數</strong>：NAND合約價漲幅收窄的速度決定毛利率回落斜率</p>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>路徑3：NAND週期溫和見頂（22%）</h3>
+<div class="card-body">
+<div class="path-card p3">
+<div class="path-header">
+<span class="path-name">路徑3 — 軟著陸</span>
+<span class="path-prob">22%</span>
+</div>
+<p><strong>對應假說</strong>：H2溫和版 ｜ <strong>股價區間</strong>：$420 - $650 ｜ <strong>預期報酬</strong>：-41% 至 -8%</p>
+</div>
+<table>
+<tr><th>時間</th><th>演進</th></tr>
+<tr><td>3個月</td><td>FQ3符合但FQ4指引持平→市場擔憂見頂→$600-700</td></tr>
+<tr><td>6個月</td><td>毛利率回落至45-50%→EPS下調→$500-650</td></tr>
+<tr><td>12個月</td><td>進入溫和下行週期→EPS $35-50→PE 12-14x→$420-700</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>路徑4：NAND價格崩跌（12%）</h3>
+<div class="card-body">
+<div class="path-card p4">
+<div class="path-header">
+<span class="path-name">路徑4 — 硬著陸</span>
+<span class="path-prob">12%</span>
+</div>
+<p><strong>對應假說</strong>：H2極端版 ｜ <strong>股價區間</strong>：$120 - $350 ｜ <strong>預期報酬</strong>：-83% 至 -51%</p>
+</div>
+<p style="margin-top:6px"><strong>觸發條件</strong>：Samsung發動2018年式價格戰 + AI CapEx突然減速 + 消費端嚴重萎縮</p>
+<table>
+<tr><th>時間</th><th>演進</th></tr>
+<tr><td>3個月</td><td>Samsung增產信號→合約價迅速反轉→$500-600</td></tr>
+<tr><td>6個月</td><td>合約價6月內跌30-40%→毛利率崩至25-35%→EPS $20-30</td></tr>
+<tr><td>12個月</td><td>大宗商品估值→PE 6-8x→$120-240</td></tr>
+</table>
+<div class="tip danger">
+<b>預防措施</b>
+Samsung Q1法說會是唯一的早期預警窗口。任何增產信號應立即減持50-100%。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>路徑5：黑天鵝事件（11%）</h3>
+<div class="card-body">
+<div class="path-card p5">
+<div class="path-header">
+<span class="path-name">路徑5 — 重大意外</span>
+<span class="path-prob">11%</span>
+</div>
+<p><strong>對應假說</strong>：H4 ｜ <strong>股價區間</strong>：$150 - $450 ｜ <strong>預期報酬</strong>：-79% 至 -37%</p>
+</div>
+<p style="margin-top:6px">可能觸發：日本大地震M7.5+、Kioxia合資中斷、重大會計問題、商譽全額減損</p>
+<p style="font-size:.82em;color:var(--txt3)">不可預測，僅能透過部位控制管理（不超過組合10%）</p>
+</div>
+</div>
+
+<!-- ===== 六、概率加權估值 ===== -->
+<div class="section-title" id="sec6">六、概率加權估值</div>
+<div class="section-sub">各路徑中位數 × 機率 = 加權預期值</div>
+
+<div class="card collapsed">
+<h3>概率加權計算表</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>中位數</th><th>機率</th><th>貢獻</th><th>區間</th></tr>
+<tr><td style="color:var(--bull)"><strong>路徑1</strong> AI超級週期</td><td>$1,200</td><td>20%</td><td>$240.0</td><td>$900-1,500</td></tr>
+<tr><td style="color:var(--accent)"><strong>路徑2</strong> 轉型成長 ★</td><td>$700</td><td>35%</td><td>$245.0</td><td>$600-800</td></tr>
+<tr><td style="color:var(--warn)"><strong>路徑3</strong> 軟著陸</td><td>$535</td><td>22%</td><td>$117.7</td><td>$420-650</td></tr>
+<tr><td style="color:var(--danger)"><strong>路徑4</strong> 硬著陸</td><td>$235</td><td>12%</td><td>$28.2</td><td>$120-350</td></tr>
+<tr><td><strong>路徑5</strong> 黑天鵝</td><td>$300</td><td>11%</td><td>$33.0</td><td>$150-450</td></tr>
+<tr style="font-weight:900"><td>加權預期值</td><td colspan="2"></td><td style="color:var(--accent);font-size:1.1em">$663.9</td><td></td></tr>
+</table>
+
+<div class="grid2" style="margin-top:10px">
+<div class="mini-card bear-card">
+<div class="title">vs 現價</div>
+<div class="num" style="color:var(--danger)">-6.5%</div>
+<div class="desc">現價$710 高於預期值$664</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">上下行比</div>
+<div class="num" style="font-size:.9em">55:45</div>
+<div class="desc">路徑1+2=55% vs 路徑3+4+5=45%</div>
+</div>
+</div>
+
+<div class="tip warn">
+<b>估值解讀</b>
+概率加權預期值$664低於現價$710，表示市場已計入較樂觀情境。路徑2（最可能）的中位數$700接近現價，意味「符合預期」的報酬接近零。要獲得正報酬，需要路徑1成立——但其僅20%機率。
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>敏感度排序 — 哪個變數最能改變預期值</h3>
+<div class="card-body">
+<table>
+<tr><th>排序</th><th>變數</th><th>影響力</th><th>可監控性</th></tr>
+<tr><td><strong>1</strong></td><td>Samsung NAND策略</td><td>最高——決定路徑3 vs 路徑4</td><td>中（法說會/投片量）</td></tr>
+<tr><td><strong>2</strong></td><td>NAND合約價Q2走勢</td><td>極高——決定路徑2 vs 路徑3</td><td>高（TrendForce月報）</td></tr>
+<tr><td><strong>3</strong></td><td>企業SSD認證結果</td><td>高——決定路徑1 vs 路徑2</td><td>中（每季法說會）</td></tr>
+<tr><td><strong>4</strong></td><td>AI CapEx增速</td><td>高——影響所有路徑上下行</td><td>高（超大規模客戶季報）</td></tr>
+<tr><td><strong>5</strong></td><td>消費端NAND需求</td><td>中高——佔SanDisk 68%營收</td><td>高（IDC/OEM指引）</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 七、個人化推衍 ===== -->
+<div class="section-title" id="sec7">七、個人化推衍</div>
+<div class="section-sub">天機閣推衍方法三 — 依分析師情境的具體行動建議</div>
+
+<div class="card collapsed">
+<h3>情境A：已持有（成本$400-700）· 穩健型</h3>
+<div class="card-body">
+<p><strong>短期（0-3個月）</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li><span class="light red"></span> <strong>不加碼</strong>：$710接近分析師中位目標價$710，高於預期值$664</li>
+<li><span class="light yellow"></span> <strong>設停損</strong>：$550-600（較現價-15%至-22%）</li>
+<li><span class="light green"></span> <strong>等FQ3</strong>：最關鍵驗證事件，資訊不完整時不做重大決定</li>
+</ul>
+<p style="margin-top:6px"><strong>中期（3-6個月）— FQ3後決策</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li>超預期+企業SSD出貨 → 持有上看$800-900，可加碼至組合5%</li>
+<li>符合預期 → 持有，設獲利了結點$780-800</li>
+<li>低於預期 或 毛利率<60% → 減持30-50%</li>
+<li>Samsung任何增產信號 → <strong>立即減持50%</strong></li>
+</ul>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>情境B：觀望中 · 穩健型</h3>
+<div class="card-body">
+<p><strong>核心建議：不追高，等FQ3</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li>$710是分析師中位目標價，追買的風險報酬比不佳</li>
+<li>可考慮小量試單：組合1-2%探路</li>
+</ul>
+<p style="margin-top:6px"><strong>FQ3後決策樹</strong></p>
+<table>
+<tr><th>FQ3結果</th><th>行動</th></tr>
+<tr><td style="color:var(--bull)">超預期 + 企業SSD出貨</td><td>追買至組合3-5%</td></tr>
+<tr><td>符合預期</td><td>等回檔$600-650再建倉</td></tr>
+<tr><td style="color:var(--danger)">低於預期</td><td>放棄此波，等路徑3底部$420-500</td></tr>
+</table>
+<div class="tip danger" style="margin-top:6px">
+<b>不建議的行為</b>
+(1) $710+重倉追買 (2) 做空SNDK（短期催化劑偏多） (3) 因「低Forward PE」認為便宜——週期股PE是陷阱指標
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>情境C：積極型 · 高風險承受</h3>
+<div class="card-body">
+<p><strong>策略：FQ3財報事件交易</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li>財報前2-3週小量建倉（組合2-3%）</li>
+<li>超預期 → 加碼至組合5-7%，目標$900-1,000</li>
+<li>符合預期 → 持有觀察，不加碼</li>
+<li>低於預期 → 停損出場，虧損控制在2%組合以內</li>
+<li>進階：選擇權價差策略（Bull Call Spread $700-$900）降低風險</li>
+</ul>
+<p style="margin-top:6px;font-size:.82em;color:var(--danger)"><strong>風險控制</strong>：任何單一部位不超過組合10%，SNDK為高波動性個股</p>
+</div>
+</div>
+
+<!-- ===== 八、催化劑時間表 ===== -->
+<div class="section-title" id="sec8">八、催化劑時間表（2026年4月 - 9月）</div>
+<div class="section-sub">未來6個月的關鍵事件日曆與觀察指標</div>
+
+<div class="card collapsed">
+<h3>正面/負面催化劑事件日曆</h3>
+<div class="card-body">
+
+<div class="timeline-item">
+<span class="tl-date">4月初</span>
+<div class="tl-event"><strong>TrendForce Q2 NAND合約價預測</strong><br>季增>30%=正面，<15%=負面<br><span style="font-size:.78em;color:var(--txt3)">觀察：Enterprise vs Client SSD價格分化</span></div>
+<span class="tl-importance critical">極高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">4月中旬</span>
+<div class="tl-event"><strong>超大規模客戶Q1財報</strong>（Microsoft/Google/Meta/Amazon）<br>AI CapEx指引上調=正面，下調=顯著負面<br><span style="font-size:.78em;color:var(--txt3)">觀察：AI CapEx金額、儲存採購量</span></div>
+<span class="tl-importance high">高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">4月下旬</span>
+<div class="tl-event"><strong>Samsung Q1法說會</strong><br>維持減產=正面，增產信號=<strong style="color:var(--danger)">極度負面</strong><br><span style="font-size:.78em;color:var(--txt3)">觀察：NAND投片量指引、HBM vs NAND分配</span></div>
+<span class="tl-importance critical">極高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">4月底-5月初</span>
+<div class="tl-event"><strong>SanDisk FQ3財報 — 所有假說驗證點</strong><br>超預期=強正面，低於預期=強負面<br><span style="font-size:.78em;color:var(--txt3)">觀察：毛利率>65%？企業SSD出貨？FQ4指引？客戶端營收？</span></div>
+<span class="tl-importance critical">最高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">5月中旬</span>
+<div class="tl-event"><strong>13F揭露</strong>（反映Q1機構持倉）<br>淨增持=正面，3家以上前10大減持=負面<br><span style="font-size:.78em;color:var(--txt3)">觀察：BlackRock/Vanguard/State Street變化</span></div>
+<span class="tl-importance high">中高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">6月</span>
+<div class="tl-event"><strong>COMPUTEX / Flash Memory Summit</strong><br>BiCS10量產確認=正面<br><span style="font-size:.78em;color:var(--txt3)">觀察：332層量產進度、512TB/1PB展示</span></div>
+<span class="tl-importance medium">中</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">7月初</span>
+<div class="tl-event"><strong>TrendForce Q3合約價預測</strong><br>持續上漲=正面，持平或下跌=週期見頂確認</div>
+<span class="tl-importance high">高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">7-8月</span>
+<div class="tl-event"><strong>SanDisk FQ4財報</strong><br>毛利率>55%=正面，<50%=見頂確認<br><span style="font-size:.78em;color:var(--txt3)">觀察：企業SSD佔比、FY2027指引</span></div>
+<span class="tl-importance high">高</span>
+</div>
+
+<div class="timeline-item">
+<span class="tl-date">8-9月</span>
+<div class="tl-event"><strong>BiCS10 332層正式量產</strong><br>如期=正面，延遲=負面</div>
+<span class="tl-importance medium">中</span>
+</div>
+
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>風險事件日曆</h3>
+<div class="card-body">
+<table>
+<tr><th>風險類型</th><th>日期</th><th>影響</th></tr>
+<tr><td>FOMC利率決議</td><td>5/7、6/18、7/30、9/17</td><td>鷹派壓制科技股估值</td></tr>
+<tr><td>選擇權到期日</td><td>每月第三個週五</td><td>高Gamma波動加劇</td></tr>
+<tr><td>指數重新平衡</td><td>6月（Russell）、9月（S&P）</td><td>被動資金流影響</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 九、推衍結論 ===== -->
+<div class="section-title" id="sec9">九、推衍結論與行動指引</div>
+<div class="section-sub">綜合5條路徑、5條影響鏈、敏感度排序的最終判斷</div>
+
+<div class="card collapsed">
+<h3>推衍最終結論</h3>
+<div class="card-body">
+<div class="grid2">
+<div class="mini-card neutral-card">
+<div class="title">最可能路徑</div>
+<div class="num" style="font-size:.9em">轉型中等成長</div>
+<div class="desc">35%機率，$600-800</div>
+</div>
+<div class="mini-card">
+<div class="title">推衍信心度</div>
+<div class="num" style="font-size:.9em;color:var(--warn)">中</div>
+<div class="desc">下行風險略大於上行空間</div>
+</div>
+</div>
+
+<div class="tip info" style="margin-top:8px">
+<b>核心邏輯</b>
+NAND供不應求確認但漲價週期已進入下半段（第12-15個月）。消費端軟化信號（Micron FQ3）部分抵消AI需求利好。企業SSD認證是轉型關鍵但目前零營收。概率加權預期值$664低於現價$710——市場已計入較樂觀情境。
+</div>
+
+<p style="margin-top:10px;font-weight:900">行動建議摘要</p>
+<div class="grid2">
+<div class="tip good">
+<b>進場條件</b>
+<ul style="font-size:.82em;padding-left:14px">
+<li>FQ3超預期+企業SSD出貨 → 追至$800-850</li>
+<li>回檔$600-650+合約價未反轉 → 建倉</li>
+<li>路徑3底部$420-500+Samsung未增產 → 積極建倉</li>
+</ul>
+</div>
+<div class="tip danger">
+<b>出場條件</b>
+<ul style="font-size:.82em;padding-left:14px">
+<li>合約價連2月下跌 → 減持50%</li>
+<li>Samsung宣布增產>10% → 減持50-100%</li>
+<li>FQ3毛利率<60% → 減持30%</li>
+<li>前5大機構3家以上減持 → 降部位</li>
+<li>破$550 → 停損出場</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>路徑交叉決策點（決策日曆）</h3>
+<div class="card-body">
+<table>
+<tr><th>時間</th><th>事件</th><th>決策邏輯</th><th>重要性</th></tr>
+<tr><td><strong>4月初</strong></td><td>TrendForce Q2合約價</td><td>季增>30%→維持；<10%→減持</td><td style="color:var(--danger)">極高</td></tr>
+<tr><td><strong>4月下旬</strong></td><td>Samsung Q1法說會</td><td>維持減產→OK；增產→減持50%</td><td style="color:var(--danger)">極高</td></tr>
+<tr><td><strong>4-5月</strong></td><td>SanDisk FQ3</td><td>超預期=路徑1；符合=路徑2；下修=路徑3/4</td><td style="color:var(--danger);font-weight:900">最高</td></tr>
+<tr><td><strong>5月中</strong></td><td>13F揭露</td><td>3家以上前10大減持→降部位</td><td>中高</td></tr>
+<tr><td><strong>7-8月</strong></td><td>FQ4+Q3合約價</td><td>毛利率回落幅度→路徑2 vs 路徑3確認</td><td>高</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3>推衍有效期與觀察清單</h3>
+<div class="card-body">
+<div class="tip warn">
+<b>推衍有效期</b>
+本次推衍有效至 <strong>2026年5月FQ3財報發布後</strong>。FQ3是所有假說的核心驗證事件，財報後須重新推衍。
+</div>
+<p style="margin-top:8px"><strong>下次推衍前須追蹤項目</strong></p>
+<ul style="font-size:.84em;padding-left:18px;color:var(--txt2)">
+<li><span class="light yellow"></span> TrendForce Q2 NAND合約價（2026年4月初）</li>
+<li><span class="light red"></span> Samsung Q1法說會 NAND策略（2026年4月下旬）</li>
+<li><span class="light red"></span> SanDisk FQ3完整財報（2026年4月底-5月初）</li>
+<li><span class="light yellow"></span> 超大規模客戶Q1 AI CapEx指引</li>
+<li><span class="light yellow"></span> IDC/Gartner Q1 PC/手機出貨量</li>
+<li><span class="light yellow"></span> 13F機構持倉Q1揭露（2026年5月中旬）</li>
+<li><span class="light green"></span> 日本東北地區地震活動</li>
+</ul>
+<p style="margin-top:8px;font-size:.82em;color:var(--txt3)"><strong>立即失效條件</strong>：Samsung在FQ3前宣布策略重大變化、日本M7+地震、超大規模客戶大幅下調AI CapEx、SNDK股價因非基本面因素±20%以上波動</p>
+</div>
+</div>
+
+
+<!-- CROSS_LINKS_START -->
+<!-- CROSS_LINKS_END -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 第八步推衍推演</p>
+    <p>報告日期：2026-03-22 ｜ SNDK (SanDisk Corporation)</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，入市需謹慎。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>

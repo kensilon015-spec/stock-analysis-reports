@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>台光電（2383）天機閣推衍報告 — 第八步推演版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<style>
+/* === 圖表容器 === */
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0}
+.chart-wrap .chart-title{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.chart-wrap .chart-note{font-size:.75em;color:var(--txt3);margin-top:4px;font-style:italic}
+.chart-wrap canvas{width:100%!important}
+.chart-wrap .echart{width:100%!important}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+@media(max-width:650px){.chart-row{grid-template-columns:1fr}}
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+.data-chart-row .chart-col .chart-wrap{margin:0}
+@media(max-width:750px){.data-chart-row{grid-template-columns:1fr}}
+
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片 === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 證據卡片 === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 時間軸（圖表元件模板） === */
+.timeline-v2{position:relative;padding:16px 0;margin:10px 0}
+.timeline-v2::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--border);transform:translateX(-50%)}
+.tl2-item{position:relative;display:flex;align-items:flex-start;margin:0 0 20px;width:100%}
+.tl2-item:last-child{margin-bottom:0}
+.tl2-item:nth-child(odd){flex-direction:row-reverse}
+.tl2-item:nth-child(odd) .tl2-content{text-align:right;padding-right:30px;padding-left:0}
+.tl2-item:nth-child(even) .tl2-content{text-align:left;padding-left:30px;padding-right:0}
+.tl2-content{width:50%}
+.tl2-dot{position:absolute;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;border:3px solid var(--panel);z-index:2;top:4px}
+.tl2-dot.green{background:var(--bull)}.tl2-dot.red{background:var(--bear)}.tl2-dot.yellow{background:var(--warn)}.tl2-dot.blue{background:var(--link)}
+.tl2-date{font-weight:800;font-size:.85em;color:var(--base);margin-bottom:2px}
+.tl2-event{font-size:.82em;color:var(--txt2);font-weight:600}
+.tl2-detail{font-size:.75em;color:var(--txt3);margin-top:2px;line-height:1.4}
+.tl2-impact{display:inline-block;font-size:.7em;font-weight:700;padding:1px 8px;border-radius:4px;margin-top:3px}
+.tl2-impact.bull{background:rgba(46,125,50,.15);color:var(--bull)}
+.tl2-impact.bear{background:rgba(198,40,40,.12);color:var(--bear)}
+.tl2-impact.mixed{background:rgba(212,160,23,.15);color:var(--warn)}
+.tl2-impact.critical{background:rgba(198,40,40,.2);color:var(--bear);border:1px solid var(--bear)}
+@media(max-width:600px){
+    .timeline-v2::before{left:20px}
+    .tl2-item,.tl2-item:nth-child(odd){flex-direction:row}
+    .tl2-content,.tl2-item:nth-child(odd) .tl2-content{width:calc(100% - 40px);text-align:left!important;padding-left:30px!important;padding-right:0!important}
+    .tl2-dot{left:20px}
+}
+
+/* === SVG 通用容器 === */
+.chart-svg{width:100%;overflow-x:auto}
+.chart-svg svg{display:block;margin:0 auto}
+.chart-svg text{font-family:'Inter','Noto Sans TC',sans-serif}
+
+/* === 水平量表 === */
+.gauge{display:flex;align-items:center;gap:8px;margin:4px 0}
+.gauge .gauge-label{min-width:80px;font-size:.8em;font-weight:600;color:var(--base);text-align:right}
+.gauge .gauge-track{flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden;position:relative}
+.gauge .gauge-fill{height:100%;border-radius:7px;transition:width .4s}
+.gauge .gauge-val{min-width:40px;font-size:.78em;font-weight:700;text-align:left}
+
+/* === 指標卡片群組 === */
+.metric-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.metric-card{flex:1;min-width:100px;text-align:center;padding:10px 8px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.metric-card .mc-num{font-size:1.4em;font-weight:900;margin:2px 0}
+.metric-card .mc-label{font-size:.72em;color:var(--txt3);font-weight:500}
+.metric-card .mc-sub{font-size:.68em;color:var(--txt3);margin-top:2px}
+.metric-card.bull-border{border-left:4px solid var(--bull)}
+.metric-card.bear-border{border-left:4px solid var(--bear)}
+.metric-card.neutral-border{border-left:4px solid var(--link)}
+.metric-card.warn-border{border-left:4px solid var(--warn)}
+
+/* === 概率樹 === */
+.prob-tree{margin:8px 0}
+.prob-path{border:1px solid var(--border);border-radius:8px;margin:6px 0;overflow:hidden}
+.prob-header{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-weight:700;font-size:.88em;cursor:pointer;user-select:none}
+.prob-header:hover{background:var(--hover)}
+.prob-body{padding:6px 14px 10px;font-size:.82em;color:var(--txt2);border-top:1px solid var(--border)}
+.prob-bar{height:8px;border-radius:4px;margin-top:4px}
+.path-a{background:rgba(76,175,80,.1)}.path-a .prob-header{color:var(--bull)}
+.path-a .prob-bar{background:var(--bull)}
+.path-b{background:rgba(122,176,192,.08)}.path-b .prob-header{color:var(--neutral)}
+.path-b .prob-bar{background:var(--neutral)}
+.path-c{background:rgba(212,160,23,.08)}.path-c .prob-header{color:var(--warn)}
+.path-c .prob-bar{background:var(--warn)}
+.path-d{background:rgba(239,83,80,.08)}.path-d .prob-header{color:var(--bear)}
+.path-d .prob-bar{background:var(--bear)}
+
+/* === 蝴蝶效應信號卡 === */
+.signal-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin:5px 0}
+.signal-card .sig-type{font-size:.72em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.sig-type.sig-a{background:rgba(21,101,192,.2);color:#7ab0c0}
+.sig-type.sig-b{background:rgba(184,150,12,.2);color:#d4b030}
+.sig-type.sig-c{background:rgba(90,125,96,.2);color:#6b9f72}
+.sig-type.sig-d{background:rgba(198,40,40,.2);color:#d4887a}
+.sig-type.sig-e{background:rgba(122,176,192,.2);color:#7ab0c0}
+.signal-card .sig-title{font-weight:700;font-size:.86em;color:var(--base)}
+.signal-card .sig-desc{font-size:.82em;color:var(--txt2);margin-top:2px}
+
+/* === 推演鏈 === */
+.chain{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0}
+.chain .chain-title{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.chain .chain-flow{font-size:.82em;color:var(--txt2);line-height:1.8}
+.chain-arrow{color:var(--accent);font-weight:700;margin:0 4px}
+
+/* === 信心校準表格 === */
+.calib-table th{text-align:center}
+.calib-table td{text-align:center}
+
+/* === 雙欄對比 === */
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:10px 0}
+.compare-cols .col-left,.compare-cols .col-right{padding:12px;border:1px solid var(--border)}
+.compare-cols .col-left{border-radius:8px 0 0 8px;background:rgba(198,40,40,.04);border-right:none}
+.compare-cols .col-right{border-radius:0 8px 8px 0;background:rgba(46,125,50,.04)}
+.compare-cols h4{font-size:.82em;font-weight:700;text-align:center;margin-bottom:6px}
+.compare-cols .col-left h4{color:var(--bear)}
+.compare-cols .col-right h4{color:var(--bull)}
+@media(max-width:600px){.compare-cols{grid-template-columns:1fr}}
+
+/* === 信心進度條 === */
+.conf-bar-wrap{margin:4px 0}
+.conf-bar-label{font-size:.78em;color:var(--base);font-weight:600;margin-bottom:2px;display:flex;justify-content:space-between}
+.conf-bar-track{height:18px;background:var(--border);border-radius:9px;overflow:hidden;position:relative;display:flex}
+.conf-bar-seg{height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:.65em;font-weight:700;color:#fff;min-width:20px}
+
+/* === CSS 互動流程圖 === */
+.flow-section{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+.flow-section-title{font-size:.88em;font-weight:700;color:var(--accent);margin-bottom:12px}
+.flow-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.fnode{padding:10px 18px;border-radius:6px;font-size:.82em;font-weight:600;text-align:center;position:relative;max-width:280px;cursor:default}
+.fnode.start{background:rgba(46,125,50,.15);border:1.5px solid #4caf50;color:#4caf50}
+.fnode.process{background:rgba(96,165,250,.12);border:1.5px solid #60a5fa;color:#60a5fa}
+.fnode.decision{background:rgba(245,158,11,.12);border:1.5px solid #f59e0b;color:#f59e0b;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);padding:20px 30px}
+.fnode.action{background:rgba(46,125,50,.12);border:1.5px solid #4caf50;color:#81c784}
+.fnode.error{background:rgba(239,83,80,.12);border:1.5px solid #ef5350;color:#ef5350}
+.fnode.end{background:rgba(96,165,250,.12);border:1.5px solid #60a5fa;color:#60a5fa;border-radius:20px}
+.fnode.highlight{background:rgba(212,176,48,.15);border:1.5px solid #d4b030;color:#d4b030}
+.fnode .tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #4caf50;border-radius:6px;padding:8px 12px;min-width:220px;max-width:320px;z-index:10;text-align:left;font-weight:400;color:var(--txt2);font-size:.78em;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.fnode:hover .tooltip{display:block}
+.tooltip .tt-title{font-weight:700;color:var(--accent);margin-bottom:4px;font-size:.9em}
+.tooltip .tt-desc{line-height:1.5}
+.arrow-down{width:2px;height:24px;background:#555;position:relative;margin:0 auto}
+.arrow-down::after{content:'';position:absolute;bottom:-4px;left:-4px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #555}
+.arrow-right{height:2px;width:24px;background:#555;position:relative}
+.arrow-right::after{content:'';position:absolute;right:-4px;top:-4px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:6px solid #555}
+.branch-group{display:flex;gap:24px;justify-content:center;margin:8px 0;flex-wrap:wrap}
+.branch{display:flex;flex-direction:column;align-items:center;gap:8px}
+.branch-label{font-size:.72em;font-weight:700;color:var(--txt3)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+
+<!-- 推衍日期浮動標籤 -->
+<div style="position:fixed;top:12px;right:20px;z-index:9999;background:rgba(60,55,45,0.95);color:#fff;padding:6px 16px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+  推衍日期：2026-04-09
+</div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>台光電（2383）— 推衍報告</h1>
+  <div class="sub">深度調查系統 — 第八步推演版 | 2026-04-09</div>
+  <div class="desc">本報告為九步驟分析法的第八步「推演版」，將前七步的事實、推論、假設進行情境模擬與蝴蝶效應推衍，產出未來可能路徑與行動建議。</div>
+  <div class="tags">
+    <span class="tag">推衍日期 2026-04-09</span>
+    <span class="tag">基準股價 2,885 元</span>
+    <span class="tag">推衍有效期至 2026-05-09</span>
+    <span class="tag">事實:38 推論:12 假設:6 推測:4</span>
+  </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+  <strong style="font-size:.88em;color:var(--base)">報告結構（8a ~ 8i）</strong>
+  <a href="#s8a">8a. 推衍基礎確認 — 回溯關鍵事實</a>
+  <a href="#s8b">8b. 最新情報更新</a>
+  <a href="#s8c">8c. 影響鏈分析</a>
+  <a href="#s8d">8d. 情境模擬（概率決策樹）</a>
+  <a href="#s8e">8e. 個人化推衍</a>
+  <a href="#s8f">8f. 催化劑時間表</a>
+  <a href="#s8g">8g. 蝴蝶效應推衍</a>
+  <a href="#s8h">8h. 貓膩推衍</a>
+  <a href="#s8i">8i. 推衍結論 + 第四次信心校準</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+  <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+  <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8a：推衍基礎確認 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認 — 回溯關鍵事實</div>
+<div class="section-sub">確認前七步的核心事實仍然成立，推衍才有效</div>
+
+<!-- 指標卡片 -->
+<div class="metric-row">
+  <div class="metric-card bull-border">
+    <div class="mc-label">全球高速CCL市佔</div>
+    <div class="mc-num" style="color:var(--bull)">50%+</div>
+    <div class="mc-sub">無鹵材料 #1</div>
+  </div>
+  <div class="metric-card neutral-border">
+    <div class="mc-label">AI佔營收</div>
+    <div class="mc-num" style="color:var(--link)">63%</div>
+    <div class="mc-sub">2025Q4 / 2026目標70%+</div>
+  </div>
+  <div class="metric-card warn-border">
+    <div class="mc-label">本益比 (TTM)</div>
+    <div class="mc-num" style="color:var(--warn)">70.6x</div>
+    <div class="mc-sub">歷史極端水位</div>
+  </div>
+  <div class="metric-card bear-border">
+    <div class="mc-label">中國營收佔比</div>
+    <div class="mc-num" style="color:var(--bear)">77%</div>
+    <div class="mc-sub">最大地緣風險</div>
+  </div>
+</div>
+
+<details open>
+<summary>關鍵假設存活檢查</summary>
+<table>
+<tr><th>核心假設</th><th>原始依據</th><th>當前狀態</th><th>存活判定</th></tr>
+<tr>
+  <td>CCL全球高速材料市佔率 #1（50%+）</td>
+  <td>法說會 / Prismark 資料</td>
+  <td>2024年 40.1%，2025年預估超過 50%，HDI基板 70%。持續擴產中。</td>
+  <td><span class="light green"></span>有效</td>
+</tr>
+<tr>
+  <td>AI佔營收持續提升至 70%+</td>
+  <td>2025Q4法說會指引</td>
+  <td>Q4已達 60~63%，2026Q1出貨1.6T交換器（M8+），ASIC客戶已量產。</td>
+  <td><span class="light green"></span>有效</td>
+</tr>
+<tr>
+  <td>M9獨佔 NVIDIA 供應鏈</td>
+  <td>法說會 + 產業情報</td>
+  <td>M9仍獨佔，2026H2開始出貨。<b>但 M10 已三家測試</b>，GB300測試傳未通過。</td>
+  <td><span class="light yellow"></span>弱化</td>
+</tr>
+<tr>
+  <td>ACH 結論：H2溫和看多 48%</td>
+  <td>第四步 ACH 分析</td>
+  <td>評審團後修正為 48%。但 B-1 複習發現後建議下修至 40%（護城河裂縫提前）。</td>
+  <td><span class="light yellow"></span>弱化</td>
+</tr>
+<tr>
+  <td>加權合理價 2,208 元（B-2修正後）</td>
+  <td>第七步六法加權</td>
+  <td>現價 2,885 元，溢價 30.7%。法人共識 EPS 60~64 元，Forward PE 仍高達 45~48x。</td>
+  <td><span class="light yellow"></span>偏貴未變</td>
+</tr>
+<tr>
+  <td>護城河寬（技術壁壘+客戶綁定）</td>
+  <td>第三步競爭力分析</td>
+  <td>斗山 DS-7409 量產、Digitimes 報導 Doosan 可能取得 Rubin 獨家。護城河有縮窄風險。</td>
+  <td><span class="light yellow"></span>弱化</td>
+</tr>
+<tr>
+  <td>全產全銷態勢</td>
+  <td>法說會管理層承諾</td>
+  <td>2026Q1 營收 330.7億（+52.5% YoY），3月120.1億創新高。全產全銷仍成立。</td>
+  <td><span class="light green"></span>有效</td>
+</tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>8a 整合結論</b>
+<p>7 項核心假設中，<b>3項有效、4項弱化、0項失效</b>。推衍基礎整體穩固但方向性已出現裂痕：(1) M9獨佔仍成立但 M10 世代供應分散已成定局；(2) 護城河從「確定寬」降為「寬但有縮窄風險」；(3) 估值偏貴的判斷不僅未改善，反而因 PE 70x 歷史極端而更加突出。這些弱化訊號不影響推衍的有效性，但會使推衍結論更偏向保守。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8b：最新情報更新 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8b">8b. 最新情報更新</div>
+<div class="section-sub">分析日至今的情報差異，檢視哪些資訊已過時或需修正</div>
+
+<details open>
+<summary>情報差異表</summary>
+<table>
+<tr><th>項目</th><th>分析日認知</th><th>最新情報</th><th>FIAS</th><th>影響方向</th></tr>
+<tr>
+  <td>2026年3月營收</td>
+  <td>尚未公布</td>
+  <td><b>120.1億元</b>創歷史新高，MoM +17.83%，YoY +56.63%</td>
+  <td><span class="fias-f">事實</span></td>
+  <td style="color:var(--bull)">正面</td>
+</tr>
+<tr>
+  <td>Q1累計營收</td>
+  <td>估計300億+</td>
+  <td><b>330.7億元</b>，QoQ +32.66%，YoY +52.52%，季度+累計雙創新高</td>
+  <td><span class="fias-f">事實</span></td>
+  <td style="color:var(--bull)">正面</td>
+</tr>
+<tr>
+  <td>外資近20日買賣超</td>
+  <td>態度不明</td>
+  <td><b>淨賣 314 萬股</b>（20日），60日僅淨買22.5萬股。態度急轉直下。</td>
+  <td><span class="fias-f">事實</span></td>
+  <td style="color:var(--bear)">負面</td>
+</tr>
+<tr>
+  <td>M10認證進度</td>
+  <td>M9獨佔為主</td>
+  <td><b>NVIDIA M10 測試三家供應商</b>（含一家中國廠+一家台灣廠），郭明錤 3/15 揭露</td>
+  <td><span class="fias-f">事實</span></td>
+  <td style="color:var(--bear)">負面</td>
+</tr>
+<tr>
+  <td>Doosan競爭態勢</td>
+  <td>DS-7409量產中</td>
+  <td>Digitimes 報導 <b>Doosan 可能取得 Rubin 平台獨家 CCL 供應</b>，台光電 GB300 測試傳未通過</td>
+  <td><span class="fias-s">推測</span></td>
+  <td style="color:var(--bear)">負面（待確認）</td>
+</tr>
+<tr>
+  <td>股價位置</td>
+  <td>接近歷史高點</td>
+  <td>現價 2,885 元，距歷史高 3,035 回檔 4.9%。近10日波動劇烈（2,600~2,945）。</td>
+  <td><span class="fias-f">事實</span></td>
+  <td style="color:var(--warn)">中性偏空</td>
+</tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>8b 整合結論</b>
+<p>最新情報呈現<b>「營運面強、籌碼面弱、競爭面惡化」</b>的三重分裂。Q1營收 330.7億大超預期是確定性利多，但外資 20日大賣 314萬股+M10供應分散+Doosan搶佔 Rubin 三個負面訊號同時出現。關鍵觀察：外資的行為（賣）與券商的報告（買進、上調目標價）出現嚴重不一致——這通常意味著某些機構投資人已取得更新的非公開產業情報。整體對第七步判斷的修正方向：看多機率下修、看空機率上修。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8c：影響鏈分析 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">三大關鍵事件的因果傳導鏈 — CSS 互動流程圖（滑鼠移至節點顯示詳情）</div>
+
+<details open>
+<summary>影響鏈 1：M10 認證結果（2026Q2）</summary>
+
+<div class="flow-section">
+  <div class="flow-section-title">影響鏈 1：M10 認證結果（2026Q2）— 護城河存亡的分水嶺</div>
+  <div class="flow-col">
+    <div class="fnode start">M10 認證測試中
+      <div class="tooltip"><div class="tt-title">現況</div><div class="tt-desc">NVIDIA 正在測試三家供應商（台光電 + 中國廠 + 台灣廠），2026Q2 出結果。郭明錤 3/15 揭露此消息，為護城河帶來首次重大不確定性。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode decision">認證結果？
+      <div class="tooltip"><div class="tt-title">關鍵分水嶺</div><div class="tt-desc">決定 2027 年後的競爭格局。台光電通過 = 維持技術壁壘，失敗 = 護城河縮窄。此節點影響後續所有路徑。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="branch-group">
+      <div class="branch">
+        <div class="branch-label">通過（50%）</div>
+        <div class="fnode action">維持獨佔/共享領先
+          <div class="tooltip"><div class="tt-title">樂觀路徑</div><div class="tt-desc">市佔維持 40%+，M10 訂單確保 2027-2028 成長動能。法人共識 EPS 可達 68~75 元，PE 維持 45x，股價目標 3,150+ 元。外資態度將從淨賣轉為淨買。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">部分通過（30%）</div>
+        <div class="fnode process">共享但仍領先
+          <div class="tooltip"><div class="tt-title">基準路徑</div><div class="tt-desc">與另一家共享 M10 供應，市佔降至 35-40%。仍為最大供應商，但獨佔溢價消失。EPS 55~62 元，PE 壓至 40x，股價區間 2,200~2,480 元。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">失敗（20%）</div>
+        <div class="fnode error">護城河崩塌
+          <div class="tooltip"><div class="tt-title">悲觀路徑</div><div class="tt-desc">Doosan 獨佔 Rubin 平台，台光電退為二線供應商。市佔降至 25%，EPS 下修至 40~45 元。PE 壓縮至 25~30 倍（成長敘事瓦解），股價目標 1,000~1,350 元。距現價 2,885 下跌 53~65%。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 機率遞減條 -->
+<div class="gauge">
+  <span class="gauge-label">觸發→一階</span>
+  <div class="gauge-track"><div class="gauge-fill" style="width:80%;background:var(--accent)"></div></div>
+  <span class="gauge-val" style="color:var(--accent)">80%</span>
+</div>
+<div class="gauge">
+  <span class="gauge-label">一階→二階</span>
+  <div class="gauge-track"><div class="gauge-fill" style="width:82%;background:var(--link)"></div></div>
+  <span class="gauge-val" style="color:var(--link)">82%</span>
+</div>
+<div class="gauge">
+  <span class="gauge-label">二階→三階</span>
+  <div class="gauge-track"><div class="gauge-fill" style="width:72%;background:var(--warn)"></div></div>
+  <span class="gauge-val" style="color:var(--warn)">72%</span>
+</div>
+</details>
+
+<details open>
+<summary>影響鏈 2：Q2 漲價 10%</summary>
+
+<div class="flow-section">
+  <div class="flow-section-title">影響鏈 2：Q2 全產品線漲價 10% — 毛利率修復的關鍵</div>
+  <div class="flow-col">
+    <div class="fnode start">管理層宣布 Q2 漲價 10%
+      <div class="tooltip"><div class="tt-title">事件背景</div><div class="tt-desc">2025Q4 法說會管理層明確指引：2026Q2 起全產品線漲價至少 10%。目標將毛利率從 28~30% 提升至 32%+。漲價理由為原物料成本上升及供不應求。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode decision">客戶接受度？
+      <div class="tooltip"><div class="tt-title">核心變數</div><div class="tt-desc">取決於 (1) 客戶是否有替代供應商、(2) AI 需求是否仍強勁、(3) 競爭對手是否跟進漲價。M10 結果會直接影響議價能力。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="branch-group">
+      <div class="branch">
+        <div class="branch-label">完全接受（65%）</div>
+        <div class="fnode action">毛利率 +2pp 達 32%+
+          <div class="tooltip"><div class="tt-title">正面影響</div><div class="tt-desc">漲價 10% 全額實現 → 毛利率從 30% 升至 32%+ → EPS 增加約 5 元 → 2026E EPS 達 65~70 元。同業聯茂、台燿跟進漲價形成共識。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">部分轉嫁（25%）</div>
+        <div class="fnode process">漲幅折讓至 5%
+          <div class="tooltip"><div class="tt-title">中性影響</div><div class="tt-desc">部分客戶以「轉單」威脅壓低漲幅至 5~8%。毛利率僅微幅改善至 30~31%。EPS 影響有限（+2~3 元），2026E EPS 維持 58~62 元。成長放緩但不惡化。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">客戶抵制（10%）</div>
+        <div class="fnode error">漲價失敗 + 訂單流失
+          <div class="tooltip"><div class="tt-title">負面影響</div><div class="tt-desc">客戶以 Doosan DS-7409 為替代方案拒絕漲價，部分訂單轉移。毛利率不升反降（原物料仍漲），EPS 下修至 50~55 元。暗示議價能力已弱化。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>影響鏈 3：中國地緣政治風險</summary>
+
+<div class="flow-section">
+  <div class="flow-section-title">影響鏈 3：中國營收佔比 77% — 地緣政治的達摩克利斯之劍</div>
+  <div class="flow-col">
+    <div class="fnode start">77% 營收來自中國市場
+      <div class="tooltip"><div class="tt-title">結構性風險</div><div class="tt-desc">台光電 77% 營收來自中國客戶（含陸資 PCB 廠及在中國的台資廠）。崑山、中山兩大生產基地佔總產能超過 60%。非中國營收佔比 2025 年僅 23%。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode decision">美中關稅升級？
+      <div class="tooltip"><div class="tt-title">政策不確定性</div><div class="tt-desc">2026 年美中科技管制持續升溫。若 CCL/PCB 被納入管制清單，或中國對台灣企業施加限制，77% 的營收將直接受衝擊。Arlon 美國廠是唯一避風港。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="branch-group">
+      <div class="branch">
+        <div class="branch-label">維持現狀（60%）</div>
+        <div class="fnode action">營運照常
+          <div class="tooltip"><div class="tt-title">基準情境</div><div class="tt-desc">美中關係不進一步惡化，中國產能持續服務當地客戶。非中國佔比透過馬來西亞檳城廠+Arlon美國廠逐步提升至 2027 年 35%。地緣風險存在但未兌現。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">溫和加稅（25%）</div>
+        <div class="fnode process">利潤壓縮 5~8%
+          <div class="tooltip"><div class="tt-title">溫和衝擊</div><div class="tt-desc">美國對中國 PCB 相關產品加徵關稅 10~15%，間接影響台光電的中國客戶需求。EPS 短期下修 5~8%（約 3~5 元），但加速海外佈局的戰略意義反而凸顯。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">嚴厲制裁（15%）</div>
+        <div class="fnode error">77% 營收受衝擊
+          <div class="tooltip"><div class="tt-title">極端衝擊</div><div class="tt-desc">中國營運被迫大幅縮減，77% 營收面臨 30~50% 萎縮。EPS 下修至 30~40 元。僅剩台灣觀音廠+馬來西亞檳城廠+Arlon 美國廠維持營運。短期股價腰斬風險。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>8c 整合結論</b>
+<p>三條影響鏈的共同特徵：<b>M10 認證結果是所有路徑的分水嶺</b>。M10通過 → 護城河確認 → 漲價有底氣 → 地緣風險可控（因為不可替代）。M10 失敗 → 護城河質疑 → 漲價空間被壓縮 → 地緣風險放大（因為客戶有替代方案）。因此 2026Q2 的 M10 認證結果是整個推衍的<b>關鍵節點</b>，其他所有事件都是此節點的附屬變量。投資決策應以此為核心觸發條件。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8d：情境模擬 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8d">8d. 情境模擬（概率決策樹）</div>
+<div class="section-sub">未來 6~18 個月，五條路徑的機率與目標股價 — CSS 互動流程圖</div>
+
+<details open>
+<summary>五路徑概率決策樹</summary>
+
+<div class="flow-section">
+  <div class="flow-section-title">五路徑概率決策樹 — 從現價 2,885 元出發</div>
+  <div class="flow-col">
+    <div class="fnode highlight">台光電 2,885 元（2026-04-09）
+      <div class="tooltip"><div class="tt-title">起始點</div><div class="tt-desc">現價 2,885 元，TTM PE 70.57x，歷史極端水位。加權期望股價 2,160 元，現價偏貴 33.6%。五條路徑中僅一條目標價高於現價。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode decision">AI 需求 + M10 + 地緣？
+      <div class="tooltip"><div class="tt-title">三大變數交叉</div><div class="tt-desc">M10認證（通過/部分/失敗）× 漲價效果（10%/5%/0%）× 地緣政策（維持/加稅/制裁）三者排列組合，收斂為五條代表性路徑。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="branch-group">
+      <div class="branch">
+        <div class="branch-label">路徑 A（15%）</div>
+        <div class="fnode action">AI 全面加速 → 3,375 元
+          <div class="tooltip"><div class="tt-title">路徑 A：AI 全面加速</div><div class="tt-desc">觸發條件：M10通過 + 漲價10%全額 + ASIC放量 + 1.6T全面啟動。EPS 75元 × PE 45x = 3,375元。報酬 +17%。前提是 M10 通過且 Doosan 獨家被否認。目前外資行為暗示此路徑機率偏低。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">路徑 B（35%）</div>
+        <div class="fnode process">溫和成長 → 2,480 元
+          <div class="tooltip"><div class="tt-title">路徑 B：溫和成長（最可能）</div><div class="tt-desc">觸發條件：M10部分通過 + 漲幅折讓至5~8% + M9獨佔延續。護城河仍寬但確認會縮窄，EPS 62元 × PE 40x = 2,480元。報酬 -14%。即使基本面仍佳，PE壓縮將主導股價。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">路徑 C（25%）</div>
+        <div class="fnode highlight">基準情境 → 2,200 元
+          <div class="tooltip"><div class="tt-title">路徑 C：基準情境</div><div class="tt-desc">觸發條件：M10結果不明朗（延後至Q3）+ 漲價被原物料吃掉 + 產能爬坡不如預期。EPS 55元 × PE 40x = 2,200元。報酬 -24%。與第七步加權合理價 2,208 元吻合，為價值投資者接球區間。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">路徑 D（20%）</div>
+        <div class="fnode error">成長減速 → 1,350 元
+          <div class="tooltip"><div class="tt-title">路徑 D：成長減速</div><div class="tt-desc">觸發條件：M10失敗 + 全行業產能過剩（2027設備集中交付）+ 地緣惡化。PE 從 70x 暴跌至 30x，EPS 45元 × PE 30x = 1,350元。報酬 -53%。類似 2021 年航運股「超級週期見頂 + 擴產」劇本。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">路徑 E（5%）</div>
+        <div class="fnode error">黑天鵝 → 750 元
+          <div class="tooltip"><div class="tt-title">路徑 E：黑天鵝</div><div class="tt-desc">觸發條件：中國營運全面中斷（兩岸衝突/嚴厲制裁）+ AI資本支出急凍。77%營收歸零，僅剩台灣/馬來/美國產能。EPS 25元 × PE 30x = 750元。報酬 -74%。極端情境但因中國佔營收 77% 無法忽略。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode end">加權期望股價：2,160 元（vs 現價 2,885 偏貴 33.6%）
+      <div class="tooltip"><div class="tt-title">加權計算</div><div class="tt-desc">15%×3,375 + 35%×2,480 + 25%×2,200 + 20%×1,350 + 5%×750 = 2,160 元。85% 的路徑目標價低於現價，風險報酬比嚴重不對等。建議觀望不追高。</div></div>
+    </div>
+  </div>
+</div>
+</details>
+
+<!-- 五路徑詳細展開 -->
+<div class="prob-tree">
+  <div class="prob-path path-a">
+    <div class="prob-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      <span>路徑 A：AI全面加速</span>
+      <span>機率 15% | 目標 3,375 元</span>
+    </div>
+    <div class="prob-body">
+      <b>觸發條件：</b>M10認證通過 + Q2漲價10%全額實現 + ASIC客戶（Meta MTIA 3）大幅放量 + 1.6T交換器世代全面啟動<br>
+      <b>推演路徑：</b>M10通過 → 護城河重新確認 → 法人大幅上修EPS至70~75元 → PE維持45x（成長確認溢價） → 外資從淨賣轉為淨買 → 目標價上調至3,000~3,500<br>
+      <b>預期報酬：</b>+17.0%（從2,885到3,375）<br>
+      <b>此路徑的前提是M10必須通過且Doosan獨家供應報導被否認。目前機率偏低，因為外資行為暗示部分機構已不認為這是最可能的結果。</b>
+      <div class="prob-bar" style="width:15%"></div>
+    </div>
+  </div>
+
+  <div class="prob-path path-b">
+    <div class="prob-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      <span>路徑 B：溫和成長（最可能）</span>
+      <span>機率 35% | 目標 2,480 元</span>
+    </div>
+    <div class="prob-body">
+      <b>觸發條件：</b>M10部分通過（台光電+另一家） + Q2漲價折讓至5~8% + M9獨佔延續 + AI佔比達70%<br>
+      <b>推演路徑：</b>護城河仍寬但確認會縮窄 → EPS 62元達標 → PE從70x壓至40x（成長減速預期） → 股價合理回歸<br>
+      <b>預期報酬：</b>-14.0%（從2,885到2,480）<br>
+      <b>這是最可能路徑。即使基本面仍佳，PE壓縮將主導股價走向。</b>
+      <div class="prob-bar" style="width:35%"></div>
+    </div>
+  </div>
+
+  <div class="prob-path path-c">
+    <div class="prob-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      <span>路徑 C：基準情境</span>
+      <span>機率 25% | 目標 2,200 元</span>
+    </div>
+    <div class="prob-body">
+      <b>觸發條件：</b>M10結果不明朗（延後至Q3） + 漲價效果被原物料吃掉 + 產能爬坡不如預期<br>
+      <b>推演路徑：</b>EPS 55元（成長但低於預期） → PE壓至40x → 合理價2,200元 → 與第七步加權合理價2,208元吻合<br>
+      <b>預期報酬：</b>-23.7%（從2,885到2,200）<br>
+      <b>此路徑代表「回歸合理價」，是價值投資者的接球區間。</b>
+      <div class="prob-bar" style="width:25%"></div>
+    </div>
+  </div>
+
+  <div class="prob-path path-d">
+    <div class="prob-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      <span>路徑 D：成長減速</span>
+      <span>機率 20% | 目標 1,350 元</span>
+    </div>
+    <div class="prob-body">
+      <b>觸發條件：</b>M10認證失敗 + 全行業產能過剩（2027設備集中交付） + 地緣政策惡化<br>
+      <b>推演路徑：</b>M10失敗 → 護城河崩塌疑慮 → PE從70x暴跌至30x → 外資加速出逃 → EPS下修至45元 → 1,350元<br>
+      <b>預期報酬：</b>-53.2%（從2,885到1,350）<br>
+      <b>類似2021年航運股的「超級週期見頂+擴產」劇本。</b>
+      <div class="prob-bar" style="width:20%"></div>
+    </div>
+  </div>
+
+  <div class="prob-path path-d" style="background:rgba(198,40,40,.08)">
+    <div class="prob-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="color:#c62828">
+      <span>路徑 E：黑天鵝</span>
+      <span>機率 5% | 目標 750 元</span>
+    </div>
+    <div class="prob-body">
+      <b>觸發條件：</b>中國營運全面中斷（兩岸衝突/嚴厲制裁） + AI資本支出急凍<br>
+      <b>推演路徑：</b>77%營收歸零 → 僅剩台灣/馬來/美國產能 → EPS暴跌至25元 → PE壓至30x → 750元<br>
+      <b>預期報酬：</b>-74.0%（從2,885到750）<br>
+      <b>極端情境，但中國佔營收77%使此風險無法忽略。</b>
+      <div class="prob-bar" style="width:5%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tip danger">
+<b>8d 整合結論</b>
+<p>加權期望股價 <b>2,160元</b>，低於現價 2,885元達 <b>33.6%</b>。這不代表股價一定會跌到2,160，而是代表：以目前的資訊評估，各情境機率加權後的「公平價值」明顯低於市場定價。五條路徑中，僅路徑A（15%機率）的目標價高於現價，其餘四條（合計85%機率）目標價均低於現價。<b>結論：現價已過度反映樂觀預期，風險報酬比不對等。</b></p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8e：個人化推衍 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">基於分析師穩健偏好、觀望中（未持有）的立場</div>
+
+<div class="card">
+<h3>行動建議矩陣</h3>
+<div class="card-body">
+
+<div class="compare-cols">
+  <div class="col-left">
+    <h4>不建議做的事</h4>
+    <p style="font-size:.8em">
+      1. <b>追高買入</b>：現價 2,885元 vs 加權期望 2,160元，溢價33.6%，風險報酬比極差。<br>
+      2. <b>聽券商喊買</b>：美銀目標價3,000元看起來很近，但外資自己在賣——「嘴巴看多，手在賣出」。<br>
+      3. <b>忽略M10結果等Q3</b>：M10是最大變數，若不追蹤而盲目持有，可能錯過停損時機。
+    </p>
+  </div>
+  <div class="col-right">
+    <h4>建議做的事</h4>
+    <p style="font-size:.8em">
+      1. <b>設定接球價</b>：2,200~2,400元（路徑B-C合理價區間），等回檔再進場。<br>
+      2. <b>等M10認證結果</b>：2026Q2出爐，是最清晰的決策觸發點。<br>
+      3. <b>分批布局</b>：若回檔至2,200以下，可分3批建倉（2,200 / 2,000 / 1,800各1/3）。<br>
+      4. <b>追蹤外資態度轉變</b>：當外資從淨賣轉為淨買，代表不確定性消退。
+    </p>
+  </div>
+</div>
+
+<div class="tip good">
+<b>核心策略：「等M10、設接球、不追高」</b>
+<p>台光電基本面優異，長期看好，但目前估值已過度反映。穩健投資者應以「不追高、等機會」為原則，在2,200~2,400元設置接球區間，以M10認證結果為進場觸發條件。</p>
+</div>
+
+</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8f：催化劑時間表 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">未來 12 個月關鍵事件時間軸</div>
+
+<div class="timeline-v2">
+  <div class="tl2-item">
+    <div class="tl2-dot green"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/4月中</div>
+      <div class="tl2-event">Q1季報公布</div>
+      <div class="tl2-detail">預估EPS 14~16元（季增），Q1營收330.7億已知。關注毛利率是否回到30%+</div>
+      <span class="tl2-impact bull">利多驗證</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot yellow"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/5月</div>
+      <div class="tl2-event">M10測試中期報告</div>
+      <div class="tl2-detail">NVIDIA對三家供應商的中期評估，可能有初步消息洩出。外資動態為先行指標。</div>
+      <span class="tl2-impact mixed">關鍵觀察點</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot red"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/6月</div>
+      <div class="tl2-event">M10認證Q2結果</div>
+      <div class="tl2-detail">關鍵分水嶺。通過→路徑A/B啟動，失敗→路徑D風險。決定護城河未來方向。</div>
+      <span class="tl2-impact critical">核心決策觸發</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot green"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/7月</div>
+      <div class="tl2-event">Q2漲價效果顯現</div>
+      <div class="tl2-detail">Q2起全產品線漲價10%，7月營收將反映漲價後的ASP提升效果。</div>
+      <span class="tl2-impact bull">毛利率驗證</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot green"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/8月</div>
+      <div class="tl2-event">Q2季報公布</div>
+      <div class="tl2-detail">首個完整反映漲價的季度。EPS是否達16~18元？毛利率32%+？</div>
+      <span class="tl2-impact bull">成長確認</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot green"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/9月</div>
+      <div class="tl2-event">M9開始出貨</div>
+      <div class="tl2-detail">M9獨佔出貨給NVIDIA，ASP較M8+再提升。營收含金量提高。</div>
+      <span class="tl2-impact bull">產品升級</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot yellow"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2026/12月</div>
+      <div class="tl2-event">2027年產能開始開出</div>
+      <div class="tl2-detail">崑山60+中山60萬張Q1開出，加上觀音75+檳城15萬張Q4開出。產能利用率是關鍵。</div>
+      <span class="tl2-impact mixed">產能消化觀察</span>
+    </div>
+  </div>
+  <div class="tl2-item">
+    <div class="tl2-dot red"></div>
+    <div class="tl2-content">
+      <div class="tl2-date">2027/H2</div>
+      <div class="tl2-event">M10量產 + 產能集中開出</div>
+      <div class="tl2-detail">全行業設備交付集中在2027年。M10量產若台光電未列入，護城河將正式縮窄。供過於求風險最高點。</div>
+      <span class="tl2-impact critical">最大風險窗口</span>
+    </div>
+  </div>
+</div>
+
+<div class="tip warn">
+<b>8f 整合結論</b>
+<p>催化劑時間軸呈現<b>「前半年利多驗證、下半年風險上升」</b>的格局。2026年4~9月是利多密集期（Q1季報+漲價效果+M9出貨），但6月的M10認證結果是唯一的「方向性催化劑」——其他都是「程度性」的（好壞差異是數字大小），M10是「方向性」的（通過/不通過會走完全不同路徑）。2027H2是風險集中區，全行業產能開出+M10量產，供過於求和護城河縮窄風險將同時到來。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8g：蝴蝶效應推衍 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8g">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">從 B-1 複習發現承接的弱訊號收斂分析</div>
+
+<details open>
+<summary>弱訊號雷達 — 五類訊號強度</summary>
+
+<!-- 雷達圖（Chart.js）+ 信號卡片分欄 -->
+<div class="data-chart-row">
+  <div class="data-col">
+    <div class="signal-card">
+      <span class="sig-type sig-a">A類：財務訊號</span>
+      <div class="sig-title">營業外收入轉負 + CB債務槓桿急升</div>
+      <div class="sig-desc">FY2024營業外支出-1,868萬（前年+7,356萬），非流動負債暴增205%達108億。三筆CB未償還61億+2026資本支出150~230億=財務壓力持續攀升。<b>若AI需求放緩，高槓桿+高折舊（28億/年）將嚴重壓縮獲利。</b></div>
+    </div>
+    <div class="gauge">
+      <span class="gauge-label">嚴重度</span>
+      <div class="gauge-track"><div class="gauge-fill" style="width:70%;background:#ef5350"></div></div>
+      <span class="gauge-val" style="color:#ef5350">7/10</span>
+    </div>
+
+    <div class="signal-card">
+      <span class="sig-type sig-b">B類：組織訊號</span>
+      <div class="sig-title">員工暴增25.6% + 平均年資反降 + 環保三次違規</div>
+      <div class="sig-desc">一年內員工從4,405人增至5,823人，平均年資從5年降至4年。半年內三次違反廢棄物清理法。董事長兼任總經理+會計財務主管同時異動。多個獨立訊號指向「組織消化能力跟不上擴張速度」。</div>
+    </div>
+    <div class="gauge">
+      <span class="gauge-label">嚴重度</span>
+      <div class="gauge-track"><div class="gauge-fill" style="width:65%;background:#d4a017"></div></div>
+      <span class="gauge-val" style="color:#d4a017">6.5/10</span>
+    </div>
+
+    <div class="signal-card">
+      <span class="sig-type sig-d">C類：競爭訊號</span>
+      <div class="sig-title">Doosan DS-7409量產 + M10三家測試 + Rubin獨家傳聞</div>
+      <div class="sig-desc">斗山DS-7409已2024Q4量產，對M8+形成直接技術競爭。M10不再獨佔。Digitimes報導Doosan可能取得Rubin獨家（推測級）。護城河裂縫從2027年提前至2026H2。</div>
+    </div>
+    <div class="gauge">
+      <span class="gauge-label">嚴重度</span>
+      <div class="gauge-track"><div class="gauge-fill" style="width:80%;background:#ef5350"></div></div>
+      <span class="gauge-val" style="color:#ef5350">8/10</span>
+    </div>
+  </div>
+  <div class="chart-col">
+    <div class="chart-wrap">
+      <div class="chart-title">弱訊號強度雷達圖</div>
+      <canvas id="ch8g-radar" height="280"></canvas>
+      <div class="chart-note">五類弱訊號同時處於 6.5~8.0 高水位，收斂指向「組織消化能力跟不上資本擴張」</div>
+    </div>
+  </div>
+</div>
+
+<div class="signal-card">
+  <span class="sig-type sig-c">D類：籌碼訊號</span>
+  <div class="sig-title">外資言行不一致 — 券商喊買、法人在賣</div>
+  <div class="sig-desc">60日僅淨買22.5萬股，20日大賣314萬股（佔流通股~9%）。美銀喊3,000元目標價，但外資實際行為是在大量出貨。這種不一致通常暗示國際投資人已掌握更新的產業情報。</div>
+</div>
+<div class="gauge">
+  <span class="gauge-label">嚴重度</span>
+  <div class="gauge-track"><div class="gauge-fill" style="width:75%;background:#ef5350"></div></div>
+  <span class="gauge-val" style="color:#ef5350">7.5/10</span>
+</div>
+
+<div class="signal-card">
+  <span class="sig-type sig-e">E類：估值訊號</span>
+  <div class="sig-title">PE 70倍歷史極端 + 資本支出指引搖擺</div>
+  <div class="sig-desc">TTM PE 70.57x為台光電歷史最高水位。2026資本支出指引150~230億（差距53%），管理層自己也不確定需要多少錢。高PE+高不確定性=極端脆弱的定價。</div>
+</div>
+<div class="gauge">
+  <span class="gauge-label">嚴重度</span>
+  <div class="gauge-track"><div class="gauge-fill" style="width:72%;background:#d4a017"></div></div>
+  <span class="gauge-val" style="color:#d4a017">7.2/10</span>
+</div>
+</details>
+
+<details open>
+<summary>蝴蝶效應推演鏈 Top 3 — CSS 互動流程圖</summary>
+
+<!-- 推演鏈 #1 -->
+<div class="flow-section">
+  <div class="flow-section-title" style="color:var(--bear)">推演鏈 #1：員工暴增 → 品質失控 → M10失敗 → 護城河崩塌（5階）</div>
+  <div class="flow-col">
+    <div class="fnode start">員工一年增 25.6%（4,405→5,823）
+      <div class="tooltip"><div class="tt-title">起始弱訊號</div><div class="tt-desc">一年內員工增加 1,418 人（+25.6%），平均年資從 5 年降至 4 年。新進員工比例過高，多廠跨區管理（崑山+中山+觀音+檳城），培訓壓力巨大。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode process">良率/品質控制下降
+      <div class="tooltip"><div class="tt-title">傳導機制</div><div class="tt-desc">新人比例過高 + 半年內三次違反廢棄物清理法（先行指標）→ 製程管控疏漏機率上升。高頻材料的良率要求極嚴格，新人錯誤率高。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">M10 認證延遲/未通過
+      <div class="tooltip"><div class="tt-title">關鍵節點</div><div class="tt-desc">NVIDIA M10 對材料規格要求更嚴格（更高頻、更低損耗），若良率不穩定將直接導致認證失敗。三家供應商同時測試，品質差異會被直接比較。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">NVIDIA 轉向 Doosan/第三家
+      <div class="tooltip"><div class="tt-title">連鎖反應</div><div class="tt-desc">M10 失敗 → NVIDIA 將主力訂單轉向 Doosan（已有 DS-7409 量產經驗），台光電從「獨佔供應商」降為「備援供應商」。敘事從「不可替代」變為「已被替代」。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">護城河崩塌 → PE 從 70x 壓至 25x
+      <div class="tooltip"><div class="tt-title">終局影響</div><div class="tt-desc">成長敘事瓦解 → PE 從 70x 壓縮至 25~30x → 以 EPS 45 元計，股價目標 1,125~1,350 元 → 距現價 2,885 下跌 53~61%。此鏈結合了 B 類（組織）與 C 類（競爭）弱訊號。</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 推演鏈 #2 -->
+<div class="flow-section">
+  <div class="flow-section-title" style="color:var(--warn)">推演鏈 #2：全行業擴產 → 設備集中交付 → 供過於求 → 價格戰（4階）</div>
+  <div class="flow-col">
+    <div class="fnode start">CCL 設備訂單排到 2028 年
+      <div class="tooltip"><div class="tt-title">產業背景</div><div class="tt-desc">台光電+聯茂+台燿+生益+斗山同步擴產，CCL 設備商（如東京應化）訂單排滿至 2028 年。全行業產能集中在 2027 年開出。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode process">產能集中 2027 年開出
+      <div class="tooltip"><div class="tt-title">供給暴增</div><div class="tt-desc">台光電：崑山60+中山60+觀音75+檳城15 = 210萬張新增。同期聯茂、台燿、生益各擴產 30~50%。全行業供給增速可能達 40~60%。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode decision">AI 需求增速 > 產能增速？
+      <div class="tooltip"><div class="tt-title">關鍵判斷</div><div class="tt-desc">若 AI 資本支出增速（目前 ~40% YoY）> 產能增速 → 維持供不應求。若 AI 增速放緩至 20% 而產能增 40~60% → 供過於求確認。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="branch-group">
+      <div class="branch">
+        <div class="branch-label">需求 > 供給</div>
+        <div class="fnode action">維持全產全銷
+          <div class="tooltip"><div class="tt-title">樂觀路徑</div><div class="tt-desc">AI 資本支出持續強勁，新增產能全數消化。毛利率維持 30%+，漲價持續。</div></div>
+        </div>
+      </div>
+      <div class="branch">
+        <div class="branch-label">供給 > 需求</div>
+        <div class="fnode error">價格戰 → 毛利率腰斬
+          <div class="tooltip"><div class="tt-title">悲觀路徑</div><div class="tt-desc">供過於求啟動價格戰 → 毛利率從 30% 腰斬至 15%。高槓桿+高折舊（28億/年）使 EPS 暴跌至 20~30 元。類似 2022 年面板產業劇本。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 推演鏈 #3 -->
+<div class="flow-section">
+  <div class="flow-section-title" style="color:var(--danger)">推演鏈 #3：外資撤退 → CB轉換加速 → 股本稀釋 → 自我實現循環</div>
+  <div class="flow-col">
+    <div class="fnode start">外資 20日大賣 314 萬股
+      <div class="tooltip"><div class="tt-title">觸發訊號</div><div class="tt-desc">外資近 20 日淨賣 314 萬股（佔流通股 ~9%），60 日僅淨買 22.5 萬股。與券商「買進」評等嚴重矛盾，暗示機構投資人已掌握負面情報。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">股價下跌壓力
+      <div class="tooltip"><div class="tt-title">直接影響</div><div class="tt-desc">大量賣壓推動股價下跌。近 10 日波動劇烈（2,600~2,945），顯示多空激烈交戰。一旦跌破關鍵支撐（如 2,600），可能觸發更大賣壓。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode process">CB 持有人加速轉換
+      <div class="tooltip"><div class="tt-title">連鎖反應</div><div class="tt-desc">三筆 CB 未償還 61 億元。股價仍在高位時，CB 持有人有動機加速轉換為股票並賣出獲利了結，形成額外賣壓。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">股本稀釋 → EPS 被攤薄
+      <div class="tooltip"><div class="tt-title">惡性循環</div><div class="tt-desc">CB 轉換增加股本 → EPS 被攤薄 → PE 看起來更貴 → 更多投資人賣出 → 股價再跌 → 更多 CB 轉換 → 自我強化的下跌螺旋。這是籌碼面風險，短期衝擊最大。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode end">自我強化的下跌螺旋 → 回到起點
+      <div class="tooltip"><div class="tt-title">循環特性</div><div class="tt-desc">此鏈為正回饋循環（非線性），一旦啟動會自我加速。打破循環的條件：(1) M10 認證通過的重大利多、(2) 公司實施庫藏股、(3) 股價跌至 CB 轉換價以下使轉換停止。</div></div>
+    </div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>弱訊號收斂分析</summary>
+<div class="tip danger">
+<b>收斂主題：「組織消化能力跟不上資本擴張」</b>
+<p>五個獨立訊號（員工暴增/環保違規/高管人事異動/資本支出搖擺/營業外轉負）來自不同來源、不同時間、不同面向，但<b>同時指向同一個方向</b>：台光電正處於史上最激進的擴張期，管理層承受極大壓力，組織的「消化能力」可能跟不上資本的「投入速度」。</p>
+<p>每個訊號單獨看都不嚴重（環保罰鍰僅72萬、員工增加是擴產必然、董事長兼總經理在台灣不罕見），但<b>同時出現時</b>暗示系統性風險正在累積。這類風險不會立即反映在財報上，而是會在12~18個月後以良率問題、人才流失、品質事件、客戶認證延遲等形式「浮現」。</p>
+<p>這正是「弱訊號收斂偵測」的核心價值——市場還沒注意到這些微小異常，但多個微小異常同時指向同方向，推衍出一個還沒人看到的風險。</p>
+</div>
+</details>
+
+<div class="tip warn">
+<b>8g 整合結論</b>
+<p>蝴蝶效應分析揭示三條高風險推演鏈，其中<b>推演鏈#1（品質失控→M10失敗）的破壞力最大</b>，因為它連結了組織弱訊號（B類）和競爭威脅（C類），形成一條從微觀（員工管理）到宏觀（市場地位）的完整因果鏈。推演鏈#2（產能過剩）是全行業風險，不僅影響台光電。推演鏈#3（自我實現螺旋）是籌碼面風險，短期衝擊最大但基本面不受影響。三條鏈的共同交集是<b>M10認證</b>——若M10通過，上述風險大部分化解；若失敗，三條鏈同時啟動。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8h：貓膩推衍 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">承接第七步Ch12 — 燈號 黃燈</div>
+
+<details open>
+<summary>歷史劇本比對</summary>
+<div class="card">
+<h3>最相似案例：2021年航運超級週期（長榮/萬海）</h3>
+<div class="card-body">
+<table>
+<tr><th>比較維度</th><th>2021航運</th><th>2026台光電</th><th>相似度</th></tr>
+<tr>
+  <td>敘事框架</td>
+  <td>超級週期+供不應求+運價飆漲</td>
+  <td>AI超級週期+全產全銷+漲價10%</td>
+  <td style="color:var(--warn)">高</td>
+</tr>
+<tr>
+  <td>擴產競賽</td>
+  <td>全行業瘋狂下單造船</td>
+  <td>全行業擴產+設備排到2028</td>
+  <td style="color:var(--warn)">高</td>
+</tr>
+<tr>
+  <td>PE估值</td>
+  <td>高峰期PE 3~5x（航運低PE）</td>
+  <td>PE 70x（科技高PE）</td>
+  <td style="color:var(--txt3)">低（結構不同）</td>
+</tr>
+<tr>
+  <td>技術壁壘</td>
+  <td>幾乎無（航運=標準化服務）</td>
+  <td>有（M8/M9技術領先1~2代）</td>
+  <td style="color:var(--txt3)">低（差異明顯）</td>
+</tr>
+<tr>
+  <td>供需反轉時間</td>
+  <td>高峰到回歸約18個月</td>
+  <td>預估高峰可能在2027H2</td>
+  <td style="color:var(--warn)">中</td>
+</tr>
+<tr>
+  <td>法人態度轉變</td>
+  <td>高峰前3個月外資開始減碼</td>
+  <td><b>外資近20日大賣314萬股</b></td>
+  <td style="color:var(--bear)">極高</td>
+</tr>
+</table>
+<p style="font-size:.82em;color:var(--txt2);margin-top:6px"><b>整體相似度：65%</b>。核心差異在於台光電有技術壁壘（航運無），但M10後壁壘可能縮窄。航運從高峰到回歸用了18個月（2021Q3→2023Q1），台光電的「高峰」可能在2026Q3~2027H1，「回歸」可能在2027H2~2028。</p>
+</div>
+</div>
+</details>
+
+<details open>
+<summary>反轉決策樹 — CSS 互動流程圖</summary>
+
+<div class="flow-section">
+  <div class="flow-section-title" style="color:var(--bear)">反轉情境：M10認證失敗後的骨牌效應</div>
+  <div class="flow-col">
+    <div class="fnode error">M10 認證失敗
+      <div class="tooltip"><div class="tt-title">觸發事件</div><div class="tt-desc">2026Q2 NVIDIA 宣布 M10 認證台光電未通過，Doosan 取得主要供應商資格。台光電從「獨佔」變為「備援」。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode process">護城河從「寬」降為「中等」
+      <div class="tooltip"><div class="tt-title">一階效應</div><div class="tt-desc">M9 仍獨佔（已量產無法替換），但 M10/Rubin 世代將面臨 Doosan 正面競爭。技術領先優勢從 2 代縮短至 0~1 代。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode process">外資敘事從「M10獨佔」改為「M9最後的獨佔」
+      <div class="tooltip"><div class="tt-title">二階效應</div><div class="tt-desc">券商報告重新定價：從「成長股」降為「成熟型成長股」。Forward PE 目標從 45x 下調至 30~35x。法人共識 EPS 從 65 下修至 55 元。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">外資加速出逃 → 持續性賣超
+      <div class="tooltip"><div class="tt-title">三階效應</div><div class="tt-desc">從目前的 20 日賣 314 萬股，擴大為持續性每月淨賣 200~500 萬股。佔流通股比例從 ~9% 擴大至 20%+。融券餘額可能同步增加。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode error">PE 從 70x 壓至 30~35x
+      <div class="tooltip"><div class="tt-title">四階效應</div><div class="tt-desc">成長敘事瓦解 + 外資大量拋售 → PE 從歷史極端 70x 壓縮至 30~35x（仍高於產業平均 20x，反映剩餘的 M9 獨佔價值）。</div></div>
+    </div>
+    <div class="arrow-down"></div>
+    <div class="fnode end">股價回落至 1,650~1,925 元（距現價 -33~43%）
+      <div class="tooltip"><div class="tt-title">終局評估</div><div class="tt-desc">PE 30x × EPS 55 = 1,650 元（悲觀）。PE 35x × EPS 55 = 1,925 元（溫和）。距現價 2,885 元下跌 33~43%。此情境下接球價應在 1,800 元以下。</div></div>
+    </div>
+  </div>
+</div>
+</details>
+
+<details open>
+<summary>保護策略建議</summary>
+
+<!-- 貓膩成立機率儀表板 -->
+<div class="chart-row">
+  <div class="chart-wrap">
+    <div class="chart-title">貓膩成立機率</div>
+    <div id="ch8h-gauge" class="echart" style="height:250px"></div>
+    <div class="chart-note">黃燈區間（20~40%），主要不確定性來自 M10 認證結果</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="mini-card neutral-card">
+      <div class="title">未持有</div>
+      <div class="num" style="color:var(--link)">等 M10</div>
+      <div class="desc">等M10認證結果（Q2），觀望不動。接球價2,200~2,400。</div>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--warn)">
+      <div class="title">輕倉持有</div>
+      <div class="num" style="color:var(--warn)">設停損</div>
+      <div class="desc">停損設在2,200（-24%），M10結果出爐前不加碼。</div>
+    </div>
+    <div class="mini-card bear-card">
+      <div class="title">重倉持有</div>
+      <div class="num" style="color:var(--bear)">減碼</div>
+      <div class="desc">減碼至舒適水位（如持股降至50%），等M10後再決定。</div>
+    </div>
+  </div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>8h 整合結論</b>
+<p>貓膩推衍的核心發現：台光電目前的市場敘事（AI超級週期+獨佔+擴產）與2021年航運的敘事<b>結構性相似</b>。差異在於台光電有技術壁壘，但M10認證若失敗，這個差異將消失。最讓人不安的是<b>外資行為的相似性</b>——航運股在2021Q3高峰前3個月，外資就開始減碼，而台光電外資近20日大賣314萬股，時間點也恰好在股價接近歷史高點（3,035元）之後。這不一定代表「見頂」，但歷史劇本的預警值得嚴肅對待。</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 8i：推衍結論 + 第四次信心校準 ===== -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8i">8i. 推衍結論 + 第四次信心校準</div>
+<div class="section-sub">ACH → 壓力測試 → 評審團 → 推演版：四次信心校準完整進程</div>
+
+<details open>
+<summary>四次信心校準完整進程</summary>
+<table class="calib-table">
+<tr>
+  <th>假說</th><th>ACH</th><th>壓力測試</th><th>評審團</th><th>推演版</th><th>變化</th>
+</tr>
+<tr>
+  <td style="text-align:left"><b>H2 溫和看多</b></td>
+  <td>45%</td><td>50%</td><td>48%</td>
+  <td style="color:var(--warn);font-weight:900">42%</td>
+  <td style="color:var(--bear)">-6pp</td>
+</tr>
+<tr>
+  <td style="text-align:left"><b>H3 中性見頂</b></td>
+  <td>20%</td><td>20%</td><td>22%</td>
+  <td style="color:var(--warn);font-weight:900">28%</td>
+  <td style="color:var(--bear)">+6pp</td>
+</tr>
+<tr>
+  <td style="text-align:left"><b>H1 極度看多</b></td>
+  <td>25%</td><td>20%</td><td>18%</td>
+  <td style="color:var(--bull);font-weight:900">15%</td>
+  <td style="color:var(--bear)">-3pp</td>
+</tr>
+<tr>
+  <td style="text-align:left"><b>H4 看空</b></td>
+  <td>8%</td><td>8%</td><td>10%</td>
+  <td style="color:var(--bear);font-weight:900">13%</td>
+  <td style="color:var(--bear)">+3pp</td>
+</tr>
+<tr>
+  <td style="text-align:left"><b>H5 黑天鵝</b></td>
+  <td>2%</td><td>2%</td><td>2%</td>
+  <td style="font-weight:900">2%</td>
+  <td>=</td>
+</tr>
+</table>
+
+<!-- 信心進度條視覺化 -->
+<p style="font-size:.82em;color:var(--txt3);margin:10px 0 4px;font-weight:600">信心分佈視覺化（推演版最終）</p>
+
+<div class="conf-bar-wrap">
+  <div class="conf-bar-label">
+    <span>H1極度看多 15%</span>
+    <span>H2溫和看多 42%</span>
+    <span>H3見頂 28%</span>
+    <span>H4看空 13%</span>
+    <span>H5 2%</span>
+  </div>
+  <div class="conf-bar-track">
+    <div class="conf-bar-seg" style="width:15%;background:#2e7d32">15</div>
+    <div class="conf-bar-seg" style="width:42%;background:#4caf50">42</div>
+    <div class="conf-bar-seg" style="width:28%;background:#d4a017">28</div>
+    <div class="conf-bar-seg" style="width:13%;background:#ef5350">13</div>
+    <div class="conf-bar-seg" style="width:2%;background:#c62828">2</div>
+  </div>
+</div>
+
+<p style="font-size:.82em;color:var(--txt2);margin-top:8px">
+<b>推演後變化摘要：</b>H2溫和看多仍是最高機率假說，但從48%降至42%（-6pp）。H3中性見頂從22%升至28%（+6pp），成為第二大假說。H1極度看多降至15%（-3pp），H4看空升至13%（+3pp）。整體趨勢：<b>看多機率下降、看空/見頂機率上升</b>，但尚未翻轉（看多合計57% vs 看空/見頂合計43%）。
+</p>
+
+<!-- 四次信心校準折線圖（Chart.js）-->
+<div class="chart-wrap">
+  <div class="chart-title">四次信心校準演進趨勢</div>
+  <canvas id="ch8i-calibration" height="220"></canvas>
+  <div class="chart-note">H2（溫和看多）持續下修，H3（見頂）持續上修 — 看多/看空差距正在收斂</div>
+</div>
+</details>
+
+<details open>
+<summary>校準變化的驅動因素</summary>
+<table>
+<tr><th>因素</th><th>影響方向</th><th>幅度</th><th>說明</th></tr>
+<tr>
+  <td>M10三家供應商</td>
+  <td style="color:var(--bear)">弱化看多</td>
+  <td>-3pp</td>
+  <td>護城河縮窄風險從2027年提前到2026H2</td>
+</tr>
+<tr>
+  <td>Doosan Rubin獨家傳聞</td>
+  <td style="color:var(--bear)">強化見頂</td>
+  <td>+2pp</td>
+  <td>雖是推測級，但若屬實衝擊極大</td>
+</tr>
+<tr>
+  <td>外資20日大賣314萬股</td>
+  <td style="color:var(--bear)">強化看空</td>
+  <td>+2pp</td>
+  <td>行為是最誠實的指標</td>
+</tr>
+<tr>
+  <td>PE 70x歷史極端</td>
+  <td style="color:var(--bear)">強化見頂</td>
+  <td>+2pp</td>
+  <td>定價已反映所有樂觀預期</td>
+</tr>
+<tr>
+  <td>弱訊號收斂（組織擴張暗面）</td>
+  <td style="color:var(--bear)">弱化看多</td>
+  <td>-2pp</td>
+  <td>五個獨立訊號同時指向管理壓力</td>
+</tr>
+<tr>
+  <td>Q1營收330.7億創新高</td>
+  <td style="color:var(--bull)">支撐看多</td>
+  <td>+2pp</td>
+  <td>營運面仍強勁，抵消部分負面</td>
+</tr>
+</table>
+</details>
+
+<!-- ===== 八種估值法 vs 現價（第七步資料帶入推演版）===== -->
+<details open>
+<summary>八種估值法 vs 現價 2,885 元</summary>
+<div class="data-chart-row">
+  <div class="data-col">
+    <table>
+    <tr><th style="width:30%">方法</th><th style="width:25%">合理價</th><th style="width:20%">vs 現價</th><th style="width:25%">判斷</th></tr>
+    <tr><td>前瞻 PE</td><td>2,480 元</td><td style="color:var(--bear);font-weight:700">-14.0%</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>PB 法</td><td>PB 22.9x</td><td style="color:var(--bear);font-weight:700">遠超歷史</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>分部估值</td><td>2,417 元</td><td style="color:var(--bear);font-weight:700">-16.2%</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>隱含預期</td><td>機率 24%</td><td style="color:var(--bear);font-weight:700">過度樂觀</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>歷史循環</td><td>PE 遠超高峰</td><td style="color:var(--bear);font-weight:700">歷史極值</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>DCF 成長版</td><td>2,524 元</td><td style="color:var(--warn);font-weight:700">-12.5%</td><td><span class="light yellow"></span> 中性偏貴</td></tr>
+    <tr><td>EV/EBITDA</td><td>溢價 2.2x</td><td style="color:var(--bear);font-weight:700">極度溢價</td><td><span class="light red"></span> 偏貴</td></tr>
+    <tr><td>PEG</td><td>1.45</td><td style="color:var(--warn)">合理偏高</td><td><span class="light yellow"></span> 合理偏高</td></tr>
+    </table>
+    <div class="mini-card bear-card" style="text-align:center;margin-top:8px">
+      <div class="title">八種方法綜合判斷</div>
+      <div class="num" style="color:var(--bear)">6/8 偏貴 | 2/8 合理偏高</div>
+      <div class="desc">安全邊際為零 | 沒有任何方法顯示「低估」</div>
+    </div>
+  </div>
+  <div class="chart-col">
+    <div class="chart-wrap">
+      <div class="chart-title">八種估值法合理價 vs 現價 2,885 元</div>
+      <div id="ch8i-valuation-bar" class="echart" style="height:340px"></div>
+      <div class="chart-note">紅色虛線（現價 2,885）高於六種估值法合理價，僅 DCF 成長版接近</div>
+    </div>
+  </div>
+</div>
+</details>
+
+<!-- ===== 最終七維評分雷達圖 ===== -->
+<details open>
+<summary>七維評分雷達圖 + 綜合評估</summary>
+<div class="data-chart-row">
+  <div class="data-col">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+      <div class="metric-card bull-border"><div class="mc-label">基本面</div><div class="mc-num" style="color:var(--bull)">A (90)</div><div class="mc-sub">營收加速+技術壁壘</div></div>
+      <div class="metric-card bull-border"><div class="mc-label">成長性</div><div class="mc-num" style="color:var(--bull)">A (90)</div><div class="mc-sub">EPS CAGR 29%</div></div>
+      <div class="metric-card warn-border"><div class="mc-label">護城河</div><div class="mc-num" style="color:var(--warn)">B+ (80)</div><div class="mc-sub">寬但2026H2受質疑</div></div>
+      <div class="metric-card neutral-border"><div class="mc-label">管理層</div><div class="mc-num" style="color:var(--link)">B (70)</div><div class="mc-sub">誠信度~75%</div></div>
+      <div class="metric-card bear-border"><div class="mc-label">估值</div><div class="mc-num" style="color:var(--bear)">C (40)</div><div class="mc-sub">6/8偏貴 PE 70x</div></div>
+      <div class="metric-card bear-border"><div class="mc-label">籌碼</div><div class="mc-num" style="color:var(--bear)">C (40)</div><div class="mc-sub">外資急轉/CB稀釋</div></div>
+    </div>
+    <div class="metric-card warn-border" style="text-align:center">
+      <div class="mc-label">風險控管</div><div class="mc-num" style="color:var(--warn)">B- (55)</div><div class="mc-sub">期望損失 -38.75%</div>
+    </div>
+    <div class="mini-card neutral-card" style="text-align:center;margin-top:8px">
+      <div class="title">總評</div>
+      <div class="num" style="color:var(--warn);font-size:1.3em">B+</div>
+      <div class="desc">好公司、壞價格 — 基本面卓越但估值已充分反映</div>
+    </div>
+  </div>
+  <div class="chart-col">
+    <div class="chart-wrap">
+      <div class="chart-title">最終七維評分雷達圖</div>
+      <canvas id="ch8i-final-radar" height="300"></canvas>
+      <div class="chart-note">基本面+成長性最強（90），估值+籌碼最弱（40）— 典型「好公司壞價格」形態</div>
+    </div>
+  </div>
+</div>
+</details>
+
+<!-- ===== 整體投資信心度（獨立區塊）===== -->
+<details open>
+<summary>整體投資信心度</summary>
+<div class="chart-wrap" style="max-width:340px;margin:0 auto">
+  <div class="chart-title">整體投資信心度</div>
+  <div id="ch8i-invest-confidence" class="echart" style="height:270px"></div>
+</div>
+<p style="text-align:center;font-size:.82em;color:var(--txt2);margin-top:6px">信心度 42%：基本面優異但估值風險太高，不適合在現價建立部位。等待回檔至 2,200-2,400 區間。</p>
+</details>
+
+<!-- 最終結論 -->
+<details open>
+<summary>推衍最終結論</summary>
+
+<!-- ECharts 儀表板 × 2：整體信心度 + 推衍可靠度 -->
+<div class="chart-row">
+  <div class="chart-wrap">
+    <div class="chart-title">整體看多信心度</div>
+    <div id="ch8i-confidence" class="echart" style="height:250px"></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">推衍可靠度</div>
+    <div id="ch8i-reliability" class="echart" style="height:250px"></div>
+  </div>
+</div>
+
+<div class="metric-row">
+  <div class="metric-card warn-border">
+    <div class="mc-label">加權期望股價</div>
+    <div class="mc-num" style="color:var(--warn)">2,160 元</div>
+    <div class="mc-sub">vs 現價 2,885 偏貴 33.6%</div>
+  </div>
+  <div class="metric-card neutral-border">
+    <div class="mc-label">最可能路徑</div>
+    <div class="mc-num" style="color:var(--link)">B 溫和成長</div>
+    <div class="mc-sub">機率 35% | 目標 2,480元</div>
+  </div>
+  <div class="metric-card bear-border">
+    <div class="mc-label">核心觸發</div>
+    <div class="mc-num" style="color:var(--bear)">M10</div>
+    <div class="mc-sub">2026Q2 認證結果</div>
+  </div>
+</div>
+
+<div class="tip danger">
+<b>行動建議：觀望，不追高</b>
+<p><b>主要判斷：</b>台光電基本面優異（全球高速CCL #1、AI佔比63%、全產全銷、Q1營收330.7億創新高），但估值已過度反映所有樂觀預期（PE 70x、加權期望低於現價33.6%）。</p>
+<p><b>建議策略：</b></p>
+<ul style="margin:4px 0;padding-left:16px">
+  <li>觀望不追高，等待 M10 認證結果（2026Q2）</li>
+  <li>接球價設定：2,200~2,400 元（路徑B-C合理價區間）</li>
+  <li>若回檔至 2,200 以下，可考慮分批布局</li>
+  <li>持續監控外資買賣超，作為態度轉變的先行指標</li>
+</ul>
+<p><b>風險提醒：</b>85% 的路徑指向目標價低於現價。即使路徑A（全面加速）實現，報酬僅+17%；但路徑D（成長減速）的虧損為-53%。風險報酬比嚴重不對等。</p>
+</div>
+
+<div class="tip good">
+<b>長期觀點</b>
+<p>台光電的產業地位和技術壁壘仍是同業最優。若M10認證通過，且全行業產能不過剩，2027年後的成長空間依然巨大（產能翻倍+AI佔比70%+）。<b>問題不在公司好不好，而在現在的價格是否已把未來兩年的成長都定進去了。</b>答案是：可能是的。因此，等一個更好的價格，或等一個更確定的催化劑（M10通過），都是更聰明的策略。</p>
+</div>
+</details>
+
+<div class="tip info" style="margin-top:12px">
+<b>推衍有效期</b>
+<p>本推衍報告有效期為 <b>2026-04-09 至 2026-05-09（30天）</b>。以下事件任一發生時，報告失效需重新推衍：(1) M10認證結果提前揭露、(2) 中國地緣政策劇變、(3) 台光電重大營運公告（如新CB發行/大規模裁員/工廠事故）、(4) AI資本支出趨勢重大轉向。</p>
+</div>
+
+
+<!-- ===== 頁尾 ===== -->
+
+<!-- CROSS_LINKS_START -->
+<style>
+.cross-section{margin:20px 0;padding:16px;background:rgba(0,210,255,.03);border:1.5px dashed rgba(0,210,255,.3);border-radius:12px}
+.cross-section h4{color:#00d2ff;margin:0 0 8px;font-size:.95em}
+.cross-meta{font-size:.78em;color:#707090;margin:6px 0 10px}
+.cross-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.cross-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-size:.82em;margin:2px}
+.cross-badge-warn{background:rgba(255,212,59,.12);color:#ffd43b;border:1px solid #ffd43b}
+.cross-badge-info{background:rgba(116,192,252,.12);color:#74c0fc;border:1px solid #74c0fc}
+.cross-badge-good{background:rgba(81,207,102,.15);color:#51cf66;border:1px solid #51cf66}
+.cross-badge-danger{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid #ff6b6b}
+.cross-alert{padding:6px 10px;border-radius:8px;border-left:3px solid #ff6b6b;background:rgba(22,33,62,.8);font-size:.8em;margin:6px 0;color:#e0e0e0}
+.cross-alert b{color:#ff6b6b}
+.cross-card{display:flex;gap:10px;background:rgba(22,33,62,.6);border:1px solid #2a2a4a;border-radius:8px;padding:10px 12px;margin:6px 0;align-items:center}
+.cross-card:hover{background:rgba(15,52,96,.6)}
+.cross-card .icon{font-size:1.5em;min-width:32px;text-align:center}
+.cross-card .info{flex:1}
+.cross-card .info .cname{font-weight:700;color:#e0e0e0;font-size:.9em}
+.cross-card .info .cname .flag{color:#ff6b6b}
+.cross-card .info .rel{font-size:.78em;color:#707090}
+.cross-card .info .days-old{color:#ff6b6b;font-weight:700}
+.cross-card .action{color:#00d2ff;font-size:.8em;font-weight:600;text-decoration:none}
+.cross-card .action:hover{text-decoration:underline}
+.cross-card-dim{opacity:.5}
+.cross-verdict{margin:4px 0;background:transparent;border:none}
+.cross-verdict summary{font-size:.78em;color:#707090;padding:2px 0;cursor:pointer;list-style:none}
+.cross-verdict summary::before{content:"▸ "}
+.cross-verdict[open] summary::before{content:"▾ "}
+</style>
+<div class="cross-section">
+<h4>📡 相關標的分析（西碧拉圖譜自動連結）</h4>
+<div class="cross-summary">
+<span class="cross-badge cross-badge-warn">一致性：1/6 偏多 | 5/6 偏空</span>
+<span class="cross-badge cross-badge-info">覆蓋率：6 家關聯 → 6 家已分析（30%）</span>
+</div>
+<div class="cross-alert"><b>🚩 矛盾偵測</b> 供應商 Alphabet(GOOGL) 結論方向與本報告相反 — 建議檢視邏輯一致性</div>
+<p class="cross-meta">基於西碧拉圖譜 | 邊驗證 ≥ V2 | confidence ≥ 0.7 | 更新：2026-04-10</p>
+<div class="cross-card">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">富喬 (1815)</div>
+<div class="rel">關係：供應商 | 2026-03-23 分析（<span>18 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">免責聲明
+本報告為天機閣深度調查系統自動產生的質化分析，僅供分析師參考，不構成任何投資建議或推薦。所有數據來源標註於各段...</span>
+</details>
+</div>
+<a class="action" href="20260323_1815_富喬_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">富喬 (1815)</div>
+<div class="rel">關係：客戶 | 2026-03-23 分析（<span>18 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">免責聲明
+本報告為天機閣深度調查系統自動產生的質化分析，僅供分析師參考，不構成任何投資建議或推薦。所有數據來源標註於各段...</span>
+</details>
+</div>
+<a class="action" href="20260323_1815_富喬_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">台燿 (6274)</div>
+<div class="rel">關係：競爭對手 | 2026-04-09 分析（<span>1 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">免責聲明
+本報告為研究團隊基於公開資料（六份年報、法說會簡報、財報資料庫季報數據）製作的投資分析參考，不構成投資建議或買...</span>
+</details>
+</div>
+<a class="action" href="20260409_6274_台燿_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname"> <span class="flag">🚩</span>Alphabet (GOOGL)</div>
+<div class="rel">關係：供應商 | 2026-03-22 分析（<span>19 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-good">偏多</span> 
+<span style="font-size:.8em;color:#b0b0c0">免責聲明
+本報告由 AI 分析系統（天機閣推衍系統 v2.0）生成，所有數據來源已標註，但可能存在計算誤差或資訊延遲。本...</span>
+ <span style="font-size:.75em;color:#ff6b6b">⚠ 與本報告方向相反</span>
+</details>
+</div>
+<a class="action" href="20260322_GOOGL_Alphabet_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">德宏 (5475)</div>
+<div class="rel">關係：客戶 | 2026-03-26 分析（<span>15 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">第十三章整合結論
+最終結論是 D 級（不建議買入）。理由非常直接：214 元的股價隱含的是一個機率不到 2% 的超級樂觀...</span>
+</details>
+</div>
+<a class="action" href="20260326_5475_德宏_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card">
+<div class="icon">⚔️</div>
+<div class="info">
+<div class="cname">聯茂 (6213)</div>
+<div class="rel">關係：競爭對手 | 2026-04-09 分析（<span>1 天前</span>）</div>
+<details class="cross-verdict"><summary>展開結論</summary>
+<span class="cross-badge cross-badge-danger">偏空</span> 
+<span style="font-size:.8em;color:#b0b0c0">第十三章整合結論（最終投資判斷）
+資料：經完整分析 + 二次審閱，聯茂 6213 的投資價值可歸結為：淨期望值 -5.8...</span>
+</details>
+</div>
+<a class="action" href="20260409_6213_聯茂_完整版.html" target="_blank">查看報告 →</a>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">欣興 (3037)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">欣興 (3037)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">健鼎 (3044)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">華通 (2313)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">臻鼎-KY (4958)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">INTL_Samsung (INTL_Samsung)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">NVIDIA (NVDA)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">Amazon (AMZN)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬆️</div>
+<div class="info">
+<div class="cname">Panasonic (JP_Panasonic)</div>
+<div class="rel">關係：客戶 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<div class="cross-card cross-card-dim">
+<div class="icon">⬇️</div>
+<div class="info">
+<div class="cname">南亞 (1303)</div>
+<div class="rel">關係：供應商 | ⏳ 尚未分析</div>
+</div>
+<span style="color:#707090;font-size:.8em">待分析</span>
+</div>
+<p class="cross-meta">...還有 4 個關聯標的尚未分析</p>
+</div>
+<!-- CROSS_LINKS_END -->
+<div class="footer">
+  深度調查系統 | 第八步推演版 | 台光電（2383）<br>
+  推衍日期：2026-04-09 | 資料截止：2026-04-09 | 基準股價：2,885元<br>
+  本報告為投資研究參考，不構成任何買賣建議。投資有風險，請自行評估。<br>
+  資料來源：財報資料庫、公開法說會、產業圖譜分析、公開情報
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// === Chart.js 暗色全域設定 ===
+Chart.defaults.color='#b8b0a5';
+Chart.defaults.borderColor='rgba(255,255,255,0.06)';
+Chart.defaults.font.family="'Inter','Noto Sans TC',sans-serif";
+const C={bull:'#4caf50',bear:'#ef5350',neutral:'#7ab0c0',accent:'#6b9f72',gold:'#d4b030',warn:'#d4a017',purple:'#a78bfa'};
+
+// === 8g 雷達圖：弱訊號強度 ===
+new Chart(document.getElementById('ch8g-radar'),{type:'radar',data:{
+  labels:['財務槓桿\n(A類 7.0)','組織膨脹\n(B類 6.5)','競爭威脅\n(C類 8.0)','籌碼異常\n(D類 7.5)','估值泡沫\n(E類 7.2)'],
+  datasets:[{
+    label:'弱訊號強度',
+    data:[70,65,80,75,72],
+    borderColor:C.bear,
+    backgroundColor:'rgba(239,83,80,.12)',
+    pointBackgroundColor:C.bear,
+    pointRadius:5,
+    borderWidth:2
+  },{
+    label:'警戒線 (60)',
+    data:[60,60,60,60,60],
+    borderColor:'rgba(212,160,23,.4)',
+    backgroundColor:'transparent',
+    pointRadius:0,
+    borderWidth:1,
+    borderDash:[5,3]
+  }]
+},options:{responsive:true,scales:{r:{suggestedMin:0,suggestedMax:100,grid:{color:'rgba(255,255,255,.08)'},ticks:{display:false},angleLines:{color:'rgba(255,255,255,.08)'},pointLabels:{font:{size:10}}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}}});
+
+// === 8i 信心校準折線圖 ===
+new Chart(document.getElementById('ch8i-calibration'),{type:'line',data:{
+  labels:['ACH','壓力測試','評審團','推演版'],
+  datasets:[
+    {label:'H1 極度看多',data:[25,20,18,15],borderColor:C.bull,backgroundColor:'rgba(76,175,80,.08)',fill:false,tension:.3,pointRadius:5,borderWidth:2},
+    {label:'H2 溫和看多',data:[45,50,48,42],borderColor:C.accent,backgroundColor:'rgba(107,159,114,.08)',fill:false,tension:.3,pointRadius:5,borderWidth:3},
+    {label:'H3 中性見頂',data:[20,20,22,28],borderColor:C.warn,backgroundColor:'rgba(212,160,23,.08)',fill:false,tension:.3,pointRadius:5,borderWidth:2},
+    {label:'H4 看空',data:[8,8,10,13],borderColor:C.bear,backgroundColor:'rgba(239,83,80,.08)',fill:false,tension:.3,pointRadius:5,borderWidth:2},
+    {label:'H5 黑天鵝',data:[2,2,2,2],borderColor:'#c62828',backgroundColor:'transparent',fill:false,tension:.3,pointRadius:3,borderWidth:1,borderDash:[4,4]}
+  ]
+},options:{responsive:true,scales:{y:{min:0,max:55,grid:{color:'rgba(255,255,255,.05)'},ticks:{callback:function(v){return v+'%'}}},x:{grid:{display:false}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}}}}});
+
+// === 8h 貓膩成立機率儀表板（ECharts）===
+(function(){
+  var c=echarts.init(document.getElementById('ch8h-gauge'));
+  c.setOption({
+    backgroundColor:'transparent',
+    series:[{type:'gauge',radius:'80%',min:0,max:100,
+      axisLine:{lineStyle:{width:12,color:[[.2,'#4caf50'],[.4,'#f59e0b'],[.7,'#ef5350'],[1,'#c62828']]}},
+      pointer:{width:4,length:'60%'},
+      axisTick:{show:false},
+      splitLine:{length:10,lineStyle:{color:'#b8b0a5'}},
+      axisLabel:{color:'#b8b0a5',fontSize:10,distance:15},
+      detail:{formatter:'{value}%',fontSize:22,color:'#e0dcd4',offsetCenter:[0,'70%']},
+      title:{offsetCenter:[0,'90%'],fontSize:12,color:'#b8b0a5'},
+      data:[{value:25,name:'貓膩成立機率'}]
+    }]
+  });
+  window.addEventListener('resize',()=>c.resize());
+})();
+
+// === 8i 整體看多信心度儀表板（ECharts）===
+(function(){
+  var c=echarts.init(document.getElementById('ch8i-confidence'));
+  c.setOption({
+    backgroundColor:'transparent',
+    series:[{type:'gauge',radius:'80%',min:0,max:100,
+      axisLine:{lineStyle:{width:12,color:[[.3,'#ef5350'],[.7,'#f59e0b'],[1,'#4caf50']]}},
+      pointer:{width:4,length:'60%'},
+      axisTick:{show:false},
+      splitLine:{length:10,lineStyle:{color:'#b8b0a5'}},
+      axisLabel:{color:'#b8b0a5',fontSize:10,distance:15},
+      detail:{formatter:'{value}%',fontSize:22,color:'#e0dcd4',offsetCenter:[0,'70%']},
+      title:{offsetCenter:[0,'90%'],fontSize:12,color:'#b8b0a5'},
+      data:[{value:42,name:'看多信心度（H2）'}]
+    }]
+  });
+  window.addEventListener('resize',()=>c.resize());
+})();
+
+// === 8i 推衍可靠度儀表板（ECharts）===
+(function(){
+  var c=echarts.init(document.getElementById('ch8i-reliability'));
+  c.setOption({
+    backgroundColor:'transparent',
+    series:[{type:'gauge',radius:'80%',min:0,max:100,
+      axisLine:{lineStyle:{width:12,color:[[.3,'#ef5350'],[.7,'#f59e0b'],[1,'#4caf50']]}},
+      pointer:{width:4,length:'60%'},
+      axisTick:{show:false},
+      splitLine:{length:10,lineStyle:{color:'#b8b0a5'}},
+      axisLabel:{color:'#b8b0a5',fontSize:10,distance:15},
+      detail:{formatter:'{value}%',fontSize:22,color:'#e0dcd4',offsetCenter:[0,'70%']},
+      title:{offsetCenter:[0,'90%'],fontSize:12,color:'#b8b0a5'},
+      data:[{value:68,name:'推衍可靠度'}]
+    }]
+  });
+  window.addEventListener('resize',()=>c.resize());
+})();
+
+// === 8i 八種估值法 vs 現價（ECharts 混合圖）===
+(function(){
+  var c=echarts.init(document.getElementById('ch8i-valuation-bar'));
+  c.setOption({
+    backgroundColor:'transparent',
+    textStyle:{color:'#b8b0a5',fontFamily:"'Inter','Noto Sans TC'"},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+    grid:{left:'3%',right:'4%',bottom:'12%',top:'10%',containLabel:true},
+    xAxis:{type:'category',
+      data:['前瞻PE','PB法','分部估值','隱含預期','歷史循環','DCF成長版\n(打7折)','EV/EBITDA','PEG'],
+      axisLabel:{fontSize:10,color:'#b8b0a5',rotate:15},
+      axisLine:{lineStyle:{color:'#3a3a3a'}}
+    },
+    yAxis:{type:'value',name:'元',
+      splitLine:{lineStyle:{color:'rgba(255,255,255,.05)'}},
+      axisLine:{lineStyle:{color:'#3a3a3a'}},
+      max:3200
+    },
+    series:[
+      {name:'合理價',type:'bar',barWidth:'40%',
+        data:[
+          {value:2480,itemStyle:{color:'rgba(122,176,192,.6)'}},
+          {value:2888,itemStyle:{color:'rgba(239,83,80,.6)'}},
+          {value:2542,itemStyle:{color:'rgba(122,176,192,.6)'}},
+          {value:2160,itemStyle:{color:'rgba(245,158,11,.6)'}},
+          {value:1500,itemStyle:{color:'rgba(239,83,80,.6)'}},
+          {value:2524,itemStyle:{color:'rgba(122,176,192,.6)'}},
+          {value:2170,itemStyle:{color:'rgba(245,158,11,.6)'}},
+          {value:1993,itemStyle:{color:'rgba(245,158,11,.6)'}}
+        ],
+        label:{show:true,position:'top',color:'#b8b0a5',fontSize:10,
+          formatter:function(p){
+            var labels=['2,480\n(PE40x)','2,888\n(PB偏貴)','2,542\n(分部加權)','2,160\n(機率24%)','1,500\n(歷史循環)','2,524\n(DCF成長版)','2,170\n(EV/EBITDA)','1,993\n(PEG=1.45)'];
+            return labels[p.dataIndex];
+          }
+        }
+      },
+      {name:'現價 2,885',type:'line',
+        markLine:{
+          symbol:'none',
+          lineStyle:{color:'#ef5350',width:2,type:'dashed'},
+          label:{formatter:'現價 2,885',color:'#ef5350',fontSize:11,fontWeight:700},
+          data:[{yAxis:2885}]
+        },
+        data:[]
+      }
+    ]
+  });
+  window.addEventListener('resize',function(){c.resize()});
+})();
+
+// === 8i 最終七維評分雷達圖（Chart.js）===
+new Chart(document.getElementById('ch8i-final-radar'),{type:'radar',data:{
+  labels:['基本面','成長性','護城河','管理層','估值','籌碼','風險控管'],
+  datasets:[{
+    label:'台光電 2383',
+    data:[90,90,80,70,40,40,55],
+    borderColor:C.accent,
+    backgroundColor:'rgba(107,159,114,.15)',
+    pointBackgroundColor:C.accent,
+    pointRadius:5,
+    borderWidth:2
+  }]
+},options:{responsive:true,scales:{r:{suggestedMin:0,suggestedMax:100,
+  grid:{color:'rgba(255,255,255,.08)'},
+  angleLines:{color:'rgba(255,255,255,.08)'},
+  pointLabels:{color:'#b8b0a5',font:{size:11}},
+  ticks:{display:false}
+}},plugins:{legend:{display:false}}}});
+
+// === 8i 整體投資信心度（ECharts 獨立儀表板）===
+(function(){
+  var g=echarts.init(document.getElementById('ch8i-invest-confidence'));
+  g.setOption({
+    backgroundColor:'transparent',
+    series:[{type:'gauge',radius:'85%',min:0,max:100,
+      axisLine:{lineStyle:{width:14,color:[[.3,'#ef5350'],[.6,'#f59e0b'],[1,'#4caf50']]}},
+      pointer:{width:5,length:'60%'},
+      axisTick:{show:false},
+      splitLine:{length:12,lineStyle:{color:'#b8b0a5'}},
+      axisLabel:{color:'#b8b0a5',fontSize:11,distance:18},
+      detail:{formatter:'{value}%',fontSize:26,color:'#e0dcd4',offsetCenter:[0,'70%'],fontWeight:900},
+      title:{offsetCenter:[0,'92%'],fontSize:14,color:'#b8b0a5'},
+      data:[{value:42,name:'整體投資信心度'}]
+    }]
+  });
+  window.addEventListener('resize',function(){g.resize()});
+})();
+
+// === 卡片展開/收合 ===
+document.querySelectorAll('.card h3').forEach(h=>{
+  h.addEventListener('click',()=>{h.parentElement.classList.toggle('collapsed')})
+});
+// 全部展開/收合
+function toggleAll(collapse){
+  document.querySelectorAll('.card').forEach(c=>{
+    collapse?c.classList.add('collapsed'):c.classList.remove('collapsed')
+  });
+  document.querySelectorAll('details').forEach(d=>{
+    d.open=!collapse
+  });
+}
+</script>
+</body>
+</html>

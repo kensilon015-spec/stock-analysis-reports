@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>3213 茂訊 — 天機錄：質化分析完整版（v3.0）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- ============================================================
+     天機閣 — 3213 茂訊 完整版報告（Phase C 整合）
+     第七步 v3.0  |  分析日期：2026-04-02
+     Phase B 審閱修正已融入文脈
+     ============================================================ -->
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;--good:#6b9f72
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:20px 16px 16px;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:4px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--good);background:rgba(90,125,96,.18)}.tip.good b{color:var(--good);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* === 收合區塊 === */
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:700;color:var(--base);padding:5px 0;font-size:.92em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:5px;border-bottom:1px solid var(--border);padding-bottom:5px}
+
+/* === 段落標題 === */
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:20px 0 4px;padding-top:14px;border-top:2px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:3px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 證據卡 === */
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:6px 0}
+.ev .ev-t{font-weight:700;color:var(--base);font-size:.88em;margin-bottom:3px}
+.ev .ev-d{font-size:.82em;color:var(--txt2);line-height:1.5}
+.ev .ev-s{font-size:.72em;color:var(--txt3);margin-top:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.fias-i-promise{color:#1565c0;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25);border-left:2px solid #b8960c}
+
+/* === 分數條 === */
+.score-bar{height:16px;background:#333;border-radius:8px;overflow:hidden;margin:3px 0}
+.score-fill{height:100%;border-radius:8px}
+
+/* === 催化劑/風險卡 === */
+.catalyst-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:6px 0}
+.catalyst-card .cat-name{font-weight:900;font-size:.9em;color:var(--base)}
+.catalyst-card .cat-ev{font-size:1.1em;font-weight:900;margin:4px 0}
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:6px 0}
+.risk-card .risk-name{font-weight:900;font-size:.9em}
+.risk-card .risk-ev{font-size:1.1em;font-weight:900;margin:4px 0}
+
+/* === 致命因子 === */
+.fatal{background:rgba(198,40,40,.15);border:1px solid rgba(198,40,40,.4);border-radius:8px;padding:12px;margin:8px 0}
+.fatal .fatal-title{font-weight:900;color:var(--bear);font-size:.95em;margin-bottom:4px}
+.fatal .fatal-body{font-size:.84em;color:var(--txt2)}
+
+/* === 評審團 === */
+.reviewer{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px;margin:8px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.88em}
+.reviewer .r-layer{font-size:.72em;color:var(--txt3);margin-left:6px}
+.reviewer .r-verdict{font-size:.82em;font-weight:700;margin-top:2px}
+.reviewer .r-verdict.pass{color:var(--bull)}.reviewer .r-verdict.cond{color:var(--warn)}.reviewer .r-verdict.fail{color:var(--bear)}
+
+/* === 評審 維度項 === */
+.評審-item{display:flex;gap:8px;align-items:baseline;padding:4px 8px;font-size:.82em;border-bottom:1px dashed var(--border);background:var(--panel);border-radius:4px;margin:2px 0}
+.評審-item:last-child{border-bottom:none}
+.評審-id{flex-shrink:0;font-weight:700;color:var(--base);min-width:28px}
+.評審-name{flex-shrink:0;min-width:100px;font-weight:600;color:var(--txt)}
+.評審-assess{flex:1;color:var(--txt2)}
+.評審-data{flex-shrink:0;font-size:.75em;padding:1px 6px;border-radius:4px}
+.評審-data.ok{background:rgba(46,125,50,.25);color:#2e7d32}
+.評審-data.judge{background:rgba(184,150,12,.25);color:#b8960c}
+.評審-data.manual{background:rgba(198,40,40,.25);color:#c62828}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.tl-bear::before{background:var(--bear)}
+.tl-item.tl-warn::before{background:var(--warn)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:10px 0}
+.toc a{color:var(--link);text-decoration:none;font-size:.85em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent)}
+
+/* === 按鈕 === */
+.btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--txt2);cursor:pointer;font-size:.8em;margin:2px}
+.btn:hover{background:var(--hover)}
+
+/* === 徽章 === */
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<!-- 右上角固定日期標籤 -->
+<div style="position:fixed;top:12px;right:20px;z-index:9999;background:rgba(90,125,96,0.92);color:#fff;padding:6px 16px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+  分析日期：2026-04-02
+</div>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>3213 茂訊（MilDef Crete）天機錄</h1>
+  <div class="sub">第七步：完整版（v3.0）— Phase C 整合｜13 章全文</div>
+  <div class="desc">
+    本報告以質化分析為核心 — 這家公司有什麼優勢？有沒有值得買進的理由？目前股價有什麼風險？<br>
+    OTC 電腦及週邊設備業｜強固型軍用電腦 OEM + 商用筆電通路<br>
+    基準股價：99.8 元（2026/4/1）｜FIAS：<span class="fias-f">事實 42</span> <span class="fias-i">推論 20</span> <span class="fias-a">假設 11</span> <span class="fias-s">推測 6</span>
+  </div>
+  <div class="tags">
+    <span class="tag">評審 38.9/100</span><span class="tag">期望報酬 -7.9%</span>
+    <span class="tag">RODA 佔營收 33%</span><span class="tag">H3 脫離 37%</span>
+    <span class="tag">安全邊際價 68 元</span><span class="tag">連續 24 年配息</span>
+  </div>
+</div>
+
+<!-- ===== 快照總覽 6 卡 ===== -->
+<div class="grid3">
+  <div class="mini-card bear-card"><div class="title">評審 總分</div><div class="num" style="color:var(--bear)">38.9 / 100</div><div class="desc">觀望/迴避</div></div>
+  <div class="mini-card bear-card"><div class="title">期望報酬</div><div class="num" style="color:var(--bear)">-7.9%</div><div class="desc">三情境加權含息</div></div>
+  <div class="mini-card neutral-card"><div class="title">收盤價</div><div class="num">99.8 元</div><div class="desc">PE 13.49x｜PB 1.58x</div></div>
+  <div class="mini-card bear-card"><div class="title">安全邊際價</div><div class="num" style="color:var(--warn)">68 元</div><div class="desc">現價溢價 47%</div></div>
+  <div class="mini-card bear-card"><div class="title">FY2025 EPS</div><div class="num">7.4 元</div><div class="desc">YoY -12%（ROE 11.3%）</div></div>
+  <div class="mini-card bear-card"><div class="title">RODA 佔營收</div><div class="num" style="color:var(--danger)">32.55%</div><div class="desc">= 系統事業部 66%</div></div>
+</div>
+
+<!-- ===== 控制按鈕 ===== -->
+<div style="text-align:center;margin:10px 0">
+  <button class="btn" onclick="toggleAll(true)">全部展開</button>
+  <button class="btn" onclick="toggleAll(false)">全部收合</button>
+</div>
+<script>function toggleAll(expand){document.querySelectorAll('details').forEach(d=>d.open=expand);}</script>
+
+<!-- ===== 目錄（13 章） ===== -->
+<div class="toc">
+  <b style="color:var(--base)">目錄（13 章）</b>
+  <a href="#ch1">一、公司概覽 — 你在看的是什麼公司？</a>
+  <a href="#ch2">二、近期催化劑 / 利多因素</a>
+  <a href="#ch3">三、為什麼在漲？市場為什麼買單？</a>
+  <a href="#ch4">四、潛在風險偵測與求證 — 市場還沒看到什麼？</a>
+  <a href="#ch5">五、隱藏優勢挖掘與求證 — 市場錯過了什麼？</a>
+  <a href="#ch6">六、六步分析關鍵決策因素彙整</a>
+  <a href="#ch7">七、風險清單與壓力測試</a>
+  <a href="#ch8">八、監控儀表板</a>
+  <a href="#ch9">九、推衍預測</a>
+  <a href="#ch10">十、股價合理性評估</a>
+  <a href="#ch11">十一、（保留）</a>
+  <a href="#ch12">十二、貓膩探索與求證</a>
+  <a href="#ch13">十三、投資結論</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- 第一章：公司概覽 -->
+<!-- ============================================================ -->
+<div id="ch1"></div>
+<details open>
+<summary class="section-title">一、公司概覽 — 你在看的是什麼公司？</summary>
+<div class="section-sub">基本資料 + 人力結構 + 營收結構 + 銷售地區 + 製造能力 + 競爭力地圖 + 護城河 + Porter 五力 + 財務體質</div>
+
+<details open>
+<summary>基本資料</summary>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>代號 / 全名</td><td>3213 茂訊電腦（MilDef Crete Inc.）</td></tr>
+<tr><td>成立 / 上櫃</td><td>1990-03-15 / 2004-10（OTC）</td></tr>
+<tr><td>董事長兼總經理</td><td>沈頤同（創辦人）</td></tr>
+<tr><td>發言人</td><td>周詠翔（執行副總）</td></tr>
+<tr><td>總部</td><td>新北市深坑區北深路三段 250 號 7 樓</td></tr>
+<tr><td>簽證會計師</td><td>安侯建業 KPMG（高靚玟、唐慈杰）</td></tr>
+<tr><td>員工（FY2024）</td><td>293 人（管理19 / 研發43 / 業務122 / 生產109）｜均齡 42.2 歲 / 年資 12.7 年</td></tr>
+<tr><td>碩博佔比</td><td>研發 43 人佔總員工 14.7%（含碩博士），年報揭露研發人員學歷以碩士為主</td></tr>
+<tr><td>非主管均薪</td><td>小型 OTC 未詳細披露（年報僅揭露全體員工平均；待 2026 Q2 薪資統計報告確認）</td></tr>
+<tr><td>認證</td><td>ISO 9001/14001、MIL-STD-810H/461G、TEMPEST（NSA）、AMSG（NATO）</td></tr>
+<tr><td>股本 / 股數</td><td>5.87 億元 / ~5,870 萬股</td></tr>
+<tr><td>市值（4/1）</td><td>約 59 億元</td></tr>
+<tr><td>收盤價 / PE / PB</td><td>99.8 元 / 13.49x / 1.58x</td></tr>
+<tr><td>殖利率</td><td>6.01%（6 元 / 連續 24 年）</td></tr>
+<tr><td>董監持股 / 質押</td><td>11.04% / <b>零質押</b></td></tr>
+<tr><td>外資持股</td><td>7.18%（4/1，近 20 日小幅減少）</td></tr>
+</table>
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 創辦人兼任董事長與總經理</div>
+<div class="ev-d">白話說：老闆就是創辦人，一人掌控公司決策。好處是決策效率高，風險是沒有分權制衡。董事平均年資超過 21 年，年齡集中在 62-91 歲（大部分 82-91 歲）。公司已承諾 2025 年股東會增選一席女性獨立董事。研發團隊 43 人佔全公司 14.7%，以碩士為主，主要負責強固型產品的機構/電磁遮蔽/韌體設計。</div>
+<div class="ev-s">來源：FY2024 年報公司治理報告 + 員工結構</div>
+</div>
+</details>
+
+<details open>
+<summary>營收結構與業務組成（FY2024）</summary>
+<table>
+<tr><th>事業部</th><th>營收（千元）</th><th>比重</th><th>特性</th><th>毛利率估</th></tr>
+<tr><td>強固型電腦（系統）</td><td>1,403,886</td><td>49.20%</td><td>MilDef 品牌軍規電腦 OEM，利潤引擎</td><td>~40-50%</td></tr>
+<tr><td>商用筆電通路</td><td>1,361,708</td><td>47.72%</td><td>台灣國內零售通路</td><td>~10-15%</td></tr>
+<tr><td>維修服務及其他</td><td>87,797</td><td>3.08%</td><td>售後服務，YoY +40%</td><td>高</td></tr>
+<tr><td><b>合計</b></td><td><b>2,853,391</b></td><td><b>100%</b></td><td>YoY -4.5%</td><td><b>~31.4%</b></td></tr>
+</table>
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 系統事業部 = 全部利潤來源，但 RODA 佔其 66%</div>
+<div class="ev-d">白話說：通路事業部雖佔 48% 營收但毛利率極低（~10%），利潤幾乎全來自系統事業部。而系統事業部 14 億營收中，RODA 一家客戶就佔了 9.3 億（66%）。所以真正的公式是：<b>茂訊的利潤 ≈ RODA 訂單量 x 代工毛利</b>。MilDef Group 現在完全掌控 RODA，茂訊的利潤命脈握在別人手上。</div>
+<div class="ev-s">來源：FY2024 年報營收結構 + RODA 佔銷貨 32.55%（928,676 千元）推算</div>
+</div>
+</details>
+
+<details open>
+<summary>銷售地區分布（FY2024）</summary>
+<table>
+<tr><th>地區</th><th>金額（千元）</th><th>FY2024</th><th>FY2023</th><th>變動</th></tr>
+<tr><td>國內</td><td>1,579,928</td><td>55.34%</td><td>61.62%</td><td style="color:var(--bear)">-6.3pp</td></tr>
+<tr><td>歐洲</td><td>1,048,768</td><td>36.76%</td><td>33.24%</td><td style="color:var(--bull)">+3.5pp</td></tr>
+<tr><td>美洲</td><td>187,469</td><td>6.57%</td><td>3.12%</td><td style="color:var(--bull)">+3.5pp</td></tr>
+<tr><td>亞洲</td><td>27,927</td><td>0.98%</td><td>2.02%</td><td style="color:var(--bear)">-1.0pp</td></tr>
+</table>
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 外銷比重從 38% 升至 45%，歐洲是成長引擎</div>
+<div class="ev-d">歐洲佔比 37% 幾乎全部經 RODA/MilDef Group 出貨。美洲從 3% 跳升至 6.6%（可能含澳洲子公司/新通路）。國內佔比持續下降，反映通路事業部飽和。為什麼這是問題？因為歐洲營收 = RODA 命運，MilDef 若轉單，歐洲 37% 將直接萎縮。</div>
+<div class="ev-s">來源：FY2024 年報 p.93 地區營收表</div>
+</div>
+</details>
+
+<details>
+<summary>製造能力與產能</summary>
+<table>
+<tr><th>項目</th><th>FY2023 資料</th><th>FY2024</th></tr>
+<tr><td>月產能</td><td>6,525 台/年</td><td style="color:var(--danger)">年報省略（未揭露）</td></tr>
+<tr><td>實際產量</td><td>9,005 台/年</td><td style="color:var(--danger)">年報省略</td></tr>
+<tr><td>利用率</td><td>138%</td><td style="color:var(--danger)">年報省略</td></tr>
+<tr><td>廠區</td><td colspan="2">新北深坑（主廠）+ 訊志精密（機構件，持股 56.22%）</td></tr>
+<tr><td>擴產計畫</td><td colspan="2">+50% 產能、2 條新線、投資逾 1 億、2026 H1 完成（法說會承諾 2025/12）</td></tr>
+</table>
+<div class="tip danger">
+<b>疑點：FY2024 年報省略產銷量值表</b>
+FY2023 年報有完整的產能/產量/利用率表格，FY2024 年報在同位置直接跳過。逐頁確認（p.88-103）此表不存在於年報任何位置。公司過去揭露的產能資訊在最新年報不再揭露——「從揭露到不揭露」本身就是<b>負面透明度訊號</b>。潛在含義：(1) 產能利用率可能下降 (2) 不想讓投資人追蹤 RODA 出貨量變化 (3) 刻意降低資訊揭露程度。
+</div>
+</details>
+
+<details open>
+<summary>競爭力地圖（7 維度）</summary>
+<table>
+<tr><th>維度</th><th>分數</th><th>說明</th></tr>
+<tr><td>技術深度</td><td>7/10</td><td>MIL-STD-810H/461G + TEMPEST/AMSG（NSA+NATO 等級）+ NanoCoating</td></tr>
+<tr><td>客戶黏性</td><td>6/10</td><td>認證 12-18 月 + 5-10 年供應承諾（但只保護舊訂單）</td></tr>
+<tr><td>價格競爭力</td><td>5/10</td><td>台灣成本優勢存在，但軍工不看價格。MilDef 毛利 45% 足以自製</td></tr>
+<tr><td>品牌力</td><td>2/10</td><td>OEM 角色，品牌歸 MilDef Group。終端用戶不知茂訊存在</td></tr>
+<tr><td>規模</td><td>2/10</td><td>年營收 28.5 億 vs 神基 380 億。全球市佔個位數</td></tr>
+<tr><td>客戶分散</td><td>1/10</td><td>RODA 佔 32.55% + 系統事業部 66%。FY2024 確認後進一步惡化</td></tr>
+<tr><td>自主性</td><td>2/10</td><td>依賴 MilDef Group 品牌+訂單+國際通路。茂訊自身無直接終端客戶</td></tr>
+</table>
+<div style="margin:6px 0">
+<div style="font-size:.84em;margin-bottom:3px"><b>技術深度 7/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:70%;background:var(--accent)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>客戶黏性 6/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:60%;background:var(--accent)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>價格競爭力 5/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:50%;background:var(--warn)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>品牌力 2/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:20%;background:var(--danger)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>規模 2/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:20%;background:var(--danger)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>客戶分散 1/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:10%;background:var(--bear)"></div></div>
+<div style="font-size:.84em;margin-bottom:3px"><b>自主性 2/10</b></div>
+<div class="score-bar"><div class="score-fill" style="width:20%;background:var(--danger)"></div></div>
+</div>
+<p style="font-size:.84em"><b>七維平均：3.6/10</b>。技術深度和客戶黏性是僅有的優勢，但「向外防禦」有效（擋新進者），「向上依賴」極脆弱（無法防止 MilDef 內化）。</p>
+</details>
+
+<details>
+<summary>護城河評估（五維度，v3.0 下修至 4.2/10）</summary>
+<table>
+<tr><th>維度</th><th>分數</th><th>說明</th></tr>
+<tr><td>品牌力</td><td>3/10</td><td>OEM，品牌歸 MilDef Group</td></tr>
+<tr><td>技術壁壘</td><td>6/10</td><td>MIL-STD + NanoCoating + TEMPEST/AMSG</td></tr>
+<tr><td>轉換成本</td><td>7/10</td><td>認證 12-18 月 + 供應承諾（但只護舊訂單，新訂單不保護）</td></tr>
+<tr><td>成本優勢</td><td>4/10</td><td>台灣成本低，但軍工不看價格</td></tr>
+<tr><td>規模/客戶分散</td><td>1/10</td><td>RODA 佔系統事業部 66% 已確認</td></tr>
+</table>
+<p style="font-size:.84em"><b>護城河綜合：4.2/10</b>（RODA 確認後從 4.6 下修）。白話說：茂訊有技術壁壘和轉換成本，但這些只能防止「別人搶客戶」，不能防止「最大客戶自己不來了」。護城河朝外堅固、朝內空虛。</p>
+</details>
+
+<details>
+<summary>Porter 五力分析</summary>
+<table>
+<tr><th>力量</th><th>強度</th><th>說明</th></tr>
+<tr><td>現有競爭者威脅</td><td style="color:var(--warn)">中高</td><td>Panasonic 50-55%、神基 20-25%、Dell 15%。<b>MilDef Group 從夥伴變成競爭者</b></td></tr>
+<tr><td>新進入者威脅</td><td style="color:var(--accent)">低</td><td>認證 12-18 月，5-10 年供應承諾</td></tr>
+<tr><td>替代品威脅</td><td style="color:var(--accent)">低</td><td>戰場必須用強固型設備，AR/VR 10 年內不替代</td></tr>
+<tr><td>供應商議價力</td><td style="color:var(--warn)">中</td><td>LCD/CPU/RAM 國際大廠，茂訊採購量小</td></tr>
+<tr><td>客戶議價力</td><td style="color:var(--bear)">極高</td><td><b>RODA 佔 32.55% + 系統事業部 66%，已被 MilDef 收購</b></td></tr>
+</table>
+<p style="font-size:.84em">五力結構的核心問題：新進入者/替代品威脅低（防外人），但客戶議價力極高（最大客戶同時是最大潛在競爭者）。這是最不利的組合——外面進不來，裡面的人隨時可以走。</p>
+</details>
+
+<details open>
+<summary>財務體質卡片</summary>
+<table>
+<tr><th>項目</th><th>FY2024/FY2025 最新</th><th>評價</th></tr>
+<tr><td>負債比率</td><td>22.2%（FY2025Q4）</td><td style="color:var(--accent)">保守</td></tr>
+<tr><td>流動/速動比率</td><td>財報資料庫 無此欄位；依年報推估流動比率 > 200%（待確認）</td><td style="color:var(--accent)">推估健康</td></tr>
+<tr><td>現金部位</td><td>充裕（法說會 2025/12 確認帳上現金足以支應擴產 + 配息）</td><td style="color:var(--accent)">安全</td></tr>
+<tr><td>EPS</td><td>FY2024: 8.44 / FY2025: 7.4（-12%）</td><td style="color:var(--warn)">衰退中</td></tr>
+<tr><td>ROE</td><td>FY2024: 16.96% → FY2025: 11.28%</td><td style="color:var(--bear)">大幅下滑</td></tr>
+<tr><td>毛利率</td><td>FY2025: ~30.2%（Q1 37% → Q2 30% → Q3 29% → Q4 25%，逐季降）</td><td style="color:var(--bear)">惡化中</td></tr>
+<tr><td>營業利益率</td><td>Q4 僅 7.0%（連 4 季降，Q1 曾 26%）</td><td style="color:var(--bear)">急速惡化</td></tr>
+<tr><td>營業外</td><td>FY2024 暴增 12 倍至 96,974 千（主要來自處分 MilDef 持股利益）</td><td style="color:var(--warn)">不可持續</td></tr>
+<tr><td>現金股利</td><td>6 元 / 殖利率 6.01% / 連續 24 年</td><td style="color:var(--accent)">穩定</td></tr>
+<tr><td>董監質押</td><td>零質押</td><td style="color:var(--accent)">乾淨</td></tr>
+<tr><td>法人關注度</td><td>投信 2026 年零進出、外資持股 7.18% 小減</td><td style="color:var(--bear)">冷門</td></tr>
+<tr><td>日均量</td><td>~28 萬股（~2,800 萬元）</td><td style="color:var(--warn)">流動性中低</td></tr>
+</table>
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> EPS 季度拆解揭露利潤品質問題</div>
+<div class="ev-d">FY2025 各季 EPS：Q1 2.83、Q2 0.59、Q3 2.66、Q4 1.32。Q2 僅 0.59 元，Q4 僅 1.32 元——全年 7.4 元中有 74% 集中在 Q1+Q3。這種高波動暗示系統事業部訂單出貨極不穩定，且下半年利潤急速萎縮（Q3+Q4 合計 3.98 元 vs Q1+Q2 合計 3.42 元，看似平衡，但 Q4 單季營業利益率僅 7% 已不正常）。</div>
+<div class="ev-s">來源：財報資料庫 季 EPS + 季營業利益率</div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>第一章整合結論</b>
+<p><b>資料 →</b> 茂訊是 1990 年成立的台灣強固型電腦 OEM 廠，59 億市值、293 人。系統事業部（49% 營收）為主要利潤來源，但最大客戶 RODA 佔其 66%。財務體質保守（負債 22%、零質押、現金充裕），但 ROE 從 16.96% 降至 11.28%、營業利益率從 26% 降至 7% 急速惡化。流動比率推估健康但 財報資料庫 無直接欄位。</p>
+<p><b>觀察 →</b> 競爭力地圖 3.6/10、護城河 4.2/10。技術壁壘是存在的（TEMPEST/AMSG），但護城河只能防「外人」不能防「最大客戶內化」。客戶分散度 1/10 在 FY2024 RODA 確認後成為致命短板。研發團隊 43 人佔比 14.7%，在小型 OTC 廠中算正常偏上。</p>
+<p><b>推論 →</b> 茂訊不是「便宜的軍工股」，是「高度依賴單一客戶的代工廠」。PE 13.5x 看似不貴，但反映的不是成長溢價，而是市場已不信成長兌現。法人完全缺席（投信零進出）= 機構投資人對此股票沒有信心。</p>
+<p><b>結論 →</b> 公司定位 = 「代工依賴 x 客戶集中」最不利象限。短期靠配息 6% 撐股價，中長期命運取決於 MilDef Group 是否繼續轉單。財務安全但利潤品質惡化。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第二章：催化劑 -->
+<!-- ============================================================ -->
+<div id="ch2"></div>
+<details open>
+<summary class="section-title">二、近期催化劑 / 利多因素 — 有什麼好消息？</summary>
+<div class="section-sub">催化劑卡片 + 量化期望值 + Price-in 計算 + 時間軸</div>
+
+<div class="catalyst-card bull-card">
+<div class="cat-name">C1：MilDef 訂單溢出 → 茂訊承接</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>邏輯</td><td>MilDef 訂單 SEK 35 億（歷史新高），產能可能不夠 → 溢出至茂訊</td></tr>
+<tr><td>時間</td><td>2026 Q2-Q3（新產線投產後）</td></tr>
+<tr><td>影響幅度</td><td>EPS +2-3 元（系統事業部營收 +20%）→ 股價 +20-30%</td></tr>
+<tr><td>實現機率</td><td>15%</td></tr>
+<tr><td>Price-in 程度</td><td>30%（法說會已公開宣布，PE 13.5x 未含成長溢價 = 市場不太信）</td></tr>
+<tr><td>FIAS</td><td><span class="fias-a">假設</span>（法說會承諾，無具體合約）</td></tr>
+</table>
+<div class="cat-ev" style="color:var(--bull)">期望值 = 15% x 25% x (1 - 30%) = <b>+2.6%</b></div>
+<p style="font-size:.82em"><b>為什麼不高？</b>MilDef Rosersberg 4x 擴廠已完工，再加 Helsingborg 額外投資，自有產能充足。RODA 德國工廠也可承接。MilDef 訂單暴增不代表會溢到茂訊——MilDef 更可能優先自己消化。Price-in 30% 的意思是：即使發生了，股價也只反映 70% 的上漲空間。</p>
+</div>
+
+<div class="catalyst-card bull-card">
+<div class="cat-name">C2：無人機 GCS 新商機</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>邏輯</td><td>強固型無人機/機器人地面控制站（GCS），2026 H2 開始貢獻營收</td></tr>
+<tr><td>時間</td><td>2026 H2 起</td></tr>
+<tr><td>影響幅度</td><td>初期小（年營收可能 0.5-1 億），中長期看好</td></tr>
+<tr><td>實現機率</td><td>30%（有開發方向但無具體訂單）</td></tr>
+<tr><td>Price-in</td><td>10%（市場幾乎未反映）</td></tr>
+<tr><td>FIAS</td><td><span class="fias-a">假設</span>（定性展望，無具體金額）</td></tr>
+</table>
+<div class="cat-ev" style="color:var(--bull)">期望值 = 30% x 5% x (1 - 10%) = <b>+1.4%</b></div>
+</div>
+
+<div class="catalyst-card bull-card">
+<div class="cat-name">C3：全球軍費持續增長</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>邏輯</td><td>全球軍費 88 兆（+9.4%），德國 +28%，NATO 擴張 → 整體需求結構性增長</td></tr>
+<tr><td>時間</td><td>持續性（2026-2030+）</td></tr>
+<tr><td>影響幅度</td><td>整體市場 CAGR 6.42%，茂訊受惠程度取決於 MilDef 關係</td></tr>
+<tr><td>實現機率</td><td>85%（結構性趨勢，非個別事件）</td></tr>
+<tr><td>Price-in</td><td>60%（軍工概念已反映在股價，茂訊被歸類為軍工概念股已有一段時間）</td></tr>
+<tr><td>FIAS</td><td><span class="fias-f">事實</span>（政府預算數據）</td></tr>
+</table>
+<div class="cat-ev" style="color:var(--bull)">期望值 = 85% x 10% x (1 - 60%) = <b>+3.4%</b></div>
+<p style="font-size:.82em"><b>注意：</b>軍費增長 = 產業增長，不等於茂訊增長。如果 MilDef 自己消化訂單，軍費再高也跟茂訊無關。「問題不在有沒有訂單，在訂單會不會流到茂訊」。Price-in 60% 是因為「全球軍費擴張」這個故事早已在市場上流傳，股價已部分反映。</p>
+</div>
+
+<div class="catalyst-card bull-card">
+<div class="cat-name">C4：擴產 +50% 完成（2026 H1）</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>邏輯</td><td>2 條新線，投資逾 1 億，2026 H1 完成 → 解決產能瓶頸</td></tr>
+<tr><td>時間</td><td>2026 Q2</td></tr>
+<tr><td>影響幅度</td><td>若滿載 → 系統營收 +50% → EPS +3-4 元</td></tr>
+<tr><td>實現機率</td><td>60%（建設面很可能完成，但填充率取決於訂單）</td></tr>
+<tr><td>Price-in</td><td>40%（法說會已公布，市場已知但半信半疑）</td></tr>
+<tr><td>FIAS</td><td><span class="fias-i-promise">推論-承諾</span></td></tr>
+</table>
+<div class="cat-ev" style="color:var(--bull)">期望值 = 60% x 15% x (1 - 40%) = <b>+5.4%</b></div>
+<p style="font-size:.82em"><b>關鍵假設：</b>產線建好不等於訂單來。如果 RODA 不加單，新產線就是閒置產能 + 年增 3-5 千萬折舊。Price-in 40% 代表市場已吸收部分資訊但尚存疑慮。</p>
+</div>
+
+<!-- 催化劑時間軸 -->
+<details open>
+<summary>催化劑時間軸</summary>
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2025/12 法說會</div>
+    <div class="tl-title">宣布擴產 +50%、訂單能見度 80-90%</div>
+    <div class="tl-desc">管理層最樂觀的時刻。公開承諾 2026H1 完工、2 條新線。</div>
+  </div>
+  <div class="tl-item tl-bear">
+    <div class="tl-date" style="color:var(--bear)">2026/1-2 月營收</div>
+    <div class="tl-title" style="color:var(--bear)">YoY -23.18%（4.50 億）</div>
+    <div class="tl-desc">法說會後第一份營收數據就打臉「挑戰新高」。</div>
+  </div>
+  <div class="tl-item tl-warn">
+    <div class="tl-date" style="color:var(--warn)">2026 Q2（預計）</div>
+    <div class="tl-title">新產線完工 → 關鍵驗證窗口</div>
+    <div class="tl-desc">產能擴好了，但有沒有訂單來填？看 Q2 月營收 YoY 能否回正。</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026 H2（預期）</div>
+    <div class="tl-title">無人機 GCS 可能開始出貨</div>
+    <div class="tl-desc">最早期的營收貢獻，金額可能極小（0.5-1 億/年）。</div>
+  </div>
+  <div class="tl-item tl-bear">
+    <div class="tl-date" style="color:var(--bear)">2026 Q3-Q4</div>
+    <div class="tl-title">RODA SEK 320M 合約交貨期</div>
+    <div class="tl-desc">這筆史上最大合約由 RODA 直接交貨——如果茂訊月營收仍未回升，等於確認被排除在外。</div>
+  </div>
+</div>
+</details>
+
+<div class="tip info">
+<b>催化劑合計期望值：+12.8%（調整相關性後 ~+7%）</b>
+<p>C1（+2.6%）+ C2（+1.4%）+ C3（+3.4%）+ C4（+5.4%）= +12.8%。但請注意：C1（訂單溢出）和 C4（擴產填充）高度相關——如果 MilDef 不轉單，兩個同時失效。C3（軍費增長）對茂訊的傳導效率取決於 MilDef 關係。</p>
+<p><b>所以呢？</b>催化劑看起來不少，但幾乎全部依賴同一個前提條件：「MilDef Group 繼續把訂單轉給茂訊」。這使催化劑之間高度相關，不是獨立事件的加總。真實的催化劑期望值扣除相關性後約 <b>+7%</b>。</p>
+</div>
+
+<div class="tip warn">
+<b>第二章整合結論</b>
+<p><b>資料 →</b> 四個催化劑名義合計 +12.8%，調整相關性後 ~+7%。最有力的 C4 擴產（+5.4%）和 C1 訂單溢出（+2.6%）都完全依賴 MilDef 配合。C3 軍費增長雖然實現機率高（85%），但 Price-in 已 60%、且傳導到茂訊的效率存疑。</p>
+<p><b>觀察 →</b> 時間軸上最關鍵的驗證點在 2026 Q2：新產線完工時月營收能否回正。2026 前 2 月 YoY -23% 是嚴重的負面訊號，法說會「挑戰新高」的承諾正面臨第一次事實檢驗。</p>
+<p><b>結論 →</b> 催化劑面不弱但高度相關——全繫於 MilDef 一條繩上。如果 MilDef 配合，+12.8%；如果不配合，四個催化劑同時失效趨近零。這不是「多個獨立的好消息」，是「同一個好消息的四種表述」。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第三章：為什麼在漲 -->
+<!-- ============================================================ -->
+<div id="ch3"></div>
+<details open>
+<summary class="section-title">三、為什麼在漲？市場為什麼買單？</summary>
+<div class="section-sub">市場目前相信的故事 + FIAS 標記 + 敘事拆解</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 驅動力 1：「PE 13.5x + 殖利率 6% = 便宜的軍工股」</div>
+<div class="ev-d">市場看到的是：一家軍工概念股，PE 只有 13.5 倍，配息 6%，連續 24 年不斷。在利率下行周期，這種高殖利率標的吸引存股族。<br><b>問題在哪？</b>PE 13.5x 不含成長溢價——市場已經不給成長預期。這不是「便宜」，是「市場不看好成長」。對比神基 PE 15-18x，茂訊 PE 折價 25% 反映的是客戶集中度折扣。</div>
+<div class="ev-s">來源：財報資料庫 PE 數據 + 殖利率計算</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 驅動力 2：全球軍費擴張敘事</div>
+<div class="ev-d">全球軍費 88 兆（+9.4%），德國 +28%，NATO 擴張。茂訊被歸類為「軍工概念股」，受惠於這波預算擴張。法說會也強調「訂單能見度 80-90%」、「挑戰新高」。<br><b>問題在哪？</b>軍費增長不等於茂訊增長。MilDef Group 訂單 +116%，但 RODA SEK 320M 最大合約走 RODA 不走茂訊。茂訊 2026 前 2 月營收反而 -23%。產業大好 + 個股衰退 = 被邊緣化的訊號。</div>
+<div class="ev-s">來源：法說會 2025/12 + MilDef Year-End 2025 + 財報資料庫 月營收</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 驅動力 3：配息穩定 = 下檔保護</div>
+<div class="ev-d">連續 24 年配息，現金殖利率 6%，吸引長期存股投資人。負債只有 22%，零質押，配息不會中斷。<br><b>這是真的嗎？</b>短期是的。但如果 RODA 減單導致 EPS 降至 5 元以下，配息可能從 6 元降至 4 元 → 殖利率吸引力消失 → 存股族撤退。配息殖利率不是絕對保護，它依賴利潤的穩定性。</div>
+<div class="ev-s">來源：財報資料庫 配息紀錄 + 負債比率</div>
+</div>
+
+<div class="tip warn">
+<b>第三章整合結論</b>
+<p><b>資料 →</b> 市場買單的三個理由：PE 便宜、軍工概念、配息穩定。股價在 97-105 元區間整理 60 天。</p>
+<p><b>觀察 →</b> 三個理由都有隱藏假設：PE 便宜假設 EPS 不會再降，軍工概念假設訂單會流到茂訊，配息穩定假設利潤不會被 RODA 減單侵蝕。三個假設全部指向同一個前提——MilDef 不會棄茂訊。</p>
+<p><b>推論 →</b> 市場目前的「故事」是 H1（成長兌現）+ H4（穩定配息）的混合體，合計信心 22%。而證據支持的是 H2+H3（62%）。</p>
+<p><b>結論 →</b> <b>市場在信不太可能發生的故事。</b>當 2026 前 2 月營收 -23% 的事實持續積累，這個敘事終將瓦解——問題只在速度。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第四章：風險偵測 -->
+<!-- ============================================================ -->
+<div id="ch4"></div>
+<details open>
+<summary class="section-title">四、潛在風險偵測與求證 — 市場還沒看到什麼？</summary>
+<div class="section-sub">已知延伸 / 損害嚴重度 / 觸發因素 / 解決方案 / 即時求證 / 產業圖譜節點 / 總覽表</div>
+
+<details open>
+<summary>4-1. 已知風險延伸 — 連鎖影響路徑</summary>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 風險鏈 A：RODA → MilDef 內化 → 茂訊邊緣化</div>
+<div class="ev-d">
+<b>一階</b>：MilDef 全資收購 RODA（2024/11 完成）→ 掌控茂訊 32.55% 營收的生殺大權<br>
+<b>二階</b>：MilDef Rosersberg 4x 擴廠完工 + Helsingborg 額外投資 → 自有產能充足，不再需要茂訊代工<br>
+<b>三階</b>：RODA 訂單逐步轉回歐洲 → 茂訊系統事業部營收腰斬 → 退化為純通路股<br>
+<b>四階</b>：純通路股 PE 8-10x x EPS 3-4 元 = 股價 25-40 元
+</div>
+<div class="ev-s">來源：FY2024 年報（RODA 32.55%）+ MilDef Q3/Year-End 2025 + WebSearch 最新確認</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 風險鏈 B：營業利益率崩潰</div>
+<div class="ev-d">
+<b>一階</b>：Q4 營業利益率降至 7%（Q1 曾 26%）→ 連 4 季下滑<br>
+<b>二階</b>：若此趨勢延續，FY2026 全年營業利益率可能降至 10-12%<br>
+<b>三階</b>：加上 2026 前 2 月營收 -23% → FY2026 EPS 可能降至 5-6 元<br>
+<b>四階</b>：EPS 5 元 x PE 12x = 股價 60 元（-40%）
+</div>
+<div class="ev-s">來源：財報資料庫 營業利益率 20 季數據</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 風險鏈 C：擴產 + RODA 減單 = 雙殺</div>
+<div class="ev-d">
+<b>一階</b>：茂訊投資逾 1 億擴產 +50%<br>
+<b>二階</b>：RODA 減單 → 新產線閒置<br>
+<b>三階</b>：年增 3-5 千萬折舊 + 營收下滑 = 利潤雙殺<br>
+<b>四階</b>：EPS 可能降至 3-4 元，最悲觀 2.5 元
+</div>
+<div class="ev-s">來源：法說會擴產承諾 + 致命因子分析推算</div>
+</div>
+</details>
+
+<details open>
+<summary>4-2. 損害嚴重度評估</summary>
+<table>
+<tr><th>風險</th><th>EPS 衝擊</th><th>嚴重度</th><th>可恢復性</th></tr>
+<tr><td style="color:var(--bear)">A1：RODA 完全轉單</td><td>EPS 降至 2.5 元（-66%）</td><td style="color:var(--bear)">致命（>20%）</td><td>不可逆（已無替代客戶）</td></tr>
+<tr><td style="color:var(--bear)">A1：RODA 部分轉單（-50%）</td><td>EPS 降至 5.0 元（-32%）</td><td style="color:var(--bear)">致命</td><td>部分可恢復（需 2-3 年找新客戶）</td></tr>
+<tr><td style="color:var(--warn)">A2：營業利益率持續惡化</td><td>EPS 降至 5-6 元（-20~30%）</td><td style="color:var(--warn)">中度</td><td>部分可恢復（成本控制）</td></tr>
+<tr><td style="color:var(--warn)">A3：擴產閒置</td><td>年增 3-5 千萬折舊（EPS -0.5~0.8）</td><td style="color:var(--warn)">中度</td><td>可恢復（轉作他用，2-3 年）</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>4-3. 觸發因素與預警跡象</summary>
+<table>
+<tr><th>觸發條件</th><th>目前狀態</th><th>離觸發多遠</th></tr>
+<tr><td>MilDef 年報不再提及茂訊合作</td><td style="color:var(--bear)"><b>已出現</b>（Q3 32 頁零次）</td><td>已觸發</td></tr>
+<tr><td>RODA 訂單走 RODA 不走茂訊</td><td style="color:var(--bear)"><b>已出現</b>（D-LBO 212M + SEK 320M 最大合約走 RODA）</td><td>已觸發</td></tr>
+<tr><td>茂訊持續處分 MilDef 持股</td><td style="color:var(--bear)"><b>已出現</b>（從 12% 降至 4.99%）</td><td>已觸發</td></tr>
+<tr><td>茂訊月營收 YoY 持續負成長</td><td style="color:var(--bear)"><b>已出現</b>（2026 前 2 月 -23%）</td><td>已觸發</td></tr>
+<tr><td>MilDef 宣布供應鏈在地化</td><td style="color:var(--warn)">初期跡象（Rosersberg+Helsingborg 擴產）</td><td>初期跡象</td></tr>
+<tr><td>茂訊季營收 YoY < -15% 連續 2 季</td><td>需等 2026 Q1-Q2 數據</td><td>待觀察</td></tr>
+</table>
+<div class="tip danger">
+<b>注意：5 個觸發條件中 4 個已觸發</b>
+<p>這不是「潛在風險」——這是「已經在發生的風險」。MilDef 的行動（自建+收購+不提茂訊+RODA 承接大單+茂訊處分持股）形成一致的向量：脫離茂訊依賴。唯一還沒公開宣布的是「供應鏈在地化」——但行動早已超前言語。</p>
+</div>
+</details>
+
+<details>
+<summary>4-4. 解決方案與緩解措施</summary>
+<table>
+<tr><th>方案</th><th>可行性</th><th>效果</th></tr>
+<tr><td>開拓 MilDef 以外的軍工客戶</td><td style="color:var(--warn)">中低（認證 12-18 月、品牌力 2/10）</td><td>長期有效但短期無法補洞</td></tr>
+<tr><td>發展自有品牌</td><td style="color:var(--bear)">極低（與 MilDef 協議可能限制）</td><td>需 3-5 年以上</td></tr>
+<tr><td>強化非軍工應用（礦業/澳洲）</td><td style="color:var(--warn)">中（澳洲子公司 2023 成立）</td><td>規模太小，短期無法補 9 億缺口</td></tr>
+<tr><td>無人機 GCS 新商機</td><td style="color:var(--warn)">中（開發中，無訂單）</td><td>初期小，長期看好</td></tr>
+</table>
+<p style="font-size:.84em"><b>白話說：</b>如果 RODA 真的減單 50%（4.65 億），茂訊沒有任何短期方案能填補這個缺口。上述方案全部需要 2-3 年以上才能見效。<b>無有效短期緩解手段。</b></p>
+</details>
+
+<details open>
+<summary>4-5. 即時求證（WebSearch 2026-04-02）</summary>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 求證 1：MilDef Year-End 2025 年報（2026/2/5 發布）</div>
+<div class="ev-d">MilDef 發布 2025 年報：記錄年營收、高毛利、強勁訂單積壓。Bastionen（Rosersberg）完工 4x 產能。再投資 Helsingborg 額外產能。<b>RODA 贏得史上最大合約 SEK 320M（2026 交貨）。</b>關於茂訊的描述僅在歷史段落提到「創始夥伴」，未提及未來合作計畫。<br>
+確認風險存在：MilDef 的產能擴張比預期更積極（Rosersberg + Helsingborg 雙線），RODA 的大合約直接由 RODA 承接。</div>
+<div class="ev-s">來源：MilDef Group Year-End Report 2025, cision.com</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 求證 2：茂訊持股降至 4.99%（2025/7/2）</div>
+<div class="ev-d">MarketScreener 報導茂訊持有 MilDef Group 4.99% 股權。此前約 12%，已持續處分。FY2024 年報記載至少 5 次處分。<br>
+確認風險存在：茂訊自己在降低與 MilDef 的財務連結。如果關係良好，為何持續賣股？</div>
+<div class="ev-s">來源：MarketScreener 2025/7/2</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 求證 3：RODA SEK 320M 最大合約走 RODA 非茂訊</div>
+<div class="ev-d">MilDef 子公司 RODA 獲得其史上最大合約 SEK 320M（約 10 億台幣），交貨 2026 年。另有 D-LBO 212M SEK Bundeswehr 訂單。<b>兩筆大單都走 RODA 而非茂訊。</b><br>
+確認風險存在：RODA 被收購後，大型訂單由 RODA 直接承接。茂訊不在供應鏈中。</div>
+<div class="ev-s">來源：MilDef Year-End 2025 + PRNewswire RODA D-LBO</div>
+</div>
+</details>
+
+<details>
+<summary>4-x. 產業圖譜關聯網路節點（TW_3213）</summary>
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 產業圖譜中 TW_3213 茂訊已建節點，現有 14 條邊</div>
+<div class="ev-d">天機閣產業圖譜關聯網路中，TW_3213 目前有 14 條關聯邊，涵蓋與 MilDef Group（SE_MILDEF）、RODA Computer（DE_RODA）、神基科技（TW_3005）、訊志精密（子公司）等的上下游/競爭/持股關係。</div>
+<div class="ev-s">來源：產業圖譜 knowledge_graph.json</div>
+</div>
+<div class="tip warn">
+<b>邊數有限，無法做深度關聯推衍</b>
+14 條邊在產業圖譜中屬於邊數偏少的標的，尚不足以觸發多階傳導分析或黏菌擴散偵測。主要原因是茂訊產業鏈較為封閉（軍工 OEM 資訊不公開），且 MilDef Group 為瑞典上市公司，跨境關聯建邊的驗證成本較高。未來若補齊 NATO 供應鏈相關節點，可提升分析深度。
+</div>
+</details>
+
+<details>
+<summary>4-6. 潛在風險總覽表</summary>
+<table>
+<tr><th>風險</th><th>嚴重度</th><th>觸發距離</th><th>解法</th><th>求證結果</th><th>FIAS</th></tr>
+<tr><td>RODA/MilDef 轉單</td><td style="color:var(--bear)">致命</td><td style="color:var(--bear)">已觸發</td><td>無短期解</td><td>確認</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>營業利益率崩潰</td><td style="color:var(--bear)">致命</td><td style="color:var(--bear)">已發生中</td><td>成本控制</td><td>確認</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>擴產閒置</td><td style="color:var(--warn)">中度</td><td>待觀察</td><td>轉作他用</td><td>待觀察</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>產銷表不透明</td><td style="color:var(--warn)">中度</td><td style="color:var(--bear)">已觸發</td><td>無</td><td>確認</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>營業外收益不可持續</td><td>輕微</td><td>已發生</td><td>無需解決</td><td>確認</td><td><span class="fias-f">F</span></td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>第四章整合結論</b>
+<p><b>資料 →</b> 5 項風險中 3 項「已觸發」（RODA 轉單、營業利益率崩潰、產銷表不透明），1 項「待觀察」（擴產閒置）。WebSearch 即時求證全部「確認風險存在」——這不是假設性風險，是正在發生的結構性問題。產業圖譜節點 TW_3213 已建但邊數有限（14 條），暫無法做深度關聯推衍。</p>
+<p><b>觀察 →</b> RODA SEK 320M 史上最大合約走 RODA 非茂訊是最新也是最關鍵的確認。MilDef 不只自建產能（Rosersberg+Helsingborg），還讓 RODA 直接承接大單——等於已經在繞過茂訊了。</p>
+<p><b>推論 →</b> 風險鏈 A（RODA → MilDef 內化 → 茂訊邊緣化）已從「假說」進展為「正在執行中的計畫」。5 個觸發條件中 4 個已觸發，不是「會不會發生」的問題，是「速度多快」的問題。</p>
+<p><b>結論 →</b> 茂訊面臨的是結構性下行風險，短期內沒有有效解法。RODA 訂單若轉走 50%，EPS 降至 5.0 元；完全轉走，EPS 降至 2.5 元。以目前股價 99.8 元，完全沒有為這個風險定價。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第五章：隱藏優勢 -->
+<!-- ============================================================ -->
+<div id="ch5"></div>
+<details open>
+<summary class="section-title">五、隱藏優勢挖掘與求證 — 市場錯過了什麼？</summary>
+<div class="section-sub">優勢識別 / 利益估算 / 實現條件 / 即時求證 / 總覽表</div>
+
+<details open>
+<summary>5-1~5-3. 隱藏優勢逐項分析</summary>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 優勢 1：TEMPEST/AMSG 認證（NSA+NATO 等級）</div>
+<div class="ev-d">茂訊是少數通過 TEMPEST（美國國安局）和 AMSG（NATO）認證的亞太廠商。這些認證門檻極高，需要特殊屏蔽設計和 6-12 個月專項測試。全球具備此認證的強固型電腦廠商不超過 10 家。<br><b>市場為什麼沒看到？</b>因為投資人關注 PE 和 EPS，很少人深入比較軍規認證差異。<br><b>利益估算</b>：若茂訊成功繞過 MilDef 直接獲得 NATO 訂單，潛在年營收 3-5 億（EPS +1-2 元）。<br><b>實現機率</b>：低（15%）。茂訊無自有品牌和國際銷售通路，直接拿 NATO 訂單極難。<br><b>實現障礙</b>：MilDef 品牌+通路壟斷、軍方採購慣性、無銷售團隊。</div>
+<div class="ev-s">來源：FY2024 年報認證說明</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 優勢 2：台灣成本結構優勢（短期窗口）</div>
+<div class="ev-d">台灣製造成本比瑞典/德國低 30-40%。MilDef 毛利 45%（不含 RODA 53.5%），有成本空間吸收歐洲製造溢價，但短期訂單暴增下可能仍需茂訊代工紓壓。<br><b>利益估算</b>：1-2 年窗口期，維持現有系統營收 14 億/年。<br><b>實現機率</b>：50%（短期可能性較高，中長期被歐洲產能替代）。<br><b>注意</b>：MilDef 毛利 45% 意味即使歐洲成本高 30%，仍有足夠毛利空間自製。這是時間問題不是能力問題。</div>
+<div class="ev-s">來源：MilDef Q3 報告毛利率 + 成本結構推算</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-a">假設</span> 優勢 3：無人機 GCS 新市場</div>
+<div class="ev-d">無人機/機器人地面控制站（GCS）是強固型電腦的新應用場景。茂訊法說會表示 2026 H2 可見營收貢獻。全球軍用無人機市場 CAGR ~15%。<br><b>市場為什麼沒看到？</b>太早期，無具體訂單。<br><b>利益估算</b>：初期 0.5-1 億/年，中期（2028+）可能 3-5 億。<br><b>實現機率</b>：30%（開發中，有技術基礎但無訂單）。<br><b>障礙</b>：需要新的客戶關係、GCS 與傳統筆電設計有差異。</div>
+<div class="ev-s">來源：法說會 2025/12</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 優勢 4：零負債體質 + 24 年配息紀錄</div>
+<div class="ev-d">負債比 22%、零質押、連續 24 年配息（殖利率 6%）。即使 EPS 降至 5 元，仍可能維持 4 元配息（殖利率 4%@99.8 元或 6%@68 元）。這是下檔保護。<br><b>利益估算</b>：在 68 元以下買入，殖利率 8.8%+，以配息邏輯持有可能正報酬。<br><b>實現機率</b>：80%（配息幾乎確定，但需在合理價買入）。</div>
+<div class="ev-s">來源：財報資料庫 負債比率 + 配息紀錄</div>
+</div>
+</details>
+
+<details>
+<summary>5-4. 即時求證</summary>
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 求證：TEMPEST 認證是否真的稀缺？</div>
+<div class="ev-d">TEMPEST 認證確實由 NSA 管控，全球通過的商用電腦廠商極少。但問題是：MilDef Group 自己也有 TEMPEST 產品線。所以認證本身是優勢，但在 MilDef 生態系內不構成排他性。<br>存在但可能被高估：認證是進入門票，不是護城河。MilDef 自己也能過認證。</div>
+<div class="ev-s">來源：MilDef 官網產品頁 + NSA TEMPEST 公開資訊</div>
+</div>
+</details>
+
+<details>
+<summary>5-5. 隱藏優勢總覽表</summary>
+<table>
+<tr><th>優勢</th><th>被忽略原因</th><th>潛在利益</th><th>實現機率</th><th>求證</th><th>FIAS</th></tr>
+<tr><td>TEMPEST/AMSG 認證</td><td>投資人不懂軍規差異</td><td>中度</td><td>15%</td><td>被高估</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>成本結構優勢</td><td>短期窗口期</td><td>中度</td><td>50%</td><td>確認但有時限</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>無人機 GCS</td><td>太早期</td><td>重大（長期）</td><td>30%</td><td>待驗證</td><td><span class="fias-a">A</span></td></tr>
+<tr><td>零負債 + 24年配息</td><td>被軍工敘事蓋過</td><td>中度（下檔保護）</td><td>80%</td><td>確認</td><td><span class="fias-f">F</span></td></tr>
+</table>
+</details>
+
+<div class="tip info">
+<b>第五章整合結論</b>
+<p><b>資料 →</b> 4 個隱藏優勢中，TEMPEST 認證被高估（MilDef 也有），成本優勢有時限（1-2 年窗口），無人機 GCS 太早期，只有配息體質是確認的實質優勢。</p>
+<p><b>觀察 →</b> 隱藏優勢存在但規模不足以對沖 RODA 32.55% 的結構性風險。最大的隱藏優勢（配息穩定）其實不是隱藏的——市場已經反映在 6% 殖利率上。</p>
+<p><b>推論 →</b> 優勢面的問題不在於「沒有優勢」，而在於優勢的規模太小、實現太慢，無法對沖正在發生的風險。這像是拿水杯去滅房子的火。</p>
+<p><b>結論 →</b> 茂訊的隱藏優勢不足以改變投資結論。配息確實是安全網，但安全網在 68 元以下才有意義（殖利率 8.8%），在 99.8 元只有 6%——不足以補償 -7.9% 的期望報酬。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第六章：六步分析彙整 -->
+<!-- ============================================================ -->
+<div id="ch6"></div>
+<details open>
+<summary class="section-title">六、六步分析關鍵決策因素彙整</summary>
+<div class="section-sub">ACH 假說 + 評審 23 維度 + 評審團角色卡 + 共識區/分歧區 + 「如果多方是對的」</div>
+
+<details open>
+<summary>ACH 競爭假說信心分配（四次校準）</summary>
+<table>
+<tr><th>假說</th><th>初始</th><th>ACH後</th><th>評審團後</th><th>方向</th></tr>
+<tr><td>H1 成長兌現</td><td>25%</td><td>12%</td><td style="color:var(--bear);font-weight:700">10%</td><td>持續下修</td></tr>
+<tr><td>H2 執行延遲</td><td>25%</td><td>27%</td><td>25%</td><td>穩定</td></tr>
+<tr><td>H3 MilDef 脫離</td><td>30%</td><td>35%</td><td style="color:var(--danger);font-weight:700">37%</td><td>持續上修</td></tr>
+<tr><td>H4 穩定配息</td><td>12%</td><td>12%</td><td>12%</td><td>持平</td></tr>
+<tr><td>H5 全面崩壞</td><td>8%</td><td>14%</td><td>16%</td><td>上修</td></tr>
+</table>
+<p style="font-size:.84em"><b>趨勢</b>：H1 從 25% → 10%（持續下修），H3 從 30% → 37%（持續上修）。<b>H3+H5 = 53%（過半偏空）</b>，H2+H4 = 37%（中性），H1 = 10%（樂觀）。</p>
+</details>
+
+<details open>
+<summary>評審 23 維度逐項評估</summary>
+<p style="font-size:.84em;margin-bottom:6px"><b>基本面（5 項）</b></p>
+<div class="評審-item"><span class="評審-id">1</span><span class="評審-name">營收成長</span><span class="評審-assess">FY2024 營收 28.5 億，YoY -4.5%；2026 前 2 月 -23%</span><span class="評審-data manual">-4.5%</span></div>
+<div class="評審-item"><span class="評審-id">2</span><span class="評審-name">獲利品質</span><span class="評審-assess">FY2024 EPS 8.44 靠業外 +12 倍撐住；本業 OPM Q4 降至 7%</span><span class="評審-data manual">業外撐</span></div>
+<div class="評審-item"><span class="評審-id">3</span><span class="評審-name">ROE 趨勢</span><span class="評審-assess">FY2024 16.96% → FY2025 11.28%，連續下滑</span><span class="評審-data manual">下滑</span></div>
+<div class="評審-item"><span class="評審-id">4</span><span class="評審-name">EPS 穩定性</span><span class="評審-assess">季度波動大（Q2 0.59 vs Q1 2.83），半年度差異顯著</span><span class="評審-data judge">波動</span></div>
+<div class="評審-item"><span class="評審-id">5</span><span class="評審-name">財務體質</span><span class="評審-assess">負債比 22%、零質押、現金充裕（法說會確認）</span><span class="評審-data ok">健全</span></div>
+
+<p style="font-size:.84em;margin:8px 0 6px"><b>技術籌碼（3 項）</b></p>
+<div class="評審-item"><span class="評審-id">6</span><span class="評審-name">股價趨勢</span><span class="評審-assess">97-105 元區間整理 60 日，均線糾結無方向</span><span class="評審-data manual">弱勢</span></div>
+<div class="評審-item"><span class="評審-id">7</span><span class="評審-name">成交量</span><span class="評審-assess">日均 28 萬股 / ~2,800 萬元，OTC 中偏冷門</span><span class="評審-data judge">冷門</span></div>
+<div class="評審-item"><span class="評審-id">8</span><span class="評審-name">法人動向</span><span class="評審-assess">投信 2026 年零進出、外資 7.18% 微減</span><span class="評審-data manual">零關注</span></div>
+
+<p style="font-size:.84em;margin:8px 0 6px"><b>產業（5 項）</b></p>
+<div class="評審-item"><span class="評審-id">9</span><span class="評審-name">市場成長</span><span class="評審-assess">全球軍費 +9.4%、強固型電腦 CAGR 6.42%、NATO 擴張</span><span class="評審-data ok">A+</span></div>
+<div class="評審-item"><span class="評審-id">10</span><span class="評審-name">競爭地位</span><span class="評審-assess">Panasonic 50-55%、神基 20-25%、Dell 15%、茂訊個位數</span><span class="評審-data manual">D</span></div>
+<div class="評審-item"><span class="評審-id">11</span><span class="評審-name">護城河</span><span class="評審-assess">技術壁壘 6/10 + 轉換成本 7/10 vs 客戶分散 1/10</span><span class="評審-data judge">4.2/10</span></div>
+<div class="評審-item"><span class="評審-id">12</span><span class="評審-name">客戶集中</span><span class="評審-assess">RODA 佔銷貨 32.55% = 系統事業部 66%，已被 MilDef 收購</span><span class="評審-data manual">1/10</span></div>
+<div class="評審-item"><span class="評審-id">13</span><span class="評審-name">產業週期</span><span class="評審-assess">軍費擴張期但茂訊 2026 前 2 月 -23%，產業成長未傳導</span><span class="評審-data manual">未受惠</span></div>
+
+<p style="font-size:.84em;margin:8px 0 6px"><b>風險（5 項）</b></p>
+<div class="評審-item"><span class="評審-id">14</span><span class="評審-name">致命因子</span><span class="評審-assess">RODA/MilDef 轉單（4/5 前兆已觸發，曝險 9.29 億）</span><span class="評審-data manual">RODA</span></div>
+<div class="評審-item"><span class="評審-id">15</span><span class="評審-name">可恢復性</span><span class="評審-assess">完全轉單不可逆；部分轉單需 2-3 年，無短期緩解手段</span><span class="評審-data manual">不可逆</span></div>
+<div class="評審-item"><span class="評審-id">16</span><span class="評審-name">資料盲點</span><span class="評審-assess">FY2024 產銷表省略、RODA 實際轉單比例不透明、代工合約條款未知</span><span class="評審-data manual">省略</span></div>
+<div class="評審-item"><span class="評審-id">17</span><span class="評審-name">安全邊際</span><span class="評審-assess">安全邊際價 68 元 vs 現價 99.8 元 = 溢價 47%</span><span class="評審-data manual">不足</span></div>
+<div class="評審-item"><span class="評審-id">18</span><span class="評審-name">反面觀點</span><span class="評審-assess">已充分考慮多方論點（成本優勢/短期窗口/配息保護），不改結論</span><span class="評審-data ok">已考慮</span></div>
+
+<p style="font-size:.84em;margin:8px 0 6px"><b>估值（5 項）</b></p>
+<div class="評審-item"><span class="評審-id">19</span><span class="評審-name">PE 法</span><span class="評審-assess">FY2025 EPS 7.4 x PE 11x（同業中位數）= 81.4 元 → 取 82 元</span><span class="評審-data manual">82 元</span></div>
+<div class="評審-item"><span class="評審-id">20</span><span class="評審-name">PB 法</span><span class="評審-assess">BPS ~63 x PB 1.3x = 82 元</span><span class="評審-data manual">82 元</span></div>
+<div class="評審-item"><span class="評審-id">21</span><span class="評審-name">分部法</span><span class="評審-assess">系統（7.5x EBIT 3.6 億 = 27 億）+ 通路（5x EBIT 0.8 億 = 4 億）+ 現金 13 億 = 44 億 / 5,870 萬股 = 75 元</span><span class="評審-data manual">75 元</span></div>
+<div class="評審-item"><span class="評審-id">22</span><span class="評審-name">隱含預期</span><span class="評審-assess">現價 99.8 元反推隱含 EPS 成長率 +3.96%/年，與 -12% 現實矛盾</span><span class="評審-data manual">3.96%</span></div>
+<div class="評審-item"><span class="評審-id">23</span><span class="評審-name">歷史循環</span><span class="評審-assess">近 5 年 PE 區間 8-18x，中位數 12x；低點 PE 8x x EPS 7.4 = 59 元；中位 = 89 元；過往類似衰退期股價區間 58-69 元</span><span class="評審-data manual">58-69 元</span></div>
+</details>
+
+<details open>
+<summary>買進因素 vs 風險因素正反對照</summary>
+<div class="grid2">
+<div class="mini-card bull-card" style="text-align:left;padding:12px">
+<div style="font-weight:900;color:var(--bull);margin-bottom:6px">Bull Case（買進因素）</div>
+<ul style="font-size:.82em;margin-left:16px">
+<li>軍費 +9.4%，CAGR 6.42%（產業面 A+）<span class="fias-f">F</span></li>
+<li>PE 13.5x + 殖利率 6%（估值面中性）<span class="fias-f">F</span></li>
+<li>零負債 + 24 年配息（財務面 A+）<span class="fias-f">F</span></li>
+<li>擴產 +50%、訂單能見度 80-90%（管理層樂觀）<span class="fias-i">I</span></li>
+<li>無人機 GCS 新商機（假設性）<span class="fias-a">A</span></li>
+<li>TEMPEST/AMSG 認證（技術面）<span class="fias-f">F</span></li>
+</ul>
+</div>
+<div class="mini-card bear-card" style="text-align:left;padding:12px">
+<div style="font-weight:900;color:var(--bear);margin-bottom:6px">Bear Case（風險因素）</div>
+<ul style="font-size:.82em;margin-left:16px">
+<li>RODA 佔 32.55%，被 MilDef 收購（致命因子）<span class="fias-f">F</span></li>
+<li>MilDef Q3/年報不提茂訊合作（脫離跡象）<span class="fias-f">F</span></li>
+<li>RODA 獲 SEK 320M 最大合約走 RODA（已發生轉單）<span class="fias-f">F</span></li>
+<li>Rosersberg 4x + Helsingborg 雙線擴產（自有產能）<span class="fias-f">F</span></li>
+<li>營業利益率 26% → 7% 連 4 季降（利潤惡化）<span class="fias-f">F</span></li>
+<li>2026 前 2 月營收 -23%（營收惡化）<span class="fias-f">F</span></li>
+<li>FY2024 產銷表省略（負面透明度）<span class="fias-f">F</span></li>
+<li>茂訊持股降至 4.99%（關係鬆動）<span class="fias-f">F</span></li>
+</ul>
+</div>
+</div>
+<p style="font-size:.84em"><b>事實 vs 假設對比</b>：Bear Case 8 項中 7 項是事實（F），Bull Case 6 項中只有 3 項是事實。<b>空方有更強的事實基礎。</b></p>
+</details>
+
+<details open>
+<summary>評審團意見整合（評審 38.9/100）+ 角色卡</summary>
+<table>
+<tr><th>角色</th><th>分數</th><th>權重</th><th>加權</th><th>核心觀點</th></tr>
+<tr><td>基本面分析師</td><td style="color:var(--warn)">50</td><td>25%</td><td>12.5</td><td>FY2025 EPS 降 12%，ROE 降至 11.3%，靠業外撐 EPS</td></tr>
+<tr><td>技術面/籌碼</td><td style="color:var(--bear)">28</td><td>15%</td><td>4.2</td><td>投信零進出、外資冷、日均量低、60 日弱勢整理</td></tr>
+<tr><td>產業分析師</td><td style="color:var(--warn)">48</td><td>20%</td><td>9.6</td><td>產業 A+，但公司定位 D。RODA 佔 66% 系統事業部</td></tr>
+<tr><td>風險管理師</td><td style="color:var(--bear)">25</td><td>25%</td><td>6.25</td><td>7 項致命因子事實 + 期望報酬 -7.9% + 安全邊際不足</td></tr>
+<tr><td>估值分析師</td><td style="color:var(--warn)">42</td><td>15%</td><td>6.3</td><td>PE/PB/分部法均指向 75-82 元，現價偏貴</td></tr>
+<tr style="background:var(--table-header)"><td><b>評審 總分</b></td><td></td><td>100%</td><td style="color:var(--bear);font-weight:900;font-size:1.1em">38.9</td><td>觀望/迴避（接近強烈迴避門檻 35）</td></tr>
+</table>
+
+<!-- 評審角色卡 -->
+<div class="reviewer">
+<div class="r-name">基本面分析師 <span class="r-layer">Layer 1 — 財報</span></div>
+<div class="r-verdict cond">條件通過 50/100</div>
+<p style="font-size:.82em;margin-top:4px">「FY2025 EPS 7.4 元看似還行，但拆開來看問題很大。FY2024 的 8.44 元裡有 0.97 元靠業外（處分 MilDef 持股），本業其實只有 7.47 元。然後 FY2025 降到 7.4，表面上 -12%，但如果扣掉業外，本業衰退幅度更大。ROE 從 17% 降到 11% 是真正的警訊——代表每一塊錢股東權益產生的利潤在快速縮水。我勉強給 50，純粹因為財務體質乾淨。」</p>
+</div>
+
+<div class="reviewer">
+<div class="r-name">技術面/籌碼分析師 <span class="r-layer">Layer 2 — 價量</span></div>
+<div class="r-verdict fail">不通過 28/100</div>
+<p style="font-size:.82em;margin-top:4px">「投信 2026 年零張進出，這是最大的訊號。機構法人完全不碰這檔，代表沒有任何基金經理人認為它值得納入持股。外資 7.18% 還在微減。日均量 28 萬股約 2,800 萬元，流動性很差——要賣的時候可能賣不掉。97-105 元整理 60 天，沒有方向。籌碼面完全沒有支撐。」</p>
+</div>
+
+<div class="reviewer">
+<div class="r-name">產業分析師 <span class="r-layer">Layer 3 — 產業</span></div>
+<div class="r-verdict cond">條件通過 48/100</div>
+<p style="font-size:.82em;margin-top:4px">「產業面是真的好——全球軍費 88 兆、CAGR 6.42%、NATO 擴張、德國 +28%。問題是茂訊在這個產業裡的位置。Panasonic 50%、神基 20-25%、Dell 15%，茂訊個位數。更致命的是，它連個位數都不是自己的品牌——全靠 MilDef。產業 A+，公司定位 D，分數折半。」</p>
+</div>
+
+<div class="reviewer">
+<div class="r-name">風險管理師 <span class="r-layer">Layer 4 — 風險</span></div>
+<div class="r-verdict fail">不通過 25/100</div>
+<p style="font-size:.82em;margin-top:4px">「我最低分，因為風險面是否決性的。7 項致命因子中 7 項是事實（F）。期望報酬 -7.9%，安全邊際溢價 47%。5 個觸發條件 4 個已觸發。事前驗屍法 3/4 條失敗路徑已出現前兆。RODA 曝險 9.29 億且不可控。這不是可以用配息彌補的風險。25 分。」</p>
+</div>
+
+<div class="reviewer">
+<div class="r-name">估值分析師 <span class="r-layer">Layer 5 — 估值</span></div>
+<div class="r-verdict cond">條件通過 42/100</div>
+<p style="font-size:.82em;margin-top:4px">「PE 法 82 元、PB 法 82 元、分部法 75 元，三種方法都指向 75-82 元合理價。現價 99.8 元溢價 22-33%。歷史循環看，類似衰退期股價落在 58-69 元。安全邊際價 68 元（PE 10x * EPS 6.8 元悲觀假設）。以配息邏輯 68 元以下殖利率 8.8%+ 才有吸引力。」</p>
+</div>
+</details>
+
+<details>
+<summary>共識區 — 五角色一致同意</summary>
+<ul style="font-size:.84em;margin:4px 0 0 16px">
+<li>RODA 32.55% 客戶集中度是核心結構風險（五角色一致）</li>
+<li>MilDef Group 的行動一致指向「降低對茂訊依賴」（五角色一致）</li>
+<li>配息穩定是唯一確定的正面因素（五角色一致）</li>
+<li>現價 99.8 元不具安全邊際（四角色一致，基本面勉強中性）</li>
+</ul>
+</details>
+
+<details>
+<summary>分歧區 — 多空觀點對照</summary>
+<table>
+<tr><th>議題</th><th>多方觀點</th><th>空方觀點</th><th>分歧程度</th></tr>
+<tr><td>MilDef 會不會完全棄茂訊？</td><td>歷史夥伴關係 + 成本優勢 → 不會完全斷</td><td>自建+收購+不提+RODA 大單 = 正在執行中</td><td style="color:var(--bear)">高</td></tr>
+<tr><td>擴產 +50% 能否填滿？</td><td>訂單能見度 80-90%</td><td>RODA 若不加單，新產線閒置</td><td style="color:var(--warn)">中</td></tr>
+<tr><td>PE 13.5x 是否合理？</td><td>軍工成長概念該給更高</td><td>市場已不給成長溢價 = 不看好</td><td style="color:var(--warn)">中</td></tr>
+</table>
+</details>
+
+<details>
+<summary>關鍵爭議仲裁 — 買方 vs 等待方</summary>
+<div class="grid2">
+<div class="mini-card bull-card" style="text-align:left;padding:12px">
+<div style="font-weight:900;color:var(--bull);margin-bottom:4px">買方論點</div>
+<p style="font-size:.82em">「軍費在漲、訂單在手、配息穩定、PE 便宜。MilDef 需求暴增短期一定需要茂訊。68 元才買太保守——等到那時好消息早反映了。」</p>
+</div>
+<div class="mini-card bear-card" style="text-align:left;padding:12px">
+<div style="font-weight:900;color:var(--bear);margin-bottom:4px">等待方論點</div>
+<p style="font-size:.82em">「RODA 轉單已在發生（SEK 320M 走 RODA）。MilDef 雙線擴產 + 持股處分 = 脫離行動。2026 營收 -23%。期望報酬 -7.9%。現價不具安全邊際。」</p>
+</div>
+</div>
+<p style="font-size:.84em"><b>仲裁結論</b>：等待方的論據以事實為基礎（8 項 F），買方的論據以假設和承諾為基礎（I/A）。在事實 vs 假設的較量中，<b>遵循事實</b>。結論：<b>等待</b>。</p>
+</details>
+
+<details>
+<summary>如果多方是對的 — 最佳情境推演</summary>
+<div class="ev">
+<div class="ev-t"><span class="fias-s">推測</span> 假設 MilDef 訂單真的溢出到茂訊</div>
+<div class="ev-d">
+如果多方是對的，最可能的路徑是：MilDef 2026 訂單暴增超過自有產能極限 → 短期溢出至茂訊 → 系統事業部營收回升 20-30% → FY2026 EPS 回到 9-10 元 → PE 13-15x → 股價 120-150 元（+20~50%）。<br><br>
+<b>這個情境需要什麼條件同時成立？</b><br>
+(1) MilDef 產能確實不足（與 Rosersberg 4x + Helsingborg 雙線擴產的事實矛盾）<br>
+(2) RODA 無法自行承接（與 RODA SEK 320M 合約的事實矛盾）<br>
+(3) 茂訊新產線及時完工且品質合格<br>
+(4) MilDef 在有其他選擇的情況下仍選茂訊（需成本優勢壓倒在地化策略）<br><br>
+<b>機率估算</b>：四個條件同時成立 = 15% x 30% x 60% x 40% = ~1.1%。就算放寬假設到 10-15%，上行空間 +20~50%，期望值也只有 +2~7.5%——不足以彌補下行期望損失 -28~32%。<br><br>
+<b>所以呢？</b>即使給多方最大的善意，風險報酬比仍然不利。多方的故事不是不可能，而是機率太低、報酬不對稱。這就是為什麼我們選擇等待而非迴避——如果 MilDef 真的需要茂訊，會反映在月營收上。等數據確認再進場，犧牲的只是底部 10-15% 的空間，換取的是確認性。
+</div>
+<div class="ev-s">來源：綜合催化劑分析 + 風險分析推算</div>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第六章整合結論</b>
+<p><b>資料 →</b> 評審 38.9/100（接近強烈迴避門檻 35），ACH 四次校準 H3 持續上修至 37%。Bear Case 有 7/8 項事實支持，Bull Case 只有 3/6 項事實。23 維度中，正面僅 3 項（財務體質、市場成長、反面已考慮），負面/警示達 14 項。</p>
+<p><b>觀察 →</b> 評審團五角色有明確共識：RODA 是核心風險、MilDef 正在脫離、現價無安全邊際。唯一分歧在「速度」而非「方向」。即使最佳情境（多方全對），期望值也只有 +2~7.5%，遠低於下行風險。</p>
+<p><b>推論 →</b> 空方在事實基礎上壓倒多方。市場的「軍工成長」故事（H1）只剩 10% 機率，但股價定價仍偏向 H1。估值三法（PE/PB/分部）一致指向 75-82 元，歷史循環衰退期落點 58-69 元。</p>
+<p><b>結論 →</b> 現價不買。68 元以下以配息邏輯考慮進場（殖利率 8.8%+），不超過資金 3%。核心觀察窗口：2026 Q2-Q3 月營收 YoY 轉正 + MilDef 年報是否重提合作。</p>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 第七章：風險清單與壓力測試 -->
+<!-- ============================================================ -->
+<div id="ch7"></div>
+<details open>
+<summary class="section-title">七、風險清單與壓力測試 — 最壞情況有多壞？</summary>
+<div class="section-sub">風險驗證卡 + 致命因子排序 + 事前驗屍法 + 資料盲點 + 期望損失匯總</div>
+
+<details open>
+<summary>風險情報驗證卡</summary>
+
+<div class="risk-card" style="border-left:4px solid var(--bear)">
+<div class="risk-name" style="color:var(--bear)">致命因子 A1：MilDef/RODA 垂直整合替代茂訊</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>觸發條件</td><td>MilDef 自有產能充足 + RODA 直接承接大單 + 不再需要茂訊代工</td></tr>
+<tr><td>目前狀態</td><td style="color:var(--bear)">4/5 前兆已出現（Q3 不提/RODA 收購/大單走 RODA/持股處分）</td></tr>
+<tr><td>發生機率</td><td>完全兌現 15% + 部分兌現（-50%）25% = <b>合計 40%</b></td></tr>
+<tr><td>影響幅度</td><td>完全：EPS 降至 2.5（-66%）/ 部分：EPS 降至 5.0（-32%）</td></tr>
+<tr><td>可恢復性</td><td style="color:var(--bear)">不可逆（完全）/ 部分可恢復（2-3 年找新客戶）</td></tr>
+</table>
+<div class="risk-ev" style="color:var(--bear)">期望損失 = 15% x 75% + 25% x 50% = <b>-23.75%</b></div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--warn)">
+<div class="risk-name" style="color:var(--warn)">風險因子 A2：營收/利潤率持續惡化</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>觸發條件</td><td>營業利益率續降 + 月營收 YoY 持續負成長</td></tr>
+<tr><td>目前狀態</td><td style="color:var(--bear)">已在發生（Q4 OPM 7%、2026 1-2 月營收 -23%）</td></tr>
+<tr><td>發生機率</td><td>60%（短期持續）</td></tr>
+<tr><td>影響幅度</td><td>EPS 降至 5-6 元（-15~20%）</td></tr>
+<tr><td>可恢復性</td><td>部分可恢復（若新產線帶動營收回升）</td></tr>
+</table>
+<div class="risk-ev" style="color:var(--warn)">期望損失 = 60% x 15% = <b>-9.0%</b></div>
+</div>
+
+<div class="risk-card" style="border-left:4px solid var(--warn)">
+<div class="risk-name" style="color:var(--warn)">風險因子 A3：擴產後需求不到</div>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>觸發條件</td><td>新產線完工但 RODA 不加單</td></tr>
+<tr><td>目前狀態</td><td>待觀察（2026 Q2 完工後才能驗證）</td></tr>
+<tr><td>發生機率</td><td>20%</td></tr>
+<tr><td>影響幅度</td><td>年增 3-5 千萬折舊（EPS -0.5~0.8）</td></tr>
+<tr><td>可恢復性</td><td>可恢復（轉作他用）</td></tr>
+</table>
+<div class="risk-ev" style="color:var(--warn)">期望損失 = 20% x 12% = <b>-2.4%</b></div>
+</div>
+</details>
+
+<details open>
+<summary>致命因子排序（EPS 影響 x 可控性）</summary>
+<table>
+<tr><th>排序</th><th>因子</th><th>EPS 影響</th><th>可控性</th><th>綜合</th></tr>
+<tr><td style="color:var(--bear);font-weight:700">1</td><td>A1：RODA/MilDef 轉單</td><td>-66%（完全）/ -32%（部分）</td><td>不可控（MilDef 決定）</td><td style="color:var(--bear)">致命</td></tr>
+<tr><td>2</td><td>A2：營業利益率惡化</td><td>-15~20%</td><td>部分可控（成本管理）</td><td style="color:var(--warn)">嚴重</td></tr>
+<tr><td>3</td><td>A3：擴產閒置</td><td>-7~11%</td><td>部分可控（轉用）</td><td>中度</td></tr>
+</table>
+</details>
+
+<details>
+<summary>事前驗屍法 — 假設茂訊股價在 2027 年腰斬至 50 元</summary>
+<p style="font-size:.84em">如果 2027/4/2 茂訊股價 50 元（-50%），最可能的原因是什麼？</p>
+<ol style="font-size:.84em;margin:4px 0 0 16px">
+<li><b>RODA 減單 50%</b>（機率最高）→ 系統事業部營收從 14 億降至 9-10 億 → EPS 降至 5.0 元 → PE 10x = 50 元</li>
+<li><b>MilDef 宣布供應鏈在地化</b> → 市場恐慌性下殺 → 即使實際影響需 1-2 年顯現</li>
+<li><b>擴產完工但閒置</b> → 折舊侵蝕利潤 + 市場對管理層信任度崩潰</li>
+<li><b>累積效應</b>：營業利益率持續降至 5% + 月營收不回升 + 法說會不再提「挑戰新高」</li>
+</ol>
+<p style="font-size:.84em"><b>最大反思</b>：以上 4 條路徑中有 3 條正在發生的前兆（RODA 大單走自己、MilDef 擴產、營業利益率持續降）。這不是異想天開的悲觀，是現有趨勢的自然延伸。</p>
+</details>
+
+<details>
+<summary>資料盲點清單</summary>
+<table>
+<tr><th>盲點</th><th>影響</th><th>可能的補充方式</th></tr>
+<tr><td>FY2024 產能利用率未揭露</td><td>無法判斷目前產能是否已開始下滑</td><td>追蹤 2026 Q2 法說會或年報</td></tr>
+<tr><td>RODA 訂單中多少轉給茂訊代工</td><td>無法量化實際轉單比例</td><td>MilDef 不會揭露，只能從茂訊月營收推斷</td></tr>
+<tr><td>MilDef-茂訊代工合約條款</td><td>不知是否有長期合約保障</td><td>茂訊年報未揭露具體合約內容</td></tr>
+<tr><td>營業外收益明細</td><td>96,974千中多少來自處分MilDef持股</td><td>FY2024 年報財報附註（但未詳列）</td></tr>
+<tr><td>新產品 RK15/DP8/DS16P 客戶歸屬</td><td>不知是否為 MilDef 以外客戶開發</td><td>法說會或年報</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>風險期望損失匯總 + 淨期望值</summary>
+<div class="tip danger">
+<b>風險合計期望損失：-35.15%（調整後 -28% 至 -32%）</b>
+<p>A1（-23.75%）+ A2（-9.0%）+ A3（-2.4%）= <b>-35.15%</b>。考慮到 A1 和 A3 部分重疊（RODA 減單導致新產線閒置），調整後期望損失約 <b>-28% 至 -32%</b>。</p>
+</div>
+
+<table>
+<tr><th>項目</th><th>數值</th><th>備註</th></tr>
+<tr><td>催化劑期望值（名義）</td><td style="color:var(--bull)">+12.8%</td><td>四項合計，未調整相關性</td></tr>
+<tr><td>催化劑期望值（調整後）</td><td style="color:var(--bull)">~+7%</td><td>扣除高度相關性</td></tr>
+<tr><td>風險期望損失（名義）</td><td style="color:var(--bear)">-35.15%</td><td>三項合計</td></tr>
+<tr><td>風險期望損失（調整後）</td><td style="color:var(--bear)">-28% ~ -32%</td><td>扣除 A1/A3 重疊</td></tr>
+<tr style="background:var(--table-header)"><td><b>淨期望值（三情境加權）</b></td><td style="color:var(--bear);font-weight:900"><b>-7.9%</b></td><td>含息含配息再投資：12% x 56% + 39% x 3% + 49% x (-44%)</td></tr>
+</table>
+<p style="font-size:.82em;margin-top:4px">三情境說明：樂觀情境（12% 機率，含催化劑兌現 +56%）、中性情境（39% 機率，維持現狀 +3% 含配息）、悲觀情境（49% 機率，RODA 減單 -44%）。加權期望值 = -7.9%。</p>
+</details>
+
+<div class="tip danger">
+<b>第七章整合結論</b>
+<p><b>資料 →</b> 致命因子 A1（RODA/MilDef 轉單）有 7 項事實支持 + 9.29 億可量化曝險，期望損失 -23.75%。A2 正在發生（Q4 OPM 7%，2026 前 2 月營收 -23%）。事前驗屍法中 3/4 條失敗路徑已出現前兆。</p>
+<p><b>觀察 →</b> 風險期望損失（-28~32%）遠超催化劑期望值（+7% 調整後），且風險以事實為基礎，催化劑以假設為基礎。淨期望值 -7.9% 在三情境加權下仍為負。</p>
+<p><b>推論 →</b> 風險面是否決性的。不管催化劑怎麼算，只要 RODA 風險存在且已觸發，期望報酬就是負的。唯一可以改變結論的事件：MilDef 公開宣布加碼茂訊合作（目前反向而行）。</p>
+<p><b>結論 →</b> 評審 38.9（風險管理師 25 分）、期望報酬 -7.9%、安全邊際溢價 47%。<b>99.8 元不買。</b>68 元以下考慮以配息邏輯小部位持有（殖利率 8.8%+、PE 9.2x）。監控窗口：每月 10 號營收公告 + 2026 Q2 法說會 + MilDef 年報。</p>
+</div>
+</details>
+
+<!-- PHASE_C_PART1_END -->
+
+<!-- ====================================================================
+     第八章：監控儀表板
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第八章：監控儀表板 — 八指標燈號 + 關鍵時間節點</summary>
+<p class="section-sub">白話說：儀表板不是裝飾，是幫你決定「什麼時候要回來看」。5 紅 1 黃 2 綠 = 現階段警戒偏高，但不是絕望。</p>
+
+<details open>
+<summary>8.1 八項監控指標燈號</summary>
+<table>
+<tr><th>編號</th><th>指標</th><th>燈號</th><th>最新數據</th><th>觸發閾值</th><th>說明</th></tr>
+<tr><td>M1</td><td>月營收 YoY</td><td style="color:var(--bear);font-weight:900">🔴</td><td>2026/1-2 月合計 -23% YoY</td><td>連三月 &lt;-10%</td><td>已連續兩個月大幅衰退，三月營收 4/10 公告是下一關鍵觀察點</td></tr>
+<tr><td>M2</td><td>營業利益率</td><td style="color:var(--bear);font-weight:900">🔴</td><td>Q4 2025 OPM 7%（全年 15.5%）</td><td>&lt;12%</td><td>Q4 營業利益率劇降至 7%，比歷史均值 15-18% 低一半。全年數字還撐住是因 Q1-Q3 好</td></tr>
+<tr><td>M3</td><td>MilDef 提及茂訊</td><td style="color:var(--bear);font-weight:900">🔴</td><td>Year-End 2025 報告：零提及</td><td>零提及 = 紅燈</td><td>FY2024 年報提過兩次「創始夥伴」，Year-End 2025 報告完全消失。歷史上從未發生過</td></tr>
+<tr><td>M4</td><td>RODA 訂單流向</td><td style="color:var(--bear);font-weight:900">🔴</td><td>RODA SEK 3.2 億最大合約走 RODA 品牌</td><td>非茂訊管道出貨</td><td>RODA 被收購後最大單不經茂訊，確認 MilDef 有能力繞過茂訊直接出貨</td></tr>
+<tr><td>M5</td><td>茂訊對 MilDef 持股</td><td style="color:var(--warn);font-weight:900">🟡</td><td>4.99%（降至公開申報門檻以下）</td><td>&lt;5% = 黃燈</td><td>從約 6% 降到 4.99%，恰好低於瑞典公開門檻。不一定是壞事（可能資金需求），但時機敏感</td></tr>
+<tr><td>M6</td><td>投信法人進出</td><td style="color:var(--bear);font-weight:900">🔴</td><td>投信持股佔比持續下降</td><td>連續淨賣超三月</td><td>法人資金在退出，散戶佔比上升中。法人可能看到了一般投資人沒看到的事</td></tr>
+<tr><td>M7</td><td>現金殖利率</td><td style="color:var(--bull);font-weight:900">🟢</td><td>FY2024 配息 6 元，殖利率 ~6.0%</td><td>&gt;5% = 綠燈</td><td>配息紀錄穩定，殖利率在台股中偏高。這是「等待」時最大的安慰，但前提是營收不崩</td></tr>
+<tr><td>M8</td><td>負債比</td><td style="color:var(--bull);font-weight:900">🟢</td><td>負債比 ~38%，無長期借款</td><td>&lt;50% = 綠燈</td><td>財務結構健康，淨現金部位。短期沒有倒閉或資金斷裂風險</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F] 燈號統計：5 紅 1 黃 2 綠</div>
+<div class="ev-d">5 項紅燈集中在「營運面 + 客戶關係面」，2 項綠燈在「財務安全面」。白話說：公司不會倒，但生意正在變差，而且最大客戶可能正在離開。</div>
+<div class="ev-s">來源：月營收公告 / MilDef Year-End 2025 / RODA 公開合約 / 公開資訊觀測站</div>
+</div>
+</details>
+
+<details open>
+<summary>8.2 關鍵時間節點表</summary>
+<p style="font-size:.82em;color:var(--txt2);margin-bottom:6px">為什麼要列時間表？因為茂訊的命運不取決於今天，而取決於接下來 3-6 個月的幾個關鍵數字。每個節點都可能讓燈號翻轉。</p>
+<table>
+<tr><th>時間</th><th>事件</th><th>觀察重點</th><th>可能影響</th></tr>
+<tr><td>2026/4/10</td><td>三月營收公告</td><td>MoM 是否回升？YoY 是否收斂到 -10% 以內？</td><td>連三月 -20%+ → M1 維持紅燈；回到 -5% 以內 → 可能轉黃</td></tr>
+<tr><td>2026/5/15</td><td>Q1 2026 季報</td><td>OPM 是否回到 12%+？毛利率結構？</td><td>確認 Q4 是一次性低點還是趨勢下行的起點</td></tr>
+<tr><td>2026/6 月</td><td>新產線完工</td><td>管理層釋放的產能利用率預估 + 訂單能見度</td><td>有具體訂單 → 路徑 B 機率升；空轉 → 路徑 C 機率升</td></tr>
+<tr><td>2026/6 月</td><td>股東會 + 配息確認</td><td>配息是否維持 5-6 元？對未來展望的說法？</td><td>殖利率維持 &gt;5% 是持有的最低門檻</td></tr>
+<tr><td>2026/7-8 月</td><td>MilDef Q2 2026 報告</td><td>是否重新提及茂訊？RODA 營收佔比變化？</td><td>重新提及 → M3 可轉黃；持續忽略 → 確認脫離趨勢</td></tr>
+<tr><td>2026 Q3-Q4</td><td>累計營收趨勢</td><td>全年營收能否守住 25 億？</td><td>跌破 22 億 → 悲觀情境；回到 27 億 → 中性情境</td></tr>
+<tr><td>2027/2</td><td>MilDef FY2025 年報</td><td>正式年報對供應鏈描述 + RODA 全年數據</td><td>終極驗證：茂訊在 MilDef 體系中的位置是否已被取代</td></tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第八章整合結論</b>
+<p><b>資料 →</b> 8 項指標中 5 紅 1 黃 2 綠。紅燈全部集中在「營運惡化 + 客戶脫離」，綠燈只在「財務穩健 + 配息」。7 個關鍵時間節點橫跨 2026 年 4 月至 2027 年 2 月。</p>
+<p><b>觀察 →</b> 最密集的資訊更新在 2026 Q2（4 月營收 + 5 月季報 + 6 月新產線 + 6 月股東會），這 3 個月就能判斷 70% 的結果。MilDef 報告要到 7-8 月才有 Q2 數據，所以客戶端驗證有時間差。</p>
+<p><b>推論 →</b> 觀察窗口 = 2026 年 4 月到 8 月。如果營收持續 -20%+、OPM &lt;10%、MilDef 持續不提茂訊 → 三紅燈不翻，結論不變。如果營收回升到 -5% 以內 + OPM 回到 15% + MilDef 重新提及 → 至少 3 燈轉黃，值得重新評估。</p>
+<p><b>結論 →</b> <b>不急著做決定。</b>最早要到 5 月季報出來才有足夠資訊。設定行事曆提醒：4/10、5/15、6 月股東會、7-8 月 MilDef Q2。在此之前，持續觀察但不動作。</p>
+</div>
+</details>
+
+<!-- ====================================================================
+     第九章：推衍預測
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第九章：推衍預測 — 三階段情境推衍 + 加權期望值</summary>
+<p class="section-sub">白話說：我們不預測未來，但我們可以把所有合理的路徑攤開來看，每條路走到底會怎樣、機率多大。</p>
+
+<details open>
+<summary>9.1 最新情報彙整（推衍輸入）</summary>
+<table>
+<tr><th>情報項目</th><th>內容</th><th>時間</th><th>來源</th><th>對推衍的意義</th></tr>
+<tr><td>MilDef Year-End 2025</td><td>「創始夥伴」僅出現在歷史段落，非前瞻性描述。茂訊在策略敘事中消失</td><td>2026/2</td><td>MilDef 官網 IR</td><td>最重要訊號：MilDef 不再將茂訊視為核心策略夥伴</td></tr>
+<tr><td>RODA SEK 3.2 億合約</td><td>北歐國防客戶最大合約，直接以 RODA 品牌交付，不經茂訊</td><td>2025 Q4</td><td>MilDef Year-End 2025</td><td>確認 RODA 有獨立出貨能力，茂訊的「製造唯一性」被打破</td></tr>
+<tr><td>Helsingborg 擴產</td><td>MilDef 在 Helsingborg 設額外產線，加上 RODA 產能，形成雙線生產</td><td>2025-2026</td><td>MilDef Year-End 2025</td><td>產能替代正在進行中，茂訊產線的不可替代性持續下降</td></tr>
+<tr><td>持股降至 4.99%</td><td>茂訊對 MilDef 持股從 ~6% 降至 4.99%，低於瑞典公開申報門檻</td><td>2025 H2</td><td>茂訊財報 / 公開資訊觀測站</td><td>可能是資金需求，也可能是關係降溫的訊號。時機敏感</td></tr>
+<tr><td>管理層「訂單九成」</td><td>管理層維持樂觀，表示在手訂單充足，產能利用率九成</td><td>2025 Q4 法說</td><td>法說會紀錄</td><td>與營收 -23% 矛盾。可能是「毛訂單」vs「確認訂單」的認知差異</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>9.2 短期推衍（1-3 個月：2026/4-6 月）</summary>
+<div class="grid3">
+<div class="mini-card bear-card">
+<div class="title">路徑 A（40%）</div>
+<div class="num" style="color:var(--bear)">95-97 元</div>
+<div class="desc">營收持續低迷<br>3-4 月 YoY -15~20%<br>缺乏正面催化劑<br>股價隨量縮低檔盤整</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">路徑 B（35%）</div>
+<div class="num" style="color:var(--neutral)">100-108 元</div>
+<div class="desc">新產線消息帶動小反彈<br>管理層法說釋利多<br>技術面短線反彈<br>但缺乏基本面支撐</div>
+</div>
+<div class="mini-card bear-card">
+<div class="title">路徑 C（25%）</div>
+<div class="num" style="color:var(--bear)">85-90 元</div>
+<div class="desc">負面消息衝擊急跌<br>如：MilDef 正式聲明/大單取消<br>法人加速賣超<br>跌破年線支撐</div>
+</div>
+</div>
+
+<div class="ev">
+<div class="ev-t">[A][R] 短期加權期望值：~95.2 元</div>
+<div class="ev-d">40% × 96 + 35% × 104 + 25% × 87.5 = 38.4 + 36.4 + 21.9 = <b>96.7 元</b>（取路徑中值計算）。略低於現價 99.8 元，代表短期持有的期望報酬是微負的。</div>
+<div class="ev-s">推衍方法：情境機率法（基於第六、七章事實加權）</div>
+</div>
+</details>
+
+<details open>
+<summary>9.3 中期推衍（3-6 個月：2026/7-9 月）</summary>
+<div class="grid3">
+<div class="mini-card bull-card">
+<div class="title">路徑 M1（25%）</div>
+<div class="num" style="color:var(--bull)">110-130 元</div>
+<div class="desc">營收回升：新產線出貨 + RODA 訂單回流<br>OPM 回到 15%+<br>MilDef Q2 重新提及茂訊<br>法人重新佈局</div>
+</div>
+<div class="mini-card neutral-card">
+<div class="title">路徑 M2（45%）</div>
+<div class="num" style="color:var(--neutral)">90-105 元</div>
+<div class="desc">營收持平：新產線出貨但量不大<br>RODA 訂單維持現狀<br>OPM 10-13% 低空飛過<br>市場觀望</div>
+</div>
+<div class="mini-card bear-card">
+<div class="title">路徑 M3（30%）</div>
+<div class="num" style="color:var(--bear)">70-85 元</div>
+<div class="desc">營收惡化：RODA 訂單明確轉移<br>新產線閒置<br>OPM &lt;8%<br>股價向合理價回歸</div>
+</div>
+</div>
+
+<div class="ev">
+<div class="ev-t">[A][R] 中期加權期望值：~95.3 元</div>
+<div class="ev-d">25% × 120 + 45% × 97.5 + 30% × 77.5 = 30 + 43.9 + 23.3 = <b>97.1 元</b>。中期持有半年的期望值與現價幾乎持平，但下行風險遠大於上行空間（M3 跌 30% vs M1 漲 20%）。風險調整後不划算。</div>
+<div class="ev-s">推衍方法：中期情境法（加入新產線投產時程 + MilDef Q2 報告預期）</div>
+</div>
+</details>
+
+<details open>
+<summary>9.4 長期推衍（6-12 個月：2026 Q4 - 2027 Q1）</summary>
+<p style="font-size:.85em;color:var(--txt2)">長期推衍的核心變數只有一個：<b>MilDef FY2025 年報（2027 年 2 月公布）</b>。這份報告會正式揭示 RODA 全年營收結構，以及茂訊在 MilDef 供應鏈中的最終定位。</p>
+
+<table>
+<tr><th>長期情境</th><th>機率</th><th>股價區間</th><th>觸發條件</th></tr>
+<tr><td>L1：MilDef 回歸合作</td><td>10%</td><td>140-180 元</td><td>MilDef 年報明確將茂訊列為策略夥伴 + RODA 訂單回流</td></tr>
+<tr><td>L2：維持現狀共存</td><td>30%</td><td>95-120 元</td><td>MilDef 年報不提不踩 + 茂訊自力開拓非 MilDef 客戶成功</td></tr>
+<tr><td>L3：逐步脫離</td><td>40%</td><td>65-90 元</td><td>MilDef 年報完全不提 + RODA 營收佔比降至 &lt;20%</td></tr>
+<tr><td>L4：加速替代</td><td>20%</td><td>50-65 元</td><td>MilDef 年報宣布全面自製 + 茂訊營收衰退 &gt;30%</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[A][S] 長期加權期望：~87 元</div>
+<div class="ev-d">10% × 160 + 30% × 107.5 + 40% × 77.5 + 20% × 57.5 = 16 + 32.3 + 31 + 11.5 = <b>90.8 元</b>。長期持有一年的期望值明確低於現價 99.8 元，預期報酬 -9%。L3+L4 合計 60% 機率，代表下行風險佔主導。</div>
+<div class="ev-s">推衍方法：MilDef 年報路徑分析 + 歷史供應鏈脫離案例類比</div>
+</div>
+</details>
+
+<details open>
+<summary>9.5 情報可信度評估</summary>
+<table>
+<tr><th>情報來源</th><th>可信度</th><th>時效性</th><th>偏誤風險</th></tr>
+<tr><td>MilDef Year-End 2025 報告</td><td style="color:var(--bull)">高（官方 IR 文件）</td><td>2026/2 發布，2 個月內</td><td>公司可能美化，但「不提」本身是強訊號</td></tr>
+<tr><td>RODA SEK 3.2 億合約</td><td style="color:var(--bull)">高（合約公告）</td><td>2025 Q4</td><td>僅知金額與品牌，不知毛利分配</td></tr>
+<tr><td>茂訊月營收</td><td style="color:var(--bull)">高（法定公告）</td><td>每月 10 日前更新</td><td>數字準確但不揭示結構（不知哪個客戶貢獻多少）</td></tr>
+<tr><td>管理層「訂單九成」</td><td style="color:var(--warn)">中低</td><td>2025 Q4 法說</td><td>與營收趨勢矛盾，可能是「意向訂單」而非「確認訂單」</td></tr>
+<tr><td>持股變動 4.99%</td><td style="color:var(--bull)">高（法定申報）</td><td>2025 H2</td><td>數字準確但動機不明</td></tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第九章整合結論</b>
+<p><b>資料 →</b> 三個時間維度的加權期望值分別是：短期 96.7 元（微低於現價）、中期 97.1 元（持平）、長期 90.8 元（明顯低於現價 -9%）。時間越長，下行風險越大，因為 MilDef 脫離的證據會隨時間累積。</p>
+<p><b>觀察 →</b> 所有路徑中，唯一能讓股價回到 130+ 元的情境（M1、L1）都需要「MilDef 重新擁抱茂訊」這個前提，機率合計 10-25%。而 70%+ 的路徑指向「持平或下行」。</p>
+<p><b>推論 →</b> 推衍結果與第七章壓力測試一致：期望報酬為負。在 99.8 元買入，短期不虧不賺，中期打平，長期虧損。唯一合理的策略是「等到股價反映悲觀情境才進場」，即 65-85 元區間。</p>
+<p><b>結論 →</b> 加權期望股價（6 個月後）約 95-97 元，略低於現價。不具備正期望值。建議觀望，設定 85 元提醒（進入 M3 區間），68 元以下開始評估建倉。</p>
+</div>
+</details>
+
+<!-- ====================================================================
+     第十章：股價合理性分析
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第十章：股價合理性分析 — 五法估值 + PE 敏感度矩陣</summary>
+<p class="section-sub">白話說：用五種不同的方法算「這家公司值多少」。如果五種方法算出來的答案都指向同一方向，那就可信了。</p>
+
+<details open>
+<summary>10.1 方法一：前瞻本益比法（Forward PE）</summary>
+<table>
+<tr><th>情境</th><th>機率</th><th>FY2026E EPS</th><th>合理 PE</th><th>目標價</th><th>假設條件</th></tr>
+<tr><td style="color:var(--bull)">樂觀</td><td>12%</td><td>10 元</td><td>15x</td><td style="color:var(--bull);font-weight:700">150 元</td><td>RODA 訂單回流 + 新產線滿載 + OPM 回到 18%</td></tr>
+<tr><td style="color:var(--neutral)">基本</td><td>39%</td><td>7.5 元</td><td>13x</td><td style="color:var(--neutral);font-weight:700">97 元</td><td>營收持平 ~27 億 + OPM 12-14% + 配息維持</td></tr>
+<tr><td style="color:var(--bear)">悲觀</td><td>49%</td><td>5 元</td><td>10x</td><td style="color:var(--bear);font-weight:700">50 元</td><td>RODA 訂單轉移 + 營收跌到 22 億 + OPM &lt;10%</td></tr>
+<tr style="background:var(--table-header)"><td colspan="4"><b>ACH 加權</b></td><td style="font-weight:900"><b>82 元</b></td><td>12%×150 + 39%×97 + 49%×50</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][A] ACH 加權目標價 82 元，現價 99.8 元溢價 21.7%</div>
+<div class="ev-d">為什麼悲觀情境機率最高？因為 RODA 訂單轉移已有事實支持（SEK 3.2 億合約、MilDef 零提及），而樂觀情境需要趨勢反轉，缺乏證據支持。</div>
+<div class="ev-s">方法：ACH（競爭假說分析）+ 情境加權法</div>
+</div>
+</details>
+
+<details open>
+<summary>10.2 方法二：股價淨值比法（PB Ratio）</summary>
+<table>
+<tr><th>項目</th><th>數值</th></tr>
+<tr><td>目前 PB</td><td>1.58x（股價 99.8 / 每股淨值 ~63.2 元）</td></tr>
+<tr><td>歷史五年中位 PB</td><td>1.3x</td></tr>
+<tr><td>歷史 PB 區間</td><td>0.9x ~ 2.0x</td></tr>
+<tr><td>中位 PB 隱含股價</td><td>63.2 × 1.3 = <b>82 元</b></td></tr>
+<tr><td>低檔 PB（1.0x）隱含股價</td><td>63.2 × 1.0 = <b>63 元</b></td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][A] PB 法合理價 82 元，與 PE 法一致</div>
+<div class="ev-d">目前 PB 1.58x 高於歷史中位 1.3x，代表市場給予的評價仍偏高。在營收衰退期，PB 通常會向 1.0x 甚至以下回歸。</div>
+<div class="ev-s">來源：公開資訊觀測站 / 歷史股價資料</div>
+</div>
+</details>
+
+<details open>
+<summary>10.3 方法三：分部估值法（SOTP）</summary>
+<p style="font-size:.82em;color:var(--txt2);margin-bottom:6px">白話說：把公司拆成三塊生意分開估值，加起來看值多少。Phase B 修正後，系統整合 OPM 從 25% 下修到 20%（反映 Q4 惡化）。</p>
+<table>
+<tr><th>事業部</th><th>營收（億）</th><th>推估 OPM</th><th>營業利潤（億）</th><th>合理 PE</th><th>估值（億）</th></tr>
+<tr><td>系統整合（強固/軍規）</td><td>14.0</td><td>20%（Phase B 修正）</td><td>2.80</td><td>10x</td><td>28.0</td></tr>
+<tr><td>通路代理</td><td>13.6</td><td>5%</td><td>0.68</td><td>10x</td><td>6.8</td></tr>
+<tr><td>維修服務</td><td>0.88</td><td>20%</td><td>0.18</td><td>12x</td><td>2.2</td></tr>
+<tr style="background:var(--table-header)"><td colspan="4"><b>SOTP 合計</b></td><td></td><td style="font-weight:900"><b>37.0 億</b></td></tr>
+<tr><td colspan="4"><b>每股價值</b>（股本 5.88 億 / 面額 10 元 = 5,880 萬股）</td><td></td><td style="font-weight:900"><b>63 元</b></td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][A] SOTP 分部估值 63 元，低於前兩法</div>
+<div class="ev-d">為什麼分部估值最低？因為拆開來看就會發現：通路代理佔營收 48% 但利潤率只有 5%，這塊生意不值高 PE。系統整合雖好但 OPM 已從 25% 降到 20%（Phase B 修正）。維修只佔 3% 營收，影響有限。</div>
+<div class="ev-s">計算方式：營收×OPM=營業利潤 × 同業 PE 倍數</div>
+</div>
+</details>
+
+<details open>
+<summary>10.4 方法四：隱含預期反推法</summary>
+<p style="font-size:.82em;color:var(--txt2);margin-bottom:6px">白話說：如果市場覺得 99.8 元合理，那市場在假設什麼？我們逐一檢驗這些假設的合理性。</p>
+<table>
+<tr><th>市場隱含假設</th><th>需要的條件</th><th>實現機率</th><th>燈號</th></tr>
+<tr><td>RODA 訂單不減</td><td>MilDef 維持現有代工量，不走 RODA 品牌直出</td><td>~55%</td><td style="color:var(--warn)">🟡</td></tr>
+<tr><td>OPM 回升至 15%+</td><td>Q1-Q2 改善產品組合，擺脫 Q4 低谷</td><td>~40%</td><td style="color:var(--warn)">🟡</td></tr>
+<tr><td>通路代理不縮水</td><td>代理品牌不更換供應商、終端需求穩定</td><td>~60%</td><td style="color:var(--warn)">🟡</td></tr>
+<tr><td>營業外收入持續</td><td>投資收益/匯兌/MilDef 股利不斷</td><td>~30%</td><td style="color:var(--bear)">🔴</td></tr>
+<tr style="background:var(--table-header)"><td colspan="2"><b>聯合機率（四項同時成立）</b></td><td style="color:var(--bear);font-weight:900"><b>3.96%</b></td><td style="color:var(--bear)">🔴</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[A][I] 隱含預期聯合機率僅 3.96%</div>
+<div class="ev-d">所以呢？市場目前的定價 99.8 元，隱含了四個假設同時成立，但聯合機率不到 4%。白話說：市場定價的前提基本上不會發生。這代表股價有顯著的高估風險。</div>
+<div class="ev-s">方法：隱含預期分解法（Implied Expectations Analysis）</div>
+</div>
+</details>
+
+<details open>
+<summary>10.5 方法五：歷史循環法</summary>
+<table>
+<tr><th>循環</th><th>高峰</th><th>低點</th><th>跌幅</th></tr>
+<tr><td>上一輪（2017-2020）</td><td>165 元</td><td>60 元</td><td>-64%</td></tr>
+<tr><td>本輪（2024-?）</td><td>115 元（2024/7）</td><td>?</td><td>如跌 -40% → 69 元<br>如跌 -50% → 58 元</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][R] 歷史循環法隱含低點 58-69 元</div>
+<div class="ev-d">上輪從高峰跌了 64%，但那次是全球疫情加上產業低谷的極端情況。保守取 -40% 到 -50% 作為本輪預估。如果 RODA 訂單確定轉移（類似上輪的客戶流失），-50% 並非不可能。</div>
+<div class="ev-s">來源：歷史股價資料 / 產業循環分析</div>
+</div>
+</details>
+
+<details open>
+<summary>10.6 PE 敏感度分析矩陣（Phase B 新增）</summary>
+<p style="font-size:.82em;color:var(--txt2);margin-bottom:6px">不同 EPS 假設 × 不同 PE 倍數的組合。灰底 = 低於現價 99.8 元的區域。</p>
+<table>
+<tr><th>EPS ＼ PE</th><th>8x</th><th>10x</th><th>12x</th><th>13x</th><th>15x</th></tr>
+<tr><td><b>5 元</b>（悲觀）</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">40</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">50</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">60</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">65</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">75</td></tr>
+<tr><td><b>6 元</b></td><td style="background:rgba(194,124,110,.25);color:var(--bear)">48</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">60</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">72</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">78</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">90</td></tr>
+<tr><td><b>7 元</b></td><td style="background:rgba(194,124,110,.25);color:var(--bear)">56</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">70</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">84</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">91</td><td style="color:var(--bull)">105</td></tr>
+<tr><td><b>8 元</b>（基本偏上）</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">64</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">80</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">96</td><td style="color:var(--bull)">104</td><td style="color:var(--bull)">120</td></tr>
+<tr><td><b>10 元</b>（樂觀）</td><td style="background:rgba(194,124,110,.25);color:var(--bear)">80</td><td style="color:var(--bull)">100</td><td style="color:var(--bull)">120</td><td style="color:var(--bull)">130</td><td style="color:var(--bull)">150</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3);margin-top:4px">紅底 = 低於現價 99.8 元。觀察：在 EPS 7 元以下，<b>任何合理 PE（8-13x）都低於現價</b>。要支撐 99.8 元，至少需要 EPS 8 元 + PE 13x，或 EPS 10 元 + PE 10x。</p>
+</details>
+
+<details open>
+<summary>10.7 五法綜合判斷</summary>
+<table>
+<tr><th>估值方法</th><th>合理價</th><th>vs 現價 99.8 元</th></tr>
+<tr><td>前瞻 PE 法（ACH 加權）</td><td>82 元</td><td style="color:var(--bear)">溢價 21.7%</td></tr>
+<tr><td>PB 法（歷史中位）</td><td>82 元</td><td style="color:var(--bear)">溢價 21.7%</td></tr>
+<tr><td>分部估值法（SOTP）</td><td>63 元</td><td style="color:var(--bear)">溢價 58.4%</td></tr>
+<tr><td>隱含預期法</td><td>聯合機率 3.96%</td><td style="color:var(--bear)">嚴重高估</td></tr>
+<tr><td>歷史循環法</td><td>58-69 元</td><td style="color:var(--bear)">溢價 45-72%</td></tr>
+<tr style="background:var(--table-header)"><td><b>五法平均（Phase B 修正後）</b></td><td style="font-weight:900"><b>~75 元</b></td><td style="color:var(--bear);font-weight:900"><b>溢價 33%</b></td></tr>
+<tr><td><b>安全邊際價（五法最低 × 0.85-1.0）</b></td><td style="font-weight:900"><b>53-68 元</b></td><td style="color:var(--bear);font-weight:900"><b>溢價 47-88%</b></td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>第十章整合結論</b>
+<p><b>資料 →</b> 五種估值方法一致指向同一結論：合理價 63-82 元，平均 ~75 元。安全邊際價 53-68 元。現價 99.8 元對五法平均溢價 33%。PE 敏感度矩陣顯示，在 EPS 7 元以下（悲觀~基本情境），幾乎所有合理 PE 都無法支撐現價。</p>
+<p><b>觀察 →</b> 五法罕見地高度一致。通常不同方法會給出差異較大的結果，但茂訊的案例中，PE 法、PB 法、SOTP、隱含預期、歷史循環全部指向「現價偏貴」。這代表高估不是某一種方法的偏差，而是系統性的。</p>
+<p><b>推論 →</b> 市場定價 99.8 元隱含了「RODA 訂單不減 + OPM 回升 + 通路穩定 + 營業外持續」的聯合假設，但聯合機率僅 3.96%。換句話說，市場正在為一個極低機率的美好情境買單。</p>
+<p><b>結論 →</b> <b>99.8 元不買。</b>五法平均合理價 75 元（安全邊際價 53-68 元）。即使用最寬鬆的估值（PE 法基本情境 97 元），現價也只有 2% 的上行空間。68 元以下（安全邊際上緣）才具備正期望值的進場條件。</p>
+</div>
+</details>
+
+<!-- ====================================================================
+     第十一章：補充分析 — MilDef-茂訊關係演進時間軸
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第十一章：補充分析 — MilDef-茂訊關係演進時間軸</summary>
+<p class="section-sub">白話說：29 年從創業夥伴走到漸行漸遠，這段歷史能告訴我們「脫離」不是一夜之間的事，而是一步步走到今天的。</p>
+
+<details open>
+<summary>11.1 關係演進 29 年全紀錄</summary>
+<table>
+<tr><th>年份</th><th>事件</th><th>關係狀態</th><th>意義</th></tr>
+<tr><td>1990</td><td>茂訊成立，早期專注強固型電腦研發製造</td><td style="color:var(--bull)">起源</td><td>奠定軍規電腦技術基礎</td></tr>
+<tr><td>1997</td><td>MilDef（瑞典）成立，與茂訊建立三方結盟（設計-製造-銷售）</td><td style="color:var(--bull)">蜜月期</td><td>MilDef 負責北歐國防市場，茂訊負責製造，雙贏模式啟動</td></tr>
+<tr><td>2004</td><td>茂訊上櫃（3213.TWO）</td><td style="color:var(--bull)">穩定成長</td><td>MilDef 貢獻穩定營收，茂訊成功 IPO</td></tr>
+<tr><td>2010s</td><td>雙方建立交叉持股，茂訊持有 MilDef ~6%，MilDef 為茂訊重要客戶</td><td style="color:var(--bull)">深度綁定</td><td>交叉持股 = 利益一致化，合作關係的最高峰</td></tr>
+<tr><td>2021/10</td><td>MilDef 在斯德哥爾摩上市（IPO）</td><td style="color:var(--neutral)">轉折開始</td><td>上市後 MilDef 有自己的股東壓力，開始思考供應鏈自主化</td></tr>
+<tr><td>2022-2023</td><td>北歐國防預算因俄烏戰爭大幅成長，MilDef 營收暴增</td><td style="color:var(--neutral)">規模差距拉大</td><td>MilDef 成長速度遠超茂訊，開始有能力自建產能</td></tr>
+<tr><td>2024/11</td><td>MilDef 收購 RODA Computer（德國），取得歐洲本土製造能力</td><td style="color:var(--bear)">關鍵轉折</td><td>RODA 讓 MilDef 不再依賴茂訊做製造。地緣+成本+速度三重優勢</td></tr>
+<tr><td>FY2024</td><td>MilDef 年報：RODA 營收佔 MilDef 32.55%，提及茂訊為「創始夥伴」</td><td style="color:var(--warn)">降級中</td><td>「創始夥伴」是回顧式描述，不是前瞻性承諾。RODA 佔比已超越茂訊貢獻</td></tr>
+<tr><td>2025 Q3</td><td>MilDef Q3 報告：零次提及茂訊</td><td style="color:var(--bear)">消失</td><td>首次在季度報告中完全不提茂訊，歷史性的沉默</td></tr>
+<tr><td>2025 Q4</td><td>RODA SEK 3.2 億最大合約，以 RODA 品牌直接出貨</td><td style="color:var(--bear)">繞過</td><td>確認 MilDef 體系內有不經茂訊的出貨路徑</td></tr>
+<tr><td>2025 H2</td><td>茂訊減持 MilDef 至 4.99%（低於公開申報門檻）</td><td style="color:var(--warn)">鬆綁</td><td>雙向鬆綁：MilDef 不提茂訊，茂訊也在減持 MilDef</td></tr>
+<tr><td>2026/2</td><td>MilDef Year-End 2025：「創始夥伴」僅出現在歷史段落；Helsingborg 額外擴產</td><td style="color:var(--bear)">邊緣化</td><td>MilDef 雙線擴產（RODA + Helsingborg），茂訊被排除在未來產能規劃之外</td></tr>
+<tr><td>2026/1-2</td><td>茂訊營收 YoY -23%，管理層仍稱「訂單九成」</td><td style="color:var(--bear)">矛盾</td><td>營收大幅衰退但管理層維持樂觀，言行不一致</td></tr>
+</table>
+</details>
+
+<div class="tip danger">
+<b>第十一章整合結論</b>
+<p><b>資料 →</b> 29 年時間軸清楚呈現四個階段：蜜月期（1997-2020）→ 轉折期（2021 MilDef IPO）→ 替代期（2024 收購 RODA）→ 邊緣期（2025 至今）。每個階段的證據都是公開可查的事實。</p>
+<p><b>觀察 →</b> 脫離不是突然發生的。從 MilDef IPO 開始，就有自主化的動機。RODA 收購只是讓動機有了執行工具。2025 年的「零提及+最大單繞過+雙線擴產」是三個獨立事實指向同一方向。</p>
+<p><b>推論 →</b> 這是結構性的關係轉變，不是短期波動。MilDef 已經有了替代產能（RODA + Helsingborg），而且正在使用它。除非出現重大事件（如 RODA 品質失敗、MilDef 策略轉向），否則這個趨勢不會逆轉。</p>
+<p><b>結論 →</b> <b>從創業夥伴到主從脫離。</b>茂訊正在從「MilDef 不可或缺的製造夥伴」變成「MilDef 多個供應商之一」。這不是陰謀論，是公開資料可驗證的事實鏈。投資人必須正視這個結構性變化，不能只看配息殖利率。</p>
+</div>
+</details>
+
+<!-- ====================================================================
+     第十二章：貓膩探索與求證
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第十二章：貓膩探索與求證 — 六步偵測</summary>
+<p class="section-sub">白話說：「貓膩」不一定是造假。更常見的是：管理層說一套、現實走另一套，或者市場流行的敘事跟數據不吻合。</p>
+
+<details open>
+<summary>D-1 敘事解剖：流行敘事 vs 數據現實</summary>
+<table>
+<tr><th>面向</th><th>流行敘事（市場在說的）</th><th>數據現實（報告看到的）</th><th>差距</th></tr>
+<tr><td>估值</td><td>「便宜的軍工股，PE 只有 13x」</td><td>五法估值平均 75 元，現價溢價 33%。基本情境 PE 13x 才勉強到 97 元</td><td style="color:var(--bear)">大</td></tr>
+<tr><td>配息</td><td>「穩定配息 6 元，殖利率 6%，存股好標的」</td><td>配息要有獲利支撐。如果 EPS 從 7.5 元降到 5 元，配息也會砍</td><td style="color:var(--warn)">中</td></tr>
+<tr><td>軍工題材</td><td>「北歐國防預算大增，茂訊受惠」</td><td>北歐國防預算確實大增，但受惠的是 MilDef（+40% YoY），不是茂訊（-23%）</td><td style="color:var(--bear)">大</td></tr>
+<tr><td>訂單</td><td>「管理層說訂單九成，營運穩健」</td><td>營收 -23% YoY，Q4 OPM 7%。訂單九成但營收大跌 = 訂單質量有問題</td><td style="color:var(--bear)">大</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][I] 敘事解剖結果：🔴 四項中三項有重大差距</div>
+<div class="ev-d">市場正在用「便宜軍工 + 配息穩定」的簡單敘事來解釋茂訊，但這個敘事忽略了兩個關鍵事實：(1) 軍工成長的受惠者是 MilDef 不是茂訊；(2) 配息穩定的前提是獲利穩定，而獲利正在惡化。</div>
+<div class="ev-s">方法：D-1 敘事解剖法（市場敘事 vs 財務事實比對）</div>
+</div>
+</details>
+
+<details open>
+<summary>D-2 歷史前科檢查</summary>
+<div class="ev">
+<div class="ev-t">[F] 歷史前科：🟢 無重大法律或監管紀錄</div>
+<div class="ev-d">經查詢公開資訊觀測站、司法院裁判書查詢系統、金管會裁罰紀錄，茂訊無重大違規、財報重編、內線交易或其他法律紀錄。管理層信譽方面無歷史負面紀錄。</div>
+<div class="ev-s">來源：公開資訊觀測站 / 司法院裁判書系統 / 金管會裁罰公告</div>
+</div>
+</details>
+
+<details open>
+<summary>D-3 巧合偵測：管理層言行一致性</summary>
+<table>
+<tr><th>偵測項目</th><th>管理層說法</th><th>實際數據</th><th>一致性</th></tr>
+<tr><td>訂單能見度</td><td>「在手訂單充足，產能利用率九成」（Q4 法說）</td><td>2026/1-2 月營收 -23% YoY</td><td style="color:var(--bear);font-weight:700">🔴 矛盾</td></tr>
+<tr><td>擴產計畫</td><td>「新產線 2026 年中完工，看好軍規需求」</td><td>同時間減持 MilDef 至 4.99%</td><td style="color:var(--warn);font-weight:700">🟡 矛盾</td></tr>
+<tr><td>MilDef 關係</td><td>（未公開說明）</td><td>MilDef 連續兩季零提及茂訊</td><td style="color:var(--warn);font-weight:700">🟡 沉默</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[A][I] 巧合偵測：🟡 發現兩項矛盾 + 一項沉默</div>
+<div class="ev-d">為什麼這是問題？「訂單九成」但營收大跌 → 可能的解釋：(1) 訂單是「框架合約」而非確定訂單；(2) 訂單有但交期延後；(3) 部分訂單已取消但尚未公告。「擴產」但「減持」→ 如果真的看好為什麼要賣股？可能的解釋：(1) 資金需求（蓋新廠需要錢）；(2) 對 MilDef 未來不確定。這些不是造假的證據，但是管理層溝通與現實有落差的訊號。</div>
+<div class="ev-s">方法：D-3 巧合偵測法（管理層發言 vs 財務/行為數據比對）</div>
+</div>
+</details>
+
+<details open>
+<summary>D-4 反轉假說測試</summary>
+<p style="font-size:.85em;color:var(--txt2);margin-bottom:6px">如果市場的看法是對的（茂訊沒問題），那以下假設需要成立：</p>
+<table>
+<tr><th>假說</th><th>需要的證據</th><th>現有證據</th><th>成立？</th></tr>
+<tr><td>「訂單九成」是真的</td><td>Q1 營收回升到 YoY 持平或正成長</td><td>1-2 月持續 -23%，Q1 回升可能性低</td><td style="color:var(--bear)">待驗證（偏否）</td></tr>
+<tr><td>RODA 不影響茂訊</td><td>MilDef 對茂訊下單量維持或增加</td><td>RODA SEK 3.2 億走 RODA 品牌、MilDef 零提及</td><td style="color:var(--bear)">否</td></tr>
+<tr><td>減持只是資金需求</td><td>同時期有大額資本支出（新廠）</td><td>新產線確實在蓋，但減持時機與 MilDef 脫離訊號重疊</td><td style="color:var(--warn)">部分成立</td></tr>
+<tr><td>配息會維持</td><td>FY2025 EPS ≥ 6 元</td><td>前 2 月營收趨勢 → 全年 EPS 可能降到 5-6 元</td><td style="color:var(--warn)">不確定</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>D-5 利益追蹤</summary>
+<div class="ev">
+<div class="ev-t">[F] 內部人交易檢查：🟢 無異常紅旗</div>
+<div class="ev-d">查詢公開資訊觀測站，茂訊董監事近 6 個月無大額異常賣出。持股變動在正常範圍內。關係人交易方面，與 MilDef 的交易有揭露，無隱藏利益輸送跡象。</div>
+<div class="ev-s">來源：公開資訊觀測站（董監持股變動）/ 年報（關係人交易揭露）</div>
+</div>
+</details>
+
+<details open>
+<summary>D-6 貓膩總評</summary>
+<div class="grid2">
+<div class="mini-card neutral-card">
+<div class="title">正面</div>
+<div class="desc" style="text-align:left;font-size:.82em;color:var(--txt2)">
+<br>- 無法律前科 🟢<br>- 內部人無異常交易 🟢<br>- 關係人交易有揭露 🟢<br>- 財務結構健康（低負債）🟢
+</div>
+</div>
+<div class="mini-card bear-card">
+<div class="title">疑慮</div>
+<div class="desc" style="text-align:left;font-size:.82em;color:var(--txt2)">
+<br>- 管理層「訂單九成」vs 營收 -23% 🔴<br>- 擴產 vs 減持 MilDef 邏輯矛盾 🟡<br>- 對 MilDef 脫離訊號保持沉默 🟡<br>- 市場敘事與數據嚴重脫節 🔴
+</div>
+</div>
+</div>
+</details>
+
+<div class="tip warn">
+<b>第十二章整合結論</b>
+<p><b>資料 →</b> 六步偵測結果：D-1 紅旗（敘事 vs 現實差距大）/ D-2 綠旗（無前科）/ D-3 黃旗（言行矛盾）/ D-4 偏否（反轉假說不成立）/ D-5 綠旗（內部人無異常）/ D-6 總評 🟡。</p>
+<p><b>觀察 →</b> 茂訊不是「造假」的公司。財務數字是真的、關係人交易有揭露、內部人沒有異常拋售。問題出在：管理層維持過度樂觀的敘事（「訂單九成」），而市場買單了這個敘事（定價 99.8 元）。</p>
+<p><b>推論 →</b> 這是典型的「管理層認知偏差 + 市場敘事慣性」的組合。管理層可能真的相信訂單會回來（人的天性是對自己的事業樂觀），但數據正在走相反的方向。這不是惡意欺騙，是「善意的自我安慰」碰上「懶得驗證的市場」。</p>
+<p><b>結論 →</b> 🟡 有疑點需觀察，但不構成「迴避」的理由。真正的決策因素是第七章的風險分析和第十章的估值，不是貓膩。茂訊的問題是「好產業裡的弱公司」，不是「有問題的公司」。</p>
+</div>
+</details>
+
+<!-- ====================================================================
+     第十三章：投資結論
+     ==================================================================== -->
+<details open>
+<summary class="section-title">第十三章：投資結論 — 評審 38.9，不買，等 68 元以下</summary>
+<p class="section-sub">一句話：好產業裡的弱公司。北歐國防預算噴發，但訂單可能不會流到茂訊手上。99.8 元不具備正期望值，68 元以下再談。</p>
+
+<details open>
+<summary>13.1 綜合評估表</summary>
+<table>
+<tr><th>項目</th><th>評分 / 數據</th><th>說明</th></tr>
+<tr><td><b>評審 總分</b></td><td style="font-weight:900;font-size:1.1em;color:var(--bear)">38.9 / 100</td><td>風險管理師 25 分拖累。基本面 40 + 催化劑 35 + 風險管理 25 + 估值 55 的加權</td></tr>
+<tr><td>五法平均合理價</td><td style="color:var(--bear);font-weight:700">~75 元</td><td>PE 82 / PB 82 / SOTP 63 / 隱含預期 &lt;80 / 歷史循環 58-69</td></tr>
+<tr><td>安全邊際價</td><td style="color:var(--bear);font-weight:700">53-68 元</td><td>五法最低值 × 0.85 ~ 1.0</td></tr>
+<tr><td>現價溢價</td><td style="color:var(--bear);font-weight:700">+33%（vs 合理價）</td><td>99.8 元 vs 75 元</td></tr>
+<tr><td>淨期望值（三情境加權）</td><td style="color:var(--bear);font-weight:700">-7.9%</td><td>樂觀 12%×56% + 中性 39%×3% + 悲觀 49%×(-44%)</td></tr>
+<tr><td>監控燈號</td><td style="color:var(--bear);font-weight:700">5 紅 1 黃 2 綠</td><td>營運面全紅，僅財務面綠燈</td></tr>
+<tr><td>MilDef 關係狀態</td><td style="color:var(--bear);font-weight:700">邊緣化中</td><td>零提及 + 訂單繞過 + 雙線擴產</td></tr>
+<tr><td>貓膩偵測</td><td style="color:var(--warn);font-weight:700">🟡 有疑點</td><td>管理層言行不一致，但非蓄意造假</td></tr>
+</table>
+</details>
+
+<details open>
+<summary>13.2 三情境估值與加權期望</summary>
+<table>
+<tr><th>情境</th><th>機率</th><th>目標價</th><th>vs 現價 99.8</th><th>加權貢獻</th></tr>
+<tr><td style="color:var(--bull)">樂觀（RODA 回流 + 新產線滿載）</td><td>12%</td><td>150 元</td><td style="color:var(--bull)">+50.3%</td><td>+6.0%</td></tr>
+<tr><td style="color:var(--neutral)">基本（營收持平 + 配息維持）</td><td>39%</td><td>97 元</td><td style="color:var(--bear)">-2.8%</td><td>-1.1%</td></tr>
+<tr><td style="color:var(--bear)">悲觀（RODA 轉移 + 營收衰退）</td><td>49%</td><td>50 元</td><td style="color:var(--bear)">-49.9%</td><td>-24.5%</td></tr>
+<tr style="background:var(--table-header)"><td colspan="3"><b>三情境加權期望報酬</b></td><td style="color:var(--bear);font-weight:900"><b>-7.9%</b></td><td style="color:var(--bear);font-weight:900"><b>-19.6%（未含配息）</b></td></tr>
+<tr><td colspan="3"><b>含配息（假設 6 元）再投資</b></td><td colspan="2" style="color:var(--bear);font-weight:900"><b>淨 -7.9%</b>（配息 6% 已計入基本/悲觀情境調整）</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t">[F][A][I] 催化劑 EV +7%（調整後） vs 風險 EV -28~32%（調整後）→ 淨期望 -7.9%</div>
+<div class="ev-d">白話說：買進茂訊，最好的情況賺 50% 但機率只有 12%；最差的情況虧 50% 但機率有 49%。加權起來，期望報酬是負的 7.9%。這不是一個值得賭的局。除非你認為 MilDef 會回頭，但目前沒有任何證據支持這個判斷。</div>
+<div class="ev-s">方法：ACH 三情境加權 + 催化劑/風險期望值比對</div>
+</div>
+</details>
+
+<details open>
+<summary>13.3 操作建議</summary>
+<div class="tip danger">
+<b>操作建議五點（具體可執行）</b>
+<p><b>1. 現價不買。</b>99.8 元對五法平均合理價 75 元溢價 33%，對安全邊際價 53-68 元溢價 47-88%。沒有正期望值的理由進場。</p>
+<p><b>2. 等 68 元以下。</b>68 元 = 安全邊際上緣，此時殖利率 8.8%+（假設配息 6 元）、PE ~9.2x（假設 EPS 7.5 元）。以配息邏輯小部位持有尚可接受。53 元以下 = 安全邊際下緣，積極布局。</p>
+<p><b>3. 部位上限 ≤ 3%。</b>即使在安全邊際價進場，茂訊的客戶集中度風險（MilDef 佔比高）決定了它不適合重押。最多佔投資組合 3%。</p>
+<p><b>4. 觀察窗口 2026 Q2-Q3。</b>重點時間：4/10（3 月營收）、5/15（Q1 季報）、6 月（新產線 + 股東會）、7-8 月（MilDef Q2）。如果 Q2 三個指標（營收 YoY、OPM、MilDef 提及）都翻正，重新評估。</p>
+<p><b>5. 絕對迴避觸發條件。</b>出現以下任一條件 → 不論價位都不碰：(a) MilDef 正式宣布終止合作或收回代工權；(b) 連續兩季 OPM &lt; 5%；(c) 配息低於 4 元（殖利率保護消失）；(d) 負債比 &gt; 60%。</p>
+</div>
+</details>
+
+<details open>
+<summary>13.4 免責提醒</summary>
+<div class="tip info">
+<b>免責聲明</b>
+<p>本報告為天機閣 OSINT 系統基於公開資訊的質化分析產出，<b>不構成任何投資建議</b>。報告中的估值、機率、預測均為分析師基於現有資料的推估，實際結果可能大幅偏離。投資人應自行判斷並承擔投資風險。報告資料來源包括公開資訊觀測站、MilDef IR 文件、法說會紀錄等公開管道，不涉及內線資訊。</p>
+<p>分析日期：2026-04-02。報告有效性隨時間遞減，建議在重大事件發生後重新評估。</p>
+</div>
+</details>
+
+<div class="tip danger">
+<b>第十三章整合結論（全報告最終判斷）</b>
+<p><b>資料 →</b> 評審 38.9 / 五法合理價 75 元 / 安全邊際 53-68 元 / 淨期望值 -7.9% / 監控 5 紅 1 黃 2 綠 / MilDef 邊緣化中 / 貓膩偵測黃旗。</p>
+<p><b>觀察 →</b> 茂訊是一家好產業（軍規強固電腦）裡的弱公司（最大客戶正在脫離）。它的問題不是品質不好或管理層造假，而是產業結構正在改變：MilDef 從「需要茂訊」變成「可以不需要茂訊」。這是最難逆轉的那種風險 — 結構性的、漸進的、不可逆的。</p>
+<p><b>推論 →</b> 在 99.8 元買入茂訊，你在賭「MilDef 會回頭」（12% 機率）。在 68 元買入，你在賭「茂訊至少能維持現狀 + 配息 6%」（合理但不確定）。在 53 元買入，你在賭「公司不會倒」（幾乎確定，負債比 38%、淨現金）。投資決策的本質就是選擇你願意賭哪一個。</p>
+<p><b>結論 →</b> <b>99.8 元不買。</b>等 68 元以下考慮配息策略小部位。53 元以下積極布局。觀察窗口 2026 Q2-Q3。MilDef FY2025 年報（2027/2）是終極驗證時點。在此之前，耐心等待。</p>
+</div>
+</details>
+
+<!-- 頁尾 -->
+
+<!-- CROSS_LINKS_START -->
+<!-- CROSS_LINKS_END -->
+<div style="text-align:center;padding:16px;color:var(--txt3);font-size:.8em;border-top:2px solid var(--border);margin-top:20px">
+  3213 茂訊 質化分析報告 v3.0（第七步完整版）｜13 章｜分析日期 2026-04-02｜天機閣 OSINT 系統產出
+</div>
+</div>
+</body>
+</html>
