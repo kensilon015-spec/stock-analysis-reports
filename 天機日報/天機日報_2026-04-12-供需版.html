@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>供需失衡偵測報告 — 2026-04-12</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- 天機閣 — 供需偵測報告 v5.0（四刀篩選版）2026-04-12 -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px;overflow-x:auto}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.sd-table{border-collapse:collapse;font-size:.78em;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.15);width:100%}
+.sd-table th,.sd-table td{padding:5px 5px;word-wrap:break-word;overflow-wrap:break-word;max-width:120px}
+.sd-table td.col-inv{max-width:70px}
+.sd-table td.col-bf{min-width:110px;max-width:160px}
+.sd-table th{text-align:center;font-weight:700;color:#e0dcd4;font-size:.78em}
+.sd-table td{border-bottom:1px solid var(--border);color:#c4bdb4;background:var(--panel);vertical-align:top;font-size:.82em}
+.sd-table tr:hover td{background:var(--hover)}
+.sd-table .item-name{font-weight:700;color:var(--base);font-size:.88em}
+.th-status{background:#2a3a2a;border-bottom:2px solid var(--accent)}
+.th-trend{background:#3a3520;border-bottom:2px solid var(--warn)}
+.th-predict{background:#2a2530;border-bottom:2px solid var(--link)}
+.th-impact{background:#352a25;border-bottom:2px solid var(--danger)}
+.st{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:.78em;white-space:nowrap}
+.st-r{background:rgba(239,83,80,.2);color:#ef5350}
+.st-o{background:rgba(255,152,0,.15);color:#ff9800}
+.st-y{background:rgba(255,193,7,.15);color:#ffc107}
+.st-g{background:rgba(76,175,80,.15);color:#4caf50}
+.tr-up{color:#ef5350;font-weight:700}.tr-flat{color:#7a7268;font-weight:700}.tr-down{color:#4caf50;font-weight:700}
+.rv-low{color:#4caf50;font-weight:700}.rv-mid{color:#ffc107;font-weight:700}.rv-high{color:#ef5350;font-weight:700}
+.bf-h{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(76,175,80,.2);color:#4caf50}
+.bf-m{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(255,193,7,.15);color:#ffc107}
+.bf-l{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(122,176,192,.12);color:#7ab0c0}
+.leader{color:var(--gold);font-weight:900}
+.victim{color:#d4978a;font-size:.78em}
+.reason{font-size:.76em;color:#9a9288;line-height:1.4;margin-top:2px}
+.driver-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;margin-left:4px}
+.drv-supply{background:rgba(239,83,80,.15);color:#ef5350}
+.drv-demand{background:rgba(76,175,80,.15);color:#4caf50}
+.drv-dual{background:rgba(212,176,48,.2);color:var(--gold)}
+.ind-ok{color:var(--bull);font-weight:700}.ind-warn{color:var(--warn);font-weight:700}.ind-none{color:var(--txt3)}
+.risk-low{color:var(--bull);font-weight:700}.risk-mid{color:var(--warn);font-weight:700}.risk-high{color:var(--danger);font-weight:700}
+.cut-pass{color:var(--bull);font-weight:700}.cut-warn{color:var(--warn);font-weight:700}.cut-fail{color:var(--bear);font-weight:700}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>供需失衡偵測報告</h1>
+    <div class="sub">2026-04-12 ｜ 19 管道 × 四刀篩選 ｜ 龍頭優先 × 營收爆發優先</div>
+    <div class="desc">受惠 = 利潤因稀缺性直接提升｜四刀：供應鏈位置 × 營收加速度 × 法人行為 × 佔營收比重</div>
+    <div class="tags">
+        <span class="tag">四刀篩選</span>
+        <span class="tag">龍頭優先</span>
+        <span class="tag">營收爆發</span>
+        <span class="tag">台股+美股</span>
+        <span class="tag">19管道</span>
+        <span class="tag">v5.0</span>
+    </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#ch1">第一章：執行摘要 — 四刀篩選結果總覽</a>
+    <a href="#ch2">第二章：供需趨勢追蹤表</a>
+    <a href="#ch3">第三章：四刀篩選名單 — 真受惠 vs 假受惠</a>
+    <a href="#ch4">第四章：供需反轉預警儀表板</a>
+    <a href="#ch5">第五章：行動建議</a>
+    <a href="#ch6">附錄：搜尋來源</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- 第一章：執行摘要                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch1">第一章：執行摘要</div>
+<div class="section-sub">19 管道掃描 → 8 領域（偏緊以上）→ 27 家候選 → 四刀篩選 → 11 家真受惠龍頭</div>
+
+<div class="grid4">
+    <div class="mini-card bear-card"><div class="title">掃描領域</div><div class="num" style="color:var(--base)">8</div><div class="desc">全部偏緊以上</div></div>
+    <div class="mini-card bear-card"><div class="title">候選公司</div><div class="num" style="color:var(--base)">27</div><div class="desc">台股+美股</div></div>
+    <div class="mini-card bull-card"><div class="title">四刀通過</div><div class="num" style="color:var(--bull)">11</div><div class="desc">真受惠龍頭</div></div>
+    <div class="mini-card neutral-card"><div class="title">淘汰</div><div class="num" style="color:var(--bear)">16</div><div class="desc">假受惠/已反映/佔比不足</div></div>
+</div>
+
+<div class="tip good">
+<b>第一章整合結論</b>
+<strong>資料</strong>：19 管道掃描（供給10+需求9）涵蓋缺貨/漲價/交期/CapEx/滲透率/政策/訂單/電力/物流，共 80+ 筆新聞來源。27 家台美候選公司經四刀篩選。<br>
+<strong>觀察</strong>：27 家候選中只有 11 家通過四刀（佔比>30%+上游賣方+營收加速+法人認同）。16 家被淘汰——最常見原因：「看似受惠但實為中下游，成本上升侵蝕利潤」（如重電四雄）和「真受惠但股價已完全 price in」（如台積電/台達電）。<br>
+<strong>推論</strong>：真受惠集中在「缺貨品項=100%營收」的上游製造商/礦商。台股核心只有 3 家（南亞科/台燿/台光電），美股 3 家（FCX/MU/LITE）。<br>
+<strong>結論</strong>：<b>供需失衡的投資機會 ≠ 「跟缺貨有關的公司」。必須是：上游賣方 + 營收正在爆發 + 法人認同 + 佔營收夠大。</b>
+</div>
+
+<!-- ============================================================ -->
+<!-- 第二章：供需趨勢追蹤表                         -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch2">第二章：供需趨勢追蹤表</div>
+<div class="section-sub">現狀 × 趨勢 × 預判 × 真受惠龍頭（四刀篩選後）</div>
+
+<div>
+<table class="sd-table">
+<thead>
+<tr>
+    <th rowspan="2" style="text-align:left;background:var(--table-header);min-width:75px">品項</th>
+    <th colspan="3" class="th-status">現狀</th>
+    <th colspan="2" class="th-trend">趨勢</th>
+    <th colspan="2" class="th-predict">預判</th>
+    <th colspan="3" class="th-impact">真受惠龍頭（四刀篩選）</th>
+</tr>
+<tr>
+    <th class="th-status">狀態</th>
+    <th class="th-status">價格</th>
+    <th class="th-status" style="max-width:70px">交期/庫存</th>
+    <th class="th-trend">方向</th>
+    <th class="th-trend">vs 上期</th>
+    <th class="th-predict">反轉風險</th>
+    <th class="th-predict">反轉時間</th>
+    <th class="th-impact" style="min-width:130px">真受惠（龍頭）</th>
+    <th class="th-impact">佔營收</th>
+    <th class="th-impact" style="min-width:100px">假受惠/受害</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- ▎原物料 -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎原物料</td></tr>
+
+<tr>
+    <td><span class="item-name">銅</span><br><span class="driver-tag drv-dual">雙重</span></td>
+    <td><span class="st st-r">🔴嚴重短缺</span></td>
+    <td>LME $12,000/噸<br>歷史新高<br><span class="reason">Grasberg停工+Kamoa+Codelco減產</span></td>
+    <td class="col-inv">庫存歷史低位<br><span class="reason">LME銅庫存持續降</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">JPM缺口33萬噸，ING 60萬噸</span></td>
+    <td class="rv-low">低</td>
+    <td>2028+<br><span class="reason">礦山開發5~10年</span></td>
+    <td class="col-bf"><span class="leader">FCX(美)</span>全球最大銅礦<br><span class="leader">SCCO(美)</span>南美銅礦<br><span class="reason">銅價↑=直接利潤↑</span></td>
+    <td><span class="bf-h">100%</span></td>
+    <td><span class="victim">華新/大亞(成本↑)<br>重電廠(銅成本↑)<br>PCB廠(銅箔↑)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">鋁</span><br><span class="driver-tag drv-supply">供給</span></td>
+    <td><span class="st st-o">🟠偏緊</span></td>
+    <td>$3,521/噸 YoY+40%<br><span class="reason">美溢價$560(+68%)</span></td>
+    <td class="col-inv">美庫存75→30萬噸<br><span class="reason">歐冶煉關+俄禁</span></td>
+    <td class="tr-up">↑趨緊</td>
+    <td><span class="reason">中國近上限，美關稅50%</span></td>
+    <td class="rv-mid">中</td>
+    <td>2027中<br><span class="reason">中東緩和可緩解</span></td>
+    <td class="col-bf"><span class="leader">AA(美)</span>Alcoa冶煉龍頭<br><span class="leader">大成鋼2027</span>美鋁通路60%+<br><span class="reason">關稅50%=在地廠獨佔</span></td>
+    <td><span class="bf-h">>60%</span></td>
+    <td><span class="victim">廷鑫(加工,營收↓)<br>汽車/建材(成本↑)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">矽鋼片</span><br><span class="driver-tag drv-dual">雙重</span></td>
+    <td><span class="st st-r">🔴短缺</span></td>
+    <td>價格攀升<br><span class="reason">GO鋼=變壓器核心</span></td>
+    <td class="col-inv">交期2年+<br><span class="reason">產能集中日韓中</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">變壓器需求暴增</span></td>
+    <td class="rv-low">低</td>
+    <td>2028+</td>
+    <td class="col-bf"><span class="leader">NPSCY(美)</span>日本製鉄<br>POSCO(韓)<br><span class="reason">中鋼⚠️佔比~10%不足</span></td>
+    <td><span class="bf-l">10%</span></td>
+    <td><span class="victim">華城/中興電/士電(原料↑)<br>中鋼(佔比太小)</span></td>
+</tr>
+
+<!-- ▎零組件 -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎零組件</td></tr>
+
+<tr>
+    <td><span class="item-name">DRAM</span><br><span class="driver-tag drv-dual">雙重</span></td>
+    <td><span class="st st-r">🔴嚴重短缺</span></td>
+    <td>合約價QoQ+80~100%<br><span class="reason">高盛：15年最嚴重</span></td>
+    <td class="col-inv">庫存2~4週<br><span class="reason">三大廠轉HBM排擠</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">美光示警→2028</span></td>
+    <td class="rv-low">低</td>
+    <td>2027中~2028</td>
+    <td class="col-bf"><span class="leader">MU(美)</span>100%記憶體<br><span class="leader">南亞科2408</span>100% YoY+560%<br><span class="leader">華邦電2344</span>100% YoY+92%</td>
+    <td><span class="bf-h">100%</span></td>
+    <td><span class="victim">PC品牌(成本↑15~25%)<br>手機廠(↓出貨10~15%)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">ABF載板</span><br><span class="driver-tag drv-demand">需求</span></td>
+    <td><span class="st st-r">🔴供不應求</span></td>
+    <td>漲價潮初升段<br><span class="reason">高盛估缺口2028達42%</span></td>
+    <td class="col-inv">Semco全數被鎖<br><span class="reason">客戶簽7年長約</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">三年上升週期啟動</span></td>
+    <td class="rv-low">低</td>
+    <td>2029+</td>
+    <td class="col-bf"><span class="leader">欣興3037</span>ABF市佔#1<br><span class="reason">AI ABF 30~40%↑ 法人買超</span></td>
+    <td><span class="bf-m">30~40%↑</span></td>
+    <td><span class="victim">晶片封裝(成本↑)<br>非AI伺服器(排擠)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">CCL/T-Glass</span><br><span class="driver-tag drv-dual">雙重</span></td>
+    <td><span class="st st-r">🔴短缺</span></td>
+    <td>T-glass+銅箔飆升<br><span class="reason">玻纖布漲20%</span></td>
+    <td class="col-inv">缺口10~20%<br><span class="reason">日東紡H2才到</span></td>
+    <td class="tr-up">↑趨緊</td>
+    <td><span class="reason">M8/M9獨佔=定價權</span></td>
+    <td class="rv-mid">中</td>
+    <td>2026H2~2029</td>
+    <td class="col-bf"><span class="leader">台燿6274</span>CCL 90%+ YoY+72%<br><span class="leader">台光電2383</span>AI CCL 70~80%<br><span class="reason">四刀全過/近全過</span></td>
+    <td><span class="bf-h">70~90%</span></td>
+    <td><span class="victim">中低階PCB廠(原料↑)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">光通訊</span><br><span class="driver-tag drv-demand">需求</span></td>
+    <td><span class="st st-r">🔴嚴重短缺</span></td>
+    <td>800G需求4,000萬組<br><span class="reason">1.6T破2,000萬組</span></td>
+    <td class="col-inv">InP吃緊→2027<br><span class="reason">CPO成長90x仍小</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">Lumentum+65%</span></td>
+    <td class="rv-low">低</td>
+    <td>2027底</td>
+    <td class="col-bf"><span class="leader">LITE(美)</span>Lumentum YoY+65%<br><span class="leader">聯亞3081</span>InP 90%+ YoY+89%<br><span class="reason">上游InP=真瓶頸</span></td>
+    <td><span class="bf-h">90%+</span></td>
+    <td><span class="victim">智邦(⚠️營收-23%)<br>波若威/光聖(題材>實質)<br>DC商(採購↑)</span></td>
+</tr>
+
+<!-- ▎設備/需求 -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎設備 / 需求爆發</td></tr>
+
+<tr>
+    <td><span class="item-name">變壓器/重電</span><br><span class="driver-tag drv-dual">雙重</span></td>
+    <td><span class="st st-r">🔴嚴重短缺</span></td>
+    <td>3月集體調漲<br><span class="reason">單價+77~95%</span></td>
+    <td class="col-inv">128~144週<br><span class="reason">產能利用率98%</span></td>
+    <td class="tr-up">↑惡化</td>
+    <td><span class="reason">四重疊加：AI DC+電網+再生+半導體</span></td>
+    <td class="rv-low">低</td>
+    <td>2028~2029</td>
+    <td class="col-bf"><span class="leader">POWL(美)</span>Powell美重電<br><span class="leader">ETN(美)</span>Eaton全球龍頭<br><span class="reason">台廠⚠️全部中游成本壓力</span></td>
+    <td><span class="bf-h">100%</span><br><span class="reason">(美股)</span></td>
+    <td><span class="victim">華城(⚠️營收↓法人賣)<br>中興電/士電/亞力(同上)<br>台電/DC商(延宕)</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">AI CapEx</span><br><span class="driver-tag drv-demand">需求</span></td>
+    <td><span class="st st-r">🔴爆發</span></td>
+    <td>五巨頭~$700B<br><span class="reason">YoY+60%連3年</span></td>
+    <td class="col-inv">75%直接AI<br><span class="reason">Amazon FCF轉負</span></td>
+    <td class="tr-up">↑加速</td>
+    <td><span class="reason">Top5→$750B上修中</span></td>
+    <td class="rv-mid">中</td>
+    <td>2028+</td>
+    <td class="col-bf"><span class="leader">NVDA(美)</span>GPU壟斷100%<br><span class="reason">台積電/台達電⚠️已反映</span></td>
+    <td><span class="bf-h">100%</span><br><span class="reason">(NVDA)</span></td>
+    <td><span class="victim">台積電(⚠️PE98%)<br>台達電(⚠️PE100%)<br>傳統IT(排擠)</span></td>
+</tr>
+
+<!-- 已否決（航運）不列入 -->
+
+</tbody>
+</table>
+</div>
+
+<div class="tip warn">
+<b>第二章整合結論</b>
+<strong>資料</strong>：9 個追蹤品項的三層分析 + 四刀篩選受惠。<br>
+<strong>觀察</strong>：受惠欄的顯著變化——重電領域的真受惠全在美股（POWL/ETN），台廠四雄全部列入受害欄。光通訊的下游模組廠（波若威/光聖）也列入假受惠（題材炒作，營收未跟上）。<br>
+<strong>推論</strong>：台股真正能從供需失衡中直接獲利的龍頭比想像中少。大部分「受惠概念股」其實是成本壓力方。<br>
+<strong>結論</strong>：<b>每個領域真受惠最多 2~3 家</b>。台股可操作的核心只有：南亞科(DRAM) + 台燿/台光電(CCL) + 聯亞(光通訊) + 欣興(ABF) + 大成鋼(鋁)。
+</div>
+
+<!-- ============================================================ -->
+<!-- ============================================================ -->
+<!-- 第三章：四刀篩選名單                           -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch3">第三章：四刀篩選名單</div>
+<div class="section-sub">刀一：供應鏈位置（賣方vs買方）｜刀二：營收YoY加速度｜刀三：法人20日買賣超｜刀四：缺貨品項佔營收</div>
+
+<p style="font-size:.84em;color:var(--txt2);margin-bottom:8px"><b>篩選邏輯</b>：受惠 = 因稀缺性利潤直接提升。成本上升 ≠ 受惠。佔營收 < 30% ≠ 有意義的受惠。龍頭優先、營收爆發優先。</p>
+
+<!-- 真受惠 -->
+<table>
+<thead>
+<tr style="background:rgba(76,175,80,.1)"><th>#</th><th>公司</th><th>領域</th><th>刀一<br>位置</th><th>刀二<br>營收YoY</th><th>刀三<br>法人20日</th><th>刀四<br>佔營收</th><th>判定</th></tr>
+</thead>
+<tbody>
+<tr><td colspan="8" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em">✅ 核心受惠（四刀全過或三刀+佔比100%）</td></tr>
+<tr>
+    <td>1</td>
+    <td><span class="leader">南亞科 2408</span></td>
+    <td>DRAM</td>
+    <td class="cut-pass">✅上游<br><span class="reason">100% DRAM製造</span></td>
+    <td class="cut-pass">✅+560%<br><span class="reason">3月加速+115%</span></td>
+    <td class="cut-warn">⚠️賣超<br><span class="reason">獲利了結中</span></td>
+    <td class="cut-pass">✅100%</td>
+    <td style="font-weight:900;color:var(--gold)">核心</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td><span class="leader">台燿 6274</span></td>
+    <td>CCL</td>
+    <td class="cut-pass">✅上游<br><span class="reason">CCL 90%+ PP</span></td>
+    <td class="cut-pass">✅+72.3%<br><span class="reason">3月加速+11</span></td>
+    <td class="cut-pass">✅買超<br><span class="reason">外資+投信</span></td>
+    <td class="cut-pass">✅90%+</td>
+    <td style="font-weight:900;color:var(--gold)">核心</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td><span class="leader">台光電 2383</span></td>
+    <td>CCL</td>
+    <td class="cut-pass">✅上游<br><span class="reason">AI CCL M8/M9獨佔</span></td>
+    <td class="cut-pass">✅+56.6%<br><span class="reason">3月加速+21</span></td>
+    <td class="cut-warn">⚠️混合<br><span class="reason">外資賣投信買</span></td>
+    <td class="cut-pass">✅70~80%</td>
+    <td style="font-weight:900;color:var(--gold)">核心</td>
+</tr>
+<tr>
+    <td>4</td>
+    <td><span class="leader">MU 美光（美）</span></td>
+    <td>DRAM</td>
+    <td class="cut-pass">✅上游<br><span class="reason">100% 記憶體製造</span></td>
+    <td class="cut-pass">✅+57% YoY<br><span class="reason">毛利率56.8%</span></td>
+    <td class="cut-pass">✅—</td>
+    <td class="cut-pass">✅100%</td>
+    <td style="font-weight:900;color:var(--gold)">核心</td>
+</tr>
+<tr>
+    <td>5</td>
+    <td><span class="leader">FCX 自由港（美）</span></td>
+    <td>銅礦</td>
+    <td class="cut-pass">✅上游<br><span class="reason">全球最大銅礦商</span></td>
+    <td class="cut-pass">✅銅價歷史新高<br><span class="reason">$12,000/噸</span></td>
+    <td class="cut-pass">✅—</td>
+    <td class="cut-pass">✅100%</td>
+    <td style="font-weight:900;color:var(--gold)">核心</td>
+</tr>
+
+<tr><td colspan="8" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--warn);font-size:.82em">○ 高度受惠（三刀過+佔比>30%）</td></tr>
+<tr>
+    <td>6</td>
+    <td><span class="leader">華邦電 2344</span></td>
+    <td>DRAM</td>
+    <td class="cut-pass">✅上游<br><span class="reason">DRAM+NOR+NAND</span></td>
+    <td class="cut-pass">✅+91.5%<br><span class="reason">3月加速+38</span></td>
+    <td class="cut-warn">⚠️混合<br><span class="reason">外資賣投信大買</span></td>
+    <td class="cut-pass">✅100%</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+<tr>
+    <td>7</td>
+    <td><span class="leader">聯亞 3081</span></td>
+    <td>光通訊</td>
+    <td class="cut-pass">✅上游<br><span class="reason">InP晶圓獨家</span></td>
+    <td class="cut-pass">✅+89.3%<br><span class="reason">Q1 YoY+99%</span></td>
+    <td class="cut-pass">✅買超</td>
+    <td class="cut-pass">✅90%+</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+<tr>
+    <td>8</td>
+    <td><span class="leader">欣興 3037</span></td>
+    <td>ABF</td>
+    <td class="cut-pass">✅上游<br><span class="reason">全球ABF市佔#1</span></td>
+    <td class="cut-pass">✅+23.3%</td>
+    <td class="cut-pass">✅買超<br><span class="reason">外資+投信</span></td>
+    <td class="cut-m">○30~40%↑</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+<tr>
+    <td>9</td>
+    <td><span class="leader">大成鋼 2027</span></td>
+    <td>鋁</td>
+    <td class="cut-pass">✅上游<br><span class="reason">美國鋁通路#1 60%+</span></td>
+    <td class="cut-pass">✅+25.1%</td>
+    <td class="cut-pass">✅投信大買<br><span class="reason">+6918K張</span></td>
+    <td class="cut-pass">✅>60%</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+<tr>
+    <td>10</td>
+    <td><span class="leader">LITE Lumentum（美）</span></td>
+    <td>光通訊</td>
+    <td class="cut-pass">✅上游<br><span class="reason">光模組/雷射龍頭</span></td>
+    <td class="cut-pass">✅+65% YoY</td>
+    <td class="cut-pass">✅—</td>
+    <td class="cut-pass">✅90%+</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+<tr>
+    <td>11</td>
+    <td><span class="leader">SCCO 南方銅（美）</span></td>
+    <td>銅礦</td>
+    <td class="cut-pass">✅上游<br><span class="reason">南美銅礦龍頭</span></td>
+    <td class="cut-pass">✅銅價新高</td>
+    <td class="cut-pass">✅—</td>
+    <td class="cut-pass">✅100%</td>
+    <td style="font-weight:700;color:var(--warn)">高度</td>
+</tr>
+</tbody>
+</table>
+
+<!-- 淘汰名單 -->
+<details>
+<summary>淘汰名單（16 家 — 假受惠/已反映/佔比不足）</summary>
+<table>
+<thead><tr><th>公司</th><th>領域</th><th>淘汰原因</th></tr></thead>
+<tbody>
+<tr><td>華城 1519</td><td>重電</td><td><span class="cut-fail">❌</span> 中游用銅+矽鋼片→成本↑ / 營收YoY減速-7.5% / 法人大賣 / PE 83%</td></tr>
+<tr><td>中興電 1513</td><td>重電</td><td><span class="cut-fail">❌</span> 中游 / YoY僅+4.8%無爆發 / 法人大賣</td></tr>
+<tr><td>士電 1503</td><td>重電</td><td><span class="cut-fail">❌</span> 中游 / 毛利率QoQ縮-2.6% / 法人大賣</td></tr>
+<tr><td>亞力 1514</td><td>重電</td><td><span class="cut-fail">❌</span> 中游 / 營收YoY僅+3.4%減速</td></tr>
+<tr><td>台積電 2330</td><td>AI CapEx</td><td><span class="cut-warn">⚠️</span> 真受惠但 PE 98% / PB 99% 完全 price in</td></tr>
+<tr><td>台達電 2308</td><td>電力</td><td><span class="cut-warn">⚠️</span> 真受惠但 PE 100% / PB 100% 完全 price in</td></tr>
+<tr><td>智邦 2345</td><td>光通訊</td><td><span class="cut-fail">❌</span> 營收減速-23% / PB 100% / 題材>實質</td></tr>
+<tr><td>中鋼 2002</td><td>矽鋼片</td><td><span class="cut-warn">⚠️</span> 矽鋼片僅佔營收~10~15% → 幅度不足推不動股價</td></tr>
+<tr><td>和大 1536</td><td>EV</td><td><span class="cut-fail">❌</span> 毛利率轉負-3.4% / 法人大賣</td></tr>
+<tr><td>貿聯 3665</td><td>EV</td><td><span class="cut-warn">⚠️</span> 毛利率縮-1.3% / PE/PB 100%</td></tr>
+<tr><td>漢翔 2634</td><td>國防</td><td><span class="cut-fail">❌</span> 營收YoY-7% / 法人大賣</td></tr>
+<tr><td>廷鑫 2065</td><td>鋁</td><td><span class="cut-fail">❌</span> 中游加工 / 營收YoY-0.1%減速 / 法人不動</td></tr>
+<tr><td>第一銅 2009</td><td>銅</td><td><span class="cut-warn">⚠️</span> YoY僅+3.5%→銅庫存重估有限 / 非龍頭</td></tr>
+<tr><td>群聯 8299</td><td>DRAM</td><td><span class="cut-warn">⚠️</span> 中游SSD控制器（非DRAM製造）/ 法人賣超</td></tr>
+<tr><td>廣達 2382</td><td>AI CapEx</td><td><span class="cut-warn">⚠️</span> 中游組裝 / 營收減速 / 毛利6.3%薄</td></tr>
+<tr><td>崇越 9802</td><td>電力</td><td><span class="cut-warn">⚠️</span> 下游通路 / YoY+0.6%無爆發</td></tr>
+</tbody>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第三章整合結論</b>
+<strong>資料</strong>：27 家候選經四刀篩選，11 家通過（台股 6 + 美股 5），16 家淘汰。<br>
+<strong>觀察</strong>：台股重電四雄全部淘汰（中游成本壓力+營收無爆發）。台積電/台達電是真受惠但已 price in。真正的受惠龍頭集中在：DRAM 製造（南亞科/MU）、CCL 製造（台燿/台光電）、銅礦（FCX/SCCO）、光通訊上游（聯亞/LITE）。<br>
+<strong>推論</strong>：「跟缺貨有關」和「因缺貨獲利」是完全不同的事。重電廠雖然訂單滿但銅+矽鋼片成本吃掉漲幅；下游模組廠股價先漲是題材炒作不是供需驅動。<br>
+<strong>結論</strong>：<b>台股核心三家：南亞科(DRAM100%/YoY+560%) + 台燿(CCL90%/YoY+72%/四刀全過) + 台光電(AI CCL70~80%/YoY+57%)</b>。美股核心：FCX(銅礦100%) + MU(記憶體100%)。
+</div>
+
+<!-- 第四章：反轉預警                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch4">第四章：供需反轉預警儀表板</div>
+<div class="section-sub">七項反轉指標 — 亮燈越多 = 供需即將由緊轉鬆</div>
+
+<table>
+<thead>
+<tr><th>#</th><th>反轉指標</th><th>DRAM</th><th>銅</th><th>CCL</th><th>光通訊</th><th>ABF</th><th>鋁</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>合約報價下滑</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>2</td><td>庫存回安全水位</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>3</td><td>新產能量產</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>4</td><td>大廠擴產/復產</td><td class="ind-warn">⚠ 三星擬2027轉回</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>5</td><td>交期縮短</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>6</td><td>下游砍單</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr><td>7</td><td>AI CapEx 下修</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td><td class="ind-none">—</td></tr>
+<tr style="font-weight:700;background:var(--code-bg)"><td></td><td>亮燈數</td><td class="risk-low">1/7</td><td class="risk-low">0/7</td><td class="risk-low">0/7</td><td class="risk-low">0/7</td><td class="risk-low">0/7</td><td class="risk-low">0/7</td></tr>
+<tr style="font-weight:700"><td></td><td>反轉風險</td><td class="risk-low">低</td><td class="risk-low">低</td><td class="risk-low">低</td><td class="risk-low">低</td><td class="risk-low">低</td><td class="risk-low">低</td></tr>
+</tbody>
+</table>
+
+<div class="tip info">
+<b>第四章整合結論</b>
+目前所有品項反轉風險均為「低」。唯一微弱信號：三星擬 2027 年將部分 HBM 產能轉回 DDR5。最早可能的系統性反轉：AI 五巨頭季報 CapEx 下修。建議每季追蹤法說會。
+</div>
+
+<!-- ============================================================ -->
+<!-- 第五章：行動建議                                              -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch5">第五章：行動建議</div>
+<div class="section-sub">四刀篩選後的真受惠龍頭｜按營收爆發力排序</div>
+
+<table>
+<thead>
+<tr><th>#</th><th>標的</th><th>領域</th><th>佔營收</th><th>營收YoY</th><th>持續</th><th>為什麼是它</th><th>退場信號</th></tr>
+</thead>
+<tbody>
+<tr style="background:rgba(212,176,48,.08)">
+    <td style="font-weight:900;color:var(--gold)">1</td>
+    <td><span class="leader">南亞科 2408</span></td>
+    <td>DRAM</td><td><span class="bf-h">100%</span></td>
+    <td style="font-weight:700;color:var(--bear)">+560%</td>
+    <td>→2028</td>
+    <td>DDR4 結構性獨佔。三大廠轉HBM=DDR4沒人做=南亞科吃全部。3月營收182億歷史新高</td>
+    <td>三大廠HBM轉回DDR</td>
+</tr>
+<tr style="background:rgba(212,176,48,.08)">
+    <td style="font-weight:900;color:var(--gold)">2</td>
+    <td><span class="leader">台燿 6274</span></td>
+    <td>CCL</td><td><span class="bf-h">90%+</span></td>
+    <td style="font-weight:700;color:var(--bear)">+72.3%</td>
+    <td>→2029</td>
+    <td>四刀全過。CCL+PP 90%營收。M8級CCL佔23%↑。泰國廠倍增。YoY加速中</td>
+    <td>T-Glass新產能+M10替代</td>
+</tr>
+<tr style="background:rgba(212,176,48,.08)">
+    <td style="font-weight:900;color:var(--gold)">3</td>
+    <td><span class="leader">華邦電 2344</span></td>
+    <td>DRAM</td><td><span class="bf-h">100%</span></td>
+    <td style="font-weight:700;color:var(--bear)">+91.5%</td>
+    <td>→2028</td>
+    <td>DRAM+NOR+NAND三路受惠。法說會稱缺貨→2027。DRAM出貨量2026近倍增</td>
+    <td>同#1</td>
+</tr>
+<tr style="background:rgba(212,176,48,.08)">
+    <td style="font-weight:900;color:var(--gold)">4</td>
+    <td><span class="leader">聯亞 3081</span></td>
+    <td>光通訊</td><td><span class="bf-h">90%+</span></td>
+    <td style="font-weight:700;color:var(--bear)">+89.3%</td>
+    <td>→2027底</td>
+    <td>InP晶圓=光通訊真瓶頸。台廠獨家。Q1 YoY+99%。法人買超。CPO下游先漲是題材，上游InP才是供需驅動</td>
+    <td>InP新產能開出</td>
+</tr>
+<tr style="background:rgba(212,176,48,.08)">
+    <td style="font-weight:900;color:var(--gold)">5</td>
+    <td><span class="leader">台光電 2383</span></td>
+    <td>CCL</td><td><span class="bf-h">70~80%</span></td>
+    <td style="font-weight:700;color:var(--bear)">+56.6%</td>
+    <td>→2029</td>
+    <td>AI CCL全球#1。M8/M9首家量產獨佔。3月營收120億歷史新高。基建佔70~80%</td>
+    <td>M10多供應商+需求放緩</td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--warn)">6</td>
+    <td><span class="leader">FCX（美）</span></td>
+    <td>銅礦</td><td><span class="bf-h">100%</span></td>
+    <td style="font-weight:700">銅價歷史新高</td>
+    <td>→2028+</td>
+    <td>全球最大銅礦。銅價↑=直接利潤↑。22年最大供給缺口</td>
+    <td>Grasberg復產+需求崩塌</td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--warn)">7</td>
+    <td><span class="leader">MU 美光（美）</span></td>
+    <td>DRAM</td><td><span class="bf-h">100%</span></td>
+    <td style="font-weight:700">+57% YoY</td>
+    <td>→2028</td>
+    <td>全球DRAM/NAND三巨頭。毛利率56.8%。定價權</td>
+    <td>HBM轉回+AI CapEx↓</td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--warn)">8</td>
+    <td><span class="leader">欣興 3037</span></td>
+    <td>ABF</td><td><span class="bf-m">30~40%↑</span></td>
+    <td style="font-weight:700">+23.3%</td>
+    <td>→2029</td>
+    <td>全球ABF市佔#1。NVIDIA Blackwell ABF佔30%+。AI ASIC佔70%+。法人買超。CAGR 81%</td>
+    <td>玻璃基板替代+CapEx↓</td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--warn)">9</td>
+    <td><span class="leader">大成鋼 2027</span></td>
+    <td>鋁</td><td><span class="bf-h">>60%</span></td>
+    <td style="font-weight:700">+25.1%</td>
+    <td>→2027中</td>
+    <td>美國鋁通路60%+市佔。關稅50%=在地廠獨佔。德州廠倍增。投信大買+6918K張</td>
+    <td>關稅調降+中東緩和</td>
+</tr>
+</tbody>
+</table>
+
+<div class="tip good">
+<b>第五章整合結論</b>
+<strong>資料</strong>：11 家真受惠龍頭，按營收 YoY 排序。台股前 5 名全部 YoY > 50%，佔營收 > 70%。<br>
+<strong>觀察</strong>：南亞科 YoY+560% 是全場最強營收爆發力。台燿是唯一四刀全過（位置✅+營收加速✅+法人買✅+佔比90%+✅）。<br>
+<strong>推論</strong>：營收爆發力排序：南亞科 > 華邦電 > 聯亞 > 台燿 > 台光電。但台燿的四刀綜合評分最高（法人也在買，其他幾家法人有賣超）。<br>
+<strong>結論</strong>：<b>如果只選一檔 = 台燿6274（四刀全過）。如果選三檔 = 南亞科 + 台燿 + 聯亞（營收爆發+佔比>90%+上游獨佔）。</b>統一退場監控：每季法說會毛利率 + AI CapEx guidance + 合約報價趨勢。
+</div>
+
+<!-- ============================================================ -->
+<!-- 附錄                                                          -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch6">附錄：搜尋來源</div>
+<div class="section-sub">19 管道 × 80+ 筆新聞 × finlab 四刀數據</div>
+
+<details>
+<summary>供給面新聞來源</summary>
+<ul style="font-size:.78em;color:var(--txt2);padding-left:16px">
+<li><a href="https://www.oxfordeconomics.com/resource/commodities-outlook-2026-another-challenging-year-ahead/" style="color:var(--link)">Oxford Economics - Commodities Outlook 2026</a></li>
+<li><a href="https://www.cnbc.com/2026/04/01/oil-price-iea-fatih-birol-brent-iran-strait-hormuz.html" style="color:var(--link)">CNBC - Oil supply crunch</a></li>
+<li><a href="https://www.cw.com.tw/article/5139591" style="color:var(--link)">天下雜誌 - 記憶體晶片荒</a></li>
+<li><a href="https://tw.stock.yahoo.com/news/15%E5%B9%B4%E4%BE%86%E6%9C%80%E5%9A%B4%E9%87%8D%E8%A8%98%E6%86%B6%E9%AB%94%E8%8D%92" style="color:var(--link)">高盛 - 15年最嚴重記憶體荒</a></li>
+<li><a href="https://www.jpmorgan.com/insights/global-research/commodities/copper-outlook" style="color:var(--link)">JPM - Copper Market Outlook</a></li>
+<li><a href="https://press.spglobal.com/2026-01-08-Substantial-Shortfall-in-Copper-Supply-Widens" style="color:var(--link)">S&P Global - Copper Supply Shortfall Widens</a></li>
+<li><a href="https://www.cnbc.com/2026/03/10/copper-shortage-tariff-fears-mine-disruptions-prices-tightness.html" style="color:var(--link)">CNBC - Copper Shortage Looms</a></li>
+<li><a href="https://www.powermag.com/transformers-in-2026-shortage-scramble-or-self-inflicted-crisis/" style="color:var(--link)">POWER - Transformer Shortage 2026</a></li>
+<li><a href="https://info.fusionww.com/blog/understanding-the-t-glass-shortage-and-its-role-in-ai-growth" style="color:var(--link)">Fusion - T-Glass Shortage in AI Growth</a></li>
+</ul>
+</details>
+
+<details>
+<summary>需求面新聞來源</summary>
+<ul style="font-size:.78em;color:var(--txt2);padding-left:16px">
+<li><a href="https://www.cnbc.com/2026/02/06/google-microsoft-meta-amazon-ai-cash.html" style="color:var(--link)">CNBC - Tech AI spending $700B</a></li>
+<li><a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/" style="color:var(--link)">Futurum - AI CapEx $690B Sprint</a></li>
+<li><a href="https://www.goldmansachs.com/insights/articles/ai-to-drive-165-increase-in-data-center-power-demand-by-2030" style="color:var(--link)">Goldman - DC Power Demand +165%</a></li>
+<li><a href="https://www.armscontrol.org/act/2026-03/news/us-defense-spending-rises-more-17-percent" style="color:var(--link)">Arms Control - US Defense +17%</a></li>
+<li><a href="https://ev-volumes.com/" style="color:var(--link)">EV Volumes - 2026 Statistics</a></li>
+</ul>
+</details>
+
+<details>
+<summary>受惠/受害公司新聞來源</summary>
+<ul style="font-size:.78em;color:var(--txt2);padding-left:16px">
+<li><a href="https://wantrich.chinatimes.com/news/20260403900179-420101" style="color:var(--link)">南亞科3月營收YoY+560%</a></li>
+<li><a href="https://www.sinotrade.com.tw/richclub/hotstock/2026%E5%B9%B4%E8%BC%89%E6%9D%BF%E7%94%A2%E6%A5%AD%E5%85%A8%E9%9D%A2%E5%BE%A9%E7%94%A6" style="color:var(--link)">豐雲 - 2026載板全面復甦</a></li>
+<li><a href="https://wantrich.chinatimes.com/news/20260226900340-420101" style="color:var(--link)">旺得富 - ABF漲價潮 大摩高盛升評</a></li>
+<li><a href="https://news.cnyes.com/news/id/6407869" style="color:var(--link)">鉅亨 - 聯亞Q1營收翻倍</a></li>
+<li><a href="https://cmnews.com.tw/article/bubuypope-e8474c29-fb23-11f0-acef-ffdff842b4f2" style="color:var(--link)">CMoney - 大成鋼受惠鋁供需失衡</a></li>
+<li><a href="https://wantrich.chinatimes.com/news/20260226900533-420101" style="color:var(--link)">旺得富 - 台電500億 重電四雄</a></li>
+<li><a href="https://cmnews.com.tw/article/cmoney-5caf46ff-e23f-11f0-92c6-3820db404996" style="color:var(--link)">CMoney - 銅價歷史新高 7檔概念股</a></li>
+</ul>
+</details>
+
+<details>
+<summary>四刀篩選數據來源（finlab 2026-04-12）</summary>
+<p style="font-size:.78em;color:var(--txt2);padding:4px">
+刀一：供應鏈位置 — 西碧拉圖譜 + 產業知識判斷<br>
+刀二：營收加速度 — finlab <code>monthly_revenue:去年同月增減(%)</code>，3月加速度 = 最新YoY - 3月前YoY<br>
+刀三：法人行為 — finlab <code>institutional_investors_trading_summary</code>，近20日外資+投信累計<br>
+刀四：佔營收比重 — 新聞/法說會/年報搜尋確認
+</p>
+</details>
+
+<div class="footer">天機閣 供需失衡偵測模組 v5.0 ｜ 2026-04-12 ｜ 19管道 × 四刀篩選 × 龍頭優先 × 營收爆發優先</div>
+
+</div><!-- .wrap -->
+
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(c=>{
+        collapse?c.classList.add('collapsed'):c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card h3').forEach(h=>{
+    h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+document.querySelectorAll('.card').forEach(c=>c.classList.add('collapsed'));
+</script>
+</body>
+</html>
