@@ -70,8 +70,8 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 <div class="outer">
 <div class="hero">
   <h1>天機閣 內部更新日誌</h1>
-  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-09</div>
-  <div class="ver">20 天 ｜ ~200 項工作 ｜ 15 案分析 ｜ 點擊項目展開詳細</div>
+  <div class="sub">詳細工作紀錄 — 2026-03-21 ~ 2026-04-11</div>
+  <div class="ver">22 天 ｜ ~230 項工作 ｜ 16 案分析 ｜ 點擊項目展開詳細</div>
 </div>
 
 <div class="ctrl">
@@ -80,11 +80,147 @@ body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:va
 </div>
 
 <!-- ════════════════ Phase 4：系統整合 + 搜尋品質（04-09 ~）════════════════ -->
-<div class="phase">Phase 4：系統整合 + 搜尋品質（04-09 ~）</div>
+<div class="phase">Phase 4：系統整合 + 策略研究 + 供需偵測（04-09 ~）</div>
+
+<!-- 04-11 -->
+<div class="day">
+<div class="day-header">2026-04-11 <span class="day-badge new">NEW</span></div>
+
+<div class="item"><div class="item-title"><span class="tag analysis">分析</span>9943 好樂迪 — 第 16 案完整深度分析（Step 1~9）</div><div class="item-desc">KTV 產業首案。第七步完整版 + 第八步推演版上線 GitHub Pages</div>
+<div class="item-detail">
+<p>報告路徑：<code>github-pages/天機錄/9943_好樂迪/</code></p>
+<p>藏經閣路徑：<code>天機閣-藏經閣/天機錄/9943_好樂迪/</code></p>
+<p>八步驟資料：<code>天機閣-藏經閣/投資分析資料/9943_好樂迪/</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>事件驅動策略研究 — 14 個策略完整回測</div><div class="item-desc">巨人傑交易方法啟發 → finlab 實證回測。庫藏股最強（20 日 +7.55%），最佳組合勝率 76.8%</div>
+<div class="item-detail">
+<p>研究路徑：<code>天機閣-藏經閣/投資分析資料/策略研究/</code>（14 個 .py + _結果.json）</p>
+<p>完整報告：<code>策略研究/事件驅動策略研究報告.html</code></p>
+<table><tr><th>級別</th><th>策略</th><th>結論</th></tr>
+<tr><td>強信號</td><td>庫藏股宣告</td><td>3,873筆，5日勝率70.9%，20日+7.55%</td></tr>
+<tr><td>強信號</td><td>融資大減搶反彈</td><td>9,125筆，20日勝率65.8%，賺賠比1.78</td></tr>
+<tr><td>輔助</td><td>突破年新高</td><td>5,314筆，60日勝率63.7%</td></tr>
+<tr><td>反向</td><td>高殖利率除息</td><td>20日勝率39.7%，陷阱信號</td></tr></table>
+<p>庫藏股最佳組合（+股價<年線+融資20日減>10%）：20日勝率76.8%，60日+25.14%</p>
+<p>finlab API 本次消耗 ~1900MB/5000MB</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>供需偵測模組上線（supply_demand_scanner.py）</div><div class="item-desc">Iker 供需理論 + finlab 量化掃描 → 質化驗證 → 級聯推演。首次掃描 4 個產業</div>
+<div class="item-detail">
+<p>掃描器：<code>天機閣-推衍/供需偵測/supply_demand_scanner.py</code></p>
+<p>Skill：<code>Skills/供需偵測.skill</code>（新增路由）</p>
+<p>首次掃描結果：<code>scan_2026-04-11.json</code>（半導體/航運/通信網路/電機機械）</p>
+<p>報告 v1~v3：<code>天機閣-藏經閣/供需失衡/2026-04-11_*.html</code></p>
+<p>Phase 2 質化驗證 JSON：半導體/航運/通信網路/電機機械各一份</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>每日執行效能大修 v2.3（45 分→15 分）</div><div class="item-desc">四大瓶頸修復 + Google Scraper 適配器 + RSS 分隔修復</div>
+<div class="item-detail">
+<table><tr><th>瓶頸</th><th>修前</th><th>修後</th><th>方法</th></tr>
+<tr><td>S1 初始化</td><td>40 分</td><td>14 秒</td><td>SibylDB 重用+超時保護</td></tr>
+<tr><td>外網搜尋</td><td>12 分</td><td>14 秒</td><td>快取+指定引擎跳過翻譯雙軌</td></tr>
+<tr><td>AI 判斷</td><td>16 分</td><td>移除</td><td>每日執行配額用於修復不用於判斷</td></tr>
+<tr><td>快報卡死</td><td>15 分</td><td>3.4 秒</td><td>移除 SVL 搜尋</td></tr></table>
+<p><code>google_scraper_adapter.py</code>：Playwright 爬 Google 搜尋頁，免 API Key，500次/天，限速2秒/次，CAPTCHA偵測+自動冷卻</p>
+<p><code>router.py</code> 管道順序：google_scraper → OWS → serper（Serper 額度一次性 5000 已用完不會重置）</p>
+<p>RSS 來源庫 <code>_分隔</code> 修復：7 個分隔線項目 → KeyError '名稱'，加 source.get("網址") 過濾</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>向量情報引擎自動偵測報告上線</div><div class="item-desc">歷史類比引擎產出 3 份偵測報告（銅 0.992 / 原油 0.821+0.823），convergence_pressure 更新</div>
+<div class="item-detail">
+<p>報告路徑：<code>天機閣-藏經閣/天機錄/向量情報/20260411_*.html</code></p>
+<p>pressure 更新：<code>天機閣-藏經閣/向量情報引擎/發現記錄/convergence_pressure.json</code></p>
+<p>偵測報告：<code>天機閣-藏經閣/每日情報/偵測報告/2026-04-11_偵測報告.html</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>Iker 選股方法論 + 回測 v2~v4</div><div class="item-desc">Discord Iker 訊息擷取 → 方法論整合版 + SOP 手冊 + 供需回測（v2~v4 四版迭代）</div>
+<div class="item-detail">
+<p><code>fetch_iker_messages.py</code>：擷取 Discord Iker 頻道歷史訊息</p>
+<p><code>iker_messages.json</code>：原始訊息 JSON</p>
+<p><code>Iker_選股方法論_整合版.html</code> + <code>Iker_選股SOP流程手冊.html</code></p>
+<p>回測：<code>iker_backtest.py</code>→<code>v2</code>→<code>v3_supply_demand</code>→<code>v4_supply_demand</code>，四版統計 JSON</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>天機日報 04-10 + 04-11 發布</div><div class="item-desc">每日快報 + 04-11 供需特別版。generate_index.py + git push</div>
+<div class="item-detail">
+<p><code>github-pages/天機日報/天機日報_2026-04-10.html</code></p>
+<p><code>github-pages/天機日報/天機日報_2026-04-11.html</code></p>
+<p><code>github-pages/天機日報/天機日報_2026-04-11-供需版.html</code></p>
+<p>日報清洗腳本：<code>github-pages/天機日報/clean_daily.py</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag ui">介面</span>Skill 架構流程圖 v3→v4.1</div><div class="item-desc">多版本迭代（v3/v4/方案A分層/方案B星座圖/v4.1 分層詳細版）</div>
+<div class="item-detail">
+<p>路徑：<code>天機閣-藏經閣/說明書/Skill架構流程圖_*.html</code>（5 份）</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>閣主偏好模型系統</div><div class="item-desc">偏好紀錄 JSON + 偏好模型 JSON + 偏好分析報告 HTML</div>
+<div class="item-detail">
+<p>路徑：<code>天機閣-藏經閣/【閣主樓】/偏好*.json</code> + <code>偏好分析報告.html</code></p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag infra">基建</span>路由表更新 + 多 Skill 修訂</div><div class="item-desc">供需偵測加入路由表 / 投資分析.skill + 美股.skill + 推衍天下.skill 更新</div></div>
+
+</div>
+
+<!-- 04-10 -->
+<div class="day">
+<div class="day-header">2026-04-10</div>
+
+<div class="item"><div class="item-title"><span class="tag core">核心</span>跨標的知識互連系統全量實作完成</div><div class="item-desc">Phase 0~階段二：64 份標記植入 → 56 份互連注入（289 條邊）→ 12 份矛盾偵測 → Skill+模板修改</div>
+<div class="item-detail">
+<p>工具：<code>normalize_cross_link_markers.py</code> + <code>inject_cross_links.py</code> + <code>cross_link_data.json</code></p>
+<p>踩坑：relation_type 單數形式 / Phase 0 多層降級取首個匹配錯誤 / 台光電孤兒 <code>&lt;/div&gt;</code> 導致 wrap 斷裂</p>
+<p>規劃書 v1.2 修正 9 項 → 已完成歸檔</p>
+<p>GitHub Pages 全部報告同步推送</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag analysis">分析</span>CCL 四雄競爭生態分析完成（16 章）</div><div class="item-desc">台光電(2383)、聯茂(6213)、台燿(6274)、騰輝(6672) 完整產業競爭分析</div>
+<div class="item-detail">
+<p>完整版：<code>天機閣-藏經閣/投資分析資料/同業比較/CCL四雄_競爭生態分析_2026-04-10.html</code></p>
+<p>GitHub Pages：<code>github-pages/天機錄/同業比較/CCL四雄_競爭生態分析.html</code></p>
+<p>分段版：Ch1-3 / Ch1-7 / Ch1-10 / Part2(Ch4-7) / Part3(Ch8-10) / Part4(Ch11-16)</p>
+<p>四家公司個別競爭關係分析 HTML 各一份</p>
+<p>Phase 0 資料收集 JSON：4 份</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag ui">介面</span>報告命名標準化 + 歷史清理</div><div class="item-desc">全部報告統一命名規則，清理歷史遺留檔案，GitHub Pages 同步</div>
+<div class="item-detail">
+<p>cross_link_log.json 記錄所有注入結果</p>
+<p>GitHub Pages 推送：天機錄 27 案所有完整版+推演版</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag auto">自動化</span>每日管線穩定性修復四項</div><div class="item-desc">關聯引擎超時 24 分→3 分 / 資料擷取引擎 v2.1 / 封存工具更新</div>
+<div class="item-detail">
+<table><tr><th>修復</th><th>內容</th></tr>
+<tr><td>關聯引擎</td><td><code>天機閣_關聯引擎.py</code> 超時從 24 分→3 分</td></tr>
+<tr><td>資料擷取</td><td><code>天機閣_資料擷取引擎.py</code> v2.1：智慧域名路由+批次模式禁用 Layer4+超時公式調整+jieba 預熱</td></tr>
+<tr><td>核心檔案</td><td><code>天機閣_core.py</code> 更新</td></tr>
+<tr><td>封存工具</td><td><code>天機閣_封存工具.py</code> 修正</td></tr></table>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag data">資料</span>西碧拉邊驗證方案 C 完成（1,442 條）</div><div class="item-desc">v1.2 四批平行驗證：1,209/1,442 通過（83.8%），relation_type 正規化 + 重複邊清理 31 條</div>
+<div class="item-detail">
+<p>text_analysis: 874 / web_search: 158 / fallback: 177 / 未通過: 233</p>
+<p>DB 更新：verified_count=1（1,209 條）+ evidence_ids 寫入</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag data">資料</span>年報批次修復工具（batch_fix_fixme v3 + download_verify）</div><div class="item-desc">FIXME 批次修復 8 份報告（w0~w3）+ 下載驗證進度（w2/w4/w5）</div>
+<div class="item-detail">
+<p><code>batch_fix_fixme.py</code> + <code>batch_fix_fixme_v3.py</code>：FIXME 年報自動重轉</p>
+<p><code>batch_text_parallel.py</code>：平行批次轉檔</p>
+<p><code>download_verify.py</code>：下載驗證工具</p>
+<p><code>run_siliconflow_test.py</code>：SiliconFlow OCR 測試</p>
+</div></div>
+
+<div class="item"><div class="item-title"><span class="tag ui">介面</span>同業競爭生態分析模板更新</div><div class="item-desc">深色版模板 + 第七步/第八步模板更新</div></div>
+
+</div>
 
 <!-- 04-09 -->
 <div class="day">
-<div class="day-header">2026-04-09 <span class="day-badge new">NEW</span></div>
+<div class="day-header">2026-04-09</div>
 
 <div class="item"><div class="item-title"><span class="tag infra">基建</span>服務管理器上線（service_manager.py 288 行）</div><div class="item-desc">統一管理 vector/api/bot 三服務，CLI 六指令</div>
 <div class="item-detail">
