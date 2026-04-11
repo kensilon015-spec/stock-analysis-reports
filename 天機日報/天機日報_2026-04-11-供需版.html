@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>供需失衡偵測報告 v3.0 — 2026-04-11</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px;overflow-x:auto}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片（點擊展開/收合） === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}.light.orange{background:#ff9800}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 三層表頭 === */
+.th-group-current{border-bottom:2px solid var(--accent)}
+.th-group-trend{border-bottom:2px solid var(--warn)}
+.th-group-predict{border-bottom:2px solid var(--danger)}
+th.g-current{background:rgba(107,159,114,.15)}
+th.g-trend{background:rgba(212,160,23,.12)}
+th.g-predict{background:rgba(212,136,122,.12)}
+td.g-current{background:rgba(107,159,114,.05)}
+td.g-trend{background:rgba(212,160,23,.05)}
+td.g-predict{background:rgba(212,136,122,.05)}
+
+/* === 反轉指標 === */
+.ind-ok{color:var(--bull);font-weight:700}
+.ind-warn{color:var(--warn);font-weight:700}
+.ind-none{color:var(--txt3)}
+.risk-low{color:var(--bull);font-weight:700}
+.risk-mid{color:var(--warn);font-weight:700}
+.risk-high{color:var(--danger);font-weight:700}
+
+/* === 狀態標籤 === */
+.status{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.75em;font-weight:700;color:#fff}
+.status.red{background:var(--bear)}.status.orange{background:#ff9800}.status.yellow{background:var(--warn);color:#1a1a1a}.status.green{background:var(--bull)}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>供需失衡偵測報告</h1>
+    <div class="sub">2026-04-11 ｜ v3.0 新聞+產業面驅動 ｜ 十大管道掃描</div>
+    <div class="desc">六大類別追蹤、三層分析（現狀+趨勢+預判）、七項反轉預警</div>
+    <div class="tags">
+        <span class="tag">原物料</span>
+        <span class="tag">零組件</span>
+        <span class="tag">設備</span>
+        <span class="tag">能源</span>
+        <span class="tag">供應商</span>
+        <span class="tag">地緣</span>
+        <span class="tag">反轉預警</span>
+        <span class="tag">三層追蹤</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#ch1">第一章：執行摘要 — 八大供需失衡領域速覽</a>
+    <a href="#ch2">第二章：供需趨勢追蹤表（核心三層表頭）</a>
+    <a href="#ch3">第三章：供需反轉預警儀表板</a>
+    <a href="#ch4">第四章：記憶體（DRAM / NAND）</a>
+    <a href="#ch5">第五章：銅</a>
+    <a href="#ch6">第六章：變壓器 / 重電</a>
+    <a href="#ch7">第七章：T-Glass / 玻纖布</a>
+    <a href="#ch8">第八章：光通訊 / CPO</a>
+    <a href="#ch9">第九章：能源危機（荷莫茲）+ 鋰 / 鎳</a>
+    <a href="#ch10">第十章：行動建議與受惠標的</a>
+</div>
+
+<!-- 全部展開/收合按鈕 -->
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!--                     第一章：執行摘要                          -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch1">第一章：執行摘要</div>
+<div class="section-sub">八大供需失衡領域速覽 — 狀態 × 趨勢方向</div>
+
+<div class="grid4">
+    <div class="mini-card bear-card">
+        <div class="title">記憶體 DRAM/NAND</div>
+        <div class="num" style="color:var(--bear)">嚴重短缺</div>
+        <div class="desc"><span class="status red">嚴重</span> ↑ 惡化中</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">銅</div>
+        <div class="num" style="color:var(--warn)">偏緊</div>
+        <div class="desc"><span class="status yellow">偏緊</span> ↑ 趨緊</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">變壓器 / 重電</div>
+        <div class="num" style="color:var(--bear)">短缺</div>
+        <div class="desc"><span class="status red">短缺</span> → 持平（持續缺但沒更嚴重）</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">T-Glass / 玻纖布</div>
+        <div class="num" style="color:var(--bear)">短缺</div>
+        <div class="desc"><span class="status red">短缺</span> → 持平</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">光通訊 / CPO</div>
+        <div class="num" style="color:var(--warn)">偏緊</div>
+        <div class="desc"><span class="status yellow">偏緊</span> ↑ 趨緊（800G 放量）</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">能源（石油/LNG）</div>
+        <div class="num" style="color:var(--bear)">危機</div>
+        <div class="desc"><span class="status red">危機</span> ↓ 趨緩（美伊停火跡象）</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">鋰</div>
+        <div class="num" style="color:var(--warn)">偏緊</div>
+        <div class="desc"><span class="status yellow">偏緊</span> ↑ 趨緊（供給轉缺口）</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">鎳</div>
+        <div class="num" style="color:var(--warn)">偏緊</div>
+        <div class="desc"><span class="status yellow">偏緊</span> ↑ 趨緊（印尼限額減產）</div>
+    </div>
+</div>
+
+<div class="card">
+<h3>重點結論</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li><b style="color:var(--base)">AI 基礎建設引發的多層供需失衡持續擴散</b>：從晶片到原物料（銅、矽鋼片、T-Glass）到基礎設施（電力/變壓器），整條供應鏈全面偏緊</li>
+    <li><b style="color:var(--base)">荷莫茲海峽停火跡象為能源面帶來緩解信號</b>，但塑膠/化肥衝擊仍在消化中</li>
+    <li><b style="color:var(--base)">DRAM 合約價 Q2 預計再漲 58~63%</b>（Q1 已漲 55~95%），漲幅雖收斂但絕對值仍在創高——注意反轉信號</li>
+</ul>
+</div>
+</div>
+
+<div class="tip warn">
+<b>第一章整合結論</b>
+<b>資料：</b>八大領域中，5 個處於「短缺/嚴重短缺」，3 個「偏緊」。趨勢方向上，4 個惡化/趨緊，2 個持平，2 個趨緩。<br>
+<b>觀察：</b>供需失衡的核心驅動力已從「疫後復甦+地緣」轉向「AI 基建+地緣」雙引擎。AI 資料中心的電力、記憶體、光通訊、銅線需求形成一條完整的短缺鏈。<br>
+<b>推論：</b>這不是單一品項的供需問題，而是 AI 基建帶來的「系統性資源重分配」——當最上游（電力/變壓器）和最下游（DRAM/光模組）同時缺貨，中間環節（銅/T-Glass/矽鋼片）不可能不被波及。<br>
+<b>結論：</b>目前處於 AI 供需失衡的「中段」而非「尾段」。短期唯一的緩解來自能源面（荷莫茲停火），其餘領域的結構性短缺至少延伸到 2027~2028。但 DRAM Q2 漲幅收斂是需要高度警覺的微弱信號。
+</div>
+
+
+<!-- ============================================================ -->
+<!--              第二章：供需趨勢追蹤表（核心）                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch2">第二章：供需趨勢追蹤表</div>
+<div class="section-sub">現狀 × 趨勢 × 預判 × 受惠/受害｜14 項品項全覽｜★ = 龍頭</div>
+
+<style>
+/* 追蹤表專用樣式 */
+.sd-table{border-collapse:collapse;font-size:.78em;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.15);width:100%}
+.sd-table th,.sd-table td{padding:5px 6px;word-wrap:break-word;overflow-wrap:break-word}
+.sd-table th{padding:5px 6px;text-align:center;font-weight:700;color:#e0dcd4;font-size:.78em}
+.sd-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:#c4bdb4;background:var(--panel);vertical-align:top;font-size:.82em}
+.sd-table tr:hover td{background:var(--hover)}
+.sd-table .item-name{font-weight:700;color:var(--base);font-size:.88em}
+.sd-table .cat-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:600;background:rgba(122,176,192,.12);color:var(--link)}
+
+/* 區塊表頭色帶 */
+.th-status{background:#2a3a2a;border-bottom:2px solid var(--accent)}
+.th-trend{background:#3a3520;border-bottom:2px solid var(--warn)}
+.th-predict{background:#2a2530;border-bottom:2px solid var(--link)}
+.th-impact{background:#352a25;border-bottom:2px solid var(--danger)}
+
+/* 狀態標籤 */
+.st{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:.78em;white-space:nowrap}
+.st-r{background:rgba(239,83,80,.2);color:#ef5350}
+.st-o{background:rgba(255,152,0,.15);color:#ff9800}
+.st-y{background:rgba(255,193,7,.15);color:#ffc107}
+.st-g{background:rgba(76,175,80,.15);color:#4caf50}
+
+/* 趨勢箭頭 */
+.tr-up{color:#ef5350;font-weight:700}
+.tr-flat{color:#7a7268;font-weight:700}
+.tr-down{color:#4caf50;font-weight:700}
+
+/* 反轉風險 */
+.rv-low{color:#4caf50;font-weight:700}
+.rv-mid{color:#ffc107;font-weight:700}
+.rv-high{color:#ef5350;font-weight:700}
+
+/* 受惠程度 */
+.bf-h{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(76,175,80,.2);color:#4caf50}
+.bf-m{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(255,193,7,.15);color:#ffc107}
+.bf-l{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.72em;font-weight:700;background:rgba(122,176,192,.12);color:#7ab0c0}
+
+/* 龍頭標記 */
+.leader{color:var(--gold);font-weight:900}
+.victim{color:#d4978a;font-size:.78em}
+
+/* 理由文字 */
+.reason{font-size:.76em;color:#9a9288;line-height:1.4;margin-top:2px}
+</style>
+
+<div>
+<table class="sd-table">
+<thead>
+<tr>
+    <th rowspan="2" style="background:var(--table-header);min-width:80px;text-align:left">品項</th>
+    <th colspan="3" class="th-status">現狀</th>
+    <th colspan="2" class="th-trend">趨勢</th>
+    <th colspan="2" class="th-predict">預判</th>
+    <th colspan="3" class="th-impact">受惠 / 受害</th>
+</tr>
+<tr>
+    <th class="th-status">狀態</th>
+    <th class="th-status">價格</th>
+    <th class="th-status">交期/庫存</th>
+    <th class="th-trend">方向</th>
+    <th class="th-trend">vs 上期</th>
+    <th class="th-predict">反轉風險</th>
+    <th class="th-predict">反轉時間</th>
+    <th class="th-impact">受惠（★龍頭）</th>
+    <th class="th-impact">程度</th>
+    <th class="th-impact">受害</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- ===== 原物料 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎原物料</td></tr>
+
+<tr>
+    <td><span class="item-name">銅</span></td>
+    <td><span class="st st-y">🟡 偏緊</span></td>
+    <td>$13,000+/噸<br><span class="reason">LME 創新高</span></td>
+    <td>LME 庫存偏低</td>
+    <td class="tr-up">↑ 趨緊</td>
+    <td><span class="reason">銅價破 $13K + ICSG 確認 15 萬噸缺口 + Grasberg 減產 35%</span></td>
+    <td class="rv-mid">中</td>
+    <td>結構性 2029+<br><span class="reason">Grasberg 復產 / 中國需求</span></td>
+    <td><span class="leader">★華新 1605</span><br><span class="leader">★大亞 1609</span><br>華榮 1608<br>中電 1611<br>金居 8358<br>界霖 5285</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">PCB 廠成本壓力<br>電纜下游廠</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">矽鋼片</span><br><span class="cat-tag">GOES</span></td>
+    <td><span class="st st-r">🔴 短缺</span></td>
+    <td>2020 年以來翻倍</td>
+    <td>僅新日鐵/POSCO/Thyssenkrupp</td>
+    <td class="tr-flat">→ 持平</td>
+    <td><span class="reason">俄 NLMK 仍制裁中，供給面無改善</span></td>
+    <td class="rv-low">低</td>
+    <td>至 2030<br><span class="reason">NLMK 制裁解除</span></td>
+    <td>（間接受惠見變壓器）</td>
+    <td><span class="bf-m">中</span></td>
+    <td><span class="victim">變壓器廠原料成本↑</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">鋰</span></td>
+    <td><span class="st st-y">🟡 偏緊</span></td>
+    <td>$24,086/噸<br><span class="reason">大幅回升</span></td>
+    <td>缺口 2.2~8 萬噸</td>
+    <td class="tr-up">↑ 趨緊</td>
+    <td><span class="reason">從過剩轉為可能缺口，價格從低谷反彈</span></td>
+    <td class="rv-mid">中</td>
+    <td>取決於新項目</td>
+    <td>Albemarle(美)<br>SQM(智利)</td>
+    <td><span class="bf-m">中</span></td>
+    <td><span class="victim">電池廠成本壓力<br>EV 車廠</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">鎳</span></td>
+    <td><span class="st st-y">🟡 偏緊</span></td>
+    <td>LME 漲 20%+</td>
+    <td>印尼 Weda Bay 配額削減</td>
+    <td class="tr-up">↑ 趨緊</td>
+    <td><span class="reason">印尼最大廠限額減產是新信號</span></td>
+    <td class="rv-mid">中</td>
+    <td>取決於印尼政策</td>
+    <td>Vale Indonesia<br>PT Weda Bay</td>
+    <td><span class="bf-l">低</span></td>
+    <td><span class="victim">不鏽鋼/電池廠</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">原油</span></td>
+    <td><span class="st st-r">🔴 危機</span></td>
+    <td>Brent $103~$115<br><span class="reason">3 月均值</span></td>
+    <td>荷莫茲通行暴跌 95%</td>
+    <td class="tr-down">↓ 趨緩</td>
+    <td><span class="reason">美伊停火跡象 + OPEC 增產 + DFC 保險</span></td>
+    <td class="rv-high">高</td>
+    <td>短期<br><span class="reason">停火後快速正常化</span></td>
+    <td>中東油企<br>台塑化 6505<br>長榮海 2603</td>
+    <td><span class="bf-m">中</span></td>
+    <td><span class="victim">航空/物流/塑膠加工<br>台灣發電成本↑</span></td>
+</tr>
+
+<!-- ===== 零組件 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎零組件</td></tr>
+
+<tr>
+    <td><span class="item-name">DRAM</span></td>
+    <td><span class="st st-r">🔴 嚴重短缺</span></td>
+    <td>Q2 QoQ +58~63%<br><span class="reason">Q1 已漲 55~95%</span></td>
+    <td>庫存 2~4 週<br><span class="reason">歷史低位</span></td>
+    <td class="tr-up">↑ 惡化中</td>
+    <td><span class="reason">Q2 漲幅略收斂但仍巨大；現貨 DDR4 本週跌 1.18%</span></td>
+    <td class="rv-low">低</td>
+    <td>2027 中<br><span class="reason">HBM 轉回 / 需求下修</span></td>
+    <td><span class="leader">★南亞科 2408</span><br><span class="leader">★華邦電 2344</span><br>群聯 8299<br>威剛 3260<br>創見 2451</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">PC 品牌（華碩/聯想/宏碁）漲 15~25%<br>手機廠（小米/OPPO/vivo）下修 10~15%</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">NAND</span></td>
+    <td><span class="st st-r">🔴 短缺</span></td>
+    <td>Q2 QoQ +70~75%</td>
+    <td>供不應求</td>
+    <td class="tr-up">↑ 惡化中</td>
+    <td><span class="reason">Q2 漲幅持續擴大</span></td>
+    <td class="rv-low">低</td>
+    <td>2027<br><span class="reason">同 DRAM</span></td>
+    <td><span class="leader">★群聯 8299</span><br>威剛 3260<br>創見 2451<br>宜鼎 5765</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">SSD/手機/資料中心<br>採購成本全面上升</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">T-Glass</span><br><span class="cat-tag">玻纖布</span></td>
+    <td><span class="st st-r">🔴 短缺</span></td>
+    <td>10~20% 供給缺口<br><span class="reason">中國廠月漲 10~15%</span></td>
+    <td>日東紡近壟斷</td>
+    <td class="tr-flat">→ 持平</td>
+    <td><span class="reason">缺貨持續，日東紡擴產中但未到位</span></td>
+    <td class="rv-mid">中</td>
+    <td>2026Q4~2027H1<br><span class="reason">日東紡擴產到位</span></td>
+    <td><span class="leader">★台玻 1802</span><br><span class="leader">★建榮 5340</span><br>富喬 1815<br>南亞 1303<br>欣興 3037</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">ABF 載板廠<br>非 AI 基板廠被擠壓</span></td>
+</tr>
+
+<!-- ===== 設備 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎設備</td></tr>
+
+<tr>
+    <td><span class="item-name">變壓器</span></td>
+    <td><span class="st st-r">🔴 短缺</span></td>
+    <td>累計漲 77%<br><span class="reason">2019→今</span></td>
+    <td>交期 24~60 月<br><span class="reason">產能利用率 98%</span></td>
+    <td class="tr-flat">→ 持平</td>
+    <td><span class="reason">持續嚴重缺貨但沒有進一步惡化</span></td>
+    <td class="rv-low">低</td>
+    <td>2028~2029<br><span class="reason">三大瓶頸短期無解</span></td>
+    <td><span class="leader">★華城 1519</span><br><span class="leader">★中興電 1513</span><br>士電 1503<br>亞力 1514<br>大同 2371</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">電網升級延遲<br>AI 資料中心建設延宕</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">800G 光模組</span></td>
+    <td><span class="st st-y">🟡 偏緊</span></td>
+    <td>ASP 維持高位</td>
+    <td>需求 4000→6300 萬組<br><span class="reason">+2.6 倍</span></td>
+    <td class="tr-up">↑ 趨緊</td>
+    <td><span class="reason">需求倍數成長，CPO 商轉元年</span></td>
+    <td class="rv-low">低</td>
+    <td>至 2028<br><span class="reason">CPO 部署 / 1.6T 放量</span></td>
+    <td><span class="leader">★智邦 2345</span><br><span class="leader">★聯亞 3081</span><br>上詮 3363<br>華星光 6187</td>
+    <td><span class="bf-h">高</span></td>
+    <td><span class="victim">傳統銅纜互連廠</span></td>
+</tr>
+
+<!-- ===== 能源 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎能源</td></tr>
+
+<tr>
+    <td><span class="item-name">LNG</span></td>
+    <td><span class="st st-o">🟠 偏緊</span></td>
+    <td>高位<br><span class="reason">荷莫茲影響</span></td>
+    <td>全球 20% LNG 被卡</td>
+    <td class="tr-down">↓ 趨緩</td>
+    <td><span class="reason">美伊停火 + 卡達重啟 + 美國 LNG 滿載</span></td>
+    <td class="rv-high">高</td>
+    <td>短期<br><span class="reason">荷莫茲恢復通行</span></td>
+    <td>美國 LNG 出口商<br>澳洲 LNG 廠</td>
+    <td><span class="bf-m">中</span></td>
+    <td><span class="victim">台灣發電（LNG 庫存僅 11 天）<br>台電/半導體用電</span></td>
+</tr>
+
+<!-- ===== 供應商 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎關鍵供應商</td></tr>
+
+<tr>
+    <td><span class="item-name">三大 DRAM 廠</span><br><span class="cat-tag">三星/SK/美光</span></td>
+    <td><span class="st st-r">🔴 產能排擠</span></td>
+    <td>HBM 優先排產</td>
+    <td>DDR4/DDR5 被犧牲</td>
+    <td class="tr-flat">→ 持平</td>
+    <td><span class="reason">持續優先 HBM，結構不變</span></td>
+    <td class="rv-low">低</td>
+    <td>2027H1<br><span class="reason">HBM 需求放緩 or 新廠</span></td>
+    <td>（見 DRAM 受惠欄）</td>
+    <td>—</td>
+    <td><span class="victim">消費性記憶體買家</span></td>
+</tr>
+
+<tr>
+    <td><span class="item-name">日東紡</span><br><span class="cat-tag">T-Glass</span></td>
+    <td><span class="st st-r">🔴 產能滿載</span></td>
+    <td>訂單排到 2027</td>
+    <td>唯一量產級廠</td>
+    <td class="tr-flat">→ 持平</td>
+    <td><span class="reason">擴產中但未到位</span></td>
+    <td class="rv-mid">中</td>
+    <td>2026Q4<br><span class="reason">擴產時程</span></td>
+    <td>（見 T-Glass 受惠欄）</td>
+    <td>—</td>
+    <td><span class="victim">非 AI 玻纖布需求被排擠</span></td>
+</tr>
+
+<!-- ===== 地緣 ===== -->
+<tr><td colspan="11" style="background:var(--code-bg);padding:4px 10px;font-weight:700;color:var(--accent);font-size:.82em;letter-spacing:.05em">▎地緣</td></tr>
+
+<tr>
+    <td><span class="item-name">荷莫茲海峽</span></td>
+    <td><span class="st st-o">🟠 危機緩和中</span></td>
+    <td>通行量從 6 艘/日回升</td>
+    <td>仍有收費+水雷</td>
+    <td class="tr-down">↓ 趨緩</td>
+    <td><span class="reason">停火跡象 + 中東油國重啟出口</span></td>
+    <td class="rv-high">高</td>
+    <td>數週~數月<br><span class="reason">停火 + 掃雷完成</span></td>
+    <td>替代航線受惠<br>非中東能源供應商</td>
+    <td><span class="bf-l">低</span></td>
+    <td><span class="victim">全球：油價/LNG/化肥/塑膠<br>台灣：能源安全</span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="tip info">
+<b>第二章整合結論</b>
+<b>資料：</b>14 項品項中，6 項「短缺/嚴重短缺/產能排擠」，4 項「偏緊」，2 項「危機/危機緩和中」。趨勢分化明顯：AI 相關持續惡化，能源面因停火開始緩解。<br>
+<b>觀察：</b>供需失衡的品項形成兩個集群——「AI 基建集群」（DRAM/NAND/T-Glass/800G/變壓器/銅）全面偏緊且多數惡化中；「地緣集群」（原油/LNG/荷莫茲）正在降溫。鋰和鎳則是「新興警訊」，從過剩轉為偏緊。<br>
+<b>推論：</b>AI 基建集群的供需失衡是結構性的（產能擴充需要 2~3 年），不會因短期事件改善。地緣集群則可能在數週內快速正常化。兩個集群之間有交叉點——銅既受 AI 基建驅動也受地緣影響。<br>
+<b>結論：</b>整體供需環境仍然偏緊，但出現分化。投資布局應以 AI 基建集群為核心（確定性高、持續時間長），能源面作為戰術操作（反轉風險高但短期波動大）。
+</div>
+
+
+<!-- ============================================================ -->
+<!--              第三章：供需反轉預警儀表板                        -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch3">第三章：供需反轉預警儀表板</div>
+<div class="section-sub">七項反轉指標 × 十大品項 — 亮燈數越多 = 反轉風險越高</div>
+
+<div style="overflow-x:auto;">
+<table>
+<thead>
+<tr>
+    <th style="min-width:80px">品項</th>
+    <th>漲幅收斂</th>
+    <th>新產能</th>
+    <th>大廠回歸</th>
+    <th>庫存回升</th>
+    <th>交期縮短</th>
+    <th>替代品</th>
+    <th>需求下修</th>
+    <th>亮燈數</th>
+    <th>風險</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td><b>DRAM</b></td>
+    <td class="ind-warn">⚠️ Q2 漲幅略收斂</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>1/7</b></td>
+    <td class="risk-low">低</td>
+</tr>
+<tr>
+    <td><b>NAND</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>0/7</b></td>
+    <td class="risk-low">低</td>
+</tr>
+<tr>
+    <td><b>銅</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>0/7</b></td>
+    <td class="risk-mid">低（但機構分歧=中）</td>
+</tr>
+<tr>
+    <td><b>矽鋼片</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>0/7</b></td>
+    <td class="risk-low">低</td>
+</tr>
+<tr>
+    <td><b>T-Glass</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-warn">⚠️ 日東紡 Q4</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>1/7</b></td>
+    <td class="risk-mid">中（擴產有時間表）</td>
+</tr>
+<tr>
+    <td><b>變壓器</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>0/7</b></td>
+    <td class="risk-low">低</td>
+</tr>
+<tr>
+    <td><b>原油</b></td>
+    <td class="ind-warn">⚠️ OPEC 增產</td>
+    <td class="ind-warn">⚠️ 美 LNG 滿載</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-warn">⚠️ 全球經濟放緩</td>
+    <td><b>3/7</b></td>
+    <td class="risk-high">高</td>
+</tr>
+<tr>
+    <td><b>LNG</b></td>
+    <td class="ind-warn">⚠️ 卡達重啟</td>
+    <td class="ind-warn">⚠️ 美 LNG</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>2/7</b></td>
+    <td class="risk-high">高</td>
+</tr>
+<tr>
+    <td><b>800G 光模組</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>0/7</b></td>
+    <td class="risk-low">低</td>
+</tr>
+<tr>
+    <td><b>鋰</b></td>
+    <td class="ind-none">❌</td>
+    <td class="ind-warn">⚠️ 新項目</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td class="ind-none">❌</td>
+    <td><b>1/7</b></td>
+    <td class="risk-mid">中</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="tip good">
+<b>第三章整合結論</b>
+<b>資料：</b>10 個品項中，6 個亮燈數 0/7（極低反轉風險），2 個 1/7，2 個 2~3/7。能源面（原油 3/7、LNG 2/7）反轉風險最高，其餘 AI 相關品項幾乎全數 0~1/7。<br>
+<b>觀察：</b>大部分 AI 相關供需失衡的反轉風險仍低，可持續追蹤並維持布局。能源面反轉風險高（荷莫茲停火），T-Glass 中風險（日東紡 Q4 擴產）。<br>
+<b>推論：</b>DRAM 出現一個微弱的反轉信號——Q2 漲幅（58~63%）略低於 Q1（55~95%）。雖然只有 1/7 亮燈，但這正是「漲幅收斂 = 準備跑」的早期跡象。當漲價已成共識、所有人都在囤貨時，反而是最需要警覺的時候。<br>
+<b>結論：</b>AI 基建集群可安心持有/布局（反轉信號極少），但需每月監控 DRAM 現貨走勢——如果連續兩個月現貨走弱而合約價仍高，就是經典的「現貨領先合約反轉」信號。能源面準備好反轉劇本。
+</div>
+
+
+<!-- ============================================================ -->
+<!--              第四章：記憶體（DRAM / NAND）                     -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch4">第四章：記憶體（DRAM / NAND）</div>
+<div class="section-sub">高盛：15 年最嚴重短缺 ｜ Q1 漲 55~95% ｜ Q2 再漲 58~63%</div>
+
+<div class="card">
+<h3>新聞證據彙整</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>高盛報告稱「15 年來最嚴重的 DRAM 短缺」，三大廠（三星、SK 海力士、美光）將 HBM 優先排產，犧牲 DDR4/DDR5 傳統產能</li>
+    <li>Q1 合約價 QoQ 漲 55~95%（DDR4 漲幅更大），Q2 預估再漲 58~63%</li>
+    <li>IDC 預估 2026 PC 出貨量 -5~9%，但記憶體價格仍漲——代表供給面驅動而非需求面</li>
+    <li>現貨市場出現微弱信號：DDR4 本週現貨跌 1.18%，與合約價背離</li>
+    <li>NAND Q2 預計漲幅 +70~75% QoQ，企業級 SSD 缺貨更嚴重</li>
+    <li>庫存僅 2~4 週，遠低於正常 6~8 週水準</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>四步驗證</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:120px">驗證項</th><th>結果</th></tr>
+<tr><td><b>確認短缺</b></td><td>確認 — 多方來源交叉驗證（高盛、TrendForce、合約價數據），供給面結構性短缺（HBM 排擠）</td></tr>
+<tr><td><b>驅動因素</b></td><td>HBM 產能排擠 DDR4/DDR5 → 傳統記憶體供給被壓縮 → 需求端 PC 雖然下滑但無法抵消供給缺口</td></tr>
+<tr><td><b>持續時間</b></td><td>至 2027 中 — 三大廠無計畫增加 DDR 產能，新廠投產至少 18~24 個月</td></tr>
+<tr><td><b>定價權</b></td><td>賣方定價 — 三大廠寡占（95% 市佔），買家只能接受漲價或缺貨</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>受惠標的（新聞來源）</h3>
+<div class="card-body">
+<table>
+<tr><th>代號</th><th>公司</th><th>受惠邏輯</th><th>新聞來源</th></tr>
+<tr><td>2408</td><td><b>南亞科</b></td><td>DDR4 結構性缺口直接受惠，法人目標價 300 元</td><td>CMoney / 旺得富</td></tr>
+<tr><td>2344</td><td><b>華邦電</b></td><td>DRAM + NOR Flash 雙受惠，利基型記憶體龍頭</td><td>今周刊 / ETtoday</td></tr>
+<tr><td>8299</td><td><b>群聯</b></td><td>企業 SSD 佔營收 30%，毛利率 40%+，NAND 漲價直接受惠</td><td>CES / 法人報告</td></tr>
+<tr><td>3260</td><td><b>威剛</b></td><td>低價庫存轉高價出貨，價差利益最大</td><td>經濟日報</td></tr>
+<tr><td>2451</td><td><b>創見</b></td><td>工控/車用記憶體模組，長約優勢</td><td>法人報告</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>反轉預警</h3>
+<div class="card-body">
+<p>Q2 合約漲幅（58~63%）略低於 Q1 實際（55~95%）——雖然絕對值仍高，但漲幅收斂本身就是值得注意的信號。同時 DDR4 現貨本週跌 1.18%，與合約價走勢背離。</p>
+<p style="color:var(--warn)"><b>監控重點：</b>若連續 2~3 週現貨價走弱，且 Q3 展望下修，即為反轉早期信號。當前仍未達到，僅列為觀察。</p>
+</div>
+</div>
+
+<div class="tip good">
+<b>第四章整合結論</b>
+<b>資料：</b>DRAM Q1 漲 55~95%、Q2 預計 +58~63%、庫存 2~4 週、HBM 排擠結構不變。NAND Q2 +70~75%。現貨 DDR4 微跌 1.18%。<br>
+<b>觀察：</b>這是一個教科書級的「供給側寡占定價」案例——三大廠控制 95% 產能，主動將資源配置到高利潤的 HBM，傳統 DDR 的短缺是「設計出來的」而非「意外發生的」。<br>
+<b>推論：</b>只要 AI 對 HBM 的需求不減（目前看不到減弱跡象），DDR4/DDR5 的結構性短缺就會持續。但漲幅不可能永遠擴大——Q2 漲幅收斂暗示市場正在尋找新的均衡點。<br>
+<b>結論：</b>記憶體仍是供需失衡最確定的領域，受惠標的（南亞科、華邦電、群聯）可持續追蹤。但要開始準備反轉劇本：當 Q3 合約漲幅進一步收斂至 30% 以下，或現貨持續走弱超過一個月，就是獲利了結的信號。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     第五章：銅                                -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch5">第五章：銅</div>
+<div class="section-sub">LME 破 $13,000 新高 ｜ ICSG 確認 15 萬噸缺口 ｜ Grasberg 減產 35%</div>
+
+<div class="card">
+<h3>新聞證據彙整</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>LME 銅價突破 $13,000/噸歷史新高</li>
+    <li>ICSG（國際銅業研究組織）確認 2026 年全球缺口 15 萬噸</li>
+    <li>JPM 更悲觀，預估缺口達 33 萬噸</li>
+    <li>高盛則偏保守，認為可能有 16 萬噸過剩——機構分歧顯著</li>
+    <li>Freeport 旗下 Grasberg（全球最大銅金礦）減產 35%，受印尼監管影響</li>
+    <li>AI 資料中心每座需約 5 萬噸銅（電纜 + 變壓器 + 配電系統）</li>
+    <li>EV + 電網升級 + AI 三重需求疊加</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>四步驗證</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:120px">驗證項</th><th>結果</th></tr>
+<tr><td><b>確認短缺</b></td><td>確認偏多但有分歧 — ICSG/JPM 看缺口，高盛看過剩。價格新高支持缺口論</td></tr>
+<tr><td><b>驅動因素</b></td><td>AI 資料中心 + EV 普及 + 電網升級 = 三重需求疊加；供給端 Grasberg 減產</td></tr>
+<tr><td><b>持續時間</b></td><td>結構性至 2029+（新銅礦開發週期 7~10 年）</td></tr>
+<tr><td><b>定價權</b></td><td>偏賣方 — LME 庫存偏低，現貨溢價擴大</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>受惠標的（新聞來源）</h3>
+<div class="card-body">
+<table>
+<tr><th>代號</th><th>公司</th><th>受惠邏輯</th><th>新聞來源</th></tr>
+<tr><td>1605</td><td><b>華新</b></td><td>電纜龍頭，銅價漲直接反映營收，已漲 1 成</td><td>Yahoo / 經濟日報</td></tr>
+<tr><td>1609</td><td><b>大亞</b></td><td>台電 + 綠能電纜訂單，銅價漲加持</td><td>經濟日報</td></tr>
+<tr><td>1608</td><td><b>華榮</b></td><td>電纜/電線，銅價受惠</td><td>法人報告</td></tr>
+<tr><td>1611</td><td><b>中電</b></td><td>電力電纜，台電標案</td><td>法人報告</td></tr>
+<tr><td>8358</td><td><b>金居</b></td><td>電解銅箔，ABF 載板/PCB 上游</td><td>科技新報</td></tr>
+<tr><td>5285</td><td><b>界霖</b></td><td>導線架（銅合金），半導體封裝必需</td><td>法人報告</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip warn">
+<b>第五章整合結論</b>
+<b>資料：</b>LME 銅價 $13,000+ 新高，ICSG 缺口 15 萬噸 vs 高盛過剩 16 萬噸，Grasberg 減產 35%。<br>
+<b>觀察：</b>銅的特殊之處在於「機構分歧大」——看多（JPM 33 萬噸缺口）和看空（高盛 16 萬噸過剩）的差距達 49 萬噸。這通常意味著某個關鍵變數（如中國需求）的預測存在根本性分歧。<br>
+<b>推論：</b>價格已經創新高，代表市場暫時站在多方。但高盛的看空觀點不能忽略——如果中國房地產復甦不如預期（銅的傳統最大需求端），即使 AI/EV 需求增加也可能被抵消。<br>
+<b>結論：</b>銅是「方向確定但幅度不確定」的品項。台股電纜族群（華新、大亞）已部分反映銅價上漲，追高需謹慎。建議以「銅價維持高位」而非「銅價繼續飆漲」的假設來布局——選擇有訂單能見度的標的（台電標案）而非純粹靠銅價的。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                   第六章：變壓器 / 重電                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch6">第六章：變壓器 / 重電</div>
+<div class="section-sub">產能利用率 98% ｜ 交期 24~60 個月 ｜ 累計漲 77%</div>
+
+<div class="card">
+<h3>新聞證據彙整</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>全球變壓器產能利用率達 98%，交期從正常 6~12 個月拉長到 24~60 個月</li>
+    <li>自 2019 年以來變壓器累計漲價 77%</li>
+    <li>三大擴產瓶頸：技術工人嚴重不足 + 矽鋼片(GOES)受制裁短缺 + 擴產週期 3~5 年</li>
+    <li>重電四雄（華城/中興電/士電/亞力）全面擴產，但短期無法填補全球缺口</li>
+    <li>華城 1519 獲星際之門(Stargate)指定，觀音 3B 廠 + 台中廠擴產中</li>
+    <li>士電 1503 訂單排到 2030 年</li>
+    <li>亞力 1514 楊梅二廠動工</li>
+    <li>中興電 1513 GIS + 儲能事業 400 億訂單在手</li>
+    <li>大同 2371 電力事業 200 億目標</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>四步驗證</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:120px">驗證項</th><th>結果</th></tr>
+<tr><td><b>確認短缺</b></td><td>確認 — 產能利用率 98% + 交期 2~5 年 = 供給端已到物理極限</td></tr>
+<tr><td><b>驅動因素</b></td><td>AI 資料中心（每座需數十台大型變壓器）+ 電網老化升級 + 新能源併網 + 半導體廠擴廠</td></tr>
+<tr><td><b>持續時間</b></td><td>至 2028~2029 — 擴產從動工到投產需 3~5 年，且技術工人瓶頸無法短期解決</td></tr>
+<tr><td><b>定價權</b></td><td>賣方（集體漲價）— 需求遠超供給，買家排隊等貨</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>受惠標的（新聞來源）</h3>
+<div class="card-body">
+<table>
+<tr><th>代號</th><th>公司</th><th>受惠邏輯</th><th>新聞來源</th></tr>
+<tr><td>1519</td><td><b>華城</b></td><td>星際之門指定 + 觀音 3B 廠 + 台中廠擴產，國際訂單最強</td><td>經濟日報 / 豐雲</td></tr>
+<tr><td>1513</td><td><b>中興電</b></td><td>GIS + 儲能事業 400 億訂單在手，轉型最成功</td><td>鉅亨網 / 經濟日報</td></tr>
+<tr><td>1503</td><td><b>士電</b></td><td>訂單排到 2030 年，能見度最高</td><td>經濟日報</td></tr>
+<tr><td>1514</td><td><b>亞力</b></td><td>楊梅二廠動工，擴產彈性最大</td><td>工商時報</td></tr>
+<tr><td>2371</td><td><b>大同</b></td><td>電力事業 200 億目標，集團資源豐富</td><td>經濟日報</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip good">
+<b>第六章整合結論</b>
+<b>資料：</b>產能 98%、交期 24~60 個月、累計漲 77%、反轉指標 0/7 亮燈。四雄全面擴產，華城獲星際之門指定。<br>
+<b>觀察：</b>變壓器是所有供需失衡品項中「確定性最高、持續時間最長」的。三大瓶頸（工人/材料/擴產）全部是「年」級別的解決週期，不像記憶體可以透過調整產線配置來緩解。<br>
+<b>推論：</b>重電四雄的訂單能見度已到 2028~2030，營收成長幾乎是確定的。問題不是「會不會成長」，而是「成長多快」和「市場是否已充分定價」。<br>
+<b>結論：</b>變壓器/重電是供需失衡中最適合長期布局的領域——反轉風險最低、持續時間最長、台股有明確受惠標的。華城（國際化最強）和中興電（轉型最成功）是首選，但股價已大幅上漲，需等技術面回檔或營收超預期的催化劑。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                第七章：T-Glass / 玻纖布                       -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch7">第七章：T-Glass / 玻纖布</div>
+<div class="section-sub">日東紡壟斷 ｜ 10~20% 缺口 ｜ 中國玻纖布月漲 10~15%</div>
+
+<div class="card">
+<h3>新聞證據彙整</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>日東紡（Nittobo）近乎壟斷全球 T-Glass（超薄玻纖布）市場，全球市佔超過 80%</li>
+    <li>目前供給缺口約 10~20%，科技巨頭（Google、Meta、Microsoft）搶料</li>
+    <li>台廠訂單已排到 2027 年</li>
+    <li>中國大陸一般玻纖布月漲 10~15%，反映上游供需緊張向下傳導</li>
+    <li>T-Glass 是 AI 伺服器 + 先進封裝（ABF 載板）的關鍵材料</li>
+    <li>日東紡 2026Q4 擴產計畫到位——這是目前唯一有明確時間表的供給增量</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>四步驗證</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:120px">驗證項</th><th>結果</th></tr>
+<tr><td><b>確認短缺</b></td><td>確認 — 壟斷結構 + 10~20% 缺口 + 科技巨頭搶料</td></tr>
+<tr><td><b>驅動因素</b></td><td>AI 伺服器 + 先進封裝（ABF 載板）需求激增</td></tr>
+<tr><td><b>持續時間</b></td><td>至 2026Q4~2027H1（日東紡擴產到位後可能緩解）</td></tr>
+<tr><td><b>定價權</b></td><td>賣方 — 壟斷結構，買家無替代選擇</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>受惠標的（新聞來源）</h3>
+<div class="card-body">
+<table>
+<tr><th>代號</th><th>公司</th><th>受惠邏輯</th><th>新聞來源</th></tr>
+<tr><td>1802</td><td><b>台玻</b></td><td>台灣唯一能產 T-Glass 的亞洲廠，稀缺性最高</td><td>科技新報 / TechNews</td></tr>
+<tr><td>1815</td><td><b>富喬</b></td><td>主要玻纖廠，受惠一般玻纖布漲價</td><td>工商時報</td></tr>
+<tr><td>5340</td><td><b>建榮</b></td><td>日東紡持股 47.65%，營收彈性最大</td><td>科技新報</td></tr>
+<tr><td>1303</td><td><b>南亞</b></td><td>攜手日東紡，CCL/銅箔基板大廠</td><td>經濟日報</td></tr>
+<tr><td>3037</td><td><b>欣興</b></td><td>ABF 載板龍頭，T-Glass 是關鍵原料</td><td>法人報告</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip warn">
+<b>第七章整合結論</b>
+<b>資料：</b>日東紡壟斷 80%+、缺口 10~20%、訂單到 2027、Q4 擴產到位。反轉指標 1/7（新產能）。<br>
+<b>觀察：</b>T-Glass 的供需失衡有一個明確的「到期日」——日東紡 2026Q4 擴產到位後，缺口可能從 10~20% 縮小到 5% 以下。這與記憶體/變壓器的「無限期短缺」不同。<br>
+<b>推論：</b>這意味著 T-Glass 相關標的的投資時間窗口是有限的。現在到 Q4 之前是供需最緊的階段，Q4 之後可能逐步緩解。但如果 AI 需求成長速度超過擴產速度，緩解幅度可能不如預期。<br>
+<b>結論：</b>T-Glass 是「短中期確定、中長期有變數」的品項。台玻（稀缺性）和建榮（日東紡持股，營收彈性）是最直接受惠，但需在 Q3 之前做好獲利了結的準備。欣興作為下游（ABF 載板），T-Glass 緩解反而是利多（原料成本降）——值得作為對沖。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                  第八章：光通訊 / CPO                         -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch8">第八章：光通訊 / CPO</div>
+<div class="section-sub">800G 需求 +2.6 倍 ｜ CPO 商轉元年 ｜ InP 缺到 2027</div>
+
+<div class="card">
+<h3>新聞證據彙整</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>800G 光模組 2026 年需求預估 4000 萬→6300 萬組，年增 2.6 倍</li>
+    <li>2026 年被稱為「CPO（共封裝光學）商轉元年」，市場 7 年 CAGR 達 172%</li>
+    <li>InP（磷化銦）晶圓全球產能有限，預計缺到 2027</li>
+    <li>矽光子（Silicon Photonics）技術成為主流方案，台廠切入機會大</li>
+    <li>1.6T 光模組已開始送樣，但 800G 仍是 2026~2027 主力</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>四步驗證</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:120px">驗證項</th><th>結果</th></tr>
+<tr><td><b>確認短缺</b></td><td>確認 — 需求 2.6 倍成長 vs 產能擴充有限</td></tr>
+<tr><td><b>驅動因素</b></td><td>AI 資料中心內部互連頻寬需求爆發</td></tr>
+<tr><td><b>持續時間</b></td><td>至 2027 底（800G 為主），2028 進入 1.6T 世代</td></tr>
+<tr><td><b>定價權</b></td><td>賣方 — 能量產 800G 的廠商稀少</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>受惠標的（新聞來源）</h3>
+<div class="card-body">
+<table>
+<tr><th>代號</th><th>公司</th><th>受惠邏輯</th><th>新聞來源</th></tr>
+<tr><td>3081</td><td><b>聯亞</b></td><td>矽光主力供應商，800G 客戶群強勁</td><td>TechNews</td></tr>
+<tr><td>3363</td><td><b>上詮</b></td><td>FAU 三產品線布局，光通訊零組件</td><td>科技新報</td></tr>
+<tr><td>6187</td><td><b>華星光</b></td><td>矽光晶圓代工，CPO 直接受惠</td><td>TechNews</td></tr>
+<tr><td>2345</td><td><b>智邦</b></td><td>交換器龍頭，法人目標價喊 1000 元</td><td>Yahoo / 外資</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip good">
+<b>第八章整合結論</b>
+<b>資料：</b>800G 需求 +2.6 倍、CPO CAGR 172%、InP 缺到 2027、反轉指標 0/7。<br>
+<b>觀察：</b>光通訊/CPO 處於「早期爆發」階段，類似 2023 年 AI 伺服器剛起飛時的狀態。需求成長確定性高，但產業鏈較新，台廠切入程度不如記憶體/重電成熟。<br>
+<b>推論：</b>800G 是 2026~2027 的主力規格，產能擴充需要時間，供需偏緊的狀態至少維持到 2027 底。CPO 作為下一代封裝技術，商轉初期會有高 ASP 和高毛利。<br>
+<b>結論：</b>光通訊是供需失衡中「成長確定性高但股價反映程度最低」的領域——因為產業鏈較新，多數投資人還在觀望。聯亞（矽光）和智邦（交換器）是最直接的受惠標的。風險在於 CPO 商轉進度可能不如預期。
+</div>
+
+
+<!-- ============================================================ -->
+<!--          第九章：能源危機（荷莫茲）+ 鋰 / 鎳                  -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch9">第九章：能源危機（荷莫茲）+ 鋰 / 鎳</div>
+<div class="section-sub">荷莫茲停火跡象 ｜ 鋰從過剩轉缺口 ｜ 印尼鎳限額減產</div>
+
+<div class="card">
+<h3>荷莫茲海峽：危機緩和中</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>美伊停火跡象浮現，外交管道重啟談判</li>
+    <li>海峽通行量從最低 6 艘/日開始回升</li>
+    <li>Brent 原油從高峰 $124 回落至 $103~$115</li>
+    <li>但仍有水雷未清除 + 伊朗收費機制 = 完全恢復仍需時間</li>
+    <li>OPEC 宣布增產計畫 + DFC（戰時運費保險）降低運輸成本</li>
+    <li>卡達宣布準備重啟 LNG 出口</li>
+</ul>
+<p style="color:var(--danger);margin-top:6px"><b>台灣風險：</b>95% 能源進口、LNG 法定庫存僅 11 天、半導體用電敏感。荷莫茲如果長期封鎖，台灣是全球最脆弱的經濟體之一。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>鋰：從過剩轉為缺口</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>碳酸鋰價格從低谷大幅反彈至 $24,086/噸</li>
+    <li>2025 年多家鋰礦廠因虧損減產/停產，供給端收縮</li>
+    <li>2026 年缺口估計 2.2~8 萬噸（視 EV 銷售成長率而定）</li>
+    <li>新鋰礦項目投產需 3~5 年，短期供給端彈性低</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>鎳：印尼限額減產</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li>印尼 PT Weda Bay（全球最大鎳礦之一）遭配額削減</li>
+    <li>LME 鎳價已漲 20%+</li>
+    <li>印尼佔全球鎳產量約 50%，政策變動影響巨大</li>
+    <li>鎳是不鏽鋼 + EV 電池（三元鋰）的關鍵原料</li>
+</ul>
+</div>
+</div>
+
+<div class="tip danger">
+<b>第九章整合結論（能源）</b>
+<b>資料：</b>荷莫茲通行量回升、Brent 從 $124 降至 $103~$115、美伊談判中。台灣 95% 能源進口、LNG 11 天庫存。<br>
+<b>觀察：</b>能源危機正在「從最壞的情況改善」，但尚未完全解除。停火跡象 ≠ 停火協議 ≠ 完全恢復——中間每一步都可能出變數。<br>
+<b>推論：</b>如果停火在未來數週落實，能源價格可能快速正常化（原油回到 $80~90，LNG 回到合理水準）。這對台灣是重大利多（進口成本降 + 供電穩定），但對油價相關的投資組合是利空。<br>
+<b>結論：</b>能源面是目前反轉風險最高的領域。建議：(1) 減持或對沖能源多頭部位，(2) 準備好「停火利多」的受惠標的清單（航運、塑化、化肥），(3) 持續追蹤台灣 LNG 庫存天數——只要低於 14 天就是警戒。
+</div>
+
+<div class="tip warn">
+<b>第九章整合結論（鋰/鎳）</b>
+<b>資料：</b>鋰 $24,086/噸（反彈中）、缺口 2.2~8 萬噸。鎳 LME +20%、印尼限額。<br>
+<b>觀察：</b>鋰和鎳都是從「過剩轉偏緊」的新興信號，與 AI 相關品項的「持續缺貨」不同——這兩個品項的驅動力是 EV + 政策，而非 AI。<br>
+<b>推論：</b>鋰的供需反轉速度取決於新項目投產進度和 EV 銷售實際表現。如果 2026 下半年 EV 銷量超預期，缺口會擴大；反之則可能回到平衡。鎳的變數更集中在印尼政策——一個政策轉向就可能改變供需。<br>
+<b>結論：</b>鋰和鎳是「觀察但不急著布局」的品項——趨勢方向確認偏緊，但驅動因素（EV/政策）的不確定性比 AI 基建高。台股直接受惠標的也較少，可先關注全球礦業 ETF 作為配置工具。
+</div>
+
+
+<!-- ============================================================ -->
+<!--                    第十章：行動建議                            -->
+<!-- ============================================================ -->
+<div class="section-title" id="ch10">第十章：行動建議與受惠標的</div>
+<div class="section-sub">信號強度 × 反轉風險 = 投資吸引力排序</div>
+
+<div class="card">
+<h3>受惠標的總排序表</h3>
+<div class="card-body">
+<div style="overflow-x:auto;">
+<table>
+<thead>
+<tr>
+    <th>#</th>
+    <th>標的</th>
+    <th>產業</th>
+    <th>供需信號</th>
+    <th>信號強度</th>
+    <th>反轉風險</th>
+    <th>進場階段</th>
+    <th>新聞來源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>1</td>
+    <td><b>華城 1519</b></td>
+    <td>重電</td>
+    <td>變壓器全球缺貨，星際之門指定</td>
+    <td><span class="status red" style="font-size:.72em">強</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>經濟日報 / 豐雲</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td><b>南亞科 2408</b></td>
+    <td>記憶體</td>
+    <td>DDR4 結構性缺口，法人喊 300</td>
+    <td><span class="status red" style="font-size:.72em">強</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>CMoney / 旺得富</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td><b>華邦電 2344</b></td>
+    <td>記憶體</td>
+    <td>DRAM + NOR 雙受惠</td>
+    <td><span class="status red" style="font-size:.72em">強</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>今周刊 / ETtoday</td>
+</tr>
+<tr>
+    <td>4</td>
+    <td><b>台玻 1802</b></td>
+    <td>玻纖布</td>
+    <td>台灣唯一 T-Glass 亞洲廠</td>
+    <td><span class="status red" style="font-size:.72em">強</span></td>
+    <td class="risk-mid">中 (Q4 擴產)</td>
+    <td>數據已反映</td>
+    <td>科技新報 / TechNews</td>
+</tr>
+<tr>
+    <td>5</td>
+    <td><b>華新 1605</b></td>
+    <td>銅 / 電纜</td>
+    <td>銅價創新高 + 台電訂單</td>
+    <td><span class="status orange" style="font-size:.72em">中</span></td>
+    <td class="risk-mid">中</td>
+    <td>數據部分反映</td>
+    <td>Yahoo / 經濟日報</td>
+</tr>
+<tr>
+    <td>6</td>
+    <td><b>聯亞 3081</b></td>
+    <td>光通訊</td>
+    <td>矽光主力 + 800G 客戶強勁</td>
+    <td><span class="status orange" style="font-size:.72em">中</span></td>
+    <td class="risk-low">低</td>
+    <td>早期（CPO 商轉元年）</td>
+    <td>TechNews</td>
+</tr>
+<tr>
+    <td>7</td>
+    <td><b>中興電 1513</b></td>
+    <td>重電</td>
+    <td>GIS + 儲能 400 億訂單</td>
+    <td><span class="status red" style="font-size:.72em">強</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>鉅亨網 / 經濟日報</td>
+</tr>
+<tr>
+    <td>8</td>
+    <td><b>群聯 8299</b></td>
+    <td>記憶體</td>
+    <td>企業 SSD 佔 30% + 毛利 40%</td>
+    <td><span class="status orange" style="font-size:.72em">中</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>CES / 法人</td>
+</tr>
+<tr>
+    <td>9</td>
+    <td><b>建榮 5340</b></td>
+    <td>玻纖布</td>
+    <td>日東紡持股 47.65% 營收彈性最大</td>
+    <td><span class="status orange" style="font-size:.72em">中</span></td>
+    <td class="risk-mid">中 (Q4 擴產)</td>
+    <td>數據已反映</td>
+    <td>科技新報</td>
+</tr>
+<tr>
+    <td>10</td>
+    <td><b>智邦 2345</b></td>
+    <td>光通訊</td>
+    <td>交換器龍頭 + 法人喊 1000</td>
+    <td><span class="status orange" style="font-size:.72em">中</span></td>
+    <td class="risk-low">低</td>
+    <td>數據已反映</td>
+    <td>Yahoo / 外資</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>進場條件建議</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">已數據反映的（重電/記憶體）</div>
+        <div class="desc" style="text-align:left;padding:4px">可觀察技術面確認後進場，追蹤月營收持續性。股價已反映部分預期，追高需搭配停損紀律。</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">早期信號的（銅/光通訊）</div>
+        <div class="desc" style="text-align:left;padding:4px">先小試單 3~5%，等數據（月營收/訂單）跟上再加碼。時間是站在你這邊的。</div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>月度監控指標</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>追蹤頻率</th><th>觸發動作</th></tr>
+<tr><td>DRAM 現貨價（DDR4/DDR5）</td><td>每週</td><td>連續 3 週走弱 → 降低記憶體持倉</td></tr>
+<tr><td>DRAM Q3 合約價展望</td><td>每月</td><td>漲幅 < 30% → 反轉信號確認</td></tr>
+<tr><td>LME 銅價 + 庫存</td><td>每週</td><td>庫存連續 4 週回升 → 降低銅曝險</td></tr>
+<tr><td>日東紡擴產進度</td><td>每季</td><td>Q4 如期投產 → 減持 T-Glass 標的</td></tr>
+<tr><td>變壓器交期變化</td><td>每季</td><td>交期縮短至 18 個月 → 警戒</td></tr>
+<tr><td>荷莫茲海峽通行量</td><td>每日</td><td>恢復至 50 艘/日 → 能源多頭出場</td></tr>
+<tr><td>800G 光模組出貨量</td><td>每月</td><td>季增率 < 20% → 成長放緩信號</td></tr>
+<tr><td>碳酸鋰現貨價</td><td>每週</td><td>跌破 $20,000 → 重回過剩</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>風險清單</h3>
+<div class="card-body">
+<ul style="font-size:.85em;color:var(--txt2);padding-left:18px">
+    <li><span style="color:var(--warn)"><b>DRAM：</b></span>Q2 漲幅收斂可能是反轉早期信號，需觀察 Q3 展望。DDR4 現貨走弱是值得追蹤的先行指標</li>
+    <li><span style="color:var(--warn)"><b>銅：</b></span>高盛看 16 萬噸過剩 ≠ JPM 看 33 萬噸缺口，機構分歧大。中國需求是關鍵變數</li>
+    <li><span style="color:var(--warn)"><b>T-Glass：</b></span>日東紡 Q4 擴產到位 → 2027 供需可能反轉。投資時間窗口有限</li>
+    <li><span style="color:var(--warn)"><b>能源：</b></span>停火落實後原油急跌 → 塑膠化工成本壓力減輕，但短期波動劇烈</li>
+    <li><span style="color:var(--danger)"><b>整體：</b></span>川普關稅 + 全球 GDP 放緩可能壓抑需求，即使供給不變也可能讓供需重新平衡</li>
+</ul>
+</div>
+</div>
+
+<div class="tip info">
+<b>第十章整合結論</b>
+<b>資料：</b>10 檔受惠標的，分布在 4 個產業（重電/記憶體/玻纖布/光通訊）。信號強度「強」有 5 檔，反轉風險「低」有 7 檔。<br>
+<b>觀察：</b>「信號強 + 反轉低」的最佳象限有 4 檔：華城、南亞科、華邦電、中興電。這 4 檔是供需失衡最確定的受惠者，但股價可能已部分反映。「信號中 + 反轉低」的次佳象限有聯亞和智邦——CPO 早期機會。<br>
+<b>推論：</b>投資組合的核心應以重電（華城/中興電）和記憶體（南亞科/華邦電）為主力，佔 60~70%。光通訊（聯亞/智邦）作為成長布局佔 20%。T-Glass（台玻/建榮）作為短中期戰術佔 10~15%，Q3 開始減碼。<br>
+<b>結論：</b>本期供需失衡報告的核心訊息是：<b>AI 基建驅動的供需失衡仍在中段，但開始出現分化</b>。變壓器最穩、記憶體最賺但有微弱反轉信號、光通訊最早期、T-Glass 有到期日、能源最不確定。操作上應「核心穩持 + 邊際動態調整」。
+</div>
+
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+    <p>天機閣 供需失衡偵測模組 v3.0 ｜ 2026-04-11 ｜ 十大管道 × 六大類別 × 三層追蹤 × 反轉預警</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+
+<script>
+// 全部展開/收合
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+// 預設全部收合
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+// 點擊 h3 切換
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
