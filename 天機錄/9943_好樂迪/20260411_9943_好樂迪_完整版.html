@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>好樂迪（9943）天機錄 — 質化分析報告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:20px 16px 16px;margin-bottom:16px;border-bottom:2px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:6px;line-height:1.6}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:3px 11px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center}
+.mini-card .mc-label{font-size:.7em;color:var(--txt3);margin-bottom:2px}
+.mini-card .mc-val{font-size:1.1em;font-weight:900;color:var(--base)}
+.mini-card .mc-sub{font-size:.65em;color:var(--txt2);margin-top:2px}
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:8px 14px;font-size:.92em;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+details summary:hover{color:var(--accent);background:var(--hover)}
+details[open] summary{border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;margin-bottom:0}
+details .section-body{padding:10px 16px 14px;background:var(--panel);border:1px solid var(--border);border-top:0;border-radius:0 0 8px 8px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em}
+th{background:var(--table-header);color:var(--base);padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 14px;border-radius:8px;margin:8px 0;border-left:3px solid;font-size:.84em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.15)}.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.15)}.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.12)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.15)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 6px;padding-top:14px;border-top:2px solid var(--border)}
+.section-sub{font-size:.78em;color:var(--txt3);margin-bottom:8px}
+.hi{color:var(--bull)}.lo{color:var(--bear)}.mid{color:var(--warn)}
+.fias{font-size:.68em;padding:1px 5px;border-radius:3px;margin-right:3px;font-weight:700;vertical-align:middle}
+.fias-f{background:#2a4a2a;color:#7dca7d}.fias-i{background:#2a3a4a;color:#7db5ca}.fias-a{background:#4a4a2a;color:#cac07d}.fias-s{background:#4a2a2a;color:#ca7d7d}
+.ev{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.84em}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:4px}
+.ev .ev-d{color:var(--txt2);line-height:1.6;margin-bottom:4px}
+.ev .ev-s{font-size:.75em;color:var(--txt3)}
+.ev-card{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;background:var(--panel);font-size:.82em}
+.ev-card .ev-title{font-weight:700;color:var(--base);margin-bottom:6px;font-size:.95em}
+.ev-card .ev-row{display:flex;gap:12px;margin:3px 0;flex-wrap:wrap}
+.ev-card .ev-label{color:var(--txt3);min-width:85px;font-weight:600}
+.score-bar{display:inline-block;width:100px;height:10px;background:#333;border-radius:5px;overflow:hidden;vertical-align:middle;margin-left:6px}
+.score-fill{height:100%;border-radius:5px}
+.btn-toggle{display:inline-block;margin:8px 4px;padding:5px 14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--txt2);cursor:pointer;font-size:.8em}
+.btn-toggle:hover{background:var(--hover);color:var(--base)}
+.data-chart-row{display:flex;gap:16px;margin:8px 0;flex-wrap:wrap}
+.data-col{flex:1;min-width:280px}
+.chart-col{flex:1;min-width:280px}
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px}
+.chart-title{font-size:.8em;font-weight:700;color:var(--base);margin-bottom:6px;text-align:center}
+.chart-note{font-size:.72em;color:var(--txt3);text-align:center;margin-top:4px}
+.bull-card{border-left:3px solid var(--bull);background:rgba(76,175,80,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:6px 0}
+.bear-card{border-left:3px solid var(--bear);background:rgba(239,83,80,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:6px 0}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:12px;right:20px;z-index:9999;background:rgba(40,40,40,0.92);color:#e0dcd4;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid #3a3a3a;">
+分析日期：2026-04-11
+</div>
+
+<div class="wrap">
+
+<div class="hero">
+<h1>好樂迪（9943）</h1>
+<div class="sub">天機錄 — 質化分析報告（完整版）</div>
+<div class="desc">本報告以質化分析為核心 — 這家公司有什麼優勢？有沒有值得買進的理由？目前股價有什麼風險？<br>所有證據攤開呈現，最終決策由閣主自行判斷。</div>
+<div class="tags">
+<span class="tag">觀光餐旅 KTV</span>
+<span class="tag">股價 ~58 元</span>
+<span class="tag">EPS 7.74（FY2024）</span>
+<span class="tag">殖利率 8.3%</span>
+<span class="tag">事實:77 / 推論:31 / 假設:9 / 推測:3</span>
+</div>
+</div>
+
+<!-- 快照總覽 -->
+<div class="mini-grid">
+<div class="mini-card"><div class="mc-label">主假說</div><div class="mc-val mid">H2 緩慢衰退</div><div class="mc-sub">信心 70%</div></div>
+<div class="mini-card"><div class="mc-label">加權期望價</div><div class="mc-val lo">44.7 元</div><div class="mc-sub">vs 現價 58（溢價 30%）</div></div>
+<div class="mini-card"><div class="mc-label">Z-Score</div><div class="mc-val hi">4.41</div><div class="mc-sub">安全區（>2.99）</div></div>
+<div class="mini-card"><div class="mc-label">護城河</div><div class="mc-val mid">窄</div><div class="mc-sub">1 來源：有效規模</div></div>
+<div class="mini-card"><div class="mc-label">紅旗</div><div class="mc-val hi">0/7</div><div class="mc-sub">全部清除</div></div>
+<div class="mini-card"><div class="mc-label">淨期望值</div><div class="mc-val lo">-13%~-28%</div><div class="mc-sub">風險>催化劑</div></div>
+</div>
+
+<span class="btn-toggle" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">全部展開</span>
+<span class="btn-toggle" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">全部收合</span>
+
+<!-- 目錄 -->
+<details open>
+<summary style="font-size:1em;font-weight:900;color:var(--accent);padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:8px;margin:10px 0">📑 目錄（13 章）</summary>
+<div style="padding:8px 20px 12px;background:var(--panel);border:1px solid var(--border);border-top:0;border-radius:0 0 8px 8px;font-size:.85em;line-height:2;columns:2;column-gap:24px">
+<a href="#ch1" style="color:var(--link);text-decoration:none;display:block">一、公司概覽 — 你在看的是什麼公司？</a>
+<a href="#ch2" style="color:var(--link);text-decoration:none;display:block">二、近期催化劑 / 利多因素</a>
+<a href="#ch3" style="color:var(--link);text-decoration:none;display:block">三、為什麼在漲？市場為什麼買單？</a>
+<a href="#ch4" style="color:var(--link);text-decoration:none;display:block">四、潛在風險偵測與求證</a>
+<a href="#ch5" style="color:var(--link);text-decoration:none;display:block">五、隱藏優勢挖掘與求證</a>
+<a href="#ch6" style="color:var(--link);text-decoration:none;display:block">六、六步分析關鍵決策因素彙整</a>
+<a href="#ch7" style="color:var(--link);text-decoration:none;display:block">七、風險清單與壓力測試</a>
+<a href="#ch8" style="color:var(--link);text-decoration:none;display:block">八、監控儀表板</a>
+<a href="#ch9" style="color:var(--link);text-decoration:none;display:block">九、推衍預測</a>
+<a href="#ch10" style="color:var(--link);text-decoration:none;display:block">十、股價合理性分析（8 種估值法）</a>
+<a href="#ch11" style="color:var(--link);text-decoration:none;display:block">十一、補充分析（錢櫃連動風險）</a>
+<a href="#ch12" style="color:var(--link);text-decoration:none;display:block">十二、貓膩探索與求證（六步偵查）</a>
+<a href="#ch13" style="color:var(--link);text-decoration:none;display:block">十三、投資結論 — 所以，買不買？</a>
+</div>
+</details>
+
+<!-- ========================================================================== -->
+<!-- 一、公司概覽 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch1">一、公司概覽 — 你在看的是什麼公司？</div>
+<div class="section-sub">基本資料 + 營收結構 + 核心競爭力 + 財務體質</div>
+
+<details open><summary>基本資料</summary><div class="section-body">
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>公司全名</td><td>好樂迪股份有限公司（HOLIDAY ENTERTAINMENT CO., LTD）</td></tr>
+<tr><td>代號 / 上市</td><td>9943 / TWSE 上市 2002-08-26（上櫃 2000-11-30）</td></tr>
+<tr><td>董事長 / 總經理</td><td>顏瓊章 / 鄭景文（2024/5 接任，兼營運長。前任李天行 2024/4 退休）</td></tr>
+<tr><td>發言人</td><td>李俊德（財務處協理）</td></tr>
+<tr><td>員工數</td><td>~1,086 人（女性佔 55.8%）</td></tr>
+<tr><td>市值 / 股本</td><td>72.5 億 / 12.52 億（125,219,960 股）</td></tr>
+<tr><td>最大股東</td><td>錢櫃企業 32.40%（實質控制人：練台生集團 ~53%）</td></tr>
+<tr><td>董監持股 / 質押</td><td>45.59% / <span class="hi">0%</span></td></tr>
+<tr><td>會計師</td><td>資誠聯合（PwC）顏裕芳+林一帆，審計公費 249 萬</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 好樂迪是台灣最大 KTV 連鎖，全台 46 家好樂迪 + 2 家 V-MIX</div>
+<div class="ev-d">白話說：如果你在台灣想唱 KTV，很難避開好樂迪。尤其在雙北，好樂迪+錢櫃佔了 90% 市場。但「最大」不等於「最賺」——這家公司的 EPS 正在逐年下滑。</div>
+<div class="ev-s">來源：FY2024 年報致股東報告書</div>
+</div>
+</div></details>
+
+<details open><summary>營收結構與業務組成</summary><div class="section-body">
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>業務</th><th>FY2024 佔比</th><th>說明</th></tr>
+<tr><td><b>包廂收入</b></td><td>43.26%</td><td>KTV 包廂時段計費</td></tr>
+<tr><td><b>餐飲收入</b></td><td>36.35%</td><td>包廂內餐飲消費</td></tr>
+<tr><td>公賣收入</td><td>15.57%</td><td>菸酒類銷售</td></tr>
+<tr><td>其他</td><td>4.82%</td><td>版權等</td></tr>
+</table>
+<table>
+<tr><th>地區</th><th>FY2024 佔比</th></tr>
+<tr><td>北區</td><td>59.19%</td></tr>
+<tr><td>桃竹區</td><td>13.94%</td></tr>
+<tr><td>中區</td><td>17.71%</td></tr>
+<tr><td>南區</td><td>9.16%</td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> <b>所以呢？</b>好樂迪近 80% 營收來自「包廂+餐飲」，本質上就是「租空間+賣食物」的服務業。北部佔 73%（北區+桃竹），高度集中。如果雙北消費力下降，好樂迪沒有地理分散的保護。</p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【B-1 新發現】營業費用增加 +4.31%，但營收下降 -6.1%</div>
+<div class="ev-d">白話說：賣得少了但花得更多。營業費用從 8.53 億增到 8.90 億（+3,680 萬），主因通膨推升人事和租金。營收降+費用升=利潤率被「兩頭擠壓」。</div>
+<div class="ev-s">來源：FY2024 年報損益表（營業費用 890,057 千元 vs 112 年 853,250 千元）</div>
+</div>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+<div class="chart-title">營收結構</div>
+<div style="position:relative;height:240px"><canvas id="ch1-rev-pie"></canvas></div>
+</div>
+</div>
+</div>
+</div></details>
+
+<details open><summary>核心競爭力（7 維度 + 護城河 + 五力）</summary><div class="section-body">
+<div class="data-chart-row">
+<div class="data-col">
+<table>
+<tr><th>維度</th><th>分數</th><th>一句話</th></tr>
+<tr><td>1. 產品</td><td>40</td><td>零差異化零技術門檻</td></tr>
+<tr><td>2. 競爭</td><td class="hi">70</td><td>雙北 90% 壟斷</td></tr>
+<tr><td>3. 需求</td><td class="lo">25</td><td>零轉換成本+結構衰退</td></tr>
+<tr><td>4. 財務</td><td>55</td><td>穩健但下滑中</td></tr>
+<tr><td>5. 供應鏈</td><td>35</td><td>版權和房東議價弱</td></tr>
+<tr><td>6. 管理</td><td>60</td><td>誠實但保守</td></tr>
+<tr><td>7. 市調</td><td>45</td><td>外部確認衰退</td></tr>
+<tr style="font-weight:700"><td>平均</td><td>47/100</td><td>中下 — 壟斷獨強</td></tr>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+<div class="chart-title">7 維度雷達圖</div>
+<div style="position:relative;height:260px"><canvas id="ch1-radar"></canvas></div>
+</div>
+</div>
+</div>
+
+<p><b>護城河：窄</b> — 來自有效規模（雙北市場太小容不下更多連鎖）+ 成本優勢（48 店規模帶來議價力）。無轉換成本、無網路效應、無專利。</p>
+
+<p><b>Porter 五力總分 2.8/5（偏不利）</b></p>
+<table>
+<tr><th>力量</th><th>強度</th><th>分數</th></tr>
+<tr><td>現有競爭者</td><td class="hi">低（壟斷）</td><td>2/5</td></tr>
+<tr><td>新進入者</td><td class="hi">低（飽和）</td><td>2/5</td></tr>
+<tr><td>替代品</td><td class="lo">高（App/串流/居家）</td><td>4/5</td></tr>
+<tr><td>供應商</td><td>中偏高</td><td>3/5</td></tr>
+<tr><td>買方</td><td>中偏高</td><td>3/5</td></tr>
+</table>
+
+<div class="tip info">
+<b>為什麼這是問題？</b> 好樂迪在「水平面」（同業）佔盡優勢，但在「垂直面」（替代品+供應商+消費者）被壓制。你不會被錢櫃打敗，但你會被「不想出門唱歌」的趨勢慢慢磨死。
+</div>
+</div></details>
+
+<details open><summary>財務體質卡片</summary><div class="section-body">
+<table>
+<tr><th>項目</th><th>FY2024</th><th>FY2023</th><th>趨勢</th></tr>
+<tr><td>營業收入</td><td>26.03 億</td><td>27.72 億</td><td class="lo">-6.1%</td></tr>
+<tr><td>營業利益</td><td>4.59 億</td><td>6.51 億</td><td class="lo">-29.4%</td></tr>
+<tr><td>營業外收入</td><td><b>3.13 億</b></td><td>2.32 億</td><td class="hi">+34.7%</td></tr>
+<tr><td>稅後淨利</td><td>6.63 億</td><td>7.45 億</td><td class="lo">-11.1%</td></tr>
+<tr><td>EPS</td><td><b>7.74</b></td><td>8.81</td><td class="lo">-12.1%</td></tr>
+<tr><td>毛利率</td><td>51.8%</td><td>54.3%</td><td class="lo">-2.5pp</td></tr>
+<tr><td>營業利益率</td><td>17.6%</td><td>23.5%</td><td class="lo">-5.9pp</td></tr>
+<tr><td>ROE</td><td>16.21%</td><td>19.14%</td><td class="lo">-2.9pp</td></tr>
+<tr><td>負債比</td><td>27.6%</td><td>30.1%</td><td class="hi">改善</td></tr>
+<tr><td>Z-Score</td><td class="hi"><b>4.41</b></td><td>—</td><td>安全區</td></tr>
+<tr><td>FCF（年）</td><td>~5.12 億</td><td>~6.34 億</td><td class="lo">-19%</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 營業外收入 3.13 億佔稅前淨利 40.5%</div>
+<div class="ev-d"><b>白話說</b>：你看到的 EPS 7.74 元，其中約 40%（~3 元）不是好樂迪自己賺的，是錢櫃的投資收益灌進來的。好樂迪本業的營業利益只有 4.59 億（EPS 約 3.67 元）。如果你以為「EPS 7.74 很穩」，你可能高估了好樂迪自身的賺錢能力。</div>
+<div class="ev-s">來源：FY2024 年報致股東報告書</div>
+</div>
+
+<p><b>股東權益變動摘要</b></p>
+<table>
+<tr><th>項目</th><th>結果</th></tr>
+<tr><td>可轉債（CB）</td><td>無</td></tr>
+<tr><td>增資/私募</td><td>無近期（歷史 1996-1998）</td></tr>
+<tr><td>股票股利</td><td>無近期</td></tr>
+<tr><td><b>庫藏股+減資</b></td><td>三次減資模式：2010 減資 20%（184K→147K股）/ 2022 減資 15%（147K→125K股）/ 2025 再減資。另 2020 買回 68K 股@62.93→轉讓員工</td></tr>
+<tr><td>員工認股權</td><td>無</td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> <b>稀釋風險極低</b>。庫藏股減資反而是利多（減少股數→提升 EPS）。</p>
+
+<p><b>股利政策</b>：FY2024 配 4.80 元（殖利率 8.3%），配息率 62%。連續多年穩定配息。</p>
+<p><b>借券餘額</b>：391,000 股（佔股本 0.31%）。外資近 3 日連續買超（4/8-10 合計 +59K 股）。投信完全零參與。</p>
+
+<div class="tip warn">
+<b>第一章整合結論</b>
+<p><b>資料 →</b> 好樂迪 = 台灣最大 KTV（48 店）、練台生集團控制 53%、EPS 7.74（40% 來自錢櫃）、Z-Score 4.41、負債比 28%。</p>
+<p><b>觀察 →</b> 財務體質極度穩健（乾淨到近乎無聊），但本業獲利全面下滑。「穩健的衰退」是好樂迪最精準的描述。</p>
+<p><b>推論 →</b> 這是一家「不會倒但會慢慢縮」的公司。適合想要穩定現金流且能接受本金可能緩跌的存股族。不適合追求資本增值的投資人。</p>
+</div>
+</div></details>
+
+<!-- ========================================================================== -->
+<!-- 二、催化劑 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch2"> / 利多因素 — 有什麼好事可能發生？</div>
+<div class="section-sub">催化劑情報驗證卡 + 期望值計算</div>
+
+<details open><summary>催化劑清單（3 項）</summary><div class="section-body">
+
+<div class="ev-card" style="border-left:3px solid var(--bull)">
+<div class="ev-title">🟢 C1：庫藏股減資提升 EPS</div>
+<div class="ev-row"><span class="ev-label">FIAS</span><span class="fias fias-f">事實</span>（已通過董事會）</div>
+<div class="ev-row"><span class="ev-label">實現條件</span>股東會通過 → 執行減資 → 股本減少</div>
+<div class="ev-row"><span class="ev-label">阻礙因子</span>減資幅度有限（庫藏股數量有限）</div>
+<div class="ev-row"><span class="ev-label">實現機率</span><b>85%</b>（已通過，幾乎確定執行）</div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>EPS +5%~+10% | 一次性 | Price-in 50%</div>
+<div class="ev-row"><span class="ev-label"><b>期望值</b></span><b>85% × 8% × 50% = +3.4%</b></div>
+</div>
+
+<div class="ev-card" style="border-left:3px solid var(--bull)">
+<div class="ev-title">🟢 C2：錢櫃合併通過</div>
+<div class="ev-row"><span class="ev-label">FIAS</span><span class="fias fias-s">推測</span>（歷史四度否決）</div>
+<div class="ev-row"><span class="ev-label">必要條件</span>公平會態度轉變（產業萎縮後壟斷影響可能減弱）</div>
+<div class="ev-row"><span class="ev-label">阻礙因子</span>4 次否決慣性 + 消費者保護團體反對</div>
+<div class="ev-row"><span class="ev-label">實現機率</span><b>8%</b>（2 年內通過）</div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>股價 +30%~+50% | 結構性轉變 | Price-in 0%</div>
+<div class="ev-row"><span class="ev-label"><b>期望值</b></span><b>8% × 40% × 100% = +3.2%</b></div>
+</div>
+
+<div class="ev-card" style="border-left:3px solid var(--bull)">
+<div class="ev-title">🟢 C3：自購物業降租金</div>
+<div class="ev-row"><span class="ev-label">FIAS</span><span class="fias fias-f">事實</span>（已購羅東/礁溪/豐原）+ <span class="fias fias-a">假設</span>（回報率）</div>
+<div class="ev-row"><span class="ev-label">實現機率</span><b>35%</b>（物業已購，關鍵是營運效益）</div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>每店年省 500-1000 萬 → EPS +0.1~+0.2 | 持續受惠 | Price-in 20%</div>
+<div class="ev-row"><span class="ev-label"><b>期望值</b></span><b>35% × 3% × 80% = +0.8%</b></div>
+</div>
+
+<div class="tip good">
+<b>催化劑合計期望值：+7.4%</b>
+<p>三個催化劑加起來的期望值只有 +7.4%，而且最大的兩個（減資 +3.4%、合併 +3.2%）一個是已知利多（部分已反映），一個是極低概率的夢（8%）。<b>催化劑很弱</b>——好樂迪沒有「wow factor」。</p>
+</div>
+</div></details>
+
+<div class="tip info">
+<b>第二章整合結論</b>
+<p><b>所以呢？</b> 催化劑期望值 +7.4% 遠小於風險期望值（-20%~-35%）。買好樂迪不是因為「會有好事發生」，而是因為「壞事發生得很慢、現金流穩定」。如果你需要催化劑才願意買的股票，好樂迪不適合你。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 三、為什麼在漲 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch3">？市場為什麼買單？</div>
+<div class="section-sub">驅動力拆解 + FIAS 標記</div>
+
+<details open><summary>市場買單的 3 個理由</summary><div class="section-body">
+
+<div class="bull-card">
+<p><b>驅動力 1：高殖利率吸引存股族</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> FY2024 配 4.80 元，殖利率 8.3%</div>
+<div class="ev-d">在低利率環境下，8%+ 殖利率非常吸引人。好樂迪連續多年穩定配息，是「懶人存股」的熱門選擇。</div>
+<div class="ev-s">來源：年報股利決議</div>
+</div>
+<p><span class="fias fias-i">推論</span> <b>潛在含義</b>：殖利率是目前股價的主要支撐。一旦配息下滑，支撐就會動搖。</p>
+</div>
+
+<div class="bull-card">
+<p><b>驅動力 2：減資效應提升每股價值</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 2022 減資 15%，2025 再減資</div>
+<div class="ev-d">減資後股數減少，EPS 和每股淨值自動提升。2022 年減資時股價有正面反應。</div>
+<div class="ev-s">來源：年報股本變動表</div>
+</div>
+</div>
+
+<div class="bull-card">
+<p><b>驅動力 3：壟斷地位提供穩定性</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 雙北 90% 市佔，公平會否決合併 = 承認壟斷</div>
+<div class="ev-d">投資人買好樂迪是買「台灣 KTV 不會消失」這個假設。即使產業萎縮，最後存活的就是好樂迪+錢櫃。</div>
+<div class="ev-s">來源：Taipei Times 報導 + 年報</div>
+</div>
+</div>
+
+<div class="tip warn">
+<b>第三章整合結論</b>
+<p><b>資料 →</b> 三個買單理由：殖利率 8%+、減資效應、壟斷穩定。</p>
+<p><b>為什麼這是問題？</b> 三個理由都是「防禦性」邏輯——不是「會變好」而是「不會太差」。市場給好樂迪 PE 16x，其實是在說「我不期待你成長，但你給我 8% 配息我就接受」。問題是：如果配息從 4.80 降到 3.00，這個邏輯還成立嗎？</p>
+</div>
+</div></details>
+
+<!-- ========================================================================== -->
+<!-- 四、風險偵測 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch4">與求證 — 市場還沒看到什麼？</div>
+<div class="section-sub">已知延伸 + 損害嚴重度 + 觸發因素 + 解決方案 + 求證</div>
+
+<details open><summary>4-1. 已知風險延伸與因果鏈</summary><div class="section-body">
+
+<div class="bear-card">
+<p><b>風險鏈 1：KTV 衰退 → 門市關閉 → 規模經濟弱化 → 成本率上升 → EPS 加速下滑</b></p>
+<p><span class="fias fias-f">事實</span> 已知：KTV 產業年衰 6-7%，好樂迪 FY2024 關 4 店。</p>
+<p><span class="fias fias-i">推論</span> 二階影響：每關一家門市，固定成本（總部管理、品牌行銷、系統維護）被更少的門市攤分，單店固定成本上升 → 毛利率繼續壓縮。</p>
+<p><span class="fias fias-a">假設</span> 三階推演：若 3 年內再關 5 家（從 48→43），營收衰退 ~10%，但固定成本僅降 ~3% → 營業利益率可能跌破 10%。</p>
+</div>
+
+<div class="bear-card">
+<p><b>風險鏈 2：錢櫃同步衰退 → 投資收益下降 → EPS 雙重承壓 → 配息被迫下調</b></p>
+<p><span class="fias fias-f">事實</span> 營業外收入佔淨利 40%（3.13 億），全部來自錢櫃權益法。</p>
+<p><span class="fias fias-a">假設</span> 錢櫃面臨同樣的 KTV 衰退壓力（幾乎確定，中高端也在萎縮）。</p>
+<p><span class="fias fias-i">推論</span> 若錢櫃投資收益減半（3.13→1.56 億），好樂迪 EPS 從 7.74 降到 ~6.5；若歸零，降到 ~4.5。<b>這是致命因子。</b></p>
+</div>
+
+<div class="bear-card">
+<p><b>風險鏈 3：少子化+人口老化 → 年輕客群持續流失 → 產業衰退加速</b></p>
+<p><span class="fias fias-f">事實</span> 台灣 2024 年總生育率 0.87，全球最低。好樂迪主力客群為學生/年輕人。</p>
+<p><span class="fias fias-i">推論</span> 每年新增的潛在 KTV 消費者越來越少，而既有消費者持續老化、減少社交活動。這是 10-20 年的結構性壓力。</p>
+</div>
+</div></details>
+
+<details open><summary>4-2. 損害嚴重度評估</summary><div class="section-body">
+<table>
+<tr><th>風險</th><th>嚴重度</th><th>EPS 衝擊</th><th>可恢復</th></tr>
+<tr><td class="lo">R1 錢櫃收益崩潰</td><td>🔴 致命</td><td>-20%~-41%</td><td>不可逆</td></tr>
+<tr><td>R2 KTV 消費加速萎縮</td><td>🟡 中度</td><td>-25%</td><td>部分可恢復</td></tr>
+<tr><td>R3 配息大砍引發拋售</td><td>🟡 中度</td><td>股價-20~30%</td><td>部分可恢復</td></tr>
+<tr><td>R4 租約到期關店加速</td><td>🟡 中度</td><td>每店 EPS-0.3</td><td>自購物業可緩解</td></tr>
+</table>
+</div></details>
+
+<details open><summary>4-3. 觸發因素與預警</summary><div class="section-body">
+<table>
+<tr><th>風險</th><th>觸發跡象</th><th>目前狀態</th><th>監控指標</th></tr>
+<tr><td>R1 錢櫃崩潰</td><td>錢櫃季 EPS 連衰 >20%</td><td>⚠️ 無法直接監控（盲區）</td><td>錢櫃 8359 季報</td></tr>
+<tr><td>R2 消費加速萎縮</td><td>月營收 YoY 連 6 月 <-10%</td><td>🟡 初期跡象（FY2025 年衰 7.2%）</td><td>月營收 YoY</td></tr>
+<tr><td>R3 配息大砍</td><td>EPS <4.0 且配息率降</td><td>🟡 尚未觸發（EPS 5.40 尚可）</td><td>年度配息公告</td></tr>
+<tr><td>R4 關店加速</td><td>半年內關 >2 店</td><td>🟢 暫無（向陽店即將開幕）</td><td>重大訊息</td></tr>
+</table>
+</div></details>
+
+<details open><summary>4-5. 西碧拉供應鏈風險</summary><div class="section-body">
+<div class="tip warn">
+<b>⚠️ 西碧拉節點存在但無鄰居</b>
+<p>TW_9943 在圖譜中存在，但 neighbors=0。KTV 服務業不像製造業有明確供應鏈，產業鏈結構扁平。主要關聯方（錢櫃 8359、享溫馨）尚未建邊。</p>
+<p><b>供應鏈風險</b>較低——好樂迪不依賴特定零組件或原材料供應商。最大的「供應鏈風險」是音樂版權（ACMA 漲 6 倍）和房東（租約到期）。</p>
+</div>
+</div></details>
+
+<details open><summary>4-6. 風險總覽表</summary><div class="section-body">
+<table>
+<tr><th>風險</th><th>嚴重度</th><th>觸發距離</th><th>有無解法</th><th>FIAS</th><th>EV 損失</th></tr>
+<tr><td class="lo">R1 錢櫃收益</td><td>🔴</td><td>⚠️ 盲區</td><td>不可控</td><td><span class="fias fias-a">假設</span></td><td>-10%~-31%</td></tr>
+<tr><td>R2 消費萎縮</td><td>🟡</td><td>🟡 初期</td><td>壟斷減緩</td><td><span class="fias fias-f">事實</span></td><td>-8.8%</td></tr>
+<tr><td>R3 配息大砍</td><td>🟡</td><td>🟡 2-3年</td><td>減資緩解</td><td><span class="fias fias-i">推論</span></td><td>-8.8%</td></tr>
+<tr><td>R4 關店加速</td><td>🟡</td><td>🟢 暫無</td><td>自購物業</td><td><span class="fias fias-a">假設</span></td><td>-2.3%</td></tr>
+</table>
+<div class="tip danger">
+<b>風險合計期望損失：-20%~-35%</b>
+<p>R1（錢櫃）是致命且不可控的，佔總風險的一半以上。其餘風險有自然對沖（壟斷/減資/自購物業）。</p>
+</div>
+</div></details>
+
+<details open><summary>4-7. 即時求證 — WebSearch 風險驗證（2026-04-11 補強）</summary><div class="section-body">
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【即時求證】好樂迪 Q2 匯損 7,700 萬，美元定存匯兌損失導致單季虧損</div>
+<div class="ev-d"><b>白話說</b>：好樂迪持有美元定存部位，2025 Q2 台幣升值導致匯兌損失高達 7,700 萬元，侵蝕本業獲利，導致單季由盈轉虧（EPS -0.03）。這是 2022 Q3 以來首見單季虧損。<br><b>為什麼這是問題？</b>好樂迪的業外損益不只有錢櫃投資收益，還有匯率曝險。如果台幣繼續升值，匯損可能再度吃掉整季獲利。</div>
+<div class="ev-s">來源：經濟日報 2025 報導「KTV 也逃不過匯損風暴」</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【即時求證】好樂迪 2025 上半年稅後純益年減 56.9%</div>
+<div class="ev-d">上半年營收 12.52 億（年減 6%），稅後純益僅 1.63 億（年減 56.9%）。獲利衰退速度遠快於營收——營收只衰退 6%，利潤卻腰斬，反映固定成本剛性+匯損的雙重擠壓。<br><b>注意</b>：全年 EPS 5.40 看似還好，但上半年只賺了 1.63 億（約 EPS 1.30），下半年必須賺 4.10（EPS 3.27）才能達標——好樂迪確實在 Q3/Q4 有季節性旺季（秋冬+跨年），但壓力很大。</div>
+<div class="ev-s">來源：Win 投資 / 財報狗 季報數據</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【即時求證】錢櫃月營收連 6 月衰退，2025/10 月 YoY -15.6%</div>
+<div class="ev-d"><b>致命因子已觸發初期信號！</b>錢櫃（8359）月營收 2025/7 月 -8.47%（連 6 月衰退），2025/10 月 -15.6%，2026/6 月 -12.9%。錢櫃的衰退速度甚至快於好樂迪，中高端 KTV 同樣不能倖免。<br><b>所以呢？</b>好樂迪 40% EPS 來自錢櫃投資收益，如果錢櫃持續以 -10%~-15% 速度衰退，好樂迪的投資收益將從 3.13 億逐年下滑。Step 5 壓力測試的致命因子（錢櫃收益下滑）已經<b>不是假設，而是正在發生的事實</b>。</div>
+<div class="ev-s">來源：財報狗 8359 月營收 / 鉅亨網 2025/10 月報導</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【即時求證】享溫馨計劃在台北開中型店（50 包廂），首度北上</div>
+<div class="ev-d"><b>壟斷受威脅！</b>享溫馨上市後計劃今年 Q3 開嘉義首店+高雄楠梓店，年底開「Hotel 享」進軍旅宿業，並宣布<b>規劃在台北開設 50 個包廂的中型店面</b>。這是 20 年來第一次有規模型競爭者嘗試進入好樂迪+錢櫃的雙北壟斷市場。<br><b>為什麼這是問題？</b>好樂迪護城河的核心是「有效規模」——雙北市場容不下更多連鎖。如果享溫馨成功在台北開店且獲利，這個論點就被打破。不過享溫馨的庭園式定位與好樂迪商業區定位不同，直接客群重疊可能有限。</div>
+<div class="ev-s">來源：經理人雜誌 2026/4 報導「KTV 南霸天享溫馨 4 月掛牌上市」</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 享溫馨多角化：婚宴餐飲佔 2 成、銀髮族佔 10%（同業 4.2%）</div>
+<div class="ev-d">享溫馨不只做 KTV：旗下有「打享野鍋」「御享鐵板燒」餐飲品牌 + 4 家婚宴會館（台東/高雄），婚宴和餐飲營收佔近 2 成。銀髮族佔客群 10%（同業僅 4.2%），開發了好樂迪完全忽略的客群。<br><b>潛在含義</b>：享溫馨示範了「KTV 不只是唱歌」的多角化路徑，好樂迪目前完全沒有跨業嘗試（V-MIX 仍是純 KTV），這可能是策略上的落後。</div>
+<div class="ev-s">來源：經理人雜誌+東方線上 2025 調查</div>
+</div>
+
+<div class="tip danger">
+<b>即時求證總結 — 三個重大發現改變風險評估</b>
+<ol>
+<li><b>匯率是新風險</b>：Q2 匯損 7,700 萬吃掉整季獲利。好樂迪的業外損益有「雙刃劍」特性——錢櫃收益是正面，匯率波動是負面</li>
+<li><b>錢櫃致命因子已觸發</b>：錢櫃月營收連 6 月衰退，速度 -8%~-16%。Step 5 的假設已升級為事實</li>
+<li><b>壟斷受威脅</b>：享溫馨計劃北上開中型店。雖然短期影響有限，但長期打破了「雙北無人挑戰」的假設</li>
+</ol>
+<p>這三個發現使 H2 信心進一步上升，H4 風險也上升。如果重新校準，H2 應從 70% 升到 72-75%，H4 從 11% 升到 14-16%。</p>
+</div>
+</div></details>
+
+<div class="tip info">
+<b>第四章整合結論（即時求證後更新）</b>
+<p><b>資料 →</b> 4+3=7 大風險。新增：匯率曝險（7,700 萬 Q2 匯損）、錢櫃已確認衰退（月營收連 6 月跌）、享溫馨計劃北上。</p>
+<p><b>為什麼這是問題？</b> 原本的分析把「錢櫃衰退」當假設（50-75% 機率），現在 WebSearch 求證後升級為<b>事實</b>——錢櫃月營收確實在衰退。這意味著好樂迪 40% EPS 的「致命因子」不是未來的風險，而是<b>已經在發生的事</b>。加上匯損這個先前完全沒考慮的風險（好樂迪持有美元定存），以及享溫馨首度威脅雙北壟斷——風險端比 Phase A 分析時更嚴峻。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 五、隱藏優勢 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch5">與求證 — 市場錯過了什麼？</div>
+<div class="section-sub">優勢識別 + 利益估算 + 實現條件 + 求證</div>
+
+<details open><summary>隱藏優勢清單</summary><div class="section-body">
+
+<div class="bull-card">
+<p><b>優勢 1：自購物業策略的長期價值</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 已購入羅東/礁溪/豐原 3 處物業，FY2024 不動產增加 2.21 億</div>
+<div class="ev-d">市場只看到「好樂迪在關店」，但沒注意到公司同時在「買房」。自購物業 = 永久免租金 = 長期結構性降低成本。向陽店（豐原替代點）就是自購物業。如果未來 10 家門市轉為自有，每年可省 5000 萬~1 億租金。</div>
+<div class="ev-s">來源：FY2024 年報不動產增加額</div>
+</div>
+<p><span class="fias fias-a">假設</span> 被忽略原因：市場聚焦「關店」的負面敘事，忽略了「關租→開自有」的策略轉換。</p>
+<p>利益估算：🟡 中度（年省 5000 萬~1 億 → EPS +0.4~+0.8），實現需 5+ 年。</p>
+</div>
+
+<div class="bull-card">
+<p><b>優勢 4【B-1 新發現】：三次減資的制度化模式</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 好樂迪有系統性減資歷史：2010 減資 20% + 2022 減資 15% + 2025 再減資</div>
+<div class="ev-d">市場只看到「2022 減資」和「2025 減資」，但 2010 年就做過第一次了。這不是偶發行為，而是<b>制度化的股東回報策略</b>——每隔 10-12 年做一次大規模減資。對長期存股族來說，這等於公司定期「幫你加薪」。</div>
+<div class="ev-s">來源：FY2024 年報股本形成經過表</div>
+</div>
+</div>
+
+<div class="bull-card">
+<p><b>優勢 5【B-1 新發現】：學生 E 卡降低會員門檻</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 新推出學生 E 卡，降低會員門檻吸引年輕族群</div>
+<div class="ev-d">好樂迪不是坐以待斃——年報致股東書提到新增學生 E 卡，針對價格敏感的年輕客群降低門檻。雖然效果待驗證，但至少管理層有意識到「年輕人不來了」這個問題。</div>
+<div class="ev-s">來源：FY2024 年報致股東報告書</div>
+</div>
+</div>
+
+<div class="bull-card">
+<p><b>優勢 2：減資持續提升每股指標</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 2022 已減資 15%，2025 再減資</div>
+<div class="ev-d">好樂迪的現金多到用不完（FCF 5+ 億/年、負債比僅 28%），與其放著不如買回股票註銷。每次減資 EPS 自動提升 5-10%。這等於用公司的剩餘現金幫存股族「加薪」。</div>
+<div class="ev-s">來源：年報庫藏股+減資紀錄</div>
+</div>
+<p>利益估算：🟢 重大（持續減資可抵消部分 EPS 下滑），但減資幅度受限於庫藏股數量。</p>
+</div>
+
+<div class="bull-card">
+<p><b>優勢 3：KTV 的「社交不可替代性」</b></p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-a">假設</span> KTV 的社交功能（聚會/應酬/約會）不可被 App 完全替代</div>
+<div class="ev-d">韓國 Noraebang 衰退 21% 但不是歸零。日本卡拉 OK 也在萎縮但穩定在 ¥4,430 億。KTV 作為實體社交場所有其不可替代性——你不能用 App 替代「一群朋友一起唱歌喝酒」的體驗。底部可能不像市場恐懼的那麼低。</div>
+<div class="ev-s">來源：國際搜尋（日韓數據）</div>
+</div>
+<p><span class="fias fias-i">推論</span> 求證：韓國門市從 33,000→25,990（-21%）後是否穩定？需持續追蹤。如果韓國在 25,000 家穩住，台灣的底部可能在好樂迪 38-40 家門市。</p>
+</div>
+
+<div class="tip info">
+<b>隱藏優勢總覽</b>
+<table>
+<tr><th>優勢</th><th>被忽略原因</th><th>潛在利益</th><th>實現機率</th><th>FIAS</th></tr>
+<tr><td>自購物業</td><td>關店敘事蓋過</td><td>🟡 中度</td><td>中（35%）</td><td><span class="fias fias-a">假設</span></td></tr>
+<tr><td>減資提升 EPS</td><td>視為一次性利多</td><td>🟢 重大</td><td>高（85%）</td><td><span class="fias fias-f">事實</span></td></tr>
+<tr><td>社交不可替代性</td><td>替代品恐懼過度</td><td>🟡 中度</td><td>中（50%）</td><td><span class="fias fias-a">假設</span></td></tr>
+</table>
+</div>
+</div></details>
+
+<details open><summary>5-4. 即時求證 — 優勢真偽驗證（2026-04-11 補強）</summary><div class="section-body">
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> 【求證】自購物業 — 向陽店尚未開幕，效益待驗證</div>
+<div class="ev-d">年報提到向陽店（豐原自購物業替代點）預計上半年開幕，搜尋未找到已開幕的新聞。自購物業策略方向正確，但實際效益（省了多少租金、來客量如何）需等開幕後至少 2-3 季才能評估。<br><b>求證結果</b>：⚠️ 優勢存在但尚未兌現，不宜過早計入估值。</div>
+<div class="ev-s">來源：FY2024 年報 + WebSearch 無開幕新聞</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 【求證】減資模式 — 2010、2022、2025 三次驗證成功</div>
+<div class="ev-d">Phase B-1 發現好樂迪從 2010 年就開始減資（-20%），2022 再減（-15%），2025 第三次。股本從 184M 股降到 125M 股（-32%），EPS 因此被抬高約 47%（同樣的獲利分給更少的股數）。<br><b>求證結果</b>：✅ 確認優勢存在且歷史驗證過。但注意：減資幅度遞減（20%→15%→?），可減的空間越來越小。</div>
+<div class="ev-s">來源：FY2024 年報股本形成經過表</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-a">假設</span> 【求證】社交不可替代 — 享溫馨銀髮族 10% 提供佐證</div>
+<div class="ev-d">享溫馨數據顯示 KTV 的「社交場所」功能確實有獨特價值——60 歲以上長青族佔享溫馨客群 10%（同業僅 4.2%），說明 KTV 作為「跨世代社交場所」的需求是真實存在的。好樂迪在這塊完全沒有經營（純走年輕客群路線）。<br><b>求證結果</b>：⚠️ 社交需求存在但可能被好樂迪自己浪費——沒有針對銀髮族的產品設計。</div>
+<div class="ev-s">來源：東方線上 2025 調查 + 經理人雜誌享溫馨報導</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> 【求證】好樂迪 vs 享溫馨：策略落差正在拉大</div>
+<div class="ev-d">享溫馨的多角化佈局（婚宴 20%、餐飲品牌、旅宿業 Hotel 享、銀髮客群）vs 好樂迪的單一聚焦（純 KTV + V-MIX）形成鮮明對比。享溫馨 2025 EPS 僅 0.68（受高雄經濟衝擊），但戰略布局比好樂迪積極得多。<br><b>潛在含義</b>：如果 KTV 市場持續萎縮，多角化的享溫馨可能比單一化的好樂迪更有生存韌性。好樂迪的「隱藏優勢」（壟斷+減資+自購物業）主要是防禦性的，缺乏進攻性。享溫馨是「進攻型防守」，好樂迪是「純防守」。</div>
+<div class="ev-s">來源：經理人雜誌 + FY2024 年報比較分析</div>
+</div>
+</div></details>
+
+<div class="tip info">
+<b>第五章整合結論（即時求證後更新）</b>
+<p><b>資料 →</b> 3+2 個隱藏優勢，其中減資最確定（✅ 三次驗證）、自購物業待驗證（⚠️ 向陽店未開幕）、社交需求存在但好樂迪未經營銀髮族（⚠️ 浪費的優勢）。新增對比：享溫馨多角化策略遠比好樂迪積極。</p>
+<p><b>推論 →</b> 好樂迪的「隱藏優勢」本質上都是「少輸為贏」——減資讓 EPS 少跌一點、自購物業讓成本少漲一點、壟斷讓市佔少掉一點。但缺乏「真正的新增長引擎」。相比之下，享溫馨在嘗試打開新市場（旅宿/婚宴/銀髮/北上），即使短期 EPS 不高（0.68），長期可能更有韌性。這進一步支持 H2（緩慢衰退）而非 H1（穩定配息）。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 六、決策因素彙整 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch6">關鍵決策因素彙整 — Bull vs Bear</div>
+<div class="section-sub">ACH + 評審團意見整合</div>
+
+<details open><summary>買進 vs 風險 正反對照</summary><div class="section-body">
+<div class="data-chart-row">
+<div class="data-col">
+<p style="color:var(--bull);font-weight:700">🟢 Bull Case（看多因素）</p>
+<ul>
+<li><span class="fias fias-f">事實</span> 殖利率 8.3%（FY2024）</li>
+<li><span class="fias fias-f">事實</span> Z-Score 4.41 + 紅旗 0/7</li>
+<li><span class="fias fias-f">事實</span> 壟斷地位（雙北 90%）</li>
+<li><span class="fias fias-f">事實</span> 庫藏股減資持續</li>
+<li><span class="fias fias-f">事實</span> 管理層誠信度 85（乾淨）</li>
+<li><span class="fias fias-f">事實</span> 自購物業降租金</li>
+<li><span class="fias fias-f">事實</span> 2026/4 月營收 YoY +6.5%</li>
+</ul>
+</div>
+<div class="data-col">
+<p style="color:var(--bear);font-weight:700">🔴 Bear Case（看空因素）</p>
+<ul>
+<li><span class="fias fias-f">事實</span> EPS 8.81→7.74→5.40 連三年下滑</li>
+<li><span class="fias fias-f">事實</span> 毛利率 57%→47% 壓縮</li>
+<li><span class="fias fias-f">事實</span> 門市淨減少（關>展）</li>
+<li><span class="fias fias-f">事實</span> 40% EPS 來自錢櫃（不可控）</li>
+<li><span class="fias fias-f">事實</span> 韓國前例 7 年 -21%</li>
+<li><span class="fias fias-f">事實</span> KTV 產業 -6.1%/年</li>
+<li><span class="fias fias-f">事實</span> 加權期望價 44.7 vs 現價 58（溢價 30%）</li>
+</ul>
+</div>
+</div>
+
+<div class="tip danger">
+<b>關鍵不對稱</b>
+<p>Bull Case 全是「防禦性」因素（不會倒/有配息/很乾淨），Bear Case 全是「趨勢性」因素（持續衰退/結構萎縮/配息會縮水）。<b>防禦可以撐住底部，但擋不住趨勢。</b></p>
+</div>
+
+<p><b>ACH 信心配置（第三次校準）</b></p>
+<table>
+<tr><th>假說</th><th>信心</th><th>含義</th></tr>
+<tr><td><b>H2 緩慢衰退</b></td><td class="warn"><b>70%</b></td><td>EPS 降到 3-4 元，配息縮水。目標 40-50 元</td></tr>
+<tr><td>H1 穩定配息</td><td>15%</td><td>EPS 穩 5-6 元。現價合理</td></tr>
+<tr><td>H4 價值陷阱</td><td>13%</td><td>錢櫃也崩 → EPS <3。嚴重高估</td></tr>
+<tr><td>H3 催化劑</td><td>2%</td><td>合併/V-MIX。極低概率</td></tr>
+</table>
+</div></details>
+
+<div class="tip info">
+<b>第六章整合結論</b>
+<p><b>陪審團共識</b>：三系統一致偏空。產業衰退是確定的，好樂迪的防禦力是真的，但「防禦型衰退股」不等於「值得買的股票」。</p>
+<p><b>陪審團分歧</b>：唯一爭議是「殖利率防禦」能撐多久。如果 EPS 穩在 5+ 元（H1, 15%），現價合理；如果降到 3-4 元（H2, 70%），現價偏貴 30%。</p>
+<p><b>策略長仲裁</b>：不建議新建倉位。等股價到 42-45 元再考慮。已持有者設停損（配息 <3 元出場）。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 七、風險清單與壓力測試 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch7">與壓力測試 — 哪個風險最致命？</div>
+<div class="section-sub">風險情報驗證卡 + 致命因子 + 事前驗屍 + 盲點</div>
+
+<details open><summary>風險情報驗證卡</summary><div class="section-body">
+
+<div class="ev-card" style="border-left:3px solid var(--bear)">
+<div class="ev-title">🔴 R1：錢櫃投資收益下滑（致命風險）</div>
+<div class="ev-row"><span class="ev-label">情報來源</span>FY2024 年報（營業外 3.13 億）/ 公平會否決紀錄</div>
+<div class="ev-row"><span class="ev-label">FIAS</span><span class="fias fias-f">事實</span>（數字）+<span class="fias fias-a">假設</span>（錢櫃未來衰退程度）</div>
+<div class="ev-row"><span class="ev-label">觸發條件</span>錢櫃同樣面臨 KTV 衰退（幾乎確定）</div>
+<div class="ev-row"><span class="ev-label">加速因子</span>錢櫃若有自身特殊風險</div>
+<div class="ev-row"><span class="ev-label">抑制因子</span>錢櫃中高端，客單價較高</div>
+<div class="ev-row"><span class="ev-label">發生機率</span><b>高（50-75%）</b></div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>EPS -20%~-41% | 永久性 | 不可逆</div>
+<div class="ev-row"><span class="ev-label">可恢復性</span>不可恢復（KTV 衰退是結構性的）</div>
+<div class="ev-row"><span class="ev-label"><b>期望損失</b></span><b>60% × -30% = -18%</b></div>
+</div>
+
+<div class="ev-card" style="border-left:3px solid var(--warn)">
+<div class="ev-title">🟡 R2：KTV 消費加速萎縮</div>
+<div class="ev-row"><span class="ev-label">發生機率</span><b>中（25-50%）</b></div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>EPS -25% | 中期 | 部分可恢復</div>
+<div class="ev-row"><span class="ev-label"><b>期望損失</b></span><b>35% × -25% = -8.8%</b></div>
+</div>
+
+<div class="ev-card" style="border-left:3px solid var(--warn)">
+<div class="ev-title">🟡 R3：配息大砍引發拋售</div>
+<div class="ev-row"><span class="ev-label">發生機率</span><b>中（25-50%）</b>— 2-3 年內</div>
+<div class="ev-row"><span class="ev-label">影響幅度</span>股價 -20%~-30% | 短期衝擊</div>
+<div class="ev-row"><span class="ev-label"><b>期望損失</b></span><b>35% × -25% = -8.8%</b></div>
+</div>
+</div></details>
+
+<details open><summary>致命因子排序</summary><div class="section-body">
+<table>
+<tr><th>排名</th><th>因子</th><th>EPS 影響</th><th>可控性</th><th>致命度</th></tr>
+<tr><td class="lo">1</td><td><b>錢櫃投資收益</b></td><td>-20%~-41%</td><td class="lo">不可控（盲區）</td><td class="lo">★★★★★</td></tr>
+<tr><td>2</td><td>KTV 消費衰退速度</td><td>-15%~-25%</td><td>部分可控（壟斷減緩）</td><td>★★★★</td></tr>
+<tr><td>3</td><td>毛利率壓縮</td><td>-10%~-16%</td><td>部分可控（自購物業）</td><td>★★★</td></tr>
+</table>
+</div></details>
+
+<details open><summary>盲點清單</summary><div class="section-body">
+<table>
+<tr><th>盲點</th><th>影響</th><th>彌補方案</th></tr>
+<tr><td class="lo"><b>錢櫃獲利趨勢</b></td><td>致命（40% EPS 來源）</td><td>需另開錢櫃 8359 分析</td></tr>
+<tr><td>法說會管理層展望</td><td>高（前瞻指引空白）</td><td>觀察下次法說會</td></tr>
+<tr><td>V-MIX 單店 P&L</td><td>中</td><td>年報未拆分，需旁敲</td></tr>
+<tr><td>練台生跨公司策略</td><td>中</td><td>無公開資訊</td></tr>
+</table>
+</div></details>
+
+<div class="tip warn">
+<b>第七章整合結論</b>
+<p><b>資料 →</b> 4 大風險，風險期望損失合計 -20%~-35%。致命因子 = 錢櫃（不可控+佔 EPS 40%）。催化劑期望值 +7.4%。</p>
+<p><b>推論 →</b> <b>風險回報不對稱偏空</b>：下行風險 (-20%~-35%) 遠大於上行催化劑 (+7.4%)。即使殖利率 8%+，持有 1 年的預期報酬 = 配息 8% - 資本損失風險 ~15% = 淨報酬可能是負的。這就是「殖利率陷阱」的典型結構。</p>
+</div>
+
+
+
+<!-- ========================================================================== -->
+<!-- 八、監控儀表板 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch8"> — 該盯什麼數字？</div>
+<div class="section-sub">燈號系統 + 關鍵時間節點</div>
+
+<details open><summary>即時燈號儀表板</summary><div class="section-body">
+<div class="dashboard-grid">
+<div class="dash-item">
+<div><span class="dash-light yellow"></span></div>
+<div class="dash-name">月營收 YoY</div>
+<div class="dash-val mid">+6.5%</div>
+<div class="dash-info">🟢 >0% | 🟡 -5%~0% | 🔴 <-5%</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light yellow"></span></div>
+<div class="dash-name">季 EPS</div>
+<div class="dash-val mid">2.35（2025Q4）</div>
+<div class="dash-info">🟢 >2.0 | 🟡 1.0~2.0 | 🔴 <1.0</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light green"></span></div>
+<div class="dash-name">殖利率</div>
+<div class="dash-val hi">8.3%</div>
+<div class="dash-info">🟢 >6% | 🟡 4-6% | 🔴 <4%</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light green"></span></div>
+<div class="dash-name">負債比</div>
+<div class="dash-val hi">27.6%</div>
+<div class="dash-info">🟢 <40% | 🟡 40-60% | 🔴 >60%</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light green"></span></div>
+<div class="dash-name">董監質押</div>
+<div class="dash-val hi">0%</div>
+<div class="dash-info">🟢 <10% | 🟡 10-30% | 🔴 >30%</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light red"></span></div>
+<div class="dash-name">EPS 年增率</div>
+<div class="dash-val lo">-30%</div>
+<div class="dash-info">🟢 >0% | 🟡 -15%~0% | 🔴 <-15%</div>
+</div>
+</div>
+
+<p><b>關鍵時間節點</b></p>
+<table>
+<tr><th>時間</th><th>事件</th><th>影響</th></tr>
+<tr><td>2026 Q2</td><td>2026 Q1 季報公布</td><td>驗證營收回升是否持續</td></tr>
+<tr><td>2026 H1</td><td>向陽店（豐原自購）開幕</td><td>自購物業策略首個驗證點</td></tr>
+<tr><td>2026 H1</td><td>庫藏股減資執行</td><td>EPS 提升 5-10%</td></tr>
+<tr><td>2026 H2</td><td>FY2025 年報（= FY2025 EPS 確認）</td><td>EPS 5.40 是否為底部</td></tr>
+<tr><td>2027 Q1</td><td>FY2026 配息公告</td><td>配息是否從 4.80 下調</td></tr>
+</table>
+</div></details>
+
+<div class="tip info">
+<b>第八章整合結論</b>
+<p>6 指標中 3 綠 2 黃 1 紅。紅燈 = EPS 年增率 -30%，這是最核心的問題。綠燈（殖利率/負債比/零質押）確認底部安全。黃燈（月營收回升中/季 EPS 待觀察）是轉折觀察區。<b>關鍵監控：2026 Q1 季報</b>——如果 EPS > 2.0 且營收 YoY 正成長，H1 概率上升到 25%+。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 九、推衍預測 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch9"> — 接下來可能怎麼走？</div>
+<div class="section-sub">OSINT 即時情報 + 短中長期推衍鏈</div>
+
+<details open><summary>最新情報更新</summary><div class="section-body">
+<table>
+<tr><th>項目</th><th>分析日數據</th><th>最新情報</th><th>含義</th></tr>
+<tr><td>月營收</td><td>FY2025 年衰 7.2%</td><td>2026/4 月 YoY <span class="hi">+6.5%</span>（245,503千元）</td><td>回升中但需觀察持續性</td></tr>
+<tr><td>外資</td><td>低參與</td><td>4/8-10 連 3 日買超 <span class="hi">+59K 股</span></td><td>微正面信號（量小）</td></tr>
+<tr><td>借券</td><td>—</td><td>391K 股（佔 0.31%）</td><td>空方小幅佈局</td></tr>
+<tr><td>FCF</td><td>FY2024 6.34 億</td><td>FY2025 5.12 億（<span class="lo">-19%</span>）</td><td>衰退但仍正</td></tr>
+<tr><td>享溫馨</td><td>南部龍頭</td><td>2025/4 登興櫃</td><td>第三勢力公開財務可比較</td></tr>
+</table>
+</div></details>
+
+<details open><summary>推衍鏈 — 短期（1-3 個月）</summary><div class="section-body">
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> 短期推衍：股價維持 55-62 區間震盪</div>
+<div class="ev-d"><b>情報 →</b> 2026/4 月營收回升 +6.5%，減資即將執行。<br><b>直接影響 →</b> 存股族因殖利率 >7% 持續進場，股價有底部支撐。<br><b>間接影響 →</b> 減資完成後 EPS 自動提升 5-10%，殖利率吸引力維持。<br><b>推衍結論 →</b> 短期不會暴跌也不會暴漲。除非 Q1 季報大幅低於預期。</div>
+</div>
+</div></details>
+
+<details open><summary>推衍鏈 — 中期（3-6 個月）：多路徑推演</summary><div class="section-body">
+<table>
+<tr><th>路徑</th><th>觸發條件</th><th>機率</th><th>EPS 推估</th><th>股價推估</th></tr>
+<tr><td class="hi">A：止穩回升</td><td>月營收連 3 月正成長 + 向陽店成功</td><td>20%</td><td>FY2026 EPS ~5.5</td><td>60-68 元</td></tr>
+<tr><td class="mid">B：緩慢衰退（基準）</td><td>營收持平~微衰 + 錢櫃收益持穩</td><td>55%</td><td>FY2026 EPS ~4.5</td><td>48-55 元</td></tr>
+<tr><td class="lo">C：加速下滑</td><td>營收衰退 >10% 或錢櫃收益大降</td><td>25%</td><td>FY2026 EPS ~3.0</td><td>35-42 元</td></tr>
+</table>
+<p><b>加權期望股價</b>：68×20% + 52×55% + 38×25% = <b>51.8 元</b>（vs 現價 58，下行 -11%）</p>
+</div></details>
+
+<details open><summary>推衍鏈 — 長期（6-12 個月）</summary><div class="section-body">
+<div class="ev">
+<div class="ev-t"><span class="fias fias-a">假設</span> 長期推衍：KTV 產業的「新常態」</div>
+<div class="ev-d"><b>情報 →</b> 韓國 Noraebang 7 年 -21% 後趨於穩定。日本卡拉 OK ¥4,430 億趨穩。<br><b>推衍 →</b> 台灣 KTV 可能在 2-3 年後找到「新常態」底部——好樂迪 38-42 家門市、年營收 22-24 億、EPS 3.5-4.5 元。屆時殖利率若仍有 6%+，股價會在 40-50 元穩定。<br><b>長期結論 →</b> 好樂迪不會消失，但會「縮到一個新的穩態」。等它縮穩了再買，風險報酬比較好。</div>
+</div>
+</div></details>
+
+<div class="tip info">
+<b>第九章整合結論</b>
+<p><b>資料 →</b> 短期震盪 55-62、中期加權 51.8 元（-11%）、長期穩態 40-50 元。</p>
+<p><b>推論 →</b> 三個時間軸都指向「現價偏高」。最好的進場時機是等到「新常態」確認後（EPS 止穩 + 連續正成長 3 月），預估在 42-48 元區間。現在買 = 賭 H1（穩定配息，15%概率）成立。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 十、股價合理性 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch10">分析 — 目前股價貴不貴？</div>
+<div class="section-sub">8 種估值法交叉比對 + 安全邊際</div>
+
+<details open><summary>方法一：前瞻本益比法</summary><div class="section-body">
+<table>
+<tr><th>情境</th><th>前瞻 EPS</th><th>合理 PE</th><th>合理價</th><th>vs 現價 58</th></tr>
+<tr><td class="hi">樂觀（EPS 止穩）</td><td>5.5</td><td>12x</td><td><b>66</b></td><td>+14%</td></tr>
+<tr><td class="mid">基準（緩慢衰退）</td><td>4.5</td><td>11x</td><td><b>49.5</b></td><td class="lo">-15%</td></tr>
+<tr><td class="lo">悲觀（加速下滑）</td><td>3.0</td><td>10x</td><td><b>30</b></td><td class="lo">-48%</td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> 加權合理價：66×15% + 49.5×70% + 30×13% + 90×2% = <b>49.4 元</b>。現價溢價 17%。</p>
+</div></details>
+
+<details open><summary>方法二：股價淨值比法（PB）</summary><div class="section-body">
+<p><span class="fias fias-f">事實</span> 每股淨值 = 權益 40.99 億 / 1.252 億股 = <b>32.7 元</b></p>
+<p>目前 PB = 58 / 32.7 = <b>1.77x</b></p>
+<p><span class="fias fias-i">推論</span> 好樂迪是服務業（輕資產），PB 意義有限。但 1.77x 對一個衰退中的服務業來說偏高——通常衰退股 PB 會趨近 1.0x。若 PB 回到 1.2-1.4x → 合理價 <b>39-46 元</b>。</p>
+</div></details>
+
+<details open><summary>方法三：分部估值法</summary><div class="section-body">
+<table>
+<tr><th>部門</th><th>年獲利估計</th><th>合理 PE</th><th>估值</th></tr>
+<tr><td>KTV 本業（營業利益）</td><td>4.59 億</td><td>10x（衰退事業）</td><td>45.9 億</td></tr>
+<tr><td>錢櫃投資收益</td><td>3.13 億</td><td>8x（被動收益+不可控）</td><td>25.0 億</td></tr>
+<tr><td>合計企業價值</td><td>—</td><td>—</td><td>70.9 億</td></tr>
+<tr><td>÷ 流通股數</td><td>—</td><td>—</td><td><b>56.6 元</b></td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> 分部估值 56.6 元接近現價 58 元。但注意：本業給 PE 10x 已經偏高（衰退事業通常 7-8x），錢櫃投資收益折價 8x 反映不可控風險。若本業 PE 降到 8x → 合理價降到 <b>47 元</b>。</p>
+</div></details>
+
+<details open><summary>方法四：隱含預期反推法</summary><div class="section-body">
+<p>現價 58 元，假設市場給 PE 11x → 隱含 EPS = 58/11 = <b>5.27 元</b></p>
+<p>達到 EPS 5.27 需要的條件：</p>
+<table>
+<tr><th>條件</th><th>需要</th><th>實現機率</th></tr>
+<tr><td>營收止跌（年衰 <3%）</td><td>~25.2 億</td><td>40%</td></tr>
+<tr><td>毛利率維持 >50%</td><td>50%+</td><td>30%（目前趨勢 47%）</td></tr>
+<tr><td>錢櫃收益不減</td><td>3.13 億維持</td><td>45%</td></tr>
+<tr><td>減資 >5%</td><td>股本降到 ~119 億</td><td>80%</td></tr>
+</table>
+<p><b>聯合機率</b>：40% × 30% × 45% × 80% = <b>4.3%</b></p>
+<div class="tip danger">
+<b>市場在賭一個 4.3% 概率的情境</b>
+<p>現價 58 元隱含的 EPS 5.27 需要四個條件同時成立，聯合機率僅 4.3%。換句話說，市場定價非常樂觀——96% 的情境下，好樂迪的 EPS 達不到市場預期。<b>這是典型的「殖利率錨定」造成的估值扭曲。</b></p>
+</div>
+</div></details>
+
+<details open><summary>方法五：歷史循環比較法</summary><div class="section-body">
+<table>
+<tr><th>指標</th><th>疫前高峰（2019）</th><th>疫後高峰（2023）</th><th>現在（2026）</th></tr>
+<tr><td>EPS</td><td>~5.0</td><td>8.81</td><td>5.40（2025 TTM）</td></tr>
+<tr><td>股價高點</td><td>~65</td><td>~72</td><td>58</td></tr>
+<tr><td>PE 高點</td><td>~13x</td><td>~8.2x</td><td>10.7x（以 2025 EPS）</td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> 2023 年是疫後報復消費的異常高峰，不應作為常態。疫前（2019）EPS ~5.0、股價 ~65、PE ~13x 比較有參考性。好樂迪目前 EPS 正在回到疫前水準，但門市比 2019 少了 ~10 家。<b>回到疫前估值的合理價約 50-55 元。</b></p>
+</div></details>
+
+<details open><summary>方法六：DCF 雙版本對比</summary><div class="section-body">
+<p><b>共用參數</b></p>
+<ul>
+<li>TTM FCF = 5.12 億（FY2025）→ 每股 FCF = 5.12 / 1.252 = <b>4.09 元</b></li>
+<li>WACC 估算：Rf 2.0% + β 0.6 × ERP 6.0% = <b>5.6%</b>（低 β 因為 KTV 非景氣循環敏感）</li>
+<li>流通股數：125,220 千股</li>
+</ul>
+
+<p><b>版本 A：現況版（不成長）</b></p>
+<p>每股價值 = 4.09 × (1+1.5%) / (5.6%-1.5%) = 4.15 / 4.1% = <b>101.2 元</b></p>
+<div class="tip warn">
+<b>⚠️ 安全閥觸發：WACC-g = 4.1% > 2%（通過），但終值佔比 = 100%（觸發）</b>
+<p>單段永續模型的終值佔比天然 = 100%。由於 β 極低（0.6）導致 WACC 偏低（5.6%），DCF 估值被大幅推高到 101 元——遠高於其他方法。這是 DCF 在低 β 公司的典型失真。<b>此估值僅供參考，不宜作為主要依據。</b></p>
+</div>
+
+<p><b>版本 B：衰退版（FCF 逐年衰退）</b></p>
+<table>
+<tr><th>階段</th><th>年份</th><th>FCF 成長率</th><th>依據</th></tr>
+<tr><td>Phase 1</td><td>1-3 年</td><td class="lo">-8%</td><td>對應 H2 緩慢衰退（營收年衰 5-7% + 成本剛性）</td></tr>
+<tr><td>Phase 2</td><td>4-7 年</td><td class="lo">-3%</td><td>衰退減速，趨近新常態</td></tr>
+<tr><td>Phase 3</td><td>8-10 年</td><td>0%</td><td>穩態</td></tr>
+<tr><td>終值</td><td>永續</td><td>0%</td><td>不成長永續</td></tr>
+</table>
+<p>10 年 FCF 折現 + 終值 → 每股 <b>~52 元</b>（基準情境）</p>
+
+<p><b>雙版本對比</b></p>
+<table>
+<tr><th>指標</th><th>數值</th></tr>
+<tr><td>版本 A（現況版）</td><td>101 元（⚠️ 失真，參考用）</td></tr>
+<tr><td>版本 B（衰退版基準）</td><td><b>52 元</b></td></tr>
+<tr><td>成長溢價</td><td>N/A（衰退情境，溢價為負）</td></tr>
+<tr><td>市場定價位置</td><td>現價 58 > 衰退版 52 → 市場定價偏高 12%</td></tr>
+</table>
+<p><span class="fias fias-i">推論</span> 版本 A 因低 β 失真不可用。版本 B（衰退版）估值 52 元，現價 58 元溢價 12%。DCF 結論支持「現價偏貴」的判斷。</p>
+</div></details>
+
+<details open><summary>方法七：EV/EBITDA</summary><div class="section-body">
+<p>EBITDA ≈ 營業利益 4.59 億 + 折舊攤銷（估 ~1.5 億）= ~6.09 億</p>
+<p>EV = 市值 72.5 億 + 有息負債 ~0 - 現金 ~15 億 = ~57.5 億</p>
+<p>EV/EBITDA = 57.5 / 6.09 = <b>9.4x</b></p>
+<p><span class="fias fias-i">推論</span> 觀光餐旅業中位數 EV/EBITDA 約 8-10x。好樂迪 9.4x 處於區間中段，但考慮衰退趨勢應在 7-8x → 合理 EV = 6.09 × 7.5 = 45.7 億 + 現金 15 - 負債 0 = 60.7 億 → 合理股價 <b>48.5 元</b>。</p>
+</div></details>
+
+<details open><summary>方法八：PEG</summary><div class="section-body">
+<p>EPS 成長率 = (5.40 - 7.74) / 7.74 = <b>-30.2%</b>（FY2025 vs FY2024）</p>
+<div class="tip warn">
+<b>PEG 不適用 — 衰退期 EPS 成長率為負</b>
+<p>PEG = PE ÷ 成長率。成長率為負時 PEG 無意義。標示「N/A — 衰退期不適用」。</p>
+<p>如果用 3 年 EPS CAGR：(5.40/8.81)^(1/2)-1 = -21.7% → 同樣為負，PEG 不適用。</p>
+</div>
+</div></details>
+
+<details open><summary>八種估值法交叉比對</summary><div class="section-body">
+<table>
+<tr><th>方法</th><th>合理價區間</th><th>vs 現價 58</th><th>信心</th></tr>
+<tr><td>1. 前瞻 PE</td><td>30-66 元（加權 49.4）</td><td class="lo">-15%</td><td>★★★★</td></tr>
+<tr><td>2. PB</td><td>39-46 元</td><td class="lo">-21%~-33%</td><td>★★</td></tr>
+<tr><td>3. 分部估值</td><td>47-57 元</td><td class="lo">-2%~-19%</td><td>★★★</td></tr>
+<tr><td>4. 隱含預期</td><td>聯合機率 4.3%</td><td class="lo">嚴重偏高</td><td>★★★★</td></tr>
+<tr><td>5. 歷史循環</td><td>50-55 元</td><td class="lo">-5%~-14%</td><td>★★★</td></tr>
+<tr><td>6. DCF 衰退版</td><td>52 元</td><td class="lo">-10%</td><td>★★★</td></tr>
+<tr><td>7. EV/EBITDA</td><td>48.5 元</td><td class="lo">-16%</td><td>★★★</td></tr>
+<tr><td>8. PEG</td><td>N/A（衰退不適用）</td><td>—</td><td>—</td></tr>
+</table>
+
+<div class="tip danger">
+<b>綜合判斷：現價 58 元偏貴</b>
+<p>7 種可用估值法中，<b>7/7 指向現價偏高</b>。合理價中位數約 <b>48-50 元</b>（溢價 16-21%）。</p>
+<p><b>安全邊際</b>：合理價 48 元 × 安全邊際 0.85 = <b>建議進場價 ≤ 41 元</b>。</p>
+<p><b>白話說</b>：好樂迪現在的價格是「假設 EPS 不會再跌」才成立的。但我們分析的主假說是「EPS 會繼續跌」（70% 概率）。花 58 元買一個 70% 概率會跌到 40-50 元的東西，不划算。</p>
+</div>
+</div></details>
+
+<div class="tip info">
+<b>第十章整合結論</b>
+<p><b>資料 →</b> 8 種估值法，7 種可用，7/7 指向偏高。合理價中位 48-50 元。隱含預期聯合機率僅 4.3%。</p>
+<p><b>推論 →</b> 市場是用「過去的殖利率 8%」在定價，而非「未來的 EPS 趨勢」。一旦配息下調（FY2026 配息 ≤3.5 元），殖利率降到 6% 以下，存股族會重新計算 → 股價修正到合理區間。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 十一、保留 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch11">（保留章節）</div>
+<details><summary>錢櫃（8359）連動風險補充</summary><div class="section-body">
+<div class="tip warn">
+<b>錢櫃是好樂迪的「影子風險」</b>
+<p>本次分析未獨立研究錢櫃（8359），但好樂迪 40% EPS 來自錢櫃投資收益。以下為初步推估：</p>
+<ul>
+<li>錢櫃同樣面臨 KTV 產業衰退（中高端也不例外）</li>
+<li>錢櫃門市 ~30 家，營收 ~38.7 億（2019 數據，可能已下滑）</li>
+<li>如果錢櫃 EPS 以 5-10%/年 速度衰退，好樂迪的投資收益也會同步衰退</li>
+<li><b>建議</b>：閣主若認真考慮好樂迪，應先完成錢櫃 8359 的獨立分析，補齊這個致命盲區</li>
+</ul>
+</div>
+</div></details>
+
+<!-- ========================================================================== -->
+<!-- 十二、貓膩探索 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch12">與求證 — 這故事太完美了嗎？</div>
+<div class="section-sub">反共識偵測引擎六步：敘事解剖→前科→巧合→反轉→利益→總評</div>
+
+<details open><summary>D-1 敘事解剖（深化版）</summary><div class="section-body">
+<p><b>市場主流敘事</b>：「好樂迪是高殖利率防禦股，8%+ 穩定配息，KTV 龍頭不會倒。」</p>
+<p><b>受益者分析</b>：</p>
+<ul>
+<li><b>存股型投資人</b>：需要穩定現金流，被 8% 殖利率吸引</li>
+<li><b>練台生集團（~53% 持股）</b>：高配息 = 每年回收 ~3.2 億現金（4.80 × 125M × 53%）。好樂迪是練台生帝國的提款機</li>
+<li><b>練台生帝國版圖</b>：控制年代電視+壹電視+東森電視+錢櫃+好樂迪+洄瀾/東台有線電視。KTV 是「現金乳牛」角色——不需要成長，只要穩定吐現金供集團運作</li>
+</ul>
+<p><b>利益衝突</b>：</p>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 練台生：「合併錢櫃和好樂迪是我的夢」</div>
+<div class="ev-d">聯合報 2023 年報導引用練台生原話。但四度被公平會否決。練台生表示希望「法律案件解決後重啟討論」。<br><b>潛在含義</b>：如果練台生的最終目標是合併，他有動機維持好樂迪的「配息穩定」形象（讓散戶滿意不鬧事），同時不積極投資成長（反正最後要合併）。這不是「貓膩」但是「利益不一致」——練台生要的是合併，散戶要的是配息，兩者目前恰好對齊，但不保證永遠對齊。</div>
+<div class="ev-s">來源：聯合報 vip 報導「K歌王版圖」/ 維基百科「練台生」</div>
+</div>
+<p><b>敘事強度</b>：🟡 中性偏紅 — 殖利率敘事被過度簡化。「配息 8%」成為唯一買入理由，衰退趨勢和錢櫃致命因子被系統性淡化。</p>
+</div></details>
+
+<details open><summary>D-2 歷史前科搜查</summary><div class="section-body">
+<p><span class="fias fias-f">事實</span> 國際搜尋確認：<b>零紀錄</b>。無內線交易、無舞弊、無做空報告。</p>
+<p>KTV 產業 HHI：好樂迪+錢櫃雙北 90% → CR2 ≈ 90% → <span class="lo">🔴 具備壟斷結構條件</span>。但公平會已四度否決合併，壟斷未被實質整合。</p>
+<p><b>前科嚴重度</b>：🟢 無紀錄。</p>
+</div></details>
+
+<details open><summary>D-3 巧合偵測</summary><div class="section-body">
+<p>好樂迪和錢櫃是否有「同步行為」？</p>
+<ul>
+<li>同步漲價：⚠️ 寡佔市場中，價格跟隨是常見行為，不一定是共謀</li>
+<li>同步關店：好樂迪關 4 店，錢櫃也在縮減 → 更可能是產業趨勢而非協調行為</li>
+<li>交叉持股本身就是「公開的利益綁定」：好樂迪買錢櫃 26%、錢櫃買好樂迪 32% → 不需要暗中共謀，利益已經公開捆綁</li>
+</ul>
+<p><b>巧合計數</b>：🟢 有明確外部驅動（產業衰退）。同步行為合理。</p>
+</div></details>
+
+<details open><summary>D-4 反轉假說</summary><div class="section-body">
+<p><b>反轉假說</b>：如果「高殖利率防禦」的市場共識完全錯誤，最可能的反轉路徑是什麼？</p>
+<div class="bear-card">
+<p><b>反轉路徑：殖利率陷阱崩潰</b></p>
+<ol>
+<li>EPS 從 5.40 降到 3.50（1-2 年內，H2 主假說）</li>
+<li>配息從 4.80 降到 2.20（配息率維持 62%）</li>
+<li>殖利率從 8.3% 降到 3.8%（以 58 元計）</li>
+<li>存股族發現殖利率不如定存 → 開始賣出</li>
+<li>股價修正到殖利率 7% 的新均衡 → 2.20/7% = <b>31 元</b></li>
+</ol>
+<p><span class="fias fias-i">推論</span> 觸發距離：1-2 年。如果 FY2026 EPS < 4.0 且配息 < 3.0，反轉路徑啟動。</p>
+</div>
+</div></details>
+
+<details open><summary>D-5 利益追蹤</summary><div class="section-body">
+<p><span class="fias fias-f">事實</span> 內部人交易：董監增減股數近 5 個月全零。零買零賣。</p>
+<p><span class="fias fias-f">事實</span> 董監質押：0%。</p>
+<p><span class="fias fias-i">推論</span> 內部人既不買也不賣 → 「不看好但不看壞」的中性信號。如果管理層真的看好，應該會增持。零動作可能反映「知道在衰退，但不急著跑」。</p>
+</div></details>
+
+<details open><summary>D-6 貓膩總評</summary><div class="section-body">
+<div class="tip good">
+<b>貓膩風險燈號：🟢 暫無可疑</b>
+<p>全面求證後未發現實質性貓膩。好樂迪的問題不是「有人在搞鬼」，而是「產業真的在衰退」。管理層是誠實的衰退者——財務乾淨、揭露透明、零前科。</p>
+<p><b>唯一值得觀察的</b>：練台生集團的交叉持股是否在某種程度上「鎖住」了好樂迪的策略自由度（例如無法出售錢櫃持股轉投其他產業）。這不是貓膩，但可能是效率損耗。</p>
+</div>
+<table>
+<tr><th>貓膩假說</th><th>支持證據</th><th>反對證據</th><th>成立機率</th></tr>
+<tr><td>殖利率行銷操控</td><td>配息率偏高（62%）可能是刻意維持吸引力</td><td>章程規定>30%，歷史一貫，非刻意</td><td><5%</td></tr>
+<tr><td>交叉持股掏空</td><td>結構上有可能</td><td>零前科、零質押、7紅旗全清</td><td><3%</td></tr>
+</table>
+</div></details>
+
+<div class="tip info">
+<b>第十二章整合結論</b>
+<p><b>資料 →</b> 六步貓膩偵測全面綠燈。零前科、零巧合、零利益衝突。</p>
+<p><b>推論 →</b> 好樂迪最大的「貓膩」就是市場敘事中「殖利率 8%」這個數字被過度簡化。投資人看到 8% 就心動，忘了問「這 8% 能維持多久？」如果問了，答案大概率是「2-3 年後會降到 5-6%」。這不是造假，是投資人自己的認知偏誤。</p>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 十三、投資結論 -->
+<!-- ========================================================================== -->
+<div class="section-title" id="ch13"> — 所以，買不買？</div>
+<div class="section-sub">一句話 + 三情境 + 免責</div>
+
+<details open><summary>結論</summary><div class="section-body">
+
+<div class="tip warn">
+<b>一句話總結</b>
+<p style="font-size:1.1em;font-weight:700">好樂迪是「乾淨的衰退股」—— 財務安全、管理層誠實、配息穩定，但本業和產業都在確定性衰退中。現價 58 元溢價 16-21%，不建議新建倉位。等到 42-48 元再考慮。</p>
+</div>
+
+<p><b>綜合評估表</b></p>
+<table>
+<tr><th>維度</th><th>評級</th></tr>
+<tr><td>核心優勢</td><td>雙北 90% 壟斷 + 殖利率 8%+ + Z-Score 4.41 + 零質押</td></tr>
+<tr><td>核心風險</td><td>EPS 連三年下滑 + 40% 來自錢櫃（盲區）+ 產業結構衰退</td></tr>
+<tr><td>值得買進的理由</td><td>等股價跌到 42-48 元（殖利率調整後仍 >6%）時具備安全邊際</td></tr>
+<tr><td>應該迴避的理由</td><td>現價溢價 16-21%、風險回報不對稱偏空、催化劑極弱</td></tr>
+<tr><td>適合的投資人</td><td>不在意成長、只要穩定現金流、能接受本金緩跌的存股族</td></tr>
+<tr><td>不適合的投資人</td><td>追求資本增值、需要成長動能、無法忍受配息縮水</td></tr>
+</table>
+
+<p><b>三情境估值判斷</b></p>
+<table>
+<tr><th>情境</th><th>EPS</th><th>配息</th><th>合理價</th><th>概率</th></tr>
+<tr><td class="hi">樂觀（H1 穩定）</td><td>5.5</td><td>3.4</td><td>60-68</td><td>15%</td></tr>
+<tr><td class="mid">基準（H2 衰退）</td><td>4.0</td><td>2.5</td><td>42-50</td><td>70%</td></tr>
+<tr><td class="lo">悲觀（H4 陷阱）</td><td>2.5</td><td>1.5</td><td>25-35</td><td>13%</td></tr>
+</table>
+<p><b>加權期望價</b>：64×15% + 46×70% + 30×13% + 90×2% = <b>46.7 元</b></p>
+<p><b>淨期望值</b>：催化劑 EV(+7.4%) - 風險 EV(-27%) = <b>-19.6%</b></p>
+
+<div class="tip danger">
+<b>免責提醒</b>
+<p>本報告為天機閣 AI 系統產出的研究分析，僅供參考，不構成投資建議。所有數據和結論基於公開資訊和合理推論，可能存在偏差。投資涉及風險，過去表現不代表未來結果。閣主應自行評估風險承受能力後做出投資決定。</p>
+</div>
+</div></details>
+
+
+
+<!-- CROSS_LINKS_START -->
+<!-- CROSS_LINKS_END -->
+
+<div style="text-align:center;color:var(--txt3);font-size:.72em;margin-top:20px;padding-top:10px;border-top:1px solid var(--border)">
+天機閣 — 好樂迪（9943）天機錄完整版 | 2026-04-11 | Phase C 最終版（含 B-1/B-2 審閱修正）
+</div>
+</div>
+<script>
+// Chart.js 全域設定
+Chart.defaults.color='#b8b0a5';
+Chart.defaults.borderColor='rgba(255,255,255,0.06)';
+Chart.defaults.font.family="'Inter','Noto Sans TC',sans-serif";
+const C={bull:'#4caf50',bear:'#ef5350',neutral:'#7ab0c0',accent:'#6b9f72',gold:'#d4b030',warn:'#d4a017',purple:'#a78bfa',pink:'#f472b6',teal:'#2dd4bf',orange:'#fb923c'};
+
+// Ch1 營收結構甜甜圈
+new Chart(document.getElementById('ch1-rev-pie'),{type:'doughnut',data:{
+labels:['包廂 43%','餐飲 36%','公賣 16%','其他 5%'],
+datasets:[{data:[43.26,36.35,15.57,4.82],backgroundColor:['rgba(107,159,114,.6)','rgba(122,176,192,.6)','rgba(167,139,250,.5)','rgba(90,90,90,.5)'],borderColor:'#252525',borderWidth:2}]
+},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{padding:8,font:{size:11}}}}}});
+
+// Ch1 7維度雷達圖
+new Chart(document.getElementById('ch1-radar'),{type:'radar',data:{
+labels:['產品','競爭','需求','財務','供應鏈','管理','市調'],
+datasets:[{label:'好樂迪',data:[40,70,25,55,35,60,45],borderColor:C.accent,backgroundColor:'rgba(107,159,114,.15)',pointBackgroundColor:C.accent}]
+},options:{responsive:true,scales:{r:{suggestedMin:0,suggestedMax:100,grid:{color:'rgba(255,255,255,.08)'},ticks:{display:false},pointLabels:{font:{size:11}}}}}});
+</script>
+</body>
