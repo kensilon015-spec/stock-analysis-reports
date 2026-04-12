@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>天機錄推演版 — 南亞科(2408)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px}
+.rc-level.fatal{background:rgba(198,40,40,.15);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.15);color:var(--warn)}
+.rc-level.medium{background:rgba(90,125,140,.15);color:var(--neutral)}
+.rc-level.low{background:rgba(90,125,96,.15);color:var(--bull)}
+.risk-card .rc-body{font-size:.82em;color:var(--txt2)}
+.risk-card .rc-row{display:flex;gap:12px;margin:3px 0;font-size:.82em}
+.risk-card .rc-label{font-weight:600;color:var(--base);min-width:80px;flex-shrink:0}
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:8px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--base);font-size:.88em}
+.fork-branches{display:grid;gap:8px;margin-top:4px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branches.b4{grid-template-columns:1fr 1fr 1fr 1fr}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;position:relative}
+.fork-branch::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.7em}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fb-black{background:rgba(120,120,120,.2);color:#999}
+.fork-branch .fb-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:2px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+/* 概率樹專用 */
+.prob-tree{font-family:'Fira Code','Noto Sans TC',monospace;font-size:.82em;color:var(--txt2);background:var(--code-bg);padding:14px;border-radius:8px;margin:8px 0;line-height:1.7;overflow-x:auto;white-space:pre}
+.prob-tree .hl-bull{color:var(--bull);font-weight:700}
+.prob-tree .hl-bear{color:var(--bear);font-weight:700}
+.prob-tree .hl-warn{color:var(--warn);font-weight:700}
+.prob-tree .hl-neutral{color:var(--neutral);font-weight:700}
+/* 影響鏈 */
+.chain{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0}
+.chain .chain-title{font-weight:700;color:var(--base);font-size:.88em;margin-bottom:4px}
+.chain .chain-flow{font-size:.82em;color:var(--accent);margin:4px 0;font-weight:600}
+.chain .chain-meta{font-size:.78em;color:var(--txt3);margin:2px 0}
+/* 行動清單 */
+.action-list{list-style:none;padding:0;margin:6px 0}
+.action-list li{padding:6px 10px;border-bottom:1px solid var(--border);font-size:.84em;color:var(--txt2)}
+.action-list li:last-child{border-bottom:none}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>天機錄推演版 — 南亞科(2408)</h1>
+    <div class="sub">第八步：全景推衍 | 第四次信心校準</div>
+    <div class="desc">基於前七步分析，進行四條情境路徑推演、蝴蝶效應偵測與貓膩逆向驗證。<br>主假說 H2 有限循環(55%)，概率加權目標 176 元，現價 215 元溢價 22%。</div>
+    <div class="tags">
+        <span class="tag">DRAM 週期股</span>
+        <span class="tag">DDR4 缺貨受惠</span>
+        <span class="tag">護城河 B+ 窄</span>
+        <span class="tag">評審團 34/60</span>
+        <span class="tag">觀望</span>
+    </div>
+</div>
+
+<!-- ===== 目錄 ===== -->
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#s8a">8a. 推衍基礎確認 — ACH 假說與燈號總覽</a>
+    <a href="#s8b">8b. OSINT 情報更新 — 最新即時資訊</a>
+    <a href="#s8c">8c. 影響鏈分析 — 四條因果鏈推演</a>
+    <a href="#s8d">8d. 情境模擬 — 概率樹與四條路徑</a>
+    <a href="#s8e">8e. 個人化推衍 — 空手策略與進場建議</a>
+    <a href="#s8f">8f. 催化劑時間表 — 未來 6 個月關鍵事件</a>
+    <a href="#s8g">8g. 蝴蝶效應推衍 — 弱訊號偵測</a>
+    <a href="#s8h">8h. 貓膩推衍 — 逆向驗證市場敘事</a>
+    <a href="#s8i">8i. 第四次信心校準與推衍結論</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8a. 推衍基礎確認 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8a">8a. 推衍基礎確認</div>
+<div class="section-sub">ACH 假說分布、燈號矩陣、致命因子與關鍵事實</div>
+
+<div class="card">
+<h3>ACH 競爭假說分布</h3>
+<div class="card-body">
+<table>
+<tr><th>假說</th><th>描述</th><th>概率</th><th>目標價</th></tr>
+<tr><td style="font-weight:700;color:var(--bull)">H1</td><td>超級循環延續至 2027+</td><td>20%</td><td>300 元</td></tr>
+<tr><td style="font-weight:700;color:var(--accent)">H2（主假說）</td><td>有限循環，2026 底開始收斂</td><td style="font-weight:700;color:var(--accent)">55%</td><td>160 元</td></tr>
+<tr><td style="font-weight:700;color:var(--warn)">H3</td><td>提前反轉，Q3 開始走弱</td><td>15%</td><td>72-90 元</td></tr>
+<tr><td style="font-weight:700;color:var(--bear)">H4</td><td>黑天鵝：全球衰退+關稅衝擊</td><td>5%</td><td>&lt;60 元</td></tr>
+<tr><td style="color:var(--txt3)">H5</td><td>HBM 驗證成功開啟第二曲線</td><td>3%</td><td>350+ 元</td></tr>
+<tr><td style="color:var(--txt3)">H6</td><td>被併購或策略聯盟</td><td>2%</td><td>不確定</td></tr>
+</table>
+<p style="margin-top:6px"><b style="color:var(--accent)">概率加權目標價：176 元</b>（八法估值調整後）</p>
+<p>現價 215 元，<b style="color:var(--bear)">溢價 22%</b>，市場定價已充分反映 H2 甚至部分 H1 情境。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>燈號矩陣</h3>
+<div class="card-body">
+<table>
+<tr><th>維度</th><th>燈號</th><th>說明</th></tr>
+<tr><td>DDR4 合約價趨勢</td><td><span class="light green"></span> 綠燈</td><td>合約價維持高檔，Q1 仍在漲</td></tr>
+<tr><td>月營收動能</td><td><span class="light green"></span> 綠燈</td><td>月營收 182 億，Q1 累計 491 億確認</td></tr>
+<tr><td>產能利用率</td><td><span class="light green"></span> 綠燈</td><td>滿載中，DDR4 出貨佔比 70%</td></tr>
+<tr><td>CXMT 制裁狀態</td><td><span class="light green"></span> 綠燈</td><td>美國制裁未解除，設備升級受阻</td></tr>
+<tr><td>AI CapEx 擴張</td><td><span class="light green"></span> 綠燈</td><td>HBM 排擠 DDR4 產能持續</td></tr>
+<tr><td>公司資本策略</td><td><span class="light green"></span> 綠燈</td><td>私募增資通過，資金到位</td></tr>
+<tr><td style="font-weight:700">外資立場分歧</td><td><span class="light yellow"></span> 黃燈</td><td style="color:var(--warn)">大和買進 vs 大摩預警收斂，分歧加大</td></tr>
+</table>
+<p style="margin-top:6px">燈號狀態：<b>6 綠 1 黃</b>。黃燈來自外資觀點分歧 — 這往往是轉折的前兆訊號。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>致命因子與關鍵事實</h3>
+<div class="card-body">
+<div class="risk-card">
+    <div class="rc-header">
+        <span class="rc-title">致命因子：DDR4 價格反轉</span>
+        <span class="rc-level fatal">風險分 15 / 致命級</span>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><span class="rc-label">觸發條件</span>DDR4 合約價連續兩季環比下滑</div>
+        <div class="rc-row"><span class="rc-label">觸發機率</span>12 個月內約 30%，18 個月內約 55%</div>
+        <div class="rc-row"><span class="rc-label">殺傷力</span>南亞科 EPS 可能從 18-22 元腰斬至 8-12 元，PE 同步壓縮</div>
+        <div class="rc-row"><span class="rc-label">領先指標</span>DDR4 現貨價跌幅 > 合約價、通路庫存週數上升、3C 終端銷售下滑</div>
+    </div>
+</div>
+<p style="margin-top:8px"><b style="color:var(--base)">四項關鍵事實：</b></p>
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">DDR4 佔營收比</div>
+        <div class="num" style="color:var(--bull)">&gt;50%</div>
+        <div class="desc">核心營收命脈，單一產品集中度極高</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">DDR4 出貨佔比</div>
+        <div class="num" style="color:var(--bull)">70%</div>
+        <div class="desc">產品組合高度依賴 DDR4</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">合約價漲幅（本輪）</div>
+        <div class="num" style="color:var(--accent)">+752%</div>
+        <div class="desc">已超越 2018 年超級循環漲幅</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">最新月營收</div>
+        <div class="num" style="color:var(--neutral)">182 億</div>
+        <div class="desc">Q1 累計 491 億，歷史高位</div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="tip warn">
+<b>8a 整合結論</b>
+<b>資料：</b>ACH 六假說中 H2 有限循環佔 55% 主導，概率加權目標 176 元，燈號 6 綠 1 黃。致命因子為 DDR4 價格反轉（風險分 15）。<br>
+<b>觀察：</b>當前所有營運燈號均為正面，唯一黃燈出現在外資分歧。合約價漲幅 +752% 已突破歷史紀錄。<br>
+<b>推論：</b>燈號全面偏多但漲幅已超歷史極值，代表「好消息已經定價完畢」的機率很高。外資分歧黃燈往往是轉折前的第一個裂痕。<br>
+<b>結論：</b>推衍基礎穩固支持 H2 有限循環為主假說。現價 215 元已隱含樂觀預期，安全邊際不足。投資人不應被全綠燈迷惑，因為週期股的燈號在頂點永遠是最亮的。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8b. OSINT 情報更新 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8b">8b. OSINT 情報更新</div>
+<div class="section-sub">截至 2026/4/12 最新即時資訊</div>
+
+<div class="card">
+<h3>股價與市場動態</h3>
+<div class="card-body">
+<table>
+<tr><th>項目</th><th>數據</th><th>備註</th></tr>
+<tr><td>現價</td><td style="font-weight:700">215 元（4/10 收盤）</td><td>近期高點 223 元（4/8），回落 3.6%</td></tr>
+<tr><td>Q1 營收</td><td style="font-weight:700;color:var(--bull)">491 億</td><td>歷史新高，季增持續</td></tr>
+<tr><td>DDR4 合約價</td><td style="color:var(--bull)">維持高檔</td><td>本輪漲幅 +752%，尚無明顯回落訊號</td></tr>
+<tr><td>私募增資</td><td style="color:var(--accent)">114/4/16 通過</td><td>資金用途待觀察（擴產 or HBM 投資？）</td></tr>
+<tr><td>外資最新</td><td style="color:var(--neutral)">分歧</td><td>大和 4 月重申買進、上調目標價 19%；大摩預警 H2 收斂</td></tr>
+</table>
+
+<details>
+<summary>外資觀點分歧細節</summary>
+<div class="tip info" style="margin-top:4px">
+<b>多方：大和證券（4 月）</b>
+重申買進評級，目標價上調 19%。理由：DDR4 缺貨態勢短期難解、南亞科受惠程度在台灣 DRAM 業者中最高、HBM 驗證若成功將打開第二成長曲線。
+</div>
+<div class="tip danger" style="margin-top:4px">
+<b>空方：摩根士丹利</b>
+預警 DDR4 漲價循環 H2 可能收斂。理由：下游已開始尋找 DDR5 替代方案、通路庫存有回升跡象、歷史上 DRAM 漲價從未持續超過 6 季。
+</div>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>關鍵情報時序</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-date">2026/4/16</div>
+        <div class="tl-title">私募增資正式通過</div>
+        <div class="tl-desc">資金到位後用途將揭示管理層對未來的佈局方向</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/4/10</div>
+        <div class="tl-title">股價 215 元，自 223 高點回落</div>
+        <div class="tl-desc">短線高點後的自然回檔，尚無破壞趨勢</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/4 月初</div>
+        <div class="tl-title">大和重申買進、上調目標價 19%</div>
+        <div class="tl-desc">外資多方持續加碼看好，形成分歧對峙</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026/Q1</div>
+        <div class="tl-title">累計營收 491 億確認</div>
+        <div class="tl-desc">DDR4 量價齊揚推升營收至歷史高位</div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>8b 整合結論</b>
+<b>資料：</b>現價 215 元自高點回落 3.6%，Q1 營收 491 億創高，DDR4 合約價維持高檔，外資呈多空分歧。<br>
+<b>觀察：</b>基本面數據全部利多（營收創高、合約價穩），但股價已出現短線回落，且外資開始出現看空聲音。<br>
+<b>推論：</b>當基本面最好但股價開始猶豫、外資開始分裂時，通常代表「最後一段上漲」或「頂部震盪」。大和的樂觀與大摩的謹慎並存，意味著市場正處於多空交戰的關鍵位置。<br>
+<b>結論：</b>情報面確認短期無崩盤風險，但「好到不能再好」的困境已浮現。追高的風險報酬比極不對稱：上漲空間有限（到 250 頂多 16%），下跌空間巨大（到 120 跌幅 44%）。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8c. 影響鏈分析 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8c">8c. 影響鏈分析</div>
+<div class="section-sub">四條因果鏈推演 — 從源頭追蹤到南亞科的傳導路徑</div>
+
+<div class="card">
+<h3>鏈 1：AI CapEx 擴張鏈（利多 / 已在發生）</h3>
+<div class="card-body">
+<div class="chain">
+    <div class="chain-flow">AI CapEx 擴張 → HBM 需求爆發 → 三星/SK 海力士產能轉向 HBM → DDR4 產能被排擠 → DDR4 缺貨漲價 → 南亞科營收/毛利飆升</div>
+    <div class="chain-meta">機率：<b style="color:var(--bull)">80%（已在發生）</b> ｜ 持續性：12-18 個月高信心</div>
+    <div class="chain-meta">驗證指標：NVIDIA/AMD 資料中心營收成長率、HBM 佔 DRAM 產能比例、DDR4 交期拉長程度</div>
+</div>
+<p>這是驅動南亞科本輪行情的核心鏈條。只要 AI 投資不減速、HBM 需求不見頂，DDR4 缺貨態勢就會持續。但請注意：這條鏈的受惠是「被動」的 — 南亞科本身不做 HBM，只是因為別人去做 HBM 而受惠。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>鏈 2：CXMT 制裁鏈（利多 / 地緣政治）</h3>
+<div class="card-body">
+<div class="chain">
+    <div class="chain-flow">CXMT 受美國制裁 → 設備升級受阻 → DDR4 技術停滯 → 退出高階 DDR4 競爭 → 南亞科獨佔地位強化</div>
+    <div class="chain-meta">機率：<b style="color:var(--bull)">70%</b> ｜ 風險：若制裁放寬 → CXMT 可能重返市場</div>
+    <div class="chain-meta">驗證指標：美國出口管制政策動態、CXMT 產能利用率變化、中國 DRAM 自給率數據</div>
+</div>
+<div class="tip warn">
+<b>反向風險</b>
+若中美貿易談判出現轉機、制裁放寬，CXMT 可能在 6-12 個月內恢復 DDR4 產能擴充。此情境下南亞科的「獨佔紅利」將快速消失，需密切追蹤美國商務部出口許可動態。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>鏈 3：DDR4 → DDR5 替代鏈（利空 / 致命因子路徑）</h3>
+<div class="card-body">
+<div class="chain">
+    <div class="chain-flow">DDR4 價格過高 → 下游痛感加劇 → 加速轉向 DDR5 → DDR4 需求萎縮 → 漲價循環結束 → 南亞科營收/毛利雙殺</div>
+    <div class="chain-meta">機率：<b style="color:var(--warn)">30%（12 個月內）</b>，18 個月內升至 55% ｜ 這是致命因子的觸發路徑</div>
+    <div class="chain-meta">驗證指標：DDR5 滲透率季增幅、DDR4/DDR5 價差比例、PC/伺服器 DDR5 佔比變化</div>
+</div>
+<p>DDR4 合約價漲幅 +752% 遠超下游可承受範圍。歷史經驗顯示，當舊世代產品價格超過新世代時，轉換會急劇加速。DDR5 目前價差已大幅收窄，一旦突破心理臨界點，DDR4 需求崩塌可能非常迅速。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>鏈 4：台塑集團減持鏈（利空 / 內部人信號）</h3>
+<div class="card-body">
+<div class="chain">
+    <div class="chain-flow">台塑集團持續減持 → 市場信心受損 → 籌碼鬆動 → 股價承壓 → 融資追繳風險 → 連鎖賣壓</div>
+    <div class="chain-meta">機率：<b style="color:var(--warn)">50%</b> ｜ 影響：中度</div>
+    <div class="chain-meta">驗證指標：台塑集團申報持股變化、融資維持率、法人買賣超連續性</div>
+</div>
+<p>母集團在股價歷史高位區間連續減持，表面上是「正常獲利了結」，但若從內部人資訊優勢角度解讀，可能暗示管理層對 DDR4 紅利持續性的信心並不如市場預期。這是一個需要持續追蹤的弱訊號。</p>
+</div>
+</div>
+
+<div class="tip danger">
+<b>8c 整合結論</b>
+<b>資料：</b>四條因果鏈中，兩條利多（AI CapEx 80%、CXMT 制裁 70%）、兩條利空（DDR5 替代 30%、台塑減持 50%）。<br>
+<b>觀察：</b>利多鏈驅動力強但均為「外部被動受惠」，南亞科本身無法控制；利空鏈機率雖低但殺傷力極大，尤其鏈 3 直接連結致命因子。<br>
+<b>推論：</b>南亞科的命運不掌握在自己手上。AI 投資是否持續、制裁是否維持、下游何時轉向 DDR5 — 這三個變數全部由外部決定。這代表南亞科的未來具有極高的「外生不確定性」，不適合用確定性定價。<br>
+<b>結論：</b>短期（6 個月內）利多鏈佔優勢，中期（12-18 個月）利空鏈威脅遞增。投資時間軸越長，風險越高。若要布局，必須是短線思維，不可長抱。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8d. 情境模擬 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8d">8d. 情境模擬</div>
+<div class="section-sub">四條路徑概率樹與關鍵分支點</div>
+
+<div class="card">
+<h3>概率樹視覺化</h3>
+<div class="card-body">
+<div class="prob-tree">
+                        南亞科(2408) 現價 215 元
+                                  │
+              ┌───────────┬────────┴────────┬──────────┐
+              │           │                 │          │
+        <span class="hl-bull">路徑 A (20%)</span>  <span class="hl-neutral">路徑 B (55%)</span>     <span class="hl-warn">路徑 C (15%)</span>  <span class="hl-bear">路徑 D (5%)</span>
+        超級循環延續    有限循環(基準)     提前反轉       黑天鵝
+              │           │                 │          │
+        EPS 25-30    EPS 18-22         EPS 10-15    EPS &lt;8
+        PE 10-12x    PE 壓縮至 8x      PE 6x        PE &lt;6x
+              │           │                 │          │
+        <span class="hl-bull">目標 300 元</span>   <span class="hl-neutral">目標 160 元</span>      <span class="hl-warn">目標 72-90 元</span> <span class="hl-bear">目標 &lt;60 元</span>
+        (+40%)       (-26%)           (-58~-67%)    (-72%↓)
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">概率加權目標 = 300×20% + 160×55% + 81×15% + 55×5% + 350×3% + 215×2% ≈ <b style="color:var(--accent)">176 元</b></p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 A — 超級循環延續 (20%)</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">目標價</div>
+        <div class="num" style="color:var(--bull)">300 元</div>
+        <div class="desc">潛在漲幅 +40%</div>
+    </div>
+    <div class="mini-card bull-card">
+        <div class="title">EPS 預估</div>
+        <div class="num" style="color:var(--bull)">25-30 元</div>
+        <div class="desc">市場給予成長型 PE 10-12x</div>
+    </div>
+</div>
+<p><b style="color:var(--base)">情境描述：</b>DDR4 缺貨延續至 2027 年以後，量價齊揚推升 EPS 至 25-30 元。市場因持續超預期而維持高 PE。</p>
+<p><b style="color:var(--base)">觸發條件：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li>Q2 營收再創歷史新高</li>
+    <li>DDR4 合約價 Q2-Q3 繼續上漲</li>
+    <li>CXMT 完全退出 DDR4 市場</li>
+    <li>DDR5 轉換速度低於預期</li>
+</ul>
+<p style="font-size:.82em;color:var(--txt3)">風險：此情境需要所有利多同時發生，歷史上 DRAM 超級循環持續超過 6 季的案例極少。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 B — 有限循環（基準, 55%）</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card neutral-card">
+        <div class="title">目標價</div>
+        <div class="num" style="color:var(--neutral)">160 元</div>
+        <div class="desc">潛在跌幅 -26%</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">EPS 預估</div>
+        <div class="num" style="color:var(--neutral)">18-22 元</div>
+        <div class="desc">PE 壓縮至 8x（週期股常態）</div>
+    </div>
+</div>
+<p><b style="color:var(--base)">情境描述：</b>DDR4 缺貨持續至 2026 年底，2027H1 漲幅開始收斂。EPS 維持 18-22 元但市場預期轉向，PE 從成長型壓縮至週期型 8 倍。</p>
+<p><b style="color:var(--base)">觸發條件：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li>Q3 起 DDR4 合約價漲幅收縮至 &lt;20%/季</li>
+    <li>DDR5 滲透率加速突破 40%</li>
+    <li>AI CapEx 增速放緩但未急凍</li>
+</ul>
+<p style="font-size:.82em;color:var(--txt3)">這是最可能的路徑。週期股的特性就是「EPS 最好的時候 PE 開始壓縮」。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 C — 提前反轉 (15%)</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">目標價</div>
+        <div class="num" style="color:var(--bear)">72-90 元</div>
+        <div class="desc">潛在跌幅 -58% ~ -67%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">EPS 預估</div>
+        <div class="num" style="color:var(--bear)">10-15 元</div>
+        <div class="desc">PE 壓縮至 6x</div>
+    </div>
+</div>
+<p><b style="color:var(--base)">情境描述：</b>DDR4 價格 Q3 開始反轉，營收急降，市場恐慌性殺出。</p>
+<p><b style="color:var(--base)">觸發條件：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li>CXMT 取得制裁豁免或透過第三方恢復設備供給</li>
+    <li>力積電提前量產 DDR4</li>
+    <li>3C 終端需求急凍（關稅衝擊/消費信心崩盤）</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 D — 黑天鵝 (5%)</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bear-card">
+        <div class="title">目標價</div>
+        <div class="num" style="color:var(--bear)">&lt;60 元</div>
+        <div class="desc">潛在跌幅 -72% 以上</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">EPS 預估</div>
+        <div class="num" style="color:var(--bear)">&lt;8 元</div>
+        <div class="desc">虧損邊緣</div>
+    </div>
+</div>
+<p><b style="color:var(--base)">情境描述：</b>全球經濟衰退 + 關稅戰全面升級 + DDR4 崩盤三重打擊。</p>
+<p><b style="color:var(--base)">觸發條件：</b>聯準會被迫急升息 + 中美脫鉤加劇 + AI 投資泡沫破裂。概率低但不可忽視。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>關鍵分支點（決策日曆）</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-date">2026 年 5 月 — Q1 財報</div>
+        <div class="tl-title">第一個分支點：營收/毛利率確認</div>
+        <div class="tl-desc">若毛利率 > 55% → 路徑 A 機率上升；若 < 45% → 路徑 C 機率上升</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026 年 7 月 — Q2 法說會</div>
+        <div class="tl-title">第二個分支點：DDR4 H2 展望</div>
+        <div class="tl-desc">管理層對 H2 的 guidance 將決定市場是維持信心還是開始獲利了結</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026 年 10 月 — Q3 財報</div>
+        <div class="tl-title">第三個分支點：驗證收斂與否</div>
+        <div class="tl-desc">若 Q3 營收環比下滑 → 確認路徑 B/C；若持平或上升 → 路徑 A 仍有希望</div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="tip warn">
+<b>8d 整合結論</b>
+<b>資料：</b>四條路徑中，路徑 B（有限循環）佔 55% 目標 160 元，路徑 A（超級循環）佔 20% 目標 300 元，路徑 C/D 合計 20% 目標 60-90 元。概率加權 176 元。<br>
+<b>觀察：</b>以現價 215 元買入，只有路徑 A（20%）能獲利，路徑 B/C/D（80%）全部虧損。風險報酬比極度不對稱。<br>
+<b>推論：</b>在現價買入等於「賭 20% 機率的情境會發生」。即使路徑 A 成功，漲幅也只有 40%（215→300）；但路徑 B 就要虧 26%，路徑 C 更要虧 58%+。這不是合理的賭注。<br>
+<b>結論：</b>概率樹清楚顯示，現價缺乏安全邊際。合理的介入時機應該是：等路徑 B 開始被市場定價（股價回落至 160-180 區間），此時路徑 A 的潛在漲幅才足以補償路徑 C/D 的風險。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8e. 個人化推衍 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8e">8e. 個人化推衍</div>
+<div class="section-sub">閣主狀態：觀望中（尚未持有）— 策略建議</div>
+
+<div class="card">
+<h3>空手策略：不追高，等觸發</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>核心原則：不追高</b>
+現價 215 元已充分定價 H2 有限循環情境，甚至部分反映了 H1 超級循環的樂觀預期。在週期股頂部追高，是散戶最常犯的致命錯誤。
+</div>
+
+<p style="margin-top:8px"><b style="color:var(--base)">買入觸發條件（必須同時滿足）：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li>DDR4 合約價季環比下滑 ≥ 10%（確認漲價循環降溫但非崩盤）</li>
+    <li>南亞科股價回檔至 180 元以下</li>
+    <li>外資由分歧轉為一致看多（代表負面已被定價）</li>
+</ul>
+
+<p style="margin-top:8px"><b style="color:var(--base)">觀察窗口：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li><b>5 月</b> — Q1 財報：確認毛利率水準與管理層態度</li>
+    <li><b>7 月</b> — Q2 法說會：DDR4 H2 展望是決定性資訊</li>
+    <li><b>10 月</b> — Q3 財報：驗證路徑 B 是否成立</li>
+</ul>
+
+<div class="tip warn">
+<b>如果非要現在買？</b>
+僅用極小部位試單（總資金 &lt; 3%），嚴設停損 190 元（跌幅 -11.6%）。這不是投資，是「買個觀察席位」。心態上要做好全額停損出場的準備。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>三種投資人策略建議</h3>
+<div class="card-body">
+<div class="grid3">
+    <div class="mini-card bull-card">
+        <div class="title">積極型</div>
+        <div class="num" style="color:var(--bull);font-size:1.1em">180 元↓分批</div>
+        <div class="desc">目標 220-250 元<br>停損 150 元<br>持有期 3-6 個月</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">穩健型</div>
+        <div class="num" style="color:var(--neutral);font-size:1.1em">150 元↓買入</div>
+        <div class="desc">等 DDR4 漲幅收斂後<br>的恐慌性低點<br>持有期 6-12 個月</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">保守型</div>
+        <div class="num" style="color:var(--bear);font-size:1.1em">120 元↓或不碰</div>
+        <div class="desc">接近淨值才考慮<br>或直接不碰週期股<br>轉向穩定配息標的</div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="tip good">
+<b>8e 整合結論</b>
+<b>資料：</b>閣主為空手觀望狀態，進場價積極 180/穩健 150/保守 120，現價 215 遠高於所有進場價位。<br>
+<b>觀察：</b>現價與最積極的進場價之間仍有 16% 的差距，與穩健進場價差距 30%，與保守進場價差距 44%。<br>
+<b>推論：</b>市場已經幫我們把「好消息」都定價進去了。在這個價位買入，等於承擔所有的下行風險卻只能享受有限的上行空間。觀望是目前最理性的選擇。<br>
+<b>結論：</b>維持觀望，用時間換空間。設定好觸發條件和觀察窗口，等市場給出合理的進場價位。記住：週期股的最佳買點永遠不在「人人喊買」的時候。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8f. 催化劑時間表 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8f">8f. 催化劑時間表</div>
+<div class="section-sub">未來 6 個月關鍵事件與影響評估</div>
+
+<div class="card">
+<h3>催化劑日曆</h3>
+<div class="card-body">
+<table>
+<tr><th>日期</th><th>事件</th><th>影響方向</th><th>重要性</th><th>發生機率</th></tr>
+<tr>
+    <td style="font-weight:700">2026/5 月</td>
+    <td>Q1 財報公布</td>
+    <td>驗證營收 491 億對應的毛利率與 EPS</td>
+    <td><span style="color:var(--bear);font-weight:700">極高</span></td>
+    <td>確定</td>
+</tr>
+<tr>
+    <td style="font-weight:700">2026/5/28</td>
+    <td>股東常會</td>
+    <td>私募增資用途說明、管理層展望</td>
+    <td><span style="color:var(--warn);font-weight:700">高</span></td>
+    <td>確定</td>
+</tr>
+<tr>
+    <td style="font-weight:700">2026/7 月</td>
+    <td>Q2 財報 + 法說會</td>
+    <td>H2 走勢關鍵判斷點，DDR4 展望</td>
+    <td><span style="color:var(--bear);font-weight:700">極高（決定性）</span></td>
+    <td>確定</td>
+</tr>
+<tr>
+    <td style="font-weight:700">2026/10 月</td>
+    <td>Q3 財報</td>
+    <td>驗證大摩「H2 收斂」預測是否成立</td>
+    <td><span style="color:var(--bear);font-weight:700">極高</span></td>
+    <td>確定</td>
+</tr>
+<tr>
+    <td>2026/12 月</td>
+    <td>HBM 驗證截止</td>
+    <td>若通過 → 第二成長曲線；若失敗 → H5 歸零</td>
+    <td><span style="color:var(--warn);font-weight:700">高</span></td>
+    <td>40%</td>
+</tr>
+<tr>
+    <td>2026 全年</td>
+    <td>美國對中制裁動態</td>
+    <td>放寬 → CXMT 回歸 → 利空；維持 → 利多</td>
+    <td><span style="color:var(--warn);font-weight:700">高</span></td>
+    <td>持續追蹤</td>
+</tr>
+</table>
+
+<div class="tip info" style="margin-top:8px">
+<b>決策日曆建議</b>
+<b>5 月：</b>Q1 財報後重新評估 H1/H2 概率。若毛利率 &gt; 55%，可考慮將路徑 A 概率上調至 25-30%。<br>
+<b>7 月：</b>法說會是整個投資論點的「成敗關鍵」。管理層對 H2 的用詞（「審慎樂觀」vs「持續強勁」）將決定後續走勢。<br>
+<b>10 月：</b>Q3 財報若營收環比下滑，代表路徑 B 正式啟動，此時是觀察「恐慌性低點」的時機。
+</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>8f 整合結論</b>
+<b>資料：</b>未來 6 個月有 4 個確定性催化劑（Q1/Q2/Q3 財報 + 股東會）和 2 個不確定催化劑（HBM 驗證、制裁動態）。<br>
+<b>觀察：</b>催化劑密集排列在 5-10 月，每個事件都可能改變概率分布。其中 7 月法說會是「樞紐事件」。<br>
+<b>推論：</b>密集催化劑代表波動率將持續偏高。對於空手投資人來說，這反而是好事 — 波動越大、越可能出現恐慌低點。<br>
+<b>結論：</b>不需要急著做決定。把 5 月 Q1 財報當作第一個觀察點，7 月法說會當作核心決策點。在此之前，觀望是最佳策略。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8g. 蝴蝶效應推衍 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8g">8g. 蝴蝶效應推衍</div>
+<div class="section-sub">弱訊號偵測 — 微小異常可能暗示的重大轉折</div>
+
+<div class="card">
+<h3>弱訊號：台塑集團高位連續減持</h3>
+<div class="card-body">
+<div class="risk-card">
+    <div class="rc-header">
+        <span class="rc-title">弱訊號偵測：母集團異常行為</span>
+        <span class="rc-level high">警戒等級：中高</span>
+    </div>
+    <div class="rc-body">
+        <div class="rc-row"><span class="rc-label">現象</span>台塑集團在南亞科股價歷史高位區間連續三波減持</div>
+        <div class="rc-row"><span class="rc-label">表面解讀</span>集團正常獲利了結，調度資金用於其他投資</div>
+        <div class="rc-row"><span class="rc-label">深層疑問</span>如果這不只是套現，而是管理層看到了市場還沒看到的東西？</div>
+    </div>
+</div>
+
+<p style="margin-top:8px"><b style="color:var(--base)">蝴蝶效應推演路徑：</b></p>
+
+<div style="background:var(--code-bg);padding:12px;border-radius:8px;margin:6px 0;font-size:.84em;color:var(--txt2)">
+<p style="color:var(--warn);font-weight:700">台塑集團連續三波高位減持</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;↓ 如果這不只是套現...</p>
+<p style="color:var(--accent);font-weight:700">&nbsp;&nbsp;&nbsp;&nbsp;可能暗示 #1：DDR4 紅利窗口比預期更短</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 管理層看到了 DDR5 替代加速的內部數據</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Q3 起 DDR4 營收佔比可能快速下降</p>
+<p style="color:var(--accent);font-weight:700">&nbsp;&nbsp;&nbsp;&nbsp;可能暗示 #2：HBM 驗證進度不如預期</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 第二成長曲線延遲，估值天花板確認</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 12 月驗證截止可能無法通過</p>
+<p style="color:var(--accent);font-weight:700">&nbsp;&nbsp;&nbsp;&nbsp;可能暗示 #3：集團財務調度需求</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 台塑集團其他事業需要資金（石化業景氣低迷）</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 此情境對南亞科基本面無直接影響</p>
+</div>
+
+<p style="margin-top:8px"><b style="color:var(--base)">追蹤指標：</b></p>
+<ul style="font-size:.84em;color:var(--txt2);padding-left:20px;margin:4px 0">
+    <li>台塑集團是否在 Q2 再次申報減持（若是 → 弱訊號升級為強訊號）</li>
+    <li>其他 DRAM 廠內部人是否也在賣出（若跨公司同步賣出 → 產業級警報）</li>
+    <li>私募增資認購方的身份與態度（聰明錢是否進場）</li>
+</ul>
+</div>
+</div>
+
+<div class="tip warn">
+<b>8g 整合結論</b>
+<b>資料：</b>台塑集團在歷史高位連續三波減持，此為異常的內部人賣出行為。<br>
+<b>觀察：</b>內部人比外部投資人擁有更多即時資訊。他們選擇在「市場最看好」的時候大量賣出，這與「對未來充滿信心」的態度矛盾。<br>
+<b>推論：</b>三種可能解釋中，#1（DDR4 紅利窗口更短）和 #2（HBM 延遲）對投資論點有直接衝擊。即使實際原因是 #3（集團調度），在確認之前也應以最壞情境準備。<br>
+<b>結論：</b>此弱訊號強化了「不追高」的結論。在台塑集團減持行為獲得合理解釋之前，應額外下調信心度 2%。追蹤重點放在 Q2 是否繼續減持。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8h. 貓膩推衍 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8h">8h. 貓膩推衍</div>
+<div class="section-sub">逆向驗證市場敘事 — 歷史韻律暗示的危險</div>
+
+<div class="card">
+<h3>市場敘事 vs 歷史真相</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>市場當前主流敘事：「DDR4 缺貨到 2028」</b>
+這個敘事的底層邏輯：AI HBM 需求持續排擠 DDR4 產能 + CXMT 制裁無法解除 + DDR5 轉換緩慢 → DDR4 結構性缺貨將持續 2-3 年。
+</div>
+
+<p style="margin-top:10px"><b style="color:var(--base)">歷史韻律比對：2018 年 DRAM 超級循環</b></p>
+<table>
+<tr><th>維度</th><th>2018 年</th><th>2026 年（本輪）</th><th>對比</th></tr>
+<tr><td>主流敘事</td><td>「缺貨到 2020」</td><td>「缺貨到 2028」</td><td style="color:var(--warn)">敘事結構完全一致</td></tr>
+<tr><td>合約價漲幅</td><td>~600%</td><td><b>+752%</b></td><td style="color:var(--bear)">本輪已超越</td></tr>
+<tr><td>後續走勢</td><td>2019 年崩盤</td><td>?</td><td style="color:var(--warn)">待驗證</td></tr>
+<tr><td>崩盤觸發</td><td>智慧型手機需求見頂</td><td>DDR5 替代加速？</td><td style="color:var(--neutral)">觸發因子不同但模式相似</td></tr>
+<tr><td>分析師態度</td><td>最高點時一致喊買</td><td>已出現分歧</td><td style="color:var(--accent)">本輪較早出現裂痕</td></tr>
+</table>
+
+<div style="background:var(--code-bg);padding:12px;border-radius:8px;margin:10px 0;font-size:.88em">
+<p style="color:var(--bear);font-weight:700;font-size:1em;margin-bottom:6px">DRAM 產業的永恆定律</p>
+<p style="color:var(--txt2)">「每一次市場喊出『這次不一樣』的時候，最終都證明了『這次跟上次一樣』。」</p>
+<p style="color:var(--txt3);margin-top:4px">— 2000/2006/2010/2014/2018 五次循環頂部的市場敘事都包含「結構性缺貨」四個字。</p>
+</div>
+
+<p style="margin-top:8px"><b style="color:var(--base)">本輪「不同之處」與「相同之處」：</b></p>
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">本輪真的不同的地方</div>
+        <div class="desc" style="text-align:left;padding:4px 0">
+            <br>- AI/HBM 是全新需求（非手機/PC 替代）<br>
+            - CXMT 制裁是前所未有的地緣封鎖<br>
+            - DDR4 停產決策比過去更明確
+        </div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">本輪跟過去一樣的地方</div>
+        <div class="desc" style="text-align:left;padding:4px 0">
+            <br>- 漲幅超歷史極值 → 均值回歸壓力<br>
+            - 「缺貨到 20XX」敘事 → 每次都提前破局<br>
+            - 內部人高位賣出 → 歷次頂部都出現
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>貓膩推衍核心結論</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>歷史韻律暗示：最瘋狂的時候最危險</b>
+<p style="margin-top:4px">DDR4 合約價 +752% 已超越 2018 年漲幅。歷史上每次 DRAM「超級循環」呼聲最高的時候，就是頂點。</p>
+<p style="margin-top:4px">這不代表明天就會崩盤，但代表<b>我們正站在統計分布的最右端</b>。從這個位置往前看，下行機率遠大於上行機率。</p>
+</div>
+
+<p style="margin-top:8px;font-size:.84em;color:var(--txt2)"><b style="color:var(--base)">但也要誠實承認：</b>本輪確實有新變數（AI/HBM、地緣制裁），這些因子可能延長循環。只是延長 ≠ 永遠，最終均值回歸是不可避免的。問題只是「什麼時候」，而不是「會不會」。</p>
+</div>
+</div>
+
+<div class="tip danger">
+<b>8h 整合結論</b>
+<b>資料：</b>本輪 DDR4 漲幅 +752% 已超越 2018 年的 ~600%。歷史上 DRAM 產業五次循環頂部都伴隨「結構性缺貨」敘事。<br>
+<b>觀察：</b>市場敘事「缺貨到 2028」的結構與 2018 年「缺貨到 2020」幾乎完全一致。本輪有 AI/HBM 新變數，但「這次不一樣」本身就是歷次頂部的標準台詞。<br>
+<b>推論：</b>歷史不會完全重演，但韻律會相似。+752% 的漲幅意味著均值回歸的力量正在累積。新變數可能延長循環 1-2 季，但無法改變週期本質。<br>
+<b>結論：</b>貓膩推衍的結論是：<b>市場敘事可能過度樂觀 30-50%</b>。「缺貨到 2028」更可能在 2026 底至 2027H1 就開始瓦解。這強化了 H2 有限循環假說，也強化了「不追高、等回檔」的策略建議。
+</div>
+
+<!-- ============================================================ -->
+<!-- 8i. 第四次信心校準與推衍結論 -->
+<!-- ============================================================ -->
+<div class="section-title" id="s8i">8i. 第四次信心校準與推衍結論</div>
+<div class="section-sub">四次校準進程總覽與最終行動指南</div>
+
+<div class="card">
+<h3>四次信心校準進程</h3>
+<div class="card-body">
+<table>
+<tr><th>校準</th><th>時機</th><th>主假說</th><th>信心度</th><th>變化原因</th></tr>
+<tr>
+    <td style="font-weight:700">第一次</td>
+    <td>ACH 競爭假說</td>
+    <td>H2 有限循環</td>
+    <td style="font-weight:700;color:var(--bull)">65%</td>
+    <td>基本面數據全面支持</td>
+</tr>
+<tr>
+    <td style="font-weight:700">第二次</td>
+    <td>壓力測試</td>
+    <td>H2 有限循環</td>
+    <td style="font-weight:700;color:var(--accent)">60%</td>
+    <td>致命因子（DDR4 反轉）風險分 15 → 下調 5%</td>
+</tr>
+<tr>
+    <td style="font-weight:700">第三次</td>
+    <td>評審團 23 維度</td>
+    <td>H2 有限循環</td>
+    <td style="font-weight:700;color:var(--warn)">55%</td>
+    <td>評審團 34/60 中性偏觀望 → 再下調 5%</td>
+</tr>
+<tr>
+    <td style="font-weight:700;color:var(--accent)">第四次</td>
+    <td>推演版（本報告）</td>
+    <td>H2 有限循環</td>
+    <td style="font-weight:700;color:var(--warn)">53%</td>
+    <td>蝴蝶效應（台塑減持）+ 貓膩（歷史韻律）→ 再下調 2%</td>
+</tr>
+</table>
+
+<div class="score-bar" style="margin-top:10px">
+    <span style="font-size:.82em;color:var(--base);min-width:80px">信心走勢</span>
+    <div class="bar">
+        <div class="fill" style="width:53%;background:linear-gradient(90deg,var(--bull),var(--warn))"></div>
+    </div>
+    <span class="val" style="color:var(--warn)">53%</span>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:4px">信心度從 65% 逐步降至 53%，四次校準一致指向同一方向：基本面無疑問，但估值過度樂觀。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍最終結論</h3>
+<div class="card-body">
+<div style="background:linear-gradient(135deg,rgba(212,160,23,.08),rgba(194,124,110,.08));border:2px solid var(--warn);border-radius:10px;padding:16px;margin:8px 0">
+<p style="font-size:1.1em;font-weight:900;color:var(--base);margin-bottom:8px;text-align:center">南亞科基本面無可挑剔，但投資時機不對</p>
+
+<div class="grid2" style="margin:10px 0">
+    <div class="mini-card neutral-card">
+        <div class="title">概率加權目標</div>
+        <div class="num" style="color:var(--accent)">176 元</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">現價溢價</div>
+        <div class="num" style="color:var(--bear)">22%</div>
+    </div>
+</div>
+
+<p style="font-size:.9em;color:var(--base);font-weight:700;margin:8px 0">週期股鐵律：「在別人最興奮的時候保持冷靜」</p>
+<p style="font-size:.84em;color:var(--txt2)">DDR4 合約價 +752%、Q1 營收 491 億創高、外資喊買 — 這些看起來都像是天大的利多。但 DRAM 產業的歷史告訴我們：這些「最好」的數據，往往出現在循環的最頂端。</p>
+
+<p style="font-size:.9em;color:var(--accent);font-weight:700;margin:10px 0 4px">最佳策略：觀望，設定觸發條件等待回檔</p>
+<p style="font-size:.84em;color:var(--txt2)">不是看空南亞科，而是「等一個更好的價位」。好公司 + 好價格 = 好投資；好公司 + 貴價格 = 壞投資。</p>
+</div>
+
+<div class="tip warn" style="margin-top:10px">
+<b>翻轉信號（何時需要更新本報告）</b>
+<ul style="margin:4px 0;padding-left:18px">
+    <li><b>看空翻多信號：</b>DDR4 合約價回落但南亞科股價不跌（市場提前 price in 利空 → 反轉向上）</li>
+    <li><b>看多翻空信號：</b>DDR4 合約價連續兩季環比下滑 + 月營收連續 3 個月環比下降</li>
+    <li><b>黑天鵝信號：</b>美中貿易全面脫鉤 / 全球經濟衰退確認</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>行動清單</h3>
+<div class="card-body">
+<ul class="action-list">
+    <li style="color:var(--bull)"><b>已完成</b> — 加入監控清單（追蹤：月營收 + DDR4 合約價 + 台塑持股變化）</li>
+    <li style="color:var(--warn)"><b>等待中</b> — 2026/5 月 Q1 財報確認趨勢（毛利率 &gt; 55% → 上調路徑 A；&lt; 45% → 上調路徑 C）</li>
+    <li style="color:var(--warn)"><b>等待中</b> — 2026/7 月法說會確認 H2 展望（核心決策點）</li>
+    <li style="color:var(--accent);font-weight:700"><b>觸發買入</b> — 股價 180 元以下 + DDR4 合約價尚未反轉（兩個條件必須同時滿足）</li>
+    <li style="color:var(--bear);font-weight:700"><b>迴避信號</b> — DDR4 合約價連續季跌 + 台塑集團再次大量減持（出現任一個就維持觀望）</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>推衍有效期</h3>
+<div class="card-body">
+<div class="tip info">
+<b>有效期至 2026-05-15（Q1 財報公布後）</b>
+<p style="margin-top:4px">Q1 財報（預計 5 月中旬）將提供關鍵驗證數據：毛利率、EPS、管理層展望。財報公布後，本推演版的概率分布需要根據實際數據重新校準。</p>
+<p style="margin-top:4px">若 Q1 毛利率 &gt; 55% 且管理層 guidance 維持強勁 → 路徑 A 概率可能上調至 25-30%。<br>若 Q1 毛利率 &lt; 45% 或 guidance 轉為保守 → 路徑 C 概率可能上調至 25%+。</p>
+</div>
+</div>
+</div>
+
+<div class="tip danger">
+<b>8i 整合結論（推衍版最終結論）</b>
+<b>資料：</b>四次信心校準從 65% → 60% → 55% → 53%，一路下修。概率加權目標 176 元 vs 現價 215 元溢價 22%。80% 的概率路徑（B+C+D）指向虧損。<br>
+<b>觀察：</b>基本面毫無疑問是好的（營收創高、缺貨持續、護城河尚在），但所有利多已被市場充分定價。蝴蝶效應（台塑減持）和貓膩推衍（歷史韻律）都指向同一結論：頂部風險正在累積。<br>
+<b>推論：</b>南亞科是一家好公司，但 215 元不是一個好價格。好公司買貴了一樣會賠錢。週期股的投資邏輯是「在恐慌中買入、在狂歡中賣出」，現在市場正處於狂歡階段。<br>
+<b>結論：</b><span style="font-weight:900;color:var(--warn)">維持觀望，不追高。</span>設定 180 元為積極進場線、150 元為穩健進場線。用 5 月 Q1 財報和 7 月法說會作為兩個觀察窗口。記住週期股的終極鐵律：<b>你看到的「最好」，往往就是「最後的好」</b>。
+</div>
+
+<!-- ===== 頁尾 ===== -->
+<div class="footer">
+    <p>天機閣 — 推衍系統 / 情報中心</p>
+    <p>報告日期：2026-04-12</p>
+    <p>推衍有效期：至 2026-05-15（Q1 財報公布後需更新）</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，入市需謹慎。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(collapse){
+    document.querySelectorAll('.card').forEach(function(c){
+        if(collapse) c.classList.add('collapsed');
+        else c.classList.remove('collapsed');
+    });
+}
+document.querySelectorAll('.card').forEach(function(c){ c.classList.add('collapsed'); });
+document.querySelectorAll('.card h3').forEach(function(h3){
+    h3.addEventListener('click',function(){
+        this.parentElement.classList.toggle('collapsed');
+    });
+});
+</script>
+</body>
+</html>
