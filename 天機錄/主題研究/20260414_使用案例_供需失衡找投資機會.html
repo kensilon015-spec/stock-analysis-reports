@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>使用案例：供需失衡找投資機會 — 銅礦實戰紀錄</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;--gold:#d4b030}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;padding:0}
+.wrap{max-width:800px;margin:0 auto;padding:24px 20px}
+
+/* Hero */
+.hero{text-align:center;padding:32px 16px 24px;margin-bottom:20px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.5em;font-weight:900;color:var(--base);letter-spacing:.02em;line-height:1.4}
+.hero .sub{font-size:.88em;color:var(--accent);font-weight:600;margin-top:6px}
+.hero .desc{font-size:.8em;color:var(--txt3);margin-top:8px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:3px 12px;border-radius:6px;font-size:.73em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* 文章 */
+.article{font-size:.92em;color:var(--txt);line-height:1.85}
+.article h2{font-size:1.15em;font-weight:800;color:var(--base);margin:28px 0 10px;padding-top:16px;border-top:1.5px solid var(--border)}
+.article h3{font-size:1em;font-weight:700;color:var(--accent);margin:18px 0 6px}
+.article p{margin-bottom:10px;color:var(--txt2)}
+.article strong{color:var(--base)}
+.article a{color:var(--link);text-decoration:none}
+.article a:hover{text-decoration:underline}
+.article ul,.article ol{padding-left:20px;margin-bottom:10px;color:var(--txt2)}
+.article li{margin-bottom:4px}
+
+/* 卡片 */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+.card-title{font-weight:700;color:var(--base);font-size:.9em;margin-bottom:8px}
+
+/* 提示框 */
+.tip{padding:12px 16px;border-radius:6px;margin:12px 0;border-left:3px solid;font-size:.86em}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.15)}.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.12)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.15)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em}
+th{background:var(--table-header);color:var(--base);padding:7px 10px;text-align:center;font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);text-align:center}
+tr:hover td{background:var(--hover)}
+
+/* 圖表容器 */
+.chart-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:12px 0}
+.chart-box canvas{max-height:320px}
+.chart-label{font-size:.78em;color:var(--txt3);text-align:center;margin-top:4px}
+
+/* 流程圖 */
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.flow-step{background:var(--panel);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:100px;font-size:.8em;font-weight:600;color:var(--base)}
+.flow-step.active{border-color:var(--accent);background:rgba(107,159,114,.12);color:var(--accent)}
+.flow-step.result{border-color:var(--bull);background:rgba(76,175,80,.12);color:var(--bull)}
+.flow-arrow{color:var(--txt3);font-size:1.1em;padding:0 4px;user-select:none}
+
+/* 數據卡片 */
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.stat .num{font-size:1.5em;font-weight:900;margin:2px 0}
+.stat .label{font-size:.75em;color:var(--txt3);font-weight:600}
+
+/* 引述 */
+.quote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:rgba(107,159,114,.06);font-size:.88em;color:var(--txt2);font-style:italic;border-radius:0 6px 6px 0}
+
+/* 頁尾 */
+.footer{text-align:center;padding:16px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>供需失衡找投資機會<br>— 銅礦實戰紀錄</h1>
+    <div class="sub">從記憶體供需靈感 → 發現銅礦結構性缺口 → FCX 三個月 +13%</div>
+    <div class="desc">2026.04 ｜ 使用案例分享</div>
+    <div class="tags">
+        <span class="tag">供需分析</span>
+        <span class="tag">銅礦</span>
+        <span class="tag">FCX</span>
+        <span class="tag">實戰紀錄</span>
+    </div>
+</div>
+
+<div class="article">
+
+<!-- ===== 第一段：起因 ===== -->
+<h2>一、起因：從記憶體看到的模式</h2>
+
+<p>最近做了一輪記憶體（DRAM）的供需分析，發現一個明確的投資邏輯：<strong>當供給受到結構性限制、需求同時被多個引擎驅動時，價格上漲幾乎是必然的</strong>。這讓我想試著把同樣的框架套用到其他商品上。</p>
+
+<p>然後看到一則新聞：<strong>亞馬遜直接跟力拓簽了銅的供應協議</strong>。</p>
+
+<div class="quote">
+當一家科技公司開始繞過中間商、直接跟礦場簽約鎖定原料，通常代表它認為供給會出問題。亞馬遜不是礦業公司，它沒必要做這件事——除非它真的擔心拿不到銅。
+</div>
+
+<p>這個訊號讓我開始認真研究銅。</p>
+
+<!-- ===== 第二段：邏輯 ===== -->
+<h2>二、四條需求線同時拉動</h2>
+
+<p>仔細想，銅的需求不是單一來源，而是至少四條線同時在拉：</p>
+
+<ol>
+    <li><strong>電動車</strong> — 每輛 EV 用銅量是燃油車的 3-4 倍，全球銷量每年增 20%</li>
+    <li><strong>AI 數據中心</strong> — 每 MW 裝機容量需要 27-65 噸銅，全球正在大量建設</li>
+    <li><strong>電力網升級</strong> — 歐美電網平均 40-50 年老舊，大規模更新迫在眉睫</li>
+    <li><strong>各國電力需求成長</strong> — 工業電氣化、空調普及、EV 充電都在推升用電量</li>
+</ol>
+
+<p>這四條線的共同特點是：<strong>都是結構性趨勢，不會因為短期景氣波動就消失</strong>。</p>
+
+<!-- ===== 第三段：供需數據 ===== -->
+<h2>三、查出來的供需數據</h2>
+
+<p>用天機閣系統整理了各機構（ICSG / JPM / 高盛 / S&P Global / Wood Mackenzie）的預測，交叉比對後得到以下數據：</p>
+
+<table>
+<tr><th>年度</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th><th>2028E</th><th>2029E</th><th>2030E</th></tr>
+<tr><td><strong>總供給（萬噸）</strong></td><td>2,750</td><td>2,880</td><td>2,850</td><td>2,950</td><td>3,050</td><td>3,100</td><td>3,150</td></tr>
+<tr><td><strong>總需求（萬噸）</strong></td><td>3,000</td><td>3,120</td><td>3,220</td><td>3,330</td><td>3,450</td><td>3,560</td><td>3,680</td></tr>
+<tr style="font-weight:700"><td>缺口率</td>
+<td style="color:var(--bear)">-8%</td>
+<td style="color:var(--bear)">-8%</td>
+<td style="color:var(--bear)">-11%</td>
+<td style="color:var(--bear)">-11%</td>
+<td style="color:var(--bear)">-12%</td>
+<td style="color:var(--bear)">-13%</td>
+<td style="color:var(--bear)">-14%</td>
+</tr>
+</table>
+
+<div class="chart-box">
+    <canvas id="chartSupplyDemand"></canvas>
+    <div class="chart-label">資料來源：ICSG / J.P. Morgan / Goldman Sachs / S&P Global / Wood Mackenzie 交叉推算</div>
+</div>
+
+<p>重點不只是缺口存在，而是<strong>缺口在逐年擴大</strong>，從 -8% 擴大到 -14%。</p>
+
+<!-- ===== 第四段：為什麼補不上 ===== -->
+<h2>四、為什麼供給追不上？</h2>
+
+<div class="grid3">
+    <div class="stat">
+        <div class="label">新礦從發現到啟用</div>
+        <div class="num" style="color:var(--bear)">12~17年</div>
+    </div>
+    <div class="stat">
+        <div class="label">30年品位下降</div>
+        <div class="num" style="color:var(--bear)">-50%</div>
+    </div>
+    <div class="stat">
+        <div class="label">TC/RC 加工費</div>
+        <div class="num" style="color:var(--bear)">$0/噸</div>
+    </div>
+</div>
+
+<ul>
+    <li><strong>時間差</strong>：目前全球礦產已經開得差不多了，新礦場從發現到啟用至少 12 年，近年因為環評和法規問題甚至延長到 17 年。短期內幾乎無法解決缺口問題。</li>
+    <li><strong>品位懸崖</strong>：全球銅礦品位從 1.2% 降到 0.65%，意味著要挖出等量的銅需要處理更多岩石，成本更高、速度更慢。</li>
+    <li><strong>精礦搶奪</strong>：冶煉廠的加工費（TC/RC）從 2024 年的 $80/噸降到 2026 年的 $0/噸——冶煉廠免費幫礦商加工，只為了搶到原料。這是精礦極度稀缺的硬證據。</li>
+</ul>
+
+<div class="chart-box">
+    <canvas id="chartDeficit"></canvas>
+    <div class="chart-label">缺口率逐年擴大趨勢（供給-需求 / 需求）</div>
+</div>
+
+<!-- ===== 第五段：選股 ===== -->
+<h2>五、選什麼標的？</h2>
+
+<p>確認供需失衡是結構性的之後，下一步是找最直接受惠的公司。在美股，「純銅」礦商選擇其實不多：</p>
+
+<table>
+<tr><th>代號</th><th>公司</th><th>銅佔營收</th><th>全球銅市佔</th><th>特色</th></tr>
+<tr><td><strong>SCCO</strong></td><td>Southern Copper</td><td>85-90%</td><td>4.1%</td><td>最純、最大銅儲量</td></tr>
+<tr><td><strong>FCX</strong></td><td>Freeport-McMoRan</td><td>75-80%</td><td>6.6%</td><td>最大上市銅礦商</td></tr>
+<tr><td><strong>TECK</strong></td><td>Teck Resources</td><td>70%+</td><td>1.9%</td><td>與 Anglo American 合併中</td></tr>
+</table>
+
+<p>BHP 雖然銅產量全球最大，但銅只佔它營收的 25-30%，買 BHP 等於同時買了鐵礦石和鉀肥，不夠純。</p>
+
+<h3>為什麼選 FCX？</h3>
+
+<p>查資料的過程中發現一個額外的催化劑：<strong>FCX 旗下全球第二大銅礦 Grasberg 在 2025 年 9 月發生泥流事故</strong>，產量驟降到正常水平的 30%，股價因此受創。但公司預計 2026 年下半年分階段恢復。</p>
+
+<p>這意味著：</p>
+<ul>
+    <li>股價因為短期利空被壓低（買入機會）</li>
+    <li>復產將帶動 2027 年產量跳升 +21%（強力催化劑）</li>
+    <li>銅價趨勢上行 + 產量恢復 = 雙引擎驅動</li>
+</ul>
+
+<!-- ===== 第六段：決策流程 ===== -->
+<h2>六、決策流程</h2>
+
+<div class="flow">
+    <div class="flow-step">記憶體供需<br>得到靈感</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">亞馬遜簽約<br>訊號驗證</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step active">四大需求線<br>邏輯確認</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step active">供需數據<br>缺口逐年擴大</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step active">供給面<br>12-17年無解</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step result">選定 FCX<br>買入</div>
+</div>
+
+<div class="grid3">
+    <div class="stat">
+        <div class="label">持有期間</div>
+        <div class="num" style="color:var(--accent)">3 個月</div>
+    </div>
+    <div class="stat">
+        <div class="label">報酬率</div>
+        <div class="num" style="color:var(--bull)">+13%</div>
+    </div>
+    <div class="stat">
+        <div class="label">期間經歷</div>
+        <div class="num" style="font-size:1em;color:var(--neutral)">川普關稅恐嚇</div>
+    </div>
+</div>
+
+<p>+13% 不算特別驚人，但這筆投資有兩個讓我覺得值得記錄的特點：</p>
+<ol>
+    <li><strong>抗干擾</strong>：持有期間經歷了川普的各種關稅恐嚇，但因為銅的需求是剛性的（電網要建、EV 要造、數據中心要蓋），跌幅有限，很快就恢復。這種有剛需支撐、不容易被外部政治因素破壞的標的，持有過程比較安穩。</li>
+    <li><strong>長坡道</strong>：銅的供需缺口是逐年擴大的，不是一次性事件，所以不需要急著賣。這跟追短期題材的心態完全不同。</li>
+</ol>
+
+<!-- ===== 第七段：工具效率 ===== -->
+<h2>七、關於研究效率</h2>
+
+<p>這次分析我用了自己開發的天機閣系統來輔助整理資料。實際感受：</p>
+
+<ul>
+    <li><strong>速度</strong>：本來估計需要好幾天的跨國資料蒐集和交叉比對，大約兩天就完成決策。</li>
+    <li><strong>門檻</strong>：銅礦的供需數據分散在 ICSG、各投行報告、礦業公司財報裡，很多是英文的，天機閣幫忙降低了取得和整理這些資訊的門檻。</li>
+    <li><strong>系統性</strong>：不是看到一則新聞就衝動買入，而是有一套流程：蒐集 → 交叉比對 → 假說檢驗 → 壓力測試 → 決策。</li>
+</ul>
+
+<p>整理出來的完整報告：</p>
+<div class="card">
+    <div class="card-title">相關分析報告</div>
+    <p><a href="https://kensilon015-spec.github.io/stock-analysis-reports/天機錄/主題研究/20260414_深度調查_銅礦供需失衡_完整版.html" target="_blank">銅礦供需失衡 — 完整版（供需數據 + 公司分析 + 貓膩探索）</a></p>
+    <p><a href="https://kensilon015-spec.github.io/stock-analysis-reports/天機錄/主題研究/20260414_深度調查_銅礦供需失衡_推演版.html" target="_blank">銅礦供需失衡 — 推演版（五條未來路徑 + 蝴蝶效應 + 催化劑時間表）</a></p>
+</div>
+
+<!-- ===== 第八段：投資觀察 ===== -->
+<h2>八、近期的投資觀察</h2>
+
+<p>做完這次銅礦分析後，我對目前的投資環境有一些想法：</p>
+
+<h3>傳統價值投資越來越難做</h3>
+<p>幾個可能的原因：</p>
+<ul>
+    <li><strong>資訊落差縮小</strong>：以前能拿到年報、讀懂財報就是優勢。現在資訊傳播太快，好公司的基本面早就被翻過好幾輪了。</li>
+    <li><strong>價格反應加速</strong>：有什麼新訊息，市場幾小時內就反映完畢。安全邊際消失得很快。</li>
+    <li><strong>外部波動放大</strong>：地緣政治、關稅政策、央行動向⋯⋯這些外部因素造成的價格波動，有時候比公司基本面變化還大，對用基本面做判斷的投資人來說是很不利的環境。</li>
+</ul>
+
+<h3>供需失衡可能是目前比較有效的切入角度</h3>
+
+<div class="chart-box">
+    <canvas id="chartDrivers"></canvas>
+    <div class="chart-label">三大需求引擎 2024→2030 銅需求成長預估（萬噸）</div>
+</div>
+
+<p>這次銅礦的經驗讓我意識到，在當前環境下，<strong>供需失衡帶來的定價錯位</strong>可能比傳統估值模型更能產生超額報酬。原因是：</p>
+
+<ul>
+    <li><strong>沒有定價基礎</strong>：當供不應求時，價格會超過所有傳統估值模型的上限，因為市場在追價而不是在估價。</li>
+    <li><strong>剛需支撐</strong>：電網要建、EV 要造、數據中心要蓋——這些需求不會因為價格漲了就消失，跟消費性產品不同。</li>
+    <li><strong>時間差保護</strong>：新礦 12-17 年才能投產，意味著即使價格訊號已經發出，供給端的反應也需要很長時間，缺口有持續性。</li>
+</ul>
+
+<div class="tip info">
+<b>一點提醒</b>
+這只是我個人的投資紀錄和觀察，不構成任何投資建議。供需分析有其盲區——需求預測可能高估、地緣政治可能改變貿易格局、替代材料也在發展中。任何投資都有風險，需要自己評估。
+</div>
+
+</div><!-- .article -->
+
+<div class="footer">
+    <p>2026-04-14</p>
+    <p>免責聲明：本文僅為個人投資心得紀錄，不構成任何投資建議。投資有風險，請自行評估。</p>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// === 圖表一：供給 vs 需求 ===
+new Chart(document.getElementById('chartSupplyDemand'), {
+    type: 'bar',
+    data: {
+        labels: ['2024', '2025E', '2026E', '2027E', '2028E', '2029E', '2030E'],
+        datasets: [
+            {
+                label: '總供給（萬噸）',
+                data: [2750, 2880, 2850, 2950, 3050, 3100, 3150],
+                backgroundColor: 'rgba(107,159,114,0.7)',
+                borderColor: '#6b9f72',
+                borderWidth: 1
+            },
+            {
+                label: '總需求（萬噸）',
+                data: [3000, 3120, 3220, 3330, 3450, 3560, 3680],
+                backgroundColor: 'rgba(212,136,122,0.7)',
+                borderColor: '#d4887a',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#b8b0a5', font: { size: 12 } } },
+            title: { display: true, text: '全球精煉銅 供給 vs 需求（萬噸）', color: '#e8e4dc', font: { size: 14, weight: 'bold' } }
+        },
+        scales: {
+            x: { ticks: { color: '#7a7268' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a7268' }, grid: { color: 'rgba(255,255,255,0.08)' }, min: 2500 }
+        }
+    }
+});
+
+// === 圖表二：缺口率 ===
+new Chart(document.getElementById('chartDeficit'), {
+    type: 'line',
+    data: {
+        labels: ['2024', '2025E', '2026E', '2027E', '2028E', '2029E', '2030E'],
+        datasets: [{
+            label: '缺口率（%）',
+            data: [-8, -8, -11, -11, -12, -13, -14],
+            borderColor: '#ef5350',
+            backgroundColor: 'rgba(239,83,80,0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#ef5350'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#b8b0a5' } },
+            title: { display: true, text: '供需缺口率逐年擴大（%）', color: '#e8e4dc', font: { size: 14, weight: 'bold' } }
+        },
+        scales: {
+            x: { ticks: { color: '#7a7268' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a7268', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.08)' }, max: 0, min: -16 }
+        }
+    }
+});
+
+// === 圖表三：三大需求引擎 ===
+new Chart(document.getElementById('chartDrivers'), {
+    type: 'bar',
+    data: {
+        labels: ['電動車', 'AI 數據中心', '電力網升級'],
+        datasets: [
+            {
+                label: '2024 需求（萬噸）',
+                data: [95, 37, 1252],
+                backgroundColor: 'rgba(122,176,192,0.6)',
+                borderColor: '#7ab0c0',
+                borderWidth: 1
+            },
+            {
+                label: '2030E 需求（萬噸）',
+                data: [250, 110, 1490],
+                backgroundColor: 'rgba(107,159,114,0.7)',
+                borderColor: '#6b9f72',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#b8b0a5' } },
+            title: { display: false }
+        },
+        scales: {
+            x: { ticks: { color: '#7a7268' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a7268' }, grid: { color: 'rgba(255,255,255,0.08)' } }
+        }
+    }
+});
+</script>
+</body>
+</html>
