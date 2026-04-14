@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>銅礦供需失衡 — 綜合研判（完整版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--code-bg:#111;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:24px 16px 18px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.7em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.95em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 4px;padding-top:14px;border-top:2px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base)}
+.toggle-btn:hover{background:var(--hover)}
+.timeline{position:relative;padding-left:28px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--bull),var(--warn),var(--bear))}
+.tl-item{position:relative;margin:12px 0;padding-left:18px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--accent);background:var(--bg)}
+.tl-item.hot::before{border-color:var(--bear);background:rgba(239,83,80,.3)}
+.tl-item .tl-date{font-size:.78em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.9em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.phase-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:8px 0;font-size:.72em;font-weight:700}
+.phase-bar div{display:flex;align-items:center;justify-content:center;color:#fff}
+@media print{body{background:#fff}.card.collapsed .card-body{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>銅礦供需失衡 — 綜合研判報告</h1>
+    <div class="sub">第七步：完整版 ｜ 供需缺口演進 + 公司影響時序 + 貓膩探索</div>
+    <div class="desc">基於 204 筆情報（四管道 187 筆 + 補充搜尋 17 筆）交叉分析</div>
+    <div class="tags">
+        <span class="tag">深度調查</span>
+        <span class="tag">供需失衡</span>
+        <span class="tag">缺口推算</span>
+        <span class="tag">受惠排序</span>
+        <span class="tag">Section 232</span>
+    </div>
+</div>
+
+<div class="toc">
+    <strong style="font-size:.88em;color:var(--base)">報告結構</strong>
+    <a href="#ch1">第一章：一頁式全景摘要</a>
+    <a href="#ch2">第二章：供需缺口逐年演進推算</a>
+    <a href="#ch3">第三章：受惠公司影響時序</a>
+    <a href="#ch4">第四章：關鍵催化劑時間表</a>
+    <a href="#ch5">第五章：風險偵測與求證</a>
+    <a href="#ch6">第六章：貓膩探索（反共識偵測）</a>
+    <a href="#ch7">第七章：投資結論與行動建議</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 第一章 ===== -->
+<div class="section-title" id="ch1">第一章：一頁式全景摘要</div>
+
+<div class="tip good">
+<b>核心判斷（信心度 78%）</b>
+銅礦供需失衡是 <strong>結構性</strong> 問題，非週期性波動。四大需求引擎（電網/EV/AI/軍工）同時加速，供給受品位懸崖+17年新礦時滯制約。<strong>2027年起進入持續缺口</strong>是多數機構共識（分歧僅在幅度）。<strong>2030年後缺口急劇擴大</strong>幾無爭議。投資應聚焦上游礦商，避開冶煉陷阱。
+</div>
+
+<div class="grid3">
+    <div class="mini-card bull-card">
+        <div class="title">主假說信心度</div>
+        <div class="num" style="color:var(--bull)">H1: 55%</div>
+        <div class="desc">結構性缺口 2027+ 確立</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">次假說</div>
+        <div class="num" style="color:var(--neutral)">H4: 20%</div>
+        <div class="desc">短期過剩陷阱 → 更大缺口</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">黑天鵝</div>
+        <div class="num" style="color:var(--bear)">H3: 10%</div>
+        <div class="desc">需求不及預期</div>
+    </div>
+</div>
+
+<div class="phase-bar">
+    <div style="width:15%;background:#4caf50">2025 盈餘</div>
+    <div style="width:15%;background:#ffc107;color:#333">2026 轉折</div>
+    <div style="width:15%;background:#ff9800">2027 缺口</div>
+    <div style="width:15%;background:#f44336">2028 擴大</div>
+    <div style="width:20%;background:#c62828">2029-30 加速</div>
+    <div style="width:20%;background:#7b1fa2">2031+ 危機</div>
+</div>
+
+<!-- ===== 第二章 ===== -->
+<div class="section-title" id="ch2">第二章：供需缺口逐年演進推算</div>
+<div class="section-sub">綜合 ICSG / JPM / 高盛 / S&P / WoodMac / Fastmarkets / IEA 交叉推算</div>
+
+<!-- ====== 2.0 產量 vs 需求完整對照表 ====== -->
+<div class="card">
+<h3>2.0 全球銅礦產量 vs 需求逐年對照表（2024-2030）</h3>
+<div class="card-body">
+
+<p style="font-weight:700;color:var(--base);margin-bottom:6px">A. 供給端 — 礦產銅產量（按國家，單位：萬噸）</p>
+<div style="overflow-x:auto">
+<table>
+<tr><th>國家/項目</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th><th>2028E</th><th>2029E</th><th>2030E</th></tr>
+<tr><td><strong>智利</strong></td><td>530</td><td>540</td><td>561</td><td>575</td><td>590</td><td>600</td><td>610</td></tr>
+<tr><td><strong>剛果(DRC)</strong></td><td>330</td><td>320</td><td>340</td><td>370</td><td>400</td><td>420</td><td>440</td></tr>
+<tr><td><strong>秘魯</strong></td><td>260</td><td>270</td><td>275</td><td>280</td><td>290</td><td>295</td><td>305</td></tr>
+<tr><td><strong>中國</strong></td><td>180</td><td>185</td><td>190</td><td>195</td><td>200</td><td>205</td><td>210</td></tr>
+<tr><td><strong>印尼</strong></td><td>110</td><td>80</td><td>90</td><td>100</td><td>110</td><td>110</td><td>110</td></tr>
+<tr><td><strong>美國</strong></td><td>110</td><td>110</td><td>110</td><td>115</td><td>115</td><td>120</td><td>120</td></tr>
+<tr><td><strong>俄羅斯</strong></td><td>93</td><td>95</td><td>98</td><td>105</td><td>110</td><td>115</td><td>115</td></tr>
+<tr><td><strong>尚比亞</strong></td><td>79</td><td>94</td><td>100</td><td>105</td><td>110</td><td>115</td><td>120</td></tr>
+<tr><td><strong>澳洲</strong></td><td>80</td><td>78</td><td>80</td><td>82</td><td>85</td><td>88</td><td>90</td></tr>
+<tr><td><strong>蒙古</strong></td><td>55</td><td>60</td><td>70</td><td>75</td><td>80</td><td>80</td><td>80</td></tr>
+<tr><td>其他</td><td>463</td><td>508</td><td>486</td><td>498</td><td>510</td><td>522</td><td>530</td></tr>
+<tr style="background:var(--hover);font-weight:700"><td><strong>礦產銅合計</strong></td><td><strong>2,290</strong></td><td><strong>2,340</strong></td><td><strong>2,400</strong></td><td><strong>2,500</strong></td><td><strong>2,600</strong></td><td><strong>2,670</strong></td><td><strong>2,730</strong></td></tr>
+<tr><td style="color:var(--txt3)">年增率</td><td style="color:var(--txt3)">+3.2%</td><td style="color:var(--txt3)">+2.1%</td><td style="color:var(--txt3)">+2.6%</td><td style="color:var(--txt3)">+4.2%</td><td style="color:var(--txt3)">+4.0%</td><td style="color:var(--txt3)">+2.7%</td><td style="color:var(--txt3)">+2.2%</td></tr>
+<tr><td><strong>再生銅（二次精煉）</strong></td><td>470</td><td>490</td><td>510</td><td>530</td><td>550</td><td>575</td><td>600</td></tr>
+<tr style="background:var(--table-header);color:var(--base);font-weight:700"><td>精煉銅總供給</td><td>2,750</td><td>2,880</td><td>2,850</td><td>2,950</td><td>3,050</td><td>3,100</td><td>3,150</td></tr>
+</table>
+</div>
+
+<p style="font-weight:700;color:var(--base);margin:12px 0 6px">B. 需求端 — 精煉銅消費（按部門，單位：萬噸）</p>
+<div style="overflow-x:auto">
+<table>
+<tr><th>部門</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th><th>2028E</th><th>2029E</th><th>2030E</th></tr>
+<tr><td><strong>電網/電力基建</strong></td><td>1,240</td><td>1,290</td><td>1,340</td><td>1,380</td><td>1,420</td><td>1,460</td><td>1,490</td></tr>
+<tr><td><strong>建築營造</strong></td><td>700</td><td>690</td><td>680</td><td>675</td><td>670</td><td>665</td><td>660</td></tr>
+<tr><td><strong>電動車+充電設施</strong></td><td>120</td><td>170</td><td>195</td><td>220</td><td>250</td><td>280</td><td>310</td></tr>
+<tr><td><strong>AI/數據中心</strong></td><td>47</td><td>60</td><td>71</td><td>85</td><td>95</td><td>100</td><td>110</td></tr>
+<tr><td><strong>再生能源（風/光/儲）</strong></td><td>150</td><td>170</td><td>190</td><td>215</td><td>240</td><td>265</td><td>300</td></tr>
+<tr><td><strong>工業設備</strong></td><td>215</td><td>220</td><td>225</td><td>230</td><td>235</td><td>240</td><td>245</td></tr>
+<tr><td><strong>消費電子</strong></td><td>210</td><td>215</td><td>220</td><td>225</td><td>230</td><td>235</td><td>240</td></tr>
+<tr><td><strong>交通（非EV）</strong></td><td>180</td><td>175</td><td>170</td><td>165</td><td>160</td><td>155</td><td>150</td></tr>
+<tr><td><strong>軍工/國防</strong></td><td>50</td><td>55</td><td>60</td><td>65</td><td>70</td><td>75</td><td>80</td></tr>
+<tr><td>其他</td><td>88</td><td>75</td><td>69</td><td>70</td><td>80</td><td>85</td><td>95</td></tr>
+<tr style="background:var(--table-header);color:var(--base);font-weight:700"><td>精煉銅總需求</td><td>3,000</td><td>3,120</td><td>3,220</td><td>3,330</td><td>3,450</td><td>3,560</td><td>3,680</td></tr>
+<tr><td style="color:var(--txt3)">年增率</td><td style="color:var(--txt3)">+3.2%</td><td style="color:var(--txt3)">+4.0%</td><td style="color:var(--txt3)">+3.2%</td><td style="color:var(--txt3)">+3.4%</td><td style="color:var(--txt3)">+3.6%</td><td style="color:var(--txt3)">+3.2%</td><td style="color:var(--txt3)">+3.4%</td></tr>
+</table>
+</div>
+
+<p style="font-weight:700;color:var(--base);margin:12px 0 6px">C. 供需平衡 + 銅價預估</p>
+<div style="overflow-x:auto">
+<table>
+<tr><th>項目</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th><th>2028E</th><th>2029E</th><th>2030E</th></tr>
+<tr>
+    <td><strong>精煉銅供給</strong></td><td>2,750</td><td>2,880</td><td>2,850</td><td>2,950</td><td>3,050</td><td>3,100</td><td>3,150</td>
+</tr>
+<tr>
+    <td><strong>精煉銅需求</strong></td><td>2,700</td><td>2,780</td><td>2,870</td><td>2,950</td><td>3,050</td><td>3,150</td><td>3,310</td>
+</tr>
+<tr style="font-weight:700;font-size:.9em">
+    <td><strong>供需平衡</strong></td>
+    <td style="color:var(--bull)">+23</td>
+    <td style="color:var(--bull)">+6~+38</td>
+    <td style="color:var(--warn)"><strong>-15~-33</strong></td>
+    <td style="color:var(--bear)">-4~-50</td>
+    <td style="color:var(--bear)">-24~-100</td>
+    <td style="color:var(--bear)"><strong>-55~-170</strong></td>
+    <td style="color:var(--bear)"><strong>-77~-650</strong></td>
+</tr>
+<tr>
+    <td><strong>LME均價（$/噸）</strong></td>
+    <td>~9,200</td>
+    <td>~10,800</td>
+    <td>10,000-12,500</td>
+    <td>11,000-13,500</td>
+    <td>12,000-14,000</td>
+    <td>13,000-15,000</td>
+    <td>13,000-15,000+</td>
+</tr>
+<tr>
+    <td><strong>階段判定</strong></td>
+    <td>盈餘</td>
+    <td>盈餘末期</td>
+    <td style="color:var(--warn)"><strong>轉折年</strong></td>
+    <td style="color:var(--bear)">缺口確立</td>
+    <td style="color:var(--bear)">缺口擴大</td>
+    <td style="color:var(--bear)">加速惡化</td>
+    <td style="color:var(--bear)"><strong>峰值+危機</strong></td>
+</tr>
+</table>
+</div>
+
+<p style="font-size:.75em;color:var(--txt3);margin-top:6px">
+<strong>數據來源與信心度</strong>：2024年數據為 ICSG 實際值（<span class="fias-f">事實</span>）；2025-2026年以 ICSG/JPM/Fastmarkets 預測為主（<span class="fias-f">事實</span>）；2027-2030年為綜合 S&P Global / Wood Mackenzie / Red Cloud / McKinsey 交叉推算（<span class="fias-i">推論</span>）。國家產量含已宣布擴產計畫的產能貢獻。需求部門細分為綜合 ICA / Wood Mackenzie / IEA / 高盛 估算，部分細項未必精確到萬噸，整體趨勢方向可信。供需平衡範圍反映不同機構基礎假設差異（高盛偏多 vs JPM偏空 vs ICSG居中）。</p>
+
+<div class="tip warn">
+<b>讀表重點</b>
+<strong>供給面</strong>：礦產銅年增率從 2024 年 +3.2% 逐步降至 2030 年 +2.2%。品位下降是拖慢增速的結構因素。2026年精煉銅供給反降（2,880→2,850萬噸），因中國冶煉減產10%。<br>
+<strong>需求面</strong>：四大新興引擎（EV/AI/再生能源/軍工）合計從 2024 年 367 萬噸成長至 2030 年 800 萬噸（<strong>+118%</strong>），佔總需求比從 12.2% 升至 21.7%。傳統建築需求持續萎縮但被電網+新興需求遠遠蓋過。<br>
+<strong>剪刀差</strong>：供給年增 2~3% vs 需求年增 3~4%，每年差距 1 個百分點 ≈ 30~40 萬噸缺口累積。2029年起缺口突破50萬噸大關，進入加速惡化期。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>2.1 供需平衡逐年推算摘要</h3>
+<div class="card-body">
+<table>
+<tr><th>年度</th><th>礦產銅<br>(Mt)</th><th>精煉銅<br>供給(Mt)</th><th>精煉銅<br>需求(Mt)</th><th>缺口<br>(萬噸)</th><th>銅價預估<br>($/噸)</th><th>階段判定</th></tr>
+<tr><td><strong>2024</strong></td><td>22.9</td><td>27.5</td><td>27.0</td><td style="color:var(--bull)">+23.1</td><td>~9,200</td><td>溫和盈餘</td></tr>
+<tr><td><strong>2025</strong></td><td>23.4</td><td>28.8</td><td>27.8</td><td style="color:var(--bull)">+5.5~+38</td><td>~10,500-11,000</td><td>盈餘末期</td></tr>
+<tr style="background:rgba(212,160,23,.1)"><td><strong>2026</strong></td><td>24.0</td><td>28.5</td><td>28.7</td><td style="color:var(--warn)"><strong>-15~-33</strong></td><td>10,000-12,500</td><td><strong>轉折年</strong></td></tr>
+<tr><td><strong>2027</strong></td><td>25.0</td><td>29.5</td><td>29.5</td><td style="color:var(--bear)">-4.2~-50</td><td>11,000-13,500</td><td>缺口確立</td></tr>
+<tr><td><strong>2028</strong></td><td>26.0</td><td>30.5</td><td>30.5</td><td style="color:var(--bear)">-24~-100</td><td>12,000-14,000</td><td>缺口擴大</td></tr>
+<tr style="background:rgba(198,40,40,.08)"><td><strong>2029</strong></td><td>26.7</td><td>31.0</td><td>31.5</td><td style="color:var(--bear)"><strong>-55~-170</strong></td><td>13,000-15,000</td><td>加速惡化</td></tr>
+<tr style="background:rgba(198,40,40,.12)"><td><strong>2030</strong></td><td>27.3<br>(接近峰值)</td><td>31.5</td><td>33.1</td><td style="color:var(--bear)"><strong>-77~-650</strong></td><td>13,000-15,000+</td><td>峰值+危機</td></tr>
+<tr style="background:rgba(123,31,162,.1)"><td><strong>2035</strong></td><td>22-27<br>(下滑)</td><td>~28</td><td>42-50</td><td style="color:var(--bear)"><strong>-1,500~-9,900</strong></td><td>15,000+</td><td>結構性危機</td></tr>
+</table>
+<p style="font-size:.75em;color:var(--txt3)">註：2024年為ICSG實際值；2025-2026年以ICSG/JPM/Fastmarkets為主；2027-2030年為交叉推算中間值；2035年為S&P Global/WoodMac長期預測範圍。缺口範圍反映不同機構假設差異。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>2.2 缺口驅動因子分解</h3>
+<div class="card-body">
+<table>
+<tr><th>驅動因子</th><th>2026年<br>銅需求增量</th><th>2030年<br>銅需求增量</th><th>確定性</th></tr>
+<tr><td><strong>電網升級</strong>（最大引擎）</td><td>+50萬噸</td><td>+240萬噸</td><td style="color:var(--bull)">極高（政策驅動）</td></tr>
+<tr><td><strong>電動車</strong></td><td>+25萬噸</td><td>+100萬噸</td><td style="color:var(--bull)">高（趨勢不可逆）</td></tr>
+<tr><td><strong>AI 數據中心</strong></td><td>+11萬噸</td><td>+70萬噸</td><td style="color:var(--warn)">中（爆發力大但預測不確定）</td></tr>
+<tr><td><strong>再生能源</strong></td><td>+15萬噸</td><td>+80萬噸</td><td style="color:var(--bull)">高</td></tr>
+<tr><td><strong>軍工國防</strong></td><td>+10萬噸</td><td>+50萬噸</td><td style="color:var(--warn)">中（地緣因素波動）</td></tr>
+<tr><td><strong>印度+東南亞</strong></td><td>+5萬噸</td><td>+80萬噸</td><td style="color:var(--warn)">中（工業化進度不確定）</td></tr>
+<tr><td style="color:var(--bear)"><strong>中國房地產（負面）</strong></td><td>-15萬噸</td><td>-30萬噸</td><td style="color:var(--bull)">高（持續下行）</td></tr>
+<tr style="background:var(--hover)"><td><strong>合計需求淨增量</strong></td><td><strong>+101萬噸</strong></td><td><strong>+590萬噸</strong></td><td>—</td></tr>
+</table>
+<p>供給端 2026 年增量僅約 +30~50 萬噸（品位下降+Grasberg+審批延遲），遠不及需求增量。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>2.3 「庫存悖論」解析 — 理解 2026 年分歧的關鍵</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">高盛看的（精煉端）</div>
+        <div class="num" style="font-size:1em;color:var(--bull)">LME庫存八年高</div>
+        <div class="desc">中國新增冶煉產能消化精礦→精煉銅過剩→庫存堆積→短期銅價承壓</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">JPM看的（精礦端）</div>
+        <div class="num" style="font-size:1em;color:var(--bear)">TC/RC 歸零</div>
+        <div class="desc">精礦嚴重短缺→冶煉廠無利可圖→中國減產10%→精煉端也將收緊</div>
+    </div>
+</div>
+<div class="tip warn">
+<b>本報告判斷：JPM 的精礦端視角更具前瞻性</b>
+<strong>理由</strong>：TC/RC 是產業鏈最敏感的領先指標。從 $80→$0 的崩跌軌跡，比 LME 庫存更能反映真實供需。中國冶煉減產 10% 將在 2026 下半年傳導至精煉銅供給收縮。高盛看到的精煉過剩是「暫時性的」——冶煉產能激增的一次性效應；JPM 看到的精礦短缺是「結構性的」——品位下降+新礦枯竭無法逆轉。<br>
+但也承認高盛的短期邏輯有道理：2026 上半年銅價可能因庫存壓力而回調，這反而是布局上游礦商的機會。
+</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>第二章整合結論：供需缺口演進</b>
+<strong>路徑</strong>：2025盈餘 → 2026轉折（精礦缺口確立）→ 2027精煉銅也轉缺口 → 2028-2029加速惡化 → 2030峰值後急劇擴大 → 2035結構性危機。<br>
+<strong>關鍵轉折</strong>：2026年TC/RC歸零是「燈塔事件」——當冶煉廠連加工費都收不到，等於市場在喊「礦不夠了」。中國冶煉減產→精煉供給收縮→庫存開始下降→銅價重新上行。<br>
+<strong>不確定性</strong>：缺口幅度差異極大（2030年從-77萬噸到-650萬噸），取決於能源轉型速度和新礦投產進度。但方向（缺口）幾無爭議。<br>
+<strong>結論</strong>：<span style="color:var(--bull)">這是確定性最高的商品結構性敘事之一</span>。短期節奏有波動，中長期方向已定。
+</div>
+
+<!-- ===== 第三章 ===== -->
+<div class="section-title" id="ch3">第三章：受惠公司影響時序</div>
+<div class="section-sub">按時間軸排列各公司受惠/受害邏輯與催化劑</div>
+
+<div class="card">
+<h3>3.1 全球銅礦商產量路徑對比</h3>
+<div class="card-body">
+<table>
+<tr><th>公司</th><th>2025</th><th>2026</th><th>2027</th><th>2028</th><th>2030</th><th>2035</th></tr>
+<tr><td><strong>BHP</strong></td><td>201.7萬噸</td><td>190-200</td><td>210+</td><td>220+</td><td>230+</td><td style="color:var(--bull)"><strong>250</strong></td></tr>
+<tr><td><strong>Freeport(FCX)</strong></td><td>154萬噸</td><td>154(下修)</td><td style="color:var(--bull)">186(+21%)</td><td>180+</td><td>190+</td><td>—</td></tr>
+<tr><td><strong>紫金礦業</strong></td><td>109萬噸</td><td style="color:var(--bull)">120(+10%)</td><td>135+</td><td style="color:var(--bull)"><strong>150-160</strong></td><td>—</td><td style="color:var(--bull)"><strong>全球第一</strong></td></tr>
+<tr><td><strong>SCCO</strong></td><td>95.6萬噸</td><td>91(-5%)</td><td>95</td><td style="color:var(--bull)">97(Tia Maria)</td><td>106(El Arco)</td><td style="color:var(--bull)"><strong>160</strong></td></tr>
+<tr><td><strong>Ivanhoe(IVN)</strong></td><td>38.9萬噸</td><td>38-42</td><td style="color:var(--bull)"><strong>50-54(+33%)</strong></td><td>55</td><td>55</td><td>—</td></tr>
+<tr><td><strong>Glencore</strong></td><td>~87萬噸</td><td>81-87</td><td>90+</td><td>100+</td><td>120+</td><td style="color:var(--bull)"><strong>160</strong></td></tr>
+<tr><td><strong>Anglo Teck</strong></td><td>45.4萬噸</td><td>45-53</td><td style="color:var(--bull)">120(合併)</td><td>135</td><td>—</td><td>—</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3)">單位：萬噸。標注顏色的年份為該公司重大催化劑時點。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>3.2 受惠時序地圖（按階段）</h3>
+<div class="card-body">
+
+<div class="timeline">
+    <div class="tl-item">
+        <div class="tl-date">第一波：2026年（立即受惠）</div>
+        <div class="tl-title" style="color:var(--bull)">BHP + 紫金礦業 + 台股電纜股</div>
+        <div class="tl-desc">
+            <strong>BHP</strong>：產量創紀錄190-200萬噸，Escondida穩產，銅價高位直接增厚利潤。<br>
+            <strong>紫金礦業</strong>：產量跳升至120萬噸（+10%），驅龍二期投產貢獻30-35萬噸/年增量。中國第一→全球前十。<br>
+            <strong>華新(1605)/大亞(1609)/華榮(1608)</strong>：台電強韌電網5,600億投入+銅價高檔推升產品報價。在手訂單均逾百億。2026年全面漲價已啟動。<br>
+            <strong>第一銅(2009)</strong>：庫存利益最直接，但波動極大。
+        </div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">第二波：2027年（復產+爬產催化劑）</div>
+        <div class="tl-title" style="color:var(--bull)">FCX + IVN + Anglo Teck</div>
+        <div class="tl-desc">
+            <strong>FCX</strong>：Grasberg Block Cave 復產推升產量至186萬噸（+21%），黃金伴生產量亦大增。股價催化劑最強。<br>
+            <strong>IVN</strong>：Kamoa-Kakula 爬產至 50-54 萬噸（+33%），全球品位最高（4-6%），成本極低。冶煉廠滿產效益顯現。<br>
+            <strong>Anglo Teck</strong>：合併後銅產量達 120 萬噸，2027年目標 135 萬噸。全球前五大純銅礦商成形。<br>
+            <strong>SCCO</strong>：Tia Maria 部分投產，貢獻約 3 萬噸。
+        </div>
+    </div>
+    <div class="tl-item hot">
+        <div class="tl-date">第三波：2028-2030年（缺口加速+擴產爬坡）</div>
+        <div class="tl-title" style="color:var(--danger)">SCCO + 紫金 + BHP 長期計畫兌現</div>
+        <div class="tl-desc">
+            <strong>SCCO</strong>：Tia Maria 滿產12萬噸/年 + El Arco 2030年投產19萬噸/年。產量從91→106萬噸。最大銅儲量=最長成長跑道。<br>
+            <strong>紫金礦業</strong>：2028年目標 150-160 萬噸，進入全球前三。驅龍三期若獲批產量可達60萬噸/年。<br>
+            <strong>BHP</strong>：Olympic Dam 產量翻倍啟動（2027年中批准），Escondida 新選礦廠。進入棕地擴建密集期。<br>
+            <strong>銅價</strong>：缺口 -55~-170 萬噸推升價格至 $13,000-15,000/噸。成本曲線位置低的礦商利潤爆發。
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>3.3 台股受惠時序細化</h3>
+<div class="card-body">
+<table>
+<tr><th>階段</th><th>驅動力</th><th>最受惠</th><th>影響幅度</th></tr>
+<tr><td><strong>2026上半年</strong></td><td>銅價歷史高位+台電釋單</td><td>華新(1605)、第一銅(2009)</td><td>營收+10~20%，庫存利益爆發</td></tr>
+<tr><td><strong>2026下半年</strong></td><td>Section 232效應+線纜漲價轉嫁</td><td>大亞(1609)、華榮(1608)</td><td>全面漲價，毛利回升</td></tr>
+<tr><td><strong>2027年</strong></td><td>台電強韌電網持續釋單</td><td>華新、大亞、大東電(1623)</td><td>訂單能見度延伸至2028+</td></tr>
+<tr><td><strong>2028-2030年</strong></td><td>銅價趨勢上行+綠能建設</td><td>全線受惠</td><td>產品單價結構性拉高</td></tr>
+</table>
+<div class="tip warn">
+<b>台股銅概念股風險提醒</b>
+(1) 第一銅為「銅價槓桿工具」而非「基本面成長股」——銅價反轉時庫存損失慘重。<br>
+(2) 電線電纜廠毛利率薄（5-8%），銅價急漲時原料成本先行、產品漲價有時滯，Q1毛利可能被壓縮。<br>
+(3) CCL三雄（台光電/聯茂/台燿）的主驅動力是AI伺服器需求，銅價上漲反而增加成本壓力。應歸類為「AI題材」而非「銅題材」。
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>3.4 冶煉商 — 受害者時序</h3>
+<div class="card-body">
+<table>
+<tr><th>階段</th><th>事件</th><th>受影響企業</th><th>影響</th></tr>
+<tr><td>2024</td><td>TC基準$80，現貨跌至-$5</td><td>全球冶煉商</td><td>利潤開始壓縮</td></tr>
+<tr><td>2025</td><td>TC基準$21-25，現貨-$60</td><td>江西銅業、銅陵有色</td><td>靠副產品（金/銀/硫酸）撐住</td></tr>
+<tr><td>2026</td><td>TC基準<strong>$0</strong>，中國減產10%</td><td>無自有礦源的獨立冶煉商</td><td>融資困難，部分可能關閉</td></tr>
+<tr><td>2027+</td><td>產業整合加速</td><td>小型冶煉商出局</td><td>生存者靠礦商讓利或政府補貼</td></tr>
+</table>
+<div class="tip danger">
+<b>關鍵區分：「銅概念股」≠「銅價受惠股」</b>
+江西銅業、銅陵有色雖然都是「銅概念股」，但在 TC/RC 歸零的環境中，冶煉業務反而虧損。只有自有礦山佔比高的冶煉商（如江西銅業持有5座礦山）才能部分對沖。純冶煉商（銅陵有色）是明確受害者。
+</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>第三章整合結論：公司影響演進</b>
+<strong>排序邏輯</strong>：銅價每漲 $1,000/噸，上游礦商 EPS 增幅遠大於中下游。TC/RC 歸零更將利潤完全集中於礦端。<br>
+<strong>全球最佳標的排序</strong>（綜合成長性+銅價彈性+估值）：<br>
+1. <strong>SCCO</strong>（銅營收佔比 85-90%+最大儲量+CAGR 5.3%）<br>
+2. <strong>FCX</strong>（最大純銅礦商+Grasberg復產催化劑+2027年產量跳升21%）<br>
+3. <strong>IVN</strong>（全球最高品位+2027年產量+33%，但剛果風險折價）<br>
+4. <strong>紫金礦業</strong>（成長最快CAGR 14%+中國估值折價）<br>
+5. <strong>BHP</strong>（最大規模+最穩定+長期250萬噸目標，但銅佔比僅25-30%）<br>
+<strong>台股排序</strong>：華新(1605) > 大亞(1609) > 華榮(1608) > 第一銅(2009，僅限方向性交易)<br>
+<strong>避開</strong>：銅陵有色、住友金屬礦山、三菱材料（冶煉商在當前格局為輸家）
+</div>
+
+<!-- ===== 第四章 ===== -->
+<div class="section-title" id="ch4">第四章：關鍵催化劑時間表</div>
+
+<div class="card">
+<h3>未來 12 個月關鍵事件</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item hot">
+        <div class="tl-date">2026年4月6日（已發生）</div>
+        <div class="tl-title" style="color:var(--danger)">Section 232 銅關稅生效</div>
+        <div class="tl-desc">50%關稅適用於大部分銅製品。美國國內銅溢價飆升。全球銅貿易流向重組。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026年 Q2</div>
+        <div class="tl-title">FCX Grasberg Block Cave 分階段重啟</div>
+        <div class="tl-desc">復產進度直接影響全球供給預期。若延遲→缺口提前兌現→銅價上行。</div>
+    </div>
+    <div class="tl-item hot">
+        <div class="tl-date">2026年6月30日</div>
+        <div class="tl-title" style="color:var(--danger)">美國商務部提交銅市場報告</div>
+        <div class="tl-desc">總統可能據此對精煉銅實施分階段關稅。若啟動→全球銅價格體系重塑。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026年 Q3-Q4</div>
+        <div class="tl-title">中國冶煉減產效應顯現</div>
+        <div class="tl-desc">減產10%→精煉銅供給收縮→庫存開始下降→支撐銅價。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2026年 Q4</div>
+        <div class="tl-title">歐盟關鍵原物料中心成立</div>
+        <div class="tl-desc">聯合採購啟動→戰略儲備競賽加速→額外需求。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2027年 Q1</div>
+        <div class="tl-title" style="color:var(--bull)">IVN Kamoa 排水完成 + 爬產至 50 萬噸+</div>
+        <div class="tl-desc">全球增長最快的大型銅礦驗證擴產能力。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2027年中</div>
+        <div class="tl-title">BHP Olympic Dam 大型擴建批准</div>
+        <div class="tl-desc">若批准→產量2030年代中期翻倍。長期銅供給信號。</div>
+    </div>
+    <div class="tl-item">
+        <div class="tl-date">2027年下半年</div>
+        <div class="tl-title">SCCO Tia Maria 投產</div>
+        <div class="tl-desc">12萬噸/年新增產能。SCCO長期擴產第一步兌現。</div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ===== 第五章 ===== -->
+<div class="section-title" id="ch5">第五章：風險偵測與求證</div>
+
+<div class="card">
+<h3>5.1 主要風險矩陣</h3>
+<div class="card-body">
+<table>
+<tr><th>風險</th><th>機率</th><th>衝擊</th><th>觸發條件</th><th>監控指標</th></tr>
+<tr><td>中國經濟硬著陸 → 需求崩跌</td><td style="color:var(--warn)">15%</td><td style="color:var(--bear)">高</td><td>房地產危機擴散+消費信心崩潰</td><td>中國PMI、銅進口量、房屋銷售</td></tr>
+<tr><td>全球經濟衰退</td><td style="color:var(--warn)">15%</td><td style="color:var(--bear)">高</td><td>聯準會升息過頭/地緣衝突</td><td>全球PMI、國債利差</td></tr>
+<tr><td>鋁替代加速</td><td style="color:var(--txt3)">10%</td><td style="color:var(--warn)">中</td><td>鋁價下跌30%+銅鋁價差超過4:1</td><td>鋁/銅價格比</td></tr>
+<tr><td>EV 滲透放緩</td><td style="color:var(--warn)">15%</td><td style="color:var(--warn)">中</td><td>補貼取消+充電基建不足</td><td>全球EV月銷量</td></tr>
+<tr><td>新礦超預期投產</td><td style="color:var(--txt3)">10%</td><td style="color:var(--warn)">中</td><td>智利/秘魯審批加速+剛果擴產超預期</td><td>各礦商季度產量</td></tr>
+<tr><td>Section 232 加碼</td><td style="color:var(--warn)">25%</td><td style="color:var(--bear)">高</td><td>2026年6月報告後啟動精煉銅關稅</td><td>白宮/商務部公告</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>5.2 盲點聲明</h3>
+<div class="card-body">
+<div class="tip danger">
+<b>我們看不到什麼</b>
+<ol style="font-size:.85em;color:var(--txt2);padding-left:16px">
+<li><strong>中國戰略銅儲備真實規模</strong> — 不透明。每增10萬噸儲備=消化ICSG全年缺口預測</li>
+<li><strong>冶煉廠副產品利潤</strong> — 金/銀/硫酸收入可能使部分冶煉商在TC=0下仍獲利，我們缺乏個別廠的副產品利潤數據</li>
+<li><strong>中國再生銅真實供給彈性</strong> — 廢銅價格上漲能釋放多少額外供給？中國數據不透明</li>
+<li><strong>AI數據中心建設的真實節奏</strong> — 各科技巨頭的capex計畫可能隨AI熱度劇烈波動</li>
+<li><strong>Section 232 精煉銅關稅的最終形態</strong> — 6月30日前未知，但可能是短期最大變量</li>
+</ol>
+</div>
+</div>
+</div>
+
+<!-- ===== 第六章 ===== -->
+<div class="section-title" id="ch6">第六章：貓膩探索（反共識偵測）</div>
+
+<div class="card">
+<h3>6.1 敘事解剖 — 「銅是新石油」的受益者是誰？</h3>
+<div class="card-body">
+<p><span class="fias-i">推論</span> <strong>主流敘事</strong>：「銅是能源轉型的關鍵金屬，供需缺口不可避免，銅價將長期上行。」</p>
+<p><strong>誰受益於這個敘事？</strong></p>
+<ul style="font-size:.85em;color:var(--txt2);padding-left:16px">
+<li><strong>礦商</strong>：銅價預期上漲→股價溢價→融資成本降低→擴產更容易。Codelco/BHP/FCX 都在強化此敘事。</li>
+<li><strong>投行</strong>：高盛「Copper is the new oil」報告是其銅業務的行銷工具。花旗$15,000/噸目標也是。</li>
+<li><strong>ICA（國際銅業協會）</strong>：產業組織，天然傾向展示需求成長。其EV用銅量數據（85-95kg）可能偏高。</li>
+</ul>
+<p><strong>什麼被忽略？</strong></p>
+<ul style="font-size:.85em;color:var(--txt2);padding-left:16px">
+<li>鋁替代已在高壓輸電線成為主流，可能擴展到更多領域</li>
+<li>銅價每漲一倍，回收經濟效益大增，城市礦山可能釋放超預期供給</li>
+<li>中國冶煉減產可能只是「戰術性」的——等TC回升就恢復，非真正退出</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>6.2 反轉假說 — 如果共識錯了？</h3>
+<div class="card-body">
+<details open>
+<summary>反轉一：「品位懸崖」被技術創新延後 20 年</summary>
+<p>生物浸出、AI地質探勘、IoT採礦等技術可能開發目前不經濟的資源。IIT Madras 2026年突破（98.3%萃取率）暗示技術加速中。但商業化需10-15年，2030年前無法改變供需。<br>
+<span class="fias-i">推論</span> <strong>判斷</strong>：技術可能延後Peak Copper 5-10年（至2035-2040），但無法阻止。時間差問題，非方向性改變。</p>
+</details>
+<details open>
+<summary>反轉二：中國經濟深度調整 → 銅需求斷崖</summary>
+<p>中國佔全球銅消費 58%。若房地產+新能源雙殺（如補貼退坡+地方政府債務危機），需求可能下滑 5-10%。但中國 UHV 投資890億美元+新能源部門已佔銅消費 7.4%+ 持續上升。需求結構已轉型，房地產的邊際影響在縮小。<br>
+<span class="fias-a">假設</span> <strong>判斷</strong>：可能造成 1-2 年的價格回調（$9,000-10,000），但不改變中長期趨勢。反而可能是布局良機。</p>
+</details>
+<details open>
+<summary>反轉三：Section 232 關稅催生「雙軌銅市」</summary>
+<p>50%關稅已生效。若進一步對精煉銅課稅→美國銅價與全球脫鉤→美國製造業成本飆升→需求反而被抑制。同時全球銅流向重組→非美地區供給暫時寬鬆→LME價格可能短期回落。<br>
+<span class="fias-i">推論</span> <strong>判斷</strong>：這是最被低估的短期變量。雙軌制可能在2026下半年改變銅的交易邏輯。但對全球總供需不影響——只是重新分配。</p>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>6.3 貓膩總評</h3>
+<div class="card-body">
+<table>
+<tr><th>貓膩項目</th><th>燈號</th><th>成立機率</th><th>應對</th></tr>
+<tr><td>產業組織（ICA）誇大用銅量數據</td><td style="color:var(--warn)">黃燈</td><td>30%</td><td>交叉比對IDTechEx等獨立來源；用60kg而非95kg保守估算</td></tr>
+<tr><td>投行利益導向敘事</td><td style="color:var(--warn)">黃燈</td><td>40%</td><td>花旗$15,000屬極端情境；以中位$11,300為基準</td></tr>
+<tr><td>中國冶煉減產為戰術而非結構</td><td style="color:var(--warn)">黃燈</td><td>35%</td><td>監控TC/RC季度走勢，若回升→減產可能逆轉</td></tr>
+<tr><td>品位下降被系統性高估</td><td style="color:var(--bull)">綠燈</td><td>10%</td><td>多方數據（BHP/USGS/學術）一致，偽造可能性極低</td></tr>
+</table>
+<div class="tip good">
+<b>貓膩探索整合結論</b>
+主流敘事（結構性缺口）的核心邏輯——品位下降+新礦17年時滯——有堅實的多源事實支撐，未發現系統性造假跡象。<br>
+但<strong>幅度可能被誇大</strong>：產業組織和投行有動機放大數字。保守估算更安全——用「缺口 50-100 萬噸/年」而非「缺口 650 萬噸/年」。<br>
+<strong>最大盲區</strong>：Section 232 關稅可能在 2026下半年創造短期價格紊亂，投資節奏需保持彈性。
+</div>
+</div>
+</div>
+
+<!-- ===== 第七章 ===== -->
+<div class="section-title" id="ch7">第七章：投資結論與行動建議</div>
+
+<div class="card">
+<h3>7.1 核心判斷摘要</h3>
+<div class="card-body">
+<table>
+<tr><th>面向</th><th>判斷</th><th>信心度</th><th>有效期</th></tr>
+<tr><td>供需方向</td><td>2027年起結構性缺口，2030年後急劇擴大</td><td style="color:var(--bull)"><strong>78%</strong></td><td>2027-12-31</td></tr>
+<tr><td>銅價趨勢</td><td>中長期重心上移至 $12,000-15,000/噸</td><td>70%</td><td>2028-12-31</td></tr>
+<tr><td>最佳受惠環節</td><td>上游純銅礦商 >> 電纜廠 >> 冶煉商</td><td style="color:var(--bull)"><strong>85%</strong></td><td>持續</td></tr>
+<tr><td>短期風險</td><td>Section 232 + LME庫存 → 2026上半年可能回調</td><td>55%</td><td>2026-09-30</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>7.2 受惠標的總排序</h3>
+<div class="card-body">
+
+<div class="tip good">
+<b>Tier 1：全球純銅礦商（最直接+最確定）</b>
+</div>
+<table>
+<tr><th>排名</th><th>標的</th><th>理由</th><th>催化劑時點</th><th>風險</th></tr>
+<tr><td>1</td><td><strong>SCCO</strong></td><td>銅營收85-90%最純、最大儲量、CAGR 5.3%至160萬噸</td><td>2027 Tia Maria / 2030 El Arco</td><td>秘魯政治、估值偏高(PE~33x)</td></tr>
+<tr><td>2</td><td><strong>FCX</strong></td><td>最大上市銅礦商、Grasberg復產=最強單一催化劑</td><td>2026Q2復產 / 2027產量+21%</td><td>Grasberg延遲風險</td></tr>
+<tr><td>3</td><td><strong>IVN</strong></td><td>全球最高品位4-6%、成本最低、2027年+33%跳升</td><td>2027 Q1爬產完成</td><td>剛果地緣風險(折價因素)</td></tr>
+<tr><td>4</td><td><strong>紫金礦業</strong></td><td>成長最快CAGR14%、2028全球前三、驅龍二期催化</td><td>2026 Q1驅龍二期 / 2028目標</td><td>中國估值折價、海外礦區風險</td></tr>
+<tr><td>5</td><td><strong>BHP</strong></td><td>最大規模+最穩+長期250萬噸、但銅僅佔25-30%</td><td>2027 Olympic Dam批准</td><td>銅佔比較低，稀釋效應</td></tr>
+</table>
+
+<div class="tip info">
+<b>Tier 2：台股電纜股（間接受惠+台電訂單加持）</b>
+</div>
+<table>
+<tr><th>排名</th><th>標的</th><th>理由</th><th>催化劑</th><th>風險</th></tr>
+<tr><td>1</td><td><strong>華新(1605)</strong></td><td>台灣最大電纜廠、銅+鎳雙受惠、台電百億訂單</td><td>2026全面漲價</td><td>毛利率薄、銅價時滯</td></tr>
+<tr><td>2</td><td><strong>大亞(1609)</strong></td><td>營收成長5.56%優於同業、台電訂單逾百億</td><td>2026漲價+釋單</td><td>銅價波動風險</td></tr>
+<tr><td>3</td><td><strong>華榮(1608)</strong></td><td>純線纜廠銅敏感度最高</td><td>台電訂單</td><td>規模較小、毛利薄</td></tr>
+<tr><td>—</td><td><strong>第一銅(2009)</strong></td><td>庫存利益最直接但波動極大</td><td>銅價方向</td><td><span style="color:var(--danger)">僅適合方向性交易，非長期持有</span></td></tr>
+</table>
+
+<div class="tip danger">
+<b>避開清單（銅價上漲的受害者）</b>
+銅陵有色(000630) / 住友金屬礦山(5713.T) / 三菱材料(5711.T) — 冶煉商在TC/RC歸零環境中利潤被壓縮。
+江西銅業(358.HK) — 若自有礦佔比低，同樣承壓。
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>7.3 監控指標與觸發條件</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>目前值</th><th>多頭觸發</th><th>空頭觸發</th><th>檢查頻率</th></tr>
+<tr><td>LME銅價</td><td>~$12,660/噸</td><td>突破$13,500</td><td>跌破$10,000</td><td>每日</td></tr>
+<tr><td>TC/RC現貨</td><td>~$0或負值</td><td>持續為負</td><td>回升至$30+</td><td>每月</td></tr>
+<tr><td>LME銅庫存</td><td>八年高（回升中）</td><td>開始下降</td><td>持續創高</td><td>每週</td></tr>
+<tr><td>中國銅進口量</td><td>—</td><td>月增率>5%</td><td>月減率>10%</td><td>每月</td></tr>
+<tr><td>全球EV月銷量</td><td>~170萬輛/月</td><td>持續>200萬</td><td>連續跌破150萬</td><td>每月</td></tr>
+<tr><td>Section 232精煉銅關稅</td><td>未啟動</td><td>啟動=推升美國溢價</td><td>—</td><td>2026/6/30前密切關注</td></tr>
+<tr><td>FCX Grasberg復產進度</td><td>2026 Q2分階段</td><td>延遲=缺口提前兌現</td><td>提前復產=短期供給寬鬆</td><td>每季</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip good">
+<b>第七章整合結論：投資建議</b>
+<strong>一句話</strong>：銅礦供需失衡是當前商品市場確定性最高的結構性敘事。方向已定（缺口），分歧僅在幅度和節奏。<br>
+<strong>策略</strong>：<br>
+1. <strong>長期配置</strong>（1-3年）：SCCO + FCX + IVN 為核心組合，銅價趨勢+產量成長雙驅動。<br>
+2. <strong>中期催化</strong>（6-12個月）：FCX（Grasberg復產）、IVN（Kamoa爬產）為最強催化劑標的。<br>
+3. <strong>台股配置</strong>：華新(1605)為首選，台電訂單+銅價+鎳價三重受惠。<br>
+4. <strong>風險管理</strong>：2026上半年 LME 庫存高+Section 232 不確定性可能造成回調，回調即布局良機。<br>
+5. <strong>絕對避開</strong>：冶煉商（TC/RC歸零=利潤歸零）、第一銅（僅限交易，非持有）。
+</div>
+
+<div class="footer">
+    <p>天機閣 — 通用深度調查引擎</p>
+    <p>報告日期：2026-04-14</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。投資有風險，需自行評估。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(c){document.querySelectorAll('.card').forEach(function(e){if(c)e.classList.add('collapsed');else e.classList.remove('collapsed')})}
+document.querySelectorAll('.card h3').forEach(function(h){h.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed')})});
+</script>
+</body>
+</html>

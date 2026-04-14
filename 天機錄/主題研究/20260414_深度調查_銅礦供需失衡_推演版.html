@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>銅礦供需失衡 — 第八步：情境推衍</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;--gold:#d4b030}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;padding:0}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:24px 16px 18px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:4px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 14px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.2em;font-weight:900;color:var(--base);margin:22px 0 4px;padding-top:14px;border-top:2px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}.bear-card{border-left:4px solid var(--bear)}.neutral-card{border-left:4px solid var(--neutral)}
+.fork-tree{margin:10px 0}.fork-root{text-align:center;margin-bottom:8px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--base);font-size:.88em}
+.fork-branches{display:grid;gap:8px;margin-top:4px}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.fork-branches.b3{grid-template-columns:1fr}}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;position:relative}
+.fork-branch::before{content:'\25BC';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.7em}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fork-branch .fb-title{font-weight:700;font-size:.84em;color:var(--base);margin-bottom:2px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2)}
+.timeline{position:relative;padding-left:28px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--bull),var(--warn),var(--bear))}
+.tl-item{position:relative;margin:12px 0;padding-left:18px}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--accent);background:var(--bg)}
+.tl-item.hot::before{border-color:var(--bear);background:rgba(239,83,80,.3)}
+.tl-item .tl-date{font-size:.78em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.9em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base)}
+.toggle-btn:hover{background:var(--hover)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+    <h1>銅礦供需失衡 — 情境推衍</h1>
+    <div class="sub">第八步：五條未來路徑 + 蝴蝶效應 + 影響鏈分析</div>
+    <div class="tags">
+        <span class="tag">情境推演</span>
+        <span class="tag">五條路徑</span>
+        <span class="tag">蝴蝶效應</span>
+        <span class="tag">催化劑時間表</span>
+    </div>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(false)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(true)">全部收合</button>
+</div>
+
+<!-- ===== 影響鏈分析 ===== -->
+<div class="section-title">一、影響鏈分析</div>
+<div class="section-sub">銅礦供需失衡的一階→二階→三階連鎖影響</div>
+
+<div class="card">
+<h3>1.1 三階影響鏈</h3>
+<div class="card-body">
+<table>
+<tr><th>階</th><th>影響</th><th>具體表現</th><th>波及對象</th></tr>
+<tr><td rowspan="3"><strong>一階</strong><br>(直接)</td><td>銅價趨勢上行</td><td>LME $12,000→$15,000/噸（2026-2030）</td><td>礦商↑、冶煉商↓、銅加工↔</td></tr>
+<tr><td>TC/RC產業鏈權力轉移</td><td>礦商議價權達歷史高峰</td><td>冶煉商合併/退出潮</td></tr>
+<tr><td>各國戰略儲備競賽</td><td>中美歐日搶囤銅</td><td>全球可用流通量縮減</td></tr>
+<tr><td rowspan="3"><strong>二階</strong><br>(傳導)</td><td>能源轉型成本上升</td><td>風電/太陽能/EV成本因銅價+5~15%</td><td>綠能投資回報率下降</td></tr>
+<tr><td>數據中心建設成本上升</td><td>每MW成本+$50萬~$100萬</td><td>AI基建節奏可能放緩</td></tr>
+<tr><td>電網更新預算膨脹</td><td>台電/各國電網投資超支</td><td>電費上漲、財政壓力</td></tr>
+<tr><td rowspan="3"><strong>三階</strong><br>(系統)</td><td>「銅通膨」波及物價</td><td>電線、家電、汽車含銅零件漲價</td><td>終端消費者、CPI</td></tr>
+<tr><td>地緣博弈加劇</td><td>銅礦資源成為國安議題</td><td>非洲/拉美地緣角力升溫</td></tr>
+<tr><td>替代材料研發加速</td><td>鋁/石墨烯/超導研究投入增加</td><td>長期可能改變銅需求曲線</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 五條路徑 ===== -->
+<div class="section-title">二、五條未來路徑</div>
+
+<div class="fork-tree">
+    <div class="fork-root">
+        <div class="fork-node">2026年4月 — 銅礦供需失衡起點</div>
+    </div>
+    <div class="fork-branches b3">
+        <div class="fork-branch">
+            <span class="fb-label fb-bull">路徑 A — 40%</span>
+            <div class="fb-title">漸進缺口</div>
+            <div class="fb-desc">基本情境：2027缺口確立，銅價穩步上行至$13,000-14,000</div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-bull">路徑 B — 20%</span>
+            <div class="fb-title">加速缺口</div>
+            <div class="fb-desc">多催化劑疊加：Section 232+Grasberg延遲+中國囤積，銅價衝$15,000+</div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-neutral">路徑 C — 20%</span>
+            <div class="fb-title">先跌後漲</div>
+            <div class="fb-desc">2026H2庫存壓制→銅價回$10,000→2027反彈→$13,000+</div>
+        </div>
+    </div>
+    <div class="fork-branches b3" style="margin-top:8px">
+        <div class="fork-branch">
+            <span class="fb-label fb-bear">路徑 D — 10%</span>
+            <div class="fb-title">需求斷崖</div>
+            <div class="fb-desc">全球衰退+中國硬著陸→銅價跌至$8,000-9,000→缺口延後至2032</div>
+        </div>
+        <div class="fork-branch">
+            <span class="fb-label fb-neutral">路徑 E — 10%</span>
+            <div class="fb-title">雙軌市場</div>
+            <div class="fb-desc">Section 232全面課稅→美國銅$16,000 vs 全球$11,000→套利潮→混亂</div>
+        </div>
+        <div class="fork-branch" style="background:var(--hover);border-color:var(--accent)">
+            <span class="fb-label" style="background:rgba(107,159,114,.3);color:var(--accent)">最可能路徑</span>
+            <div class="fb-title" style="color:var(--accent)">A+C 混合</div>
+            <div class="fb-desc" style="color:var(--txt)">2026H2短期回調→2027缺口確立→漸進上行至$13,000-14,000</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+<h3>路徑 A：漸進缺口（基本情境 — 40%）</h3>
+<div class="card-body">
+<div class="timeline">
+    <div class="tl-item"><div class="tl-date">2026 Q2-Q3</div><div class="tl-title">Grasberg分階段復產+中國冶煉減產傳導</div><div class="tl-desc">銅價 $11,500-12,500。庫存從高位開始下降。市場從「精煉過剩」轉向「平衡」。</div></div>
+    <div class="tl-item"><div class="tl-date">2026 Q4-2027 Q1</div><div class="tl-title">ICSG正式宣布2026年缺口</div><div class="tl-desc">銅價 $12,500-13,500。投資人開始price-in結構性缺口敘事。礦商股PE擴張。</div></div>
+    <div class="tl-item"><div class="tl-date">2027 H1</div><div class="tl-title">IVN爬產+FCX復產驗證</div><div class="tl-desc">銅價 $13,000-14,000。新增產能仍不足以彌補需求增量。</div></div>
+    <div class="tl-item"><div class="tl-date">2028-2030</div><div class="tl-title">缺口逐年擴大</div><div class="tl-desc">銅價區間 $13,000-15,000。SCCO/紫金擴產兌現但不及需求速度。</div></div>
+</div>
+<p><strong>礦商影響</strong>：FCX +50-80%、SCCO +60-100%、IVN +80-120%、紫金 +40-60%</p>
+<p><strong>台股影響</strong>：華新/大亞營收+15-25%，毛利率小幅改善</p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 B：加速缺口（多催化劑疊加 — 20%）</h3>
+<div class="card-body">
+<p><strong>觸發條件</strong>：Section 232 對精煉銅課稅（6月30日後） + Grasberg復產延遲至2027 H2 + 中國戰略儲備加碼20萬噸</p>
+<div class="timeline">
+    <div class="tl-item hot"><div class="tl-date">2026 Q3</div><div class="tl-title">Section 232精煉銅關稅啟動</div><div class="tl-desc">CME銅溢價飆至$2,000+/噸。全球銅流向混亂。LME庫存因銅流向美國而暴跌。</div></div>
+    <div class="tl-item hot"><div class="tl-date">2026 Q4</div><div class="tl-title">多重短缺訊號疊加</div><div class="tl-desc">銅價突破$14,000。現貨升水擴大。交割延遲報告出現。</div></div>
+    <div class="tl-item"><div class="tl-date">2027</div><div class="tl-title">銅價進入$15,000+區間</div><div class="tl-desc">類似2021年鎳短擠的場景但規模更大。替代材料研發緊急加速。</div></div>
+</div>
+<p><strong>礦商影響</strong>：FCX +100-150%、SCCO +120-180%、IVN +150-200%</p>
+<p><strong>風險</strong>：價格過快上漲可能觸發政府干預（出口限制/價格管制）</p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 C：先跌後漲（短期陷阱 — 20%）</h3>
+<div class="card-body">
+<p><strong>觸發條件</strong>：LME庫存持續堆積 + 中國經濟數據疲軟 + 高盛「過剩」敘事佔上風</p>
+<div class="timeline">
+    <div class="tl-item"><div class="tl-date">2026 Q2-Q3</div><div class="tl-title">回調至 $10,000-10,500</div><div class="tl-desc">市場恐慌：「結構性缺口是假的」。礦商股回調15-25%。散戶出逃。</div></div>
+    <div class="tl-item"><div class="tl-date">2026 Q4</div><div class="tl-title">底部形成</div><div class="tl-desc">中國冶煉減產效應顯現。庫存開始下降。聰明資金進場。</div></div>
+    <div class="tl-item"><div class="tl-date">2027</div><div class="tl-title">V型反轉至 $13,000+</div><div class="tl-desc">結構性缺口無法隱藏。價格回到趨勢軌道。提前布局者獲得超額報酬。</div></div>
+</div>
+<p><strong>重要啟示</strong>：<span style="color:var(--bull)">路徑C是最佳布局機會</span>——如果發生，回調至$10,000附近是上游礦商的黃金買點。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>路徑 D：需求斷崖（黑天鵝 — 10%）</h3>
+<div class="card-body">
+<p><strong>觸發條件</strong>：全球經濟衰退 + 中國房地產/地方債危機 + EV補貼全面取消 + AI泡沫破裂</p>
+<p><strong>後果</strong>：銅價跌至 $8,000-9,000/噸。礦商股跌30-50%。擴產計畫延後。但品位下降+新礦枯竭的結構問題不變——延後缺口但不解決。2032年後缺口可能更大（因投資斷裂）。</p>
+<p><strong>對策</strong>：停損執行。等經濟觸底後重新布局。</p>
+</div>
+</div>
+
+<!-- ===== 蝴蝶效應 ===== -->
+<div class="section-title">三、蝴蝶效應推衍</div>
+
+<div class="card">
+<h3>3.1 弱訊號 → 連鎖反應</h3>
+<div class="card-body">
+<details open>
+<summary>弱訊號一：TC/RC歸零 → 冶煉商退出潮 → 精煉銅也短缺</summary>
+<p><strong>初始訊號</strong>：2026年TC/RC基準 $0/噸（已發生）</p>
+<p><strong>一階</strong>：無自有礦源的獨立冶煉商開始虧損 → 銀行收緊信貸 → 部分關閉</p>
+<p><strong>二階</strong>：全球冶煉產能收縮 5-10% → 精煉銅也從過剩轉缺口 → 2027年雙重短缺（精礦+精煉銅）</p>
+<p><strong>三階</strong>：礦商被迫自建冶煉（IVN已做）→ 產業鏈垂直整合加速 → 獨立冶煉商進一步邊緣化</p>
+<p><strong>機率</strong>：45%。已有明確跡象（中國減產10%、日本減產、Glencore Mount Isa紓困）。</p>
+</details>
+<details open>
+<summary>弱訊號二：Section 232關稅 → 雙軌銅市 → 全球供應鏈重組</summary>
+<p><strong>初始訊號</strong>：2026年4月6日 50%銅製品關稅生效</p>
+<p><strong>一階</strong>：美國國內銅溢價飆升 → 美國製造業銅成本+50% → 電網更新/AI數據中心建設成本大增</p>
+<p><strong>二階</strong>：美國國內銅礦開發加速（政策支持+經濟可行性提升）→ 但17年時滯意味短期無解</p>
+<p><strong>三階</strong>：非美國地區銅價可能暫時受壓 → LME/COMEX價差成為新交易主題 → 套利+實體銅跨區流動</p>
+<p><strong>機率</strong>：60%（已部分實現，6月30日報告為下一催化劑）</p>
+</details>
+<details open>
+<summary>弱訊號三：品位懸崖 → 成本曲線陡峭化 → 高成本礦商出局</summary>
+<p><strong>初始訊號</strong>：品位從1.2%降至0.65%（已發生，持續中）</p>
+<p><strong>一階</strong>：每噸銅的開採成本持續上升（能源+水+人力）→ 成本曲線右移</p>
+<p><strong>二階</strong>：低品位高成本礦商（C3成本>$8,000/噸）的利潤壓縮 → 減產或關閉</p>
+<p><strong>三階</strong>：供給更集中於少數低成本大型礦商（BHP/FCX/SCCO/紫金/IVN）→ 寡占格局強化 → 定價權集中</p>
+<p><strong>機率</strong>：70%（結構性趨勢，幾乎確定發生，分歧僅在速度）</p>
+</details>
+</div>
+</div>
+
+<div class="card">
+<h3>3.2 盲點獵手 — 可能翻盤的意外事件</h3>
+<div class="card-body">
+<table>
+<tr><th>意外事件</th><th>機率</th><th>影響</th><th>如何偵測</th></tr>
+<tr><td>中國突然拋售戰略銅儲備</td><td>5%</td><td style="color:var(--bear)">銅價短期暴跌15-20%</td><td>中國國儲局公告/LME中國倉庫異常出庫</td></tr>
+<tr><td>超導材料商業化突破</td><td>3%</td><td style="color:var(--bear)">長期銅需求曲線被重寫</td><td>頂級期刊Nature/Science論文</td></tr>
+<tr><td>非洲大型銅礦意外發現</td><td>8%</td><td style="color:var(--warn)">長期供給預期改善</td><td>礦業公司探勘公告/USGS報告</td></tr>
+<tr><td>新一波礦業國有化浪潮</td><td>15%</td><td style="color:var(--bear)">供給中斷+投資縮減</td><td>智利/秘魯/剛果政策變動</td></tr>
+<tr><td>AI泡沫破裂</td><td>10%</td><td style="color:var(--warn)">數據中心銅需求打折</td><td>科技股暴跌+capex削減</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ===== 推衍結論 ===== -->
+<div class="section-title">四、推衍結論</div>
+
+<div class="card">
+<h3>最可能路徑（A+C混合，機率55%）</h3>
+<div class="card-body">
+<div class="tip good">
+<b>預測路徑：先震盪後確立</b>
+<strong>2026年4-9月</strong>：Section 232 + LME庫存 + 中國經濟不確定性 → 銅價在 $10,500-13,000 區間震盪。這段是「布局窗口」。<br>
+<strong>2026年10月-2027年3月</strong>：中國冶煉減產+庫存轉降+Grasberg復產進度明朗 → 銅價站穩 $12,000 以上。<br>
+<strong>2027年</strong>：IVN/FCX產量跳升驗證 + ICSG正式宣布缺口 → 銅價突破 $13,000 趨勢確立。<br>
+<strong>2028-2030年</strong>：缺口逐年擴大 → 銅價區間 $13,000-15,000 → 上游礦商利潤爆發期。
+</div>
+
+<table>
+<tr><th>時點</th><th>銅價預估</th><th>礦商影響</th><th>台股影響</th><th>行動建議</th></tr>
+<tr><td>2026 Q2-Q3</td><td>$10,500-12,500<br>（震盪）</td><td>估值壓縮，但基本面不變</td><td>華新受惠漲價，第一銅波動大</td><td style="color:var(--bull)"><strong>回調布局上游礦商</strong></td></tr>
+<tr><td>2026 Q4</td><td>$12,000-13,000<br>（回升）</td><td>估值回升，Q3財報驗證</td><td>線纜漲價全面傳導</td><td>持有，加碼FCX/IVN</td></tr>
+<tr><td>2027年</td><td>$13,000-14,000</td><td>FCX +40%、IVN +60%、SCCO +50%</td><td>華新+15-20%</td><td>持有核心部位</td></tr>
+<tr><td>2028-2030年</td><td>$13,000-15,000</td><td>利潤爆發期，FCX/SCCO/紫金高成長</td><td>全線受惠</td><td>調高目標價，分批停利</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>觀察清單 + 有效期聲明</h3>
+<div class="card-body">
+<div class="grid2">
+    <div class="mini-card bull-card">
+        <div class="title">多頭確認訊號</div>
+        <div class="num" style="font-size:.9em;color:var(--bull)">3個中出現2個</div>
+        <div class="desc">1. LME庫存連續3月下降<br>2. TC/RC持續為負<br>3. 中國銅進口量月增>5%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">論點失效訊號</div>
+        <div class="num" style="font-size:.9em;color:var(--bear)">3個中出現2個</div>
+        <div class="desc">1. 銅價跌破$9,000持續>3月<br>2. TC/RC回升至$40+<br>3. 全球EV銷量連續6月衰退</div>
+    </div>
+</div>
+<div class="tip warn">
+<b>有效期聲明</b>
+本推衍報告基於 2026 年 4 月 14 日可得資訊。<strong>有效期至 2027 年 4 月 30 日</strong>。<br>
+以下事件發生時需立即重新評估：Section 232 精煉銅關稅決定（2026年6月30日後）、Grasberg復產進度偏離預期、中國大規模經濟刺激或衰退。
+</div>
+</div>
+</div>
+
+<div class="tip info">
+<b>推衍整合結論</b>
+<strong>最可能路徑</strong>（55%）：2026年震盪→2027年缺口確立→2028-2030年利潤爆發。<br>
+<strong>最佳策略</strong>：把2026年的價格波動視為布局機會而非風險。上游純銅礦商（SCCO/FCX/IVN/紫金/BHP）是最確定的受惠標的。台股首選華新(1605)。<br>
+<strong>關鍵監控</strong>：6月30日 Section 232 報告 + Q3中國冶煉減產效應 + FCX Grasberg 復產進度。<br>
+<strong>蝴蝶效應</strong>：TC/RC歸零→冶煉商退出潮→精煉銅也短缺→雙重缺口 是最值得關注的連鎖路徑。<br>
+<strong>黑天鵝</strong>：中國拋售儲備（5%）、超導突破（3%）均為低機率高衝擊事件，需保持警覺但不應作為主要決策依據。
+</div>
+
+<div class="footer">
+    <p>天機閣 — 通用深度調查引擎 / 推衍模組</p>
+    <p>報告日期：2026-04-14 ｜ 有效期：2027-04-30</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。推衍基於當前可得資訊，未來充滿不確定性。</p>
+</div>
+
+</div>
+<script>
+function toggleAll(c){document.querySelectorAll('.card').forEach(function(e){if(c)e.classList.add('collapsed');else e.classList.remove('collapsed')})}
+document.querySelectorAll('.card h3').forEach(function(h){h.addEventListener('click',function(){this.parentElement.classList.toggle('collapsed')})});
+</script>
+</body>
+</html>
