@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>台達電 2308 — 天機錄完整版（第七步）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:28px 16px 20px;margin-bottom:18px;border-bottom:1.5px solid var(--border);background:linear-gradient(160deg,rgba(107,159,114,.07) 0%,transparent 60%)}
+.hero h1{font-size:1.9em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.95em;color:var(--gold);font-weight:700;margin-top:5px}
+.hero .desc{font-size:.84em;color:var(--txt3);margin-top:6px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;margin:10px 0;padding:12px 16px}
+.card h3{font-size:1em;font-weight:700;color:var(--base);margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+td.pos{color:var(--bull);font-weight:700}
+td.neg{color:var(--bear);font-weight:700}
+td.highlight{color:var(--gold);font-weight:700}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+.fias-f{color:#4caf50;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(76,175,80,.18)}
+.fias-i{color:#42a5f5;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(66,165,245,.18)}
+.fias-a{color:#ffca28;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(255,202,40,.15)}
+.chapter-title{font-size:1.4em;font-weight:900;color:var(--gold);margin:28px 0 4px;padding-top:18px;border-top:2px solid var(--gold);display:flex;align-items:center;gap:10px}
+.chapter-no{background:var(--gold);color:#000;font-size:.82em;padding:3px 10px;border-radius:4px;font-weight:900}
+.chapter-sub{font-size:.82em;color:var(--txt3);margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:8px 0}
+@media(max-width:640px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:3px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--base)}
+.mini-card .desc{font-size:.72em;color:var(--txt3);margin-top:3px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.gold-card{border-left:4px solid var(--gold)}
+.ev{padding:10px 14px;margin:5px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px}
+.ev .ev-d{color:var(--txt2);line-height:1.6}
+.plain-talk{font-size:.85em;color:var(--txt2);margin-top:6px;padding:8px 12px;background:rgba(90,125,140,.08);border-left:3px solid var(--link);border-radius:4px}
+.plain-talk::before{content:'💡 白話說：';color:var(--link);font-weight:700;margin-right:4px}
+.step-progress{display:flex;gap:3px;margin-bottom:18px}
+.step-dot{flex:1;height:5px;border-radius:3px;background:var(--border)}
+.step-dot.done{background:var(--accent)}
+.step-dot.active{background:var(--gold)}
+.gauge{height:18px;background:var(--border);border-radius:9px;overflow:hidden;margin:4px 0}
+.gauge-fill{height:100%;background:linear-gradient(90deg,var(--bull),var(--gold),var(--bear));border-radius:9px}
+footer{margin-top:40px;padding:16px 0;border-top:1px solid var(--border);color:var(--txt3);font-size:.78em;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="step-progress">
+  <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
+  <div class="step-dot active"></div>
+  <div class="step-dot"></div><div class="step-dot"></div>
+</div>
+
+<div class="hero">
+  <div class="sub">📜 天機錄 完整版質化分析 — 第七步</div>
+  <h1>台達電子（2308）</h1>
+  <div class="desc">AI 電源霸主的估值極限考驗｜13 章完整版｜2026-04-17</div>
+</div>
+
+<!-- 核心儀表板 -->
+<div class="grid4">
+  <div class="mini-card gold-card">
+    <div class="title">現價</div>
+    <div class="num" style="color:var(--gold)">1,735</div>
+    <div class="desc">2026/4/10</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">加權合理價</div>
+    <div class="num" style="color:var(--bear)">1,562</div>
+    <div class="desc">溢價 +11%</div>
+  </div>
+  <div class="mini-card gold-card">
+    <div class="title">評審團信心</div>
+    <div class="num" style="color:var(--gold)">52%</div>
+    <div class="desc">中性偏弱</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">最終裁決</div>
+    <div class="num" style="color:var(--bull)">觀望</div>
+    <div class="desc">等 1,380↓ 進場</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 第一章 公司概覽 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第一章</span>公司概覽</div>
+<div class="chapter-sub">基本資料 + 營收結構 + 製造能力 + 競爭力 7 維 + Porter 五力 + 財務體質</div>
+
+<div class="grid2">
+  <div class="ev">
+    <div class="ev-t">全名 / 成立</div>
+    <div class="ev-d">台達電子工業股份有限公司（Delta Electronics）/ 1971 年 <span class="fias-f">事實</span></div>
+  </div>
+  <div class="ev">
+    <div class="ev-t">市場 / 股本</div>
+    <div class="ev-d">TWSE 2308 / 259.75 億台幣（2,597.5 百萬股，近 3 年零稀釋）<span class="fias-f">事實</span></div>
+  </div>
+  <div class="ev">
+    <div class="ev-t">董事長 / 創辦人</div>
+    <div class="ev-d">董事長兼執行長鄭平（2.14%）+ 創辦人鄭崇華（3.15% + 子女 0.93%）+ 鄭安（1.94%）= 鄭家合計 6.23% <span class="fias-f">事實</span></div>
+  </div>
+  <div class="ev">
+    <div class="ev-t">員工 / 研發</div>
+    <div class="ev-d">13,271 人（技術 59.8%、碩士以上 49.5%）｜研發費 416 億（2024，9.88%）<span class="fias-f">事實</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>四大事業範疇（2024 營收 4,211 億分布）</h3>
+  <table>
+    <tr><th>範疇</th><th>比重</th><th>AI 相關</th><th>成長性</th></tr>
+    <tr><td>電源及零組件</td><td class="highlight">53%</td><td>核心</td><td class="pos">AI 電源+液冷+HVDC 三引擎</td></tr>
+    <tr><td>基礎設施</td><td>24%</td><td>次核心</td><td class="pos">資料中心/儲能/快充</td></tr>
+    <tr><td>自動化</td><td>12%</td><td>低</td><td>工業自動化+樓宇</td></tr>
+    <tr><td>交通</td><td>11%</td><td>無</td><td class="neg">EV 市場 2024 放緩</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>競爭力 7 維度一眼看</h3>
+  <table>
+    <tr><td>① 產品事實</td><td>ORV3 33kW 領先（+83% vs 2023）、98.2% 效率 GB200 直流板</td><td class="pos">強</td></tr>
+    <tr><td>② 競爭事實</td><td>AI 伺服器電源市佔 50-60% 領先</td><td class="pos">強</td></tr>
+    <tr><td>③ 需求事實</td><td>客戶分散（無單一 &gt;10%），NVIDIA + Hyperscaler 全包</td><td class="pos">強</td></tr>
+    <tr><td>④ 財務事實</td><td>毛利 32.4% → 34.6%（連兩季微降）、ROE 16.4%</td><td class="warn">中（微降警訊）</td></tr>
+    <tr><td>⑤ 供應鏈事實</td><td>功率元件五大廠分散、Alps Alpine 內製化</td><td class="pos">強</td></tr>
+    <tr><td>⑥ 管理層事實</td><td>質押 0%、誠信度 87、承諾兌現 4/4</td><td class="pos">極強</td></tr>
+    <tr><td>⑦ 市場調查</td><td>五條線全正面、無公司自述 vs 外部矛盾</td><td class="pos">強</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Porter 五力</h3>
+  <table>
+    <tr><td>新進入者</td><td class="pos">低</td><td>55 年技術 + 規模 + 客戶認證</td></tr>
+    <tr><td>供應商議價</td><td>中</td><td>功率元件五大廠分散</td></tr>
+    <tr><td>買方議價</td><td class="neg">中高</td><td>Hyperscaler 殺價，靠 ORV3 溢價</td></tr>
+    <tr><td>替代品</td><td class="neg">中</td><td>Flex/光寶 2027 追趕</td></tr>
+    <tr><td>同業競爭</td><td class="neg">中高</td><td>玩家增加</td></tr>
+  </table>
+</div>
+
+<div class="tip good">
+  <b>第一章整合結論</b>
+  <b>資料 →</b> 55 年電源管理龍頭 + 鄭家持股 6% 低比例但紀律強 + 四大範疇以電源零組件 53% 為核心 + 7 維度 5 強 2 中。<br>
+  <b>觀察 →</b> 台達電是少見的「大型跨國 + 股本嚴謹 + 家族色彩淡 + 專業經理人主導」結構。<br>
+  <b>推論 →</b> 公司 DNA 是「工程師文化 + 持續 R&D（9.88%）+ 併購補強（Alps Alpine、NEURA、Ceres Power）」。<br>
+  <b>結論 →</b> 公司品質屬 Blue Chip 等級，是「好公司」的前提成立。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第二章 近期催化劑 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第二章</span>近期催化劑 / 利多因素</div>
+<div class="chapter-sub">情報驗證卡 + 時間軸 + 期望值量化</div>
+
+<div class="card">
+  <h3>🟢 催化劑 1：AI 電源供貨比 5 成 → 7 成（2025 兌現中）</h3>
+  <div>情報：Q4 法說會 + 管道 B 必搜 <span class="fias-f">事實</span></div>
+  <div>必要條件：Hyperscaler CapEx 維持、ORV3 33kW 認證維持</div>
+  <div>加速因子：GB300 2026Q2 放量、液冷滲透率</div>
+  <div>阻礙因子：Flex 2027 搶單、毛利率壓力</div>
+  <div>實現機率：高 65%</div>
+  <div>影響：股價 +15-20%、EPS +10-15%、已部分 price-in</div>
+  <div class="pos">期望超額收益：65% × 17% × (1-70% price-in) = <b>+3.3%</b></div>
+</div>
+
+<div class="card">
+  <h3>🟢 催化劑 2：液冷 CDU 放量（2025 9% → 2026 15%+）</h3>
+  <div>情報：Q3/Q4 法說會 + 管道 E-2 產業報告 <span class="fias-f">事實</span></div>
+  <div>實現機率：極高 80%（已通過 CSP/ODM）</div>
+  <div>影響：毛利率 +0.5pp、EPS +5-8%、已部分 price-in</div>
+  <div class="pos">期望超額收益：80% × 6% × (1-60% price-in) = <b>+1.9%</b></div>
+</div>
+
+<div class="card">
+  <h3>🟢 催化劑 3：HVDC 2H26 小量出貨 / 2027 大量</h3>
+  <div>情報：Q3+Q4 法說重申 + 固態變壓器 98.5% 效率 <span class="fias-i">推論-承諾</span></div>
+  <div>必要條件：美國資料中心 HVDC 標準定案、客戶驗證通過</div>
+  <div>實現機率：中 50%（2H26 準時）</div>
+  <div>影響：股價 +20-25%、2027 EPS 再增、尚未 price-in</div>
+  <div class="pos">期望超額收益：50% × 22% × (1-30% price-in) = <b>+7.7%</b></div>
+</div>
+
+<div class="card">
+  <h3>🟢 催化劑 4：泰國 3 座新廠 2025 底完工</h3>
+  <div>情報：Q3 法說會 <span class="fias-i">推論-承諾</span></div>
+  <div>實現機率：高 70%</div>
+  <div>影響：分散地緣政治風險、2026 CapEx 攤提、已 price-in</div>
+  <div class="pos">期望超額收益：70% × 5% × (1-80% price-in) = <b>+0.7%</b></div>
+</div>
+
+<div class="card">
+  <h3>🟢 催化劑 5：Alps Alpine 被動元件綜效</h3>
+  <div>情報：2024 年報 + 2025/1/6 完成 <span class="fias-f">事實</span></div>
+  <div>實現機率：高 75%（併購已完成）</div>
+  <div>影響：毛利率 +0.3pp（被動元件內製化）</div>
+  <div class="pos">期望超額收益：75% × 3% × (1-50% price-in) = <b>+1.1%</b></div>
+</div>
+
+<div class="tip good">
+  <b>第二章整合結論 — 催化劑期望超額收益合計 +14.7%</b><br>
+  <b>資料 →</b> 5 大催化劑期望值分別 +3.3 / +1.9 / +7.7 / +0.7 / +1.1 = 總 +14.7%<br>
+  <b>觀察 →</b> HVDC（+7.7%）是 price-in 最少的催化劑，若兌現可帶來最大驚喜；AI 電源供貨比（+3.3%）已被市場充分反映。<br>
+  <b>推論 →</b> 催化劑的「新故事紅利」逐步遞減，市場已將大部分 AI 題材定價完。<br>
+  <b>結論 →</b> 2026 下半年 HVDC 進度為最重要的上行催化劑，5/15 Q1 季報為最近檢核點。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第三章 為什麼在漲 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第三章</span>為什麼在漲？市場為什麼買單？</div>
+<div class="chapter-sub">驅動力拆解 + FIAS 標註</div>
+
+<div class="card">
+  <h3>股價從 280 → 1,735（52 週 +519%）驅動力拆解</h3>
+  <table>
+    <tr><th>驅動力</th><th>貢獻</th><th>FIAS</th></tr>
+    <tr><td>① AI 資料中心爆發（NVIDIA GB200/300）</td><td>+150%</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>② 2025 EPS +70.6%（基本面實際成長）</td><td>+80%</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>③ 液冷放量（0.9% → 9%，9 倍）</td><td>+60%</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>④ HVDC / 固態變壓器新故事</td><td>+70%</td><td><span class="fias-i">推論-承諾</span></td></tr>
+    <tr><td>⑤ 外資目標價 1,890→2,160 連續上調</td><td>+50%</td><td><span class="fias-a">假設</span></td></tr>
+    <tr><td>⑥ 融資散戶追高</td><td>+30%</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>⑦ PE Rerating（30 → 74）</td><td>+79%</td><td><span class="fias-f">事實</span></td></tr>
+  </table>
+  <div class="plain-talk">基本面+題材面解釋約 360% 漲幅，PE Rerating 貢獻額外 80%。這是「基本面真強 + 估值重估 + 題材熱度」三合一。</div>
+</div>
+
+<div class="tip good">
+  <b>第三章整合結論</b>
+  <b>資料 →</b> 52 週 +519% 漲幅分解：基本面 +230%（EPS 實際成長+結構改善）+ 題材面 +160%（AI/液冷/HVDC）+ 估值重估 +79% + 散戶追高 +30% + 其他。<br>
+  <b>觀察 →</b> 「真實增長」佔 6-7 成，「估值重估與散戶」佔 3-4 成。不是純泡沫，但也不是純實力。<br>
+  <b>推論 →</b> 若 AI 紅利持續 + HVDC 兌現 → 真實增長可以再推升 20-30%；若任何一環掉鏈 → 估值重估部分會立即修正 20-30%。<br>
+  <b>結論 →</b> 股價高點的「真實基礎」佔多數，但「估值膨脹」部分有回調風險。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第四章 潛在風險偵測 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第四章</span>潛在風險偵測與求證</div>
+<div class="chapter-sub">從 Step 2-5 共 9 項風險彙整</div>
+
+<div class="card">
+  <h3>🔴 紅燈風險（已觸發或高機率）</h3>
+  <table>
+    <tr><th>#</th><th>風險</th><th>機率</th><th>衝擊</th><th>期望</th></tr>
+    <tr><td>R1</td><td>毛利率反轉（Q3/Q4 連降）</td><td>35%</td><td>-25%</td><td class="neg">-8.75%</td></tr>
+    <tr><td>R2</td><td>PE 74 → 40 估值回歸</td><td>40%</td><td>-42%</td><td class="neg">-16.8%</td></tr>
+    <tr><td>R3</td><td>Vicor ITC 2025/2 不利</td><td>已發生</td><td>-5%</td><td class="neg">-5%（部分 price-in）</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🟡 黃燈風險（中期觀察）</h3>
+  <table>
+    <tr><th>#</th><th>風險</th><th>機率</th><th>衝擊</th><th>期望</th></tr>
+    <tr><td>R4</td><td>Flex Grid-to-Chip 2027 侵蝕</td><td>35%</td><td>-17%</td><td class="neg">-5.95%</td></tr>
+    <tr><td>R5</td><td>光寶 800V 2027Q1 放量</td><td>35%</td><td>-10%</td><td class="neg">-3.5%</td></tr>
+    <tr><td>R6</td><td>泰國關稅維持 36%</td><td>30%</td><td>-7%</td><td class="neg">-2.1%</td></tr>
+    <tr><td>R7</td><td>2029 產能壓力週期</td><td>40%</td><td>-10%</td><td class="neg">-4%（遠期）</td></tr>
+    <tr><td>R8</td><td>DIH EB 5.25 億 轉換（子公司稀釋）</td><td>50%</td><td>-2%</td><td class="neg">-1%</td></tr>
+    <tr><td>R9</td><td>融資 4,858 張斷頭</td><td>25%</td><td>-10%</td><td class="neg">-2.5%</td></tr>
+  </table>
+</div>
+
+<div class="tip danger">
+  <b>第四章整合結論</b>
+  <b>資料 →</b> 9 項風險期望損失合計：-8.75 + -16.8 + -5 + -5.95 + -3.5 + -2.1 + -4 + -1 + -2.5 = <b>-49.6%</b>（風險暴露概念，非實際跌幅）<br>
+  <b>觀察 →</b> 前 3 大（毛利率/估值/Vicor）占總風險 62%，其中毛利率為致命因子。<br>
+  <b>推論 →</b> 風險結構集中於「基本面邊際變化」+「估值正常化」兩大軸線。<br>
+  <b>結論 →</b> Step 7 監控儀表板首要追蹤毛利率 + PE/外資 consensus 對比。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第五章 隱藏優勢 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第五章</span>隱藏優勢挖掘與求證</div>
+<div class="chapter-sub">市場尚未完全定價的優勢</div>
+
+<div class="card">
+  <h3>🔍 隱藏優勢 1：Alps Alpine 併購的中長期綜效</h3>
+  <div>日本獨特粉末材料專利 + 台達子公司乾坤科技磁性元件 = 高頻功率電感的材料壟斷性<br>
+  實現條件：2025-2026 年完成整合、新世代 AI 電源採用<br>
+  利益估算：毛利率 +0.5pp 結構性提升 → 年化 +15 億獲利<br>
+  Price-in 程度：低（市場聚焦電源本身，忽略被動元件）</div>
+</div>
+
+<div class="card">
+  <h3>🔍 隱藏優勢 2：Ceres Power 氫能源技術（2027+）</h3>
+  <div>英國燃料電池龍頭技轉 + 4,300 萬英鎊投入<br>
+  實現條件：2027 SOEC 製氫 + SOFC 燃料電池量產<br>
+  利益估算：開啟氫能新事業線，潛在年營收 50-100 億<br>
+  Price-in 程度：極低（市場完全忽略 2027+ 故事）</div>
+</div>
+
+<div class="card">
+  <h3>🔍 隱藏優勢 3：NEURA Robotics 協作機器人（2026+）</h3>
+  <div>德國協作機器人新創 + 1,000 萬歐元投資<br>
+  實現條件：中壢六廠智能製造應用 + 外部客戶推廣<br>
+  利益估算：工業自動化業務升級至 AI 協作<br>
+  Price-in 程度：極低</div>
+</div>
+
+<div class="card">
+  <h3>🔍 隱藏優勢 4：DELTerra 儲能系統（5MWh）</h3>
+  <div>容量範圍 708 kWh ~ 7.78 MWh，搭 314Ah 鋰鐵電池<br>
+  已為官田鋼鐵 80MW 儲能落地 + 台電 E-dReg 服務<br>
+  實現條件：綠電轉型政策延續、儲能需求爆發<br>
+  Price-in 程度：低</div>
+</div>
+
+<div class="card">
+  <h3>🔍 隱藏優勢 5：品牌溢價（14 年國際品牌）</h3>
+  <div>2024 品牌價值 5.93 億美元（YoY +9%）<br>
+  連 14 年台灣最佳國際品牌、連 14 年 DJSI 世界指數<br>
+  實現條件：持續 ESG/永續投入<br>
+  利益：軟性競爭力，難以量化但長期加分<br>
+  Price-in 程度：中（外資機構認可）</div>
+</div>
+
+<div class="tip good">
+  <b>第五章整合結論</b>
+  <b>資料 →</b> 5 項隱藏優勢（Alps Alpine / Ceres Power / NEURA / DELTerra / 品牌），市場 price-in 程度低（尤其後三項 2027+ 故事）。<br>
+  <b>觀察 →</b> 台達電的「遠期底牌」豐富，氫能+協作機器人+儲能為下一週期的潛在成長點。<br>
+  <b>推論 →</b> 若 2028-2030 這些業務逐步放量，台達電可避免「AI 紅利退場後的斷崖」。<br>
+  <b>結論 →</b> 隱藏優勢為「長期結構性利多」，支撐 2029 後的商業模式延續。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第六章 六步彙整 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第六章</span>六步分析關鍵決策因素彙整</div>
+
+<table>
+  <tr><th>Step</th><th>核心結論</th><th>影響</th></tr>
+  <tr><td>Step 1 資料</td><td>8 管道達標，5 年年報 + 3 場法說 + 財報資料庫 30 欄</td><td>資料基礎完整</td></tr>
+  <tr><td>Step 2 FIAS</td><td>事實 56%，誠信 87，Z-Score 12.53，紅旗 0/7</td><td>資料品質極高</td></tr>
+  <tr><td>Step 3 競爭力</td><td>寬護城河 16/19，AI 電源市佔 50-60%，Porter 3 正 2 壓</td><td>公司品質極高</td></tr>
+  <tr><td>Step 4 ACH</td><td>主要假說 H2「中性 - 2027 競爭加劇」，信心 65%</td><td>中性偏空基調</td></tr>
+  <tr><td>Step 5 壓力測試</td><td>致命因子=毛利率，前 5 風險期望 -35.1%</td><td>下行風險顯著</td></tr>
+  <tr><td>Step 6 評審團</td><td>信心 52%，加權合理價 1,562，溢價 +11%</td><td>建議觀望</td></tr>
+</table>
+
+<div class="tip info">
+  <b>第六章整合結論 — 因果鏈清晰</b>
+  資料可信 → 公司優質 → 競爭力領先但 2027 有變數 → 主要情境中性偏空 → 壓力測試下行風險 -35% → 評審團建議觀望。六步因果遞進形成一致結論：<b>好公司遇壞價格，等待合理進場點</b>。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第七章 風險清單 + 壓力測試 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第七章</span>風險清單與壓力測試</div>
+<div class="chapter-sub">致命因子 + 事前驗屍法總結</div>
+
+<div class="card">
+  <h3>致命因子：毛利率</h3>
+  <div class="gauge"><div class="gauge-fill" style="width:70%"></div></div>
+  <div style="font-size:.85em;color:var(--txt2);line-height:1.7">
+    毛利率單一敏感度 -26% EPS 衝擊（其他因子均 &lt; 17%）。2025 Q3 34.9 → Q4 34.6 連降。<br>
+    <b>關鍵門檻：2026 Q1 季報（5/15）毛利率</b>：<br>
+    - ≥ 35.0% = 樂觀情境兌現（紅燈解除）<br>
+    - 33.0-34.5% = 中性情境<br>
+    - &lt; 33% = 紅燈觸發，立即減碼 50%<br>
+    - &lt; 32% = 結構性反轉確認，全面撤出
+  </div>
+</div>
+
+<div class="card">
+  <h3>事前驗屍 — 假設 12 個月後 -40%</h3>
+  <table>
+    <tr><th>原因</th><th>風險分數</th></tr>
+    <tr><td>毛利率觸頂</td><td class="neg">15</td></tr>
+    <tr><td>Hyperscaler CapEx 下調</td><td class="neg">10</td></tr>
+    <tr><td>Flex 2027 搶單</td><td>12</td></tr>
+    <tr><td>PE 回歸</td><td>12</td></tr>
+    <tr><td>Vicor 認證延遲</td><td>8</td></tr>
+    <tr><td>泰國關稅維持</td><td>9</td></tr>
+    <tr><td>HVDC 延遲</td><td>6</td></tr>
+  </table>
+</div>
+
+<div class="tip danger">
+  <b>第七章整合結論</b>
+  致命因子明確（毛利率）、事前驗屍 9 項原因層次清晰、最壞情境 -45%。Step 8 監控儀表板必須以毛利率為首要信號。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第八章 監控儀表板 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第八章</span>監控儀表板（燈號系統）</div>
+<div class="chapter-sub">紅/黃/綠燈 + 關鍵時間節點</div>
+
+<div class="card">
+  <h3>🔴 紅燈觸發條件（立即減碼）</h3>
+  <table>
+    <tr><td>2026 Q1 毛利率 &lt; 33%</td><td>5/15 Q1 季報</td><td>致命因子惡化</td></tr>
+    <tr><td>外資共識目標價 &lt; 1,400</td><td>即時</td><td>市場信心崩潰</td></tr>
+    <tr><td>股價跌破 1,450（趨勢）</td><td>即時</td><td>豁達設定的關鍵支撐</td></tr>
+    <tr><td>HVDC 2H26 宣布延遲</td><td>Q3 2026 法說</td><td>第三引擎啟動失敗</td></tr>
+    <tr><td>Flex 宣布 AI 電源大訂單</td><td>隨時</td><td>競爭結構重組</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🟡 黃燈（提高警覺）</h3>
+  <table>
+    <tr><td>毛利率 33-34%</td><td>季報</td><td>趨勢待確認</td></tr>
+    <tr><td>月營收 YoY &lt; +20%</td><td>每月 10 日</td><td>成長動能減弱</td></tr>
+    <tr><td>融資餘額 &gt; 6,000 張</td><td>每日</td><td>散戶過熱</td></tr>
+    <tr><td>泰國關稅談判僵持</td><td>隨時</td><td>地緣政治</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🟢 綠燈（續抱）</h3>
+  <table>
+    <tr><td>Q1 毛利率 ≥ 35%</td><td>5/15</td><td>反轉疑慮解除</td></tr>
+    <tr><td>HVDC 2H26 出貨確認</td><td>Q3 法說</td><td>第三引擎驗證</td></tr>
+    <tr><td>外資目標價續上調</td><td>即時</td><td>買盤動能</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>📅 關鍵時間節點</h3>
+  <table>
+    <tr><th>日期</th><th>事件</th><th>優先級</th></tr>
+    <tr style="background:rgba(194,124,110,.2)"><td>2026/4/30</td><td>法說會 + Q1 季報 guidance</td><td class="neg">🔴 最高</td></tr>
+    <tr><td>2026/5/9</td><td>2026/04 月營收公布</td><td class="neg">🔴 高</td></tr>
+    <tr style="background:rgba(194,124,110,.2)"><td>2026/5/15</td><td>Q1 季報正式（毛利率）</td><td class="neg">🔴 最高</td></tr>
+    <tr><td>2026/6</td><td>Flex Q2 法說會 AI 電源佔比</td><td>🟡 中</td></tr>
+    <tr><td>2026/7/下旬</td><td>Q2 季報法說</td><td>🟡 中</td></tr>
+    <tr><td>2026/9</td><td>Vicor ITC 上訴進展</td><td>🟡 中</td></tr>
+    <tr><td>2026/Q3 法說</td><td>HVDC 2H26 出貨進度</td><td class="neg">🔴 高</td></tr>
+  </table>
+</div>
+
+<div class="tip info">
+  <b>第八章整合結論</b>
+  監控儀表板以「毛利率」為核心信號，2026/5/15 Q1 季報為下一個最重要檢核點。建議設定 alert：股價 1,450 / 外資 consensus 1,400 / 毛利率 33%。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第九章 推衍預測 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第九章</span>推衍預測</div>
+<div class="chapter-sub">+ 短中長期推衍鏈 + 多路徑推演</div>
+
+<div class="card">
+  <h3>短期（1-3 個月，至 2026/7）</h3>
+  <div><b>主路徑</b>：Q1 季報 + 法說會出爐 → 毛利率若維持 34%+ → 股價續強 1,700-1,900；若 &lt; 33% → 修正至 1,400-1,500<br>
+  <b>概率</b>：主路徑（續強）55% / 黑天鵝（修正）30% / 其他 15%</div>
+</div>
+
+<div class="card">
+  <h3>中期（3-12 個月，2026/7-2027/4）</h3>
+  <div><b>主路徑</b>：AI 電源持續放量 + HVDC 2H26 小量出貨 + 泰國 3 廠貢獻 → 2026F EPS 45-48 → 股價 1,500-2,000 區間<br>
+  <b>分岔點</b>：若毛利率回升至 35%+ 且 HVDC 超預期 → 2,300+；若 Flex/光寶 2027 搶單加速 → 1,200-1,400<br>
+  <b>概率</b>：主路徑 50% / 樂觀 25% / 保守 25%</div>
+</div>
+
+<div class="card">
+  <h3>長期（1-3 年，2027-2029）</h3>
+  <div><b>主路徑</b>：HVDC 2027 大量貢獻 + AI 第二波（具身智能/機器人）+ 氫能 2027+ → EPS 55-65 → 股價 2,000-2,800<br>
+  <b>逆轉情境</b>：Flex Grid-to-Chip 2027 成功 + 光寶 2027Q1 放量 → 台達電市佔降至 40-45% → 毛利率回 30% → 股價回檔至 1,000-1,200<br>
+  <b>2029 產能壓力</b>：管理層已暗示，未必負面（能見度高），但競爭格局重組值得追蹤<br>
+  <b>概率</b>：主路徑 40% / 逆轉 30% / 中性 30%</div>
+</div>
+
+<div class="tip info">
+  <b>第九章整合結論 — 主路徑概率 40-55% 區間</b>
+  短中期多頭趨勢仍在，主要不確定性在 2027 競爭格局重組。<b>多路徑推演中值約 1,700-1,800（與現價接近）</b>，但波動區間廣泛（1,000-2,500），反映估值極端敏感。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第十章 股價合理性（五法估值） -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第十章</span>股價合理性分析</div>
+<div class="chapter-sub">五種估值法交叉比對 + 安全邊際</div>
+
+<div class="card">
+  <h3>五法估值對比</h3>
+  <table>
+    <tr><th>方法</th><th>假設</th><th>合理價</th><th>vs 現價 1,735</th></tr>
+    <tr><td>歷史 PE 中位 25x</td><td>EPS 23.14</td><td>579</td><td class="neg">-67%</td></tr>
+    <tr><td>PE Band 合理 40-55x</td><td>EPS 23.14</td><td>926-1,273</td><td class="neg">-27%~-47%</td></tr>
+    <tr><td>DCF（終值 PE 30）</td><td>2026-2030 EPS 增長</td><td>1,050-1,200</td><td class="neg">-31%~-39%</td></tr>
+    <tr><td>PB 合理 12x</td><td>每股淨值 88.5</td><td>1,062</td><td class="neg">-39%</td></tr>
+    <tr><td>殖利率合理 2.5%</td><td>配息 50% × EPS 23.14</td><td>463</td><td class="neg">-73%</td></tr>
+    <tr><td>PE 55x × 2026F EPS 46</td><td>前向法人樂觀</td><td>2,530</td><td class="pos">+46%</td></tr>
+  </table>
+  <div class="plain-talk">傳統估值法（歷史 PE/DCF/PB）中位落 900-1,200，現價溢價 45-90%。唯一支持現價的是「前向 PE 55x × 法人樂觀 EPS 46」的激進假設。</div>
+</div>
+
+<div class="card">
+  <h3>三情境加權估值</h3>
+  <table>
+    <tr><th>情境</th><th>機率</th><th>EPS</th><th>PE</th><th>股價</th><th>加權</th></tr>
+    <tr><td>樂觀</td><td>30%</td><td>60</td><td>38</td><td>2,300</td><td>690</td></tr>
+    <tr><td>中性</td><td>50%</td><td>46</td><td>30</td><td>1,380</td><td>690</td></tr>
+    <tr><td>保守</td><td>20%</td><td>38</td><td>24</td><td>912</td><td>182</td></tr>
+    <tr style="background:rgba(107,159,114,.12)"><td><b>加權</b></td><td></td><td></td><td></td><td></td><td class="highlight"><b>1,562</b></td></tr>
+  </table>
+</div>
+
+<div class="tip warn">
+  <b>第十章整合結論</b>
+  五法估值中位 900-1,200，三情境加權 1,562。<b>現價 1,735 溢價 11%</b>，<b>安全邊際不足</b>。建議進場區間：&lt; 1,380（中性價）/ &lt; 1,100（積極加碼）。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第十一章 保留彈性 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第十一章</span>補充分析（保留彈性）</div>
+
+<div class="card">
+  <h3>籌碼結構補述</h3>
+  <div>外資+投信 2026/4/10 雙買，融資 4,858 張（追高散戶）。若 Q1 季報低於預期，融資戶可能加速跌幅 3-5%。<br>
+  產業圖譜供應鏈圖譜：風險 0.007（低）/ 機會 0.36（低潛力）/ 關鍵節點含鴻海（competitor+partner）、廣達（customer+supplier）雙向關係。</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 第十二章 貓膩探索 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第十二章</span>貓膩探索與求證</div>
+<div class="chapter-sub">反共識六步框架</div>
+
+<div class="card">
+  <h3>六步反共識檢查</h3>
+  <table>
+    <tr><th>步驟</th><th>發現</th></tr>
+    <tr><td>① 市場共識</td><td>AI 紅利持續、2026F EPS 46、外資 18B/1S 看多</td></tr>
+    <tr><td>② 反向線索</td><td>Q3→Q4 毛利率連降、外資 consensus 低於現價、融資高檔、Q4 法說提 2029 產能壓力</td></tr>
+    <tr><td>③ 管理層「語氣變化」</td><td>Q2「只有 AI 好」→ Q3 警示泰國關稅 → Q4 罕見提 2029：<b>管理層主動揭露遠期擔憂</b></td></tr>
+    <tr><td>④ 財報貓膩</td><td>未發現造假跡象，Z-Score 12.53、紅旗 0/7、誠信 87</td></tr>
+    <tr><td>⑤ 行為矛盾</td><td>董監質押 0% = 無矛盾</td></tr>
+    <tr><td>⑥ 貓膩結論</td><td><b>無重大貓膩，但有「管理層主動管理預期」的老練操作</b>：Q4 提 2029 是為 2026-2028 超預期留空間</td></tr>
+  </table>
+</div>
+
+<div class="tip good">
+  <b>第十二章整合結論 — 無重大貓膩</b>
+  台達電並無隱藏的財務造假、股價操作、關係人交易異常等貓膩跡象。但管理層的「分層論述」風格（Q4 主動揭露遠期風險）值得高度評價。
+</div>
+
+<!-- ================================================================ -->
+<!-- 第十三章 投資結論 -->
+<!-- ================================================================ -->
+<div class="chapter-title"><span class="chapter-no">第十三章</span>投資結論</div>
+<div class="chapter-sub">一句話 + 三情境估值 + 免責</div>
+
+<div class="tip info" style="padding:18px 22px;font-size:1.05em">
+  <b>📜 天機錄一句話結論</b><br><br>
+  <b>「台達電 2308 = 好公司 + 好題材 + 壞價格的經典組合；建議觀望，等 1,380 以下進場，1,100 以下積極加碼。」</b>
+</div>
+
+<div class="grid3">
+  <div class="mini-card bull-card">
+    <div class="title">🟢 樂觀情境 30%</div>
+    <div class="num" style="color:var(--bull)">2,300</div>
+    <div class="desc">AI 紅利超預期 + HVDC 加速兌現</div>
+  </div>
+  <div class="mini-card gold-card">
+    <div class="title">🟡 中性情境 50%</div>
+    <div class="num" style="color:var(--gold)">1,380</div>
+    <div class="desc">法人預估 EPS 46 兌現，毛利穩定</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">🔴 保守情境 20%</div>
+    <div class="num" style="color:var(--bear)">912</div>
+    <div class="desc">毛利率反轉 + PE 回歸正常</div>
+  </div>
+</div>
+
+<div class="tip warn" style="padding:14px 18px">
+  <b>🎯 具體行動建議</b><br><br>
+  <b>持有者</b>：<br>
+  - 1,800 以上考慮分批減碼 30%<br>
+  - 1,450 為停損線（-16%）<br>
+  - 若 Q1 季報毛利 ≥ 35%，續抱；&lt; 33%，立即減碼 50%<br><br>
+  <b>觀望者</b>：<br>
+  - 等 1,380 以下（中性合理價）進場 30%<br>
+  - 1,100 以下積極加碼至 70%<br>
+  - 1,000 以下滿倉（最壞情境底部）<br><br>
+  <b>部位建議</b>：台達電單一個股比重 ≤ 3%（因估值風險高）<br><br>
+  <b>關鍵檢核日</b>：2026/4/30（法說）、2026/5/15（Q1 季報）、2026/Q3 法說（HVDC 進度）
+</div>
+
+<div class="tip danger" style="padding:12px 18px;font-size:.78em">
+  <b>⚠️ 免責聲明</b>
+  本報告為投資分析研究，非買賣建議。所有結論基於 2026-04-17 可得資訊，未來可能因新資訊大幅修正。投資有風險，請獨立判斷。
+</div>
+
+<footer>
+  天機閣投資分析系統 | 第七步天機錄完整版完成於 2026-04-17 | 進 Step 8 推演版
+</footer>
+
+</div>
+</body>
+</html>

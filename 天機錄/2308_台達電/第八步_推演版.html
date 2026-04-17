@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>台達電 2308 — 第八步 推演版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--table-header:#333;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+.wrap{max-width:920px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:28px 16px 20px;margin-bottom:18px;border-bottom:1.5px solid var(--border);background:linear-gradient(160deg,rgba(212,176,48,.09),transparent 60%)}
+.hero h1{font-size:1.9em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.95em;color:var(--gold);font-weight:700;margin-top:5px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;margin:10px 0;padding:12px 16px}
+.card h3{font-size:1em;font-weight:700;color:var(--base);margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--table-header);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+td.pos{color:var(--bull);font-weight:700}
+td.neg{color:var(--bear);font-weight:700}
+td.highlight{color:var(--gold);font-weight:700}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}.tip.danger b{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}.tip.info b{color:var(--link);display:block;margin-bottom:3px}
+.section-title{font-size:1.3em;font-weight:900;color:var(--gold);margin:22px 0 4px;padding-top:14px;border-top:1.5px solid var(--gold)}
+.section-no{background:var(--gold);color:#000;font-size:.72em;padding:2px 8px;border-radius:4px;margin-right:8px;font-weight:900}
+.step-progress{display:flex;gap:3px;margin-bottom:18px}
+.step-dot{flex:1;height:5px;border-radius:3px;background:var(--border)}
+.step-dot.done{background:var(--accent)}
+.step-dot.active{background:var(--gold)}
+.tree{margin:10px 0;padding:12px;background:var(--panel);border-radius:6px;border:1px solid var(--border)}
+.tree-node{padding:4px 12px;margin:4px 0;border-radius:4px;background:rgba(90,125,140,.08);font-size:.84em}
+.tree-level-1{margin-left:0}
+.tree-level-2{margin-left:24px}
+.tree-level-3{margin-left:48px;background:rgba(107,159,114,.06)}
+footer{margin-top:40px;padding:16px 0;border-top:1px solid var(--border);color:var(--txt3);font-size:.78em;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="step-progress">
+  <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
+  <div class="step-dot active"></div>
+  <div class="step-dot"></div>
+</div>
+
+<div class="hero">
+  <div class="sub">🎲 第八步 — 推演版（蝴蝶效應 / 級聯模擬 / 骨牌）</div>
+  <h1>台達電子（2308）</h1>
+  <div>多路徑概率樹 + 未來 6 個月催化劑時間表 ｜ 2026-04-17</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8a. 推衍基礎確認 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8a</span>推衍基礎確認（回溯原始資料）</div>
+
+<div class="card">
+  <h3>關鍵事實錨定</h3>
+  <table>
+    <tr><td>現價 2026/4/10</td><td class="highlight">1,735 元</td><td>財報資料庫</td></tr>
+    <tr><td>2025 EPS</td><td>23.14 元</td><td>法說+媒體</td></tr>
+    <tr><td>2025Q4 毛利率</td><td>34.59%（連兩季微降）</td><td>財報資料庫</td></tr>
+    <tr><td>2026/03 月營收</td><td>597.8 億（YoY +37.6%）</td><td>財報資料庫</td></tr>
+    <tr><td>外資共識</td><td>1,692.95（低於現價）</td><td>18B/1S</td></tr>
+    <tr><td>主要假說</td><td>H2 中性（信心 65%）</td><td>Step 4</td></tr>
+  </table>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8b. 情報更新 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8b</span>情報最新動態</div>
+
+<div class="card">
+  <h3>關鍵更新（Step 1 搜尋結果）</h3>
+  <ol style="padding-left:20px;font-size:.85em;color:var(--txt2);line-height:1.7">
+    <li>外資目標價兩週內 3 次上調（1,890→2,000→2,110→2,160 群益）</li>
+    <li>鄭平 2025/8 警示泰國 36% 關稅風險</li>
+    <li>Vicor ITC 2025/2/13 最終決定不利，redesign 獲豁免</li>
+    <li>Alps Alpine 併購案 2025/1/6 完成（6,850 萬美元）</li>
+    <li>子公司 DIH 2025 發行 5.25 億美元 0% EB（轉 DET）</li>
+    <li>液冷 CDU 通過全球主要 CSP/ODM（Q4 法說）</li>
+    <li>NVIDIA GB200/300 供應鏈台達電為核心但非獨供（MPS/TI 滲透 VRM）</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8c. 影響鏈分析（三大方法） -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8c</span>影響鏈分析</div>
+
+<div class="card">
+  <h3>🦋 蝴蝶效應：毛利率 Q1 &lt; 33% 觸發連鎖</h3>
+  <div class="tree">
+    <div class="tree-node tree-level-1">▶️ 起點：2026 Q1 毛利率 &lt; 33%（機率 35%）</div>
+    <div class="tree-node tree-level-2">└─ 直接效應：EPS 下修 15-20%，法人 2026F 46 → 38-40</div>
+    <div class="tree-node tree-level-3">└─ 外資目標價下修至 1,400-1,500</div>
+    <div class="tree-node tree-level-3">└─ 融資 4,858 張被迫停損 → 股價加速跌 5-10%</div>
+    <div class="tree-node tree-level-2">└─ 市場信心：AI 紅利見頂論浮現</div>
+    <div class="tree-node tree-level-3">└─ AI 族群全面修正（鴻海/廣達/雙鴻連動）</div>
+    <div class="tree-node tree-level-2">└─ 最終股價：1,200-1,400（-20%~-30%）</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>🎯 級聯模擬：HVDC 2H26 延遲觸發 AI 信心崩壞</h3>
+  <div class="tree">
+    <div class="tree-node tree-level-1">▶️ 起點：Q3 2026 法說 HVDC 2H26 宣布延至 2027（機率 30%）</div>
+    <div class="tree-node tree-level-2">└─ 管理層承諾兌現率從 87 降至 60</div>
+    <div class="tree-node tree-level-3">└─ 評審 紅旗：反共識分數 +30</div>
+    <div class="tree-node tree-level-2">└─ 市場質疑 2027 故事全部</div>
+    <div class="tree-node tree-level-3">└─ 外資重新估值 → PE 壓至 30 以下</div>
+    <div class="tree-node tree-level-2">└─ 股價修正 20-25%（至 1,300-1,400）</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>🁣 骨牌效應：Flex 2027 拿下 NVIDIA 15% 訂單</h3>
+  <div class="tree">
+    <div class="tree-node tree-level-1">▶️ 起點：2026 底~2027Q1 Flex 宣布 NVIDIA 大訂單（機率 35%）</div>
+    <div class="tree-node tree-level-2">└─ 台達電 AI 市佔從 50-60% 降至 40-45%</div>
+    <div class="tree-node tree-level-3">└─ 毛利率回歸 30-32% 正常</div>
+    <div class="tree-node tree-level-2">└─ 寬護城河收窄至「中等」</div>
+    <div class="tree-node tree-level-3">└─ PE 從 74 壓縮至 35-40</div>
+    <div class="tree-node tree-level-2">└─ 股價 12 個月內跌至 1,000-1,200（-30%~-42%）</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8d. 情境模擬 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8d</span>多路徑概率樹（12 個月）</div>
+
+<div class="card">
+  <h3>🌳 主要路徑樹（機率加總 = 100%）</h3>
+  <div class="tree">
+    <div class="tree-node tree-level-1">🟢 A. AI 紅利超預期 + HVDC 順利（25%）→ 股價 2,200-2,500（+27%~+44%）</div>
+    <div class="tree-node tree-level-2">A1. 毛利率回升 35%+ + HVDC 2H26 準時大量</div>
+    <div class="tree-node tree-level-1">🟡 B. 中性穩健（35%）→ 股價 1,500-1,800（-13%~+4%）</div>
+    <div class="tree-node tree-level-2">B1. 毛利率穩定 34% + 泰國/HVDC 按計畫</div>
+    <div class="tree-node tree-level-1">🟡 C. 輕度修正（20%）→ 股價 1,300-1,500（-25%~-13%）</div>
+    <div class="tree-node tree-level-2">C1. 毛利率小幅下滑至 33% + 一項催化劑延遲</div>
+    <div class="tree-node tree-level-1">🔴 D. 重大修正（15%）→ 股價 1,000-1,300（-42%~-25%）</div>
+    <div class="tree-node tree-level-2">D1. 毛利率 &lt; 33% 結構反轉 或 Flex 搶單</div>
+    <div class="tree-node tree-level-1">⚫ E. 黑天鵝（5%）→ 股價 &lt; 1,000（-42%+）</div>
+    <div class="tree-node tree-level-2">E1. 兩岸衝突 + AI 泡沫 + 多重利空同時</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>加權期望值</h3>
+  <table>
+    <tr><th>路徑</th><th>機率</th><th>中點價</th><th>加權</th></tr>
+    <tr><td>A 超預期</td><td>25%</td><td>2,350</td><td>588</td></tr>
+    <tr><td>B 中性</td><td>35%</td><td>1,650</td><td>578</td></tr>
+    <tr><td>C 輕修</td><td>20%</td><td>1,400</td><td>280</td></tr>
+    <tr><td>D 重修</td><td>15%</td><td>1,150</td><td>173</td></tr>
+    <tr><td>E 黑天鵝</td><td>5%</td><td>900</td><td>45</td></tr>
+    <tr style="background:rgba(107,159,114,.12)"><td><b>加權</b></td><td>100%</td><td></td><td class="highlight"><b>1,664</b></td></tr>
+  </table>
+  <div style="font-size:.82em;color:var(--txt2);margin-top:6px">相對現價 1,735 溢價 4.3% → <b>期望報酬接近 0</b>，但下行風險集中。</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8e. 個人化推衍 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8e</span>個人化推衍（持股情境）</div>
+
+<div class="card">
+  <h3>情境 1：尚未持股（觀望者）</h3>
+  <div class="tip info">
+    <b>建議：分批承接</b><br>
+    - 現價 1,735 不建議追高（期望報酬 ~0%）<br>
+    - 1,450-1,500 啟動試單 30% 部位<br>
+    - 1,200-1,300 中倉 60%<br>
+    - 1,000 以下滿倉（極保守情境底部）<br>
+    - 若 Q1 季報（5/15）毛利率 &gt; 35% → 可提前至 1,600 試單
+  </div>
+</div>
+
+<div class="card">
+  <h3>情境 2：已持股（成本不明）</h3>
+  <div class="tip warn">
+    <b>建議：檢視浮盈狀態</b><br>
+    - 浮盈 &gt; 50%：分批減碼 30-50%，鎖定部分獲利<br>
+    - 浮盈 20-50%：續抱但 1,450 設停損<br>
+    - 浮盈 &lt; 20% 或浮虧：觀察 Q1 季報後決定
+  </div>
+</div>
+
+<div class="card">
+  <h3>情境 3：追求成長型配置</h3>
+  <div class="tip good">
+    <b>若為長期 3-5 年持有：</b><br>
+    - 當前估值偏貴但長期故事完整（HVDC / 氫能 / 協作機器人 2027+）<br>
+    - 可分批建倉但勿重倉（≤ 3% 總資產）<br>
+    - 建倉節奏：30% 現價 / 40% 1,400 / 30% 1,100<br>
+    - 預期 3 年報酬 20-40%（年化 6-12%）
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8f. 催化劑時間表 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8f</span>未來 6 個月關鍵節點時間表</div>
+
+<div class="card">
+  <table>
+    <tr><th>日期</th><th>事件</th><th>類型</th><th>影響</th></tr>
+    <tr style="background:rgba(194,124,110,.15)"><td>2026/4/30</td><td>法說會 + Q1 季報 guidance</td><td class="neg">紅</td><td>毛利率方向性揭露</td></tr>
+    <tr style="background:rgba(194,124,110,.15)"><td>2026/5/9</td><td>2026/04 月營收</td><td class="neg">紅</td><td>確認成長動能</td></tr>
+    <tr style="background:rgba(194,124,110,.15)"><td>2026/5/15</td><td>Q1 季報正式</td><td class="neg">紅</td><td>毛利率+AI 電源佔比精確數據</td></tr>
+    <tr><td>2026/6</td><td>Flex/Lite-On Q2 法說會</td><td>黃</td><td>競爭對手 AI 佔比</td></tr>
+    <tr><td>2026/7/下旬</td><td>台達電 Q2 季報法說</td><td>黃</td><td>毛利率驗證第二次</td></tr>
+    <tr><td>2026/8</td><td>NVIDIA 財報</td><td>黃</td><td>GB300 出貨數據</td></tr>
+    <tr><td>2026/9</td><td>Vicor ITC 上訴進展</td><td>黃</td><td>美國出口限制確認</td></tr>
+    <tr style="background:rgba(107,159,114,.15)"><td>2026/Q3 法說會</td><td>HVDC 2H26 出貨進度揭露</td><td class="pos">綠</td><td>第三引擎啟動驗證</td></tr>
+    <tr><td>2026/10/13</td><td>2026/09 月營收</td><td>黃</td><td>Q3 動能</td></tr>
+    <tr style="background:rgba(212,176,48,.15)"><td>2026/11/13</td><td>Q3 季報</td><td class="highlight">金</td><td>HVDC 小量出貨確認</td></tr>
+  </table>
+</div>
+
+<!-- ================================================================ -->
+<!-- 8g. 推衍結論 -->
+<!-- ================================================================ -->
+<div class="section-title"><span class="section-no">8g</span>推衍結論</div>
+
+<div class="tip info" style="padding:14px 18px">
+  <b>🎯 推演結論</b><br><br>
+  加權期望值 1,664 ≈ 現價 1,735（僅 -4% 下行）。<br>
+  但下行路徑（C+D+E）合計 40% 機率，且下行幅度 -13%~-42%；上行路徑（A）僅 25% 機率。<br>
+  <b>風險/報酬比不對稱：下行空間 &gt; 上行空間</b>。<br><br>
+  <b>關鍵信號守望清單</b>：<br>
+  🔴 股價跌破 1,450 → 觸發趨勢轉弱<br>
+  🔴 Q1 毛利率 &lt; 33% → 致命因子確認<br>
+  🔴 Flex Q2 AI 電源大訂單公告 → 競爭結構重組<br>
+  🟢 Q1 毛利率 &gt; 35% + 上調 guidance → 續強<br>
+  🟢 HVDC 2H26 準時出貨 → 第三引擎成功啟動
+</div>
+
+<div class="tip warn" style="padding:12px 18px">
+  <b>📋 行動清單（6 個月）</b><br>
+  1. 2026/4/30 法說會即時解讀 → 決定 5 月部位調整<br>
+  2. 2026/5/15 Q1 季報 → 毛利率觸發點：&lt;33% 減碼 50%，&gt;35% 續抱<br>
+  3. 每月 10 日前後追蹤月營收（YoY &gt; +25% 為綠燈）<br>
+  4. Q3 法說會（預計 10 月底）聚焦 HVDC 小量出貨確認<br>
+  5. 2026/11/13 Q3 季報為「HVDC 引擎啟動」的第一個實質檢核點
+</div>
+
+<footer>
+  天機閣投資分析系統 | 第八步推演版完成於 2026-04-17 | 進 Step 9 追蹤回饋設定
+</footer>
+
+</div>
+</body>
+</html>
