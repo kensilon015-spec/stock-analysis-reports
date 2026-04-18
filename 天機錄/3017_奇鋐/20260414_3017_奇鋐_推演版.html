@@ -1,1378 +1,1645 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>奇鋐科技(3017) 第八步：推演版報告</title>
-    <style>
-        /* === 基礎重設 === */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>奇鋐科技 3017 · 第八步推演版 · 天機錄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Serif TC',Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
 
-        body {
-            font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
-            background: #1a1a1a;
-            color: #d4d4d4;
-            line-height: 1.7;
-            padding: 0;
-            margin: 0;
-        }
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
 
-        /* === 頂部標題區 === */
-        .hero {
-            background: linear-gradient(135deg, #1a2a1f 0%, #252525 50%, #1a1f2a 100%);
-            border-bottom: 2px solid #6b9f72;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 50%, rgba(107,159,114,0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 50%, rgba(100,140,180,0.06) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        .hero h1 {
-            font-size: 2.2em;
-            color: #6b9f72;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 0 20px rgba(107,159,114,0.3);
-        }
-        .hero .subtitle {
-            font-size: 1.1em;
-            color: #8a8a8a;
-            position: relative;
-            z-index: 1;
-        }
-        .hero .meta-row {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 15px;
-            position: relative;
-            z-index: 1;
-            flex-wrap: wrap;
-        }
-        .hero .meta-tag {
-            background: rgba(107,159,114,0.15);
-            border: 1px solid rgba(107,159,114,0.3);
-            border-radius: 20px;
-            padding: 5px 18px;
-            font-size: 0.9em;
-            color: #9fc5a5;
-        }
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{font-family:var(--serif);font-weight:900;font-size:22px;letter-spacing:-0.02em;color:var(--ink);}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none}
+.toc-list li{margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a .ix{
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;font-weight:600;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a:hover .ix{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active .ix{color:var(--accent)}
 
-        /* === 全域容器 === */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
 
-        /* === 章節面板 === */
-        .section {
-            background: #252525;
-            border-radius: 12px;
-            border: 1px solid #333;
-            margin-bottom: 28px;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
-        .section:hover {
-            border-color: #6b9f72;
-        }
-        .section-header {
-            background: linear-gradient(90deg, rgba(107,159,114,0.15), transparent);
-            padding: 18px 24px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .section-header .step-badge {
-            background: #6b9f72;
-            color: #1a1a1a;
-            font-weight: 700;
-            font-size: 0.85em;
-            padding: 4px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-        }
-        .section-header h2 {
-            font-size: 1.3em;
-            color: #e0e0e0;
-            font-weight: 600;
-        }
-        .section-body {
-            padding: 24px;
-        }
+.main{padding:56px 72px 80px;max-width:1000px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
 
-        /* === 表格 === */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 16px 0;
-            font-size: 0.92em;
-        }
-        th, td {
-            padding: 10px 14px;
-            text-align: left;
-            border-bottom: 1px solid #333;
-        }
-        th {
-            background: rgba(107,159,114,0.12);
-            color: #9fc5a5;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        tr:hover td {
-            background: rgba(107,159,114,0.05);
-        }
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:60px;line-height:0.98;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:26px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:720px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
 
-        /* === 提示框 === */
-        .tip {
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin: 18px 0;
-            border-left: 4px solid;
-            line-height: 1.8;
-        }
-        .tip b {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 1.05em;
-        }
-        .tip.info {
-            background: rgba(100,140,200,0.1);
-            border-color: #648cc8;
-            color: #a0bfe0;
-        }
-        .tip.info b { color: #80aee8; }
-        .tip.warn {
-            background: rgba(200,170,80,0.1);
-            border-color: #c8aa50;
-            color: #d4c080;
-        }
-        .tip.warn b { color: #e0c860; }
-        .tip.good {
-            background: rgba(107,159,114,0.1);
-            border-color: #6b9f72;
-            color: #a0d4a8;
-        }
-        .tip.good b { color: #80c888; }
-        .tip.danger {
-            background: rgba(200,80,80,0.1);
-            border-color: #c85050;
-            color: #e0a0a0;
-        }
-        .tip.danger b { color: #e87070; }
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{padding:18px 18px 18px 0;border-right:1px solid var(--rule-2);position:relative;}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:34px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.down{color:var(--bear)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .v.warn{color:var(--warn)}
+.hero-stat .d{font-size:12px;color:var(--ink-3);margin-top:6px;font-family:var(--mono);letter-spacing:0.02em;}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+.hero-stat .d .down{color:var(--bear);font-weight:600}
 
-        /* === 影響鏈 === */
-        .chain-box {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 16px 0;
-            position: relative;
-        }
-        .chain-box .chain-title {
-            font-size: 1.05em;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .chain-arrow {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
-        .chain-node {
-            background: rgba(107,159,114,0.12);
-            border: 1px solid rgba(107,159,114,0.3);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 0.88em;
-            color: #c0d8c4;
-            white-space: nowrap;
-        }
-        .chain-node.event {
-            background: rgba(100,140,200,0.15);
-            border-color: rgba(100,140,200,0.4);
-            color: #a0c0e0;
-        }
-        .chain-node.negative {
-            background: rgba(200,100,80,0.12);
-            border-color: rgba(200,100,80,0.3);
-            color: #e0b0a0;
-        }
-        .chain-connector {
-            color: #6b9f72;
-            font-size: 1.3em;
-            margin: 0 6px;
-            font-weight: bold;
-        }
-        .chain-connector.neg {
-            color: #c87060;
-        }
-        .chain-meta {
-            display: flex;
-            gap: 20px;
-            margin-top: 12px;
-            font-size: 0.88em;
-        }
-        .chain-meta span {
-            padding: 4px 12px;
-            border-radius: 12px;
-        }
-        .chain-meta .prob {
-            background: rgba(100,140,200,0.15);
-            color: #a0c0e0;
-        }
-        .chain-meta .impact-pos {
-            background: rgba(107,159,114,0.15);
-            color: #a0d4a8;
-        }
-        .chain-meta .impact-neg {
-            background: rgba(200,100,80,0.12);
-            color: #e0a0a0;
-        }
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
 
-        /* === 情境路徑 === */
-        .scenario-card {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 18px 22px;
-            margin: 14px 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .scenario-card .sc-header {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #333;
-        }
-        .scenario-card .sc-name {
-            font-weight: 700;
-            font-size: 1.1em;
-        }
-        .scenario-card .sc-prob {
-            font-size: 0.95em;
-            padding: 3px 14px;
-            border-radius: 14px;
-            font-weight: 600;
-        }
-        .sc-item { font-size: 0.92em; }
-        .sc-item .label { color: #888; font-size: 0.85em; }
-        .sc-item .value { color: #d4d4d4; font-weight: 600; }
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:90px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--mono);font-weight:700;font-size:44px;line-height:0.9;
+  letter-spacing:-0.02em;color:var(--accent);
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:28px;line-height:1.15;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
 
-        /* === 時間軸 === */
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-            margin: 20px 0;
-        }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #6b9f72, #333);
-        }
-        .tl-item {
-            position: relative;
-            margin-bottom: 18px;
-            padding: 12px 18px;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
-        }
-        .tl-item::before {
-            content: '';
-            position: absolute;
-            left: -26px;
-            top: 16px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid #6b9f72;
-            background: #1a1a1a;
-        }
-        .tl-item.high::before { background: #6b9f72; box-shadow: 0 0 8px rgba(107,159,114,0.5); }
-        .tl-item.extreme::before { background: #e0c860; border-color: #e0c860; box-shadow: 0 0 12px rgba(224,200,96,0.5); }
-        .tl-item .tl-date {
-            font-size: 0.8em;
-            color: #6b9f72;
-            font-weight: 600;
-        }
-        .tl-item .tl-event {
-            font-size: 0.95em;
-            margin-top: 4px;
-        }
-        .tl-item .tl-tags {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-        .tl-item .tl-tag {
-            font-size: 0.78em;
-            padding: 2px 10px;
-            border-radius: 10px;
-        }
-        .tl-tag.up { background: rgba(107,159,114,0.15); color: #a0d4a8; }
-        .tl-tag.down { background: rgba(200,80,80,0.12); color: #e0a0a0; }
-        .tl-tag.both { background: rgba(200,170,80,0.12); color: #d4c080; }
-        .tl-tag.impact-h { background: rgba(224,200,96,0.15); color: #e0c860; }
-        .tl-tag.impact-m { background: rgba(160,160,160,0.15); color: #aaa; }
-        .tl-tag.impact-l { background: rgba(100,100,100,0.15); color: #888; }
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
 
-        /* === 弱訊號卡片 === */
-        .weak-signal {
-            background: #1e1e1e;
-            border: 1px solid #c8aa50;
-            border-radius: 10px;
-            padding: 18px 22px;
-            margin: 14px 0;
-            position: relative;
-        }
-        .weak-signal::before {
-            content: '⚠';
-            position: absolute;
-            top: -10px;
-            right: 16px;
-            background: #c8aa50;
-            color: #1a1a1a;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-        }
-        .weak-signal.orange {
-            border-color: #d48040;
-        }
-        .weak-signal.orange::before {
-            background: #d48040;
-        }
-        .ws-title {
-            font-weight: 700;
-            font-size: 1em;
-            color: #e0c860;
-            margin-bottom: 10px;
-        }
-        .weak-signal.orange .ws-title {
-            color: #e8a060;
-        }
-        .ws-row {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 4px 10px;
-            font-size: 0.9em;
-            margin-bottom: 6px;
-        }
-        .ws-row .ws-label {
-            color: #888;
-            font-weight: 600;
-            text-align: right;
-        }
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.c{text-align:center}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
 
-        /* === 校準表 === */
-        .calibration-table th {
-            text-align: center;
-        }
-        .calibration-table td {
-            text-align: center;
-        }
-        .calibration-table tr:last-child {
-            background: rgba(107,159,114,0.08);
-        }
-        .calibration-table tr:last-child td {
-            font-weight: 700;
-            color: #a0d4a8;
-        }
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
 
-        /* === 最終結論面板 === */
-        .final-verdict {
-            background: linear-gradient(135deg, #1a2a1f, #252525);
-            border: 2px solid #6b9f72;
-            border-radius: 14px;
-            padding: 28px;
-            margin: 30px 0;
-            text-align: center;
-        }
-        .final-verdict h3 {
-            color: #6b9f72;
-            font-size: 1.4em;
-            margin-bottom: 16px;
-        }
-        .verdict-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin: 20px 0;
-        }
-        .verdict-item {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 14px;
-        }
-        .verdict-item .v-label {
-            font-size: 0.8em;
-            color: #888;
-            margin-bottom: 4px;
-        }
-        .verdict-item .v-value {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #e0e0e0;
-        }
-        .verdict-item .v-value.green { color: #80c888; }
-        .verdict-item .v-value.yellow { color: #e0c860; }
-        .verdict-item .v-value.red { color: #e87070; }
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+.conclusion.good::before{background:var(--accent)}
+.conclusion.warn::before{background:var(--warn)}
+.conclusion.bad::before{background:var(--bear)}
+.conclusion.info::before{background:var(--neutral)}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion.warn .mark{color:var(--warn)}
+.conclusion.bad .mark{color:var(--bear)}
+.conclusion.info .mark{color:var(--neutral)}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.3;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+.conclusion ul{margin:8px 0 4px 22px}
+.conclusion li{margin:6px 0;color:var(--ink-2)}
+.conclusion strong{color:var(--ink)}
 
-        /* === 概率柱狀視覺 === */
-        .prob-bar-container {
-            margin: 20px 0;
-        }
-        .prob-bar-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 12px;
-        }
-        .prob-bar-label {
-            width: 180px;
-            text-align: right;
-            font-size: 0.88em;
-            color: #aaa;
-            flex-shrink: 0;
-        }
-        .prob-bar-track {
-            flex: 1;
-            background: #1e1e1e;
-            border-radius: 6px;
-            height: 28px;
-            position: relative;
-            overflow: hidden;
-        }
-        .prob-bar-fill {
-            height: 100%;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            padding-left: 10px;
-            font-size: 0.8em;
-            font-weight: 600;
-            color: #1a1a1a;
-            transition: width 0.8s ease;
-        }
-        .prob-bar-price {
-            width: 100px;
-            text-align: left;
-            font-size: 0.85em;
-            color: #d4d4d4;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
+/* === 影響鏈 (chain) === */
+.chain-box{
+  border:1px solid var(--rule);
+  background:var(--paper-2);
+  padding:18px 20px;margin:16px 0;
+}
+[data-theme="dark"] .chain-box{background:var(--paper-2)}
+.chain-title{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.3;
+  color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.chain-title .cn{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.chain-title.bull{color:var(--bull)}
+.chain-title.bear{color:var(--bear)}
+.chain-title.gold{color:var(--gold)}
+.chain-arrow{
+  display:flex;align-items:center;gap:0;margin:12px 0;flex-wrap:wrap;row-gap:8px;
+}
+.chain-node{
+  border:1px solid var(--rule);background:var(--paper);
+  padding:8px 12px;font-size:12.5px;line-height:1.4;color:var(--ink-2);
+  white-space:nowrap;border-radius:2px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+[data-theme="dark"] .chain-node{background:var(--paper-3)}
+.chain-node.event{border-color:var(--neutral);color:var(--neutral)}
+.chain-node.positive{border-color:var(--bull);color:var(--bull)}
+.chain-node.negative{border-color:var(--bear);color:var(--bear)}
+.chain-connector{
+  color:var(--accent);font-size:1.15em;margin:0 6px;font-weight:700;
+}
+.chain-connector.neg{color:var(--bear)}
+.chain-meta{
+  display:flex;gap:14px;margin-top:12px;font-size:12px;flex-wrap:wrap;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.chain-meta span{padding:3px 10px;border:1px solid var(--rule);border-radius:2px}
+.chain-meta .prob{color:var(--neutral);border-color:var(--neutral)}
+.chain-meta .impact-pos{color:var(--bull);border-color:var(--bull)}
+.chain-meta .impact-neg{color:var(--bear);border-color:var(--bear)}
+details{margin:12px 0 0}
+details summary{
+  cursor:pointer;color:var(--accent);font-weight:600;
+  padding:6px 0;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+  list-style:none;
+}
+details summary::before{content:'▸ ';color:var(--accent)}
+details[open] summary::before{content:'▾ '}
+details > div{padding:10px 0 6px 16px;border-left:1px dashed var(--rule);margin-top:4px}
+details p{margin:6px 0;color:var(--ink-2);font-size:13.5px;line-height:1.65}
+details strong{color:var(--ink)}
 
-        /* === 分隔線 === */
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #444, transparent);
-            margin: 20px 0;
-        }
+/* === 機率柱 (prob-bar) === */
+.prob-bar-container{margin:22px 0 8px}
+.prob-bar-row{
+  display:grid;grid-template-columns:200px 1fr 110px;gap:12px;align-items:center;
+  margin-bottom:10px;font-size:12.5px;
+}
+.prob-bar-label{text-align:right;color:var(--ink-2);font-family:var(--sans)}
+.prob-bar-label.hl{color:var(--ink);font-weight:700}
+.prob-bar-track{
+  height:24px;background:var(--paper-3);border:1px solid var(--rule);
+  position:relative;overflow:hidden;
+}
+.prob-bar-fill{
+  height:100%;display:flex;align-items:center;padding-left:10px;
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--paper);
+  transition:width .8s ease;
+}
+.prob-bar-fill.a{background:var(--bull)}
+.prob-bar-fill.b{background:var(--warn)}
+.prob-bar-fill.c{background:var(--ink-3)}
+.prob-bar-fill.d{background:var(--bear)}
+.prob-bar-fill.e{background:var(--neutral)}
+.prob-bar-price{
+  text-align:left;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);
+  letter-spacing:0.02em;
+}
+.prob-bar-price.hl{color:var(--warn);font-weight:700}
 
-        /* === 雜項 === */
-        .highlight { color: #6b9f72; font-weight: 600; }
-        .highlight-warn { color: #e0c860; font-weight: 600; }
-        .highlight-danger { color: #e87070; font-weight: 600; }
-        .text-muted { color: #888; font-size: 0.9em; }
-        ul { padding-left: 20px; margin: 8px 0; }
-        li { margin-bottom: 6px; }
-        p { margin-bottom: 10px; }
-        strong { color: #e0e0e0; }
+/* === 情境卡 (scenario grid) === */
+.sc-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+.sc-card{
+  border:1px solid var(--rule);background:var(--paper-2);
+  padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+[data-theme="dark"] .sc-card{background:var(--paper-2)}
+.sc-card.bull{border-top:3px solid var(--bull)}
+.sc-card.warn{border-top:3px solid var(--warn)}
+.sc-card.neut{border-top:3px solid var(--ink-3)}
+.sc-card.bear{border-top:3px solid var(--bear)}
+.sc-card.info{border-top:3px solid var(--neutral)}
+.sc-card .sc-header{
+  grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:10px;border-bottom:1px solid var(--rule-2);flex-wrap:wrap;gap:10px;
+}
+.sc-card .sc-name{
+  font-family:var(--serif);font-weight:700;font-size:17px;color:var(--ink);
+}
+.sc-card.bull .sc-name{color:var(--bull)}
+.sc-card.warn .sc-name{color:var(--warn)}
+.sc-card.bear .sc-name{color:var(--bear)}
+.sc-card.info .sc-name{color:var(--neutral)}
+.sc-card .sc-prob{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.1em;font-weight:700;
+  padding:3px 10px;border:1px solid currentColor;
+  color:var(--ink-3);
+}
+.sc-card.bull .sc-prob{color:var(--bull)}
+.sc-card.warn .sc-prob{color:var(--warn)}
+.sc-card.bear .sc-prob{color:var(--bear)}
+.sc-card.info .sc-prob{color:var(--neutral)}
+.sc-card .sc-item{font-size:13px;line-height:1.5}
+.sc-card .sc-item .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--ink-4);display:block;margin-bottom:2px;
+}
+.sc-card .sc-item .value{color:var(--ink-2);font-weight:500}
+.sc-card .sc-item .value.bull{color:var(--bull);font-weight:600}
+.sc-card .sc-item .value.warn{color:var(--warn);font-weight:600}
+.sc-card .sc-item .value.bear{color:var(--bear);font-weight:600}
+.sc-card .sc-item .value.info{color:var(--neutral);font-weight:600}
 
-        /* === 頁尾 === */
-        .footer {
-            text-align: center;
-            padding: 30px;
-            color: #555;
-            font-size: 0.85em;
-            border-top: 1px solid #2a2a2a;
-            margin-top: 40px;
-        }
-        .footer a { color: #6b9f72; text-decoration: none; }
+.expected-box{
+  margin:24px 0;padding:22px 24px;
+  border:2px solid var(--accent);background:var(--accent-wash);
+  text-align:center;
+}
+[data-theme="dark"] .expected-box{background:var(--paper-2)}
+.expected-box .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:8px;
+}
+.expected-box .calc{
+  font-family:var(--mono);font-size:12.5px;color:var(--ink-3);margin:4px 0;
+}
+.expected-box .result{
+  font-family:var(--serif);font-weight:900;font-size:42px;line-height:1;
+  color:var(--accent);letter-spacing:-0.03em;margin:10px 0 6px;
+  font-variation-settings:"opsz" 96;
+}
+.expected-box .note{
+  font-family:var(--mono);font-size:11.5px;color:var(--warn);margin-top:6px;letter-spacing:0.05em;
+}
 
-        /* === 摺疊 === */
-        details {
-            margin: 10px 0;
-        }
-        details summary {
-            cursor: pointer;
-            color: #9fc5a5;
-            font-weight: 600;
-            padding: 6px 0;
-        }
-        details summary:hover {
-            color: #6b9f72;
-        }
-        details > div {
-            padding: 10px 0 10px 16px;
-        }
+/* === 時間軸 === */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.tl-item{
+  position:relative;padding:0 0 20px 28px;
+}
+.tl-item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.tl-item.key::before{background:var(--accent)}
+.tl-item.high::before{background:var(--accent);box-shadow:0 0 0 3px rgba(47,90,61,.15)}
+.tl-item.extreme::before{background:var(--warn);border-color:var(--warn);box-shadow:0 0 0 3px rgba(214,173,92,.25)}
+.tl-item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.tl-item.extreme .date{color:var(--warn)}
+.tl-item .event{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:3px;line-height:1.35;
+}
+.tl-item .detail{font-size:12.5px;color:var(--ink-3);margin-top:5px;line-height:1.55;font-family:var(--sans)}
+.tl-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.tl-tag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 8px;border:1px solid var(--rule);border-radius:2px;font-weight:600;
+}
+.tl-tag.up{color:var(--bull);border-color:var(--bull)}
+.tl-tag.down{color:var(--bear);border-color:var(--bear)}
+.tl-tag.both{color:var(--warn);border-color:var(--warn)}
+.tl-tag.impact-h{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tl-tag.impact-m{color:var(--ink-3);border-color:var(--rule)}
+.tl-tag.impact-l{color:var(--ink-4);border-color:var(--rule-2)}
 
-        /* === RWD === */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 1.5em; }
-            .hero .meta-row { gap: 10px; }
-            .scenario-card { grid-template-columns: 1fr; }
-            .verdict-grid { grid-template-columns: 1fr 1fr; }
-            .prob-bar-label { width: 120px; font-size: 0.8em; }
-            .chain-arrow { flex-wrap: wrap; }
-        }
-    </style>
+/* === 弱訊號卡 === */
+.weak-signal{
+  border:1px solid var(--warn);background:var(--paper-2);
+  padding:18px 22px;margin:14px 0;position:relative;
+}
+[data-theme="dark"] .weak-signal{background:var(--paper-2)}
+.weak-signal.orange{border-color:var(--bear)}
+.weak-signal::before{
+  content:'!';position:absolute;top:-13px;right:16px;
+  background:var(--warn);color:var(--paper);
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:900;font-size:14px;
+}
+.weak-signal.orange::before{background:var(--bear)}
+.ws-title{
+  font-family:var(--serif);font-weight:700;font-size:16px;line-height:1.3;
+  color:var(--warn);margin-bottom:12px;padding-right:40px;
+}
+.weak-signal.orange .ws-title{color:var(--bear)}
+.ws-row{
+  display:grid;grid-template-columns:90px 1fr;gap:10px;
+  font-size:13px;margin-bottom:6px;line-height:1.55;
+}
+.ws-row .ws-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-4);font-weight:600;padding-top:3px;
+}
+.ws-row .ws-val{color:var(--ink-2)}
+.ws-row .ws-val .hl{color:var(--warn);font-weight:600}
+.ws-row .ws-val .hl-orange{color:var(--bear);font-weight:600}
+
+/* === 貓膩燈號 === */
+.cat-lamp{
+  display:inline-flex;align-items:center;gap:10px;margin:14px 0 18px;
+  padding:8px 16px;background:var(--paper-2);border:1px solid var(--warn);
+}
+.cat-lamp .dot{
+  width:12px;height:12px;border-radius:50%;background:var(--warn);
+  box-shadow:0 0 0 3px rgba(214,173,92,.18);
+}
+.cat-lamp .label{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--warn);font-weight:700;
+}
+.cat-lamp .note{
+  font-family:var(--sans);font-size:12px;color:var(--ink-3);margin-left:6px;
+}
+
+/* === 子標 h3/h4 === */
+.sub-h{
+  font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.25;
+  color:var(--ink);margin:24px 0 12px;letter-spacing:-0.01em;
+}
+.sub-h4{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin:22px 0 10px;font-weight:700;
+}
+
+.info-box{
+  border:1px solid var(--rule);background:var(--paper);
+  padding:14px 18px;margin:12px 0;
+}
+[data-theme="dark"] .info-box{background:var(--paper-2)}
+.info-box p{margin:6px 0;color:var(--ink-2);font-size:13.5px;line-height:1.65}
+.info-box ul{margin:6px 0 6px 22px}
+.info-box li{margin:4px 0;color:var(--ink-2);font-size:13.5px}
+.info-box strong{color:var(--ink);font-weight:600}
+.info-box.bad{background:rgba(212,138,122,.06);border-color:rgba(212,138,122,.3)}
+
+/* === 最終裁定面板 === */
+.final-verdict{
+  margin:24px 0;padding:32px 28px;
+  background:var(--ink);color:var(--paper);
+  position:relative;overflow:hidden;
+}
+[data-theme="dark"] .final-verdict{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.final-verdict::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.28),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .final-verdict::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.final-verdict .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:700;margin-bottom:10px;position:relative;
+}
+[data-theme="dark"] .final-verdict .mark{color:#3a5e40}
+.final-verdict h3{
+  font-family:var(--serif);font-weight:900;font-size:30px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;margin-bottom:20px;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);
+  margin:14px 0;position:relative;
+}
+[data-theme="dark"] .verdict-grid{background:rgba(0,0,0,.12);border-color:rgba(0,0,0,.12)}
+@media(max-width:720px){.verdict-grid{grid-template-columns:1fr 1fr}}
+.verdict-item{padding:14px 16px;background:rgba(0,0,0,.22)}
+[data-theme="dark"] .verdict-item{background:rgba(255,255,255,.4)}
+.verdict-item .v-label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(245,241,232,.6);margin-bottom:4px;
+}
+[data-theme="dark"] .verdict-item .v-label{color:rgba(26,24,17,.55)}
+.verdict-item .v-value{
+  font-family:var(--serif);font-weight:700;font-size:22px;line-height:1.1;
+  color:inherit;letter-spacing:-0.01em;
+}
+.verdict-item .v-value.green{color:#86b58d}
+.verdict-item .v-value.yellow{color:#d6ad5c}
+.verdict-item .v-value.red{color:#d48a7a}
+[data-theme="dark"] .verdict-item .v-value.green{color:#2f6b3d}
+[data-theme="dark"] .verdict-item .v-value.yellow{color:#8a6a1f}
+[data-theme="dark"] .verdict-item .v-value.red{color:#8e3a2c}
+.verdict-flip{
+  margin-top:20px;padding:16px 18px;
+  background:rgba(0,0,0,.28);border-left:3px solid var(--warn);
+  position:relative;
+}
+[data-theme="dark"] .verdict-flip{background:rgba(255,255,255,.45)}
+.verdict-flip .flip-k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--warn);font-weight:700;margin-bottom:6px;
+}
+[data-theme="dark"] .verdict-flip .flip-k{color:#8a6a1f}
+.verdict-flip p{font-size:13.5px;line-height:1.65;color:rgba(245,241,232,.9)}
+[data-theme="dark"] .verdict-flip p{color:#2a2619}
+
+/* === pull quote === */
+.pull{margin:28px 0;padding:22px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.4;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* === 標註／小字 === */
+.hl-good{color:var(--bull);font-weight:600}
+.hl-warn{color:var(--warn);font-weight:600}
+.hl-bad{color:var(--bear);font-weight:600}
+.hl-info{color:var(--neutral);font-weight:600}
+.muted{color:var(--ink-3);font-size:13px}
+
+/* === footer === */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+.disclaimer b{color:var(--ink-2)}
+
+/* === theme toggle === */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
 </head>
 <body>
 
-<!-- ==================== 頂部標題 ==================== -->
-<div class="hero">
-    <h1>奇鋐科技 (3017.TW) — 第八步：推演版</h1>
-    <div class="subtitle">天機閣 ─ 全景推演報告 ─ AI 伺服器散熱龍頭</div>
-    <div class="meta-row">
-        <span class="meta-tag">報告日期：2026-04-14</span>
-        <span class="meta-tag">推衍有效期：至 2026-05-15</span>
-        <span class="meta-tag">第四次信心校準</span>
-        <span class="meta-tag">概率加權期望價：1,871 元</span>
-    </div>
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
 </div>
 
-<div class="container">
+<div class="shell">
 
-<!-- ==================== 8a. 推衍基礎確認 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8a</span>
-        <h2>推衍基礎確認</h2>
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機錄</span>
+      <span class="dot"></span>
+      <span class="sub">Tianji · Forecast</span>
     </div>
-    <div class="section-body">
-        <table>
-            <tr><th style="width:180px;">項目</th><th>內容</th></tr>
-            <tr><td>標的</td><td><strong>奇鋐科技 3017.TW</strong> ─ 全球 AI 伺服器散熱龍頭</td></tr>
-            <tr><td>ACH 主假說</td><td>H2「好公司壞價格」<span class="highlight">(55%)</span>、H1「超級週期」(22%)、H3「均值回歸」(15%)、H4「系統風險」(8%)</td></tr>
-            <tr><td>第七步加權期望價</td><td><span class="highlight">1,961 元</span></td></tr>
-            <tr><td>現價</td><td>2,200~2,265 元（溢價 15~23%）</td></tr>
-            <tr><td>FY2025 EPS</td><td>49.17 元｜2026E 法人共識 65~78 元</td></tr>
-            <tr><td>護城河</td><td>窄 B+（無形資產 + 成本優勢）</td></tr>
-            <tr><td>監控儀表板</td><td>🟢×4 🟡×3 🔴×1</td></tr>
-        </table>
 
-        <div class="tip info">
-            <b>8a 整合結論</b>
-            <strong>資料：</strong>ACH 四假說機率分佈穩定，H2「好公司壞價格」佔主導（55%）。期望價 1,961 vs 現價 2,200+ 存在明顯溢價。<br>
-            <strong>觀察：</strong>FY2025 EPS 49.17 達歷史新高，但市場已充分定價並提前反映 2026E 成長。PE 以 2025 計約 45x，以 2026E 共識中位 71.5 計約 31x。<br>
-            <strong>推論：</strong>市場價格已包含「超級週期持續」的樂觀預期，若 2026 營運不如預期加速，PE 有壓縮風險。<br>
-            <strong>結論：</strong>推衍基礎確認完畢。核心矛盾明確 ─ 優質成長公司，但目前價格偏貴。後續章節將從多維度推演可能走向。
-        </div>
+    <div class="meta-block">
+      <div><span class="k">ISSUE</span><span class="v">第八步 · 推演版</span></div>
+      <div><span class="k">DATE</span><span class="v">2026·04·14</span></div>
+      <div><span class="k">CODE</span><span class="v">3017.TW</span></div>
+      <div><span class="k">PAGES</span><span class="v">9 CH.</span></div>
     </div>
-</div>
 
-<!-- ==================== 8b. OSINT 情報更新 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8b</span>
-        <h2>OSINT 情報更新（2026 年 4 月 14 日）</h2>
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#ch-8a"><span class="ix">8a</span><span>推衍基礎確認</span></a></li>
+      <li><a href="#ch-8b"><span class="ix">8b</span><span>OSINT 情報更新</span></a></li>
+      <li><a href="#ch-8c"><span class="ix">8c</span><span>影響鏈分析</span></a></li>
+      <li><a href="#ch-8d"><span class="ix">8d</span><span>情境模擬五路徑</span></a></li>
+      <li><a href="#ch-8e"><span class="ix">8e</span><span>個人化推衍</span></a></li>
+      <li><a href="#ch-8f"><span class="ix">8f</span><span>催化劑時間表</span></a></li>
+      <li><a href="#ch-8g"><span class="ix">8g</span><span>蝴蝶效應推衍</span></a></li>
+      <li><a href="#ch-8h"><span class="ix">8h</span><span>貓膩推衍</span></a></li>
+      <li><a href="#ch-8i"><span class="ix">8i</span><span>第四次信心校準</span></a></li>
+    </ol>
+
+    <div class="side-verdict">
+      <div class="label">Verdict · 期望 1,871</div>
+      <strong>不追高，等 1,800 以下再啟動</strong><br>
+      現價 2,200 溢價 17.6%。5 月法說會為最關鍵分歧點。
     </div>
-    <div class="section-body">
-        <p class="text-muted">以下為分析日（4/10）至今的關鍵資訊差異比對：</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>項目</th>
-                    <th>分析日（4/10）</th>
-                    <th>最新</th>
-                    <th>變化</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>股價</td>
-                    <td>2,265 元</td>
-                    <td>~2,200 元</td>
-                    <td><span class="highlight-danger">↓ -2.9%</span></td>
-                </tr>
-                <tr>
-                    <td>3 月營收</td>
-                    <td>180.17 億</td>
-                    <td>180.17 億（YoY +111.7%）</td>
-                    <td><span class="highlight">確認</span></td>
-                </tr>
-                <tr>
-                    <td>NVIDIA Rubin</td>
-                    <td>2H26 出貨</td>
-                    <td>VR200 量產 2Q26，機櫃 3Q26，全面出貨 4Q26</td>
-                    <td><span class="highlight">更明確</span></td>
-                </tr>
-                <tr>
-                    <td>Rubin TDP</td>
-                    <td>未知</td>
-                    <td>1.8kW / 2.3kW（比 Blackwell 1.4kW 大增 29~64%）</td>
-                    <td><span class="highlight">利多</span></td>
-                </tr>
-                <tr>
-                    <td>Rubin 冷板</td>
-                    <td>預估 MCCP</td>
-                    <td>確認：大冷板 + 微通道技術（MCCP/MCL）</td>
-                    <td><span class="highlight">確認利多</span></td>
-                </tr>
-                <tr>
-                    <td>Hyperscaler capex</td>
-                    <td>&gt;$500B</td>
-                    <td>&gt;$600B（+36% YoY），但增速放緩至 25%</td>
-                    <td><span class="highlight-warn">雙面</span></td>
-                </tr>
-                <tr>
-                    <td>古河電氣</td>
-                    <td>減持中（-2.51pp）</td>
-                    <td>投資 $345M 擴散熱產能（菲律賓 + 泰國 + 中國）</td>
-                    <td><span class="highlight-warn">新訊號</span></td>
-                </tr>
-            </tbody>
-        </table>
+  </aside>
 
-        <div class="tip info">
-            <b>8b 整合結論</b>
-            <strong>資料：</strong>4 天內 7 項追蹤指標中，2 項確認利多（Rubin TDP / 冷板規格）、2 項雙面（capex/古河）、1 項小幅利空（股價微跌）。<br>
-            <strong>觀察：</strong>Rubin 規格逐漸明朗化，TDP 跳升幅度超過先前保守估計。但 Hyperscaler capex 增速從 60% 降至 25% 是值得注意的轉折訊號。古河電氣的「減持 + 擴產」組合拳是本輪最值得警惕的新情報。<br>
-            <strong>推論：</strong>短期利多（Rubin 升級需求）與中期隱憂（競爭+增速放緩）形成拉鋸。市場目前聚焦前者，可能忽略後者。<br>
-            <strong>結論：</strong>情報更新整體偏中性略偏多。但古河電氣的動向是需要持續追蹤的弱訊號，可能在 2027 年形成實質競爭壓力。
-        </div>
+  <!-- ====================== MAIN ====================== -->
+  <main class="main">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">STEP 08 · 推演版</span>
+        <span>第四次信心校準 · 全景推演</span>
+      </div>
+      <h1>奇鋐科技<span class="ticker">3017.TW</span></h1>
+      <p class="deck">AI 伺服器散熱龍頭，Rubin 升級明確利多但估值已提前定價；四次校準期望價 1,800~1,871 元收斂穩定，現價 2,200 溢價 17.6%。</p>
+      <div class="byline">
+        <span><b>Analyst</b>天機閣</span>
+        <span><b>Coverage</b>AI 伺服器散熱 / 液冷 / 微通道冷板</span>
+        <span><b>Scope</b>推衍有效期至 2026/5/15</span>
+        <span><b>Confidence</b>高收斂 · 標準差 &lt;2%</span>
+      </div>
+    </header>
+
+    <!-- HERO STATS -->
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">概率加權期望價</div>
+        <div class="v up">1,871</div>
+        <div class="d">元 · 四次校準 <span class="up">1,800~1,871</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">現價</div>
+        <div class="v">2,200</div>
+        <div class="d">元 · 4/14 收盤 <span class="down">↓ -2.9%</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">溢價幅度</div>
+        <div class="v down">17.6%</div>
+        <div class="d">高於期望價</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">ACH 主假說</div>
+        <div class="v warn">55%</div>
+        <div class="d">好公司壞價格</div>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip hot">AI 伺服器散熱</span>
+      <span class="chip hot">Rubin VR200</span>
+      <span class="chip bull">微通道冷板 MCCP</span>
+      <span class="chip warn">古河電氣減持</span>
+      <span class="chip warn">capex 增速放緩</span>
+      <span class="chip">好公司壞價格</span>
+      <span class="chip bear">PE 壓縮風險</span>
     </div>
-</div>
 
-<!-- ==================== 8c. 影響鏈分析 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8c</span>
-        <h2>影響鏈分析</h2>
-    </div>
-    <div class="section-body">
+    <!-- ====================== 8a ====================== -->
+    <section class="section" id="ch-8a">
+      <div class="section-head">
+        <div class="no">8a</div>
+        <div class="tit">
+          <h2>推衍基礎確認</h2>
+          <div class="sub">Baseline · ACH 四假說 × 第七步加權期望價</div>
+        </div>
+      </div>
 
-        <!-- 鏈1 -->
-        <div class="chain-box">
-            <div class="chain-title" style="color: #80c888;">
-                鏈 1：Rubin TDP 升級 → 散熱需求跳升
-            </div>
-            <div class="chain-arrow">
-                <span class="chain-node event">Rubin GPU TDP<br>1.4kW → 1.8/2.3kW</span>
-                <span class="chain-connector">→</span>
-                <span class="chain-node">散熱面積/流量<br>+29~64%</span>
-                <span class="chain-connector">→</span>
-                <span class="chain-node">冷板 ASP 提升<br>MCCP 技術溢價</span>
-                <span class="chain-connector">→</span>
-                <span class="chain-node" style="background:rgba(107,159,114,0.25); color:#80e888;">2027 營收<br>翻倍可能性 ↑</span>
-            </div>
-            <div class="chain-meta">
-                <span class="prob">機率：80%（NVIDIA 已確認規格）</span>
-                <span class="impact-pos">影響：EPS +15~25%</span>
-            </div>
-            <details>
-                <summary>展開推演邏輯</summary>
-                <div>
-                    <p><strong>一階效應：</strong>每顆 GPU 散熱面積與冷卻液流量需求大增 29~64%，直接推升冷板用料與設計複雜度。</p>
-                    <p><strong>二階效應：</strong>微通道冷板（MCCP）技術門檻高，奇鋐掌握獨家雷射焊接+奈米流道製程，ASP 有望較 Blackwell 世代提升 30~50%。</p>
-                    <p><strong>三階效應：</strong>若 Rubin 全面出貨期（4Q26）量產順利，2027 年營收有翻倍基礎。按 MCCP 單價 × 出貨量推算，2027 營收可達 2,500~3,000 億。</p>
-                </div>
-            </details>
+      <table class="tbl">
+        <caption>Baseline · 推衍基礎要素</caption>
+        <thead><tr><th style="width:180px">項目</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">標的</td><td><strong>奇鋐科技 3017.TW</strong> ─ 全球 AI 伺服器散熱龍頭</td></tr>
+          <tr><td class="bold">ACH 主假說</td><td>H2「好公司壞價格」<span class="hl-good">(55%)</span>、H1「超級週期」(22%)、H3「均值回歸」(15%)、H4「系統風險」(8%)</td></tr>
+          <tr><td class="bold">第七步加權期望價</td><td><span class="hl-good">1,961 元</span></td></tr>
+          <tr><td class="bold">現價</td><td>2,200~2,265 元（溢價 15~23%）</td></tr>
+          <tr><td class="bold">FY2025 EPS</td><td>49.17 元｜2026E 法人共識 65~78 元</td></tr>
+          <tr><td class="bold">護城河</td><td>窄 B+（無形資產 + 成本優勢）</td></tr>
+          <tr><td class="bold">監控儀表板</td><td>綠燈×4 黃燈×3 紅燈×1</td></tr>
+        </tbody>
+      </table>
+
+      <div class="conclusion info">
+        <div class="mark">§ 8a　Integrated Finding</div>
+        <h4>核心矛盾明確：優質成長公司，但當前價格偏貴</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">ACH 四假說機率分佈穩定，H2「好公司壞價格」佔主導（55%）。期望價 1,961 vs 現價 2,200+ 存在明顯溢價。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">FY2025 EPS 49.17 達歷史新高，但市場已充分定價並提前反映 2026E 成長。PE 以 2025 計約 45x，以 2026E 共識中位 71.5 計約 31x。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">市場價格已包含「超級週期持續」的樂觀預期，若 2026 營運不如預期加速，PE 有壓縮風險。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">推衍基礎確認完畢。核心矛盾明確 ─ 優質成長公司，但目前價格偏貴。後續章節將從多維度推演可能走向。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8b ====================== -->
+    <section class="section" id="ch-8b">
+      <div class="section-head">
+        <div class="no">8b</div>
+        <div class="tit">
+          <h2>OSINT 情報更新</h2>
+          <div class="sub">Intelligence Delta · 2026/4/10 → 4/14 關鍵資訊差異</div>
+        </div>
+      </div>
+
+      <p class="muted">以下為分析日（4/10）至今的關鍵資訊差異比對：</p>
+
+      <table class="tbl">
+        <caption>Δ Intelligence · 7 項追蹤指標差異</caption>
+        <thead>
+          <tr><th>項目</th><th>分析日（4/10）</th><th>最新</th><th>變化</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="bold">股價</td><td>2,265 元</td><td>~2,200 元</td><td><span class="hl-bad">↓ -2.9%</span></td></tr>
+          <tr><td class="bold">3 月營收</td><td>180.17 億</td><td>180.17 億（YoY +111.7%）</td><td><span class="hl-good">確認</span></td></tr>
+          <tr><td class="bold">NVIDIA Rubin</td><td>2H26 出貨</td><td>VR200 量產 2Q26，機櫃 3Q26，全面出貨 4Q26</td><td><span class="hl-good">更明確</span></td></tr>
+          <tr><td class="bold">Rubin TDP</td><td>未知</td><td>1.8kW / 2.3kW（比 Blackwell 1.4kW 大增 29~64%）</td><td><span class="hl-good">利多</span></td></tr>
+          <tr><td class="bold">Rubin 冷板</td><td>預估 MCCP</td><td>確認：大冷板 + 微通道技術（MCCP/MCL）</td><td><span class="hl-good">確認利多</span></td></tr>
+          <tr><td class="bold">Hyperscaler capex</td><td>&gt;$500B</td><td>&gt;$600B（+36% YoY），但增速放緩至 25%</td><td><span class="hl-warn">雙面</span></td></tr>
+          <tr><td class="bold">古河電氣</td><td>減持中（-2.51pp）</td><td>投資 $345M 擴散熱產能（菲律賓 + 泰國 + 中國）</td><td><span class="hl-warn">新訊號</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="conclusion info">
+        <div class="mark">§ 8b　Integrated Finding</div>
+        <h4>短期利多與中期隱憂形成拉鋸，古河動向為最值得警惕的弱訊號</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">4 天內 7 項追蹤指標中，2 項確認利多（Rubin TDP / 冷板規格）、2 項雙面（capex / 古河）、1 項小幅利空（股價微跌）。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">Rubin 規格逐漸明朗化，TDP 跳升幅度超過先前保守估計。但 Hyperscaler capex 增速從 60% 降至 25% 是值得注意的轉折訊號。古河電氣的「減持 + 擴產」組合拳是本輪最值得警惕的新情報。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">短期利多（Rubin 升級需求）與中期隱憂（競爭 + 增速放緩）形成拉鋸。市場目前聚焦前者，可能忽略後者。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">情報更新整體偏中性略偏多。但古河電氣的動向是需要持續追蹤的弱訊號，可能在 2027 年形成實質競爭壓力。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8c ====================== -->
+    <section class="section" id="ch-8c">
+      <div class="section-head">
+        <div class="no">8c</div>
+        <div class="tit">
+          <h2>影響鏈分析</h2>
+          <div class="sub">Causal Chains · 四條推演鏈 + 一階／二階／三階效應</div>
+        </div>
+      </div>
+
+      <!-- 鏈1 -->
+      <div class="chain-box">
+        <div class="chain-title bull">
+          <span class="cn">CHAIN · 01</span>
+          Rubin TDP 升級 → 散熱需求跳升
+        </div>
+        <div class="chain-arrow">
+          <span class="chain-node event">Rubin GPU TDP　1.4kW → 1.8/2.3kW</span>
+          <span class="chain-connector">→</span>
+          <span class="chain-node">散熱面積/流量 +29~64%</span>
+          <span class="chain-connector">→</span>
+          <span class="chain-node">冷板 ASP 提升　MCCP 技術溢價</span>
+          <span class="chain-connector">→</span>
+          <span class="chain-node positive">2027 營收翻倍可能性 ↑</span>
+        </div>
+        <div class="chain-meta">
+          <span class="prob">機率 80% · NVIDIA 已確認規格</span>
+          <span class="impact-pos">影響 · EPS +15~25%</span>
+        </div>
+        <details>
+          <summary>展開推演邏輯</summary>
+          <div>
+            <p><strong>一階效應：</strong>每顆 GPU 散熱面積與冷卻液流量需求大增 29~64%，直接推升冷板用料與設計複雜度。</p>
+            <p><strong>二階效應：</strong>微通道冷板（MCCP）技術門檻高，奇鋐掌握獨家雷射焊接 + 奈米流道製程，ASP 有望較 Blackwell 世代提升 30~50%。</p>
+            <p><strong>三階效應：</strong>若 Rubin 全面出貨期（4Q26）量產順利，2027 年營收有翻倍基礎。按 MCCP 單價 × 出貨量推算，2027 營收可達 2,500~3,000 億。</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- 鏈2 -->
+      <div class="chain-box">
+        <div class="chain-title gold">
+          <span class="cn">CHAIN · 02</span>
+          Hyperscaler capex 增速放緩
+        </div>
+        <div class="chain-arrow">
+          <span class="chain-node event">capex 成長 60% → 25%（2H26）</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">新訂單成長率放緩</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">市場預期下修　PE 壓縮</span>
+          <span class="chain-connector">→</span>
+          <span class="chain-node">但基數 $600B　實際量不減</span>
+        </div>
+        <div class="chain-meta">
+          <span class="prob">機率 60%</span>
+          <span class="impact-neg">影響 · PE 壓縮 -15~20%，EPS 有限</span>
+        </div>
+        <details>
+          <summary>展開推演邏輯</summary>
+          <div>
+            <p><strong>一階效應：</strong>CSP 資本支出增速從高峰回落，新建資料中心節奏放緩，但非停滯。新訂單成長率可能從 YoY +100% 降至 +30~50%。</p>
+            <p><strong>二階效應：</strong>股票市場對「減速」極度敏感（成長股邏輯），即使絕對值仍在成長，PE 也會先行壓縮。類似 2022 年 TSMC 經歷。</p>
+            <p><strong>三階效應：</strong>$600B 基數仍極龐大，實際伺服器出貨量不會減少。奇鋐已接訂單（backlog）可支撐 6~9 個月，EPS 受影響有限。</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- 鏈3 -->
+      <div class="chain-box">
+        <div class="chain-title bear">
+          <span class="cn">CHAIN · 03</span>
+          古河電氣減持 + 擴產 ＝ 競合轉變
+        </div>
+        <div class="chain-arrow">
+          <span class="chain-node event">古河持股 14.99% → 12.48%</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">策略夥伴 → 潛在競爭者？</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">2027+ 冷板供應增加</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">奇鋐市佔承壓</span>
+        </div>
+        <div class="chain-meta">
+          <span class="prob">機率 40% · 2027 後才實質競爭</span>
+          <span class="impact-neg">影響 · 長期市佔 -5~10pp</span>
+        </div>
+        <details>
+          <summary>展開推演邏輯</summary>
+          <div>
+            <p><strong>一階效應：</strong>古河電氣投資 $345M 在菲律賓、泰國、中國擴建散熱產能，規模不小，顯示不只是既有產品擴張。</p>
+            <p><strong>二階效應：</strong>古河作為奇鋐的策略股東（曾持股近 15%），已深度了解奇鋐的技術路線與客戶結構。若決心自立門戶，具備快速追趕能力。</p>
+            <p><strong>三階效應：</strong>短期（2026）影響有限，因新產能需要 12~18 個月建設期 + NVIDIA 認證流程。但 2027H2 後可能成為 Tier 1 競爭者。</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- 鏈4 -->
+      <div class="chain-box">
+        <div class="chain-title bear">
+          <span class="cn">CHAIN · 04</span>
+          關稅 + 地緣政治
+        </div>
+        <div class="chain-arrow">
+          <span class="chain-node event">美中貿易戰升級　越南關稅不確定</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">越南廠避關稅失效？</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">客戶要求更多地區分散</span>
+          <span class="chain-connector neg">→</span>
+          <span class="chain-node negative">capex ↑　毛利率 ↓</span>
+        </div>
+        <div class="chain-meta">
+          <span class="prob">機率 30%</span>
+          <span class="impact-neg">影響 · 毛利率 -1~3pp</span>
+        </div>
+        <details>
+          <summary>展開推演邏輯</summary>
+          <div>
+            <p><strong>一階效應：</strong>奇鋐越南廠原為繞過美中關稅而建，但美國對越南加徵關稅的可能性正在上升。</p>
+            <p><strong>二階效應：</strong>若越南被課高關稅，客戶可能要求產線進一步分散至墨西哥、印度等地，增加營運複雜度與資本支出。</p>
+            <p><strong>三階效應：</strong>全球多據點佈局推高固定成本，短期毛利率承壓。但長期來看，分散佈局也是護城河的一部分。</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="conclusion warn">
+        <div class="mark">§ 8c　Integrated Finding</div>
+        <h4>短多中空格局成形：營運面強勁，估值面承壓</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">四條影響鏈中，鏈 1（Rubin TDP）為明確利多且機率最高（80%）；鏈 2~4 為不同程度的利空或隱憂。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">利多集中在「技術升級帶來的量價齊揚」，利空集中在「宏觀增速放緩 + 競爭格局變化」。時間上，利多偏短期（2026H2），利空偏中長期（2027+）。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">短期（6 個月內）奇鋐的營運動能不成問題，Rubin 升級是明確的結構性利多。但中長期的競爭壓力（古河）與宏觀減速（capex 放緩）可能壓縮估值。這解釋了為何 ACH 主假說是「好公司壞價格」而非「超級週期」。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">影響鏈分析支持「短多中空」的判斷。投資人需區分「營運面」（仍強勁）與「估值面」（偏貴且有壓縮風險），不可混為一談。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8d ====================== -->
+    <section class="section" id="ch-8d">
+      <div class="section-head">
+        <div class="no">8d</div>
+        <div class="tit">
+          <h2>情境模擬 — 五條路徑</h2>
+          <div class="sub">Scenario Matrix · 機率加權期望價 1,871 元</div>
+        </div>
+      </div>
+
+      <div class="prob-bar-container">
+        <div class="prob-bar-row">
+          <span class="prob-bar-label">A · 超級週期延續</span>
+          <div class="prob-bar-track"><div class="prob-bar-fill a" style="width:22%">22%</div></div>
+          <span class="prob-bar-price">2,500~3,000</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-bar-label hl">B · 好公司壞價格 ★</span>
+          <div class="prob-bar-track"><div class="prob-bar-fill b" style="width:40%">40%</div></div>
+          <span class="prob-bar-price hl">1,625~1,800</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-bar-label">C · 有序減速</span>
+          <div class="prob-bar-track"><div class="prob-bar-fill c" style="width:20%">20%</div></div>
+          <span class="prob-bar-price">1,375~1,550</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-bar-label">D · 系統風險</span>
+          <div class="prob-bar-track"><div class="prob-bar-fill d" style="width:12%">12%</div></div>
+          <span class="prob-bar-price">800~1,000</span>
+        </div>
+        <div class="prob-bar-row">
+          <span class="prob-bar-label">E · 液冷王者</span>
+          <div class="prob-bar-track"><div class="prob-bar-fill e" style="width:6%">6%</div></div>
+          <span class="prob-bar-price">3,000+</span>
+        </div>
+      </div>
+
+      <!-- 五張情境卡 -->
+      <div class="sc-grid">
+        <div class="sc-card bull">
+          <div class="sc-header">
+            <span class="sc-name">路徑 A · 超級週期延續</span>
+            <span class="sc-prob">機率 22%</span>
+          </div>
+          <div class="sc-item"><span class="label">觸發條件</span><span class="value">Rubin 如期大量出貨 + CSP 新客戶放量 + capex 不減速</span></div>
+          <div class="sc-item"><span class="label">2026 EPS</span><span class="value bull">78~85 元</span></div>
+          <div class="sc-item"><span class="label">目標價</span><span class="value bull">2,500~3,000 元（PE 32~38x）</span></div>
+          <div class="sc-item"><span class="label">時間軸</span><span class="value">2026 Q3 確認</span></div>
         </div>
 
-        <!-- 鏈2 -->
-        <div class="chain-box">
-            <div class="chain-title" style="color: #e0c860;">
-                鏈 2：Hyperscaler capex 增速放緩
-            </div>
-            <div class="chain-arrow">
-                <span class="chain-node event">capex 成長<br>60% → 25%（2H26）</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">新訂單<br>成長率放緩</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">市場預期下修<br>PE 壓縮</span>
-                <span class="chain-connector">→</span>
-                <span class="chain-node">但基數 $600B<br>實際量不減</span>
-            </div>
-            <div class="chain-meta">
-                <span class="prob">機率：60%</span>
-                <span class="impact-neg">影響：PE 壓縮 -15~20%，EPS 影響有限</span>
-            </div>
-            <details>
-                <summary>展開推演邏輯</summary>
-                <div>
-                    <p><strong>一階效應：</strong>CSP 資本支出增速從高峰回落，新建資料中心節奏放緩，但非停滯。新訂單成長率可能從 YoY+100% 降至 +30~50%。</p>
-                    <p><strong>二階效應：</strong>股票市場對「減速」極度敏感（成長股邏輯），即使絕對值仍在成長，PE 也會先行壓縮。類似 2022 年 TSMC 經歷。</p>
-                    <p><strong>三階效應：</strong>$600B 基數仍極龐大，實際伺服器出貨量不會減少。奇鋐已接訂單（backlog）可支撐 6~9 個月，EPS 受影響有限。</p>
-                </div>
-            </details>
+        <div class="sc-card warn">
+          <div class="sc-header">
+            <span class="sc-name">路徑 B · 好公司壞價格 ★ 基準情境</span>
+            <span class="sc-prob">機率 40%</span>
+          </div>
+          <div class="sc-item"><span class="label">觸發條件</span><span class="value">營收續成長但增速放緩 + PE 壓縮</span></div>
+          <div class="sc-item"><span class="label">2026 EPS</span><span class="value warn">65~72 元</span></div>
+          <div class="sc-item"><span class="label">目標價</span><span class="value warn">1,625~1,800 元（PE 25x）</span></div>
+          <div class="sc-item"><span class="label">時間軸</span><span class="value">2026 Q2~Q3 PE 修正</span></div>
         </div>
 
-        <!-- 鏈3 -->
-        <div class="chain-box">
-            <div class="chain-title" style="color: #e8a060;">
-                鏈 3：古河電氣減持 + 擴產 ＝ 競合轉變
-            </div>
-            <div class="chain-arrow">
-                <span class="chain-node event">古河持股<br>14.99% → 12.48%</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">策略夥伴 →<br>潛在競爭者？</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">2027+ 冷板<br>供應增加</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">奇鋐市佔<br>承壓</span>
-            </div>
-            <div class="chain-meta">
-                <span class="prob">機率：40%（2027 後才實質競爭）</span>
-                <span class="impact-neg">影響：長期市佔 -5~10pp</span>
-            </div>
-            <details>
-                <summary>展開推演邏輯</summary>
-                <div>
-                    <p><strong>一階效應：</strong>古河電氣投資 $345M 在菲律賓、泰國、中國擴建散熱產能，規模不小，顯示不只是既有產品擴張。</p>
-                    <p><strong>二階效應：</strong>古河作為奇鋐的策略股東（曾持股近 15%），已深度了解奇鋐的技術路線與客戶結構。若決心自立門戶，具備快速追趕能力。</p>
-                    <p><strong>三階效應：</strong>短期（2026）影響有限，因新產能需要 12~18 個月建設期 + NVIDIA 認證流程。但 2027H2 後可能成為 Tier 1 競爭者。</p>
-                </div>
-            </details>
+        <div class="sc-card neut">
+          <div class="sc-header">
+            <span class="sc-name">路徑 C · 有序減速</span>
+            <span class="sc-prob">機率 20%</span>
+          </div>
+          <div class="sc-item"><span class="label">觸發條件</span><span class="value">Hyperscaler capex 增速降至 15% + Rubin 延遲一季</span></div>
+          <div class="sc-item"><span class="label">2026 EPS</span><span class="value">55~62 元</span></div>
+          <div class="sc-item"><span class="label">目標價</span><span class="value">1,375~1,550 元（PE 25x）</span></div>
+          <div class="sc-item"><span class="label">時間軸</span><span class="value">2026 Q4</span></div>
         </div>
 
-        <!-- 鏈4 -->
-        <div class="chain-box">
-            <div class="chain-title" style="color: #e0a0a0;">
-                鏈 4：關稅 + 地緣政治
-            </div>
-            <div class="chain-arrow">
-                <span class="chain-node event">美中貿易戰升級<br>越南關稅不確定</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">越南廠<br>避關稅失效？</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">客戶要求<br>更多地區分散</span>
-                <span class="chain-connector neg">→</span>
-                <span class="chain-node negative">capex ↑<br>毛利率 ↓</span>
-            </div>
-            <div class="chain-meta">
-                <span class="prob">機率：30%</span>
-                <span class="impact-neg">影響：毛利率 -1~3pp</span>
-            </div>
-            <details>
-                <summary>展開推演邏輯</summary>
-                <div>
-                    <p><strong>一階效應：</strong>奇鋐越南廠原為繞過美中關稅而建，但美國對越南加徵關稅的可能性正在上升。</p>
-                    <p><strong>二階效應：</strong>若越南被課高關稅，客戶可能要求產線進一步分散至墨西哥、印度等地，增加營運複雜度與資本支出。</p>
-                    <p><strong>三階效應：</strong>全球多據點佈局推高固定成本，短期毛利率承壓。但長期來看，分散佈局也是護城河的一部分。</p>
-                </div>
-            </details>
+        <div class="sc-card bear">
+          <div class="sc-header">
+            <span class="sc-name">路徑 D · 系統風險</span>
+            <span class="sc-prob">機率 12%</span>
+          </div>
+          <div class="sc-item"><span class="label">觸發條件</span><span class="value">AI 泡沫破裂 + 景氣衰退 + 關稅全面開打</span></div>
+          <div class="sc-item"><span class="label">2026 EPS</span><span class="value bear">40~50 元</span></div>
+          <div class="sc-item"><span class="label">目標價</span><span class="value bear">800~1,000 元（PE 20x）</span></div>
+          <div class="sc-item"><span class="label">時間軸</span><span class="value">黑天鵝</span></div>
         </div>
 
-        <div class="tip warn">
-            <b>8c 整合結論</b>
-            <strong>資料：</strong>四條影響鏈中，鏈 1（Rubin TDP）為明確利多且機率最高（80%）；鏈 2~4 為不同程度的利空或隱憂。<br>
-            <strong>觀察：</strong>利多集中在「技術升級帶來的量價齊揚」，利空集中在「宏觀增速放緩 + 競爭格局變化」。時間上，利多偏短期（2026H2），利空偏中長期（2027+）。<br>
-            <strong>推論：</strong>短期（6 個月內）奇鋐的營運動能不成問題，Rubin 升級是明確的結構性利多。但中長期的競爭壓力（古河）與宏觀減速（capex 放緩）可能壓縮估值。這解釋了為何 ACH 主假說是「好公司壞價格」而非「超級週期」。<br>
-            <strong>結論：</strong>影響鏈分析支持「短多中空」的判斷。投資人需區分「營運面」（仍強勁）與「估值面」（偏貴且有壓縮風險），不可混為一談。
+        <div class="sc-card info">
+          <div class="sc-header">
+            <span class="sc-name">路徑 E · 液冷王者</span>
+            <span class="sc-prob">機率 6%</span>
+          </div>
+          <div class="sc-item"><span class="label">觸發條件</span><span class="value">Rubin MCCP 獨佔 + 併購擴張 + 超預期</span></div>
+          <div class="sc-item"><span class="label">2026 EPS</span><span class="value info">90+ 元</span></div>
+          <div class="sc-item"><span class="label">目標價</span><span class="value info">3,000+ 元（PE 35x）</span></div>
+          <div class="sc-item"><span class="label">時間軸</span><span class="value">需多重催化劑同時引爆</span></div>
         </div>
-    </div>
-</div>
+      </div>
 
-<!-- ==================== 8d. 情境模擬 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8d</span>
-        <h2>情境模擬 — 五條路徑</h2>
-    </div>
-    <div class="section-body">
+      <!-- 期望價計算 -->
+      <div class="expected-box">
+        <div class="k">概率加權期望價計算</div>
+        <div class="calc">0.22 × 2,750 + 0.40 × 1,713 + 0.20 × 1,463 + 0.12 × 900 + 0.06 × 3,000</div>
+        <div class="calc">＝ 605 + 685 + 293 + 108 + 180</div>
+        <div class="result">1,871 元</div>
+        <div class="note">現價 2,200 元 → 溢價 17.6%</div>
+      </div>
 
-        <!-- 概率柱狀圖 -->
-        <div class="prob-bar-container">
-            <div class="prob-bar-row">
-                <span class="prob-bar-label">A：超級週期延續</span>
-                <div class="prob-bar-track">
-                    <div class="prob-bar-fill" style="width:22%; background:linear-gradient(90deg,#4a8f52,#6bc878);">22%</div>
-                </div>
-                <span class="prob-bar-price">2,500~3,000</span>
-            </div>
-            <div class="prob-bar-row">
-                <span class="prob-bar-label" style="color:#e0e0e0; font-weight:600;">B：好公司壞價格 ★</span>
-                <div class="prob-bar-track">
-                    <div class="prob-bar-fill" style="width:40%; background:linear-gradient(90deg,#c8aa50,#e0c860);">40%</div>
-                </div>
-                <span class="prob-bar-price" style="color:#e0c860;">1,625~1,800</span>
-            </div>
-            <div class="prob-bar-row">
-                <span class="prob-bar-label">C：有序減速</span>
-                <div class="prob-bar-track">
-                    <div class="prob-bar-fill" style="width:20%; background:linear-gradient(90deg,#7a7a7a,#a0a0a0);">20%</div>
-                </div>
-                <span class="prob-bar-price">1,375~1,550</span>
-            </div>
-            <div class="prob-bar-row">
-                <span class="prob-bar-label">D：系統風險</span>
-                <div class="prob-bar-track">
-                    <div class="prob-bar-fill" style="width:12%; background:linear-gradient(90deg,#a05050,#d06060);">12%</div>
-                </div>
-                <span class="prob-bar-price">800~1,000</span>
-            </div>
-            <div class="prob-bar-row">
-                <span class="prob-bar-label">E：液冷王者</span>
-                <div class="prob-bar-track">
-                    <div class="prob-bar-fill" style="width:6%; background:linear-gradient(90deg,#5080c0,#70a0e0);">6%</div>
-                </div>
-                <span class="prob-bar-price">3,000+</span>
-            </div>
+      <div class="conclusion warn">
+        <div class="mark">§ 8d　Integrated Finding</div>
+        <h4>概率加權觀點：現價不具備足夠安全邊際</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">五條路徑涵蓋牛熊兩端。基準情境（路徑 B，40%）指向 1,625~1,800 元；正面情境（A+E，28%）指向 2,500+；負面情境（C+D，32%）指向 800~1,550 元。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">概率加權期望價 1,871 元低於現價 2,200 元，意味著在平衡所有情境後，當前股價偏高。即使給予 Rubin 利多充分權重，仍無法合理化現價。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">市場似乎正以路徑 A（超級週期，22%）的估值在交易，忽略了路徑 B~D（合計 72%）的可能性。這正是「好公司壞價格」假說的核心邏輯。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">以概率加權觀點，現價不具備足夠安全邊際。理性做法是等待 PE 修正至合理區間（25x 以下），或等待新催化劑將路徑 A 機率提升至 &gt;35%。</div></div>
         </div>
+      </div>
+    </section>
 
-        <div class="divider"></div>
-
-        <!-- 路徑A -->
-        <div class="scenario-card" style="border-color: #4a8f52;">
-            <div class="sc-header">
-                <span class="sc-name" style="color:#80c888;">路徑 A：超級週期延續</span>
-                <span class="sc-prob" style="background:rgba(107,159,114,0.2); color:#80c888;">機率 22%</span>
-            </div>
-            <div class="sc-item"><div class="label">觸發條件</div><div class="value">Rubin 如期大量出貨 + CSP 新客戶放量 + capex 不減速</div></div>
-            <div class="sc-item"><div class="label">2026 EPS</div><div class="value" style="color:#80c888;">78~85 元</div></div>
-            <div class="sc-item"><div class="label">目標價</div><div class="value" style="color:#80c888;">2,500~3,000 元（PE 32~38x）</div></div>
-            <div class="sc-item"><div class="label">時間軸</div><div class="value">2026Q3 確認</div></div>
+    <!-- ====================== 8e ====================== -->
+    <section class="section" id="ch-8e">
+      <div class="section-head">
+        <div class="no">8e</div>
+        <div class="tit">
+          <h2>個人化推衍（閣主視角）</h2>
+          <div class="sub">Personal Calibration · 分級進場策略 + 關鍵監控</div>
         </div>
+      </div>
 
-        <!-- 路徑B -->
-        <div class="scenario-card" style="border-color: #c8aa50;">
-            <div class="sc-header">
-                <span class="sc-name" style="color:#e0c860;">路徑 B：好公司壞價格 ★ 基準情境</span>
-                <span class="sc-prob" style="background:rgba(200,170,80,0.2); color:#e0c860;">機率 40%</span>
-            </div>
-            <div class="sc-item"><div class="label">觸發條件</div><div class="value">營收續成長但增速放緩 + PE 壓縮</div></div>
-            <div class="sc-item"><div class="label">2026 EPS</div><div class="value" style="color:#e0c860;">65~72 元</div></div>
-            <div class="sc-item"><div class="label">目標價</div><div class="value" style="color:#e0c860;">1,625~1,800 元（PE 25x）</div></div>
-            <div class="sc-item"><div class="label">時間軸</div><div class="value">2026Q2~Q3 PE 修正</div></div>
-        </div>
+      <table class="tbl">
+        <caption>Profile · 閣主定位</caption>
+        <thead><tr><th style="width:160px">項目</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">閣主風格</td><td>價值投資 + 安全邊際，不追高</td></tr>
+          <tr><td class="bold">目前持倉</td><td>空手觀望</td></tr>
+          <tr><td class="bold">現價 vs 期望價</td><td>2,200 vs 1,871 → <span class="hl-bad">溢價 17.6%</span></td></tr>
+        </tbody>
+      </table>
 
-        <!-- 路徑C -->
-        <div class="scenario-card" style="border-color: #888;">
-            <div class="sc-header">
-                <span class="sc-name" style="color:#aaa;">路徑 C：有序減速</span>
-                <span class="sc-prob" style="background:rgba(160,160,160,0.15); color:#aaa;">機率 20%</span>
-            </div>
-            <div class="sc-item"><div class="label">觸發條件</div><div class="value">Hyperscaler capex 增速降至 15% + Rubin 延遲一季</div></div>
-            <div class="sc-item"><div class="label">2026 EPS</div><div class="value">55~62 元</div></div>
-            <div class="sc-item"><div class="label">目標價</div><div class="value">1,375~1,550 元（PE 25x）</div></div>
-            <div class="sc-item"><div class="label">時間軸</div><div class="value">2026Q4</div></div>
-        </div>
+      <div class="sub-h">分級進場策略</div>
+      <table class="tbl">
+        <caption>Ladder · 四階段分批建倉計畫</caption>
+        <thead>
+          <tr><th>層級</th><th>價位</th><th>對應 PE（2026E 71.5）</th><th>動作</th><th>部位</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold"><span class="hl-good">觀察區</span></td>
+            <td>2,000~2,200</td>
+            <td>28~31x</td>
+            <td>不動作，持續監控</td>
+            <td class="num">0%</td>
+          </tr>
+          <tr class="highlight">
+            <td class="bold"><span class="hl-good">首次進場</span></td>
+            <td>1,800 以下</td>
+            <td>≤ 25x</td>
+            <td>試水溫，小量建倉</td>
+            <td class="num">20~30%</td>
+          </tr>
+          <tr class="highlight">
+            <td class="bold"><span class="hl-good">加碼區</span></td>
+            <td>1,500 以下</td>
+            <td>≤ 22x</td>
+            <td>確認基本面無虞則加碼</td>
+            <td class="num">50~60%</td>
+          </tr>
+          <tr class="highlight">
+            <td class="bold"><span class="hl-good">重壓區</span></td>
+            <td>1,200 以下</td>
+            <td>≤ 18x</td>
+            <td>恐慌性殺盤 + 基本面撐住 = 重壓</td>
+            <td class="num">80~100%</td>
+          </tr>
+        </tbody>
+      </table>
 
-        <!-- 路徑D -->
-        <div class="scenario-card" style="border-color: #c85050;">
-            <div class="sc-header">
-                <span class="sc-name" style="color:#e87070;">路徑 D：系統風險</span>
-                <span class="sc-prob" style="background:rgba(200,80,80,0.12); color:#e87070;">機率 12%</span>
-            </div>
-            <div class="sc-item"><div class="label">觸發條件</div><div class="value">AI 泡沫破裂 + 景氣衰退 + 關稅全面開打</div></div>
-            <div class="sc-item"><div class="label">2026 EPS</div><div class="value" style="color:#e87070;">40~50 元</div></div>
-            <div class="sc-item"><div class="label">目標價</div><div class="value" style="color:#e87070;">800~1,000 元（PE 20x）</div></div>
-            <div class="sc-item"><div class="label">時間軸</div><div class="value">黑天鵝</div></div>
-        </div>
-
-        <!-- 路徑E -->
-        <div class="scenario-card" style="border-color: #5080c0;">
-            <div class="sc-header">
-                <span class="sc-name" style="color:#70a0e0;">路徑 E：液冷王者</span>
-                <span class="sc-prob" style="background:rgba(80,128,200,0.15); color:#70a0e0;">機率 6%</span>
-            </div>
-            <div class="sc-item"><div class="label">觸發條件</div><div class="value">Rubin MCCP 獨佔 + 併購擴張 + 超預期</div></div>
-            <div class="sc-item"><div class="label">2026 EPS</div><div class="value" style="color:#70a0e0;">90+ 元</div></div>
-            <div class="sc-item"><div class="label">目標價</div><div class="value" style="color:#70a0e0;">3,000+ 元（PE 35x）</div></div>
-            <div class="sc-item"><div class="label">時間軸</div><div class="value">需多重催化劑同時引爆</div></div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- 概率加權 -->
-        <div style="background:#1e1e1e; border:2px solid #6b9f72; border-radius:10px; padding:20px; text-align:center;">
-            <div style="font-size:0.9em; color:#888; margin-bottom:8px;">概率加權期望價計算</div>
-            <div style="font-size:0.88em; color:#aaa; margin-bottom:12px;">
-                0.22 × 2,750 + 0.40 × 1,713 + 0.20 × 1,463 + 0.12 × 900 + 0.06 × 3,000
-            </div>
-            <div style="font-size:0.88em; color:#aaa; margin-bottom:12px;">
-                = 605 + 685 + 293 + 108 + 180
-            </div>
-            <div style="font-size:1.8em; font-weight:700; color:#6b9f72;">
-                ＝ 1,871 元
-            </div>
-            <div style="font-size:0.9em; color:#e0c860; margin-top:8px;">
-                現價 2,200 元 → 溢價 17.6%
-            </div>
-        </div>
-
-        <div class="tip warn">
-            <b>8d 整合結論</b>
-            <strong>資料：</strong>五條路徑涵蓋牛熊兩端。基準情境（路徑 B，40%）指向 1,625~1,800 元；正面情境（A+E，28%）指向 2,500+；負面情境（C+D，32%）指向 800~1,550 元。<br>
-            <strong>觀察：</strong>概率加權期望價 1,871 元低於現價 2,200 元，意味著在平衡所有情境後，當前股價偏高。即使給予 Rubin 利多充分權重，仍無法合理化現價。<br>
-            <strong>推論：</strong>市場似乎正以路徑 A（超級週期，22%）的估值在交易，忽略了路徑 B~D（合計 72%）的可能性。這正是「好公司壞價格」假說的核心邏輯。<br>
-            <strong>結論：</strong>以概率加權觀點，現價不具備足夠安全邊際。理性做法是等待 PE 修正至合理區間（25x 以下），或等待新催化劑將路徑 A 機率提升至 >35%。
-        </div>
-    </div>
-</div>
-
-<!-- ==================== 8e. 個人化推衍 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8e</span>
-        <h2>個人化推衍（閣主視角）</h2>
-    </div>
-    <div class="section-body">
-        <table>
-            <tr><th style="width:160px;">項目</th><th>內容</th></tr>
-            <tr><td>閣主風格</td><td>價值投資 + 安全邊際，不追高</td></tr>
-            <tr><td>目前持倉</td><td>空手觀望</td></tr>
-            <tr><td>現價 vs 期望價</td><td>2,200 vs 1,871 → <span class="highlight-danger">溢價 17.6%</span></td></tr>
-        </table>
-
-        <div class="divider"></div>
-
-        <h3 style="color:#9fc5a5; margin-bottom:14px;">分級進場策略</h3>
-        <table>
-            <thead>
-                <tr><th>層級</th><th>價位</th><th>對應 PE（2026E 71.5）</th><th>動作</th><th>部位</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><span class="highlight">觀察區</span></td>
-                    <td>2,000~2,200</td>
-                    <td>28~31x</td>
-                    <td>不動作，持續監控</td>
-                    <td>0%</td>
-                </tr>
-                <tr style="background:rgba(107,159,114,0.05);">
-                    <td><span class="highlight">首次進場</span></td>
-                    <td>1,800 以下</td>
-                    <td>≤ 25x</td>
-                    <td>試水溫，小量建倉</td>
-                    <td>20~30%</td>
-                </tr>
-                <tr style="background:rgba(107,159,114,0.08);">
-                    <td><span class="highlight">加碼區</span></td>
-                    <td>1,500 以下</td>
-                    <td>≤ 22x</td>
-                    <td>確認基本面無虞則加碼</td>
-                    <td>50~60%</td>
-                </tr>
-                <tr style="background:rgba(107,159,114,0.12);">
-                    <td><span class="highlight">重壓區</span></td>
-                    <td>1,200 以下</td>
-                    <td>≤ 18x</td>
-                    <td>恐慌性殺盤 + 基本面撐住 = 重壓</td>
-                    <td>80~100%</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="divider"></div>
-
-        <h3 style="color:#9fc5a5; margin-bottom:14px;">關鍵監控事件</h3>
+      <div class="sub-h">關鍵監控事件</div>
+      <div class="info-box">
         <ul>
-            <li><strong>5 月法說會</strong>（最高優先）：2026 全年營運指引 + Rubin 進度更新</li>
-            <li><strong>Q2 月營收</strong>：4~6 月逐月追蹤，確認成長斜率</li>
-            <li><strong>Rubin 量產進度</strong>：VR200 2Q26 → 機櫃 3Q26 → 全面出貨 4Q26</li>
-            <li><strong>古河電氣持股</strong>：月度追蹤，跌破 10% 為警訊</li>
+          <li><strong>5 月法說會</strong>（最高優先）：2026 全年營運指引 + Rubin 進度更新</li>
+          <li><strong>Q2 月營收</strong>：4~6 月逐月追蹤，確認成長斜率</li>
+          <li><strong>Rubin 量產進度</strong>：VR200 2Q26 → 機櫃 3Q26 → 全面出貨 4Q26</li>
+          <li><strong>古河電氣持股</strong>：月度追蹤，跌破 10% 為警訊</li>
         </ul>
+      </div>
 
-        <div class="tip good">
-            <b>8e 整合結論</b>
-            <strong>資料：</strong>閣主風格偏價值投資，現價溢價 17.6%，不符合安全邊際原則。<br>
-            <strong>觀察：</strong>分級進場策略提供明確的行動框架 — 1,800 以下才啟動，每下跌 300 元加一級。這避免了「追高套牢」與「等到天荒地老」兩個極端。<br>
-            <strong>推論：</strong>以基準情境（PE 25x，EPS 65~72）計算，1,625~1,800 是合理進場區間。若 Rubin 催化劑引爆路徑 A，則 1,800 可能等不到，但這個機會成本（28% 機率）是可以承受的。<br>
-            <strong>結論：</strong>建議維持空手觀望。首要關注 5 月法說會，若指引超預期（EPS >80），則上調路徑 A 機率並重新評估進場價位；若指引平庸（EPS 65~70），則維持現有策略靜待回檔。
+      <div class="conclusion good">
+        <div class="mark">§ 8e　Integrated Finding</div>
+        <h4>空手觀望，等 5 月法說會方向確認</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">閣主風格偏價值投資，現價溢價 17.6%，不符合安全邊際原則。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">分級進場策略提供明確的行動框架 ─ 1,800 以下才啟動，每下跌 300 元加一級。這避免了「追高套牢」與「等到天荒地老」兩個極端。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">以基準情境（PE 25x，EPS 65~72）計算，1,625~1,800 是合理進場區間。若 Rubin 催化劑引爆路徑 A，則 1,800 可能等不到，但這個機會成本（28% 機率）是可以承受的。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">建議維持空手觀望。首要關注 5 月法說會，若指引超預期（EPS &gt;80），則上調路徑 A 機率並重新評估進場價位；若指引平庸（EPS 65~70），則維持現有策略靜待回檔。</div></div>
         </div>
-    </div>
-</div>
+      </div>
+    </section>
 
-<!-- ==================== 8f. 催化劑時間表 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8f</span>
-        <h2>催化劑時間表</h2>
-    </div>
-    <div class="section-body">
-        <div class="timeline">
-            <!-- 4月 -->
-            <div class="tl-item">
-                <div class="tl-date">2026 / 4 月中</div>
-                <div class="tl-event">Q1 營收確認（預估 ~559 億）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">偏多</span>
-                    <span class="tl-tag impact-m">影響：中</span>
-                </div>
-            </div>
+    <!-- ====================== 8f ====================== -->
+    <section class="section" id="ch-8f">
+      <div class="section-head">
+        <div class="no">8f</div>
+        <div class="tit">
+          <h2>催化劑時間表</h2>
+          <div class="sub">Catalyst Timeline · 2026 四月至第四季</div>
+        </div>
+      </div>
 
-            <!-- 5月法說 -->
-            <div class="tl-item extreme">
-                <div class="tl-date">2026 / 5 月</div>
-                <div class="tl-event"><strong>法說會 + 2026 全年指引</strong>（本輪最關鍵催化劑）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag both">多空皆可</span>
-                    <span class="tl-tag impact-h">影響：極高</span>
-                </div>
-                <div style="font-size:0.85em; color:#888; margin-top:6px;">
-                    → 若指引 EPS >80 元：路徑 A 機率大增，股價可能突破 2,500<br>
-                    → 若指引 EPS 65~70 元：確認路徑 B，PE 壓縮壓力浮現
-                </div>
-            </div>
-
-            <!-- 5月季報 -->
-            <div class="tl-item">
-                <div class="tl-date">2026 / 5 月</div>
-                <div class="tl-event">Q1 季報公布（關注毛利率是否 >25%）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">偏多</span>
-                    <span class="tl-tag impact-m">影響：中</span>
-                </div>
-            </div>
-
-            <!-- 6月 -->
-            <div class="tl-item">
-                <div class="tl-date">2026 / 6 月</div>
-                <div class="tl-event">Computex 2026（散熱新技術展示、Rubin 實機）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">偏多</span>
-                    <span class="tl-tag impact-m">影響：中</span>
-                </div>
-            </div>
-
-            <!-- 7月 -->
-            <div class="tl-item">
-                <div class="tl-date">2026 / 7 月</div>
-                <div class="tl-event">除權息（歷年填息率高，但高價股息殖利率低）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag down">偏空</span>
-                    <span class="tl-tag impact-l">影響：低</span>
-                </div>
-            </div>
-
-            <!-- Q3 Rubin -->
-            <div class="tl-item extreme">
-                <div class="tl-date">2026 / Q3</div>
-                <div class="tl-event"><strong>Rubin VR200 機櫃量產</strong></div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">利多</span>
-                    <span class="tl-tag impact-h">影響：極高</span>
-                </div>
-                <div style="font-size:0.85em; color:#888; margin-top:6px;">
-                    → MCCP 微通道冷板開始放量，ASP 大幅提升<br>
-                    → 若量產順利 = 路徑 A 確認信號
-                </div>
-            </div>
-
-            <!-- Q3 CSP -->
-            <div class="tl-item high">
-                <div class="tl-date">2026 / Q3</div>
-                <div class="tl-event">CSP 新客戶首批出貨</div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">利多</span>
-                    <span class="tl-tag impact-h">影響：高</span>
-                </div>
-            </div>
-
-            <!-- Q4 全面出貨 -->
-            <div class="tl-item extreme">
-                <div class="tl-date">2026 / Q4</div>
-                <div class="tl-event"><strong>Rubin 全面出貨</strong></div>
-                <div class="tl-tags">
-                    <span class="tl-tag up">利多</span>
-                    <span class="tl-tag impact-h">影響：極高</span>
-                </div>
-            </div>
-
-            <!-- Q4 古河 -->
-            <div class="tl-item">
-                <div class="tl-date">2026 / Q4</div>
-                <div class="tl-event">古河電氣新廠投產？（競爭壓力浮現點）</div>
-                <div class="tl-tags">
-                    <span class="tl-tag down">偏空</span>
-                    <span class="tl-tag impact-m">影響：中</span>
-                </div>
-            </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="date">2026 / 4 月中</div>
+          <div class="event">Q1 營收確認（預估 ~559 億）</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">偏多</span>
+            <span class="tl-tag impact-m">影響 · 中</span>
+          </div>
         </div>
 
-        <div class="tip info">
-            <b>8f 整合結論</b>
-            <strong>資料：</strong>2026 年有 9 個關鍵催化劑，其中 3 個為「極高影響」（法說會/Rubin 機櫃量產/Rubin 全面出貨），2 個為「高影響」。<br>
-            <strong>觀察：</strong>催化劑集中在 Q3~Q4（Rubin 相關），但最早的分歧點在 5 月法說會。法說會將決定市場對 2026 全年的定價基礎。<br>
-            <strong>推論：</strong>5 月法說會是「路徑分歧決定點」— 指引好壞將直接影響路徑 A vs B 的機率權重。Q3 Rubin 量產則是「路徑確認點」— 量產順利與否將最終確認哪條路徑勝出。<br>
-            <strong>結論：</strong>投資決策的最佳時間窗口在 5 月法說會後至 Q3 之間。法說會後若確認路徑 B 且股價回檔至 1,800 以下，即為理想進場點。
-        </div>
-    </div>
-</div>
-
-<!-- ==================== 8g. 蝴蝶效應推衍 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8g</span>
-        <h2>蝴蝶效應推衍 — 弱訊號偵測</h2>
-    </div>
-    <div class="section-body">
-
-        <!-- 弱訊號1 -->
-        <div class="weak-signal orange">
-            <div class="ws-title">弱訊號 1：古河電氣「減持 + 擴產」組合拳</div>
-            <div class="ws-row"><span class="ws-label">表面：</span><span>策略夥伴正常調整持股</span></div>
-            <div class="ws-row"><span class="ws-label">深層推演：</span><span>古河掌握奇鋐技術 Know-how → 自建微通道冷板產線 → 2027 成為 Tier 1 競爭者</span></div>
-            <div class="ws-row"><span class="ws-label">蝴蝶效應：</span><span>若古河拿下 NVIDIA 第二供應商資格 → 奇鋐市佔從 70% 降至 50% → PE 永久壓縮</span></div>
-            <div class="ws-row"><span class="ws-label">追蹤指標：</span><span>古河新廠量產時間、是否取得 NVIDIA 認證</span></div>
-            <div class="ws-row"><span class="ws-label">驗證時點：</span><span style="color:#e8a060; font-weight:600;">2026Q4</span></div>
+        <div class="tl-item extreme">
+          <div class="date">2026 / 5 月</div>
+          <div class="event">法說會 + 2026 全年指引（本輪最關鍵催化劑）</div>
+          <div class="tl-tags">
+            <span class="tl-tag both">多空皆可</span>
+            <span class="tl-tag impact-h">影響 · 極高</span>
+          </div>
+          <div class="detail">
+            若指引 EPS &gt;80 元：路徑 A 機率大增，股價可能突破 2,500。<br>
+            若指引 EPS 65~70 元：確認路徑 B，PE 壓縮壓力浮現。
+          </div>
         </div>
 
-        <!-- 弱訊號2 -->
-        <div class="weak-signal">
-            <div class="ws-title">弱訊號 2：員工數暴增 68%（11,837 → 19,919）</div>
-            <div class="ws-row"><span class="ws-label">表面：</span><span>產能擴張需要人力</span></div>
-            <div class="ws-row"><span class="ws-label">深層推演：</span><span>越南廠大量招工 → 初期良率/效率低 → 毛利率短期承壓</span></div>
-            <div class="ws-row"><span class="ws-label">蝴蝶效應：</span><span>若學習曲線慢於預期 → 2026H1 毛利率低於預期 → 法人下修</span></div>
-            <div class="ws-row"><span class="ws-label">追蹤指標：</span><span>Q1 毛利率是否維持 >25%</span></div>
-            <div class="ws-row"><span class="ws-label">驗證時點：</span><span style="color:#e0c860; font-weight:600;">2026/5 月 Q1 季報</span></div>
+        <div class="tl-item">
+          <div class="date">2026 / 5 月</div>
+          <div class="event">Q1 季報公布（關注毛利率是否 &gt;25%）</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">偏多</span>
+            <span class="tl-tag impact-m">影響 · 中</span>
+          </div>
         </div>
 
-        <!-- 弱訊號3 -->
-        <div class="weak-signal orange">
-            <div class="ws-title">弱訊號 3：capex 150 億 vs FCF 19.6 億</div>
-            <div class="ws-row"><span class="ws-label">表面：</span><span>積極擴產是常態</span></div>
-            <div class="ws-row"><span class="ws-label">深層推演：</span><span>FCF 極度緊張 → 若需融資（CB/增資）→ 稀釋</span></div>
-            <div class="ws-row"><span class="ws-label">蝴蝶效應：</span><span>若同時遇營收放緩 + 高 capex → 淨負債惡化 → 信評壓力</span></div>
-            <div class="ws-row"><span class="ws-label">追蹤指標：</span><span>2026H1 融資動態、負債比變化</span></div>
-            <div class="ws-row"><span class="ws-label">驗證時點：</span><span style="color:#e8a060; font-weight:600;">2026/8 月半年報</span></div>
+        <div class="tl-item">
+          <div class="date">2026 / 6 月</div>
+          <div class="event">Computex 2026（散熱新技術展示、Rubin 實機）</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">偏多</span>
+            <span class="tl-tag impact-m">影響 · 中</span>
+          </div>
         </div>
 
-        <!-- 弱訊號4 -->
-        <div class="weak-signal">
-            <div class="ws-title">弱訊號 4：Rubin MCCP 微通道技術門檻</div>
-            <div class="ws-row"><span class="ws-label">表面：</span><span>技術升級對奇鋐有利</span></div>
-            <div class="ws-row"><span class="ws-label">深層推演：</span><span>MCCP 要求雷射焊接 + 奈米級流道 → 良率初期可能 <80% → 短期成本飆升</span></div>
-            <div class="ws-row"><span class="ws-label">蝴蝶效應：</span><span>若良率不達標 → NVIDIA 認證延遲 → 出貨窗口被古河/雙鴻搶走</span></div>
-            <div class="ws-row"><span class="ws-label">追蹤指標：</span><span>法說會是否提及 MCCP 良率、Rubin 送樣進度</span></div>
-            <div class="ws-row"><span class="ws-label">驗證時點：</span><span style="color:#e0c860; font-weight:600;">2026/5 月法說會</span></div>
+        <div class="tl-item">
+          <div class="date">2026 / 7 月</div>
+          <div class="event">除權息（歷年填息率高，但高價股息殖利率低）</div>
+          <div class="tl-tags">
+            <span class="tl-tag down">偏空</span>
+            <span class="tl-tag impact-l">影響 · 低</span>
+          </div>
         </div>
 
-        <div class="tip warn">
-            <b>8g 整合結論</b>
-            <strong>資料：</strong>四個弱訊號涵蓋競爭（古河）、營運效率（員工暴增）、財務健康（FCF 緊張）、技術風險（MCCP 良率）四個維度。<br>
-            <strong>觀察：</strong>這四個訊號表面上互不相關，但若同時惡化，會形成「完美風暴」：古河搶客戶 + 良率不佳 + 毛利率下滑 + 被迫融資稀釋 → 估值崩塌。<br>
-            <strong>推論：</strong>單一弱訊號惡化的影響有限（各自 <10% EPS 影響）。但弱訊號的價值在於「收斂偵測」— 若 2~3 個同時亮橙燈，代表基本面風險正在實質化，應立即重新評估。<br>
-            <strong>結論：</strong>目前四個弱訊號處於「監控」階段，尚未進入「警報」。最早驗證時點為 5 月法說會（弱訊號 2+4），次為 8 月半年報（弱訊號 3），古河動態則需持續追蹤至 Q4。建議建立月度弱訊號追蹤清單，任二個同時惡化即啟動深度重新評估。
-        </div>
-    </div>
-</div>
-
-<!-- ==================== 8h. 貓膩推衍 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8h</span>
-        <h2>貓膩推衍</h2>
-    </div>
-    <div class="section-body">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-            <span style="background:#c8aa50; color:#1a1a1a; padding:4px 14px; border-radius:14px; font-weight:700; font-size:0.9em;">貓膩燈號：黃燈</span>
-            <span style="color:#888; font-size:0.9em;">有可疑跡象但尚未確認</span>
+        <div class="tl-item extreme">
+          <div class="date">2026 / Q3</div>
+          <div class="event">Rubin VR200 機櫃量產</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">利多</span>
+            <span class="tl-tag impact-h">影響 · 極高</span>
+          </div>
+          <div class="detail">
+            MCCP 微通道冷板開始放量，ASP 大幅提升。<br>
+            若量產順利 ＝ 路徑 A 確認信號。
+          </div>
         </div>
 
-        <h3 style="color:#e0c860; margin-bottom:14px;">古河減持之謎</h3>
-
-        <table>
-            <tr><th style="width:140px;">面向</th><th>分析</th></tr>
-            <tr>
-                <td><strong>事實</strong></td>
-                <td>古河電氣從持股 14.99% 減至 12.48%（-2.51pp），減持持續進行中。同期投資 $345M 擴建散熱產能（菲律賓 + 泰國 + 中國）。</td>
-            </tr>
-            <tr>
-                <td><span class="highlight">情境 A</span></td>
-                <td><strong>單純獲利了結</strong>：奇鋐股價大漲 10 倍，古河實現部分獲利屬正常行為。不影響業務合作關係。</td>
-            </tr>
-            <tr>
-                <td><span class="highlight-warn">情境 B</span></td>
-                <td><strong>競合關係轉變</strong>：古河掌握技術 Know-how 後，決定自建微通道冷板產線。減持 = 降低利益衝突、為未來競爭鋪路。</td>
-            </tr>
-        </table>
-
-        <div class="divider"></div>
-
-        <h4 style="color:#aaa; margin-bottom:10px;">歷史劇本比對</h4>
-        <div style="background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:16px; margin-bottom:16px;">
-            <p><strong>類似案例：華碩-和碩分拆（2009~2010）</strong></p>
-            <ul>
-                <li>和碩原為華碩代工事業部，分拆前漸行漸遠</li>
-                <li>分拆後和碩成為華碩的直接競爭者（代工領域）</li>
-                <li>但華碩品牌事業不受影響，各自發展良好</li>
-            </ul>
-            <p style="color:#888; margin-top:8px;">
-                <strong>差異：</strong>古河-奇鋐的關係不如華碩-和碩緊密。古河僅為財務投資人 + 技術合作，非控股母子公司。因此即使轉為競爭，影響範圍較小。
-            </p>
+        <div class="tl-item high">
+          <div class="date">2026 / Q3</div>
+          <div class="event">CSP 新客戶首批出貨</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">利多</span>
+            <span class="tl-tag impact-h">影響 · 高</span>
+          </div>
         </div>
 
-        <h4 style="color:#aaa; margin-bottom:10px;">最壞情境推演</h4>
-        <div style="background:rgba(200,80,80,0.06); border:1px solid rgba(200,80,80,0.2); border-radius:8px; padding:16px;">
-            <ul>
-                <li>古河 2027 自建液冷產線完成 + 取得 NVIDIA 認證</li>
-                <li>帶走部分中小型客戶（非核心 Tier 1 CSP）</li>
-                <li>奇鋐營收影響：<span class="highlight-danger">&lt;10%</span>（核心大客戶黏性高）</li>
-                <li>但市場可能過度反應，PE 壓縮 10~15%</li>
-            </ul>
+        <div class="tl-item extreme">
+          <div class="date">2026 / Q4</div>
+          <div class="event">Rubin 全面出貨</div>
+          <div class="tl-tags">
+            <span class="tl-tag up">利多</span>
+            <span class="tl-tag impact-h">影響 · 極高</span>
+          </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="tl-item">
+          <div class="date">2026 / Q4</div>
+          <div class="event">古河電氣新廠投產？（競爭壓力浮現點）</div>
+          <div class="tl-tags">
+            <span class="tl-tag down">偏空</span>
+            <span class="tl-tag impact-m">影響 · 中</span>
+          </div>
+        </div>
+      </div>
 
-        <h4 style="color:#aaa; margin-bottom:10px;">持續監控指標</h4>
+      <div class="conclusion info">
+        <div class="mark">§ 8f　Integrated Finding</div>
+        <h4>5 月法說會＝分歧決定點；Q3 Rubin＝路徑確認點</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">2026 年有 9 個關鍵催化劑，其中 3 個為「極高影響」（法說會 / Rubin 機櫃量產 / Rubin 全面出貨），2 個為「高影響」。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">催化劑集中在 Q3~Q4（Rubin 相關），但最早的分歧點在 5 月法說會。法說會將決定市場對 2026 全年的定價基礎。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">5 月法說會是「路徑分歧決定點」─ 指引好壞將直接影響路徑 A vs B 的機率權重。Q3 Rubin 量產則是「路徑確認點」─ 量產順利與否將最終確認哪條路徑勝出。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">投資決策的最佳時間窗口在 5 月法說會後至 Q3 之間。法說會後若確認路徑 B 且股價回檔至 1,800 以下，即為理想進場點。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8g ====================== -->
+    <section class="section" id="ch-8g">
+      <div class="section-head">
+        <div class="no">8g</div>
+        <div class="tit">
+          <h2>蝴蝶效應推衍 — 弱訊號偵測</h2>
+          <div class="sub">Butterfly Effect · 四個弱訊號的深層推演</div>
+        </div>
+      </div>
+
+      <div class="weak-signal orange">
+        <div class="ws-title">弱訊號 1 · 古河電氣「減持 + 擴產」組合拳</div>
+        <div class="ws-row"><span class="ws-label">表面</span><span class="ws-val">策略夥伴正常調整持股</span></div>
+        <div class="ws-row"><span class="ws-label">深層推演</span><span class="ws-val">古河掌握奇鋐技術 Know-how → 自建微通道冷板產線 → 2027 成為 Tier 1 競爭者</span></div>
+        <div class="ws-row"><span class="ws-label">蝴蝶效應</span><span class="ws-val">若古河拿下 NVIDIA 第二供應商資格 → 奇鋐市佔從 70% 降至 50% → PE 永久壓縮</span></div>
+        <div class="ws-row"><span class="ws-label">追蹤指標</span><span class="ws-val">古河新廠量產時間、是否取得 NVIDIA 認證</span></div>
+        <div class="ws-row"><span class="ws-label">驗證時點</span><span class="ws-val"><span class="hl-orange">2026 Q4</span></span></div>
+      </div>
+
+      <div class="weak-signal">
+        <div class="ws-title">弱訊號 2 · 員工數暴增 68%（11,837 → 19,919）</div>
+        <div class="ws-row"><span class="ws-label">表面</span><span class="ws-val">產能擴張需要人力</span></div>
+        <div class="ws-row"><span class="ws-label">深層推演</span><span class="ws-val">越南廠大量招工 → 初期良率／效率低 → 毛利率短期承壓</span></div>
+        <div class="ws-row"><span class="ws-label">蝴蝶效應</span><span class="ws-val">若學習曲線慢於預期 → 2026H1 毛利率低於預期 → 法人下修</span></div>
+        <div class="ws-row"><span class="ws-label">追蹤指標</span><span class="ws-val">Q1 毛利率是否維持 &gt;25%</span></div>
+        <div class="ws-row"><span class="ws-label">驗證時點</span><span class="ws-val"><span class="hl">2026 / 5 月 Q1 季報</span></span></div>
+      </div>
+
+      <div class="weak-signal orange">
+        <div class="ws-title">弱訊號 3 · capex 150 億 vs FCF 19.6 億</div>
+        <div class="ws-row"><span class="ws-label">表面</span><span class="ws-val">積極擴產是常態</span></div>
+        <div class="ws-row"><span class="ws-label">深層推演</span><span class="ws-val">FCF 極度緊張 → 若需融資（CB／增資）→ 稀釋</span></div>
+        <div class="ws-row"><span class="ws-label">蝴蝶效應</span><span class="ws-val">若同時遇營收放緩 + 高 capex → 淨負債惡化 → 信評壓力</span></div>
+        <div class="ws-row"><span class="ws-label">追蹤指標</span><span class="ws-val">2026H1 融資動態、負債比變化</span></div>
+        <div class="ws-row"><span class="ws-label">驗證時點</span><span class="ws-val"><span class="hl-orange">2026 / 8 月半年報</span></span></div>
+      </div>
+
+      <div class="weak-signal">
+        <div class="ws-title">弱訊號 4 · Rubin MCCP 微通道技術門檻</div>
+        <div class="ws-row"><span class="ws-label">表面</span><span class="ws-val">技術升級對奇鋐有利</span></div>
+        <div class="ws-row"><span class="ws-label">深層推演</span><span class="ws-val">MCCP 要求雷射焊接 + 奈米級流道 → 良率初期可能 &lt;80% → 短期成本飆升</span></div>
+        <div class="ws-row"><span class="ws-label">蝴蝶效應</span><span class="ws-val">若良率不達標 → NVIDIA 認證延遲 → 出貨窗口被古河／雙鴻搶走</span></div>
+        <div class="ws-row"><span class="ws-label">追蹤指標</span><span class="ws-val">法說會是否提及 MCCP 良率、Rubin 送樣進度</span></div>
+        <div class="ws-row"><span class="ws-label">驗證時點</span><span class="ws-val"><span class="hl">2026 / 5 月法說會</span></span></div>
+      </div>
+
+      <div class="conclusion warn">
+        <div class="mark">§ 8g　Integrated Finding</div>
+        <h4>弱訊號的價值在於「收斂偵測」，任二個同時惡化即啟動深度重評</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">四個弱訊號涵蓋競爭（古河）、營運效率（員工暴增）、財務健康（FCF 緊張）、技術風險（MCCP 良率）四個維度。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">這四個訊號表面上互不相關，但若同時惡化，會形成「完美風暴」：古河搶客戶 + 良率不佳 + 毛利率下滑 + 被迫融資稀釋 → 估值崩塌。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">單一弱訊號惡化的影響有限（各自 &lt;10% EPS 影響）。但弱訊號的價值在於「收斂偵測」─ 若 2~3 個同時亮橙燈，代表基本面風險正在實質化，應立即重新評估。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">目前四個弱訊號處於「監控」階段，尚未進入「警報」。最早驗證時點為 5 月法說會（弱訊號 2+4），次為 8 月半年報（弱訊號 3），古河動態則需持續追蹤至 Q4。建議建立月度弱訊號追蹤清單，任二個同時惡化即啟動深度重新評估。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8h ====================== -->
+    <section class="section" id="ch-8h">
+      <div class="section-head">
+        <div class="no">8h</div>
+        <div class="tit">
+          <h2>貓膩推衍</h2>
+          <div class="sub">Contrarian Probe · 古河減持之謎 × 歷史劇本比對</div>
+        </div>
+      </div>
+
+      <div class="cat-lamp">
+        <span class="dot"></span>
+        <span class="label">貓膩燈號 · 黃燈</span>
+        <span class="note">有可疑跡象但尚未確認</span>
+      </div>
+
+      <div class="sub-h">古河減持之謎</div>
+
+      <table class="tbl">
+        <caption>Cat · 情境 A vs 情境 B</caption>
+        <thead><tr><th style="width:140px">面向</th><th>分析</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">事實</td><td>古河電氣從持股 14.99% 減至 12.48%（-2.51pp），減持持續進行中。同期投資 $345M 擴建散熱產能（菲律賓 + 泰國 + 中國）。</td></tr>
+          <tr><td class="bold"><span class="hl-good">情境 A</span></td><td><strong>單純獲利了結</strong>：奇鋐股價大漲 10 倍，古河實現部分獲利屬正常行為。不影響業務合作關係。</td></tr>
+          <tr><td class="bold"><span class="hl-warn">情境 B</span></td><td><strong>競合關係轉變</strong>：古河掌握技術 Know-how 後，決定自建微通道冷板產線。減持 ＝ 降低利益衝突、為未來競爭鋪路。</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h4">歷史劇本比對</div>
+      <div class="info-box">
+        <p><strong>類似案例：華碩-和碩分拆（2009~2010）</strong></p>
         <ul>
-            <li>古河持股比率月度變化（跌破 10% = 紅燈）</li>
-            <li>古河財報中散熱事業營收佔比變化</li>
-            <li>古河是否申請微通道冷板相關專利</li>
-            <li>古河是否出現在 NVIDIA 供應商認證清單</li>
+          <li>和碩原為華碩代工事業部，分拆前漸行漸遠</li>
+          <li>分拆後和碩成為華碩的直接競爭者（代工領域）</li>
+          <li>但華碩品牌事業不受影響，各自發展良好</li>
         </ul>
+        <p class="muted" style="margin-top:10px"><strong>差異：</strong>古河-奇鋐的關係不如華碩-和碩緊密。古河僅為財務投資人 + 技術合作，非控股母子公司。因此即使轉為競爭，影響範圍較小。</p>
+      </div>
 
-        <div class="tip warn">
-            <b>8h 整合結論</b>
-            <strong>資料：</strong>古河電氣同時「減持」+「擴產散熱」，兩個動作組合在一起，情境 B（競合轉變）的可能性不可忽略。<br>
-            <strong>觀察：</strong>目前仍在「黃燈」階段 — 有可疑跡象但無確鑿證據。古河減持速度溫和（-2.51pp / 數月），尚未出現急售或清倉行為。<br>
-            <strong>推論：</strong>即使情境 B 成真，短期（2026）影響有限。古河從零到量產至少需要 12~18 個月（建廠+認證），且奇鋐在 MCCP 領域的先行優勢（2~3 年）不易快速追趕。真正的風險窗口在 2027H2~2028。<br>
-            <strong>結論：</strong>維持黃燈監控。不因此改變短期判斷，但需將古河動態納入年度追蹤清單。若古河持股跌破 10% 或取得 NVIDIA 散熱認證，升級為橙燈並啟動深度重評。
+      <div class="sub-h4">最壞情境推演</div>
+      <div class="info-box bad">
+        <ul>
+          <li>古河 2027 自建液冷產線完成 + 取得 NVIDIA 認證</li>
+          <li>帶走部分中小型客戶（非核心 Tier 1 CSP）</li>
+          <li>奇鋐營收影響：<span class="hl-bad">&lt;10%</span>（核心大客戶黏性高）</li>
+          <li>但市場可能過度反應，PE 壓縮 10~15%</li>
+        </ul>
+      </div>
+
+      <div class="sub-h4">持續監控指標</div>
+      <div class="info-box">
+        <ul>
+          <li>古河持股比率月度變化（跌破 10% ＝ 紅燈）</li>
+          <li>古河財報中散熱事業營收佔比變化</li>
+          <li>古河是否申請微通道冷板相關專利</li>
+          <li>古河是否出現在 NVIDIA 供應商認證清單</li>
+        </ul>
+      </div>
+
+      <div class="conclusion warn">
+        <div class="mark">§ 8h　Integrated Finding</div>
+        <h4>維持黃燈監控，真正的風險窗口在 2027H2~2028</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">古河電氣同時「減持」+「擴產散熱」，兩個動作組合在一起，情境 B（競合轉變）的可能性不可忽略。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">目前仍在「黃燈」階段 ─ 有可疑跡象但無確鑿證據。古河減持速度溫和（-2.51pp / 數月），尚未出現急售或清倉行為。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">即使情境 B 成真，短期（2026）影響有限。古河從零到量產至少需要 12~18 個月（建廠 + 認證），且奇鋐在 MCCP 領域的先行優勢（2~3 年）不易快速追趕。真正的風險窗口在 2027H2~2028。</div></div>
+          <div class="row"><div class="k">結論</div><div class="v">維持黃燈監控。不因此改變短期判斷，但需將古河動態納入年度追蹤清單。若古河持股跌破 10% 或取得 NVIDIA 散熱認證，升級為橙燈並啟動深度重評。</div></div>
         </div>
-    </div>
+      </div>
+    </section>
+
+    <!-- ====================== 8i ====================== -->
+    <section class="section" id="ch-8i">
+      <div class="section-head">
+        <div class="no">8i</div>
+        <div class="tit">
+          <h2>第四次信心校準 — 最終裁定</h2>
+          <div class="sub">Final Calibration · 四次校準收斂 × 最終決策</div>
+        </div>
+      </div>
+
+      <div class="sub-h">四次校準進程</div>
+
+      <table class="tbl">
+        <thead>
+          <tr><th>次序</th><th>時機</th><th class="c">期望價</th><th>核心結論</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold">第一次</td>
+            <td>ACH 競爭假說</td>
+            <td class="num">1,800</td>
+            <td>好公司壞價格 55%</td>
+          </tr>
+          <tr>
+            <td class="bold">第二次</td>
+            <td>壓力測試</td>
+            <td class="num">1,800</td>
+            <td>致命因子 ＝ AI capex 放緩</td>
+          </tr>
+          <tr>
+            <td class="bold">第三次</td>
+            <td>評審團 23 維度</td>
+            <td class="num">1,804</td>
+            <td>不追高，等 PE 修正</td>
+          </tr>
+          <tr class="highlight">
+            <td class="bold"><span class="hl-good">第四次</span></td>
+            <td class="bold">推演版（本報告）</td>
+            <td class="num gold">1,871</td>
+            <td class="bold">確認不追高</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="muted" style="margin-top:8px">四次校準期望價區間：1,800 ~ 1,871 元。標準差僅 35 元（&lt;2%），顯示分析結論高度收斂穩定。推演版因加入 Rubin TDP 利多（鏈 1），期望價略上修 +71 元，但不改變整體判斷方向。</p>
+
+      <!-- 大字金句 -->
+      <div class="pull">
+        <p>投資這家公司的核心問題不是「好不好」（答案明確是好），而是「何時買 / 買多貴」。</p>
+        <div class="attr">— 第四次信心校準</div>
+      </div>
+
+      <!-- 最終裁定 -->
+      <div class="final-verdict">
+        <div class="mark">Final Verdict · 最終裁定</div>
+        <h3>好公司，但目前價格偏貴：不買入，等 1,800 以下。</h3>
+
+        <div class="verdict-grid">
+          <div class="verdict-item">
+            <div class="v-label">概率加權期望價</div>
+            <div class="v-value green">1,871 元</div>
+          </div>
+          <div class="verdict-item">
+            <div class="v-label">現價</div>
+            <div class="v-value">2,200 元</div>
+          </div>
+          <div class="verdict-item">
+            <div class="v-label">溢價幅度</div>
+            <div class="v-value red">17.6%</div>
+          </div>
+          <div class="verdict-item">
+            <div class="v-label">推衍有效期</div>
+            <div class="v-value yellow">至 2026/5/15</div>
+          </div>
+          <div class="verdict-item">
+            <div class="v-label">行動建議</div>
+            <div class="v-value yellow">不買入，等 1,800↓</div>
+          </div>
+          <div class="verdict-item">
+            <div class="v-label">致命因子</div>
+            <div class="v-value red">capex 放緩 + Rubin 延遲</div>
+          </div>
+        </div>
+
+        <div class="verdict-flip">
+          <div class="flip-k">唯一翻轉因子</div>
+          <p>2026 EPS 確認 &gt;80 元（路徑 A + E，合計機率 28%）。若 5 月法說會指引或 Q3 實際營運數據確認此情境，則期望價上修至 2,300+ 元，現價轉為合理。</p>
+        </div>
+      </div>
+
+      <div class="conclusion good">
+        <div class="mark">§ 8i　Final Integrated Finding</div>
+        <h4>四次校準收斂穩定，決策分三階段執行</h4>
+        <div class="rows">
+          <div class="row"><div class="k">資料</div><div class="v">四次校準一致指向「好公司，但目前價格偏貴」。期望價 1,800~1,871 vs 現價 2,200，溢價 17~22%。</div></div>
+          <div class="row"><div class="k">觀察</div><div class="v">奇鋐是少數在 AI 伺服器散熱領域具備全球龍頭地位的台灣公司，技術護城河（MCCP）短期內難以被複製。但市場已充分甚至過度定價這些優勢。</div></div>
+          <div class="row"><div class="k">推論</div><div class="v">投資這家公司的核心問題不是「好不好」（答案明確是好），而是「何時買 / 買多貴」。以價值投資邏輯，在安全邊際不足時買入優質公司，長期報酬率仍可能令人失望。歷史上不乏「好公司買在高點套 3 年」的案例（如 2021 年的 TSMC 688 元）。</div></div>
+        </div>
+        <ul>
+          <li><strong>短期（1~3 月）</strong>：不買入。等待 5 月法說會確認方向。</li>
+          <li><strong>中期（3~6 月）</strong>：若股價回檔至 1,800 以下 + 基本面無虞 → 首次建倉。</li>
+          <li><strong>長期（6~12 月）</strong>：Rubin 量產確認後（Q3~Q4），重新評估路徑機率並調整策略。</li>
+          <li><strong>推衍有效期</strong>：至 2026/5/15。5 月法說會後本報告需全面更新。</li>
+        </ul>
+      </div>
+
+      <div class="disclaimer">
+        <b>免責聲明：</b>本報告為天機閣 AI 輔助分析產出，所有預測、情境、期望價均為機率推演結果，不構成任何買賣建議。投資人應自行承擔投資決策風險並參考多方資訊來源。報告內容以分析日（2026/4/10~4/14）為準，推衍有效期至 2026/5/15，5 月法說會後本報告需全面更新。
+      </div>
+
+    </section>
+
+    <!-- CROSS_LINKS_START --><!-- CROSS_LINKS_END -->
+
+    <footer class="footer">
+      天機錄　·　第八步推演版　·　奇鋐科技 3017.TW　·　分析基準日 2026-04-14<br>
+      來源：NVIDIA 規格公告、Hyperscaler capex 追蹤、古河電氣公告、3017 公開資訊觀測站、月營收公告<br>
+      信心校準：ACH 55% → 壓力測試 → 評審團 23 維度 → 推演版全景推演<br>
+      最終裁定：不追高，等 1,800 以下再啟動，唯一翻轉因子＝ 2026 EPS &gt;80 元<br>
+      推衍有效期：至 2026-05-15｜5 月法說會後需全面更新
+    </footer>
+  </main>
 </div>
 
-<!-- ==================== 8i. 第四次信心校準 ==================== -->
-<div class="section">
-    <div class="section-header">
-        <span class="step-badge">8i</span>
-        <h2>第四次信心校準 — 最終裁定</h2>
-    </div>
-    <div class="section-body">
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
 
-        <h3 style="color:#9fc5a5; margin-bottom:14px;">四次校準進程</h3>
-        <table class="calibration-table">
-            <thead>
-                <tr><th>次序</th><th>時機</th><th>期望價</th><th>核心結論</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>第一次</td>
-                    <td>ACH 競爭假說</td>
-                    <td>1,800</td>
-                    <td>好公司壞價格 55%</td>
-                </tr>
-                <tr>
-                    <td>第二次</td>
-                    <td>壓力測試</td>
-                    <td>1,800</td>
-                    <td>致命因子 = AI capex 放緩</td>
-                </tr>
-                <tr>
-                    <td>第三次</td>
-                    <td>評審團 23 維度</td>
-                    <td>1,804</td>
-                    <td>不追高，等 PE 修正</td>
-                </tr>
-                <tr>
-                    <td>第四次</td>
-                    <td style="color:#6b9f72; font-weight:700;">推演版（本報告）</td>
-                    <td style="color:#6b9f72; font-weight:700;">1,871</td>
-                    <td style="color:#6b9f72; font-weight:700;">確認不追高</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p style="color:#888; font-size:0.9em; margin-top:12px;">
-            四次校準期望價區間：1,800 ~ 1,871 元。標準差僅 35 元（<2%），顯示分析結論高度收斂穩定。推演版因加入 Rubin TDP 利多（鏈 1），期望價略上修 +71 元，但不改變整體判斷方向。
-        </p>
-
-        <div class="divider"></div>
-
-        <!-- 最終結論面板 -->
-        <div class="final-verdict">
-            <h3>最終裁定</h3>
-            <div class="verdict-grid">
-                <div class="verdict-item">
-                    <div class="v-label">概率加權期望價</div>
-                    <div class="v-value green">1,871 元</div>
-                </div>
-                <div class="verdict-item">
-                    <div class="v-label">現價</div>
-                    <div class="v-value">2,200 元</div>
-                </div>
-                <div class="verdict-item">
-                    <div class="v-label">溢價幅度</div>
-                    <div class="v-value red">17.6%</div>
-                </div>
-                <div class="verdict-item">
-                    <div class="v-label">推衍有效期</div>
-                    <div class="v-value yellow">至 2026/5/15</div>
-                </div>
-                <div class="verdict-item">
-                    <div class="v-label">行動建議</div>
-                    <div class="v-value yellow">不買入，等 1,800↓</div>
-                </div>
-                <div class="verdict-item">
-                    <div class="v-label">致命因子</div>
-                    <div class="v-value red">AI capex 放緩 + Rubin 延遲</div>
-                </div>
-            </div>
-
-            <div style="margin-top:20px; padding:14px; background:rgba(0,0,0,0.3); border-radius:8px; text-align:left;">
-                <p style="color:#e0c860; font-weight:600; margin-bottom:8px;">唯一翻轉因子：</p>
-                <p style="color:#d4d4d4;">
-                    2026 EPS 確認 >80 元（路徑 A + E，合計機率 28%）。若 5 月法說會指引或 Q3 實際營運數據確認此情境，則期望價上修至 2,300+ 元，現價轉為合理。
-                </p>
-            </div>
-        </div>
-
-        <div class="tip good">
-            <b>8i 最終整合結論</b>
-            <strong>資料：</strong>四次校準一致指向「好公司，但目前價格偏貴」。期望價 1,800~1,871 vs 現價 2,200，溢價 17~22%。<br>
-            <strong>觀察：</strong>奇鋐是少數在 AI 伺服器散熱領域具備全球龍頭地位的台灣公司，技術護城河（MCCP）短期內難以被複製。但市場已充分甚至過度定價這些優勢。<br>
-            <strong>推論：</strong>投資這家公司的核心問題不是「好不好」（答案明確是好），而是「何時買 / 買多貴」。以價值投資邏輯，在安全邊際不足時買入優質公司，長期報酬率仍可能令人失望。歷史上不乏「好公司買在高點套 3 年」的案例（如 2021 年的 TSMC 688 元）。<br>
-            <strong>結論：</strong>
-            <ul>
-                <li><strong>短期（1~3 月）</strong>：不買入。等待 5 月法說會確認方向。</li>
-                <li><strong>中期（3~6 月）</strong>：若股價回檔至 1,800 以下 + 基本面無虞 → 首次建倉。</li>
-                <li><strong>長期（6~12 月）</strong>：Rubin 量產確認後（Q3~Q4），重新評估路徑機率並調整策略。</li>
-                <li><strong>推衍有效期</strong>：至 2026/5/15。5 月法說會後本報告需全面更新。</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== 頁尾 ==================== -->
-<!-- CROSS_LINKS_START --><!-- CROSS_LINKS_END -->
-
-<div class="footer">
-    <p>天機閣 — 奇鋐科技 (3017.TW) 第八步推演版報告</p>
-    <p>報告產生日期：2026-04-14 ｜ 推衍有效期：至 2026-05-15</p>
-    <p style="margin-top:8px;">本報告為 AI 輔助分析產出，不構成投資建議。投資決策請自行判斷風險。</p>
-</div>
-
-</div><!-- end container -->
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
 </body>
 </html>
