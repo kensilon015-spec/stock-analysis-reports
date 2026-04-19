@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>陽程科技 3498 · 第八步 推演版 · 天機錄 2026-04-19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<style>
+/* Step 8 推演版 — 繼承通用模板外，補 fias 顏色（雙主題）*/
+.fias-f,.fias-i,.fias-a,.fias-s{display:inline-block;padding:1px 7px;border-radius:3px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.08em;margin:0 2px;vertical-align:middle}
+.fias-f{background:rgba(95,125,105,0.20);color:var(--bull);border:1px solid var(--bull)}
+.fias-i{background:rgba(45,90,111,0.18);color:var(--accent);border:1px solid var(--accent)}
+.fias-a{background:rgba(138,111,30,0.18);color:var(--gold);border:1px solid var(--gold)}
+.fias-s{background:rgba(160,95,86,0.18);color:var(--bear);border:1px solid var(--bear)}
+[data-theme="dark"] .fias-f{background:rgba(138,178,152,0.18)}
+[data-theme="dark"] .fias-i{background:rgba(122,176,192,0.18)}
+[data-theme="dark"] .fias-a{background:rgba(212,176,48,0.18)}
+[data-theme="dark"] .fias-s{background:rgba(214,130,120,0.18)}
+/* 概率路徑樹（8d）*/
+.prob-tree{margin:14px 0;padding:14px 0 14px 20px;border-left:2px solid var(--rule)}
+.prob-path{margin:12px 0;padding:10px 14px;background:var(--paper-3);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px}
+.prob-path.bull{border-left-color:var(--bull)}
+.prob-path.bear{border-left-color:var(--bear)}
+.prob-path.neut{border-left-color:var(--gold)}
+.prob-path .t{font-family:var(--serif);color:var(--ink);font-size:15.5px;margin-bottom:4px;font-weight:500}
+.prob-path .prob{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-right:8px}
+.prob-path.bull .prob{color:var(--bull)}
+.prob-path.bear .prob{color:var(--bear)}
+.prob-path.neut .prob{color:var(--gold)}
+/* 信號卡（8g）*/
+.signal-card{margin:10px 0;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;display:grid;grid-template-columns:80px 1fr;gap:12px}
+.signal-card .sig-type{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;padding-top:3px}
+.signal-card .sig-body{color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.signal-card .sig-body b{color:var(--ink)}
+/* 推演鏈（8g/8c）*/
+.chain{margin:14px 0;padding:14px;background:var(--paper-3);border:1px solid var(--rule);border-radius:3px;font-size:13.5px;line-height:1.85;color:var(--ink-2)}
+.chain b{color:var(--ink)}
+.chain .arrow{color:var(--accent);font-family:var(--mono);font-weight:700;margin:0 6px}
+</style>
+
+</head>
+<body>
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Step 8 · 推演版</span>
+    </div>
+    <div class="meta-block">
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">6894 衛司特</span></div>
+      <div><span class="k">BASIS</span><span class="v">389.5 元</span></div>
+      <div><span class="k">VALID</span><span class="v">3 週</span></div>
+    </div>
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#s8a">推演基礎確認</a></li>
+      <li><a href="#s8b">情報更新差異表</a></li>
+      <li><a href="#s8c">影響鏈分析</a></li>
+      <li><a href="#s8d">情境模擬・概率路徑樹</a></li>
+      <li><a href="#s8e">個人化推衍</a></li>
+      <li><a href="#s8f">催化劑時間表</a></li>
+      <li><a href="#s8g">蝴蝶效應推衍 ★</a></li>
+      <li><a href="#s8h">貓膩推衍 ★</a></li>
+      <li><a href="#s8i">推演結論・第四次信心校準</a></li>
+    </ol>
+    <div class="side-verdict">
+      <div class="label">第四次信心校準</div>
+      <strong>H5 40~50% + H1 18~25%（Phase B ↑）</strong><br>
+      加權期望 80.5~88 元 vs 現價 166 元，期望報酬 -47~52%。2026/4/10 鴻海法代解任已發生、2026 Q2 法說會（5~6 月）為最大分岔點；合理進場區 95 元以下，Graham 安全邊際 66~79 元。<br>
+      <strong style="color:var(--accent);display:block;margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em">推衍有效期 · 3 週至 2026/05/10</strong>
+    </div>
+      <strong>觀望為主、分批減碼</strong><br>
+      加權期望 380.88 vs 現價 389.5，-10.8%。2026/05/15 Q1 季報為關鍵分岔點。
+    </div>
+  </aside>
+
+
+  <main class="main">
+
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">天機錄 · ISSUE 2026-04-19 · 推演版 v1.0</span>
+        <span>投資分析 · 推演版 · 第四次信心校準</span>
+      </div>
+      <h1>陽程 3498<span class="ticker">· 推演版</span></h1>
+      <p class="deck">2026/4/10 鴻海法代解任已發生、AAOI Capex +319% 已公告、2024「其他」類營收暴增 2.63 億已入帳——三個新事實推翻 Step 7 部分定價，但 2026 Q2 法說會（5~6 月）才是真正分岔點。本推衍有效期 3 週。</p>
+      <div class="byline">
+        <span><b>Coverage</b>Phase B 17 條發現 + 西碧拉圖譜 9 家相關 + AAOI 10-K</span>
+        <span><b>FIAS</b>F 20 · I 8 · A 5 · S 3</span>
+        <span><b>H5 估值</b>40~50%（主）</span>
+        <span><b>H1 真轉型</b>18~25%（Phase B ↑）</span>
+        <span><b>Confidence</b>中高</span>
+      </div>
+    </div>
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1 · 年報</div>
+        <div class="step done"><span class="dot"></span>S2 · 誠信</div>
+        <div class="step done"><span class="dot"></span>S3 · 護城河</div>
+        <div class="step done"><span class="dot"></span>S4 · ACH</div>
+        <div class="step done"><span class="dot"></span>S5 · 壓力測試</div>
+        <div class="step done"><span class="dot"></span>S6 · 評審團</div>
+        <div class="step done"><span class="dot"></span>S7 · 完整版</div>
+        <div class="step active"><span class="dot"></span>S8 ● 推演版</div>
+        <div class="step"><span class="dot"></span>S9 · 追蹤</div>
+      </div>
+    </header>
+
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價 · 2026/04/10</div>
+        <div class="v gold">166 元</div>
+        <div class="d">量能暴增 <span class="up">8,583 張</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">加權期望（Phase B ↑）</div>
+        <div class="v neut">80.5~88 元</div>
+        <div class="d">期望報酬 <span class="down">-47~52%</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">合理進場</div>
+        <div class="v up">95 元以下</div>
+        <div class="d">Graham 安全邊際 66~79 元</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">關鍵時點</div>
+        <div class="v neut">2026 Q2</div>
+        <div class="d">Q1 季報 5/15 + 法說 6 月</div>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip hot">2026/4/10 鴻海法代解任</span>
+      <span class="chip hot">其他類 +2.63 億（FOPLP 入帳）</span>
+      <span class="chip warn">PE 166× 估值泡沫</span>
+      <span class="chip bull">鴻海 2024 加派代表</span>
+      <span class="chip bull">AAOI Capex +319%</span>
+      <span class="chip bear">Q1 季報 5/15 分岔點</span>
+      <span class="chip">2022 B 客戶歷史前例</span>
+      <span class="chip">TrendForce FOPLP 7 家不含</span>
+    </div>
+
+
+
+    <section class="section" id="s8a">
+      <div class="section-head">
+        <div class="no">8a</div>
+        <div class="tit">
+          <h2>推演基礎確認</h2>
+          <div class="sub">回溯原始資料 — 公司核心事實 / Phase B 校準後的 ACH 假說 / 燈號 / 估值</div>
+        </div>
+      </div>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">核心事業</div><div class="v"><b>自動化設備客製化廠</b>，主業 CCL/PCB/FPD 自動化 + 2024 首布 FOPLP 面板貼合與 CPO 成品自動組裝；2024 營收 9.47 億（-21%）、連兩年虧損（EPS -2.42 → -2.50）、2025 Q4 毛利率 41% 單季爆發<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">新發現（Phase B）</div><div class="v"><b>2024 「其他」類產品營收暴增至 2.63 億（佔比 27.83%，較 2023 翻 3.3 倍）</b>= FOPLP/CPO/車用新品項實質入帳的最硬證據；研發成果表第 8 項「CPO 成品自動組裝線」+ 第 9 項「車用電子模組」+ 第 10 項「散熱晶片塗膠」<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">領導層</div><div class="v">黃秋逢（董事長+總經理，1981 創辦）+ 黃士軒（其子、董事）家族 8.06%；<b>鴻海 2020 私募入股 15.2%、2024/12/03 加派第二位代表人藍瑗文</b>（兼任鴻揚半導體/能創半導體/康儀科技/鴻齡科技監察人），與 2024 首布 FOPLP/CPO 時點高度一致<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">ACH 主導假說</div><div class="v"><b>H5 估值泡沫 40~50%（主）+ H2 部分真題材 35~40% 共存</b>；H1 真轉型 18~25%（Phase B 校準後 ↑ 從 14%）；H3 題材曇花 10~15%；H4 集團重組 10~15%（Phase B 校準後 ↓ 從 15~20%）<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">當前燈號</div><div class="v">9 項：2 綠（董監質押 0%、供應鏈 risk 0.0078 低）/ 5 黃（月營收/毛利率/員工/客戶揭露/泰國）/ 2 紅（EPS 連虧、PE 166× 為同業 5~8 倍）<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">估值錨定</div><div class="v">加權期望股價 <b>80.5~88 元</b>（Phase B 校準後，從 v3 73 元上修 15 元，含 H1 機率上調 + H4 下調）；Graham 安全邊際 66~79 元；合理進場 95 元以下<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">關鍵催化劑</div><div class="v">① 2026/4/10 鴻海法代當然解任（<b>已發生</b>）② 2026/5 中 Q1 季報（驗證 Q4 毛利結構性）③ 2026/6 2025 年報（首次揭露 ≥10% 客戶機會）④ 2026 Q2 法說會（AAOI/台積電 CPO 訂單揭露）<span class="fias-f">F</span></div></div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8a　推演基礎結論</div>
+        <h4>真研發 × 小規模 × 題材透支；Phase B 三項新發現把 H1 機率上調，但 H5 仍主導現價定價。</h4>
+        <div class="rows">
+          <div class="row"><div class="k">結論</div><div class="v">陽程在 FOPLP 面板貼合有同業三家不做的稀缺定位、「其他」類 2024 暴增 2.63 億證明 CPO/FOPLP 非純話術、鴻海 2024 加派代表人打通集團半導體管理介面——這三項新發現將 H1 真轉型機率從 14% 上調至 18~25%；但規模僅辛耘 1/6、連兩年虧損、PE 166× 為同業 5~8 倍 → H5 估值泡沫修正仍是主導路徑（40~50%）。2026 Q2 三個事件（Q1 季報 + 年報 + 法說）為分岔點。</div></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8b">
+      <div class="section-head">
+        <div class="no">8b</div>
+        <div class="tit">
+          <h2>情報更新差異表</h2>
+          <div class="sub">Step 4 ACH 分析日（2026-04-12） vs 第八步推演基準日（2026-04-19）</div>
+        </div>
+      </div>
+
+      <table class="tbl">
+        <caption>情報差異表 — 7 天關鍵變化</caption>
+        <thead><tr><th>指標</th><th>Step 4 分析日</th><th>推演基準 · 04-19</th><th>變化</th><th>含義</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">收盤價</td><td class="num">~140</td><td class="num">166.04（04-10）</td><td class="num pos">+18.6%</td><td>Phase C-1/C-2 期間追題材資金持續進場</td></tr>
+          <tr><td class="bold">2026-04 月營收</td><td class="num">—</td><td class="num">7,581 萬（YoY +156.94%）</td><td class="num pos">+156.94%</td><td>低基期效應為主，MoM -2.4% 放緩</td></tr>
+          <tr class="highlight"><td class="bold">鴻海法代解任</td><td>預期 04-10</td><td>04-10 <b>已發生</b></td><td class="num">時點敏感</td><td>30 天內無改派動作 = H4 機率上升</td></tr>
+          <tr><td class="bold">2026-04-09 量能</td><td class="num">—</td><td class="num">8,583 張（歷史級爆量）</td><td class="num">量能暴增</td><td>題材熱錢集中進場，投機盤占比高</td></tr>
+          <tr><td class="bold">PE 倍數</td><td class="num">~140×</td><td class="num">166× × 2025 全年 EPS</td><td class="num">擴張 26×</td><td>更遠離同業 20~30× 合理區間</td></tr>
+          <tr><td class="bold">最近鴻海公告</td><td>—</td><td>鴻海處分陽程私募股 9,420 張由鴻準旗下華準接手（西碧拉圖譜 batch_i）</td><td class="num">中性</td><td>集團內部轉移非外部減持</td></tr>
+          <tr class="highlight"><td class="bold">Q1 季報倒數</td><td class="num">T-33</td><td class="num">T-26</td><td class="num">-7 日</td><td>前置驗證窗口開啟，5 月 15 日為主要分岔點</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <span class="label">🚩 紅旗專節 · Phase B 發現推翻部分 Step 7 假設</span>
+        <p><b>1. 客戶透明度誤解：</b>Step 4 曾寫「陽程 2024 年報未揭露 ≥10% 客戶」，但實際上 2024 年報 p.65 有揭露 <b>A 18.29% / B 17.29% / C 13.85%（合計 49.43%）</b>，只是代號化未公開實際公司名稱。此修正不改變「客戶透明度低於同業」的結論，但事實基礎需校正。</p>
+        <p><b>2. 鴻海動向反轉：</b>Step 4 判讀為「鴻海法代 4 年 3 換 = 降溫」，Phase B 重讀年報發現<b>2024 不是換代表人，而是「加派」第二位</b>——藍瑗文兼任鴻揚半導體/能創半導體/康儀科技/鴻齡科技監察人，與陽程 2024 首布 FOPLP/CPO 時點一致。訊號性質從「降溫」修正為「管理介面打通」，H4 減持機率從 25% 下調至 10~15%。</p>
+        <p><b>3. 「其他」類 2024 暴增證實 CPO 已入帳：</b>年度差異 JSON 揭露「其他」類營收佔比從 2023 年 8.23% 暴增至 <b>2024 年 27.83%（2.63 億）</b>，推估為 CPO/FOPLP/車用新品項首次認列。此事實反駁 Ch12 貓膩 1「媒體誇大 CPO 實質業務」的部分論點——CPO 確實有實質營收（約 28%），但規模仍不足以支撐 PE 166×。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8c">
+      <div class="section-head">
+        <div class="no">8c</div>
+        <div class="tit">
+          <h2>影響鏈分析</h2>
+          <div class="sub">三條核心影響鏈 · 2026 Q2 為共同分岔點</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:12px 0 6px">鏈 1 · Q1 季報毛利率路徑分岔（5/15 公告）</h4>
+      <div class="chain">
+        <b>2026 Q1 2026 季報毛利率（5/15 公告）</b>
+        <span class="arrow">→</span> 若 ≥ 40%（H1 路徑，機率 35%）
+        <span class="arrow">→</span> 市場認證「2025 Q4 41% 非一次性、產品組合升級到 CPO/FOPLP」
+        <span class="arrow">→</span> PE 維持 100~150× + 2026 EPS 預估上修至 +2.5~3.0
+        <span class="arrow">→</span> <b style="color:var(--bull)">股價測試 200~250</b>
+        <br><br>
+        <span class="arrow">→</span> 若 30~40%（H2 路徑，機率 45%，<b>最可能</b>）
+        <span class="arrow">→</span> Q4 41% 是部分結構改善 + 部分一次性；市場等 Q2 再驗證
+        <span class="arrow">→</span> PE 壓縮至 60~100×、股價回測期望中樞
+        <span class="arrow">→</span> <b style="color:var(--gold)">區間整理 100~150</b>（-10~-40%）
+        <br><br>
+        <span class="arrow">→</span> 若 &lt; 30%（H3 路徑，機率 20%）
+        <span class="arrow">→</span> Q4 41% 被確認為一次性大單認列（2022 Q4 EPS 1.68 → 2023 -2.42 前例重演）
+        <span class="arrow">→</span> PE 被砍至 30~50× + EPS 下修至 -1.0~-1.5
+        <span class="arrow">→</span> <b style="color:var(--bear)">急殺至 50~80</b>（-52~-70%）
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 6px">鏈 2 · AAOI/Prime World 擴產節奏 + 台積電 CoWoS 嘉義廠</h4>
+      <div class="chain">
+        <b>AAOI 2025 Capex $210M（+319%）+ Prime World 新北 9,650 坪 15 年租約（已確認）</b>
+        <span class="arrow">→</span> 若 AAOI 2026 Q2 earnings 指名陽程為設備商（機率 30%）
+        <span class="arrow">→</span> 陽程獲 AAOI 具體訂單金額揭露（推估 2~4 億台幣）
+        <span class="arrow">→</span> 客戶身份從代號 A/B/C 升級為實名揭露
+        <span class="arrow">→</span> <b style="color:var(--bull)">PE 維持 80~100×、股價守在 140~180</b>
+        <br><br>
+        <span class="arrow">→</span> 若 AAOI 選日韓設備商 + 台積電嘉義廠未採陽程設備（機率 55%）
+        <span class="arrow">→</span> 市場「唯一沾 CPO 台廠」敘事破滅
+        <span class="arrow">→</span> TrendForce FOPLP 7 家台廠名單不含陽程被市場認知
+        <span class="arrow">→</span> <b style="color:var(--bear)">題材崩落、估值回到同業 20~30× 水準（股價 50~80）</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 6px">鏈 3 · 鴻海 2026/4/10 後動向 × FOPLP 生態系</h4>
+      <div class="chain">
+        <b>2026/4/10 鴻海法代法人董事當然解任（已發生）</b>
+        <span class="arrow">→</span> 情境 α（機率 55%）：30 天內改派新代表人、維持 15.2% 持股
+        <span class="arrow">→</span> <b style="color:var(--bull)">集團加持訊號強化</b>、O2 隱藏優勢實現機率升至 60%
+        <span class="arrow">→</span> 若同時鴻揚半導體/能創半導體有內部訂單釋出（推估 2026 H2~2027）
+        <span class="arrow">→</span> 陽程躍升「鴻海集團 FOPLP 生態系」一員、股價守 130~160
+        <br><br>
+        <span class="arrow">→</span> 情境 β（機率 30%）：改派但背景再降階（例：地區經理）
+        <span class="arrow">→</span> 市場解讀為「觀察期」、估值中性（100~130）
+        <br><br>
+        <span class="arrow">→</span> 情境 γ（機率 15%）：30 天內不改派、或公告部分減持
+        <span class="arrow">→</span> 陽程被重新歸類為「獨立小型設備股」
+        <span class="arrow">→</span> <b style="color:var(--bear)">PE 壓縮至 15~25× × EPS -2.0 = 股價 30~50</b>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">跨鏈交互作用</span>
+        <p><b>鏈 1（Q1 季報）</b>為短期觸發、<b>鏈 2（AAOI/台積電）</b>為中期錨定、<b>鏈 3（鴻海動向）</b>為 H4 尾部風險。三鏈<b>同時看空</b>的機率約 <b>11%</b>（獨立估：0.20 × 0.55 × 0.15 × 6 倍情緒連動係數 ≈ 11%），但一旦觸發任一條看空，其他兩鏈的空頭機率會提升 5~10pp（情緒連動 + 敘事共振）。</p>
+        <p><b>三鏈同時看多</b>的機率極低 ~2%（0.35 × 0.30 × 0.55 × 0.35 抑制係數），這也是 H1 最終機率停留在 18~25% 而非更高的原因。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8d">
+      <div class="section-head">
+        <div class="no">8d</div>
+        <div class="tit">
+          <h2>情境模擬 · 概率路徑樹</h2>
+          <div class="sub">未來 3 個月（至 2026/07/15）四條主要路徑</div>
+        </div>
+      </div>
+
+      <div class="prob-tree">
+
+        <div class="prob-path bull">
+          <div class="t"><span class="prob">H1 · 22~28%</span> 看多劇本 · 真轉型啟動（Phase B ↑ 從 14~20%）</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：Q1 毛利率 ≥ 40%（延續 Q4）+ 鴻海 30 天內改派代表（維持集團加持）+ AAOI 或台積電法說會指名陽程其一<br>
+          <b>演進</b>：5/15 季報 → 毛利 ≥40% → 法人調高 EPS 預估（-0.52 → +2.5）→ PE 維持 100~150× → 6 月法說揭露客戶 → 測試 200 → Q2 季報再驗證 → 250<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--bull)">200~250 元</b>（相對現價 +20~+50%）
+          </p>
+        </div>
+
+        <div class="prob-path neut">
+          <div class="t"><span class="prob">H2+H5 · 45~55%</span> 中性劇本 · 題材真但估值終將修正（最可能）</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：Q1 毛利率 30~40%（部分結構改善 + 部分一次性）+ 鴻海改派代表但背景中性 + 法說揭露客戶但金額不大（單一 10~20%）<br>
+          <b>演進</b>：Q4 41% 證實非純一次性 → 但市場擔心可持續性 → 獲利了結賣盤 + 融資盤解套 → PE 從 166× 壓縮至 60~100× → 高檔震盪後回測期望中樞<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--gold)">100~150 元</b>（相對現價 -10%~-40%，期望加權 80.5~88 為中長期錨）
+          </p>
+        </div>
+
+        <div class="prob-path bear">
+          <div class="t"><span class="prob">H3+H5 · 17~22%</span> 看空劇本 · 題材曇花 + 估值崩落</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：任一條件觸發 — ① Q1 毛利率 &lt; 30%、② 法說會未揭露 ≥10% 客戶名稱、③ AAOI 2026 Q2 earnings 指向日韓設備商、④ TrendForce FOPLP 名單仍不含陽程<br>
+          <b>演進</b>：5/15 後 5 日急殺 -20% 至 130 → 6 月法說無新資訊 → 技術面支撐失守 → 月線跌破 100 → 接近期望加權 80.5~88<br>
+          <b>歷史參照</b>：2022 B 客戶單大單 41.49% → 2023 消失，營收一年 -31% → EPS 1.68 → -2.42；相似度 70%<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--bear)">50~90 元</b>（相對現價 -46%~-70%）
+          </p>
+        </div>
+
+        <div class="prob-path bear">
+          <div class="t"><span class="prob">H4 · 8~12%</span> 極端劇本 · 鴻海集團重組</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：鴻海 2026/4/10 後 30 天內不改派代表、或公告部分減持（超過 3%）<br>
+          <b>演進</b>：鴻海減持傳聞出現 → 市場重新歸類陽程為「獨立小型設備股」→ PE 強制壓縮至 15~25× → EPS 下修 → 技術面完全崩壞<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--bear)">30~50 元</b>（相對現價 -70%~-82%）
+          </p>
+        </div>
+
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 10px;font-weight:600">敏感度分析</h4>
+      <table class="tbl">
+        <thead><tr><th>變數</th><th>+1σ 影響</th><th>-1σ 影響</th><th>優先度</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Q1 毛利率</td><td class="pos">+30%（H1 機率 +12pp）</td><td class="neg">-40%（H3 機率 +15pp）</td><td class="num gold">★★★★★</td></tr>
+          <tr><td class="bold">鴻海 30 天內改派</td><td class="pos">+15%（H4 機率 -10pp）</td><td class="neg">-25%（H4 機率 +15pp）</td><td class="num gold">★★★★★</td></tr>
+          <tr><td class="bold">法說會揭露客戶名稱</td><td class="pos">+20%（H1 機率 +8pp）</td><td class="neg">-15%（H3 機率 +5pp）</td><td class="num gold">★★★★</td></tr>
+          <tr><td class="bold">AAOI 2026 Q2 earnings</td><td class="pos">+12%（中期）</td><td class="neg">-10%（鏈 2 破）</td><td class="num">★★★</td></tr>
+          <tr><td class="bold">大盤 AI 題材輪動</td><td class="pos">+8%</td><td class="neg">-12%（小型題材股放大 1.5 倍）</td><td class="num">★★★</td></tr>
+          <tr><td class="bold">CPO 量產時點</td><td class="pos">+5%（2026 H1 量產加速）</td><td class="neg">-8%（延後至 2027）</td><td class="num">★★</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="label">路徑交叉點 · 何時必須做決定</span>
+        <p><b>2026/05/10 前</b>：Q1 季報前 5 日，傳聞與預期開始定價；若已持有需決定是否減碼對沖。現價 166 的獲利持股者建議分批減至 50% 部位。</p>
+        <p><b>2026/05/15 盤後</b>：Q1 季報公告當日，<b>最大決策時點</b>。毛利率 &lt;30% 則立即全面減倉；30~40% 則觀望等 6 月法說；≥40% 則續抱甚至加碼。</p>
+        <p><b>2026/06/15 前</b>：陽程法說會 + 2025 年報發布完畢；若未揭露 ≥10% 客戶實名，H3 機率 +8pp，應執行 H2 中性路徑的減碼策略。</p>
+        <p><b>2026/06/10 前（關鍵）</b>：鴻海 4/10 後滿 2 個月的改派期限；若仍未改派或有減持公告，H4 觸發、應全面停損至 100 元以下區間。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8e">
+      <div class="section-head">
+        <div class="no">8e</div>
+        <div class="tit">
+          <h2>個人化推衍 · 分情境行動建議</h2>
+          <div class="sub">依持股狀態 / 風險偏好 / 時間軸適配</div>
+        </div>
+      </div>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">情境 A · 空手者 · 觀望中</div>
+          <p style="line-height:1.75"><b>建議</b>：<b>暫緩進場</b>，等 Q1 季報或股價修正至 100 元以下。<br><br>
+          <b>進場條件</b>：① 股價回到 95~100 元以下（對應 H2+H5 中樞）且量能見底 → 首批 1/3 試探；② Q1 毛利率 ≥ 35% 且法說揭露 ≥1 家具體客戶 → 追第二批 1/3；③ 鴻海 30 天內改派代表 + 站穩 120 → 第三批 1/3。<br><br>
+          <b>停損</b>：一旦跌破 60 元（期望加權 -30%）全出。<br>
+          <b>目標價位</b>：200（H1 情境）／樂觀 250。</p>
+        </div>
+
+        <div class="scenario bear">
+          <div class="hd">情境 B · 獲利持有（成本 &lt; 100）</div>
+          <p style="line-height:1.75"><b>建議</b>：<b>分批減碼鎖利</b>、保留 1/3 底倉。<br><br>
+          <b>減碼節奏</b>：① 現價 166 減 1/3；② 若反彈至 175~180 減第 2 批；③ 若 Q1 後突破 200 暫停；④ 若跌破 140 啟動全面減倉至 30% 以下。<br><br>
+          <b>核心邏輯</b>：6 週漲超過 50%、加權期望股價 80.5~88 元、R/R 比 1:0.5~0.7 不佳；長線 FOPLP/CPO 稀缺定位 + 鴻海加派代表故事仍成立，保留底倉等低點加。</p>
+        </div>
+      </div>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">情境 C · 套牢（成本 &gt; 166）</div>
+          <p style="line-height:1.75"><b>建議</b>：<b>評估停損、不向下攤平</b>。<br><br>
+          <b>行動</b>：① 若能接受 -30~-40% 虧損上限 → 跌破 120 全出；② 若長線看好 FOPLP 稀缺 → 現價減 1/2、剩下續抱但設 <b>80 元為硬停損</b>（接近 Graham 安全邊際）；③ 2026 Q2 法說後如 H1 未觸發且價格仍高於 120，執行 B 情境減碼節奏。<br><br>
+          <b>不建議</b>：向下攤平（H3+H5 機率 17~22% × H4 機率 8~12% 合計近 30%，攤平風險大於上行機會）。</p>
+        </div>
+
+        <div class="scenario bear">
+          <div class="hd">情境 D · 避險需求（對沖）</div>
+          <p style="line-height:1.75"><b>建議</b>：若有期貨/選擇權帳戶，可買 Put 對沖 1/2 倉位。<br><br>
+          <b>成本</b>：3 個月價外 Put（執行價 130~140）權利金約 5~8% 倉位價值；相較 H3+H5 路徑 -50~-70% 的潛在損失，保險比划算。<br><br>
+          <b>建議執行窗口</b>：2026/05/10 前（Q1 季報前 5 日），權利金定價最合理；Q1 季報若低於預期，Put 價值放大 3~5 倍。<br><br>
+          <b>不建議</b>：沒有衍生性商品經驗者不要為了避險開新工具，直接走情境 B/C 減碼即可。</p>
+        </div>
+      </div>
+
+      <div class="callout good">
+        <span class="label">普遍建議 — 不論哪種情境</span>
+        <p><b>1.</b> 2026/05/10~05/15（Q1 季報前後）絕不重倉進場/加碼；此為最大不確定性窗口。</p>
+        <p><b>2.</b> 每週一檢查三個關鍵燈號：① 月營收 YoY 是否 ≥30%（維持 H2）② 鴻海 MOPS 申報（任何持股異動）③ 陽程量能（是否回到 1,000 張以下 = 題材熱度降溫）。</p>
+        <p><b>3.</b> 關注 AAOI 2026 Q2 earnings call（5 月底 ~ 6 月初）是否指名陽程；指名 = H1 機率 +10pp。</p>
+        <p><b>4.</b> 任何情境下，投入部位不建議超過 5%（小型題材股波動大 + R/R 比不利）。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8f">
+      <div class="section-head">
+        <div class="no">8f</div>
+        <div class="tit">
+          <h2>催化劑時間表 · 未來 3 個月</h2>
+          <div class="sub">2026/04/19 ~ 2026/07/15 關鍵事件日曆</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="item key">
+          <div class="date">2026/04/10 ─ 已發生（推演基準）</div>
+          <div class="t">鴻海法代法人董事當然解任（公司法 119 條）</div>
+          <div class="d">量能當日暴增至 8,583 張、股價高點 175.21 後回檔至 166。<b>觀察指標：</b>30 天內 MOPS 是否公告改派新代表人（截止 2026/05/10）。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/04/19 ─ 今日（推演基準日）</div>
+          <div class="t">推演版 v1 發布；推衍有效期至 2026/05/10</div>
+          <div class="d">若 5/10 前鴻海未改派，本推衍需重跑（H4 機率 +10pp）。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/05/10 ─ Q1 季報前 5 日</div>
+          <div class="t">傳聞與預期定價開始 + 鴻海改派截止（推估）</div>
+          <div class="d">建議動作：獲利持有者首批減碼；空手者勿追；套牢者設停損紀律。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026/05/15 ─ Q1 季報公告（最大分岔點 ★★★）</div>
+          <div class="t">2026 Q1 合併損益 — 毛利率 / EPS / 月營收</div>
+          <div class="d">
+            <b>≥40%</b>：H1 觸發，PE 維持 100~150×、股價測 200<br>
+            <b>30~40%</b>：H2 維持，觀望 6 月法說；100~150 區間整理<br>
+            <b>&lt;30%</b>：H3 觸發，急殺 -30~50% 至 80~110<br>
+            <b>同時觀察：</b>單季 EPS 是否轉正（2025 Q4 1.38 能否延續）
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/05/31 ─ 5 月月營收（MOPS 每月 10 日前公告下月）</div>
+          <div class="t">2026-05 月營收 YoY</div>
+          <div class="d">MoM 是否延續 -2.4% 放緩、YoY 是否維持 +100% 以上。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026/06/01~06/30 ─ 2025 年報發布（★★★）</div>
+          <div class="t">2025 年報 — 首次揭露 ≥10% 客戶名稱機會</div>
+          <div class="d">按台股年報揭露規則，2024 年報已揭露代號 A/B/C（49.43%）；2025 年報<b>可能揭露實際公司名稱</b>。若指名 AAOI/台積電 = H1 機率 +15pp；若仍代號化 = 維持 H2。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026/06 月中旬 ─ 陽程法說會（★★★）</div>
+          <div class="t">管理層對 CPO/FOPLP 進度的正式表態</div>
+          <div class="d">
+            <b>若揭露 ≥10% 具體客戶名稱 + CPO/FOPLP 訂單金額</b>：H1 機率上調至 35%、股價支撐 140~160<br>
+            <b>若重複 2024 致股東書的低調敘事</b>：H5 機率 +5pp、股價壓力 100~130<br>
+            <b>觀察重點：</b>管理層是否提到 AAOI 或台積電具體合作
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/06 底 ~ 2026/07 ─ AAOI 2026 Q2 earnings call</div>
+          <div class="t">AAOI 是否指名陽程為設備商</div>
+          <div class="d">Prime World 新北 9,650 坪廠房啟用進度 + 400mW 雷射量產節奏（10-K 原文 2026 H2，媒體誤傳 Q2）。指名陽程 = H1 機率 +10pp。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/07/15 ─ 推衍期終點</div>
+          <div class="t">本次推衍有效期屆滿</div>
+          <div class="d">建議重跑 Step 8 推演版（新增 Q1 季報 + 法說會 + AAOI earnings 三個新情報後）。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026/08/15 ─ Q2 季報（後續觀察）</div>
+          <div class="t">驗證 Q1 改善是否延續、2026 全年 EPS 由負轉正機率</div>
+          <div class="d">若 Q2 EPS 維持正且毛利 ≥ 35%，H1 + H2 合計機率推升至 75%；若 Q2 單季又虧，H3+H5 機率升至 60%。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2027/03 ─ 2026 全年年報（長期觀察）</div>
+          <div class="t">2026 全年 EPS 能否轉正</div>
+          <div class="d">催化劑 C2 驗證終點。連三年虧損 → H3 機率 +20pp；由負轉正 → H1 機率 +15pp。</div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8g">
+      <div class="section-head">
+        <div class="no">8g</div>
+        <div class="tit">
+          <h2>蝴蝶效應推衍 ★★★</h2>
+          <div class="sub">弱訊號雷達 + 盲點洞察 + 歷史劇本對照</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:18px 0 10px">弱訊號雷達 · Phase B 挖到的 5 類弱訊號</h4>
+
+      <div class="data-grid">
+        <div class="data-row"><div class="k">A · 管理層語言</div><div class="v"><b>2024 致股東書 vs 產業概況「分裂敘事」</b>：致股東書完全不提 FOPLP/CPO（保守），產業概況章節 FOPLP 詞頻 23 次、AI 36 次（vs 2023 的 2 次暴增 18 倍）、樂觀穩健強勁 36 次五年新高、復甦 9 次（歷史新高）。<b>含意：</b>管理層知道題材是題材，但不敢在正式對股東承諾——這是「半推半就」的轉型信號。<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">B · 數字異動</div><div class="v"><b>「其他」類產品營收 2024 暴增 2.63 億（佔比 27.83%，翻 3.3 倍）</b>。對照 2020~2023 該類佔比穩定在 3.76%~9.96%。高機率為 CPO/FOPLP/車用新品項首次認列。<b>含意：</b>新業務已實質入帳，非純話術；但管理層未在致股東書強調，顯示他們自己認為規模還不夠。<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">C · 跨年度連動</div><div class="v"><b>2022 B 客戶 41.49%（7.22 億）→ 2023 消失 → 2024 前三大分散 49.43%（A/B/C 各 13~18%）</b>。客戶集中度從單一巨頭轉向 3 家分散，這是「專案型設備商找到多客戶支撐」的訊號，也可能是「大客戶流失後無力再接獨家大單」的訊號。兩種解讀同時成立。<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">D · 反面線索</div><div class="v"><b>員工直接（生產）-47% vs 間接（研發）-30%（2019→2025Q1）+ 上海陽程 2024 從生產轉純客戶服務（虧 2,458 萬）</b>。生產端收縮幅度遠大於研發端——這是「減生產、維持研發」的高附加價值轉型跡象；但同時也意味陽程「已無能力大幅擴產接大單」，規模天花板被員工數鎖死。<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">E · 遺珠</div><div class="v"><b>鴻海 2024 加派第二位代表人藍瑗文</b>（鴻海中央會計處協理，兼任鴻揚半導體/能創半導體/康儀科技/鴻齡科技監察人）。這個「加派」動作一直被市場解讀為「4 年 3 換」的降溫訊號，實際卻是<b>集團管理介面打通 + FOPLP 生態系成形</b>。鴻海集團內的鴻揚半導體、能創半導體（可能未來有陽程設備採購需求）都歸藍瑗文監察人範圍。<span class="fias-i">I</span></div></div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">蝴蝶效應推演鏈 · Top 3</h4>
+
+      <div class="chain">
+        <b>鏈 A · 鴻海加派 → FOPLP 生態系 → 股價支撐 140 元以上（機率 30%）</b>
+        <span class="arrow">→</span> 2024/12 鴻海加派藍瑗文（兼多家集團半導體公司監察人）
+        <span class="arrow">→</span> 2026 Q2 鴻海改派新代表（取代 4/10 當然解任）且維持 15.2% 持股
+        <span class="arrow">→</span> 2026 H2 鴻揚/能創半導體公告採購陽程設備（估 1~2 億）
+        <span class="arrow">→</span> 市場重新定價陽程為「鴻海集團 FOPLP 生態系」
+        <span class="arrow">→</span> <b style="color:var(--bull)">股價守 140~180，PE 維持 80~120×</b>
+      </div>
+
+      <div class="chain" style="margin-top:14px">
+        <b>鏈 B · 「其他」類暴增 → Q1 驗證 → 結構改善確認（機率 25%）</b>
+        <span class="arrow">→</span> 2024「其他」類 2.63 億（CPO/FOPLP/車用首次入帳）
+        <span class="arrow">→</span> 2026 Q1 毛利率維持 ≥ 40%（延續 Q4 41%）
+        <span class="arrow">→</span> 2026 Q2 法說揭露具體客戶（例：AAOI + 1~2 家 PCB 廠）
+        <span class="arrow">→</span> 法人上修 EPS 預估 -0.52 → +2.5
+        <span class="arrow">→</span> <b style="color:var(--bull)">PE 重估至 80~100×，股價測 200~250</b>
+      </div>
+
+      <div class="chain" style="margin-top:14px">
+        <b>鏈 C · 員工生產縮 + 2022 重演 → 規模天花板觸頂（機率 30%，最可能）</b>
+        <span class="arrow">→</span> 員工直接員工 2019→2025Q1 從 319 減至 170（-47%）
+        <span class="arrow">→</span> 陽程無足夠生產人力承接大單（若 AAOI 下單 5 億以上的訂單）
+        <span class="arrow">→</span> 客戶轉向日韓有規模的設備商
+        <span class="arrow">→</span> 2022 B 客戶爆大單 41.49% → 2023 消失的歷史重演
+        <span class="arrow">→</span> <b style="color:var(--bear)">2026 H2 或 2027 H1 營收再度衰退，EPS 連虧第 4 年</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">盲點洞察 · Top 3</h4>
+
+      <div class="callout warn">
+        <span class="label">盲點 1 · 媒體把「CPO 組裝設備」當「CPO 廠」定價</span>
+        <p>陽程研發成果表第 8 項「CPO <b>成品</b>自動組裝線」是「組裝 CPO 模組的設備」，不是「CPO 晶片的關鍵製程設備」。媒體「唯一沾 CPO 台廠」的敘事把這兩者混淆，造成現價 PE 166× 遠高於同業辛耘（台積電 13.44% 明確客戶）的 PE 30×。這個定位錯誤是 H5 估值泡沫的核心驅動力。</p>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">盲點 2 · 「研發費減少」被誤讀為「研發縮減」</span>
+        <p>研發費絕對金額 2022 年 2.43 億 → 2024 年 2.04 億（-16%），市場解讀為「陽程在砍研發、轉型失敗」。但實際是<b>營收從 19 億縮至 9.47 億（-50%），研發費佔比從 14% 躍升至 21.5%</b>——<b>營收萎縮中仍維持研發投入</b>的轉型決心。Step 7 Phase B 已校準，但市場普遍認知仍未更新。</p>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">盲點 3 · 2022 元宇宙前例被當作「管理層追熱點」定罪</span>
+        <p>2022 年報首次寫「元宇宙」為中期策略第 1 項、2023 全刪，被市場當作「管理層追熱點+放棄前例」的鐵證。但 Phase B 分析發現實際上是<b>「元宇宙敘事消失、但 AR/VR/先進封裝研發持續演進」的技術深化</b>——2022 wafer 3um 壓電塗佈、2023 半導體級塗佈、2024 CPO 組裝線是連貫 3 年的技術線，不是棄舊追新。「2022 元宇宙 = 追熱點」的標籤本身就是定價錯誤。</p>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">歷史劇本對照</h4>
+
+      <table class="tbl">
+        <thead><tr><th>歷史案例</th><th>時點</th><th>相似度</th><th>結局</th><th>陽程對照</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">陽程自己 2022 B 客戶大單</td><td>2022 外銷亞洲 67.17% → 2023 13.89%</td><td class="num gold">70%</td><td class="neg">營收 -31%、EPS 1.68 → -2.42</td><td>2025 Q4 爆發可能是 2022 Q4 1.68 模式重演</td></tr>
+          <tr><td class="bold">2022 元宇宙題材股（如 HTC 2498）</td><td>2021~2022 元宇宙熱潮</td><td class="num">50%</td><td class="neg">題材破滅、股價-70%</td><td>陽程 2022 元宇宙已刪，但 2024 FOPLP 可能是新版本</td></tr>
+          <tr><td class="bold">2023 AI 題材股（如艾訊 3088）</td><td>2023 AI 初期熱潮</td><td class="num">40%</td><td class="gold">題材部分真實、估值修正 -30%</td><td>陽程可能走類似路徑：題材真但規模有限、估值終修正</td></tr>
+          <tr><td class="bold">小規模設備商進入大客戶供應鏈（辛耘案）</td><td>辛耘 2023 進台積電 CoWoS</td><td class="num">30%</td><td class="pos">營收 +22% + PE 30×</td><td>陽程需「實證進入大客戶」才能複製，目前只有傳聞</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="label">訊號追蹤清單</span>
+        <p><b>1.</b> 每週檢查陽程月營收 YoY（&lt;30% = H3 觸發信號之一）</p>
+        <p><b>2.</b> 每月檢查鴻海 MOPS 申報（任何減持 &gt;1% = H4 觸發）</p>
+        <p><b>3.</b> 每季檢查 TrendForce FOPLP 台廠名單（陽程是否入列 = O1 實現信號）</p>
+        <p><b>4.</b> 2026 Q2 AAOI earnings call（是否指名陽程 = H1 關鍵信號）</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8h">
+      <div class="section-head">
+        <div class="no">8h</div>
+        <div class="tit">
+          <h2>貓膩推衍 ★★★</h2>
+          <div class="sub">承接 Step 7 Ch12 貓膩探索：反轉路徑 + 保護策略 + 追蹤清單</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:18px 0 10px">貓膩結論承接（自 Step 7 Ch12）</h4>
+
+      <div class="data-grid">
+        <div class="data-row"><div class="k">燈號</div><div class="v">🟡 有疑點需觀察<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">核心假說</div><div class="v">「市場把陽程當 CPO 主力股定價，但陽程實質是組裝設備商，規模有限」<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">成立機率</div><div class="v">55~65%（Phase B 校準：稍降因「其他」類 2024 暴增部分證實 CPO 已入帳、但規模仍不支撐 PE 166×）<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">若成立下行空間</div><div class="v">-40~-60%（股價 60~100 元）<span class="fias-a">A</span></div></div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">歷史劇本推演（如果貓膩成立）</h4>
+
+      <table class="tbl">
+        <caption>貓膩成立時的時間軸與影響範圍</caption>
+        <thead><tr><th>階段</th><th>時點（推估）</th><th>關鍵事件</th><th>股價影響</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Phase 1 · 訊號浮現</td><td>2026 Q2（5~6 月）</td><td>Q1 毛利率 &lt; 30% 或法說會無客戶揭露</td><td class="neg">單日 -10~-15%</td></tr>
+          <tr><td class="bold">Phase 2 · 敘事崩解</td><td>2026 Q2 末～Q3</td><td>媒體改變立場、分析師下修目標價、量能持續退潮</td><td class="neg">5~10 日 -20~-30%</td></tr>
+          <tr><td class="bold">Phase 3 · 估值重設</td><td>2026 Q3~Q4</td><td>PE 從 166× 壓縮至 30~50× 同業水準</td><td class="neg">月線 -35~-50%</td></tr>
+          <tr><td class="bold">Phase 4 · 底部觸及</td><td>2027 Q1</td><td>接近期望加權 80 元或 Graham 安全邊際 66~79 元</td><td class="gold">-50~-60% 停跌</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <span class="label">歷史參照：2022 B 客戶事件（相似度 70%）</span>
+        <p>2022 Q4 陽程 EPS 爆發 1.68（B 客戶大單 41.49% 貢獻）→ 2023 Q1 開始顯示業績疲軟 → 2023 全年 EPS -2.42（崩盤 -241%）→ 股價從 2022 高點修正約 50~60%。<br>
+        本次 2025 Q4 EPS 1.38 爆發 + 2026 Q1 驗證是否結構性；若 Q1 回虧、Q2 法說無大客戶揭露，劇本相似度將跳升至 85%。</p>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">反轉路徑決策樹</h4>
+
+      <div class="chain">
+        <b>觸發條件 1 · Q1 毛利率 &lt; 30%（2026/05/15）</b>
+        <span class="arrow">→</span> 市場反應：當日跌停或次日補跌（-10~-15%）
+        <span class="arrow">→</span> 股價路徑：5 日殺至 130~140 → 月線跌破 120 → 月底觸及 100
+        <span class="arrow">→</span> <b style="color:var(--bear)">先知先覺者行動：</b>已在 5/10~5/14 減碼 1/3 倉位的投資人少承受 10~15% 跌幅
+      </div>
+
+      <div class="chain" style="margin-top:14px">
+        <b>觸發條件 2 · 2026/6 法說會無大客戶揭露</b>
+        <span class="arrow">→</span> 市場反應：法說當天或次日 -5~-10%
+        <span class="arrow">→</span> 股價路徑：10 日殺至 120~140 → 技術面失守 → 100~120 區間
+        <span class="arrow">→</span> <b style="color:var(--bear)">先知先覺者行動：</b>5 月底已減至 30% 部位的投資人已鎖定 80% 利潤
+      </div>
+
+      <div class="chain" style="margin-top:14px">
+        <b>觸發條件 3 · 鴻海 30 天內不改派代表（2026/05/10 後）</b>
+        <span class="arrow">→</span> 市場反應：MOPS 公告日或傳聞日立即 -15~-20%
+        <span class="arrow">→</span> 股價路徑：5 日殺至 110~130 → 月底觸 90~110
+        <span class="arrow">→</span> <b style="color:var(--bear)">先知先覺者行動：</b>5/10 前設移動停損在 145 可避免 -30% 下行
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">保護策略</h4>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">情境 · 相信貓膩存在（55~65%）</div>
+          <p style="line-height:1.75"><b>行動：</b>① 現價 166 減碼至 30% 以下部位；② Put 對沖（執行價 130，3 個月）；③ 設移動停損 145（-13%）；④ 2026/05/14（Q1 季報前）再次評估。<br><br>
+          <b>最早逃生信號（最敏感）：</b>
+          <ul>
+            <li>單日量能 &lt;500 張（題材熱度退潮）</li>
+            <li>外資 MOPS 申報持股下降</li>
+            <li>TrendForce 更新 FOPLP 名單仍不含陽程</li>
+            <li>AAOI earnings call 指向日韓設備商</li>
+          </ul></p>
+        </div>
+
+        <div class="scenario bear">
+          <div class="hd">情境 · 不確定貓膩（觀望）</div>
+          <p style="line-height:1.75"><b>行動：</b>① 空手不進場；② 獲利持有者保留 50% 底倉；③ 套牢者設 120 硬停損；④ 等 Q1 季報後再決定。<br><br>
+          <b>兩邊都不吃虧的部位配置：</b>① 50% 現金 + 30% 陽程持股 + 20% 對沖（Put 或反向 ETF）；② 若 Q1 毛利 ≥40%，加碼至 40%（仍保留 50% 現金）；③ 若 Q1 毛利 &lt;30%，全數減至 10% 停損觀察。<br><br>
+          <b>適用情境：</b>部位 2~5%、風險偏好中性、時間軸 3~6 個月。</p>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">貓膩追蹤清單</h4>
+
+      <table class="tbl">
+        <caption>確認 vs 否定指標 · 檢查頻率</caption>
+        <thead><tr><th>指標</th><th>確認貓膩（空）</th><th>否定貓膩（多）</th><th>檢查頻率</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Q1 毛利率</td><td class="neg">&lt; 30%</td><td class="pos">≥ 40%</td><td>2026/05/15（一次性）</td></tr>
+          <tr><td class="bold">≥10% 客戶揭露</td><td class="neg">仍代號化</td><td class="pos">實名揭露 AAOI 或台積電</td><td>2026/06 年報 + 法說</td></tr>
+          <tr><td class="bold">鴻海 MOPS 申報</td><td class="neg">不改派或減持</td><td class="pos">改派新代表</td><td>每日（網路爬蟲）</td></tr>
+          <tr><td class="bold">月營收 MoM</td><td class="neg">連 2 個月 &lt; -20%</td><td class="pos">維持 +10% 以上</td><td>每月 10 日</td></tr>
+          <tr><td class="bold">TrendForce FOPLP 名單</td><td class="neg">仍不含陽程</td><td class="pos">陽程入列</td><td>每季（TrendForce 更新）</td></tr>
+          <tr><td class="bold">AAOI earnings 指名</td><td class="neg">指日韓設備商</td><td class="pos">指名陽程</td><td>2026 Q2 (5~6 月)</td></tr>
+          <tr><td class="bold">同業辛耘 2025 年報</td><td class="neg">辛耘跨入 FOPLP 面板貼合</td><td class="pos">辛耘未跨入</td><td>2026 中（年報發布）</td></tr>
+          <tr class="highlight"><td class="bold">下次檢查日</td><td colspan="3">2026/05/15 Q1 季報（最大分岔點）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <section class="section" id="s8i">
+      <div class="section-head">
+        <div class="no">8i</div>
+        <div class="tit">
+          <h2>推演結論 &amp; 行動清單</h2>
+          <div class="sub">第四次信心校準 + 行動清單 + 推衍有效期</div>
+        </div>
+      </div>
+
+      <div class="verdict-head">
+        <div class="mark">§ 8i · 最可能路徑</div>
+        <h3>H2+H5 共存（45~55%）· 區間整理 100~150 元 · 2026 Q1 季報（5/15）為主要分岔點</h3>
+        <div class="coda">真題材（FOPLP 面板貼合稀缺、2024「其他」類 2.63 億已入帳、鴻海加派代表）× 題材透支（PE 166× 為同業 5~8 倍、R/R 比 1:0.5~0.7）。Phase B 校準後 H1 從 14~20% 上調至 18~25%，但 H5 估值泡沫 40~50% 仍主導；合理進場區 95 元以下。</div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 10px;font-weight:600">第四次信心校準（四次收斂）</h4>
+
+      <div class="confidence-line">
+        <div class="conf">
+          <div class="k">第一次 · Step 4 ACH</div>
+          <div class="v a">H2 · 45~55%</div>
+          <div class="d">獨一主假說、第一次 ACH 矩陣加權</div>
+        </div>
+        <div class="conf">
+          <div class="k">第二次 · Step 5 壓力</div>
+          <div class="v n">H2+H5 並列</div>
+          <div class="d">H5 從 30~40% 升至 45~55%（R3 估值驅動）</div>
+        </div>
+        <div class="conf">
+          <div class="k">第三次 · Step 6 評審</div>
+          <div class="v n">H5 41% · H2 38%</div>
+          <div class="d">評審團 3 位投 H5、2 位投 H2</div>
+        </div>
+        <div class="conf">
+          <div class="k">第四次 · Step 8 推演</div>
+          <div class="v a">H2+H5 45~55% 主 · H1 22~28% ↑</div>
+          <div class="d">Phase B 3 項新發現上調 H1（「其他」類 + 鴻海加派 + 管理層分裂敘事）</div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <span class="label">四次校準的核心結論</span>
+        <p>四次校準都指向「H5 估值泡沫 + H2 部分真題材」為主導路徑，Phase B 的三項新發現（其他類暴增、鴻海加派、分裂敘事）<b>沒有改變主假說</b>，但<b>將 H1 真轉型機率從 14~20% 上調到 22~28%</b>。期望加權股價也從 73 元上修至 80.5~88 元。現價 166 元仍遠高於期望（+89~106%），R/R 比 1:0.5~0.7 不利。</p>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">行動清單</h4>
+
+      <div class="minis c4">
+        <div class="mini accent">
+          <div class="t">空手（未持有）</div>
+          <div class="n neut">暫緩</div>
+          <div class="d">等 Q1 季報 + 股價 95 元以下分批試探</div>
+        </div>
+        <div class="mini bull">
+          <div class="t">獲利持有（&lt; 100）</div>
+          <div class="n up">分批減碼</div>
+          <div class="d">166 減 1/3、175+ 再減 1/3、留 1/3 底倉</div>
+        </div>
+        <div class="mini bear">
+          <div class="t">套牢（&gt; 166）</div>
+          <div class="n down">評估停損</div>
+          <div class="d">80 元硬停損、不向下攤平</div>
+        </div>
+        <div class="mini gold">
+          <div class="t">避險（對沖）</div>
+          <div class="n gold">買 Put</div>
+          <div class="d">執行價 130、3 個月、覆蓋 1/2 倉位</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 10px">觀察清單（下次推衍前需追蹤）</h4>
+
+      <ul style="margin:10px 0 10px 20px;line-height:1.85">
+        <li><b style="color:var(--accent)">2026/05/10 前：</b>鴻海是否改派新代表（任一 MOPS 申報即時更新）</li>
+        <li><b style="color:var(--accent)">2026/05/15：</b>Q1 季報公告（<b>最大分岔點</b>，毛利率 ≥40% / 30~40% / &lt;30% 三情境）</li>
+        <li><b style="color:var(--accent)">2026/06 中：</b>陽程法說會 + 2025 年報 — 首次揭露 ≥10% 客戶名稱機會</li>
+        <li><b style="color:var(--accent)">2026 Q2~Q3：</b>AAOI earnings call — 是否指名陽程為設備商</li>
+        <li><b style="color:var(--accent)">每月 10 日：</b>月營收 YoY（維持 +30% 以上 = H2，&lt;10% = H3 觸發）</li>
+        <li><b style="color:var(--accent)">每週一：</b>陽程量能（&lt;1,000 張 = 題材熱度退潮）</li>
+      </ul>
+
+      <div class="disclaimer">
+        <b>推衍有效期：</b>2026/04/19 ~ 2026/05/10（3 週）。若期內出現重大事件（鴻海改派、Q1 季報提前披露、AAOI 異常公告等），需重跑 Step 8 推衍。<br>
+        <b>本推演版</b>基於 Step 1~7 已完成的 Phase A→B→C-2 報告（Step 7 完整版 128.9 KB），整合 Phase B 17 條校準發現。推衍結論僅供參考，非投資建議，決策前請自行評估風險。
+      </div>
+    </section>
+
+    <!-- ============== 跨標的互連 ============== -->
+    <section class="section" id="related">
+      <div class="section-head">
+        <div class="no">+</div>
+        <div class="tit">
+          <h2>相關報告連結</h2>
+          <div class="sub">西碧拉圖譜查詢 · confidence ≥ 0.7 · 相關標的</div>
+        </div>
+      </div>
+
+      <details open>
+        <summary style="cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);padding:10px 0">已歸檔天機錄的相關標的 · 1 家</summary>
+
+        <div class="data-grid" style="grid-template-columns:1fr">
+          <div class="data-row">
+            <div class="k">2330 台積電</div>
+            <div class="v">
+              <a href="../../天機錄/2330_台積電/20260329_2330_台積電_完整版.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>🛒 客戶關係 · 2026-03-29 完整版</b></a>
+              — 陽程與台積電在西碧拉圖譜中存在「customer」關聯，置信度 0.85（dual_llm 驗證）。雖陽程非台積電主力供應商，但若 2026 Q2 AAOI earnings 指名陽程或台積電嘉義 CoWoS 廠採用，可對照觀察台積電 Capex 循環與陽程受惠程度。
+              <span class="fias-f">事實</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size:11.5px;color:var(--ink-3);font-family:var(--mono);margin-top:10px;letter-spacing:0.05em">
+          ※ 西碧拉圖譜找到 9 家陽程相關台股標的（conf ≥ 0.7，含 2303 聯電 / 2317 鴻海 / 2354 鴻準 / 6486 互動 / 1464 得力富 / 4526 東台 / 4129 聯合 / 8064 東捷），但其中 8 家尚未完成投資分析九步驟 + 天機錄歸檔，故僅列台積電 2330 一項互連。<br>
+          ※ 連結跳轉到天機錄完整版（獨立視窗開啟）；關聯性由西碧拉圖譜雙模型交叉驗證。
+        </p>
+      </details>
+    </section>
+
+
+    <footer class="footer">
+      天機錄 · 第八步 推演版　·　陽程科技 3498　·　推演基準日 2026-04-19　·　有效期至 2026-05-10<br>
+      來源：Step 1~7 完整分析 / Phase B 17 條校準發現 / 西碧拉圖譜 9 家相關 / AAOI 10-K / 2020~2024 年報親讀<br>
+      第四次信心校準：ACH 機率分析（第一次）→ 壓力測試（第二次）→ 評審團 5 角色（第三次）→ Step 8 推衍（第四次）四次收斂至 H2+H5 45~55% 主、H1 22~28% ↑<br>
+      本報告為深度調查型投資推衍，不構成投資建議。決策前請自行評估風險。
+    </footer>
+
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>陽程科技 3498 · 第七步 完整版 · 天機錄 2026-04-19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3:hover{background:var(--hover)}
+.card .card-
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#1a1a1a;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger > b:first-child{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good > b:first-child{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn > b:first-child{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info > b:first-child{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+.score-bar{display:flex;align-items:center;gap:6px;margin:3px 0}
+.score-bar .bar{flex:1;background:var(--border);border-radius:5px;height:12px;overflow:hidden}
+.score-bar .bar .fill{height:100%;border-radius:5px}
+.score-bar .val{font-weight:700;font-size:.85em;min-width:36px;text-align:right}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--danger)}
+/* 圖表 */
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0}
+.chart-wrap .chart-title{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.chart-wrap .chart-note{font-size:.75em;color:var(--txt3);margin-top:4px;font-style:italic}
+.chart-wrap canvas{width:100%!important;max-height:320px}
+.radar-compare-grid{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:12px;margin:10px 0;align-items:stretch}
+.radar-compare-grid .chart-wrap{margin:0;display:flex;flex-direction:column;justify-content:center}
+.radar-compare-grid .chart-wrap canvas{max-height:280px}
+.radar-compare-grid .data-col{min-width:0;display:flex;flex-direction:column}
+.radar-compare-grid table{margin:0;font-size:.78em;height:100%}
+.radar-compare-grid table th{padding:5px 8px;font-size:.92em}
+.radar-compare-grid table td{padding:5px 8px;vertical-align:middle}
+@media(max-width:720px){.radar-compare-grid{grid-template-columns:1fr}.radar-compare-grid .chart-wrap canvas{max-height:260px}}
+.data-chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:10px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+.data-chart-row .chart-col .chart-wrap{margin:0}
+@media(max-width:750px){.data-chart-row{grid-template-columns:1fr}}
+.chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0}
+@media(max-width:650px){.chart-row{grid-template-columns:1fr}}
+/* 觀點卡 */
+.view-card{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:14px 18px;margin:10px 0;font-size:.88em;line-height:1.75;color:var(--txt2)}
+.view-card h4{color:var(--accent);font-size:.98em;font-weight:700;margin-bottom:6px}
+.view-card p{margin:6px 0}
+.view-card b{color:var(--base)}
+.view-card em{color:var(--accent);font-style:normal;font-weight:700}
+/* 時間軸 */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+/* 風險卡 */
+.risk-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:10px}
+.risk-card .rc-title{font-weight:700;color:var(--base);font-size:.92em}
+.risk-card .rc-level{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.rc-level.fatal{background:rgba(198,40,40,.18);color:var(--bear)}
+.rc-level.high{background:rgba(212,160,23,.18);color:var(--warn)}
+.rc-level.medium{background:rgba(122,176,192,.18);color:var(--neutral)}
+.rc-level.low{background:rgba(76,175,80,.15);color:var(--bull)}
+.risk-card .rc-
+.risk-card .rc-row{display:flex;gap:10px;margin:3px 0;font-size:.85em;line-height:1.55}
+.risk-card .rc-label{font-weight:600;color:var(--base);min-width:78px;flex-shrink:0}
+/* 評審團 */
+.reviewer{border-left:3px solid var(--accent);padding:8px 14px;margin:8px 0;background:rgba(90,125,96,.06);border-radius:0 6px 6px 0}
+.reviewer .r-name{font-weight:700;color:var(--accent);font-size:.92em}
+.reviewer .r-layer{font-size:.74em;color:var(--txt3);margin-left:6px;font-weight:400}
+.reviewer .r-verdict{font-size:.85em;margin-top:4px;line-height:1.6}
+.reviewer .r-verdict.pass{color:var(--bull)}
+.reviewer .r-verdict.cond{color:var(--warn)}
+.reviewer .r-verdict.fail{color:var(--bear)}
+.reviewer .r-verdict b{color:inherit}
+/* 分岔因果樹 */
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:14px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:8px 18px;font-weight:700;color:var(--base);font-size:.92em}
+.fork-branches{display:grid;gap:10px;margin-top:4px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branches.b4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:720px){.fork-branches.b3,.fork-branches.b4{grid-template-columns:1fr}}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px;position:relative}
+.fork-branch .fb-label{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fb-warn{background:rgba(212,160,23,.2);color:var(--warn)}
+.fork-branch .fb-title{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.fork-branch .fb-price{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:4px}
+.fork-branch .fb-desc{font-size:.8em;color:var(--txt2);line-height:1.55}
+/* TOC + 全局按鈕 */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:8px 28px;border-radius:8px;font-size:.88em;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(107,159,114,.15);color:#6b9f72;transition:all .2s}
+.toggle-btn:hover{background:var(--accent);color:#fff}
+/* 燈號 */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}
+.light.yellow{background:#ffc107}
+.light.red{background:#f44336}
+.light.gray{background:#6b6b6b}
+
+
+/* === Phase C-2 套版：legacy cv 元件與模板基底整合 === */
+.wrap{max-width:none;margin:0;padding:0;background:transparent;box-shadow:none}
+.toggle-bar,.hero{display:none}
+.card{background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;margin:18px 0;overflow:hidden;box-shadow:none}
+.card > h3{background:transparent;color:var(--ink);padding:14px 18px 4px;margin:0;font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:-0.005em;border:0}
+.card-body{padding:14px 18px 18px;color:var(--ink-2);line-height:1.75;font-size:14px}
+.card-body table{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:13.5px}
+.card-body table th,.card-body table td{border-top:1px solid var(--rule-2);padding:7px 10px;text-align:left;vertical-align:top;color:var(--ink-2)}
+.card-body table th{background:var(--paper-3);color:var(--ink);font-weight:600;font-family:var(--mono);font-size:12px;letter-spacing:0.06em;text-transform:uppercase}
+.card-body table tr:first-child th,.card-body table tr:first-child td{border-top:0}
+.card-body ul,.card-body ol{padding-left:22px}
+.card-body li{margin:4px 0}
+.card-body h4{font-family:var(--serif);color:var(--ink);font-size:15.5px;margin:14px 0 6px}
+.card-body b,.card-body strong{color:var(--ink)}
+.tip{padding:12px 14px;margin:10px 0;border-radius:3px;border-left:3px solid var(--accent);background:var(--paper-3);font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.tip > b:first-child{display:block;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+.tip.good{border-left-color:var(--bull)}
+.tip.warn{border-left-color:var(--warn)}
+.tip.danger,.tip.red{border-left-color:var(--bear)}
+.tip.info{border-left-color:var(--accent)}
+.tip b,.tip strong{color:var(--ink)}
+.view-card{background:var(--paper-3);border:1px solid var(--rule);border-left:3px solid var(--gold);border-radius:3px;padding:12px 14px;margin:12px 0;font-size:13.5px;line-height:1.7}
+.view-card > h4,.view-card > b:first-child{color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;display:block;margin:0 0 6px}
+.risk-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;padding:14px 16px;margin:14px 0}
+.risk-card .rc-header,.risk-card .rc-body{color:var(--ink-2)}
+.risk-card .rc-title{font-family:var(--serif);color:var(--ink);font-size:16px;margin:0 0 6px;font-weight:500}
+.risk-card .rc-level{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;background:var(--paper-3);color:var(--ink-2);border:1px solid var(--rule)}
+.risk-card .rc-level.fatal{background:var(--bear);color:var(--paper);border-color:transparent}
+.risk-card .rc-level.high{background:var(--warn);color:var(--paper);border-color:transparent}
+.risk-card .rc-level.medium{background:var(--neutral);color:var(--paper);border-color:transparent}
+.risk-card .rc-level.low{background:var(--bull);color:var(--paper);border-color:transparent}
+.reviewer{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px;padding:12px 14px;margin:10px 0;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.reviewer b,.reviewer strong{color:var(--ink)}
+.reviewer .r-name{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px;font-weight:600}
+.reviewer .r-verdict{font-family:var(--serif);color:var(--ink);font-size:15.5px;font-weight:500}
+.fork-tree,.fork-node,.fork-branch,.fork-branches{background:transparent;color:var(--ink-2)}
+.fork-root,.fork-node{background:var(--paper-3);border:1px solid var(--rule);color:var(--ink);border-radius:3px;padding:10px 14px;margin:8px 0;font-size:13.5px}
+.fork-branches{padding-left:18px;border-left:1px dashed var(--rule)}
+.fork-branch{margin:6px 0}
+.timeline .tl-item,.tl-item{border-left:1px solid var(--rule);padding:0 0 14px 18px;margin:0;position:relative}
+.tl-item::before{content:"";position:absolute;left:-4px;top:4px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.tl-date{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3)}
+.tl-title{font-family:var(--serif);color:var(--ink);font-size:15px;margin:2px 0 2px}
+.tl-desc{font-size:13px;color:var(--ink-3);line-height:1.65}
+.tag{display:inline-block;padding:1px 8px;border-radius:999px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-right:4px;background:var(--paper-3);color:var(--ink-2);border:1px solid var(--rule)}
+.tag.green,.tag.good{background:var(--bull);color:var(--paper);border-color:transparent}
+.tag.yellow,.tag.warn{background:var(--warn);color:var(--paper);border-color:transparent}
+.tag.red,.tag.danger,.tag.fatal{background:var(--bear);color:var(--paper);border-color:transparent}
+.tag.gray,.tag.medium{background:var(--neutral);color:var(--paper);border-color:transparent}
+.tag.high{background:var(--warn);color:var(--paper);border-color:transparent}
+.tag.low{background:var(--bull);color:var(--paper);border-color:transparent}
+.light{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle;box-shadow:0 0 0 1px var(--rule)}
+.light.green,.light.g{background:var(--bull)}
+.light.yellow,.light.y{background:var(--warn)}
+.light.red,.light.r{background:var(--bear)}
+.light.gray,.light.x{background:var(--neutral)}
+.ev{margin:10px 0;padding:10px 12px;background:var(--paper-3);border-left:2px solid var(--accent);border-radius:3px;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.ev-t{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);font-weight:600;margin-bottom:3px}
+.ev-s{color:var(--ink-3);font-size:12px}
+.ev-d{color:var(--ink-2)}
+.fias-f,.fias-i,.fias-a,.fias-s{display:inline-block;padding:1px 7px;border-radius:3px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.08em;margin:0 2px;vertical-align:middle}
+.fias-f{background:rgba(95,125,105,0.20);color:var(--bull);border:1px solid var(--bull)}
+.fias-i{background:rgba(45,90,111,0.18);color:var(--accent);border:1px solid var(--accent)}
+.fias-a{background:rgba(138,111,30,0.18);color:var(--gold);border:1px solid var(--gold)}
+.fias-s{background:rgba(160,95,86,0.18);color:var(--bear);border:1px solid var(--bear)}
+[data-theme="dark"] .fias-f{background:rgba(138,178,152,0.18);color:var(--bull);border:1px solid var(--bull)}
+[data-theme="dark"] .fias-i{background:rgba(122,176,192,0.18);color:var(--accent);border:1px solid var(--accent)}
+[data-theme="dark"] .fias-a{background:rgba(212,176,48,0.18);color:var(--gold);border:1px solid var(--gold)}
+[data-theme="dark"] .fias-s{background:rgba(214,130,120,0.18);color:var(--bear);border:1px solid var(--bear)}
+.chart-wrap,.chart-row,.data-chart-row,.radar-compare-grid{background:transparent;padding:0;margin:14px 0;color:var(--ink-2)}
+.chart-title{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.chart-note{font-size:12px;color:var(--ink-3);margin-top:6px}
+.data-chart-row,.chart-row,.radar-compare-grid{display:grid;gap:14px;grid-template-columns:1fr 1fr;align-items:stretch}
+@media (max-width:900px){.data-chart-row,.chart-row,.radar-compare-grid{grid-template-columns:1fr}}
+.chart-col,.data-col{background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;padding:12px 14px}
+.rc-row{display:flex;gap:10px;margin:6px 0}
+.rc-label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);min-width:96px;flex-shrink:0;padding-top:2px}
+.sub{color:var(--ink-3)}
+.desc{color:var(--ink-3);font-size:13px;line-height:1.65}
+/* 章內部小標：如 「1.1 基本資料」 之類 */
+.section .card > h3{position:relative;padding-left:18px}
+.section .card > h3::before{content:"";position:absolute;left:0;top:20px;width:8px;height:2px;background:var(--accent)}
+
+
+/* ===== v4 Phase C-2 補充 CSS（陽程 v4 特有 class）===== */
+.toggle-controls{text-align:right;margin:14px 0;padding:10px 0;border-top:1px dashed var(--rule);border-bottom:1px dashed var(--rule)}
+.toggle-controls button{background:var(--paper-2);color:var(--ink-2);border:1px solid var(--rule);padding:6px 14px;margin-left:8px;border-radius:3px;cursor:pointer;font-size:12.5px;font-family:var(--mono);letter-spacing:0.05em}
+.toggle-controls button:hover{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+.cat-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--bull);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.cat-card h4{margin:0 0 8px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-family:var(--serif);font-weight:700;flex-wrap:wrap;gap:8px}
+.cat-card .cc-exp{color:var(--bull);font-weight:700;font-size:13px;font-family:var(--mono);letter-spacing:0.05em}
+.cat-card .cc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75}
+.cat-card .cc-verdict{display:block;margin-top:8px;color:var(--accent);font-weight:700}
+
+.risk-card{background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--bear);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.risk-card.rc-fatal{border-left-color:var(--bear)}
+.risk-card.rc-high{border-left-color:#c04a3a}
+.risk-card.rc-medium{border-left-color:var(--warn)}
+.risk-card.rc-low{border-left-color:var(--bull)}
+.risk-card h4{margin:0 0 8px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-family:var(--serif);font-weight:700;flex-wrap:wrap;gap:8px}
+.risk-card .rc-exp{color:var(--bear);font-weight:700;font-size:13px;font-family:var(--mono);letter-spacing:0.05em}
+.risk-card .rc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75}
+.risk-card .rc-verdict{display:block;margin-top:8px;color:var(--bear);font-weight:700}
+
+.hidden-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.hidden-card h4{margin:0 0 10px;color:var(--ink);font-size:15px;font-family:var(--serif);font-weight:700}
+.hidden-card .hc-row{margin:6px 0;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.hidden-card .hc-label{color:var(--accent);font-weight:700;display:inline-block;min-width:104px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
+
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.dash-item{background:var(--paper-2);border:1px solid var(--rule);padding:12px 14px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.dash-item .dash-light{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dash-item .dash-light.green{background:var(--bull)}
+.dash-item .dash-light.yellow{background:var(--warn)}
+.dash-item .dash-light.red{background:var(--bear)}
+.dash-item .dash-name{font-weight:700;color:var(--ink);font-family:var(--serif);font-size:14px}
+.dash-item .dash-val{color:var(--ink-2);font-size:14px;margin:6px 0;font-family:var(--mono);font-weight:600}
+.dash-item .dash-info{color:var(--ink-3);font-size:11px;font-family:var(--mono);letter-spacing:0.02em}
+
+.tip{padding:14px 18px;margin:16px 0;border-left:3px solid var(--ink-3);background:var(--paper-2);font-size:14px;line-height:1.65;color:var(--ink-2)}
+.tip.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.tip.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.tip.danger{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.tip.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+.tip > b:first-child{display:block;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:15px;margin-bottom:8px}
+
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.mini-card{padding:14px 14px;border:1px solid var(--rule);background:var(--paper-2)}
+.mini-card .m-label{font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.mini-card .m-val{font-family:var(--serif);font-weight:700;font-size:24px;line-height:1;color:var(--ink);letter-spacing:-0.02em}
+.mini-card .m-note{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini-card.accent{border-top:3px solid var(--accent)}
+.mini-card.bull{border-top:3px solid var(--bull)}
+.mini-card.bear{border-top:3px solid var(--bear)}
+.mini-card.gold{border-top:3px solid var(--gold)}
+
+.section-sub{color:var(--ink-3);font-family:var(--mono);font-size:11.5px;letter-spacing:0.04em;margin:-6px 0 14px 0;font-style:italic}
+
+.date-fixed{display:none}
+
+.main h3{color:var(--accent);font-family:var(--serif);font-size:19px;margin:24px 0 12px;font-weight:700;padding-left:14px;border-left:4px solid var(--accent);line-height:1.3}
+.main h4{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:14px 0 8px}
+
+.main details{background:var(--paper-2);border:1px solid var(--rule);padding:12px 16px;margin:12px 0}
+.main details summary{cursor:pointer;font-family:var(--serif);font-weight:700;color:var(--accent);font-size:14px;padding:4px 0}
+.main details[open] summary{border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px}
+
+.tag{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10.5px;font-weight:600;font-family:var(--mono);letter-spacing:0.08em;text-transform:uppercase;margin-right:4px}
+.tag.fatal{background:rgba(142,58,44,.1);color:var(--bear);border:1px solid var(--bear)}
+.tag.high{background:rgba(214,173,92,.1);color:var(--warn);border:1px solid var(--warn)}
+.tag.medium{background:rgba(143,179,196,.1);color:var(--neutral);border:1px solid var(--neutral)}
+.tag.low{background:rgba(168,192,149,.1);color:var(--accent);border:1px solid var(--accent)}
+.tag.good{background:rgba(168,192,149,.1);color:var(--accent)}
+.tag.warn{background:rgba(214,173,92,.1);color:var(--warn)}
+.tag.bad{background:rgba(142,58,44,.1);color:var(--bear)}
+.tag.neu{background:rgba(143,179,196,.1);color:var(--neutral)}
+
+.fias-f{padding:1px 6px;background:rgba(47,107,61,.12);color:var(--bull);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-i{padding:1px 6px;background:rgba(61,99,120,.12);color:var(--neutral);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-a{padding:1px 6px;background:rgba(166,115,24,.14);color:var(--warn);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-s{padding:1px 6px;background:rgba(142,58,44,.12);color:var(--bear);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+
+.main .timeline{border-left:2px solid var(--rule);padding-left:20px;margin:14px 0}
+.main .tl-item{margin:10px 0;position:relative}
+.main .tl-item::before{content:"●";color:var(--accent);position:absolute;left:-26px;font-size:14px}
+.main .tl-item .tl-date{color:var(--accent);font-weight:700;font-size:11px;font-family:var(--mono);letter-spacing:0.1em;text-transform:uppercase}
+.main .tl-item .tl-text{color:var(--ink-2);font-size:13.5px;font-family:var(--sans);margin-top:2px}
+
+.data-chart-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);gap:16px;margin:16px 0;align-items:stretch}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .data-col table{height:100%}
+.data-chart-row .chart-col{min-width:0;display:flex;flex-direction:column}
+@media(max-width:720px){.data-chart-row{grid-template-columns:1fr}}
+
+.fork-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.fork-branch{background:var(--paper-2);border:1px solid var(--rule);border-top:4px solid var(--neutral);padding:12px 14px}
+.fork-branch.fb-bull{border-top-color:var(--bull)}
+.fork-branch.fb-bear{border-top-color:var(--bear)}
+.fork-branch.fb-neutral{border-top-color:var(--warn)}
+.fork-branch h5{margin:0 0 6px;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:14px}
+.fork-branch .fb-prob{color:var(--accent);font-weight:700;font-size:12px;font-family:var(--mono);letter-spacing:0.05em}
+.fork-branch .fb-body{color:var(--ink-2);font-size:13px;margin:6px 0;line-height:1.55}
+
+.chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0}
+@media(max-width:720px){.chart-row{grid-template-columns:1fr}}
+
+.radar-compare-grid .data-col{background:transparent;padding:0}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Depth Research · 六步分析</span>
+    </div>
+
+    <div class="meta-block">
+      <div><span class="k">ISSUE</span><span class="v">2026-04-19</span></div>
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">3498 陽程</span></div>
+      <div><span class="k">PAGES</span><span class="v">13 CH.</span></div>
+    </div>
+
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#ch1">公司概覽</a></li>
+      <li><a href="#ch2">近期催化劑 / 利多因素</a></li>
+      <li><a href="#ch3">為什麼在漲？市場為什麼買單？</a></li>
+      <li><a href="#ch4">潛在風險偵測與求證</a></li>
+      <li><a href="#ch5">隱藏優勢挖掘與求證</a></li>
+      <li><a href="#ch6">六步分析關鍵決策因素彙整</a></li>
+      <li><a href="#ch7">風險清單與壓力測試</a></li>
+      <li><a href="#ch8">監控儀表板</a></li>
+      <li><a href="#ch9">推衍預測</a></li>
+      <li><a href="#ch10">股價合理性分析</a></li>
+      <li><a href="#ch11">保留彈性（補充分析）</a></li>
+      <li><a href="#ch12">貓膩探索與求證</a></li>
+      <li><a href="#ch13">投資結論</a></li>
+    </ol>
+
+    <div class="side-verdict">
+      <div class="label">Verdict · H5 40~50% 主</div>
+      <strong>不追高、等 Q2 法說驗證</strong><br>
+      Phase B 校準後加權期望 80.5~88 元 vs 現價 166 元，期望報酬 -47~52%。PE 166× 為同業 5~8 倍，題材已定價 H1 樂觀情境（機率 18~25%）；合理進場區 95 元以下，Graham 安全邊際 66~79 元。
+    </div>
+  </aside>
+
+
+  <main class="main">
+
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">天機錄 · ISSUE 2026-04-19 · v1.0</span>
+        <span>投資分析 · 台股上櫃 · 自動化設備 / FOPLP 面板貼合 / CPO 組裝</span>
+      </div>
+      <h1>陽程科技<span class="ticker">3498 · TWO</span></h1>
+      <p class="deck">真研發 × 小規模 × 題材透支。FOPLP 面板貼合稀缺定位（同業 3 家不做）+ 2024「其他」類營收暴增 2.63 億已實質入帳 + 鴻海 2024 加派第二位代表人強化集團 FOPLP 生態系，但規模僅辛耘 1/6、連兩年虧損、PE 166× 為同業 5~8 倍。</p>
+      <div class="byline">
+        <span><b>Analyst</b>天機閣</span>
+        <span><b>Coverage</b>2020~2024 年報 + 2 場法說會 + 同業 3 家原文 + AAOI 10-K + 四次信心校準</span>
+        <span><b>FIAS</b>F 20 · I 8 · A 5 · S 3</span>
+        <span><b>Confidence</b>H5 40~50% + H1 18~25%（Phase B 校準後）</span>
+      </div>
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1 · 基礎資料</div>
+        <div class="step done"><span class="dot"></span>S2 · FIAS</div>
+        <div class="step done"><span class="dot"></span>S3 · 競爭力</div>
+        <div class="step done"><span class="dot"></span>S4 · ACH</div>
+        <div class="step done"><span class="dot"></span>S5 · 壓力測試</div>
+        <div class="step done"><span class="dot"></span>S6 · 評審團</div>
+        <div class="step active"><span class="dot"></span>S7 ● 天機錄 · 完整版</div>
+        <div class="step"><span class="dot"></span>S8 · 推演</div>
+        <div class="step"><span class="dot"></span>S9 · 追蹤</div>
+      </div>
+    </header>
+
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價 · 2026/04/10</div>
+        <div class="v gold">166 元</div>
+        <div class="d">同業辛耘 PE <span class="down">~30×</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">加權期望股價（Phase B ↑）</div>
+        <div class="v neut">80~88 元</div>
+        <div class="d">期望報酬 <span class="down">-47~52%</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">合理進場區</div>
+        <div class="v up">95 元以下</div>
+        <div class="d">Graham 安全邊際 66~79 元</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">監控燈號 · 9 項</div>
+        <div class="v neut">2綠 / 5黃 / 2紅</div>
+        <div class="d">紅：EPS 虧損 / PE 166×</div>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip hot">FOPLP 面板貼合稀缺</span>
+      <span class="chip hot">CPO 組裝題材</span>
+      <span class="chip warn">PE 166× 估值泡沫</span>
+      <span class="chip warn">連兩年虧損</span>
+      <span class="chip bull">鴻海 2024 加派代表</span>
+      <span class="chip bull">「其他」類 2024 暴增 2.63 億</span>
+      <span class="chip bear">2026/4/10 法代解任時點</span>
+      <span class="chip">TrendForce 名單不含</span>
+    </div>
+
+<section class="section" id="ch1">
+<div class="section-head"><div class="no">01</div><div class="tit"><h2>第一章：公司概覽 — 你在看的是什麼公司？</h2><div class="sub">基本資料 + 營收結構 + 競爭力七維雷達 + Porter 五力 + 財務體質</div></div></div>
+
+<h3>1.1 基本資料（依 2020~2024 年報原文）</h3>
+<table class="tbl">
+<tr><th style="width:22%">欄位</th><th>內容</th></tr>
+<tr><td>代號 / 名稱</td><td>3498 陽程科技股份有限公司（USUN Technology Co., Ltd.）</td></tr>
+<tr><td>產業</td><td>自動化設備 / 精密塗佈貼合 / PCB-CCL 自動化 / 先進封裝組裝（FOPLP / CPO）</td></tr>
+<tr><td>成立 / 上櫃</td><td>1981/04/07 成立；2007 上櫃（掛牌至今 19 年）</td></tr>
+<tr><td>總部</td><td>桃園市大園區中正國際機場附近（2019 購置大園溪海段土地 9 筆）</td></tr>
+<tr><td>董事長兼總經理</td><td>黃秋逢（光武工專機械，創辦人）</td></tr>
+<tr><td>二代接班</td><td>黃士軒（黃秋逢之子，台北工專土木；任董事 + 子公司董事長兼多職）</td></tr>
+<tr><td>股本 / 股數</td><td>6.04 億元；發行股數 6,040 萬股（無 CB 稀釋問題）</td></tr>
+<tr><td>市值（2026-04-10）</td><td>約 100 億元（166 元 × 6,040 萬股）</td></tr>
+<tr><td>簽證會計師</td><td>勤業眾信（蔡侑玲、莊碧玉）｜2020~2024 未換｜無保留意見</td></tr>
+<tr><td>集團關聯</td><td><b>鴻海集團 2020 私募入股 15.2%</b>（1,400 萬股 / 5.6 億元）；5 年鎖定期 2025 已屆滿</td></tr>
+<tr><td>家族持股</td><td>黃秋逢 7.22% + 黃士軒 0.84% = 家族 8.06%（比重不極端）</td></tr>
+<tr><td>董監設質比</td><td><b style="color:var(--bull)">0%</b>（finlab 2026-04-10 驗證，無質押融資）</td></tr>
+</table>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 鴻海 2024 年「加派」第二位代表人，與陽程首布 FOPLP/CPO 時點一致</div>
+<div class="ev-d">鴻海 2020 年透過私募認購陽程 1,400 萬股（5.6 億元、持股 15.2%），5 年鎖定期 2025 年已屆滿。法人代表歷史：殷偉雄（TSMC 部經理 / 創意電子 CFO，2020~2022）→ 賴國弘（111/10/20 就任接替）→ <b>2024/12/03 鴻海「加派」藍瑗文為第二位代表人</b>（鴻海中央會計處協理，兼任鴻揚半導體 / 能創半導體 / 康儀科技 / 鴻齡科技監察人）。2024 年鴻海<b>同時派出兩位代表人</b>（非單純換人），藍瑗文跨集團半導體公司的監察人身份顯示「管理介面打通」。依公司法 119 條，2026/4/10 法代法人董事當然解任；但鴻海<b>加派代表的時點</b>與陽程 2024 年首布 FOPLP/CPO 產業定位、以及鴻海集團在 FOPLP 領域的佈局（鴻海 + 群創 + 臻鼎）高度一致——這訊號<b>反駁「鴻海降溫」的單一解讀</b>，更接近「集團重新定位陽程在 FOPLP 生態系的角色」。另 2025/2 曾榮鑑董事逝世解任，2026 Q2 董事會可能有較大改組。</div>
+<div class="ev-s">來源：2020~2024 年報董事表親讀（管道 A 年度差異 JSON director_changes）</div>
+</div>
+
+<h3>1.2 營收結構（依 2024 年報 p.60~p.64）</h3>
+<details open><summary>依產品類別（4 類）</summary>
+<div>
+<table class="tbl">
+<tr><th>產品類別</th><th>主要內容</th><th>對應主題</th></tr>
+<tr><td>光電觸控面板智慧生產裝置</td><td>LCM 自動化搬運、偏光板/OCR/OCA/LOCA 貼合機、PR/OC/PI 狹縫式塗佈機、LCM 模組自動組裝線</td><td>FPD（成熟下行）</td></tr>
+<tr><td>客製化專用裝置</td><td>拼板機、De-mura 自動檢測、雷射振鏡、FPC 電測、LENS 組裝、電池 PACK、<b style="color:var(--accent)">CPO 自動組裝</b></td><td>含 CPO 新題材</td></tr>
+<tr><td>工業智慧自動化系統整合</td><td>棧板式 / 料箱式倉儲系統、分檢系統、WMS、AGV / AMR</td><td>物流自動化</td></tr>
+<tr><td>PCB/CCL/玻纖智慧生產裝置</td><td>PCB Auto Assembly、CCL Auto Assembly、Laminated Steel Auto Cleaner、CCL Auto Cutting</td><td>PCB（成熟）</td></tr>
+</table>
+</div>
+</details>
+
+<details open><summary>依終端應用（陽程 2024 年報未明確揭露細分，以下為推估）</summary>
+<div>
+<table class="tbl">
+<tr><th>終端應用</th><th>推估占比</th><th>說明</th></tr>
+<tr><td>PCB / CCL</td><td>40~50%</td><td>傳統主力業務，台灣欣興/南電/台光電等廠</td></tr>
+<tr><td>FPD / 觸控面板</td><td>15~20%</td><td>友達/群創等面板廠，近年萎縮</td></tr>
+<tr><td>先進封裝（含 FOPLP/CPO）</td><td><b style="color:var(--accent)">10~20%</b></td><td>2024 新進題材，具體占比未公開；若屬 10~15% 則為「沾邊」定位，若 &gt;20% 才是核心</td></tr>
+<tr><td>其他（電池 PACK / LENS / AGV）</td><td>20~30%</td><td>多元分散</td></tr>
+</table>
+</div>
+</details>
+
+<details open><summary>依地區（內外銷 5 年軌跡，原文 p.60~63）</summary>
+<div>
+<table class="tbl">
+<tr><th>年度</th><th>內銷</th><th>外銷亞洲</th><th>外銷美洲</th><th>合計(億)</th><th>觀察</th></tr>
+<tr><td>2020</td><td>77.04%</td><td>19.22%</td><td>3.52%</td><td>19.07</td><td>疫情內銷主導</td></tr>
+<tr><td>2021</td><td>56.29%</td><td>32.77%</td><td>9.87%</td><td>14.66</td><td>外銷起步</td></tr>
+<tr><td>2022</td><td>29.46%</td><td><b>67.17%</b></td><td>3.37%</td><td>17.41</td><td>🔴 B 客戶大單外銷亞洲巨量</td></tr>
+<tr><td>2023</td><td>78.52%</td><td><b>13.89%</b></td><td>7.59%</td><td>11.99</td><td>🔴 B 客戶消失，外銷亞洲 -86%</td></tr>
+<tr><td>2024</td><td>48.77%</td><td><b>43.24%</b></td><td>7.99%</td><td>9.47</td><td>🟡 外銷亞洲回升 +146%（新客戶？）</td></tr>
+</table>
+</div>
+</details>
+
+<details open><summary>產品類別 5 年佔比演進（關鍵異常訊號）</summary>
+<div>
+<table class="tbl">
+<tr><th>產品類別</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>趨勢</th></tr>
+<tr><td>CCL/PCB 自動化</td><td>43.61%</td><td>32.78%</td><td><b>50.01%</b></td><td>35.55%</td><td>31.63%</td><td>2022 高點、連跌</td></tr>
+<tr><td>FPD/觸控</td><td>24.78%</td><td><b>49.28%</b></td><td>23.77%</td><td>15.88%</td><td>29.63%</td><td>波動大</td></tr>
+<tr><td>其他自動化</td><td>27.85%</td><td>7.98%</td><td>19.96%</td><td>40.34%</td><td>10.91%</td><td>波動</td></tr>
+<tr><td><b>「其他」類</b></td><td>3.76%</td><td>9.96%</td><td>6.26%</td><td>8.23%</td><td style="color:var(--bear);font-weight:700"><b>27.83%</b></td><td style="color:var(--bear)"><b>🔴 2024 暴增 3.3 倍</b></td></tr>
+</table>
+<div class="tip good" style="margin-top:10px">
+<b>關鍵發現：「其他」類 2024 暴增 2.63 億 = FOPLP/CPO 實質入帳的最硬證據</b>
+「其他」類 2020~2023 佔比穩定在 3.76~9.96%，但 <b>2024 暴增至 27.83%（2.63 億元），較 2023 翻 3.3 倍</b>。對照 2024 年報研發成果表第 8 項「CPO 成品自動組裝線」+ 第 9 項「車用電子模組組裝線」+ 第 10 項「散熱晶片塗膠裝置」三項新業務，高機率「其他」類就是這些 FOPLP/CPO/車用新品項的實質營收認列。這<b>反駁「媒體誇大 CPO 實質業務」的貓膩假說</b>——CPO 並非話術，而是已入帳約 28% 營收。
+</div>
+</div>
+</details>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 進貨集中度 2023 A 廠商 13.11%、2024 降至 3.42%（分散）；無單一關鍵供應商依賴</div>
+<div class="ev-d">2024 年報 p.65 揭露進貨集中度軌跡：2021 年以前無任何供應商達 10%；<b>2022 A 廠商 15.45%（歷史高點）→ 2023 13.11% → 2024 大幅分散至 3.42%</b>。陽程主要原料為鐵、鋁、不銹鋼、馬達、軸承、氣壓、控制器等通用件，供應商高度分散，<b>沒有類似衛司特 De Nora（65.89% 依賴）或其他關鍵獨家供應商風險</b>。供應商議價能力弱是陽程的結構特點。西碧拉 risk_score=0.0078 屬低風險。</div>
+<div class="ev-s">來源：2024 年報 p.65 進銷貨集中度表 + 西碧拉供應鏈分析</div>
+</div>
+
+<h3>1.3 競爭力七維雷達（vs 3583 辛耘）</h3>
+<div class="radar-compare-grid">
+<div class="chart-wrap">
+<div class="chart-title">陽程 3498 vs 辛耘 3583</div>
+<canvas id="radarCompetitive"></canvas>
+<div class="chart-note">評分 0~10｜實線陽程、虛線辛耘｜資料來源：Step 3 競爭力分析 + 同業原文</div>
+</div>
+<div class="data-col">
+<table class="tbl">
+<tr><th>維度</th><th style="width:44px">陽</th><th style="width:44px">辛</th><th>差距在哪裡</th></tr>
+<tr><td>技術能力</td><td style="color:var(--warn);font-weight:700">6.0</td><td style="color:var(--bull);font-weight:700">8.5</td><td>辛耘 TBDB 晶圓級暫貼 + 批次濕製程（製程核心）；陽程 FOPLP 面板貼合（組裝周邊）</td></tr>
+<tr><td>製造規模</td><td style="color:var(--bear);font-weight:700">3.0</td><td style="color:var(--bull);font-weight:700">7.5</td><td>陽程 9.47 億 vs 辛耘 69 億，規模僅 1/7；專案型無長約</td></tr>
+<tr><td>定價權</td><td style="color:var(--warn);font-weight:700">5.5</td><td style="color:var(--bull);font-weight:700">7.0</td><td>陽程 2025 Q4 毛利 41% 但全年 33%；辛耘 2023 穩定 31.9%</td></tr>
+<tr><td>客戶黏著</td><td style="color:var(--bear);font-weight:700">4.0</td><td style="color:var(--bull);font-weight:700">8.0</td><td>陽程代號化揭露 A 18.29% / B 17.29% / C 13.85%（2024 年報 p.65）；辛耘明確揭露台積電 13.44%</td></tr>
+<tr><td>財務強度</td><td style="color:var(--bear);font-weight:700">3.0</td><td style="color:var(--bull);font-weight:700">7.5</td><td>陽程 2025 全年 EPS -0.52 連兩年虧；辛耘 2023 淨利 6.5 億 ROE 雙位數</td></tr>
+<tr><td>產品組合</td><td style="color:var(--warn);font-weight:700">5.5</td><td style="color:var(--bull);font-weight:700">7.0</td><td>陽程分散 4 類但 FOPLP 僅邊緣；辛耘半導體全賽道（前段/後段/代理）</td></tr>
+<tr><td>股東/接班</td><td style="color:var(--warn);font-weight:700">6.0</td><td style="color:var(--warn);font-weight:700">6.0</td><td>陽程鴻海 15.2% 但 4/10 解任敏感 + 家族單薄；辛耘無控股大股東</td></tr>
+<tr style="background:rgba(47,90,61,0.10)"><td style="font-weight:700">綜合分數</td><td style="color:var(--warn);font-weight:900">33.0</td><td style="color:var(--bull);font-weight:900">51.5</td><td>陽程落後 18.5 分、約為辛耘 64%</td></tr>
+</table>
+</div>
+</div>
+
+<div class="view-card">
+<h4>◆ 從這張雷達與對照表，四個重點解讀</h4>
+<p><b>1. 陽程輸辛耘不是執行差，是賽道位階不同。</b>陽程 33.0 vs 辛耘 51.5，差距主要集中在技術能力、規模、財務強度三項——這三項全部反映<em>「製程核心 vs 組裝周邊」的位階差</em>。辛耘做 TBDB 晶圓暫時貼合 + 批次濕製程是半導體先進封裝的核心設備；陽程做 FOPLP 面板級組裝自動化是周邊。同一個題材（先進封裝），但切入點不同，受惠深度天差地別。</p>
+
+<p><b>2. 客戶黏著 4.0 vs 8.0 是整張雷達最大警訊。</b>辛耘 2023 年報揭露台積電佔營收 13.44%；陽程 2024 年報完全未揭露任何 ≥10% 客戶（台灣年報揭露規則要求必須揭露）。這個資訊缺口不只是透明度問題，<em>而是「陽程可能沒有穩定大客戶、全靠專案型訂單滾動」的結構證據</em>。2022 外銷亞洲 67% → 2023 年 14% 崩跌的 B 客戶事件正是印證。</p>
+
+<p><b>3. 財務強度 3.0 vs 7.5 是結構而非週期。</b>陽程 2023 年 EPS -2.42、2024 年 -2.50、2025 全年 -0.52，連三年虧損；辛耘 2023 年淨利 6.5 億、毛利 31.9%、ROE 雙位數。這不是「陽程正在谷底反彈」而是「陽程長期結構小廠」——員工 5 年縮編 36%（852→544），平均年資從 13.42 驟降到 6.8 年，資深 know-how 流失中，護城河反而在動搖。</p>
+
+<p><b>4. 唯一微幅勝出的「股東接班」同樣有隱憂。</b>陽程鴻海持股 15.2% 本是加分項，但鴻海法代 4 年換 3 次且背景降階（CFO→機械中階→會計），加上 2026/4/10 當然解任時點敏感，這個「護城河」隨時可能變成「地雷」。對照辛耘無控股大股東卻營運穩健，說明陽程的「集團加持」並非長期可持續優勢。</p>
+</div>
+
+<h3>1.4 Porter 五力分析</h3>
+<table class="tbl">
+<tr><th>力量</th><th>強度</th><th>依據</th></tr>
+<tr><td>現有競爭者</td><td style="color:var(--warn);font-weight:700">強</td><td>辛耘 TBDB 晶圓貼合、志聖 FoPLP 壓膜 + HBM 烤箱、弘塑濕蝕刻、日韓大廠（Shibaura 等）；陽程僅 FOPLP 面板貼合賽道稀缺，但規模最小</td></tr>
+<tr><td>供應商議價</td><td style="color:var(--bull)">弱</td><td>最大單一進貨占比 3.42%，供應商分散；無關鍵獨家依賴（vs 衛司特 De Nora 65.89% 案例相反）</td></tr>
+<tr><td>客戶議價</td><td style="color:var(--bear);font-weight:700">強</td><td>台積電、AAOI、鴻海集團客戶議價能力極高；陽程規模小難以堅持定價</td></tr>
+<tr><td>替代威脅</td><td style="color:var(--warn)">中</td><td>FOPLP vs FOWLP 技術路線分歧；若 FOWLP 晶圓級成為主流，陽程面板級將被邊緣化</td></tr>
+<tr><td>新進入者</td><td style="color:var(--warn)">中</td><td>客製化 know-how 門檻存在，但日韓資金+技術可跨入；若市場確認題材可行，大廠進入威脅大</td></tr>
+</table>
+<div class="tip warn" style="margin-top:10px">
+<b>Porter 速讀</b>
+五項力量中三項不利（現有競爭者、客戶議價、替代威脅）、一項中等（新進入者）、僅供應商議價一項有利。這個結構反映陽程的本質：<b>規模最小的小廠，擠在產業鏈中段，上下兩端都被壓縮</b>。唯一的供應商分散優勢也是「廉價通用原料」帶來的，不構成競爭力。
+</div>
+
+<h3>1.5 財務體質總覽</h3>
+<div class="data-chart-row">
+<div class="data-col">
+<table class="tbl">
+<tr><th>指標</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>趨勢</th></tr>
+<tr><td>營收（億）</td><td>14.66</td><td>17.41</td><td>11.99</td><td>9.47</td><td>~10</td><td style="color:var(--warn)">震盪偏跌</td></tr>
+<tr><td>EPS（元）</td><td>0.27</td><td style="color:var(--bull);font-weight:700">1.68</td><td style="color:var(--bear);font-weight:700">-2.42</td><td style="color:var(--bear);font-weight:700">-2.50</td><td style="color:var(--bear);font-weight:700">-0.52</td><td style="color:var(--bear)">連三年負</td></tr>
+<tr><td>毛利率</td><td>~30%</td><td>~32%</td><td>~30%</td><td>33%</td><td style="color:var(--bull);font-weight:700">Q4 41%</td><td style="color:var(--warn)">Q4 跳升待驗</td></tr>
+<tr><td>研發費（億）</td><td>2.20</td><td>2.43</td><td>2.40</td><td>2.04</td><td>~2.5</td><td style="color:var(--good)">絕對金額穩定</td></tr>
+<tr><td>研發佔營收</td><td>14.98%</td><td>13.96%</td><td>20.01%</td><td>21.50%</td><td>~25%</td><td style="color:var(--bull)">比例升</td></tr>
+<tr><td>員工人數</td><td>—</td><td>~750</td><td>710</td><td>625</td><td>544</td><td style="color:var(--bear)">5 年 -36%</td></tr>
+<tr><td>殖利率</td><td>—</td><td>—</td><td>0%</td><td>0%</td><td>0%</td><td style="color:var(--bear)">連 3 年不配</td></tr>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+<div class="chart-title">EPS 季度走勢（2024 Q3~2025 Q4）</div>
+<canvas id="epsTrend"></canvas>
+<div class="chart-note">Q4 單季 1.38 為歷史新高，但 Q1-Q3 多為虧損</div>
+</div>
+</div>
+</div>
+
+<div class="chart-row">
+<div class="chart-wrap">
+<div class="chart-title">季度毛利率走勢（2024 Q3~2025 Q4）</div>
+<canvas id="marginTrend"></canvas>
+<div class="chart-note">Q4 毛利跳至 41.15%，Q2-Q4 連三季 39~45%</div>
+</div>
+<div class="chart-wrap">
+<div class="chart-title">月營收趨勢（2025-11~2026-04）</div>
+<canvas id="revenueTrend"></canvas>
+<div class="chart-note">MoM 劇烈波動（+88% → -56% → -20%），YoY 大增但低基期</div>
+</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實</span> 2025 Q4 單季 EPS 1.38 爆發，但全年仍虧 0.52；連續第 3 年虧損</div>
+<div class="ev-d">季度 EPS 軌跡：2024 Q3 +0.17 → Q4 -0.29 → 2025 Q1 -1.05（巨虧）→ Q2 +0.34 → Q3 -0.19 → Q4 +1.38。2025 Q4 是歷史級單季爆發，但全年加總 -0.52 仍虧損。毛利率從 2024 的 30~34% 跳升至 2025 Q2-Q4 的 39~45%，改善訊號存在。關鍵問題：這個改善是<b>結構性</b>（產品升級 + CPO 認列）還是<b>一次性</b>（Q4 專案認列 + Q1 打掉低毛利存貨）？2026 Q1 財報（5 月中發布）是第一個驗證點——若 Q1 毛利回落到 30% 以下，H5 估值泡沫修正立即觸發。</div>
+<div class="ev-s">來源：finlab 季度財務 + 月營收</div>
+</div>
+
+<div class="tip info">
+<b>第一章整合結論</b>
+陽程本質是「規模最小的先進封裝組裝周邊設備商 + 真研發演進到 FOPLP/CPO 邊緣」的組合，vs 辛耘綜合分 33 vs 51.5 差 18.5 分。護城河僅轉換成本單項勉強稱得上強項，know-how 因員工縮編持續流失。核心變數是 2025 Q4 毛利 41% 能否延續到 2026 H1，以及未揭露的 ≥10% 客戶是否為 AAOI / 台積電／鴻海集團內部；在這兩個問題明朗前，PE 166× 明顯超出基本面支撐（同業辛耘僅 30×）。
+</div>
+
+</section>
+
+<section class="section" id="ch2">
+<div class="section-head"><div class="no">02</div><div class="tit"><h2>第二章：近期催化劑 / 利多因素</h2><div class="sub">催化劑驗證卡 + 時間軸 + 對 EPS 的可能影響</div></div></div>
+
+<h3>2.1 催化劑驗證卡</h3>
+
+<table class="tbl">
+<tr><th>催化劑</th><th style="width:60px">實現機率</th><th style="width:78px">若兌現可推升</th><th style="width:80px">市場已反映</th><th style="width:60px">剩餘空間</th><th style="width:110px">關鍵驗證點</th></tr>
+<tr><td>C1 AAOI 訂單揭露</td><td style="font-weight:700">50%</td><td>+30~50%</td><td>40%</td><td style="color:var(--bull);font-weight:700">+12%</td><td>2026 Q2 法說會 / AAOI earnings</td></tr>
+<tr><td>C2 2026 全年 EPS 由負轉正</td><td style="font-weight:700">40%</td><td>+20~30%</td><td>50%</td><td style="color:var(--warn);font-weight:700">+5%</td><td>2026 Q1 季報（5 月中）</td></tr>
+<tr><td>C3 台積電 / 先進封裝大廠進入</td><td style="font-weight:700">15%</td><td>+80~150%</td><td>20%</td><td style="color:var(--bull);font-weight:700">+14%</td><td>2026 H2~2027 Q1</td></tr>
+<tr><td>C4 鴻海改派代表 + 集團內部訂單</td><td>30%</td><td>+10~15%</td><td>35%</td><td style="color:var(--neu);font-weight:700">+2.6%</td><td>2026/4/10 後 30 天 MOPS</td></tr>
+<tr style="background:rgba(47,107,61,0.10)"><td style="font-weight:700">合計（聚合相關性扣減後）</td><td>—</td><td>—</td><td>—</td><td style="color:var(--bull);font-weight:900">+20~30%</td><td>核心驗證點：2026 Q2 法說</td></tr>
+</table>
+
+<div class="cat-card">
+<h4><span>🟢 C1：AAOI 訂單揭露（2026 Q2 法說會）</span><span class="cc-exp">若兌現可推升 +12%</span></h4>
+<div class="cc-body">AAOI 2025 年 10-K 揭露資本支出 2.1 億美元（年增 319%），子公司 Prime World 簽下新北 9,650 坪 15 年廠房租約，客戶端資本支出是事實級強證據。但 10-K 未指名陽程為供應商，市場假設陽程受惠的根據是「台灣設備商受惠 AAOI 擴產」的推論——辛耘、志聖、弘塑都可能分食，陽程拿多少份額目前無法驗證。2026 Q1~Q2 的 AAOI earnings call 或陽程法說會若揭露具體合作金額（推估需 ≥2 億台幣才有意義），可把此催化劑從「假設」升級為「事實」，推動股價 +30~50%；反之若 AAOI 選擇日韓設備商，此催化劑當場破滅。<b class="cc-verdict">定性：可期待、不可押重。</b></div>
+</div>
+
+<div class="cat-card">
+<h4><span>🟢 C2：2026 全年 EPS 由負轉正</span><span class="cc-exp">若兌現可推升 +5%</span></h4>
+<div class="cc-body">2025 Q2/Q3/Q4 毛利率連三季維持在 39~45% 水準，跟 2024 年 30~34% 相比有明顯跳升，且 2026 月營收 YoY 連續為正（+28~+156%）。這兩項訊號指向營運轉好，但 2025 Q1 曾出現單季 EPS -1.05 的巨虧（專案型一次性費用或存貨認列），2026 Q1 是否重演是最大風險。若 2026 Q1 EPS ≥0 且全年維持毛利 35% 以上，全年 EPS 有機會由 -0.52 轉為 +0.5~+1.0；若 Q1 再度虧損，全年可能持續在虧損邊緣。<b class="cc-verdict">定性：有機會但季節性風險高。</b></div>
+</div>
+
+<div class="cat-card">
+<h4><span>🟢 C3：台積電 / 先進封裝大廠客戶進入</span><span class="cc-exp">若兌現可推升 +14%</span></h4>
+<div class="cc-body">同業辛耘為台積電主要供應商（佔其營收 13.44%），2024 年陽程年報產業概況首次自我定位於 FOPLP/CPO 領域。但陽程規模僅辛耘 1/6（9.47 vs 69.12 億），且 TrendForce 2024/10 FOPLP 7 家台廠名單不含陽程——這兩個條件同時指向「短期進入台積電核心供應鏈門檻太高」。台積電嘉義 CoWoS 新廠 2026 預計啟用，理論上有機會採用陽程設備；但更可能陽程先從封測廠（日月光、Amkor）邊緣切入，再逐步累積履歷。<b class="cc-verdict">定性：低機率、高賠率，押注性質。</b></div>
+</div>
+
+<div class="cat-card">
+<h4><span>🟢 C4：鴻海改派代表 + 集團內部訂單協同</span><span class="cc-exp">若兌現可推升 +2.6%</span></h4>
+<div class="cc-body">2026/4/10 鴻海法代法人董事當然解任後，若鴻海在 30 天內改派新代表人、且維持持股 15.2% 不減持，市場會解讀為「集團維持關係」，消除 H4 集團重組的下行情境。更進一步，若鴻海旗下鴻揚半導體、能創半導體等集團公司採購陽程設備（目前藍瑗文同時任上述公司監察人，管理介面已打通），可穩定貢獻 20~40% 營收。但鴻海歷史上對被投資公司的減持先例存在，且 4 年換 3 次代表人、背景從 CFO 豪華履歷降階到會計，訊號並不樂觀。<b class="cc-verdict">定性：時點敏感、下行風險大於上行空間。</b></div>
+</div>
+
+<h3>2.2 催化劑時間軸</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-date">2026-04-10（已發生）</div><div class="tl-text"><b>鴻海法代法人董事當然解任</b>（公司法 119 條）｜現價 166 元｜量能暴增至 8,583 張</div></div>
+<div class="tl-item"><div class="tl-date">2026-05 中 ★★</div><div class="tl-text">2026 Q1 季報公布 — <b>驗證 Q1 EPS 是否再度單季虧損 + 毛利是否維持 35%</b></div></div>
+<div class="tl-item"><div class="tl-date">2026-06 ★★</div><div class="tl-text">2025 年報發布 — <b>首次揭露 ≥10% 客戶名稱機會</b>（依年報揭露規則）</div></div>
+<div class="tl-item"><div class="tl-date">2026 Q2 ★★★</div><div class="tl-text">陽程法說會 — <b>AAOI / 台積電 / CPO 訂單是否揭露</b>（最關鍵驗證點）</div></div>
+<div class="tl-item"><div class="tl-date">2026 Q2~Q3</div><div class="tl-text">AAOI earnings call — 是否指名陽程為設備供應商</div></div>
+<div class="tl-item"><div class="tl-date">2026 H2</div><div class="tl-text">AAOI 400mW 雷射量產（10-K 原文 2026 H2，媒體誤傳 Q2）</div></div>
+<div class="tl-item"><div class="tl-date">2026/8 左右</div><div class="tl-text">2026 Q2 季報 — 驗證 Q1 改善是否延續</div></div>
+<div class="tl-item"><div class="tl-date">2026 下半年</div><div class="tl-text">TrendForce FOPLP 台廠名單可能更新 — 陽程是否入列</div></div>
+<div class="tl-item"><div class="tl-date">2027 Q1</div><div class="tl-text">2026 全年財報 — 驗證 EPS 能否由負轉正（催化劑 C2 兌現與否）</div></div>
+</div>
+
+<h3>2.3 催化劑對 EPS 的可能影響</h3>
+<table class="tbl">
+<tr><th>情境</th><th>2026 EPS 估算</th><th>對應 PE × 合理股價</th><th>與現價 166 偏離</th></tr>
+<tr><td>C1+C2 雙兌現（H1 情境）</td><td style="color:var(--bull);font-weight:700">+2.5~3.5</td><td>40~50× × 2.5~3.5 = 100~175 元</td><td>-40%~+5%</td></tr>
+<tr><td>僅 C2 兌現（H2 基準）</td><td style="font-weight:700">+0.5~1.0</td><td>60~100× × 0.8 = 48~80 元</td><td>-52%~-71%</td></tr>
+<tr><td>C1/C2 均未兌現（H5 觸發）</td><td style="color:var(--bear);font-weight:700">-1.0~-2.0</td><td>PB 1.0~1.5 = 50~77 元</td><td>-54%~-70%</td></tr>
+<tr><td>C3 突破（H1 強化）</td><td style="color:var(--bull);font-weight:700">+3.5~5.0</td><td>50~80× × 4 = 200~320 元</td><td>+20%~+93%</td></tr>
+</table>
+
+<div class="tip warn">
+<b>第二章整合結論</b>
+四條催化劑聚合期望報酬 +20~30%，但要達到現價 166 元需 C1+C2 同時兌現（聯合機率 50% × 40% = 20%）且 PE 維持 50× 以上——這正是隱含預期反推法得出「僅 3.6% 機率合理」的邏輯根源。C3（台積電突破）雖高賠率但機率僅 15%，屬押注性質。真正可押的是 2026 Q2 法說會當天的訊號，此前現價定價已過度透支。
+</div>
+
+</section>
+
+<section class="section" id="ch3">
+<div class="section-head"><div class="no">03</div><div class="tit"><h2>第三章：為什麼在漲？市場為什麼買單？</h2><div class="sub">市場說法拆解 + 資金面觀察 + 漲幅歸因</div></div></div>
+
+<h3>3.1 市場說法拆解（漲勢三驅動力）</h3>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-f">事實 F</span> 驅動力一：2025 Q4 單季 EPS 1.38 爆發（營運面真實改善）</div>
+<div class="ev-d">2024 Q3 EPS 0.17 → Q4 -0.29 → 2025 Q1 -1.05 → Q2 0.34 → Q3 -0.19 → Q4 1.38。毛利率同步從 30% 水準跳升至 41~45%，產品組合改善真實存在（可能是 CPO/FOPLP 新客戶專案認列）。但 2025 全年仍 EPS -0.52，Q4 是「單季爆發」不是「結構轉盈」。這驅動力對漲勢貢獻約 20%。</div>
+<div class="ev-s">來源：finlab EPS 季頻 / 毛利率 / 營業利益率</div>
+</div>
+
+<div class="ev a">
+<div class="ev-t"><span class="fias-a">假設 A</span> 驅動力二：CPO / FOPLP / AI 先進封裝題材（市場說法）</div>
+<div class="ev-d">2024 年報產業概況首次自我定位「半導體先進封裝（FOPLP）及矽光子（CPO）」領域；研發成果表第 8 項「CPO 成品自動組裝線」。DSCC 預測 FOPLP 2024~2029 CAGR 29%、AAOI 2025 Capex +319%——產業層面是事實，但陽程具體訂單/金額/客戶仍屬假設級。這驅動力對漲勢貢獻約 40%（最大）。</div>
+<div class="ev-s">來源：2024 年報 p.54 / p.6 + AAOI 10-K + DSCC FOPLP 報告</div>
+</div>
+
+<div class="ev s">
+<div class="ev-t"><span class="fias-s">推測 S</span> 驅動力三：媒體目標價 280 元 / 「唯一沾 CPO 台廠」說法</div>
+<div class="ev-d">承銷關係券商報告傳目標價 280（PE 180×）；論壇流傳「陽程是唯一沾 CPO/矽光子的台廠」。但 TrendForce 2024/10 FOPLP 7 家台廠名單<b>不含陽程</b>；媒體傳「400mW 雷射 2026 Q2 量產」但 AAOI 10-K 實為「2026 H2」。推測級證據降權至 0.15，但對漲勢貢獻約 20%（情緒面推升）。</div>
+<div class="ev-s">來源：管道 E-1 中文即時搜尋 / TrendForce 2024/10 / 財經媒體</div>
+</div>
+
+<h3>3.2 市場資金面觀察</h3>
+<table class="tbl">
+<tr><th>指標</th><th>2026-04 觀察</th><th>解讀</th></tr>
+<tr><td>成交量（張）</td><td>2026-04-09 5,890 / 04-10 8,583</td><td>量能暴增，前週 2,595~4,635</td></tr>
+<tr><td>股價波動</td><td>04-09 高點 175.21 / 04-10 回檔至 166</td><td>短線震盪，高點有賣壓</td></tr>
+<tr><td>股價淨值比</td><td>2.15（2026-04-10）</td><td>窄護城河合理 1.5~2.0 上緣偏高</td></tr>
+<tr><td>殖利率</td><td>0%</td><td>連兩年虧損不配息；典型題材股特徵</td></tr>
+<tr><td>三大法人日買賣超</td><td>finlab 未涵蓋（盲點）</td><td>需 Step 9 補抓，推估投信+外資帶動</td></tr>
+<tr><td>融資使用率</td><td>finlab 未涵蓋（盲點）</td><td>量能暴增可能伴隨融資增加</td></tr>
+</table>
+
+<div class="tip warn">
+<b>題材股 6/6 訊號全中</b>
+陽程目前 6 項題材股特徵全部命中：PE 過高（166×）、殖利率 0%、媒體熱議（目標價 280）、月營收 MoM 劇烈波動、連兩年虧損、量能暴增。與業績股特徵完全脫鉤，短期由投機資金推升而非長期法人佈局。
+</div>
+
+<h3>3.3 漲幅歸因：EPS 實質改善 vs PE 估值重估</h3>
+<p>假設 2025 年初股價約 80 元、現價 166 元，漲幅 108%。拆解歸因：</p>
+
+<div class="tip info" style="margin:10px 0">
+<b>管理層分裂敘事（Phase B 新發現）</b>
+2024 年報呈現「致股東書 vs 產業概況」的語氣分裂：致股東書完全不提 FOPLP / CPO / AI（保守），但產業概況章節<b>FOPLP 詞頻 23 次、AI 詞頻 36 次（vs 2023 的 2 次暴增 18 倍）、樂觀/穩健/強勁詞 36 次五年新高、復甦詞 9 次（歷史新高）</b>。同年度兩個文本的語氣落差，比單純「低調」更複雜——管理層在官方對股東的正式場合保守，但在產業分析章節展現積極——這是「半推半就」的轉型訊號。
+</div>
+
+
+<table class="tbl">
+<tr><th>歸因來源</th><th>FIAS</th><th>對漲勢貢獻</th><th>可持續性</th></tr>
+<tr><td>Q4 EPS 1.38 單季爆發</td><td>F</td><td>20%</td><td>需後續 2~3 季驗證</td></tr>
+<tr><td>月營收 YoY 大幅正成長</td><td>F</td><td>15%</td><td>低基期效應為主</td></tr>
+<tr><td>CPO/FOPLP 題材</td><td>A</td><td><b>40%</b></td><td>依賴法說會驗證</td></tr>
+<tr><td>媒體目標價 / 「唯一沾 CPO」說法</td><td>S</td><td>20%</td><td>易碎（TrendForce 不含）</td></tr>
+<tr><td>AI 大盤連動</td><td>A</td><td>5%</td><td>依 AI 題材輪動</td></tr>
+<tr><td><b>事實級（F）貢獻合計</b></td><td>—</td><td style="color:var(--warn);font-weight:700">35%</td><td>業績面</td></tr>
+<tr><td><b>題材級（A+S）貢獻合計</b></td><td>—</td><td style="color:var(--bear);font-weight:700">65%</td><td>估值擴張面</td></tr>
+</table>
+
+<div class="view-card">
+<h4>◆ 為什麼漲的四段觀察</h4>
+<p><b>1. 這波漲勢 65% 以上靠估值擴張，不是獲利成長。</b>2025 全年 EPS -0.52 是負的，股價漲幅主要來自市場把未來成長想像力提前折現。這種漲勢最大的弱點是，一旦題材熱度降溫或基本面不如預期，估值會快速收縮——陽程 PE 166× vs 辛耘 30× 有 5~6 倍的修正空間。</p>
+
+<p><b>2. 題材級證據（A/S）對漲勢貢獻 65%，事實級（F）只貢獻 35%。</b>真正業績面的驅動只有 Q4 EPS 1.38 和月營收 YoY 大幅成長（多半來自低基期）。大部分漲勢來自「市場相信陽程會分到 CPO/FOPLP 蛋糕」這個信念，還沒有訂單/金額的硬事實支撐。</p>
+
+<p><b>3. 媒體目標價 280 元建立在「全部 H1 最樂觀假說同時成立」。</b>要達到 PE 180× × EPS 1.5，需要五件事同時成立：AAOI 訂單兌現 + 台積電進入 + Q4 毛利結構化 + 題材不降溫 + 鴻海集團持續加持。聯合機率 15% × 50% × 40% × 60% × 75% ≈ <em>1.4%</em>——這不是分析，是樂透。</p>
+
+<p><b>4. 估值擴張最易碎的是 Q4 爆發的可持續性。</b>2022 Q4 EPS 曾爆發至 1.68，隔年 2023 即崩落至 -2.42 全年——這就是前例。若 2026 Q1 財報（5 月中）EPS 再度翻負，市場會立刻把「Q4 結構改善」的定價拿回來，這是最近期的破滅觸發點。</p>
+</div>
+
+<div class="tip warn">
+<b>第三章整合結論</b>
+股價從 80 漲到 166 的 108% 漲幅，事實級業績貢獻約 35%、題材與估值擴張貢獻 65%，現價完全定價在 H1 最樂觀情境但該情境聯合機率僅 1.4%。核心變數是 Q4 毛利 41% 能否延續到 2026 H1——答案在 2026/5 中 Q1 季報揭曉。在此之前，漲勢主要靠「市場相信未來」而非基本面已兌現。
+</div>
+
+</section>
+
+<section class="section" id="ch4">
+<div class="section-head"><div class="no">04</div><div class="tit"><h2>第四章：潛在風險偵測與求證</h2><div class="sub">按風險分數分級 + 連鎖路徑 + 產業鏈關聯風險</div></div></div>
+
+<h3>4.1 致命風險（風險分 ≥ 15）</h3>
+
+<div class="risk-card rc-fatal">
+<h4><span>🔴 R1：客戶集中斷單（2022 B 客戶重演）<span class="tag fatal">致命</span></span><span class="rc-exp">風險分 15 ｜ 期望損失 -12%</span></h4>
+<div class="rc-body">2022 年外銷亞洲比例從 32.77% 跳升至 67.17%（B 客戶大單 41.49%/7.22 億單一客戶歷史高點），隔年 2023 年崩回 13.89%（B 客戶消失，D/E 兩個新代號進場），直接導致 2023 年營收衰退 31%。2024 年前三大客戶<b>代號化揭露</b> A 18.29% / B 17.29% / C 13.85%，合計 49.43%，金額分別 1.73 / 1.64 / 1.31 億（客戶代號 A/B/C 每年依排序重排，非穩定編碼，實際公司名稱未揭露）。當前大客戶完成當期專案後若未續單，歷史就會重演。客製化 know-how 深可稍緩衝，但陽程近年員工縮編 36% 讓 know-how 優勢流失。機率 40%、影響 -30~40%、可恢復但需 6 個月以上。<b class="rc-verdict">定性：最重複、最致命的結構風險。</b></div>
+</div>
+
+<div class="risk-card rc-fatal">
+<h4><span>🔴 R3：估值泡沫自然修正（PE 回歸 30~50×）<span class="tag fatal">致命</span></span><span class="rc-exp">風險分 12~15 ｜ 期望損失 -24.75%（最大）</span></h4>
+<div class="rc-body">現價 PE 166× vs 同業志聖 20×、辛耘 30×，陽程為同業 5~8 倍；殖利率 0%、股價淨值比 2.15。基本面並沒有支撐 PE 166× 的獲利成長——2025 全年 EPS -0.52 是負的。這個風險不需要特殊事件觸發，只要題材熱度降溫、大盤修正、或 Q1 季報不如預期，市場就會啟動估值收縮，把 PE 壓回同業 30~50×。這是所有風險中機率最高的（55%），也是期望損失最大的（-24.75%）。抑制因子是外資連續買超或訂單突破性揭露——但兩者目前都未發生。<b class="rc-verdict">定性：非基本面風險，純估值重力。</b></div>
+</div>
+
+<h3>4.2 高度風險（風險分 10~14）</h3>
+
+<div class="risk-card rc-high">
+<h4><span>🟠 R2：CPO / FOPLP 量產延後至 2027~2028<span class="tag high">高度</span></span><span class="rc-exp">風險分 12 ｜ 期望損失 -7.5%</span></h4>
+<div class="rc-body">AAOI 10-K 明確寫「400mW 雷射量產於 2026 H2」，但媒體傳「2026 Q2」——半年的落差已是風險。DSCC 預估 FOPLP 2024~2029 CAGR 29% 聽起來誘人，但產業報告本身也警告「面板尺寸標準化、翹曲控制、裝置成熟度挑戰依然存在」。若客戶 Capex 延後半年到一年，陽程的訂單認列時點就會跟著延後，2026 全年 EPS 轉正機率直接下降。加速因子是宏觀景氣下行與客戶資本支出緊縮，抑制因子是 AI 爆發與 CHIPS Act 補助。機率 30%、影響 -25%、完全可恢復。<b class="rc-verdict">定性：時點延後不改方向，但估值修正立即發生。</b></div>
+</div>
+
+<div class="risk-card rc-high">
+<h4><span>🟠 R4：鴻海減持 / 2026/4/10 不改派代表<span class="tag high">高度</span></span><span class="rc-exp">風險分 10 ｜ 期望損失 -5%</span></h4>
+<div class="rc-body">鴻海 2020 年私募入股陽程 15.2%，5 年鎖定期 2025 已屆滿。鴻海法人代表 4 年換 3 次（殷偉雄 → 賴國弘 → 藍瑗文），背景從 CFO 豪華履歷降階到中央會計處協理。2026/4/10 法代當然解任（公司法 119 條）是敏感時點——若鴻海改派新代表，市場解讀為「集團維持關係」；若不改派或公告減持，市場會重新把陽程從「集團加持股」定位為「獨立小型設備股」，PE 直接壓縮 30~50%。加速因子是鴻海 EV / 半導體聚焦策略，抑制因子是減持 15.2% 會自傷股價。機率<b>（Phase B 校準後）10~15%</b>（依 E-1 新發現：鴻海 2024 加派兩位代表人、藍瑗文兼任多家集團半導體監察人，訊號接近「加碼管理介面」而非「降溫」，原 25% 下調）、影響 -15~25%、PE 壓縮為主。<b class="rc-verdict">定性：時點敏感但加派代表訊號正面，真正觸發需額外減持公告。</b></div>
+</div>
+
+<h3>4.3 中度風險（風險分 6~9）</h3>
+
+<div class="risk-card rc-medium">
+<h4><span>🟡 R5：know-how 流失導致產品良率下滑<span class="tag medium">中度</span></span><span class="rc-exp">風險分 8 ｜ 期望損失 -3.6%</span></h4>
+<div class="rc-body">2020~2025 員工從 852 人縮編到 544 人（-36%），平均服務年資從 2023 年的 13.42 年驟降到 2024 年的 6.8 年（資深員工大量流失），碩士員工從 52 人減至 37 人（-29%）。客製化自動化設備商最核心的競爭力就是工程師的 know-how，這個資本流失是結構性且不可逆的——新人招進來可以取代人數，但無法立即取代經驗。泰國子公司 2024 年設立可能引進新人才，股權激勵計畫可能留住核心骨幹，但這些抑制因子的效果需 2~3 年才會顯現。機率 20%（已縮編 5 年接近底部）、影響 -15~20%、長期不可逆。<b class="rc-verdict">定性：慢性殺手，機率低但效果永久。</b></div>
+</div>
+
+<div class="risk-card rc-medium">
+<h4><span>🟡 R6：台股大盤週期修正<span class="tag medium">中度</span></span><span class="rc-exp">風險分 9 ｜ 期望損失 -5%</span></h4>
+<div class="rc-body">2026 年全球宏觀不確定性升高：Trump 二任關稅政策 + 美中貿易戰升溫 + AI 題材已連漲 2 年有輪動壓力 + 台股加權指數處於歷史相對高檔。陽程作為小型題材股，大盤修正時會先被外資與投信賣出（流動性較差）。大盤每修正 10%，陽程可能放大至 -15~-20%。機率 35%（宏觀事件高）、影響 -15%、可恢復。<b class="rc-verdict">定性：非個股特有，但小型題材股放大效應顯著。</b></div>
+</div>
+
+<div class="risk-card rc-medium">
+<h4><span>🟡 R7：2026 Q2 董事會改組不確定性（Phase B 新增）<span class="tag medium">中度</span></span><span class="rc-exp">風險分 6 ｜ 期望損失 -3%</span></h4>
+<div class="rc-body">2025 年 2 月曾榮鑑董事逝世解任後董事席次出缺，加上 2026/4/10 鴻海法代法人董事當然解任，<b>2026 Q2 董事會可能有較大改組</b>。若改組過程中：① 鴻海未按時改派代表（2026/4/10 後 30 天內）② 新獨董引進方向暗示治理重心轉移 ③ 家族（黃秋逢+黃士軒 8.06%）未補強席次——任一情境都可能觸發市場對「治理結構動搖」的擔憂。但改組本身在台股上市公司為常規事件，除非出現異常（例如審計方向調整、會計政策變更），否則是中度風險。機率 30%、影響 -8~-12%。<b class="rc-verdict">定性：結構性但短期，依 2026 Q2 申報動向判定。</b></div>
+</div>
+
+<h3>4.4 風險總覽與連鎖路徑</h3>
+
+<table class="tbl">
+<tr><th>風險</th><th>分級</th><th>機率</th><th>影響</th><th>期望損失</th><th>觸發因子</th></tr>
+<tr><td>R1 客戶集中斷單</td><td><span class="tag fatal">致命</span></td><td>40%</td><td>-30~40%</td><td><b>-12%</b></td><td>大客戶不續單</td></tr>
+<tr><td>R3 估值泡沫修正</td><td><span class="tag fatal">致命</span></td><td>55%</td><td>-40~60%</td><td><b>-24.75%</b></td><td>題材降溫 / Q1 不如預期</td></tr>
+<tr><td>R2 量產延後</td><td><span class="tag high">高度</span></td><td>30%</td><td>-20~30%</td><td>-7.5%</td><td>AAOI Capex 延後</td></tr>
+<tr><td>R4 鴻海減持</td><td><span class="tag high">高度</span></td><td>25%</td><td>-15~25%</td><td>-5%</td><td>2026/4/10 後不改派</td></tr>
+<tr><td>R5 know-how 流失</td><td><span class="tag medium">中度</span></td><td>20%</td><td>-15~20%</td><td>-3.6%</td><td>資深員工離職潮</td></tr>
+<tr><td>R6 大盤修正</td><td><span class="tag medium">中度</span></td><td>35%</td><td>-15%</td><td>-5%</td><td>AI 題材輪動</td></tr>
+<tr><td><b>合計（聚合相關性扣減）</b></td><td>—</td><td>—</td><td>—</td><td style="color:var(--bear);font-weight:900">-30~-40%</td><td>—</td></tr>
+</table>
+
+<h4>風險連鎖路徑（最可能觸發鏈）</h4>
+<p><b style="color:var(--accent)">鏈一（基本面崩解）：</b>2026/5 中 Q1 季報若 EPS 再虧 → 題材受挫（R3 估值泡沫立即發酵）→ 量能退潮 → 若 2026/6 年報仍未揭露大客戶 → R1 客戶集中疑慮加深 → 連鎖下跌至 100 元以下</p>
+<p><b style="color:var(--accent)">鏈二（集團動搖）：</b>2026/4/10 後鴻海未改派代表 → R4 觸發 → 市場重估陽程身份（「集團股」→「獨立小型股」）→ PE 壓縮至 30~50× → 同步觸發 R3 → 股價修正至 60~80 元</p>
+<p><b style="color:var(--accent)">鏈三（產業時點延後）：</b>AAOI Q2 法說未指名陽程 → R2 觸發 → 媒體「唯一沾 CPO」說法破滅 → R3 全面觸發 → 股價修正至 80~100 元</p>
+
+<h3>4.5 產業鏈關聯風險分析</h3>
+<table class="tbl">
+<tr><th>關聯方</th><th>風險類型</th><th>對陽程影響</th></tr>
+<tr><td>AAOI（最熱門受惠說法）</td><td>10-K 未指名陽程為供應商</td><td>若 AAOI 選日韓設備商，C1 催化劑破滅</td></tr>
+<tr><td>台積電（H1 觸發客戶）</td><td>規模要求 30~50 億才進主力供應鏈</td><td>陽程 11.99 億規模不足，短期不太可能進入</td></tr>
+<tr><td>辛耘 3583（同業/競爭）</td><td>辛耘若跨入 FOPLP 面板貼合</td><td>陽程獨家定位瓦解（目前同業原文顯示未跨入）</td></tr>
+<tr><td>志聖 2467（同業/互補）</td><td>志聖跨足 SoIC / HBM 烤箱</td><td>兩家同題材不同工序，客戶重疊則競爭</td></tr>
+<tr><td>鴻海集團（策略股東）</td><td>2026/4/10 法代動向</td><td>R4 核心風險來源</td></tr>
+<tr><td>林州致遠（中國訴訟方）</td><td>2024/7 重新提訴</td><td>金額 1.66 億小，不致命但揭露中國法律風險</td></tr>
+</table>
+
+<div class="tip danger">
+<b>第四章整合結論</b>
+六條風險聚合下行 -30~40%，兩條致命風險（R1 客戶集中 + R3 估值泡沫）佔總風險一半以上。三條連鎖路徑中最可能觸發的是鏈一（基本面崩解）與鏈三（AAOI 法說破滅）。真正不可逆的是 R5 know-how 流失但機率最低；真正時點敏感的是 2026/4/10 鴻海法代解任。決策窗口就是 2026 Q2 法說前的 2~3 個月，觀察風險是否向連鎖方向擴散。
+</div>
+
+</section>
+
+<section class="section" id="ch5">
+<div class="section-head"><div class="no">05</div><div class="tit"><h2>第五章：隱藏優勢挖掘與求證</h2><div class="sub">四項個股特化優勢 + 實現機率與潛在溢價估算</div></div></div>
+
+<h3>5.1 FOPLP 面板貼合自動化 — 三家同業都不做的稀缺定位</h3>
+<div class="hidden-card">
+<h4><span class="fias-f">事實</span> O1：FOPLP 面板貼合自動化（同業原文佐證稀缺）</h4>
+<div class="hc-row"><span class="hc-label">事實：</span>管道 E-2.5 同業原文直接指出：「陽程做的是機械動作與結構精度，三家同業（弘塑/辛耘/志聖）均無此專業」。辛耘做 TBDB 晶圓級圓形載具、志聖做 FoPLP 壓膜烤箱、弘塑做濕製程，陽程獨守面板級方形貼合。</div>
+<div class="hc-row"><span class="hc-label">被忽略原因：</span>媒體聚焦「CPO 組裝線」光環，沒看到真正稀缺的 FOPLP 面板貼合。</div>
+<div class="hc-row"><span class="hc-label">實現利益：</span>若 FOPLP 2024~2029 CAGR 29% 兌現，陽程年營收可成長 +30~80%（規模小限制受惠天花板）。</div>
+<div class="hc-row"><span class="hc-label">實現機率：</span><b>（Phase B 校準後）65~75%</b>（稀缺已同業原文佐證 + <b>2024「其他」類營收暴增 2.63 億已部分入帳</b>，確認題材非純話術；完整兌現仍需 2026 Q2 法說揭露客戶）。</div>
+</div>
+
+<h3>5.2 鴻海 15.2% 持股的集團協同潛力</h3>
+<div class="hidden-card">
+<h4><span class="fias-i">推論</span> O2：鴻海集團內部訂單協同（雙面刃）</h4>
+<div class="hc-row"><span class="hc-label">事實：</span>鴻海集團內含鴻揚半導體、鴻齡科技、能創半導體、康儀科技等多家半導體關聯公司（2024 年陽程法代藍瑗文同時任這幾家監察人，管理介面打通）。陽程可能承接集團內部先進封裝設備需求。</div>
+<div class="hc-row"><span class="hc-label">被忽略原因：</span>鴻海法代 4 年 3 換 + 2026/4/10 解任讓市場擔心「已放手」，但同一事實的另一面是「鴻海可能重新派人 + 重新定義陽程在集團的角色」。</div>
+<div class="hc-row"><span class="hc-label">實現利益：</span>若集團內部半導體 / CPO 業務採用陽程設備，可穩定貢獻 +20~40% 營收。</div>
+<div class="hc-row"><span class="hc-label">實現機率：</span><b>（Phase B 校準後）50~60%</b>（鴻海 2024 加派藍瑗文為第二位代表，兼任鴻揚半導體/能創半導體等集團半導體公司監察人，與陽程 2024 首布 FOPLP/CPO 時點高度一致，屬「管理介面已打通」的積極訊號；需 2026 Q2 後驗證是否有實質訂單）。</div>
+</div>
+
+<h3>5.3 2022 台灣精品獎「光學模組精密組立機」</h3>
+<div class="hidden-card">
+<h4><span class="fias-f">事實</span> O3：2022 年精品獎（光學組立技術背書）</h4>
+<div class="hc-row"><span class="hc-label">事實：</span>2022 年報沿革記載：「榮獲第 31 屆台灣精品獎光學模組精密組立機」——政府 + 產業公會雙認證。CPO 成品自動組裝線本質上是「光學模組精密組裝」的延伸，這是 2024 年 CPO 組裝線的技術前身，陽程已累積 3 年技術。</div>
+<div class="hc-row"><span class="hc-label">被忽略原因：</span>2 年前獎項被市場遺忘，但這條線索比媒體炒作更硬（有政府認證）。</div>
+<div class="hc-row"><span class="hc-label">實現利益：</span>在 CPO 組裝設備商評選有技術履歷優勢，可提高 +10~20% 接單率。</div>
+<div class="hc-row"><span class="hc-label">實現機率：</span>60~70%（已有技術事實，觸發條件是客戶（AAOI / 光通訊廠）採用驗證）。</div>
+</div>
+
+<h3>5.4 泰國子公司 — 東南亞 PCB 新興聚落先行佈局</h3>
+<div class="hidden-card">
+<h4><span class="fias-i">推論</span> O4：泰國子公司承接東南亞 PCB 南向擴產</h4>
+<div class="hc-row"><span class="hc-label">事實：</span>2024 年報首次揭露「透過第三地轉投資設立泰國子公司」。同業 2024 產業概況指出「泰國成為全球 PCB 新興聚落」，陸日台資廠商積極南向。陽程比同業辛耘、志聖更早在泰國設點。</div>
+<div class="hc-row"><span class="hc-label">被忽略原因：</span>年報揭露簡短（單句提及）、市場未關注、營運數字尚未反映。</div>
+<div class="hc-row"><span class="hc-label">實現利益：</span>若獲得 2~3 家主力 PCB 廠訂單，可貢獻 +10~20% 營收。</div>
+<div class="hc-row"><span class="hc-label">實現機率：</span>40~50%（結構性機會存在，需 2025/2026 年報看實質貢獻）。</div>
+</div>
+
+<h3>5.5 隱藏優勢實現機率與潛在溢價估算</h3>
+
+<table class="tbl">
+<tr><th>優勢</th><th>實現機率</th><th>實現利益</th><th>期望溢價</th><th>2026 兌現驗證點</th></tr>
+<tr><td>O1 FOPLP 稀缺定位</td><td><b>70%</b>（Phase B ↑）</td><td>+50%</td><td style="color:var(--bull);font-weight:700">+35%</td><td>Q2 法說揭露客戶</td></tr>
+<tr><td>O2 鴻海集團協同</td><td><b>55%</b>（Phase B ↑）</td><td>+25%</td><td style="color:var(--bull);font-weight:700">+13.75%</td><td>2026/4/10 後動向</td></tr>
+<tr><td>O3 光學精品獎技術</td><td>65%</td><td>+12%</td><td style="color:var(--bull);font-weight:700">+7.8%</td><td>客戶採用（AAOI）</td></tr>
+<tr><td>O4 泰國子公司</td><td>45%</td><td>+15%</td><td style="color:var(--bull);font-weight:700">+6.75%</td><td>2025 年報實質貢獻</td></tr>
+<tr><td><b>合計（聚合相關性扣減）</b></td><td>—</td><td>—</td><td style="color:var(--bull);font-weight:900">+15~25%</td><td>—</td></tr>
+</table>
+
+<h4>硬幣兩面檢查（同事實在 Ch4 vs Ch5）</h4>
+<table class="tbl">
+<tr><th>事實</th><th>風險面（Ch4）</th><th>優勢面（Ch5）</th><th>目前硬幣哪一面</th></tr>
+<tr><td>客戶集中（未揭露）</td><td>R1 客戶斷單重演</td><td>若留住大客戶 → 規模躍升</td><td style="color:var(--bear)">風險面（未揭露）</td></tr>
+<tr><td>鴻海 15.2% 持股</td><td>R4 2026/4/10 解任可能減持</td><td>O2 集團內部半導體訂單協同</td><td style="color:var(--warn)">中性（法代動向決定）</td></tr>
+<tr><td>員工 -36%</td><td>R5 know-how 流失</td><td>人力成本節省、效率提升</td><td style="color:var(--bear)">風險面（年資驟降）</td></tr>
+<tr><td>小規模（9.47 億）</td><td>護城河弱、客戶議價差</td><td>利基市場專精、毛利率拉高（Q4 41%）</td><td style="color:var(--warn)">中性偏優勢</td></tr>
+</table>
+
+<div class="view-card">
+<h4>◆ 隱藏優勢四段觀察</h4>
+<p><b>1. 最被低估的是 O1 FOPLP 面板貼合稀缺，市場搞錯了主角。</b>媒體把陽程當「CPO 廠」，但同業原文證實真正稀缺在 FOPLP 面板級自動化貼合——辛耘做 TBDB 晶圓級、志聖做壓膜烤箱，陽程獨守面板貼合環節。若 FOPLP 量產起來，陽程有 50~60% 機率守得住這塊，這是四項優勢中期望溢價最大（+27.5%）的一項。</p>
+
+<p><b>2. O2 鴻海協同是雙面刃觀點。</b>市場目前盯 2026/4/10 法代解任當利空（Ch4 R4），但同一事實的另一面是鴻海可能重新派人 + 重新定義陽程在集團的角色。鴻揚 / 鴻齡 / 能創等集團半導體公司名稱暗示潛在內部訂單。兌現條件是「鴻海不放棄 + 主動定位」，目前機率 35% 但時點敏感。</p>
+
+<p><b>3. O3 光學精品獎是 CPO 業務的前身線索。</b>2022 年的獎項不是裝飾，證明陽程做光學組裝已累積 3 年技術。CPO 成品自動組裝線本質上就是「光學模組精密組裝」的延伸——這條線索比媒體炒作更硬（有政府認證）。實現機率最高（65~70%），但期望溢價較低（+7.8%）。</p>
+
+<p><b>4. 四項優勢若部分兌現（期望加權）約貢獻 +15~25% 上行空間，對齊 Ch2 催化劑 +20~30%。</b>但四項優勢兌現條件都指向未來 2~3 季具體事件（客戶揭露 / 集團動向 / AAOI 合作 / 泰國訂單），在事件前優勢仍只是假設。現階段不能算作已兌現的進場理由——這也是為什麼 Ch4 風險（-30~40%）依然大於 Ch5 優勢（+15~25%）。</p>
+</div>
+
+<div class="tip good">
+<b>第五章整合結論</b>
+四項隱藏優勢中 O1 FOPLP 面板貼合稀缺（機率 50~60%、期望溢價 +27.5%）最有分量，市場目前聚焦錯誤對象（CPO 而非 FOPLP）。四項優勢合計期望溢價 +15~25%，略低於 Ch4 風險 -30~40%，風險略大於機會。核心變數是 2026 Q2 能否出現「FOPLP 訂單 + 台積電邊緣進入 + 鴻海改派」三訊號同步兌現。
+</div>
+
+</section>
+
+<section class="section" id="ch6">
+<div class="section-head"><div class="no">06</div><div class="tit"><h2>第六章：六步分析關鍵決策因素彙整</h2><div class="sub">ACH 競爭假說結果 + 六步決策因素 + 評審團整合判定</div></div></div>
+
+<h3>6.1 ACH 競爭假說分析結果（三次信心校準收斂）</h3>
+<table class="tbl">
+<tr><th>假說</th><th>Step 4 ACH</th><th>Step 5 壓測</th><th>Step 6 評審</th><th>最終機率</th></tr>
+<tr><td>H1 真轉型（CPO/FOPLP 實質兌現）</td><td>25~30%</td><td>25~30%</td><td>14%</td><td style="color:var(--bull)"><b>18~25%</b>（Phase B ↑）</td></tr>
+<tr><td>H2 部分真題材（有定位但規模有限）</td><td>45~55%</td><td>40~50%</td><td>38%</td><td><b>35~40%</b></td></tr>
+<tr><td>H3 題材曇花（2022 元宇宙重演）</td><td>20~25%</td><td>20~25%</td><td>7%</td><td>10~15%</td></tr>
+<tr><td>H4 集團重組（鴻海減持）</td><td>15~20%</td><td>15~20%</td><td>—</td><td style="color:var(--bull)"><b>10~15%</b>（Phase B ↓）</td></tr>
+<tr><td><b>H5 估值泡沫修正</b></td><td>30~40%</td><td style="color:var(--bull);font-weight:700">45~55%</td><td style="color:var(--bear);font-weight:700">41%</td><td style="color:var(--bear);font-weight:900"><b>40~50%</b></td></tr>
+</table>
+
+<div class="tip danger">
+<b>三次校準趨勢：看空證據持續累積</b>
+H1 真轉型從 25~30% 降到 Step 6 的 14%，經 Phase B 校準（「其他」類 2024 暴增 2.63 億 + 鴻海加派代表 + O1/O2 機率上調）後回升至 <b>18~25%</b>；H5 估值泡沫從 30~40% 升到 40~50%（風險卡 R3 + 豁達負面指標 -15 分驅動）。最可能情境是「H2 + H5 共存」（題材真 + 估值終將修正），兩者合計機率達 75~90%，指向加權期望股價 80.5~115 元（Ch10→Ch6）的合理區間。
+</div>
+
+<h3>6.2 六步決策因素匯總（Step 1~6 標籤對齊）</h3>
+
+<table class="tbl">
+<tr><th>步驟</th><th>核心產出</th><th>關鍵結論</th></tr>
+<tr><td><b>Step 1：年報</b></td><td>七管道 + 西碧拉 G + 5 年年報主對話親讀</td><td>跨年度說法演進：傳統三領域 → 元宇宙 → 半導體封裝 → FOPLP/CPO</td></tr>
+<tr><td><b>Step 2：誠信</b></td><td>FIAS 34 條 + 紅旗 7 項 + 管理層誠信度</td><td>會計乾淨（勤業眾信未換、查核無保留、董監質押 0%），但有 2022 追熱點紀錄</td></tr>
+<tr><td><b>Step 3：護城河</b></td><td>Morningstar 5 來源 + Porter 五力 + 同業比較</td><td>護城河 7/25 窄（僅轉換成本強），規模最小（辛耘 1/6）</td></tr>
+<tr><td><b>Step 4：ACH</b></td><td>5 條假說 × 20 證據矩陣 + 第一次信心校準</td><td>H2 部分真題材 +14.75 獨一主假說</td></tr>
+<tr><td><b>Step 5：壓力測試</b></td><td>A-F 六項 + 5 風險卡 + 3 催化劑卡 + 第二次校準</td><td>H5 估值泡沫升至並列主假說（45~55%）</td></tr>
+<tr><td><b>Step 6：期望值</b></td><td>評審團 5 角色 + 第三次校準</td><td>加權期望股價 115 元，H5 41% 超越 H2 38%</td></tr>
+</table>
+
+<h4>共識區（5 角色一致同意）</h4>
+<ul>
+<li><b style="color:var(--accent)">產業題材真實：</b>FOPLP/CPO 產業趨勢正向，DSCC CAGR 29% 有公信力</li>
+<li><b style="color:var(--accent)">陽程稀缺定位存在：</b>FOPLP 面板貼合是三家同業不做的賽道</li>
+<li><b style="color:var(--accent)">會計乾淨：</b>勤業眾信 5 年穩定、董監 0% 質押、無保留意見、<b>2024 前三大客戶代號化揭露合計 49.43%</b>（雖代號化但有揭露佔比）</li>
+<li><b style="color:var(--accent)">估值偏高：</b>現價 166 元 vs 合理 100~130 元，差距 20~40%</li>
+<li><b style="color:var(--accent)">規模是硬傷：</b>11.99 億營收不足以支撐「大轉型股」定位</li>
+</ul>
+
+<h4>分歧區（多空對照）</h4>
+<table class="tbl">
+<tr><th>議題</th><th>多方觀點（H2）</th><th>空方觀點（H5）</th></tr>
+<tr><td>Q4 毛利 41% 可持續性</td><td>結構改善，產品組合升級</td><td>一次性專案認列，Q1 可能回落</td></tr>
+<tr><td>CPO 組裝線定位</td><td>進入 CPO 供應鏈的切入點</td><td>組裝設備非關鍵製程，受惠有限</td></tr>
+<tr><td>鴻海集團支持</td><td>會改派代表 + 可能內部訂單</td><td>4 年 3 換降階暗示降溫</td></tr>
+<tr><td>PE 166× 合理性</td><td>題材初期可接受</td><td>同業 20~30× 有 5~6 倍落差</td></tr>
+</table>
+
+<h3>6.3 評審團整合判定（5 角色交叉 + 三大爭議裁決）</h3>
+
+<div class="reviewer">
+<h4>🏭 產業分析師（Iker L1 產業面 7 項）</h4>
+<div class="r-body">產業大方向正向（FOPLP 29% CAGR + AI 驅動），但陽程無長約保護、定價權中性，受惠受限於專案認列時點。投 H2 部分真題材（55%）。</div>
+<div class="r-verdict cond">⚠️ 附條件通過（題材真但兌現需時）</div>
+</div>
+
+<div class="reviewer">
+<h4>🔬 個股研究員（Iker L2 + BenTsai 營收三階段）</h4>
+<div class="r-body">處於第二階段轉折期（Q4 EPS 爆發 + 月營收回升），但 L2 個股受惠 6 項有 3 項紅色（護城河窄 / 客戶盲點 / 研發縮減），受惠深度不明。投 H2（50%）。</div>
+<div class="r-verdict cond">⚠️ 附條件通過（轉折已啟動，深度待驗）</div>
+</div>
+
+<div class="reviewer">
+<h4>📊 籌碼分析師（Iker L3 + BenTsai 公司派分點）</h4>
+<div class="r-body">題材股 6/6 訊號全中（PE 166× / 殖利率 0% / 媒體熱議 / MoM 劇烈 / 連兩年虧損 / 量能暴增），完全脫離業績股特徵。投 H5 估值泡沫（55%）。</div>
+<div class="r-verdict fail">❌ 籌碼面不宜追高</div>
+</div>
+
+<div class="reviewer">
+<h4>💼 策略長（Iker L4 + BenTsai 估值錨定 + 豁達比較排名）</h4>
+<div class="r-body">加權期望股價 115 元 vs 現價 166 元（-31%）。豁達比較排名陽程規模最小、護城河最弱、但 PE 最高。投 H5（50%）。</div>
+<div class="r-verdict fail">❌ 估值嚴重高估</div>
+</div>
+
+<div class="reviewer">
+<h4>🛡️ 風控官（橫切三系統交叉）</h4>
+<div class="r-body">豁達負面指標扣 -15 / 12（嚴重等級）。三系統（Iker 產業 / BenTsai 價值 / 豁達數字）一致指向 H2+H5 共存。5 大資料缺口中 2 個紅色無法短期驗證。投 H5（55%）。</div>
+<div class="r-verdict fail">❌ 風險過度集中</div>
+</div>
+
+<h4>三大爭議裁決（策略長仲裁）</h4>
+<div class="tip warn">
+<b>策略長仲裁</b>
+多方（H2）與空方（H5）並非互斥，最可能的情境是「H2 + H5 共存」：題材有真實部分（FOPLP 稀缺 + Q4 毛利改善），但估值已定價 H1 最樂觀情境，終將修正到 100~130 元合理區間。加權期望股價 115 元是共識錨點。決策窗口在 2026 Q2 法說會——若揭露大客戶則 H1 機率上調、股價可守在 140~160；若未揭露則 H5 觸發，股價向 100~115 修正。
+</div>
+
+<div class="view-card">
+<h4>◆ 六步彙整四段觀察</h4>
+<p><b>1. 三次信心校準趨勢一致：看空證據持續累積。</b>H1 從 25~30% 降到 14%、H5 從 30~40% 升到 41%——兩次校準都往空方修正。這不是評審團故意保守，是 Step 5 風險卡 + Step 6 三系統交叉驗證找到更多反面證據的自然結果。</p>
+
+<p><b>2. 多空兩方對「基本面」看法沒什麼分歧，真正分歧在「估值水準」。</b>五個角色全都同意 FOPLP 賽道真實、陽程有稀缺定位、會計乾淨——這些是共識。多空差異只在「現價 166 元反映的是 H1 還是 H2」，策略長 / 籌碼 / 風控一致認為現價定價 H1 但實際機率僅 18~25%（Phase B ↑）。</p>
+
+<p><b>3. 決策窗口非常明確：2026 Q2 法說會（5 月中 Q1 季報 + 6 月法說 + 年報）。</b>這個窗口是「股價漂浮在題材上」vs「股價回到基本面」的分水嶺。之前的兩個月（2026/4 月中~6 月中）不是買進時間，是觀察時間。</p>
+
+<p><b>4. 風控官 5 大資料缺口中 2 個紅色（客戶名稱 + AAOI 合作）在 2026 Q2 前無法填補。</b>這意味著現階段任何進場決定都是「押題材」而非「押基本面」，Graham 安全邊際不夠。合理進場點在 85 元以下（期望股價 73 × 0.85 + 緩衝）。</p>
+</div>
+
+<div class="tip warn">
+<b>第六章整合結論</b>
+三次校準趨勢一致指向「H5 估值泡沫 + H2 部分真題材」共存，加權期望股價 115 元。評審團 3 位投 H5 看空、2 位投 H2 中性，分歧集中在估值水準而非基本面。決策窗口在 2026 Q2 法說（5 月中~6 月），此前現價定價 H1 但 H1 機率僅 18~25%（Phase B ↑）。
+</div>
+
+</section>
+
+<section class="section" id="ch7">
+<div class="section-head"><div class="no">07</div><div class="tit"><h2>第七章：風險清單與壓力測試</h2><div class="sub">風險矩陣 + 壓力測試情境 + 致命因子敏感度 + 事前驗屍 + 資料盲點</div></div></div>
+
+<h3>7.1 風險矩陣</h3>
+<table class="tbl">
+<tr><th>風險</th><th>分級</th><th>機率</th><th>影響</th><th>期望損失</th><th>可恢復性</th></tr>
+<tr><td>R1 客戶集中斷單</td><td><span class="tag fatal">致命</span></td><td>40%</td><td>-30~40%</td><td><b>-12%</b></td><td>中（6 個月以上）</td></tr>
+<tr><td>R3 估值泡沫修正</td><td><span class="tag fatal">致命</span></td><td>55%</td><td>-40~60%</td><td><b>-24.75%</b></td><td>中（部分可恢復）</td></tr>
+<tr><td>R2 CPO / FOPLP 量產延後</td><td><span class="tag high">高度</span></td><td>30%</td><td>-20~30%</td><td>-7.5%</td><td>高（完全可恢復）</td></tr>
+<tr><td>R4 鴻海減持</td><td><span class="tag high">高度</span></td><td>25%</td><td>-15~25%</td><td>-5%</td><td>中（PE 壓縮為主）</td></tr>
+<tr><td>R5 know-how 流失</td><td><span class="tag medium">中度</span></td><td>20%</td><td>-15~20%</td><td>-3.6%</td><td>低（長期不可逆）</td></tr>
+<tr><td>R6 大盤修正</td><td><span class="tag medium">中度</span></td><td>35%</td><td>-15%</td><td>-5%</td><td>高</td></tr>
+</table>
+
+<h3>7.2 三情境壓力測試</h3>
+<table class="tbl">
+<tr><th>情境</th><th>機率</th><th>2026 EPS</th><th>PE / PB</th><th>目標價</th><th>vs 現價</th></tr>
+<tr><td>樂觀（H1 兌現）</td><td>22~28%（Phase B ↑）</td><td>+2.5~3.5</td><td>PE 50~60×</td><td>150~200 元</td><td>-10%~+20%</td></tr>
+<tr><td>基準（H2 + H5 共存）</td><td>45~50%</td><td>+0.5~1.0</td><td>PE 80×</td><td>64~80 元</td><td>-52%~-61%</td></tr>
+<tr><td>悲觀（H3 + H5 觸發）</td><td>17~22%</td><td>-1.5</td><td>PB 1.0~1.2</td><td>50~60 元</td><td>-64%~-70%</td></tr>
+<tr><td>極悲觀（H4 鴻海重組）</td><td>8~12%（Phase B ↓）</td><td>-2.0</td><td>PB 0.8</td><td>30~40 元</td><td>-76%~-82%</td></tr>
+<tr style="background:rgba(47,90,61,0.10)"><td><b>期望加權</b></td><td>100%</td><td>—</td><td>—</td><td><b style="color:var(--warn)">88 元</b>（Phase B ↑）</td><td><b style="color:var(--bear)">-47%</b></td></tr>
+</table>
+
+<h3>7.3 致命因子敏感度測試</h3>
+<table class="tbl">
+<tr><th>假設</th><th>錯誤時 H2 影響</th><th>錯誤時 EPS 影響</th><th>致命等級</th></tr>
+<tr><td>Q1：FOPLP 稀缺定位為真</td><td>H2/H1 全塌，降為 H3 曇花</td><td>2026 EPS 由 +0.5 → -2.0</td><td>🔴 致命</td></tr>
+<tr><td>Q2：Q4 毛利 41% 是結構改善（非一次性）</td><td>H2 轉 H5 為主</td><td>2026 EPS 由 +0.5 → -1.0</td><td>🟠 重大</td></tr>
+<tr><td>Q3：AAOI 訂單實質化</td><td>題材被戳破 → H3/H5 上升</td><td>2026 EPS 由 +0.5 → -1.5</td><td>🟠 重大</td></tr>
+<tr><td>Q5：鴻海不大幅減持</td><td>觸發 H4</td><td>EPS 影響有限，PE 壓縮 30~50%</td><td>🟠 重大</td></tr>
+<tr><td>Q7：當前未揭露 ≥10% 客戶不會中斷</td><td>H2 降為 H3+H5</td><td>2026 EPS 由 +0.5 → -3.0</td><td>🔴 致命</td></tr>
+</table>
+
+<h3>7.4 事前驗屍法（假設 12 個月後虧損 40%，原因是什麼？）</h3>
+<table class="tbl">
+<tr><th>#</th><th>虧損原因</th><th>機率(1-5)</th><th>衝擊(1-5)</th><th>風險分數</th></tr>
+<tr><td>R1</td><td>客戶集中斷單（2022 B 客戶重演）</td><td>3</td><td>5</td><td><b style="color:var(--bear)">15 🚩</b></td></tr>
+<tr><td>R2</td><td>CPO / FOPLP 量產延後至 2027~2028</td><td>3</td><td>4</td><td><b>12</b></td></tr>
+<tr><td>R3</td><td>估值泡沫自然修正</td><td>4</td><td>3</td><td><b>12</b></td></tr>
+<tr><td>R8</td><td>2022 元宇宙重演，CPO 題材降溫</td><td>3</td><td>4</td><td><b>12</b></td></tr>
+<tr><td>R6</td><td>台股大盤週期修正</td><td>3</td><td>3</td><td>9</td></tr>
+<tr><td>R4</td><td>鴻海減持</td><td>2</td><td>4</td><td>8</td></tr>
+<tr><td>R5</td><td>know-how 流失導致良率下滑</td><td>2</td><td>4</td><td>8</td></tr>
+<tr><td>R7</td><td>同業辛耘 / 日本廠商反攻 FOPLP</td><td>2</td><td>3</td><td>6</td></tr>
+<tr><td>R9</td><td>中國子公司訴訟擴大</td><td>1</td><td>4</td><td>4</td></tr>
+<tr><td>R10</td><td>泰國子公司擴廠負擔</td><td>2</td><td>2</td><td>4</td></tr>
+</table>
+
+<div class="tip danger">
+<b>風險分數 ≥15 的強制預警 + 應對（R1 客戶集中斷單）</b>
+<b style="color:var(--accent)">預警信號：</b>月營收 MoM 連續 2 個月 &lt;-50% + 外銷亞洲比例從 43% 驟降至 20% 以下。<br>
+<b style="color:var(--accent)">應對方案：</b>設移動停損 20%（從 166 元跌至 133 元觸發），持股觀察期 2 個月；若月營收持續轉弱，降部位至 50%。
+</div>
+
+<h3>7.5 資料盲點清單（本報告無法取得的關鍵資料）</h3>
+<table class="tbl">
+<tr><th>盲點</th><th>對結論影響</th><th>補救建議</th></tr>
+<tr><td>陽程 2024 / 2025 大客戶<b>實際公司名稱</b>（代號 A/B/C 對應何者）</td><td>🔴 極高（Q7 無法驗證）</td><td>法說會揭露 / 供應鏈側面驗證</td></tr>
+<tr><td>陽程是否進入 AAOI / Prime World 供應鏈</td><td>🔴 極高（Q3 無法驗證）</td><td>AAOI earnings call / 陽程 2026 Q2 法說</td></tr>
+<tr><td>CPO 自動組裝線實際出貨量與金額</td><td>🔴 極高（H1/H2 分界）</td><td>研發成果表有寫但金額未揭露</td></tr>
+<tr><td>鴻海 2026/4/10 後是否改派代表人</td><td>🟠 高（Q5 假設）</td><td>2026 Q2 MOPS 公告</td></tr>
+<tr><td>2026 Q1 真實財報</td><td>🟠 高（Q2 假設驗證）</td><td>2026/5 中發布</td></tr>
+<tr><td>三大法人日買賣超 / 融資融券</td><td>🟡 中（finlab 未涵蓋）</td><td>Step 9 追蹤補抓</td></tr>
+<tr><td>同業辛耘 / 志聖 2025 年 FOPLP 是否跨入</td><td>🟡 中（O1 稀缺反驗）</td><td>2025 年同業年報（2026 年中）</td></tr>
+</table>
+
+<div class="view-card">
+<h4>◆ 壓力測試三段觀察</h4>
+<p><b>1. 致命因子有兩條（Q1 + Q7），且都是外部不可控。</b>Q1（FOPLP 稀缺）由同業行為決定、Q7（大客戶不中斷）由客戶 Capex 決定——陽程自身無法主動影響。這意味著即使管理層盡全力，只要外部環境變化，基本面就會崩。這是小規模設備商的本質風險。</p>
+
+<p><b>2. 風險分數 ≥12 的四條中三條指向「題材降溫」。</b>R2（量產延後）+ R3（估值修正）+ R8（2022 重演）本質都是「市場發現題材兌現不如預期」的不同包裝。這三條同時發生的機率不低（可能 30~40%），是最具體的下行情境。期望加權股價 80.5~88 元正是反映這個聚合情境（Phase B 校準後）。</p>
+
+<p><b>3. 三個紅色資料盲點全部指向「客戶與訂單資訊」。</b>2025 年報 + 2026 Q2 法說會是唯一的驗證窗口。在這兩個時點之前，所有「陽程受惠 CPO」的論述都是假設級，無法升到事實級。這也是評審團一致認為現階段不宜追高、Graham 安全邊際下限 55~66 元的邏輯根源。</p>
+</div>
+
+<div class="tip warn">
+<b>第七章整合結論</b>
+十條事前驗屍原因中四條風險分數 ≥12，三條指向題材降溫（R2/R3/R8 合計權重最大）。致命因子是 Q1+Q7（FOPLP 稀缺 + 客戶不中斷），兩條都是外部不可控。三個紅色資料盲點在 2026 Q2 法說前無法填補，此段時間任何進場決定都是押題材而非押基本面。
+</div>
+
+</section>
+
+<section class="section" id="ch8">
+<div class="section-head"><div class="no">08</div><div class="tit"><h2>第八章：監控儀表板</h2><div class="sub">即時燈號 + 關鍵時間節點 + 進場條件清單</div></div></div>
+
+<h3>8.1 即時燈號（9 項）</h3>
+<div class="dash-grid">
+<div class="dash-item">
+<div><span class="dash-light yellow"></span><span class="dash-name">2026 月營收 YoY</span></div>
+<div class="dash-val">+156.94%（4 月）</div>
+<div class="dash-info">維持 H2：+30~80%｜&gt;100% 轉 H1｜&lt;10% 轉 H3</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light yellow"></span><span class="dash-name">單季毛利率</span></div>
+<div class="dash-val">2025 Q4 41.15%</div>
+<div class="dash-info">維持：35~45%｜&gt;50% 轉 H1｜&lt;25% 轉 H3</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light red"></span><span class="dash-name">單季 EPS 趨勢</span></div>
+<div class="dash-val">2025 全年 -0.52</div>
+<div class="dash-info">紅燈：連兩年虧損；需 2026 EPS &gt;0 才轉黃</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light yellow"></span><span class="dash-name">員工總數</span></div>
+<div class="dash-val">544 人（2025 Q1）</div>
+<div class="dash-info">止跌於 500~600｜&lt;500 轉 H3｜&gt;700 轉 H1</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light red"></span><span class="dash-name">鴻海法代動向</span></div>
+<div class="dash-val">2026/4/10 當然解任</div>
+<div class="dash-info">紅燈：時點敏感；改派新代表才轉黃</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light yellow"></span><span class="dash-name">≥10% 客戶揭露</span></div>
+<div class="dash-val">未揭露</div>
+<div class="dash-info">2026 Q2 法說 / 2025 年報為驗證時點</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light red"></span><span class="dash-name">PE 倍數</span></div>
+<div class="dash-val">166×（現價）</div>
+<div class="dash-info">紅燈：超同業 5~6 倍；30~50× 合理</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light green"></span><span class="dash-name">董監質押率</span></div>
+<div class="dash-val">0%</div>
+<div class="dash-info">綠燈：無質押融資</div>
+</div>
+<div class="dash-item">
+<div><span class="dash-light green"></span><span class="dash-name">西碧拉供應鏈</span></div>
+<div class="dash-val">risk 0.0078</div>
+<div class="dash-info">綠燈：低風險</div>
+</div>
+</div>
+
+<h3>8.2 關鍵時間節點（未來 12 個月）</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-date">2026-04-10（已過）</div><div class="tl-text">鴻海法代法人董事當然解任（公司法 119 條）；量能暴增至 8,583 張</div></div>
+<div class="tl-item"><div class="tl-date">2026-05 中 ★★</div><div class="tl-text">2026 Q1 季報 — <b>毛利率 / EPS 是否維持</b>（判定 Q4 爆發是結構改善或一次性）</div></div>
+<div class="tl-item"><div class="tl-date">2026-06 ★★</div><div class="tl-text">2025 年報發布 — <b>首次揭露 ≥10% 客戶名稱機會</b>（依台股年報揭露規則）</div></div>
+<div class="tl-item"><div class="tl-date">2026 Q2 ★★★</div><div class="tl-text">陽程法說會 — <b>AAOI / 台積電 / CPO 訂單揭露</b>（最關鍵驗證點）</div></div>
+<div class="tl-item"><div class="tl-date">2026 Q2~Q3</div><div class="tl-text">AAOI 2026 earnings call — 是否指名陽程為設備商</div></div>
+<div class="tl-item"><div class="tl-date">2026 H2</div><div class="tl-text">AAOI 400mW 雷射量產（10-K 原文 H2，媒體誤傳 Q2）</div></div>
+<div class="tl-item"><div class="tl-date">2026/8 左右</div><div class="tl-text">2026 Q2 季報 — 驗證 Q1 改善是否延續</div></div>
+<div class="tl-item"><div class="tl-date">2026 下半年</div><div class="tl-text">TrendForce FOPLP 台廠名單可能更新 — 陽程是否入列</div></div>
+<div class="tl-item"><div class="tl-date">2027 Q1</div><div class="tl-text">2026 全年財報 — 驗證 EPS 能否由負轉正（C2 催化劑兌現與否）</div></div>
+</div>
+
+<h3>8.3 進場條件清單（含安全邊際基準）</h3>
+<table class="tbl">
+<tr><th>進場條件</th><th>對應假說</th><th>建議行動</th></tr>
+<tr><td>股價 ≤ 85 元 + 其他條件中性</td><td>安全邊際 Graham 25% 達標</td><td>可建立試探部位（5~10% 倉位）</td></tr>
+<tr><td>股價 ≤ 100 元 + 2026 Q2 法說揭露 ≥10% 客戶</td><td>H2 確認</td><td>建立基本部位（10~15% 倉位）</td></tr>
+<tr><td>股價任何水準 + AAOI 指名陽程 + Q1 EPS &gt;0</td><td>H1 觸發</td><td>建立核心部位（15~25% 倉位）</td></tr>
+<tr><td>現價 166 元 + 無明確客戶訊號</td><td>H5 當前情境</td><td><b style="color:var(--bear)">不進場、不追高</b></td></tr>
+<tr><td>股價 &lt; 60 元 + H4 觸發但基本面無塌陷</td><td>H4 恐慌超賣</td><td>反向操作，分批建立（10% 倉位）</td></tr>
+</table>
+
+<div class="tip info">
+<b>第八章整合結論</b>
+9 項指標中綠燈 2 項（質押 / 供應鏈）、黃燈 5 項（待驗證）、紅燈 2 項（EPS 虧損 + PE 過高）。關鍵時間節點集中在 2026 Q2（5~6 月），是 H1 真轉型升級或 H5 估值修正觸發的分水嶺。進場條件最低門檻是股價 ≤ 85 元，現價 166 元距離此門檻 -48%。
+</div>
+
+</section>
+
+<section class="section" id="ch9">
+<div class="section-head"><div class="no">09</div><div class="tit"><h2>第九章：推衍預測 — 接下來可能怎麼走？</h2><div class="sub">短期 / 中期 / 長期 + 分岔因果樹四路徑</div></div></div>
+
+<h3>9.1 短期推衍（3-6 個月，2026 Q2~Q3）</h3>
+<div class="ev">
+<div class="ev-t">情報 → 影響路徑 → 推衍結論</div>
+<div class="ev-d">
+<b style="color:var(--accent)">情報：</b>2026/4/10 鴻海法代解任（已發生）+ 2026/5 中 Q1 季報 + 2026/6 年報 + 2026 Q2 法說會。
+<br><b style="color:var(--accent)">直接影響：</b>市場盯 3 個事件 — 鴻海是否改派 / Q1 EPS 是否續正 / 法說會是否揭露客戶。
+<br><b style="color:var(--accent)">間接影響：</b>任一事件轉負，觸發 H5 估值修正；兩個以上正面，H1 上調。
+<br><b style="color:var(--accent)">推衍結論：</b>短期股價震盪區間 130~180 元，波動係數高。若 4 月中到 6 月中的三個事件全部負面，可能直接跌破 130 元；全部正面則可能挑戰 200 元。
+</div>
+<div class="ev-s">來源：finlab 股價 / MOPS / 公司法 119 條</div>
+</div>
+
+<h3>9.2 中期推衍（6-18 個月，2026 H2~2027 H1）— 分岔因果樹四路徑</h3>
+<div class="fork-tree">
+<div class="fork-branch fb-bull">
+<h5>路徑 A：H1 真轉型兌現</h5>
+<div class="fb-prob">機率 <b>22~28%</b>（Phase B ↑）</div>
+<div class="fb-body"><b style="color:var(--accent)">觸發：</b>2026 Q2 法說揭露台積電或 AAOI 大客戶 + Q2 EPS &gt; 0.5 + 毛利維持 40%+<br><b style="color:var(--accent)">結果：</b>PE 重估 150~200×，股價突破 <b>200~300 元</b><br><b style="color:var(--accent)">後續：</b>2027 年報若 EPS 穩定 &gt;3 元，長期可達 400 元</div>
+</div>
+<div class="fork-branch fb-neutral">
+<h5>路徑 B：H2 + H5 共存</h5>
+<div class="fb-prob">機率 45~55%</div>
+<div class="fb-body"><b style="color:var(--accent)">觸發：</b>法說會揭露客戶但金額不大（10~20%）+ Q2 EPS 微正<br><b style="color:var(--accent)">結果：</b>PE 壓縮至 60~100×，股價回到 <b>100~150 元</b>中樞<br><b style="color:var(--accent)">後續：</b>題材持續但規模有限，2027 後才有機會上調</div>
+</div>
+<div class="fork-branch fb-bear">
+<h5>路徑 C：H3 + H5 觸發</h5>
+<div class="fb-prob">機率 20~25%</div>
+<div class="fb-body"><b style="color:var(--accent)">觸發：</b>Q1 EPS 再虧 + 法說無客戶揭露 + 鴻海未改派<br><b style="color:var(--accent)">結果：</b>估值崩至 PB 1.0~1.5，股價 <b>50~80 元</b><br><b style="color:var(--accent)">後續：</b>2027 若仍無改善，可能跌破 50 元</div>
+</div>
+<div class="fork-branch fb-bear">
+<h5>路徑 D：H4 鴻海重組</h5>
+<div class="fb-prob">機率 <b>8~12%</b>（Phase B ↓）</div>
+<div class="fb-body"><b style="color:var(--accent)">觸發：</b>鴻海宣布減持或不改派代表<br><b style="color:var(--accent)">結果：</b>市場重估為獨立小型設備股，PE 15~25×，股價 <b>30~50 元</b><br><b style="color:var(--accent)">後續：</b>集團身份消失，估值永久性下修</div>
+</div>
+</div>
+
+<h4>四路徑期望加權</h4>
+<p><b>Phase B 校準後</b>：25%×250 + 48%×125 + 17%×65 + 10%×40 ≈ <b style="color:var(--warn)">137 元</b>（較原 v3 的 120 元上修 17 元，反映 H1 機率上調與 H4 下調的綜合影響；仍低於現價 166 元 17%）</p>
+
+<h3>9.3 長期推衍（2-5 年，2027~2030）</h3>
+<p>長期看陽程能否跨過「15 億營收」門檻。2025 全年 ~10 億，若 2026 增長至 13~15 億，才有機會在 2027 年 EPS 由負轉正穩定。若 2026 仍在 10 億附近震盪，則長期 H5 必然觸發，PE 回到同業 20~30×。</p>
+
+<table class="tbl">
+<tr><th>年度</th><th>樂觀路徑 A</th><th>基準路徑 B</th><th>悲觀路徑 C/D</th></tr>
+<tr><td>2026 營收</td><td>15~18 億（+60~90%）</td><td>11~13 億（+16~40%）</td><td>8~10 億（-5~+5%）</td></tr>
+<tr><td>2027 營收</td><td>22~28 億</td><td>13~16 億</td><td>8~11 億</td></tr>
+<tr><td>2028 營收</td><td>30~40 億（進主力供應鏈）</td><td>15~18 億（穩定在二線）</td><td>7~10 億（可能被邊緣化）</td></tr>
+<tr><td>2030 潛在股價</td><td>400~600 元（結構轉變）</td><td>100~150 元</td><td>30~60 元</td></tr>
+</table>
+
+<div class="tip warn">
+<b>第九章整合結論</b>
+四條中期路徑加權期望股價約 120 元，與 Ch6 的 115 元一致。決策分水嶺在 2026 Q2 的三個事件（鴻海改派 / Q1 EPS / 法說揭露客戶）。長期看能否跨過 15 億營收門檻，若 2026 仍在 10 億震盪則 H5 必然觸發。市場情緒輪動是非基本面下行的額外風險。
+</div>
+
+</section>
+
+<section class="section" id="ch10">
+<div class="section-head"><div class="no">10</div><div class="tit"><h2>第十章：股價合理性分析 — 目前股價貴不貴？</h2><div class="sub">8 種估值法 + 左表右圖 floating bar + 安全邊際</div></div></div>
+
+<h3>10.1 估值方法總覽（8 法）</h3>
+<div class="data-chart-row">
+<div class="data-col">
+<table class="tbl">
+<tr><th>方法</th><th>合理股價</th><th>vs 現價 166</th></tr>
+<tr><td>PE 法（樂觀 H1）</td><td>120~150</td><td>-10~-28%</td></tr>
+<tr><td>PE 法（基準 H2）</td><td>25~40</td><td>-76~-85%</td></tr>
+<tr><td>PE 法（保守 H3）</td><td>PB 1.0 基準</td><td>-73%</td></tr>
+<tr><td>PB 法</td><td>77~133</td><td>-20~-54%</td></tr>
+<tr><td>分拆估值 SoTP</td><td>90~115</td><td>-31~-46%</td></tr>
+<tr><td>隱含預期反推</td><td>現價僅 3.6% 機率合理</td><td>極度高估</td></tr>
+<tr><td>歷史循環（2022 前例）</td><td>50~80</td><td>-52~-70%</td></tr>
+<tr><td>DCF 雙版本</td><td>N/A（FCF &lt; 0）</td><td>安全閥觸發</td></tr>
+<tr><td>EV/EBITDA</td><td>N/A（EBITDA &lt; 0）</td><td>安全閥觸發</td></tr>
+<tr><td>PEG（基準）</td><td>PEG 5.53 嚴重高估</td><td>—</td></tr>
+<tr style="background:rgba(47,90,61,0.10)"><td><b>綜合中位數</b></td><td><b>90~120 元</b></td><td><b style="color:var(--bear)">-28~-46%</b></td></tr>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap">
+<div class="chart-title">估值區間 vs 現價 166 元</div>
+<canvas id="valuationChart"></canvas>
+<div class="chart-note">紫=區間跨現價、紅=高估、金=安全邊際區；虛線=現價</div>
+</div>
+</div>
+</div>
+
+<h4>方法四詳解：隱含預期反推</h4>
+<p>假設合理 PE 50×（題材股上緣），要達到現價 166 元需 EPS = 3.32 元。推算條件聯合機率：</p>
+<ul>
+<li><b style="color:var(--accent)">條件一：</b>2026 毛利率維持 40%（機率 50%）</li>
+<li><b style="color:var(--accent)">條件二：</b>2026 營收 ≥16 億（+70% YoY）（機率 30%）</li>
+<li><b style="color:var(--accent)">條件三：</b>營業利益率回到 15%（機率 40%）</li>
+<li><b style="color:var(--accent)">條件四：</b>題材不降溫（機率 60%）</li>
+<li><b style="color:var(--accent)">聯合機率：</b>50% × 30% × 40% × 60% = <b style="color:var(--bear)">3.6%</b></li>
+</ul>
+
+<div class="tip danger">
+<b>隱含預期反推結論</b>
+現價 166 元建立在四項條件同時成立的前提上，聯合機率僅約 3.6%。這是明顯的樂觀定價。要使現價合理，市場需認為這四項條件接近必然（機率 &gt;70%），但客觀證據不支持。
+</div>
+
+<h3>10.2 安全邊際分析</h3>
+<table class="tbl">
+<tr><th>安全邊際標準</th><th>折扣</th><th>計算</th><th>合理進場價</th></tr>
+<tr><td>Graham 保守（25%）</td><td>×0.75</td><td>73 × 0.75</td><td><b style="color:var(--bull)">55 元</b></td></tr>
+<tr><td>平衡（15%）</td><td>×0.85</td><td>73 × 0.85</td><td><b>62 元</b></td></tr>
+<tr><td>積極（10%）</td><td>×0.90</td><td>73 × 0.90</td><td><b>66 元</b></td></tr>
+<tr><td>期望值中樞（Phase B 校準）</td><td>×1.00</td><td>期望加權</td><td>88 元</td></tr>
+<tr><td>H2 合理上限</td><td>×1.15</td><td>73 × 1.15</td><td>84 元</td></tr>
+<tr><td>當前股價</td><td>—</td><td>—</td><td style="color:var(--bear);font-weight:700">166 元（高出期望值 127%）</td></tr>
+</table>
+
+<div class="view-card">
+<h4>◆ 估值章四段觀察</h4>
+<p><b>1. 八種方法有兩種不適用、六種給出的合理區間落在 50~150 元（中位數 90~120）。</b>DCF 和 EV/EBITDA 因 FCF/EBITDA 為負不適用。剩下六種方法合理區間最寬 25~150 元、最窄 90~115 元（SoTP 與 PB 中段交集）。</p>
+
+<p><b>2. 期望加權期望價 80.5~88 元（Phase B 校準），與 Ch6 的 115 元有落差。</b>差異源自本章把 H5 極悲觀情境（H4 鴻海重組）納入（10% 機率），並給更嚴格的 PB 下限。Ch6 115 元偏樂觀加權，本章 80.5 元含極端下行加權（Phase B 校準）。合理進場參考值在這兩個數字之間的下半部，即 <em>85~100 元</em>。</p>
+
+<p><b>3. 隱含預期反推法揭露市場認定的「近乎必然」是 3.6% 真實機率。</b>這是本章最硬的數字——要讓現價 166 元合理，市場需相信四項條件都是接近必然，但客觀機率僅 3.6%。這是典型的「市場定價在樂透彩區間」。</p>
+
+<p><b>4. 安全邊際下限約 55~66 元。</b>若要建立有 Graham 級安全邊際的部位，需等股價回到 55~66 元（期望值 73 × 0.75~0.9）。現價 166 元離這個區間還有 60% 以上距離。</p>
+</div>
+
+<div class="tip danger">
+<b>第十章整合結論</b>
+八種估值法有六種可用，中位數合理股價 90~120 元，<b>Phase B 校準後期望加權期望價 88 元</b>（較 v3 73 元上修 15 元，含 H1 機率上調 + H4 下調綜合影響），與 Ch6 的 115 元形成 88~115 區間。現價 166 元仍高出期望值 45~89%，隱含預期反推揭露市場定價在 3.6% 機率的樂觀情境。Graham 安全邊際下限 66~79 元。核心結論：現價仍透支，合理進場區在 <b>95 元以下</b>。
+</div>
+
+</section>
+
+<section class="section" id="ch11">
+<div class="section-head"><div class="no">11</div><div class="tit"><h2>第十一章：保留彈性（補充分析）</h2><div class="sub">股權結構與鴻海解鎖 + 產業趨勢補充 + 同業財務比較深化</div></div></div>
+
+<h3>11.1 股權結構與鴻海解鎖分析</h3>
+<p>陽程無 CB（可轉換公司債）發行、無員工認股權、近 5 年無股票股利，股本結構相對純淨。但鴻海 2020 年私募入股的 15.2% 持股 5 年鎖定期已於 2025 年屆滿，後續動向是核心變數。</p>
+
+<table class="tbl">
+<tr><th>股東</th><th>持股%</th><th>性質</th><th>解鎖狀態</th><th>備註</th></tr>
+<tr><td>鴻海精密</td><td>15.2%</td><td>策略法人</td><td style="color:var(--bear)">🔴 2025 已解鎖</td><td>2020 私募 5.6 億；法代 4 年 3 換，2026/4/10 當然解任</td></tr>
+<tr><td>黃秋逢（董事長）</td><td>7.22%</td><td>自然人（創辦人）</td><td>無鎖定</td><td>質押率 0%</td></tr>
+<tr><td>黃士軒（其子 / 董事）</td><td>0.84%</td><td>自然人（家族）</td><td>無鎖定</td><td>台北工專土木</td></tr>
+<tr><td>家族合計</td><td>~8.06%</td><td>家族</td><td>—</td><td>家族持股比重不極端</td></tr>
+<tr><td>流通籌碼</td><td>~76.7%</td><td>散戶 + 法人</td><td>—</td><td>2026-04 量能暴增暗示投機資金進場</td></tr>
+</table>
+
+<div class="tip warn">
+<b>鴻海解鎖的三種情境</b>
+① <b>維持持股 + 改派代表</b>（機率 45~55%）：最可能，維持集團加持身份<br>
+② <b>維持持股但不改派代表</b>（機率 15~20%）：觀察期，市場解讀為消極訊號<br>
+③ <b>宣告部分減持（例如 5~8%）</b>（機率 20~30%）：H4 觸發，股價直接下修 -20~30%
+</div>
+
+<h3>11.2 產業趨勢補充：FOPLP vs FOWLP 技術路線</h3>
+<p>FOPLP（扇出型面板級封裝）與 FOWLP（扇出型晶圓級封裝）是先進封裝的兩大技術路線，影響陽程設備定位：</p>
+
+<table class="tbl">
+<tr><th>維度</th><th>FOWLP（晶圓級）</th><th>FOPLP（面板級）</th></tr>
+<tr><td>載具</td><td>300mm 圓形晶圓</td><td>方形面板（更大面積）</td></tr>
+<tr><td>成本</td><td>較高（晶圓材料貴）</td><td>較低（規模經濟優勢）</td></tr>
+<tr><td>主流採用</td><td>台積電 InFO、日月光</td><td>AAOI Prime World、未來 CoWoS 擴產方向</td></tr>
+<tr><td>技術成熟度</td><td>已量產多年</td><td>2024~2026 逐步成熟</td></tr>
+<tr><td>陽程定位</td><td>不直接參與</td><td><b style="color:var(--accent)">面板貼合自動化（稀缺定位）</b></td></tr>
+<tr><td>同業辛耘定位</td><td>TBDB 暫貼（主力）</td><td>暫時未跨入</td></tr>
+<tr><td>同業志聖定位</td><td>FoPLP 壓膜 + SoIC 烤箱</td><td>同題材互補</td></tr>
+</table>
+
+<div class="tip info">
+<b>技術路線風險</b>
+若 FOWLP 仍為主流、FOPLP 量產延後或被邊緣化，陽程的「面板級貼合稀缺」定位會失去價值。目前產業趨勢偏向「兩條路線並存」——AAOI 走 FOPLP、台積電 CoWoS 走 FOWLP 為主。陽程若能守住 AAOI 訂單，且 2026~2028 FOPLP CAGR 29% 兌現，則 O1 隱藏優勢實現。
+</div>
+
+<h3>11.3 同業財務比較深化</h3>
+<table class="tbl">
+<tr><th>指標</th><th>陽程 3498</th><th>辛耘 3583</th><th>志聖 2467</th><th>弘塑 3131</th></tr>
+<tr><td>2023 營收（億）</td><td>11.99</td><td>69.12</td><td>36.26</td><td>35.44</td></tr>
+<tr><td>2023 YoY</td><td style="color:var(--bear)">-31%</td><td style="color:var(--bull)">+22%</td><td style="color:var(--bear)">-32.4%</td><td>-4.8%</td></tr>
+<tr><td>2023 毛利率</td><td>~30%</td><td>31.9%</td><td>—</td><td>—</td></tr>
+<tr><td>2023 淨利（億）</td><td style="color:var(--bear)">-1.46</td><td style="color:var(--bull)">6.50</td><td>—</td><td>—</td></tr>
+<tr><td>研發佔比</td><td><b style="color:var(--warn)">21.5%</b></td><td>~8%</td><td>9.32%</td><td>員工 21% 為研發</td></tr>
+<tr><td>台積電曝險</td><td>未揭露（前三大代號化 49.43%）</td><td style="color:var(--bull)">13.44%（明確）</td><td>無 ≥10%</td><td>F 客戶 16.34%</td></tr>
+<tr><td>員工數</td><td>710（2023）/ 544（2025 Q1）</td><td>—</td><td>—</td><td>418</td></tr>
+<tr><td>PE（2026-04）</td><td style="color:var(--bear);font-weight:700">166×</td><td>~30×</td><td>~20×</td><td>~25×</td></tr>
+<tr><td>賽道定位</td><td>FOPLP 面板貼合 + CPO 組裝</td><td>TBDB 晶圓級 + 批次濕製程</td><td>PCB 曝光 + FoPLP 壓膜 + HBM 烤箱</td><td>晶圓濕蝕刻 + 電子級化學品</td></tr>
+</table>
+
+<div class="view-card">
+<h4>◆ 同業比較三點解讀</h4>
+<p><b>1. 2023 業績分化：辛耘 +22% vs 陽程 -31%。</b>辛耘因為 CoWoS + AI 紅利而逆勢成長，陽程則跟志聖（-32%）同步衰退——說明陽程 2023 年<em>還沒享受到先進封裝紅利</em>。若 2025~2026 陽程能像辛耘 2023 那樣轉正，才能證明真正切入 AI 供應鏈。</p>
+
+<p><b>2. 陽程研發佔比 21.5% 是「分母效應」而非真正研發加碼。</b>研發費絕對金額 5 年軌跡：2.20 → 2.43 → 2.40 → 2.04 → ~2.5 億（相對穩定，2 億水準）；但佔營收比從 14.98% 躍升至 21.50%（翻倍），原因是<b>營收從 19 億縮至 9.47 億（分母減半）</b>。對比辛耘研發費約 5 億（營收 69 億/佔比 ~8%），陽程研發絕對投入只有辛耘 40%。正面訊號是「營收萎縮仍維持研發投入」的轉型決心，不是「加碼研發」。</p>
+
+<p><b>3. 客戶透明度陽程最差。</b>辛耘（台積電 13.44%）、弘塑（F 客戶 16.34%）都揭露 ≥10% 客戶，只有陽程連續兩年未揭露。這不只是透明度問題，<em>還暗示陽程可能沒有穩定大客戶、全靠專案型訂單滾動</em>——印證 Ch4 R1 客戶集中斷單風險。</p>
+</div>
+
+<div class="tip info">
+<b>第十一章整合結論</b>
+陽程規模最小（辛耘 1/6）、2023 年與志聖同步衰退（未享 AI 紅利）、客戶透明度最差。鴻海 15.2% 持股 2025 解鎖後動向是核心變數。FOPLP 技術路線若被 FOWLP 邊緣化則 O1 優勢失效。這些補充分析指向：陽程的結構性處境比表面看的更困難。
+</div>
+
+</section>
+
+<section class="section" id="ch12">
+<div class="section-head"><div class="no">12</div><div class="tit"><h2>第十二章：貓膩探索與求證</h2><div class="sub">市場共識 vs 反共識 + 特化議題 + 六步貓膩 + 個案掃描 + 總評</div></div></div>
+
+<h3>12.1 市場共識 vs 反共識</h3>
+<table class="tbl">
+<tr><th>市場共識</th><th>反共識觀點</th><th>佐證強度</th></tr>
+<tr><td>陽程是唯一沾 CPO / 矽光子的台廠</td><td>TrendForce 2024/10 FOPLP 7 家台廠名單不含陽程；陽程「CPO 成品自動組裝」為組裝設備層——但<b>2024「其他」類營收暴增 2.63 億（+3.3 倍）顯示 CPO 已有實質入帳，非純話術</b></td><td><b>中強</b>（第三方不認定，但內部營收認列）</td></tr>
+<tr><td>2025 Q4 EPS 1.38 是結構性改善</td><td>2025 全年仍虧 0.52；2022 Q4 曾爆發 EPS 1.68 隔年崩至 -2.42</td><td><b>強</b>（歷史前例）</td></tr>
+<tr><td>AAOI Capex +319% 陽程受惠</td><td>AAOI 10-K 未指名陽程；400mW 量產實為 2026 H2 非媒體傳 Q2</td><td><b>強</b>（10-K 原文）</td></tr>
+<tr><td>鴻海集團加持穩定</td><td>法代 4 年 3 換 + 2026/4/10 當然解任；代表人背景從 CFO 降到會計</td><td>中</td></tr>
+<tr><td>PE 166× 是題材股合理區間</td><td>同業辛耘 ~30×、志聖 ~20×，陽程為同業 5~8 倍；基本面不支撐</td><td><b>強</b>（同業比較）</td></tr>
+</table>
+
+<h3>12.2 特化議題：CPO 組裝定位 vs 媒體「唯一沾 CPO 台廠」矛盾</h3>
+<div class="ev s">
+<div class="ev-t"><span class="fias-s">推測</span> 媒體「唯一沾 CPO 台廠」vs TrendForce 名單不含陽程</div>
+<div class="ev-d">TrendForce 2024/10 發布 FOPLP 7 家台廠名單不含陽程；但媒體普遍稱「陽程是唯一沾 CPO / 矽光子的台廠」。兩者衝突，可能解釋：① TrendForce 統計範圍是 FOPLP 非 CPO，陽程做 CPO 組裝不在此名單內；② 陽程規模太小未達 TrendForce 關注門檻；③ 媒體說法誇大陽程的 CPO 實質業務。若 2026 Q2 法說未提供 CPO 訂單金額，傾向解釋 ③（媒體誇大）。
+
+<br><b style="color:var(--accent)">關鍵區分：</b>「做 CPO 組裝設備」≠「做 CPO 晶片」。陽程研發成果表第 8 項「CPO 成品自動組裝線」是<b>組裝 CPO 模組的自動化設備</b>，不是製造 CPO 晶片本身——媒體把這兩者混淆放大。</div>
+<div class="ev-s">來源：TrendForce 2024/10 名單 + 陽程 2024 年報 p.6 研發成果表 + 媒體追蹤</div>
+</div>
+
+<div class="ev a">
+<div class="ev-t"><span class="fias-a">假設</span> 鴻海法代 4 年 3 換 + 時點敏感</div>
+<div class="ev-d">殷偉雄（TSMC 部經理 / 創意 CFO 豪華履歷）→ 賴國弘（中華工專機械 / 典泰經理，111/10/20 就任）→ 藍瑗文（鴻海中央會計處協理，113/12/03 就任）。履歷從「策略高層」逐步降到「執行層會計」。2024/12/03 藍瑗文就任 + 2026/4/10 當然解任 + 2025 Q4 EPS 爆發，三個時點巧合——若是策略性定位通常保持資深代表；降階暗示鴻海對陽程的資源投入正在減少。</div>
+<div class="ev-s">來源：2020~2024 年報董事表親讀</div>
+</div>
+
+<h3>12.3 六步貓膩探索（details 收合 × 6）</h3>
+
+<details>
+<summary>12.3.1 營收品質：專案型 vs 結構型</summary>
+<div>
+<p>陽程月營收 MoM 劇烈波動（+88% → -56% → -20% → -2%），外銷亞洲比例 5 年劇變（19%→33%→67%→14%→43%）——這些都是專案型設備商的營收特徵，不是結構型。2025 Q4 EPS 1.38 爆發有可能是一次性大單認列，需看 2026 Q1 是否延續。<b style="color:var(--accent)">判定：</b>🟡 營收品質屬專案型，不算貓膩，但可持續性低。</p>
+</div>
+</details>
+
+<details>
+<summary>12.3.2 獲利品質：毛利改善 vs 一次性認列</summary>
+<div>
+<p>2025 Q2~Q4 毛利率連三季 39~45%，相對 2024 的 30~34% 明顯跳升。兩種可能解釋：(A) 產品組合升級到 CPO/FOPLP，高毛利產品佔比上升；(B) Q1 大虧（-38.75% 營業利益率）已一次性打掉低毛利存貨。若 2026 Q1 毛利回落到 30% 以下，則是 (B) 一次性。<b style="color:var(--accent)">判定：</b>🟡 待 2026 Q1 驗證。</p>
+</div>
+</details>
+
+<details>
+<summary>12.3.3 治理品質：會計師 + 獨董結構</summary>
+<div>
+<p>會計師：勤業眾信 2020~2024 穩定未換，查核意見「無保留意見」，這是治理品質的正面訊號。獨董結構 2024/12 大換血：蔡忠杓 / 翁軟綺出、周志誠（誠品聯合會計師事務所合夥）+ 劉賢成入，引進會計師背景強化財報治理。董監質押率 0%，無股票質押融資風險。<b style="color:var(--accent)">判定：</b>🟢 治理品質乾淨。</p>
+</div>
+</details>
+
+<details>
+<summary>12.3.4 管理層誠信：致股東書語氣 vs 產業概況</summary>
+<div>
+<p>2024 致股東書完全不提 FOPLP / CPO / AI，同年的產業概況卻首次自我定位「FOPLP / CPO」領域——兩個文本同年度但語氣差異極大。如果管理層想操縱題材，致股東書就是最好的平台；但他們選擇在致股東書低調。這個反差暗示管理層自知規模不大，不想誤導市場。正面訊號比負面多。<b style="color:var(--accent)">判定：</b>🟢 管理層誠信度偏正。</p>
+</div>
+</details>
+
+<details>
+<summary>12.3.5 隱藏風險：中國訴訟 + 員工縮編</summary>
+<div>
+<p>中國子公司上海陽程 vs 林州致遠訴訟 2024/7 重新提訴，金額約 1.66 億（不致命但需追蹤）。員工 5 年縮編 36%（852→544），平均年資驟降（13.42→6.8 年），碩士 -29%——know-how 流失是長期結構性風險，雖然機率低但不可逆。<b style="color:var(--accent)">判定：</b>🟡 存在但可控。</p>
+</div>
+</details>
+
+<details>
+<summary>12.3.6 估值盲點：市場定價 H1 但 H1 機率僅 18~25%（Phase B ↑）</summary>
+<div>
+<p>現價 166 元隱含預期反推揭露：需要四項條件同時成立（毛利 40% + 營收 +70% + 營益 15% + 題材不降溫），聯合機率 3.6%。這是最大的估值盲點——市場把「樂透級別」的機率當作「接近必然」在定價。同業 PE 20~30×，陽程 166× 有 5~8 倍落差。<b style="color:var(--accent)">判定：</b>🔴 估值明顯脫離基本面。</p>
+</div>
+</details>
+
+<h3>12.4 個案貓膩掃描（4 張）</h3>
+
+<div class="ev s">
+<div class="ev-t"><span class="fias-s">推測</span> 個案 1：媒體「唯一沾 CPO」vs TrendForce 名單不含</div>
+<div class="ev-d"><b style="color:var(--accent)">具體數字：</b>TrendForce 2024/10 FOPLP 7 家台廠名單不含陽程。<br>
+<b style="color:var(--accent)">可能解讀：</b>
+<ul>
+<li><b style="color:var(--accent)">解讀 1：</b>TrendForce 範圍是 FOPLP 非 CPO，陽程做 CPO 不在此名單內</li>
+<li><b style="color:var(--accent)">解讀 2：</b>陽程規模太小未達 TrendForce 關注門檻</li>
+<li><b style="color:var(--accent)">解讀 3：</b>媒體說法誇大陽程的 CPO 實質業務</li>
+</ul>
+<b style="color:var(--accent)">判定條件：</b>2026 Q2 法說若未提供 CPO 訂單金額，傾向解讀 3。</div>
+<div class="ev-s">來源：TrendForce 2024/10</div>
+</div>
+
+<div class="ev a">
+<div class="ev-t"><span class="fias-a">假設</span> 個案 2：鴻海法代 4 年 3 換 + 背景降階暗示</div>
+<div class="ev-d"><b style="color:var(--accent)">具體事實：</b>殷偉雄（TSMC / CFO）→ 賴國弘（中華工專機械）→ 藍瑗文（鴻海中央會計處）。<br>
+<b style="color:var(--accent)">可能解讀：</b>
+<ul>
+<li><b style="color:var(--accent)">解讀 1：</b>鴻海逐步降低對陽程的策略重視，進入觀察期</li>
+<li><b style="color:var(--accent)">解讀 2：</b>鴻海管理層輪調正常，不代表策略降溫</li>
+<li><b style="color:var(--accent)">解讀 3：</b>2024/12 換會計背景代表可能為 2026 Q2 減持做準備</li>
+</ul>
+<b style="color:var(--accent)">判定條件：</b>2026/4/10 後 30 天內 MOPS 申報動向（改派 or 減持）。</div>
+<div class="ev-s">來源：2020~2024 年報董事表</div>
+</div>
+
+<div class="ev a">
+<div class="ev-t"><span class="fias-a">假設</span> 個案 3：2022 元宇宙 → 2024 FOPLP/CPO 是追熱點還是真轉型？</div>
+<div class="ev-d"><b style="color:var(--accent)">具體事實：</b>2022 年報首次寫「元宇宙」為中期策略第 1 項，2023 全刪；2024 年報首次寫「FOPLP / CPO」自我定位。<br>
+<b style="color:var(--accent)">可能解讀：</b>
+<ul>
+<li><b style="color:var(--accent)">解讀 1：</b>管理層習慣追熱點，2024 FOPLP / CPO 將重演元宇宙命運</li>
+<li><b style="color:var(--accent)">解讀 2：</b>元宇宙只是策略文字，FOPLP 有研發實質累積 3 年（晶圓盒 → wafer 壓電 → 半導體塗佈 → CPO）</li>
+<li><b style="color:var(--accent)">解讀 3：</b>管理層學乖了，2024 致股東書低調不提，研發才是真實重心</li>
+</ul>
+<b style="color:var(--accent)">判定條件：</b>2025 年報研發成果表若繼續擴展 CPO / FOPLP 項目 = 真轉型；縮項 = 重演。</div>
+<div class="ev-s">來源：2022 / 2023 / 2024 年報親讀</div>
+</div>
+
+<div class="ev i">
+<div class="ev-t"><span class="fias-i">推論</span> 個案 4：2025 Q4 EPS 1.38 是結構改善還是一次性？</div>
+<div class="ev-d"><b style="color:var(--accent)">具體數字：</b>2025 Q1 -1.05 / Q2 0.34 / Q3 -0.19 / Q4 1.38，全年 -0.52。<br>
+<b style="color:var(--accent)">可能解讀：</b>
+<ul>
+<li><b style="color:var(--accent)">解讀 1：</b>結構改善，毛利率從 30% 升到 40%（成本管理 + 產品升級）</li>
+<li><b style="color:var(--accent)">解讀 2：</b>Q4 一次性大單專案認列，Q1 會回落（2022 Q4 爆發模式重演）</li>
+<li><b style="color:var(--accent)">解讀 3：</b>Q4 包含會計年度重整（存貨評價、遞延認列）</li>
+</ul>
+<b style="color:var(--accent)">判定條件：</b>2026 Q1 財報（5 月中）若 EPS &lt; 0 且毛利率跌回 30%，傾向解讀 2。</div>
+<div class="ev-s">來源：finlab 季頻 EPS / 毛利率 / 營業利益率</div>
+</div>
+
+<h3>12.5 貓膩總評（燈號）</h3>
+<div class="tip warn">
+<b>貓膩風險燈號：🟡 有疑點需觀察</b>
+<ul>
+<li><b style="color:var(--accent)">三條紅旗：</b>TrendForce 不認定 / 2022 追熱點前例 / PE 異常偏高同業 5~8 倍</li>
+<li><b style="color:var(--accent)">兩條黃旗：</b>鴻海代表人降階 / 致股東書與市場說法落差</li>
+<li><b style="color:var(--accent)">兩條綠燈：</b>會計師穩定無保留、董監 0% 質押 — 會計層面無貓膩</li>
+</ul>
+核心貓膩假說：「市場把陽程當 CPO 主力股定價，但陽程實質是組裝設備商，規模有限」——<b>成立機率 55~65%</b>。若成立，下行空間 -40~-60%。
+</div>
+
+<div class="view-card">
+<h4>◆ 貓膩章四段觀察</h4>
+<p><b>1. 主要貓膩不在會計而在定位錯誤。</b>陽程會計品質乾淨（會計師穩定 5 年、董監 0% 質押、訴訟金額小），這是重要正面訊號。真正貓膩是「市場把『CPO 成品自動組裝的設備商』當成『CPO 主力廠商』」的定位錯誤，不是公司操縱，而是媒體與市場的集體誤讀。</p>
+
+<p><b>2. 管理層行為反而是反向訊號。</b>如果管理層真的在操縱題材，他們會在致股東書大寫特寫 FOPLP / CPO——但 2024 致股東書完全不提。這種「低調」說明管理層自知規模還不大、不想誤導市場，反證媒體說法過度。</p>
+
+<p><b>3. 最大貓膩時點敏感在 2026/4/10 到 2026 Q2 法說會之間。</b>鴻海解任 + 量能暴增 + 媒體目標價三個巧合疊加，說明這段時間股價可能脫離基本面。貓膩假說成立的最早驗證點就是 2026 Q2 法說會。</p>
+
+<p><b>4. 四項個案貓膩中最大威脅是個案 1（CPO 定位錯誤）。</b>其他三項（鴻海降階 / 追熱點 / Q4 單季）都是中等威脅，但個案 1 若成立，會同時觸發所有其他三項的負面解讀。這是四項貓膩的主線。</p>
+</div>
+
+<div class="tip warn">
+<b>第十二章整合結論</b>
+貓膩燈號黃（有疑點需觀察），核心貓膩「市場定位錯誤（CPO 主力 vs CPO 組裝）」成立機率 55~65%。會計層面乾淨，管理層低調反而是正面訊號。最大威脅是媒體與市場的集體誤讀。驗證窗口在 2026 Q2 法說，若揭露 CPO 實質營收 &lt; 5%，貓膩假說成立、下行 -40~-60%。
+</div>
+
+</section>
+
+<section class="section" id="ch13">
+<div class="section-head"><div class="no">13</div><div class="tit"><h2>第十三章：投資結論</h2><div class="sub">一句話 + 綜合評估 + 三情境 + 淨期望值 + 操作建議 + 關鍵追蹤 + 免責</div></div></div>
+
+<div class="tip danger" style="font-size:16px">
+<b>一句話結論</b>
+陽程是小規模客製化設備商，FOPLP 面板貼合有稀缺定位、會計乾淨、研發方向真實（<b>Phase B 新發現「其他」類 2024 暴增 2.63 億已部分入帳</b>）；但規模僅同業 1/6、連兩年虧損、PE 166× 是同業 5~8 倍，市場已定價 H1 樂觀情境（<b>Phase B 校準後實際機率 18~25%</b>）。合理進場區在 <b>95 元以下（Graham 安全邊際下 66~79 元）</b>，現價仍透支。<b>建議：不追高，等 2026 Q2 法說驗證或股價修正至 100~110 元以下</b>。
+</div>
+
+<h3>13.1 綜合評估表（7 維加權總分 /10）</h3>
+<table class="tbl">
+<tr><th>維度</th><th>評分 /10</th><th>權重</th><th>加權</th><th>說明</th></tr>
+<tr><td>成長性</td><td>5</td><td>15%</td><td>0.75</td><td>2026 月營收 YoY 高但低基期，全年 EPS 能否轉正待驗</td></tr>
+<tr><td>獲利品質</td><td>3</td><td>15%</td><td>0.45</td><td>連兩年虧損，Q4 單季爆發但全年仍負</td></tr>
+<tr><td>護城河</td><td>4</td><td>20%</td><td>0.80</td><td>Morningstar 5 來源 7/25，僅轉換成本強</td></tr>
+<tr><td>管理層</td><td>6</td><td>10%</td><td>0.60</td><td>會計穩定 + 董監 0% 質押，但有 2022 追熱點紀錄</td></tr>
+<tr><td>估值</td><td style="color:var(--bear);font-weight:700">2</td><td>20%</td><td style="color:var(--bear)">0.40</td><td>PE 166× 同業 5~8 倍，嚴重高估</td></tr>
+<tr><td>風險控制</td><td>5</td><td>10%</td><td>0.50</td><td>供應鏈低風險，但客戶集中未揭露</td></tr>
+<tr><td>催化劑</td><td>6</td><td>10%</td><td>0.60</td><td>AAOI / FOPLP 有真實產業驅動</td></tr>
+<tr style="background:rgba(47,90,61,0.10)"><td><b>加權總分</b></td><td>—</td><td>100%</td><td><b style="color:var(--warn);font-size:16px">4.10 / 10</b></td><td>偏弱，主因估值與獲利品質</td></tr>
+</table>
+
+<h3>13.2 三情境估值彙整（期望加權，Phase B 校準）</h3>
+<table class="tbl">
+<tr><th>情境</th><th>機率</th><th>EPS</th><th>PE / PB</th><th>目標價</th><th>vs 現價</th><th>加權</th></tr>
+<tr><td>樂觀（H1 真轉型）</td><td><b>25%</b>（Phase B ↑）</td><td>3.0</td><td>PE 50×</td><td>150 元</td><td>-10%</td><td>37.5</td></tr>
+<tr><td>基準（H2 + H5 共存）</td><td>48%</td><td>0.8</td><td>PE 80×</td><td>64 元</td><td>-61%</td><td>30.7</td></tr>
+<tr><td>悲觀（H3 + H5）</td><td>17%</td><td>-1.5</td><td>PB 1.0</td><td>50 元</td><td>-70%</td><td>8.5</td></tr>
+<tr><td>極悲觀（H4）</td><td><b>10%</b>（Phase B ↓）</td><td>-2.0</td><td>PB 0.8</td><td>38 元</td><td>-77%</td><td>3.8</td></tr>
+<tr style="background:rgba(47,90,61,0.10)"><td><b>期望加權</b></td><td>100%</td><td>—</td><td>—</td><td><b style="color:var(--warn);font-size:16px">80.5 元</b>（Phase B ↑）</td><td><b style="color:var(--bear)">-52%</b></td><td>80.5</td></tr>
+</table>
+
+<h3>13.3 淨期望值</h3>
+<div class="ev">
+<div class="ev-t">催化劑期望收益 − 風險期望損失 = 淨期望值</div>
+<div class="ev-d">
+<b style="color:var(--bull)">催化劑聚合期望收益：</b>+20~+30%（Ch2 C1+C2+C3+C4）<br><b style="color:var(--accent)">Phase B 隱藏優勢補強：</b>+15~+25%（Ch5 O1 升 65~75% + O2 升 50~60% 期望溢價 +35%+13.75%）<br><b style="color:var(--bear)">風險聚合期望損失：</b>-25~-35%（R4 鴻海減持下調至 10~15% + R1 客戶斷單維持 40% + R3 估值修正 55%）<br><b style="color:var(--accent)">淨期望值：</b>0~+5%（Phase B 校準後由 -10~-20% 改善）<br><b style="color:var(--accent)">風險 / 報酬比：</b>1 : 0.8~1.0（仍不利但已改善）
+</div>
+<div class="ev-s">來源：Ch2 催化劑 + Ch4 風險卡聚合</div>
+</div>
+
+<h3>13.4 操作建議（依持倉狀態分層）</h3>
+<table class="tbl">
+<tr><th>持倉狀態</th><th>建議</th><th>理由</th></tr>
+<tr><td>未持有</td><td><b style="color:var(--warn)">暫緩</b>（不追高）</td><td>現價定價 H1 樂觀（機率 18~25%（Phase B ↑）），R/R 比 1:0.5~0.7 不利；等股價修正至 100 元以下或 2026 Q2 法說驗證</td></tr>
+<tr><td>獲利持有（成本 &lt; 100）</td><td><b style="color:var(--bull)">分批減碼</b></td><td>獲利豐厚，現價有 -45% 期望下行空間，分批鎖定獲利</td></tr>
+<tr><td>套牢（成本 &gt; 166）</td><td><b style="color:var(--warn)">評估停損</b></td><td>期望值 80.5~88 元意味可能長期無法解套，建議設移動停損觀察預警（月營收連 2 個月 &lt;-50%）</td></tr>
+<tr><td>長期觀察</td><td><b style="color:var(--info)">加入追蹤清單</b></td><td>若 2026 Q2 法說揭露 ≥10% 客戶 + 股價跌至 85~100 元，可建立試探部位</td></tr>
+</table>
+
+<h3>13.5 關鍵追蹤事件（6 個節點）</h3>
+<table class="tbl">
+<tr><th>事件</th><th>時間</th><th>觀察重點</th></tr>
+<tr><td>鴻海 2026/4/10 後動向</td><td>2026 Q2</td><td>MOPS 是否改派代表人 / 減持</td></tr>
+<tr><td>2026 Q1 季報</td><td>2026/5 中</td><td>EPS 是否維持正 / 毛利率是否 ≥35%</td></tr>
+<tr><td>2025 年報發布</td><td>2026/6</td><td>首次揭露 ≥10% 客戶名稱機會</td></tr>
+<tr><td>陽程 2026 Q2 法說會</td><td>2026 Q2</td><td>AAOI / 台積電 / CPO 訂單是否揭露</td></tr>
+<tr><td>AAOI 2026 earnings call</td><td>2026 Q2~Q3</td><td>是否指名陽程為設備商</td></tr>
+<tr><td>TrendForce FOPLP 名單更新</td><td>2026 下半年</td><td>陽程是否入列</td></tr>
+</table>
+
+<div class="tip warn">
+<b>免責聲明</b>
+本報告為資訊整合與質化分析，非投資建議。所有估值、機率、目標價均為基於當下可取得資料的推算，未來實際市場走勢受多重不可控因素影響（地緣政治、產業輪動、個別事件）。投資決策應結合自身風險承受度與完整資訊，<b>閣主自行判斷</b>，本報告僅供參考。
+</div>
+
+<div class="tip info">
+<b>第十三章整合結論（最終定調）</b>
+陽程 3498 現價 166 元仍透支，期望加權期望價 <b>Phase B 校準後 80.5~88 元</b>、合理進場區 <b>95 元以下</b>。主假說 H5 估值泡沫修正（40~50%）+ H2 部分真題材共存（35~40%），真正的轉型定位（H1）機率 <b>18~25%</b>（Phase B 從 18~25%（Phase B ↑） 上調，依「其他」類 2024 暴增 + 鴻海加派代表兩項新發現）。決策窗口在 2026 Q2 法說會，此前不宜追高；已持有低成本者分批減碼、已套牢者評估停損。
+</div>
+
+</section>
+
+    
+    <!-- ============== 跨標的互連：相關報告（預設收合，認知錨定方案 C） ============== -->
+    <section class="section" id="related">
+  <div class="section-head">
+    <div class="no">+</div>
+    <div class="tit">
+      <h2>跨標的互連分析（保留）</h2>
+      <div class="sub">Phase C 完成後由互連注入流程產生 · 依西碧拉圖譜查詢 confidence ≥0.7 相關標的</div>
+    </div>
+  </div>
+
+  <details open>
+    <summary style="cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);padding:10px 0">待互連注入執行</summary>
+
+    <!-- CROSS_LINKS_START -->
+
+      <div class="data-grid" style="grid-template-columns:1fr">
+        <div class="data-row">
+          <div class="k">2330_台積電</div>
+          <div class="v">
+            <a href="../../天機錄/2330_台積電/20260329_2330_台積電_完整版.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>🛒 客戶關係 · 2026-04-10 完整版</b></a>
+            — 陽程與 台積電（TW_2330）存在「customer」關聯，西碧拉圖譜置信度 0.85（dual_llm）。可對照觀察兩者在同一產業鏈或合作網絡中的聯動走勢。
+            <span class="fias-f">事實</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-3);font-family:var(--mono);margin-top:10px;letter-spacing:0.05em">
+        ※ 連結跳轉到天機錄完整版（獨立視窗開啟）；關聯性由西碧拉圖譜雙模型交叉驗證，實際連動程度因產業脈絡與時點而異。
+      </p>
+      <!-- CROSS_LINKS_END -->
+  </details>
+</section>
+
+    <footer class="footer">
+      天機錄 · 第七步 完整版　·　陽程科技 3498　·　分析基準日 2026-04-19<br>
+      來源：2021~2024 年度報告 / 2024Q1~Q4 財務季報 / 8 場法說會原音 / 同業公開資料 / 財報資料庫量化比對 / 公開人才市場資料 / 多元來源交叉驗證<br>
+      信心校準：ACH 機率分析（第一次）→ 壓力測試（第二次）→ 評審團 23 維度（第三次）→ 完稿審閱整合（第四次）四次收斂至 H2 中性 44%<br>
+      本報告為深度調查型投資分析，不構成投資建議。決策前請自行評估風險。
+    </footer>
+
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+<script>
+// Chart.js 全域字體設定
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.font.family = '"Inter","Noto Sans TC","Segoe UI",sans-serif';
+  Chart.defaults.font.size = 11;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = '#4a3f33';
+}
+
+// === Ch1.3 競爭力七維雷達（陽程 vs 辛耘 3583） ===
+(function(){
+  const ctx = document.getElementById('radarCompetitive');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['技術能力','製造規模','定價權','客戶黏著','財務強度','產品組合','股東/接班'],
+      datasets: [{
+        label: '陽程 3498',
+        data: [6.0, 3.0, 5.5, 4.0, 3.0, 5.5, 6.0],
+        borderColor: '#2f5a3d',
+        backgroundColor: 'rgba(47,90,61,0.15)',
+        pointBackgroundColor: '#2f5a3d',
+        pointRadius: 4,
+        borderWidth: 2
+      },{
+        label: '辛耘 3583',
+        data: [8.5, 7.5, 7.0, 8.0, 7.5, 7.0, 6.0],
+        borderColor: '#8a6a1f',
+        backgroundColor: 'rgba(138,106,31,0.08)',
+        pointBackgroundColor: '#8a6a1f',
+        pointRadius: 4,
+        borderWidth: 2,
+        borderDash: [5,5]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          suggestedMin: 0,
+          suggestedMax: 10,
+          ticks: { stepSize: 2, color: '#8a7f72', backdropColor: 'transparent' },
+          grid: { color: 'rgba(74,63,51,0.15)' },
+          angleLines: { color: 'rgba(74,63,51,0.15)' },
+          pointLabels: { color: '#4a3f33', font: { size: 12, weight: '700' } }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#4a3f33', padding: 14 } }
+      }
+    }
+  });
+})();
+
+// === Ch1.5 EPS 季度趨勢 ===
+(function(){
+  const ctx = document.getElementById('epsTrend');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['24Q3','24Q4','25Q1','25Q2','25Q3','25Q4'],
+      datasets: [{
+        label: 'EPS（元）',
+        data: [0.17, -0.29, -1.05, 0.34, -0.19, 1.38],
+        borderColor: '#2f5a3d',
+        backgroundColor: 'rgba(47,90,61,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointBackgroundColor: (ctx) => ctx.parsed && ctx.parsed.y >= 0 ? '#2f6b3d' : '#8e3a2c'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { grid: { color: 'rgba(74,63,51,0.1)' }, ticks: { color: '#4a3f33' } },
+        x: { grid: { display: false }, ticks: { color: '#4a3f33' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+})();
+
+// === Ch1.5 季度毛利率 ===
+(function(){
+  const ctx = document.getElementById('marginTrend');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['24Q3','24Q4','25Q1','25Q2','25Q3','25Q4'],
+      datasets: [{
+        label: '毛利率 (%)',
+        data: [30.4, 34.2, 11.4, 39.2, 45.3, 41.1],
+        backgroundColor: (ctx) => {
+          const v = ctx.parsed && ctx.parsed.y;
+          if (v == null) return '#8a7f72';
+          if (v >= 40) return '#2f6b3d';
+          if (v >= 30) return '#8a6a1f';
+          return '#8e3a2c';
+        },
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          grid: { color: 'rgba(74,63,51,0.1)' },
+          ticks: { color: '#4a3f33', callback: (v) => v + '%' }
+        },
+        x: { grid: { display: false }, ticks: { color: '#4a3f33' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+})();
+
+// === Ch1.5 月營收 ===
+(function(){
+  const ctx = document.getElementById('revenueTrend');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['25/11','25/12','26/01','26/02','26/03','26/04'],
+      datasets: [{
+        label: '月營收（百萬）',
+        data: [168, 118, 222, 97, 78, 76],
+        backgroundColor: 'rgba(47,90,61,0.7)',
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { grid: { color: 'rgba(74,63,51,0.1)' }, ticks: { color: '#4a3f33' } },
+        x: { grid: { display: false }, ticks: { color: '#4a3f33' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+})();
+
+// === Ch10 估值 floating bar 區間柱 ===
+(function(){
+  const ctx = document.getElementById('valuationChart');
+  if (!ctx) return;
+  const currentPrice = 166;
+  const data = [
+    { label: 'PE 樂觀 H1',  range:[120, 150], color:'#8e3a2c' },
+    { label: 'PE 基準 H2',  range:[25, 40],   color:'#8e3a2c' },
+    { label: 'PB 法',       range:[77, 133],  color:'#8e3a2c' },
+    { label: '分拆 SoTP',   range:[90, 115],  color:'#8e3a2c' },
+    { label: '歷史循環',    range:[50, 80],   color:'#8e3a2c' },
+    { label: '期望加權 73', range:[55, 84],   color:'#8a6a1f' },
+    { label: '現價 166',    range:[165, 167], color:'#4a3f33' }
+  ];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        data: data.map(d => d.range),
+        backgroundColor: data.map(d => d.color),
+        borderColor: data.map(d => d.color),
+        borderWidth: 1,
+        barPercentage: 0.7
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => {
+          const r = ctx.raw;
+          return `合理區間：${r[0]} ~ ${r[1]} 元`;
+        }}}
+      },
+      scales: {
+        x: {
+          min: 0, max: 200,
+          title: { display: true, text: '股價 (元)', color: '#4a3f33' },
+          ticks: { color: '#4a3f33' },
+          grid: { color: 'rgba(74,63,51,0.1)' }
+        },
+        y: { ticks: { color: '#4a3f33', font: { weight: '700' } }, grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'currentPriceLine',
+      afterDraw: (chart) => {
+        const { ctx, chartArea, scales } = chart;
+        const x = scales.x.getPixelForValue(currentPrice);
+        ctx.save();
+        ctx.strokeStyle = '#8e3a2c';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5,5]);
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.fillStyle = '#8e3a2c';
+        ctx.font = 'bold 11px Inter';
+        ctx.fillText(`現價 ${currentPrice}`, x - 30, chartArea.top - 5);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+</script>
+</body>
+</html>
