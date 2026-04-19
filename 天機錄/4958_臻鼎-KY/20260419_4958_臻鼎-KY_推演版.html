@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4958 臻鼎-KY · 第八步推演版 · 天機閣</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+
+/* ========== Legacy CSS Step 8（清理後） ========== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+.section-title{font-size:1.3em;font-weight:900;color:var(--gold);margin:24px 0 4px;padding-top:14px;border-top:2px solid var(--rule);font-family:'Fraunces',serif}
+.section-sub{font-size:.82em;color:var(--ink-3);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82em;border-radius:8px;overflow:hidden}
+th{background:var(--paper-3);color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--rule);color:var(--ink-2);background:var(--paper-2)}
+tr:hover td{background:var(--paper-3)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.86em}
+.tip.danger{border-color:var(--bear);background:rgba(212,136,122,.18)}
+.tip.danger b{color:var(--bear);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(107,159,114,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--neutral);background:rgba(122,176,192,.18)}
+.tip.info b{color:var(--neutral);display:block;margin-bottom:3px}
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--ink);padding:5px 0;font-size:.92em}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:6px;border-bottom:1px solid var(--rule);padding-bottom:5px}
+.fias-f{color:#6ec071;font-weight:700;font-size:.7em;padding:2px 5px;border-radius:3px;background:rgba(110,192,113,.2)}
+.fias-i{color:#7ab0c0;font-weight:700;font-size:.7em;padding:2px 5px;border-radius:3px;background:rgba(122,176,192,.2)}
+.fias-a{color:#d4a017;font-weight:700;font-size:.7em;padding:2px 5px;border-radius:3px;background:rgba(212,160,23,.25)}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:6px;padding:12px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:3px 0;color:var(--ink)}
+.mini-card .title{font-weight:700;font-size:.82em;color:var(--accent)}
+.mini-card .desc{font-size:.75em;color:var(--ink-3);margin-top:3px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.warn-card{border-left:4px solid var(--warn)}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:5px 16px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink)}
+
+.num-bull{color:var(--bull);font-weight:700}
+.num-bear{color:var(--bear);font-weight:700}
+.num-warn{color:var(--warn);font-weight:700}
+.chain-step{background:var(--paper-2);border-left:3px solid var(--accent);padding:8px 14px;margin:6px 0;font-size:.85em}
+.chain-step .step-title{font-weight:700;color:var(--gold);font-size:.88em;margin-bottom:2px}
+.chain-step .step-body{color:var(--ink-2);line-height:1.6}
+.tl-item{position:relative;padding-left:22px;margin:12px 0}
+.tl-item::before{content:'';position:absolute;left:4px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--panel)}
+.timeline{border-left:2px solid var(--border);padding-left:8px;margin:10px 0 10px 6px}
+.tl-item .tl-date{font-size:.76em;color:var(--gold);font-weight:700}
+.tl-item .tl-title{font-size:.9em;font-weight:700;color:var(--ink)}
+.tl-item .tl-desc{font-size:.82em;color:var(--ink-2);margin-top:2px}
+.weak-signal{background:rgba(212,160,23,.1);border-left:3px solid var(--warn);padding:8px 12px;margin:6px 0;font-size:.84em}
+.weak-signal .ws-title{font-weight:700;color:var(--warn);margin-bottom:2px}
+
+/* ========== End Legacy ========== */
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!--
+====================================================================
+報告通用模板（雙色：淺色 warm paper ↔ 深色 dark paper）
+來源：報告雙色模板.html（2026-04-18 抽離具體內容後通用化）
+結構設計：
+  - 雙色切換（.theme-toggle）：localStorage 記憶主題
+  - Sidebar 目錄自動 scrollspy
+  - 章節數可自由增減，以下示範各類組件，可依需求挑選組合
+可用組件列表（CSS class 速查）：
+  版型：.shell / .sidebar / .main / .section
+  頁首：.masthead / .hero-stats / .chips / .steps（九步進度）
+  段落：.prose .drop（首字放大）/ .plain（引言框）/ .pull（大字金句）
+  資料：.data-grid / .data-row / table.tbl（num/pos/neg/gold/bold/highlight）
+  卡片：.risk（tag: fatal/high/medium/low）/ .minis（bull/bear/gold/neut/accent）
+  強調：.callout（good/warn/bad/info）/ .conclusion（整合結論，每章必備）
+  時序：.timeline（item / item.key）
+  對比：.duo / .scenario（bull/bear）
+  估值：.verdict-head / .confidence-line / .conf（a=警示、n=中性）
+  圖表：.chart + 內嵌 SVG（柱/線/點/區間/分布皆可，axis 樣式用 class）
+  指標：.fias（F=事實 / I=推論 / A=分析 / S=存疑 / IP=待驗證）
+  燈號：.light（g綠/y黃/r紅/x灰）
+  進度條：.bars / .bar-row
+====================================================================
+-->
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Tian Ji Ge · 推演引擎</span>
+    </div>
+
+    <div class="meta-block">
+      <div><span class="k">ISSUE</span><span class="v">第八步 · 推演版</span></div>
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">4958 臻鼎-KY</span></div>
+      <div><span class="k">PAGES</span><span class="v">9 §.</span></div>
+    </div>
+
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <!-- 章節數不固定，依實際增減 li -->
+      <li><a href="#s8a">8a · 推衍基礎確認</a></li>
+      <li><a href="#s8b">8b · OSINT 情報更新</a></li>
+      <li><a href="#s8c">8c · 影響鏈分析（3 主鏈）</a></li>
+      <li><a href="#s8d">8d · 情境模擬決策樹</a></li>
+      <li><a href="#s8e">8e · 個人化推衍</a></li>
+      <li><a href="#s8f">8f · 催化劑時間表</a></li>
+      <li><a href="#s8g">8g · 蝴蝶效應推衍</a></li>
+      <li><a href="#s8h">8h · 貓膩推衍</a></li>
+      <li><a href="#s8i">8i · 推衍結論（第四次校準）</a></li>
+    </ol>
+
+    <div class="side-verdict">
+      <div class="label">Verdict · 48-52%</div>
+      <strong>中性 Hold · 不建議追高</strong><br>
+      加權期望 230 元 · 現價 282 溢價 +22% · H2 執行不順 45% 為主路徑
+    </div>
+  </aside>
+
+  <!-- ====================== MAIN ====================== -->
+  <main class="main">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">第八步 · 推演版（最終校準）</span>
+        <span>影響鏈 + 情境模擬 + 蝴蝶效應 + 貓膩推衍</span>
+      </div>
+      <h1>臻鼎-KY 推演報告<span class="ticker">4958</span></h1>
+      <p class="deck">第四次（最終）信心校準 48-52%、加權期望股價 230 元、4 路徑機率 H1 35%/H2 45%/H3 15%/H4 5%、Q2 毛利率決策樹三分支、歷史劇本對照大立光 50%、推衍有效期 2026-05-19。</p>
+      <div class="byline">
+        <span><b>Analyst</b>天機閣推演引擎</span>
+        <span><b>Coverage</b>1-12 個月未來推衍</span>
+        <span><b>FIAS</b>混合（以推論 I 為主）</span>
+        <span><b>Confidence</b>48-52% · 中性偏空</span>
+      </div>
+
+      <!-- 九步進度（如不需要可整段刪除） -->
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1</div>
+        <div class="step done"><span class="dot"></span>S2</div>
+        <div class="step done"><span class="dot"></span>S3</div>
+        <div class="step done"><span class="dot"></span>S4</div>
+        <div class="step done"><span class="dot"></span>S5</div>
+        <div class="step done"><span class="dot"></span>S6</div>
+        <div class="step done"><span class="dot"></span>S7 · 完整版</div>
+        <div class="step active"><span class="dot"></span>S8 · 推演版 ●</div>
+        <div class="step"><span class="dot"></span>S9</div>
+      </div>
+    </header>
+
+    <!-- HERO STATS（四格核心數字） -->
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">最可能路徑</div>
+        <div class="v">H2 執行不順</div>
+        <div class="d">機率 45% / EPS 8-9 / 股價 180-240</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">Step 8 加權期望</div>
+        <div class="v gold">230 元</div>
+        <div class="d">Step 6 算 235.5 → Step 8 修 230</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">第四次校準</div>
+        <div class="v">48-52%</div>
+        <div class="d">Step 4/5/6/8 四次皆向下</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">推衍有效期</div>
+        <div class="v">30 天</div>
+        <div class="d">至 2026-05-19 需重校準</div>
+      </div>
+    </section>
+
+    <!-- 標籤 chips（hot/warn/bull/bear 可選） -->
+    <div class="chips">
+      <span class="chip hot">5 項弱訊號雷達</span>
+      <span class="chip hot">3 主鏈影響推演</span>
+      <span class="chip warn">Q2 毛利率決策樹</span>
+      <span class="chip bull">NVIDIA 長約可能揭露</span>
+      <span class="chip bull">Shinko 下市空缺</span>
+      <span class="chip warn">ECB#4 2026 Q3-Q4 集中</span>
+      <span class="chip bear">大立光 Apple 依賴類比 50%</span>
+      <span class="chip">3 情境個人化操作</span>
+    </div>
+
+    <!-- ====== Step 8 · 9 小節推演內容 ====== -->
+
+<section class="section" id="s8a">
+  <div class="section-head">
+    <div class="no">8a</div>
+    <div class="tit">
+      <h2>8a · 推衍基礎確認</h2>
+      <div class="sub">回溯原始資料 · 核心事實 · ACH 假說 · 燈號 · 估值依據</div>
+    </div>
+  </div>
+
+<table>
+<tr><th>項目</th><th>回溯確認</th><th>來源</th></tr>
+<tr><td>2024 合併營收</td><td>1,716.64 億（+13.4%）</td><td>2024 年報致股東<span class="fias-f">F</span></td></tr>
+<tr><td>2024 AI 應用佔比</td><td>45% → 2025 預估 70%+</td><td>2024 年報致股東<span class="fias-f">F</span></td></tr>
+<tr><td>2025 全年 EPS</td><td>6.91 元（-29%）</td><td>2026-03-12 法說會<span class="fias-f">F</span></td></tr>
+<tr><td>2025 全年營收</td><td>1,825.22 億（+6.33%）</td><td>法說會<span class="fias-f">F</span></td></tr>
+<tr><td>ECB#3 稀釋（2025 Q3-Q4）</td><td>股本 +11.9%（+1.14 億股）</td><td>finlab 股本季度<span class="fias-f">F</span></td></tr>
+<tr><td>ABF 2 奈米客戶認證</td><td>2024 底通過</td><td>2024 年報<span class="fias-f">F</span></td></tr>
+<tr><td>2026 Capex</td><td>800 億（2026-04-07 上修自 500 億）</td><td>重大訊息<span class="fias-f">F</span></td></tr>
+<tr><td>ACH 假說分佈（Step 4/6 校準）</td><td>H1 35% / H2 45% / H3 15% / H4 5%</td><td>Step 6 評審團<span class="fias-i">I</span></td></tr>
+<tr><td>加權期望股價</td><td>235.5 元</td><td>Step 6 計算</td></tr>
+<tr><td>當前股價</td><td>~282 元（2026-04-08 52 週新高 247.5，後續再漲）</td><td>財報狗<span class="fias-f">F</span></td></tr>
+</table>
+
+<!-- ==================== 8b ==================== -->
+</section>
+
+<section class="section" id="s8b">
+  <div class="section-head">
+    <div class="no">8b</div>
+    <div class="tit">
+      <h2>8b · OSINT 情報更新（最新即時）</h2>
+      <div class="sub">分析日 2026-04-18 → 推衍日 2026-04-19</div>
+    </div>
+  </div>
+
+<details open><summary>最新情報差異表（分析日 2026-04-18 → 推衍日 2026-04-19）</summary>
+<table>
+<tr><th>情報</th><th>狀態</th><th>FIAS</th></tr>
+<tr><td>2026-03 月營收</td><td>154.43 億（+7.18%）；伺服器/光通訊 YoY +190% 創單月新高；IC 載板 YoY +70%</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026-04-07 重大訊息</td><td>Capex 從 500 億上修至 800 億（基於與關鍵客戶下世代 AI 產品長期合作共識）</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026-04-08 股價</td><td>52 週新高 247.5 元；技術面中線目標 260-270 已突破</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026-04-09 外資態度</td><td>Goldman Sachs 全面喊進 ABF 四雄（欣興/南電/臻鼎/景碩）</td><td><span class="fias-i">I</span></td></tr>
+<tr><td>近 10 交易日三大法人</td><td>合計買超 16,775 張</td><td><span class="fias-f">F</span></td></tr>
+<tr><td>2026-02-24 公告</td><td>內部稽核主管辭職，新任人選待董事會決議</td><td><span class="fias-f">F</span></td></tr>
+</table>
+<div class="tip info" style="margin-top:8px"><b>情報更新解讀</b>
+最新情報強化 H1 AI 爆發假說（月營收 AI 相關 +190% / Goldman 喊進 / Capex 上修）；但內稽主管異動是新增黃燈警訊。當前股價已反映大部分正面情報。
+</div>
+</details>
+
+<!-- ==================== 8c ==================== -->
+</section>
+
+<section class="section" id="s8c">
+  <div class="section-head">
+    <div class="no">8c</div>
+    <div class="tit">
+      <h2>8c · 影響鏈分析（3 條主鏈）</h2>
+      <div class="sub">H1 AI 爆發 / H2 ECB 稀釋 / H3 Apple 切單</div>
+    </div>
+  </div>
+
+<details open><summary>主鏈 1：AI 爆發 → 臻鼎 ABF 載板訂單激增</summary>
+<div class="chain-step"><div class="step-title">關鍵事件</div><div class="step-body">2024 AI 應用 45% + 2 奈米客戶認證</div></div>
+<div class="chain-step"><div class="step-title">一階影響（+1 季）</div><div class="step-body">ABF 稼動率從 60-70% 升至 80%，2026-Q2 轉盈（承諾節點）</div></div>
+<div class="chain-step"><div class="step-title">二階影響（+2-3 季）</div><div class="step-body">2026 全年 ABF 貢獻 100+ 億營收（vs 2025 預估 60-70 億）；毛利率提升至 23-25%</div></div>
+<div class="chain-step"><div class="step-title">三階影響（+6-12 月）</div><div class="step-body">2026 EPS 突破 12 元；股價達 300+ 元</div></div>
+<div class="chain-step"><div class="step-title">概率</div><div class="step-body num-warn">35%（ACH H1）</div></div>
+</details>
+
+<details><summary>主鏈 2：ECB#4 2026 集中轉換 → EPS 稀釋</summary>
+<div class="chain-step"><div class="step-title">關鍵事件</div><div class="step-body">2024-01 發行 ECB#4 4 億美元 + 2026 股價 282 元遠高於推估轉換價 120-160</div></div>
+<div class="chain-step"><div class="step-title">一階影響（+1-2 季）</div><div class="step-body">ECB#4 持有人大規模轉換套利，2026-Q3/Q4 股本再增 8-10%</div></div>
+<div class="chain-step"><div class="step-title">二階影響（+2-3 季）</div><div class="step-body">EPS 被稀釋 8-10%，從 10.78 元（法人預估）降至 9.80-9.97 元</div></div>
+<div class="chain-step"><div class="step-title">三階影響（+3-6 月）</div><div class="step-body">投資人發現稀釋真相，股價下修 10-15%</div></div>
+<div class="chain-step"><div class="step-title">概率</div><div class="step-body num-warn">50-70%（幾乎必然）</div></div>
+</details>
+
+<details><summary>主鏈 3：Apple 2026 H2 切單 → 鵬鼎營收衝擊</summary>
+<div class="chain-step"><div class="step-title">關鍵事件</div><div class="step-body">Apple Houston AI 伺服器廠完工 + FII 內製能力成熟</div></div>
+<div class="chain-step"><div class="step-title">一階影響（+1-2 季）</div><div class="step-body">Apple 減少鵬鼎指定訂單 20-30%；鵬鼎月營收 YoY 轉負</div></div>
+<div class="chain-step"><div class="step-title">二階影響（+3-6 季）</div><div class="step-body">2026-2027 臻鼎合併營收衰退 10-15%；毛利率下滑至 16-18%</div></div>
+<div class="chain-step"><div class="step-title">三階影響（+6-12 月）</div><div class="step-body">EPS 跌至 6-7 元；股價下探 140-180 元</div></div>
+<div class="chain-step"><div class="step-title">概率</div><div class="step-body num-bear">15-25%（長尾但破壞力強）</div></div>
+</details>
+
+<div class="tip warn"><b>8c 跨鏈交互作用</b>
+主鏈 1（AI 爆發）與主鏈 2（ECB 稀釋）**同時進行**：即使 H1 成立，ECB#4 稀釋也會打折 EPS 成長率。主鏈 3（Apple 去化）與主鏈 1 **互斥**，但歷史顯示 Apple 多供應商策略通常漸進式（非突然），短期 6 個月內兩者並存可能性低。
+</div>
+
+<!-- ==================== 8d ==================== -->
+</section>
+
+<section class="section" id="s8d">
+  <div class="section-head">
+    <div class="no">8d</div>
+    <div class="tit">
+      <h2>8d · 情境模擬（概率決策樹）</h2>
+      <div class="sub">Q2 毛利率為根節點、三分支對應 H1/H2/H3-4</div>
+    </div>
+  </div>
+
+<details open><summary>情境決策樹（2026 下半年觀察點）</summary>
+<pre style="font-family:'Fraunces',serif;color:var(--txt2);font-size:.82em;line-height:1.6;padding:12px;background:#1e1e1e;border-radius:6px">
+                                【2026-05/08/10 財報】
+                                         │
+              ┌──────────────────────────┼──────────────────────────┐
+              │                           │                           │
+        【Q2 毛利率 >20%】             【Q2 毛利率 15-20%】         【Q2 毛利率 <15%】
+         + ABF 轉盈確認                  + ABF 持平                    + ABF 虧損擴大
+              │ 35%                        │ 45%                        │ 20%
+              ↓                           ↓                           ↓
+         【H1 路徑】                   【H2 路徑】                 【H3/H4 路徑】
+         EPS 12-14 元                   EPS 8-9 元                   EPS 6-7 元
+         股價 300-360                   股價 180-240                 股價 140-180
+              │                           │                           │
+              ├─ ECB#4 慢轉               ├─ ECB#4 快轉               ├─ 觸發停損 230
+              │   保持 +50% 上行          │   稀釋 -8%                │   向下急速
+              │                           │                           │
+              ↓                           ↓                           ↓
+         保守估 330                    加權估 210                    保守估 160
+</pre>
+</details>
+
+<details><summary>敏感度分析：哪個變數最影響結果</summary>
+<table>
+<tr><th>變數</th><th>變化</th><th>股價影響</th><th>排序</th></tr>
+<tr><td>Q2 毛利率</td><td>±5 pp</td><td>±50 元</td><td>⭐⭐⭐⭐⭐ 最敏感</td></tr>
+<tr><td>AI 營收佔比 2026 值</td><td>±10 pp</td><td>±40 元</td><td>⭐⭐⭐⭐ 高</td></tr>
+<tr><td>ABF 稼動率</td><td>±10 pp</td><td>±25 元</td><td>⭐⭐⭐ 中</td></tr>
+<tr><td>ECB#4 轉換速度</td><td>全轉 vs 慢轉</td><td>±15 元</td><td>⭐⭐ 中低</td></tr>
+<tr><td>鵬鼎月營收 YoY</td><td>±5 pp</td><td>±12 元</td><td>⭐⭐ 中低</td></tr>
+</table>
+</details>
+
+<div class="tip info"><b>8d 路徑交叉點</b>
+**2026-08-15 Q2 財報是最關鍵決策點**：毛利率是所有路徑的分水嶺。之前（現在到 5/15）股價已反映樂觀，Q2 財報將決定 H1/H2/H3 走向。建議 Q2 財報前保守，Q2 財報後根據實際數字行動。
+</div>
+
+<!-- ==================== 8e ==================== -->
+</section>
+
+<section class="section" id="s8e">
+  <div class="section-head">
+    <div class="no">8e</div>
+    <div class="tit">
+      <h2>8e · 個人化推衍</h2>
+      <div class="sub">6 種閣主情境的具體行動建議</div>
+    </div>
+  </div>
+
+<details open><summary>3 種閣主情境的具體行動建議</summary>
+<table>
+<tr><th>情境</th><th>建議</th><th>詳細操作</th></tr>
+<tr><td><b>已持有 + 低成本（ <200 元）</b></td><td class="num-bull">減碼 30-50% 獲利了結</td><td>保留 50-70% 核心部位；減碼資金等待回檔再進場；設核心部位停損 230 元</td></tr>
+<tr><td><b>已持有 + 中成本（200-260 元）</b></td><td class="num-warn">持有觀望 + 設停損</td><td>停損 230-240 元（-10% 保護）；每月檢查鵬鼎月營收與 Q2 毛利率；正向則續抱</td></tr>
+<tr><td><b>已持有 + 高成本（>260 元）</b></td><td class="num-warn">嚴格停損 + 平均成本</td><td>停損 240-250 元（-7% 保護）；若股價回檔至 230 元以下可逢低攤平</td></tr>
+<tr><td><b>空手觀望（投機型）</b></td><td class="num-bear">不追高，等待訊號</td><td>等股價回至 240 元以下（-15%）或 Q2 財報正向兌現再進場</td></tr>
+<tr><td><b>空手觀望（價值型）</b></td><td class="num-bear">大幅折價才進場</td><td>等股價至 188 元以下（安全邊際 20%+）再分批建倉</td></tr>
+<tr><td><b>保守型（長期存股）</b></td><td class="num-neutral">等殖利率 >4% 才進場</td><td>以 2025 配息 3.45 元計算 → 股價需 <86 元才達殖利率 4%</td></tr>
+</table>
+</details>
+
+<!-- ==================== 8f ==================== -->
+</section>
+
+<section class="section" id="s8f">
+  <div class="section-head">
+    <div class="no">8f</div>
+    <div class="tit">
+      <h2>8f · 催化劑時間表（未來 6 個月）</h2>
+      <div class="sub">關鍵事件日曆</div>
+    </div>
+  </div>
+
+<details open><summary>關鍵事件日曆</summary>
+<div class="timeline">
+<div class="tl-item"><div class="tl-date">2026-04-10</div><div class="tl-title">3 月營收公告（已完成）</div><div class="tl-desc">154.43 億 +7.18%；伺服器/光通訊 +190% 創單月新高 → 正向</div></div>
+<div class="tl-item"><div class="tl-date">2026-05-10</div><div class="tl-title">4 月營收公告</div><div class="tl-desc">關鍵觀察：AI 相關營收是否持續高增長；鵬鼎月營收</div></div>
+<div class="tl-item"><div class="tl-date">2026-05-15</div><div class="tl-title">2026-Q1 季報</div><div class="tl-desc">關鍵指標：毛利率（>18% 為正）、AI 營收佔比、ABF 虧損金額</div></div>
+<div class="tl-item"><div class="tl-date">2026-06（約）</div><div class="tl-title">股東會 + 2025 現金股利除息</div><div class="tl-desc">除息 3.45 元；關注董事會改選情況</div></div>
+<div class="tl-item"><div class="tl-date">2026-08-15</div><div class="tl-title">2026-Q2 季報 + 法說會（關鍵）</div><div class="tl-desc">**ABF 是否轉盈**（承諾驗證）；AI 應用佔比；下半年展望</div></div>
+<div class="tl-item"><div class="tl-date">2026-10-15</div><div class="tl-title">2026-Q3 季報</div><div class="tl-desc">AI 旺季表現；NVIDIA Rubin 發表後客戶訂單揭露</div></div>
+</div>
+</details>
+
+<!-- ==================== 8g ==================== -->
+</section>
+
+<section class="section" id="s8g">
+  <div class="section-head">
+    <div class="no">8g</div>
+    <div class="tit">
+      <h2>8g · 蝴蝶效應推衍（弱訊號 + 盲點）</h2>
+      <div class="sub">5 弱訊號 + Top 3 盲點 + 歷史劇本對照</div>
+    </div>
+  </div>
+
+<details open><summary>5 項弱訊號雷達</summary>
+<div class="weak-signal">
+<div class="ws-title">弱訊號 A · 微營運訊號</div>
+2026-03 伺服器/光通訊 YoY +190% 創單月新高，但整體月營收僅 +7.18% → **非 AI 業務（手機為主）仍疲弱**
+</div>
+<div class="weak-signal">
+<div class="ws-title">弱訊號 B · 供應鏈訊號</div>
+Shinko 2025-06 下市、轉由 JIC Capital + 三井化學 + DNP 共同經營 → ABF 日本供應格局重構，臻鼎有機會搶佔 Shinko 原有日系客戶
+</div>
+<div class="weak-signal">
+<div class="ws-title">弱訊號 C · 產業結構訊號</div>
+NVIDIA 10-K 揭露「prepaid manufacturing & capacity agreements」→ NVIDIA 直接鎖定 ABF 產能，意味臻鼎可能有 NVIDIA 長約但未揭露
+</div>
+<div class="weak-signal">
+<div class="ws-title">弱訊號 D · 管理層訊號</div>
+2026-04-07 重大訊息原文「基於與關鍵客戶下世代 AI 產品達成長期合作共識」→ **關鍵客戶可能是 NVIDIA 而非僅 Apple**
+</div>
+<div class="weak-signal">
+<div class="ws-title">弱訊號 E · 資金訊號</div>
+近 10 交易日三大法人買超 16,775 張但股價 +54.6% 已高 → 可能為 ECB 套利（買股壓低+轉換時出貨），需警惕
+</div>
+</details>
+
+<details><summary>盲點獵手：Top 3 被忽略的見解</summary>
+<table>
+<tr><th>#</th><th>盲點</th><th>市場忽略原因</th><th>意義</th></tr>
+<tr><td>1</td><td><b>臻鼎可能有 NVIDIA 長約</b>（2026-04-07 重大訊息暗示）</td><td>公司未明確揭露，市場焦點仍在 Apple</td><td>若屬實，客戶結構改變，Apple 集中度風險降低</td></tr>
+<tr><td>2</td><td><b>Shinko 下市後的空缺</b></td><td>市場只看 Ibiden/AT&S 擴產，忽略 Shinko 空缺</td><td>臻鼎有機會切入日系客戶（Sony/任天堂/日系伺服器）</td></tr>
+<tr><td>3</td><td><b>鴻海 FII 自建 AI 伺服器 = 臻鼎內部訂單</b>（非競爭）</td><td>市場擔心鴻海分單，但 FII 仍需 PCB 供應商</td><td>鴻海集團 AI 伺服器擴張 = 臻鼎訂單增加</td></tr>
+</table>
+</details>
+
+<details><summary>歷史劇本對照</summary>
+<table>
+<tr><th>歷史案例</th><th>相似度</th><th>劇本演進</th><th>臻鼎借鏡</th></tr>
+<tr><td>台積電 2003-2007 週期</td><td>70%</td><td>Capex 大幅上修 → 2004-2005 折舊爆量 → 2006-2007 AI 需求起飛 → EPS 突破</td><td>若如此演進，臻鼎 2026 折舊高峰，2027-2028 獲利爆發</td></tr>
+<tr><td>欣興電子 2020-2023 週期</td><td>60%</td><td>ABF 載板缺貨 → 股價飆漲 → 產能過剩 → 股價腰斬</td><td>注意 ABF 產業過剩週期風險（2027-2028）</td></tr>
+<tr><td>大立光 2015-2018 週期</td><td>50%</td><td>Apple 訂單集中 → 高 PE → Apple 多元供應商 → 股價修正 50%</td><td>Apple 集中依賴歷史警訊</td></tr>
+</table>
+</details>
+
+<!-- ==================== 8h ==================== -->
+</section>
+
+<section class="section" id="s8h">
+  <div class="section-head">
+    <div class="no">8h</div>
+    <div class="tit">
+      <h2>8h · 貓膩推衍（承接 Step 7 Ch12）</h2>
+      <div class="sub">燈號總評 + 歷史劇本 + 保護策略</div>
+    </div>
+  </div>
+
+<details open><summary>貓膩結論承接</summary>
+<table>
+<tr><th>貓膩燈號</th><th>核心假說</th><th>成立機率</th></tr>
+<tr><td class="num-warn">3 黃燈</td><td>獨董轉總經理（治理獨立性設計操作）+ 內稽主管異動 + ECB 連續發行</td><td>低（15-20%）— 為治理設計問題非違法</td></tr>
+</table>
+</details>
+
+<details><summary>歷史劇本推演（如果貓膩成立）</summary>
+<table>
+<tr><th>情境</th><th>演進</th><th>股價影響</th></tr>
+<tr><td>最快（3-6 月）</td><td>內部人異常交易被發現 + 重大訊息延遲 + 會計差錯</td><td>-40%</td></tr>
+<tr><td>最可能（6-12 月）</td><td>關係人交易透明度惡化 + 鴻海集團切單爭議 + 股東會抗議</td><td>-20%</td></tr>
+<tr><td>最慢（12-24 月）</td><td>沈慶芳退休爭議 + 簡禎富短期離職 + 業績兌現不如預期</td><td>-15%</td></tr>
+</table>
+</details>
+
+<details><summary>保護策略</summary>
+<table>
+<tr><th>策略</th><th>觸發條件</th><th>行動</th></tr>
+<tr><td>相信貓膩存在</td><td>簡禎富 6 個月內離職</td><td>立即全部出場</td></tr>
+<tr><td>不確定</td><td>—</td><td>限制單一股票持股 <10%，設停損 230 元</td></tr>
+<tr><td>最早逃生信號</td><td>內部人（沈慶芳/游哲宏）大量申報轉讓</td><td>立即減碼 50%</td></tr>
+</table>
+</details>
+
+<details><summary>貓膩追蹤清單</summary>
+<table>
+<tr><th>追蹤指標</th><th>確認訊號</th><th>否定訊號</th><th>檢查頻率</th></tr>
+<tr><td>簡禎富留任</td><td>2025 年度業績 vs 承諾的實現度</td><td>2026 簡禎富離職</td><td>每季</td></tr>
+<tr><td>關係人交易揭露</td><td>年報附註更透明</td><td>仍未具體揭露</td><td>年度</td></tr>
+<tr><td>內稽主管新任</td><td>資深專業人士接任</td><td>拖延超過 6 個月</td><td>每季</td></tr>
+<tr><td>ECB#4 轉換進度</td><td>緩慢分散</td><td>大規模集中轉換</td><td>每季</td></tr>
+<tr><td>鴻海集團切單爭議</td><td>鵬鼎月營收穩定</td><td>鵬鼎營收異常下降</td><td>每月</td></tr>
+</table>
+</details>
+
+<!-- ==================== 8i ==================== -->
+</section>
+
+<section class="section" id="s8i">
+  <div class="section-head">
+    <div class="no">8i</div>
+    <div class="tit">
+      <h2>8i · 推衍結論（第四次信心校準）</h2>
+      <div class="sub">四次校準彙整 + 最終行動建議</div>
+    </div>
+  </div>
+
+<div class="grid3">
+<div class="mini-card warn-card">
+<div class="title">最可能路徑</div>
+<div class="num">H2</div>
+<div class="desc">執行不如預期<br>機率 45%</div>
+</div>
+<div class="mini-card warn-card">
+<div class="title">第四次信心校準</div>
+<div class="num">48-52%</div>
+<div class="desc">中偏低<br>（低於 Step 6 的 50-55%）</div>
+</div>
+<div class="mini-card warn-card">
+<div class="title">最終加權期望</div>
+<div class="num">230 元</div>
+<div class="desc">當前 282 元溢價 18-23%</div>
+</div>
+</div>
+
+<details open><summary>四次信心校準最終彙整</summary>
+<table>
+<tr><th>校準點</th><th>信心度</th><th>合理股價</th><th>備註</th></tr>
+<tr><td>第一次 ACH</td><td>60-65%</td><td>140-260 元</td><td>初步</td></tr>
+<tr><td>第二次 壓力測試</td><td>55-60%</td><td>130-230 元</td><td>風險扣減</td></tr>
+<tr><td>第三次 評審團</td><td>50-55%</td><td>142-170 元</td><td>豁達扣分</td></tr>
+<tr><td class="num-warn">**第四次 推演（最終）**</td><td class="num-warn">48-52%</td><td class="num-warn">220-240 元</td><td>Step 8 調整：考量最新情報 + 蝴蝶效應 + 貓膩</td></tr>
+</table>
+</details>
+
+<details><summary>蝴蝶效應洞察摘要（3 個被忽略的見解）</summary>
+<ol style="padding-left:20px;font-size:.86em;color:var(--txt2);line-height:1.8">
+<li><b>NVIDIA 可能是「關鍵客戶」</b>（非僅 Apple）— 2026-04-07 Capex 上修訊息暗示；若屬實，客戶結構實際比市場想像更多元</li>
+<li><b>Shinko 下市後日系市場空缺</b>— 臻鼎有機會搶佔日系客戶（Sony/任天堂/日系伺服器），未反映在估值中</li>
+<li><b>鴻海 FII 自建 AI 伺服器實為內部訂單機會</b>（非競爭）— 市場錯誤擔心分單，實際上鴻海集團 AI 擴張對臻鼎是利多</li>
+</ol>
+</details>
+
+<details><summary>貓膩推衍摘要</summary>
+<div style="font-size:.86em;color:var(--txt2);padding-left:10px;line-height:1.7">
+<b>最關鍵影響：</b>若貓膩成立（機率 15-20%），最大風險非財務舞弊（無跡象），而是「治理獨立性弱 → 關鍵人物風險」。<br>
+<b>保護策略：</b>限制單一持股 <10%、設停損 230 元、追蹤簡禎富任期首年業績、關注內部人申報轉讓。
+</div>
+</details>
+
+<div class="tip warn"><b>推衍結論：最終行動建議（整合四次校準）</b>
+<div style="background:#1e1e1e;padding:12px 16px;border-radius:6px;margin-top:6px;font-size:.88em;line-height:1.75">
+<b style="color:var(--gold)">📊 最終評級：中性（Hold）/ 不建議追高</b><br><br>
+
+<b>核心判斷：</b>
+<ul style="padding-left:20px">
+<li>加權期望股價 230 元，當前 282 元 → <b>溢價 22%</b></li>
+<li>風險期望 -30% > 催化劑期望 +25.5%（風險略大於機會）</li>
+<li>最可能路徑 H2 執行不如預期（45%）</li>
+</ul>
+
+<b>行動建議：</b>
+<ul style="padding-left:20px">
+<li><b>已持有</b>（<200 元成本）：減碼 30-50% 獲利了結</li>
+<li><b>已持有</b>（200-260 元）：設停損 230 元，持有觀察</li>
+<li><b>已持有</b>（>260 元）：嚴格停損 240 元</li>
+<li><b>空手</b>：不追高，等待 2026-Q2 財報（8/15）或股價回檔至 200 元以下</li>
+</ul>
+
+<b>關鍵監測日期：</b>
+<ul style="padding-left:20px">
+<li>2026-05-10（4 月營收）→ 2026-05-15（Q1 財報）→ 2026-08-15（Q2 財報，最關鍵）</li>
+</ul>
+
+<b>推衍有效期：</b>2026-04-19 ~ 2026-05-19（1 個月），若 Q1 財報出現重大變化需提早更新。
+</div>
+</section>
+
+
+    <footer class="footer">
+      天機閣投資分析　·　第八步推演版　·　4958 臻鼎-KY　·　推衍基準日 2026-04-19<br>
+      來源：Step 1-7 推衍紀錄 + 2026-03 月營收 + 2026-04-07 重大訊息 + 管道 B/C/E 外部情報<br>
+      信心校準：Step 4 ACH 60-65% → Step 5 壓力 55-60% → Step 6 評審團 50-55% → Step 8 推演 48-52%（四次皆向下）<br>
+      最終評級：中性 Hold · 不建議追高 · 推衍有效期 2026-05-19
+    </footer>
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+</body>
+</html>
