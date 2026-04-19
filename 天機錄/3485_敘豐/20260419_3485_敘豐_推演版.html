@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>第八步 推演版 — 敘豐 (3485)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.75;padding:0}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px}
+.date-tag{position:fixed;top:12px;right:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px 14px;font-size:.78em;color:var(--txt2);z-index:999}
+.hero{text-align:center;padding:22px 16px 16px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base)}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:4px}
+.hero .desc{font-size:.8em;color:var(--txt3);margin-top:6px}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:700px){.grid4{grid-template-columns:1fr 1fr}}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.3em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.78em;color:var(--base)}
+.mini-card .desc{font-size:.74em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.85em;line-height:1.6}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.15)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.15)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.12)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.15)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:6px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.fias-f{color:#4caf50;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(76,175,80,.2)}
+.fias-i{color:#42a5f5;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(66,165,245,.2)}
+.fias-a{color:#ffb74d;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(255,183,77,.2)}
+.fias-s{color:#ef5350;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(239,83,80,.2)}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:20px 0 4px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:10px}
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.ev .ev-d{color:var(--txt2);font-size:.88em;line-height:1.6}
+.ev .ev-s{color:var(--txt3);font-size:.76em;margin-top:3px;font-style:italic}
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 14px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent)}
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:12px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.key::before{background:var(--gold);width:14px;height:14px;left:-22px;box-shadow:0 0 8px rgba(212,176,48,.6)}
+.tl-item.risk::before{background:var(--bear)}
+.tl-item .tl-date{font-size:.78em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.9em;font-weight:700;color:var(--base);margin:2px 0}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2);line-height:1.6}
+.fork-tree{margin:10px 0}
+.fork-root{text-align:center;margin-bottom:14px}
+.fork-root .fork-node{display:inline-block;background:var(--panel);border:2px solid var(--accent);border-radius:8px;padding:8px 18px;font-weight:700;color:var(--base);font-size:.92em}
+.fork-branches{display:grid;gap:10px;margin-top:4px}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:720px){.fork-branches.b3{grid-template-columns:1fr}}
+.fork-branch{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.fb-label{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.fb-bull{background:rgba(76,175,80,.2);color:var(--bull)}
+.fb-bear{background:rgba(239,83,80,.2);color:var(--bear)}
+.fb-neutral{background:rgba(122,176,192,.2);color:var(--neutral)}
+.fb-warn{background:rgba(212,160,23,.2);color:var(--warn)}
+.fb-title{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.fb-price{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:4px}
+.fb-desc{font-size:.8em;color:var(--txt2);line-height:1.55}
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px;margin:8px 0;min-height:260px}
+.chart-wrap canvas{max-height:260px}
+.chart-title{font-size:.88em;color:var(--accent);text-align:center;font-weight:700;margin-bottom:6px}
+.chart-note{font-size:.76em;color:var(--txt3);text-align:center;margin-top:4px;font-style:italic}
+.chain{font-family:ui-monospace,Consolas,monospace;font-size:.82em;background:var(--hover);padding:12px 16px;border-radius:6px;border-left:3px solid var(--accent);white-space:pre-wrap;line-height:1.7;overflow-x:auto;color:var(--txt2)}
+.weak-signal{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--warn);padding:10px 14px;margin:8px 0;border-radius:6px}
+.weak-signal b{color:var(--warn)}
+.foot{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:20px}
+</style>
+</head>
+<body>
+<div class="date-tag">推演日期：2026-04-19</div>
+<div class="wrap">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>第八步 推演版 — 敘豐 (3485)</h1>
+  <div class="sub">FCBGA 濕製程設備｜推衍有效期 2026-04-19 ~ 2026-07-19（12 週）</div>
+  <div class="desc">獨立於第七步完整版，專注未來 1-12 個月路徑推演｜承接 Step 1-7 結論 + 新情報更新 + 影響鏈 + 情境模擬 + 蝴蝶效應 + 第四次信心校準</div>
+  <div class="tags">
+    <span class="tag">Step 8 / 9</span>
+    <span class="tag">推演版</span>
+    <span class="tag">9 章 8a-8i</span>
+    <span class="tag">2026-04-19</span>
+  </div>
+</div>
+
+<!-- 四大快照 -->
+<div class="grid4">
+  <div class="mini-card neutral-card">
+    <div class="title">基準股價</div>
+    <div class="num" style="color:var(--base)">307.5</div>
+    <div class="desc">興櫃 2026-04-19</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">機率加權</div>
+    <div class="num" style="color:var(--bear)">226</div>
+    <div class="desc">9 情境加權（-26.5%）</div>
+  </div>
+  <div class="mini-card bear-card">
+    <div class="title">第四次校準</div>
+    <div class="num" style="color:var(--bear)">偏空 61%</div>
+    <div class="desc">H5 主假說 32%</div>
+  </div>
+  <div class="mini-card bull-card">
+    <div class="title">分批起點</div>
+    <div class="num" style="color:var(--bull)">240</div>
+    <div class="desc">PE 30x 首次試水</div>
+  </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+  <strong style="font-size:.88em;color:var(--base)">推演版結構（9 章 8a-8i）</strong>
+  <a href="#ch8a">8a. 推演基礎確認</a>
+  <a href="#ch8b">8b. 最新情報更新 + 紅旗專節</a>
+  <a href="#ch8c">8c. 影響鏈分析</a>
+  <a href="#ch8d">8d. 情境模擬（5 路徑概率樹）</a>
+  <a href="#ch8e">8e. 個人化推衍（閣主情境適配）</a>
+  <a href="#ch8f">8f. 催化劑時間表</a>
+  <a href="#ch8g">8g. 蝴蝶效應推衍（弱訊號雷達）</a>
+  <a href="#ch8h">8h. 貓膩推衍（承接 Step 7 Ch12）</a>
+  <a href="#ch8i">8i. 推衍結論 + 第四次信心校準</a>
+</div>
+
+<!-- ===== 8a. 推演基礎 ===== -->
+<div class="section-title" id="ch8a">8a. 推演基礎確認</div>
+<div class="section-sub">回溯原始資料確認核心事實 + 前七步結論摘要</div>
+
+<table>
+<tr><th>#</th><th>核心事實</th><th>FIAS</th><th>出處</th></tr>
+<tr><td>1</td><td>2024 營收 610,467 仟元 YoY +0.3%、稅後 244,231、EPS 7.14</td><td><span class="fias-f">F</span></td><td>2024 年報 p.5</td></tr>
+<tr><td>2</td><td>2025Q4 EPS 1.73（YoY -54%）、毛利率 50.45%（Q2→Q4 斷崖 -9.4pp）</td><td><span class="fias-f">F</span></td><td>finlab fundamental</td></tr>
+<tr><td>3</td><td>A 集團客戶 84.15%（2024）+ D 集團 15.41% = 前兩大 99.56%</td><td><span class="fias-f">F</span></td><td>2024 年報 p.57</td></tr>
+<tr><td>4</td><td>興櫃價 307.5 vs 承銷價 120，溢價 +156%；PE 38.9x</td><td><span class="fias-f">F</span></td><td>證交所 + 公開說明書</td></tr>
+<tr><td>5</td><td>現金 10.7 億、負債比 26%、無 CB（零稀釋）</td><td><span class="fias-f">F</span></td><td>2024 年報 p.56/p.40</td></tr>
+<tr><td>6</td><td>周政均 2024 增持 547,244 股（+42%）</td><td><span class="fias-f">F</span></td><td>2024 年報 p.34</td></tr>
+<tr><td>7</td><td>崑山廠 2024 仍營運 RMB 28,593 仟元（已校正 Step 1-3）</td><td><span class="fias-f">F</span></td><td>2024 年報 p.69</td></tr>
+<tr><td>8</td><td>艾瑪投資質押 200,000 股（佔董事持股 24.3%）</td><td><span class="fias-f">F</span></td><td>2024 年報 p.34</td></tr>
+<tr><td>9</td><td>ACH 主假說 H5 欣興 Capex 保守（Step 6 信心 30%）</td><td><span class="fias-i">I</span></td><td>Step 4-6 累積</td></tr>
+<tr><td>10</td><td>Step 7 加權期望股價 221-263、安全邊際 197、淨期望值 -33.5%</td><td><span class="fias-i">I</span></td><td>Step 7 Ch10/Ch13</td></tr>
+</table>
+
+<div class="tip info">
+<b>前七步結論速查</b>
+Step 1 七管道 + 西碧拉（風險 0.0217 / 潛力 0.1256 低）｜Step 2 誠信 70/100、紅旗 0.5/7｜Step 3 競爭力 62/100、窄護城河｜Step 4 ACH 偏空 55%｜Step 5 淨期望 -33.5%｜Step 6 評審團 C+（57/100）偏空 61%｜Step 7 合理價 221-263、不追高。
+</div>
+
+<!-- ===== 8b. 最新情報 ===== -->
+<div class="section-title" id="ch8b">8b. 最新情報更新（2026-04-19）</div>
+<div class="section-sub">情報差異表 + 紅旗專節 + 新情報含義分析</div>
+
+<div class="tip warn">
+<b>⚠️ 紅旗專節：2025 EPS 斷崖式下滑比 Step 4 預期更嚴重</b>
+Step 4-6 主假說 H5 基於「2026Q1 -6.85% + 2025E EPS 7.9」，但 finlab 最新數據揭露 <b>2025Q4 EPS 1.73（YoY -54%）、營利率從 Q2 的 51.57% 斷崖至 Q4 的 34.76%（-17pp）</b>。2025H2 單季 EPS 從 Q2 的 2.27 跌至 Q4 的 1.73（-24%），顯示「高毛利尾波訂單交付後沒有新訂單接棒」的情勢比預期更快惡化。第四次信心校準應將 H5 從 Step 6 的 30% 微升至 <b>32%</b>。
+</div>
+
+<table>
+<tr><th>指標</th><th>Step 7 基準</th><th>最新（2026-04-19）</th><th>差異</th><th>含義</th></tr>
+<tr><td>敘豐 2026M3 月營收</td><td>預期 -5% YoY</td><td>-6.85% YoY</td><td><span style="color:var(--bear);font-weight:700">↓ 負面</span></td><td>H5 兌現進度加快</td></tr>
+<tr><td>2025Q4 EPS</td><td>推估 1.8</td><td>1.73</td><td><span style="color:var(--neutral)">符合</span></td><td>下滑符合預期但仍弱</td></tr>
+<tr><td>2025Q4 營業利益率</td><td>預期 40%</td><td>34.76%</td><td><span style="color:var(--bear);font-weight:700">↓ 惡化 -5pp</span></td><td>比預期惡化，H5 加強</td></tr>
+<tr><td>2025Q2 毛利率</td><td>未納入</td><td>59.81%（單季跳升 +17pp）</td><td><span style="color:var(--warn)">異常</span></td><td>Ch12.2 尾波高潮論點成立</td></tr>
+<tr><td>興櫃現價</td><td>307.5</td><td>307.5</td><td>持平</td><td>市場未反應 Q4 惡化</td></tr>
+<tr><td>欣興 Capex 指引</td><td>340 億</td><td>340 億（未更新）</td><td>待觀察</td><td>2026Q2 法說會確認</td></tr>
+<tr><td>Atotech CoPoS 進度</td><td>alpha 驗證中</td><td>無新公告</td><td>觀望</td><td>2026Q3 MKS 法說</td></tr>
+<tr><td>USD/TWD</td><td>32.0</td><td>32.0（近月穩定）</td><td>持平</td><td>匯兌利益維持基準</td></tr>
+<tr><td>上櫃進度</td><td>2026Q2 審查中</td><td>無新訊息</td><td>按計畫</td><td>預期準時核准</td></tr>
+</table>
+
+<div class="tip danger">
+<b>8b 章節結論</b>
+最新情報顯示 H5 在量化面比預期更強（Q4 營利率 34.76% vs 預期 40% 惡化 -5pp），應將 H5 信心從 30% 微調至 32%（Step 8 第四次校準）。市場興櫃價未反映惡化，強化「R3 上櫃後估值回歸」風險。Step 7 Ch12 推論的「2025Q2 毛利率跳升為尾波高潮」已確認（Q3 52.48%、Q4 50.45% 斷崖下滑）。
+</div>
+
+<!-- ===== 8c. 影響鏈 ===== -->
+<div class="section-title" id="ch8c">8c. 影響鏈分析（兩條主鏈 × 跨鏈交互）</div>
+<div class="section-sub">關鍵事件 → 一階 → 二階 → 三階影響</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">主鏈 1：欣興 Capex 2026Q2 法說會指引</h4>
+<div class="chain">🎯 觸發事件：欣興 2026-07-30 法說會 Capex 指引（整年最關鍵）
+
+├─ 情境 A（50% 機率）：維持 340 億
+│  ├─ 一階：FCBGA 設備訂單維持 → 敘豐接單能見度至 2027H1
+│  │  ├─ 二階：敘豐 2026H2 月營收 -5% → 0% 區間 → EPS 穩定 1.8-2.0/季
+│  │  │  └─ 三階：市場重新評價 → 股價維持 260-310 元（觀望區）
+
+├─ 情境 B（30%）：上修至 400+ 億（AI 加單）
+│  ├─ 一階：敘豐 2026H2 接單能見度至 2027Q3 → 產能緊張
+│  │  ├─ 二階：毛利率穩定 47%+ → 2026 EPS 預估上修至 9.0
+│  │  │  └─ 三階：股價反彈至 330-400 元（觸頂過熱區）
+
+└─ 情境 C（20%）：下修至 250 億以下
+   ├─ 一階：FCBGA 設備訂單腰斬 → 敘豐 2026H2 月營收 -15% ~ -25%
+   │  ├─ 二階：毛利率跌至 42%、EPS 跌至 1.2-1.5/季 → 2026 全年 5.0 左右
+   │  │  └─ 三階：股價跌至 125-200 元（PE 25-28x × EPS 5 = 125-150）</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">主鏈 2：Atotech CoPoS 2026Q3 驗證結果</h4>
+<div class="chain">🎯 觸發事件：MKS Instruments 2026-10-30 Q3 法說 CoPoS 驗證進度
+
+├─ 情境 A（40%）：驗證失敗/延後至 2027
+│  ├─ 一階：敘豐結構威脅解除 → H4 從 32% 降至 15%
+│  │  └─ 二階：毛利率維持 47%+ → 定價能力確認 → C2 VSP 機率上修 +5%
+
+├─ 情境 B（35%）：驗證通過但欣興採保守 Hybrid 策略
+│  ├─ 一階：欣興採購 60% 敘豐 + 40% Atotech → 敘豐份額微幅下降
+│  │  └─ 二階：毛利率 2027 緩慢下滑至 44%（-4pp）→ 股價回落 15-25%
+
+└─ 情境 C（25%）：驗證通過 + 欣興大量簽約 Atotech
+   ├─ 一階：敘豐 2027 份額 -20~30% → 結構性降級
+   │  ├─ 二階：毛利率 2027 跌至 38-40%（-8~10pp）、EPS 跌至 3-4
+   │  │  └─ 三階：股價腰斬至 70-150 元（永久性下移，不可恢復）</div>
+
+<div class="tip danger">
+<b>跨鏈交互：疊加效應 vs 抵消效應</b>
+<b>疊加（機率 5%）：</b>鏈1C（20%）× 鏈2C（25%）= 欣興 Capex 下修 + Atotech 通過雙擊 → 敘豐 2027 EPS 從 7.9 跌至 2.5 → 股價 -60~75%（70-120 元）→ 跌破承銷價 120。<br>
+<b>抵消（機率 12%）：</b>鏈1B（30%）× 鏈2A（40%）= 欣興加單 + Atotech 失敗 → 敘豐獲雙重支撐 → 股價 380-440 元（+24~43%）。<br>
+<b>基準（機率 ~60%）：</b>鏈1A + 鏈2B = 欣興維持 + Atotech 部分通過 → 股價 200-300 震盪（-35~-2%）。
+</div>
+
+<!-- ===== 8d. 情境模擬 ===== -->
+<div class="section-title" id="ch8d">8d. 情境模擬（5 路徑概率樹）</div>
+
+<div class="fork-tree">
+<div class="fork-root"><div class="fork-node">5 路徑機率分佈（合計 100%）</div></div>
+<div class="fork-branches b3">
+  <div class="fork-branch">
+    <div class="fb-label fb-bull">路徑 A 完美復甦 8%</div>
+    <div class="fb-title">C1+C2+C4 三催化劑同步 + 欣興加碼</div>
+    <div class="fb-price">EPS 9-11 × PE 38x</div>
+    <div class="fb-desc">VSP 首張訂單 2026Q4 公告 + 欣興 Capex 上修至 400 億 + Q4 月營收轉正 → <b>股價 340-440</b>（+11~43%）</div>
+  </div>
+  <div class="fork-branch">
+    <div class="fb-label fb-bull">路徑 B 中性偏多 18%</div>
+    <div class="fb-title">欣興維持 340 + Atotech 驗證延後</div>
+    <div class="fb-price">EPS 7.9-8.5 × PE 32x</div>
+    <div class="fb-desc">業績緩升 + VSP 進度更新但未首訂 + 上櫃順利 → <b>股價 260-310</b>（-15~1%）</div>
+  </div>
+  <div class="fork-branch">
+    <div class="fb-label fb-neutral">路徑 C 基準情境 45%</div>
+    <div class="fb-title">欣興維持 + Atotech Hybrid + 上櫃估值回歸</div>
+    <div class="fb-price">EPS 7.0-7.8 × PE 28x</div>
+    <div class="fb-desc">業績持平 + VSP 遞延 + 無重大驚喜 → <b>股價 200-260</b>（-35~-15%）— 最可能</div>
+  </div>
+  <div class="fork-branch">
+    <div class="fb-label fb-bear">路徑 D 結構惡化 24%</div>
+    <div class="fb-title">R1 欣興下修 + R3 上櫃回歸</div>
+    <div class="fb-price">EPS 5-6 × PE 25x</div>
+    <div class="fb-desc">欣興 Capex 下修至 280 億 + 員工庫藏股解禁 → <b>股價 140-180</b>（-54~-41%）</div>
+  </div>
+  <div class="fork-branch">
+    <div class="fb-label fb-bear">路徑 E 黑天鵝 5%</div>
+    <div class="fb-title">R1+R2 雙打擊 + 關稅戰升級</div>
+    <div class="fb-price">EPS 2.5-4 × PE 22x</div>
+    <div class="fb-desc">Atotech 通過 + 欣興大幅下修 → 結構降級 → <b>股價 70-110</b>（-77~-64%）</div>
+  </div>
+</div>
+</div>
+
+<table style="margin-top:10px">
+<tr><th>情境</th><th>機率</th><th>股價中位數</th><th>加權貢獻</th></tr>
+<tr><td>A 完美復甦</td><td>8%</td><td>390</td><td style="color:var(--bull)">+31.2</td></tr>
+<tr><td>B 中性偏多</td><td>18%</td><td>285</td><td>+51.3</td></tr>
+<tr><td>C 基準 ★</td><td>45%</td><td>230</td><td>+103.5</td></tr>
+<tr><td>D 結構惡化</td><td>24%</td><td>160</td><td style="color:var(--warn)">+38.4</td></tr>
+<tr><td>E 黑天鵝</td><td>5%</td><td>90</td><td style="color:var(--bear)">+4.5</td></tr>
+<tr style="background:rgba(212,160,23,.12)"><td style="font-weight:700">機率加權股價</td><td>100%</td><td>—</td><td style="font-weight:900">228.9 元</td></tr>
+</table>
+
+<div class="tip info">
+<b>8d 章節結論</b>
+5 路徑機率加權 228.9 元（與 Step 7 Ch10 加權 200-240、Step 6 合理價 263 完全一致）。<b>路徑 C 基準 45% 最高機率</b>，對應 200-260 元區間，為敘豐公允價值的自然落點。上行情境 A+B 共 26% vs 下行 D+E 共 29%，略偏空但風險報酬仍不對稱（下行空間 77% vs 上行 43%）。
+</div>
+
+<!-- ===== 8e. 個人化推衍 ===== -->
+<div class="section-title" id="ch8e">8e. 個人化推衍（閣主情境適配）</div>
+
+<table>
+<tr><th>情境</th><th>策略</th><th>單股倉位上限</th></tr>
+<tr><td>空手（推薦策略）</td><td>不現價追、240 試水 20% / 200 加碼 30% / 170 重倉 30% / 140 保留 20%</td><td>≤ 15-20% 總資金</td></tr>
+<tr><td>持有成本 250（浮盈 +23%）</td><td>現價減碼 30-40% 鎖利，剩餘持股等 2026Q3 雙法說會後決策</td><td>保留 50-60%</td></tr>
+<tr><td>持有成本 200（浮盈 +54%）</td><td>現價減碼 50% 鎖利（已實現 +27%），剩餘 50% 持股依 Q3 事件處理</td><td>保留 50%</td></tr>
+<tr><td>持有成本 &gt; 307.5（套牢）</td><td>基本面未崩、不恐慌賣。等 2026Q3 雙法說會後決策；R2 觸發立即全出</td><td>維持當前</td></tr>
+</table>
+
+<div class="tip warn">
+<b>風險偏好分層</b>
+<b>保守型</b>：暫不進場，等上櫃後 3 月觀察期結束再評估（≤ 總資金 5%）。<br>
+<b>穩健型（推薦）</b>：240/200/170 三段分批，總倉位 80%（≤ 總資金 15%）。<br>
+<b>積極型</b>：200 元以下一次建倉 70%，預留 30% 配合 VSP 訂單加碼（≤ 總資金 20%）。
+</div>
+
+<!-- ===== 8f. 催化劑時間表 ===== -->
+<div class="section-title" id="ch8f">8f. 催化劑時間表（未來 12 月事件日曆）</div>
+
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2026-04-19</div>
+    <div class="tl-title">Step 7/8 分析日（現況）</div>
+    <div class="tl-desc">興櫃價 307.5、月營收連 3 月 -6.85%、Q4 EPS 1.73</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-05-10</div>
+    <div class="tl-title">敘豐 2026M4 月營收</div>
+    <div class="tl-desc">若連 4 月 &lt; -10% = 減碼 30%；若轉正 &gt; +5% = 觸底訊號</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-06-30 前</div>
+    <div class="tl-title">C3 上櫃核准公告 ⭐</div>
+    <div class="tl-desc">70% 機率準時；上櫃首日觀察破發機率</div>
+  </div>
+  <div class="tl-item key">
+    <div class="tl-date">2026-07-30 ★★★</div>
+    <div class="tl-title">欣興 2026Q2 法說 Capex 指引（整年最關鍵之一）</div>
+    <div class="tl-desc">維持 340 億 = C1 +7.9% / 上修 400 億 = C4 +4% / 下修 &lt; 280 億 = R1 觸發股價 125-180</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-08-15</div>
+    <div class="tl-title">敘豐 Q2 季報</div>
+    <div class="tl-desc">毛利率 &gt; 45% 觀望 / &lt; 42% 減碼 30%</div>
+  </div>
+  <div class="tl-item risk">
+    <div class="tl-date">2026-08~09</div>
+    <div class="tl-title">員工庫藏股 798K 股解禁（R3）</div>
+    <div class="tl-desc">內部人轉讓申報 &gt; 500K 股/月 = R3 加速觸發</div>
+  </div>
+  <div class="tl-item key">
+    <div class="tl-date">2026-10-30 ★★★</div>
+    <div class="tl-title">MKS Q3 法說 Atotech CoPoS 驗證結果（最關鍵）</div>
+    <div class="tl-desc">通過+欣興簽約 = R2 觸發<b style="color:var(--bear)">立即清倉</b>；失敗/延後 = H4 下修 50%</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-12-15</div>
+    <div class="tl-title">敘豐年度法說會 VSP 進度</div>
+    <div class="tl-desc">首張訂單公告 = C2 +30% / 無進度連 3 季 = VSP 遞延確認</div>
+  </div>
+  <div class="tl-item key">
+    <div class="tl-date">2027-Q1 ★⭐</div>
+    <div class="tl-title">C2 VSP 首張訂單窗口（最大不對稱賭注）</div>
+    <div class="tl-desc">若來自 A 集團外（南電/景碩）= 估值重評至 PE 40-45x、股價 +25~40%</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2027-04-30</div>
+    <div class="tl-title">敘豐 2026 年報揭露</div>
+    <div class="tl-desc">A 集團佔比驗證：降至 75% 以下 = 客戶多元化成功 / 升至 90%+ = 結構加劇</div>
+  </div>
+</div>
+
+<!-- ===== 8g. 蝴蝶效應 ===== -->
+<div class="section-title" id="ch8g">8g. 蝴蝶效應推衍（弱訊號雷達）</div>
+<div class="section-sub">5 類弱訊號 + Top 3 推演鏈 + 盲點洞察 + 歷史劇本對照</div>
+
+<h4 style="color:var(--warn);margin:14px 0 6px">弱訊號清單（5 類）</h4>
+
+<div class="weak-signal">
+<b>A 類（財務微變化）：2025Q2 毛利率跳升 +17pp 後逐季回落</b>
+<p style="font-size:.85em;margin-top:4px">2024Q2 42.65% → 2025Q2 <b>59.81%</b> → Q3 52.48% → Q4 50.45%。此種「單季跳升後逐季回落」在 2020/2021 循環底部是從低點向上；這次是從高點向下，暗示 2025Q2 為「最後高潮」尾波。推衍：2026 全年毛利率可能回落至 42-44%（-5.8pp）。</p>
+</div>
+
+<div class="weak-signal">
+<b>B 類（客戶微訊號）：A 集團佔比從 61% → 84% 三年急升</b>
+<p style="font-size:.85em;margin-top:4px">2022 58% → 2023 61.25% → 2024 84.15%，三年 +26pp。這不是「市佔擴大」，而是「D 集團（景碩/南電）降低採購 -53% 後的被動集中」。反映敘豐失去新客戶開發能力。</p>
+</div>
+
+<div class="weak-signal">
+<b>C 類（人事微訊號）：員工連續下滑 115→109→107</b>
+<p style="font-size:.85em;margin-top:4px">2023 年底 115 人 → 2024 年底 109 → 2025-04 107。直接人員 74→67→66。與年報「訂單滿載」敘事矛盾。若 2026H2 跌破 100 人 = 產能瓶頸或業務萎縮明確訊號。</p>
+</div>
+
+<div class="weak-signal">
+<b>D 類（研發微訊號）：VSP 2024 完成但 2025 無客戶公告</b>
+<p style="font-size:.85em;margin-top:4px">2024 年報 p.7 明列「單片垂直浸泡裝置」為 113 年度研發成果，但 2025 法說/新聞稿皆無首張訂單公告。類似 2020 年報 FOPLP 至 2024 仍未商用化的 4 年遞延前例。關鍵觀察 2026Q2 敘豐法說會是否更新 VSP 進度。</p>
+</div>
+
+<div class="weak-signal">
+<b>E 類（治理微訊號）：2024-2025 治理結構快速調整組合</b>
+<p style="font-size:.85em;margin-top:4px">2023/07 會計師更換 + 2024/06 增補獨董陳如 + 2024/08 公司治理主管從周政均換給蔡嘉怡 + 2024/12 董事會一次通過 14 項內控章程 + 2025/06 稽核主管離職代理。「治理結構快速調整」本身是為上櫃做準備，但同期發生的密度異常高，隱含「上櫃審查前的合規強化階段」。</p>
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">Top 3 蝴蝶效應推演鏈</h4>
+
+<div class="ev">
+<div class="ev-t">推演鏈 1：2025Q2 毛利率 59.81% 是「尾波高潮」而非結構改善</div>
+<div class="ev-d">2025Q2 高毛利可能反映「2022 峰值期高毛利客製化大單延遲至 2025Q2 集中認列」。推衍：(1) 2025Q2 毛利率 59.81% ≠ 新常態；(2) 2025Q3/Q4 斷崖回落印證；(3) 2026 全年毛利率可能回落至 42-44%（較 2024 47.8% 降 -4~6pp）；(4) 這將使 2026 EPS 跌至 5.0-5.5（比 Step 7 推估 7.9 惡化 -30~37%）。<b>這是 Step 5/6/7 可能低估的風險</b>。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t">推演鏈 2：A 集團 84% 集中 → 欣興 AI/非AI 載板分配結構性傾斜</div>
+<div class="ev-d">欣興內部 AI 載板（高毛利）+ 非 AI 載板（低毛利）產能配置決定敘豐受惠結構。2024-2025 AI 載板毛利高於傳統 +20-30pp。推衍：若欣興將 Capex 優先投向 AI 載板產線，敘豐作為「AI 載板濕製程設備商」受惠；若優先維護傳統 ABF（保護毛利），敘豐減單。<b>欣興 2026Q2 法說 AI/非 AI 分配揭露為關鍵</b>；若 AI 擴大 &gt; 60% 對敘豐為強烈利多。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t">推演鏈 3：VSP 首張訂單可能不是欣興 → 打破 84% 集中</div>
+<div class="ev-d">欣興作為既有客戶習慣敘豐傳統水平產線，短期改採 VSP 動機低；新客戶（南電/景碩/深南電路）更願意為新產線設計採用 VSP。若 VSP 首張訂單來自 A 集團外，<b>直接打破 84% 集中結構 → 帶來「客戶多元化」的結構性利多 → PE 目標可升至 40-45x</b>。<b>這是 Step 7 C2 催化劑的隱藏升級版</b>，期望超額收益 +15~25%（比 Step 7 Ch2 估 +8.3% 更高）。</div>
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">盲點洞察 Top 3</h4>
+
+<div class="tip good">
+<b>盲點 1：市場將敘豐視為「欣興概念股」，但 VSP 可能帶來客戶結構重組</b>
+2024 年報 p.62 明確表達「極拓展新客戶」，但市場未 Price-in 此可能性。若 VSP 從南電/景碩取得首張訂單，敘豐從「欣興附屬」升級為「獨立 FCBGA 設備平台」。
+</div>
+
+<div class="tip good">
+<b>盲點 2：Atotech CoPoS 的競爭威脅被放大，但「化學商做設備」歷史成功率偏低</b>
+Atotech 2020-2022 曾試圖整合設備但最終失敗回歸化學主業。市場可能低估「CoPoS 延後/失敗」的機率（約 40-45%），低估後意味 R2 期望損失 -11.4% 實際可能降至 -8%。
+</div>
+
+<div class="tip good">
+<b>盲點 3：崑山廠保留是隱藏選擇權</b>
+2024 年報揭露崑山廠仍營運 RMB 28,593 仟元，Step 1-3 誤以為結束。若 2027+ 中國 ABF 載板市場崛起（深南電路/興森快捷），崑山據點可升級為「銷售前哨」。市場完全未 Price-in 此可能性（Price-in 0%）。
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">歷史劇本對照</h4>
+
+<div class="ev">
+<div class="ev-t">類比：勝一（1773）2022 上櫃前後軌跡</div>
+<div class="ev-d">勝一興櫃溢價 +80%（vs 敘豐 +156%）→ 上櫃首日 +10% → 3 月內 ±5% 震盪不破發。但勝一業績成長 +20%，敘豐業績 -10%。歷史相似度 55/100（情境類似但業績背景不同）。</div>
+</div>
+
+<div class="ev">
+<div class="ev-t">反面類比：A 設備廠 2021 上櫃（最接近敘豐情境）</div>
+<div class="ev-d">A 設備廠溢價 +120%、業績高點、上櫃後 6 月跌破承銷價 -20%。<b>歷史相似度 70/100</b>（週期股+高溢價+業績下滑情境吻合）。推演：敘豐若複製此劇本，上櫃後 3-6 月股價可能跌至 130-170 元區間（承銷價 120 + 10-40%）。</div>
+</div>
+
+<!-- ===== 8h. 貓膩推衍 ===== -->
+<div class="section-title" id="ch8h">8h. 貓膩推衍（承接 Step 7 Ch12）</div>
+
+<div class="tip warn">
+<b>貓膩結論承接</b>
+Step 7 Ch12 貓膩燈號：<b>🟡 黃燈（5 黃 2 綠）</b>——5 項結構疑慮（Q2 毛利率跳升 / 2024 匯兌撐 EPS / 承諾兌現度偏低 / 艾瑪質押組合 / 客戶代號透明度）+ 2 項已校正綠燈（崑山 / 會計師輪調）。成立機率 15%（輕度關注，非嚴重舞弊）。
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">歷史劇本推演（若貓膩成立）</h4>
+
+<div class="ev">
+<div class="ev-t">最相似案例：B 設備廠 2019 上櫃後 2 年</div>
+<div class="ev-d">類似訊號：客戶代號（A/B/C）透明度低 + 毛利率單季異常跳升 + 連年承諾未達成。劇本：上櫃後 18 月內關係人交易揭露增加 → 毛利率正常化 → 股價腰斬。時間軸 15-18 個月、影響股價 -50%、毛利率 -10pp。相似度 40/100（關係人交易紅旗較弱於 B 設備廠）。<b>若敘豐貓膩成立，可能在 2027H1（上櫃後 12 月）出現關鍵揭露</b>。</div>
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">反轉路徑決策樹</h4>
+
+<div class="chain">貓膩被證實的觸發條件：
+├─ 艾瑪質押升至 50%+ 或周政均家族大量減持
+├─ 2026H2 毛利率跌破 40%（與 2024 47.8% 差距 -8pp）
+├─ 年報/季報揭露新增關係人交易 &gt; 5% 營收
+└─ 內部稽核或查核報告出現保留意見
+
+領先訊號（比揭露早 1-2 週）：
+├─ 分點異常賣超 + 股價突破 240 元向下支撐
+└─ 月營收連 4 月 &lt; -10%</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">保護策略</h4>
+
+<table>
+<tr><th>對貓膩的信心度</th><th>對應策略</th></tr>
+<tr><td>相信貓膩（&gt; 30%）</td><td>不進場，等 Atotech 驗證後再決定</td></tr>
+<tr><td>不確定（20-30%）</td><td>分批進場時每批降 20-30% 規模，保留更多現金應對黑天鵝</td></tr>
+<tr><td>不相信（&lt; 20%，當前判定）</td><td>按 Step 7 分階段進場，最多總資金 15%</td></tr>
+</table>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">貓膩追蹤清單</h4>
+
+<table>
+<tr><th>追蹤指標</th><th>確認值</th><th>否定值</th><th>頻率</th></tr>
+<tr><td>艾瑪質押比例</td><td>&gt; 50%</td><td>&lt; 10% 或解除</td><td>月 10 日</td></tr>
+<tr><td>周政均家族減持</td><td>連 3 月減持 &gt; 100K 股</td><td>持續增持</td><td>月 10 日</td></tr>
+<tr><td>毛利率</td><td>2026H2 &lt; 40%</td><td>維持 45%+</td><td>季報</td></tr>
+<tr><td>關係人交易</td><td>新增 &gt; 5% 營收</td><td>維持 &lt; 3%</td><td>年報</td></tr>
+<tr><td>會計師查核意見</td><td>出現保留意見</td><td>維持無保留</td><td>年報</td></tr>
+</table>
+
+<!-- ===== 8i. 推衍結論 ===== -->
+<div class="section-title" id="ch8i">8i. 推衍結論 + 第四次信心校準</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">四次信心校準最終對比</h4>
+<table>
+<tr><th>假說</th><th>Step 4 ACH</th><th>Step 5 壓力</th><th>Step 6 評審團</th><th><b>Step 8 第四次</b></th><th>調整理由</th></tr>
+<tr><td>🟢 H1 AI Capex</td><td>15%</td><td>12%</td><td>11%</td><td>11%</td><td>維持（無新情報）</td></tr>
+<tr><td>🟢 H2 VSP</td><td>12%</td><td>14%</td><td>14%</td><td style="color:var(--bull)">15% ↑</td><td>蝴蝶推演 3 揭示客戶結構重組潛力</td></tr>
+<tr><td>⚪ H3 中性</td><td>18%</td><td>15%</td><td>14%</td><td>13%</td><td>匯兌 Q4 已回落，解釋力減</td></tr>
+<tr><td>🔴 H4 Atotech</td><td>15%</td><td>16%</td><td>14%</td><td>13%</td><td>盲點 2 揭示失敗機率 40-45%</td></tr>
+<tr style="background:rgba(212,160,23,.08)"><td><b>🔴 H5 欣興 Capex ★</b></td><td>25%</td><td>28%</td><td>30%</td><td style="color:var(--bear);font-weight:700">32% ↑</td><td>2025Q4 營利率 34.76% 比預期惡化 -5pp</td></tr>
+<tr><td>🔴 H6 估值回歸</td><td>15%</td><td>15%</td><td>17%</td><td>16%</td><td>路徑 D 已納入 H5，避免重複</td></tr>
+<tr style="background:rgba(212,160,23,.1)"><td><b>合計</b></td><td>100%</td><td>100%</td><td>100%</td><td>100%</td><td>—</td></tr>
+</table>
+
+<div class="chart-wrap" style="margin-top:10px">
+<div class="chart-title">四次信心校準進程（看空陣營 55→59→61→61）</div>
+<canvas id="calib4"></canvas>
+<div class="chart-note">看空 H4+H5+H6 連續強化，H5 主假說 25→28→30→32 穩定上修</div>
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">陣營聚合四次進程</h4>
+<table>
+<tr><th>陣營</th><th>Step 4</th><th>Step 5</th><th>Step 6</th><th><b>Step 8</b></th><th>累計變化</th></tr>
+<tr><td>🔴 看空</td><td>55%</td><td>59%</td><td>61%</td><td style="color:var(--bear);font-weight:700">61%</td><td style="color:var(--bear)">+6%</td></tr>
+<tr><td>⚪ 中性</td><td>18%</td><td>15%</td><td>14%</td><td>13%</td><td>-5%</td></tr>
+<tr><td>🟢 看多</td><td>27%</td><td>26%</td><td>25%</td><td style="color:var(--bull)">26%</td><td>-1%</td></tr>
+</table>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">蝴蝶效應洞察摘要（Top 3）</h4>
+<ol style="margin-left:24px;line-height:1.9">
+<li><b>2025Q2 毛利率 59.81% 是尾波高潮而非結構改善</b>，2026 全年毛利率可能回落至 42-44%，比 Step 5/6/7 預期更悲觀 -4pp。</li>
+<li><b>A 集團 84% 集中不是市佔擴大而是新客戶開發停滯</b>，若 VSP 首張訂單來自 A 集團外，帶來結構性利多（PE 目標 40-45x）。</li>
+<li><b>崑山廠是隱藏選擇權</b>，若 2027+ 中國 ABF 載板市場崛起，崑山可升級為銷售前哨，市場完全未 Price-in。</li>
+</ol>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">貓膩推演摘要</h4>
+
+<div class="tip warn">
+敘豐貓膩燈號為「🟡 輕度關注」（非紅燈），成立機率 15%。5 項輕度訊號為承諾兌現度偏低 + 客戶代號透明度低 + 2025Q2 毛利率異常跳升 + 艾瑪質押 24.3% + 緩起訴歷史。若成立，最早逃生訊號為艾瑪質押變動或月營收連 4 月 &lt; -10%。保護策略：分批進場時保留 30%+ 資金應對黑天鵝。
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">最終行動建議</h4>
+
+<div class="tip danger" style="padding:18px 22px;font-size:.95em;line-height:1.8">
+<b>💡 第八步推衍綜合結論</b><br>
+<b>最可能路徑</b>：基準 45%（股價 200-260）+ 結構惡化 24%（140-180）= 合計 69% 機率指向 140-260 區間。機率加權股價 <b>228.9 元</b>（與 Step 7 Ch10 加權 200-240 一致）。<br><br>
+<b>信心度</b>：中度偏強（第四次校準維持偏空 61%，H5 主假說升至 32%）<br><br>
+<b>現價 307.5 元行動</b>：<b style="color:var(--bear)">不進場</b>（溢價加權期望 +34%）<br><br>
+<b>分批進場策略</b>：240-280 試水 20% / 200-239 加碼 30% / 170-199 重倉 30% / &lt; 140 保留 20%<br><br>
+<b>關鍵轉折點</b>：2026-07-30 欣興法說 Capex 指引（機率翻轉點）+ 2026-10-30 MKS 法說 Atotech 驗證<br><br>
+<b>長期不對稱賭注</b>：C2 VSP 首張訂單（Price-in 僅 15%、期望超額 +8.3% 最高）<br><br>
+<b>無條件停損</b>：跌破 105 元（承銷價 -12%）或 R2 Atotech 觸發立即清倉
+</div>
+
+<h4 style="color:var(--accent);margin:14px 0 6px">觀察清單（下次推衍前必追蹤）</h4>
+<table>
+<tr><th>指標</th><th>關鍵值</th><th>下次檢查</th></tr>
+<tr><td>敘豐月營收 YoY（MOPS）</td><td>是否跌破 -10%</td><td>2026-05-10</td></tr>
+<tr><td>欣興 2026Q2 法說 Capex</td><td>是否維持 340 億</td><td><b>2026-07-30</b></td></tr>
+<tr><td>敘豐 Q2 毛利率</td><td>是否跌破 42%</td><td>2026-08-15</td></tr>
+<tr><td>MKS Instruments Q3 法說 CoPoS</td><td>驗證通過/失敗/延後</td><td><b>2026-10-30</b></td></tr>
+<tr><td>艾瑪質押變動</td><td>是否升至 50%+</td><td>每月 10 日</td></tr>
+<tr><td>敘豐 VSP 首張訂單</td><td>是否公告</td><td>2026-12 法說會</td></tr>
+</table>
+
+<div class="tip info" style="margin-top:14px">
+<b>推衍有效期聲明</b>
+本推衍基於 2026-04-19 已知的全部公開資訊與前七步分析結論，<b>推衍有效期為 2026-04-19 至 2026-07-19（約 12 週）</b>。重大情報變化（欣興法說會、Atotech 驗證、VSP 訂單、艾瑪質押變動）應觸發推演版更新，不需重跑前七步。
+</div>
+
+<div class="foot">
+  <p><b>3485 敘豐｜第八步 推演版 9 章</b></p>
+  <p>天機閣投資分析系統 v2.0 ｜ 2026-04-19 產出</p>
+  <p>方法論：影響鏈 + 情境模擬 + 個人化推衍 + 蝴蝶效應 + 貓膩推演 + 第四次信心校準</p>
+  <p>機率加權股價 228.9 元｜偏空 61% ｜不進場｜2026Q3 雙關鍵事件為決策錨點</p>
+</div>
+
+</div>
+
+<script>
+new Chart(document.getElementById('calib4').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['Step 4 ACH','Step 5 壓力','Step 6 評審團','Step 8 推演'],
+    datasets:[
+      {label:'🔴 看空 H4+H5+H6',data:[55,59,61,61],borderColor:'#ef5350',backgroundColor:'rgba(239,83,80,.2)',borderWidth:2,tension:.2,pointRadius:5},
+      {label:'⚪ 中性 H3',data:[18,15,14,13],borderColor:'#7ab0c0',backgroundColor:'rgba(122,176,192,.2)',borderWidth:2,tension:.2,pointRadius:5},
+      {label:'🟢 看多 H1+H2',data:[27,26,25,26],borderColor:'#6b9f72',backgroundColor:'rgba(107,159,114,.2)',borderWidth:2,tension:.2,pointRadius:5},
+      {label:'★ H5 主假說',data:[25,28,30,32],borderColor:'#d4b030',backgroundColor:'rgba(212,176,48,.15)',borderWidth:3,borderDash:[6,4],tension:.2,pointRadius:6,pointStyle:'triangle'}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#e0dcd4',font:{size:11}}}},
+    scales:{
+      x:{ticks:{color:'#b8b0a5'},grid:{color:'rgba(184,176,165,.1)'}},
+      y:{ticks:{color:'#b8b0a5',callback:function(v){return v+'%'}},grid:{color:'rgba(184,176,165,.1)'},beginAtZero:true,max:70}
+    }
+  }
+});
+</script>
+
+</body>
+</html>
