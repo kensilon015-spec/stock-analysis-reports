@@ -1,0 +1,2935 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>4958 臻鼎-KY · 第七步完整版 · 天機閣投資分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+
+/* ========== Legacy CSS（Phase A 內容版原樣式、保留舊章節組件） ========== */
+
+/* === 圖表容器 === */
+.chart-wrap{background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:14px;margin:10px 0}
+.chart-wrap .chart-title{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.chart-wrap .chart-note{font-size:.75em;color:var(--ink-3);margin-top:4px;font-style:italic}
+.chart-wrap canvas{width:100%!important;max-height:320px}
+.data-chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:10px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+.data-chart-row .chart-col .chart-wrap{margin:0}
+@media(max-width:750px){.data-chart-row{grid-template-columns:1fr}}
+.chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0}
+@media(max-width:650px){.chart-row{grid-template-columns:1fr}}
+/* === 雷達圖左右並列（衛司特模式） === */
+.radar-compare-grid{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:12px;margin:10px 0;align-items:stretch}
+.radar-compare-grid .chart-wrap{margin:0;display:flex;flex-direction:column;justify-content:center}
+.radar-compare-grid .chart-wrap canvas{max-height:280px}
+.radar-compare-grid .data-col{min-width:0;display:flex;flex-direction:column}
+.radar-compare-grid table{margin:0;font-size:.78em;height:100%}
+.radar-compare-grid table th{padding:5px 8px;font-size:.92em}
+.radar-compare-grid table td{padding:5px 8px;vertical-align:middle}
+@media(max-width:720px){.radar-compare-grid{grid-template-columns:1fr}.radar-compare-grid .chart-wrap canvas{max-height:260px}}
+/* === 觀點卡（紀律二，每章一張） === */
+.view-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:8px;padding:14px 18px;margin:10px 0;font-size:.88em;line-height:1.75;color:var(--ink-2)}
+.view-card h4{color:var(--accent);font-size:.98em;font-weight:700;margin-bottom:6px}
+.view-card p{margin:6px 0}
+.view-card b{color:var(--ink)}
+.view-card em{color:var(--accent);font-style:normal;font-weight:700}
+/* === 基底 === */
+
+
+
+
+
+
+
+
+
+
+.card{background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--ink);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--ink-3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--paper-3)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+
+td{padding:6px 10px;border-bottom:1px solid var(--rule);color:var(--ink-2);background:var(--paper-2);vertical-align:top}
+tr:hover td{background:var(--table-hl)}
+.tip{padding:10px 14px;border-radius:6px;margin:8px 0;border-left:3px solid;font-size:.86em;line-height:1.7}
+.tip.danger{border-color:var(--bear);background:rgba(212,136,122,.13)}
+.tip.danger > b:first-child{display:block;margin-bottom:4px;color:var(--bear);font-size:1em}
+.tip.good{border-color:var(--accent);background:rgba(107,159,114,.13)}
+.tip.good > b:first-child{display:block;margin-bottom:4px;color:var(--accent);font-size:1em}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.11)}
+.tip.warn > b:first-child{display:block;margin-bottom:4px;color:var(--warn);font-size:1em}
+.tip.info{border-color:var(--neutral);background:rgba(122,176,192,.13)}
+.tip.info > b:first-child{display:block;margin-bottom:4px;color:var(--neutral);font-size:1em}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--ink);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.fias-f{color:#6ec071;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(110,192,113,.2)}
+.fias-i{color:#7ab0c0;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(122,176,192,.2)}
+.fias-a{color:#d4a017;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(212,160,23,.25)}
+.fias-s{color:#d4887a;font-weight:700;font-size:.72em;padding:2px 6px;border-radius:4px;background:rgba(212,136,122,.25)}
+.section-title{font-size:1.25em;font-weight:900;color:var(--ink);margin:22px 0 4px;padding-top:14px;border-top:1.5px solid var(--rule)}
+.section-sub{font-size:.84em;color:var(--ink-3);margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--ink)}
+.mini-card .desc{font-size:.75em;color:var(--ink-3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+.warn-card{border-left:4px solid var(--warn)}
+.ev{padding:10px 14px;margin:6px 0;border-radius:6px;font-size:.86em;border:1px solid var(--rule);background:var(--paper-2)}
+.ev .ev-t{font-weight:700;color:var(--ink);margin-bottom:4px;font-size:.95em}
+.ev .ev-d{color:var(--ink-2);font-size:.92em;line-height:1.7}
+.ev .ev-s{color:var(--ink-3);font-size:.78em;margin-top:4px;font-style:italic}
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 14px}
+.toggle-btn{padding:8px 28px;border-radius:8px;font-size:.88em;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(107,159,114,.15);color:#6b9f72;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.2);letter-spacing:.05em}
+.toggle-btn:hover{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(107,159,114,.4)}
+
+.toc strong{font-size:.92em;color:var(--gold);display:block;margin-bottom:6px}
+
+.toc a:last-child{border-bottom:none}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72em;font-weight:700;color:#fff}
+.badge.wide{background:#5a7d60}.badge.narrow{background:#5a7d8c}.badge.none{background:var(--bear)}
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item.critical::before{background:var(--bear)}
+.tl-item.bull::before{background:var(--bull)}
+.tl-item .tl-date{font-size:.78em;color:var(--accent);font-weight:700}
+.tl-item.critical .tl-date{color:var(--bear)}
+.tl-item .tl-title{font-size:.92em;font-weight:700;color:var(--ink);margin-top:1px}
+.tl-item .tl-desc{font-size:.82em;color:var(--ink-2);margin-top:2px}
+/* === 催化劑/風險卡欄位列 === */
+.cat-card{background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;margin:10px 0}
+.cat-card.bull{border-left:4px solid var(--bull)}
+.cat-card.warn{border-left:4px solid var(--warn)}
+.cat-card .cc-title{font-weight:700;color:var(--ink);font-size:1em;margin-bottom:6px;padding-bottom:5px;border-bottom:1px dashed var(--border)}
+.cat-card .cc-row{display:flex;gap:10px;font-size:.85em;margin:4px 0;line-height:1.6}
+.cat-card .cc-label{font-weight:600;color:var(--accent);min-width:96px;flex-shrink:0}
+.cat-card .cc-val{color:var(--ink-2);flex:1}
+.cat-card .cc-ev{font-size:.95em;color:var(--bull);font-weight:700;margin-top:6px;padding:6px 10px;background:rgba(76,175,80,.1);border-radius:5px}
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}}
+
+/* ========== End Legacy ========== */
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!--
+====================================================================
+報告通用模板（雙色：淺色 warm paper ↔ 深色 dark paper）
+來源：報告雙色模板.html（2026-04-18 抽離具體內容後通用化）
+結構設計：
+  - 雙色切換（.theme-toggle）：localStorage 記憶主題
+  - Sidebar 目錄自動 scrollspy
+  - 章節數可自由增減，以下示範各類組件，可依需求挑選組合
+可用組件列表（CSS class 速查）：
+  版型：.shell / .sidebar / .main / .section
+  頁首：.masthead / .hero-stats / .chips / .steps（九步進度）
+  段落：.prose .drop（首字放大）/ .plain（引言框）/ .pull（大字金句）
+  資料：.data-grid / .data-row / table.tbl（num/pos/neg/gold/bold/highlight）
+  卡片：.risk（tag: fatal/high/medium/low）/ .minis（bull/bear/gold/neut/accent）
+  強調：.callout（good/warn/bad/info）/ .conclusion（整合結論，每章必備）
+  時序：.timeline（item / item.key）
+  對比：.duo / .scenario（bull/bear）
+  估值：.verdict-head / .confidence-line / .conf（a=警示、n=中性）
+  圖表：.chart + 內嵌 SVG（柱/線/點/區間/分布皆可，axis 樣式用 class）
+  指標：.fias（F=事實 / I=推論 / A=分析 / S=存疑 / IP=待驗證）
+  燈號：.light（g綠/y黃/r紅/x灰）
+  進度條：.bars / .bar-row
+====================================================================
+-->
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Tian Ji Ge · 投資推衍</span>
+    </div>
+
+    <div class="meta-block">
+      <div><span class="k">ISSUE</span><span class="v">第七步 · V5 套版</span></div>
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">4958 臻鼎-KY</span></div>
+      <div><span class="k">PAGES</span><span class="v">13 CH.</span></div>
+    </div>
+
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <!-- 章節數不固定，依實際增減 li -->
+      <li><a href="#ch1">公司概覽</a></li>
+      <li><a href="#ch2">近期催化劑</a></li>
+      <li><a href="#ch3">為什麼在漲</a></li>
+      <li><a href="#ch4">潛在風險偵測</a></li>
+      <li><a href="#ch5">隱藏優勢挖掘</a></li>
+      <li><a href="#ch6">六步彙整</a></li>
+      <li><a href="#ch7">壓力測試</a></li>
+      <li><a href="#ch8">監控儀表板</a></li>
+      <li><a href="#ch9">推衍預測</a></li>
+      <li><a href="#ch10">股價合理性</a></li>
+      <li><a href="#ch11">補充分析</a></li>
+      <li><a href="#ch12">貓膩探索</a></li>
+      <li><a href="#ch13">投資結論</a></li>
+    </ol>
+
+    <div class="side-verdict">
+      <div class="label">Verdict · 48-52%</div>
+      <strong>中性 Hold · 不建議追高</strong><br>
+      加權期望 230-235.5 · 現價 282 溢價 +17-23% · 風險報酬比 1:2.4 不利
+    </div>
+  </aside>
+
+  <!-- ====================== MAIN ====================== -->
+  <main class="main">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">第七步 · V5 完整套版</span>
+        <span>台股 · PCB · 鴻海集團 · AI 供應鏈</span>
+      </div>
+      <h1>臻鼎-KY 投資分析<span class="ticker">4958</span></h1>
+      <p class="deck">鴻海集團 PCB 旗艦、全球市佔 7% 連續 7 年第一、2024 通過 2 奈米 ABF 寡占認證（全球 5 家）；但 PE 40.8 vs 同業均 17.2 差 2.37 倍為五年最極端，加權期望股價 230-235.5 vs 現價 282 溢價 +17-23%，風險報酬比 1:2.4 不利。</p>
+      <div class="byline">
+        <span><b>Analyst</b>天機閣推衍系統</span>
+        <span><b>Coverage</b>台股 PCB / AI 供應鏈</span>
+        <span><b>FIAS</b>76% 事實 / 14% 推論 / 8% 假設 / 2% 推測</span>
+        <span><b>Confidence</b>48-52% · 中性偏空</span>
+      </div>
+
+      <!-- 九步進度（如不需要可整段刪除） -->
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1</div>
+        <div class="step done"><span class="dot"></span>S2</div>
+        <div class="step done"><span class="dot"></span>S3</div>
+        <div class="step done"><span class="dot"></span>S4</div>
+        <div class="step done"><span class="dot"></span>S5</div>
+        <div class="step done"><span class="dot"></span>S6</div>
+        <div class="step active"><span class="dot"></span>S7 ● 完整版</div>
+        <div class="step"><span class="dot"></span>S8</div>
+        <div class="step"><span class="dot"></span>S9</div>
+      </div>
+    </header>
+
+    <!-- HERO STATS（四格核心數字） -->
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價 · 2026-04-19</div>
+        <div class="v gold">282 元</div>
+        <div class="d">Q1 漲 +54.6% / 52 週高 247.5</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">加權期望股價</div>
+        <div class="v neut">230-235.5 元</div>
+        <div class="d">Step 6 算 235.5 · Step 8 修 230</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">第四次信心校準</div>
+        <div class="v">48-52%</div>
+        <div class="d">Step 4/5/6/8 四次皆向下</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">PE · 同業對比</div>
+        <div class="v">40.8× / 17.2×</div>
+        <div class="d">同業均 2.37 倍為五年最極端</div>
+      </div>
+    </section>
+
+    <!-- 標籤 chips（hot/warn/bull/bear 可選） -->
+    <div class="chips">
+      <span class="chip hot">AI 應用 45%→70%+</span>
+      <span class="chip hot">2 奈米 ABF 認證</span>
+      <span class="chip warn">Apple &gt;60% 指定</span>
+      <span class="chip warn">ECB#4 Q3-Q4 集中</span>
+      <span class="chip bull">軟板/MSAP 全球第一</span>
+      <span class="chip bull">鴻海集團 PCB 旗艦</span>
+      <span class="chip bear">PE 40.8 = 同業 2.37 倍</span>
+      <span class="chip">風險報酬比 1:2.4</span>
+    </div>
+
+    <!-- ====== 13 章完整內容（Phase A 內容版、Phase C-2 套版保留） ====== -->
+
+<!-- ============================================================ -->
+<!-- ===== 一、公司概覽 ===== -->
+<!-- ============================================================ -->
+<section class="section" id="ch1">
+  <div class="section-head">
+    <div class="no">01</div>
+    <div class="tit">
+      <h2>第一章：公司概覽 — 你在看的是什麼公司？</h2>
+      <div class="sub">基本資料 + 產品結構 + 競爭力雷達 + Porter 五力 + 財務體質</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>1.1 公司基本資料</h3>
+<div class="card-body">
+<table>
+<tr><th style="width:130px">項目</th><th>內容</th></tr>
+<tr><td>公司全名</td><td>臻鼎科技控股股份有限公司（Zhen Ding Technology Holding Ltd.）</td></tr>
+<tr><td>股票代號</td><td>4958（台股上市 KY 股，2011-12-26 掛牌）</td></tr>
+<tr><td>註冊地</td><td>開曼群島，2006-06-05 成立</td></tr>
+<tr><td>董事長</td><td>沈慶芳（71-80 歲、創辦人、兼集團策略長 + 鵬鼎控股董事長 + 多家境外子公司董事）</td></tr>
+<tr><td>總經理</td><td>簡禎富（2025-03-01 接任、清華大學講座教授兼執行副校長、AI 製造權威；2025-02-27 原獨董辭任 2 天後轉任）</td></tr>
+<tr><td>最大股東</td><td><b>Foxconn (Far East) Limited 31.94%</b>（鴻海集團對臻鼎直接持股、最大單一股東；鴻海母公司董座郭台銘另持鴻海 12.54%，透過鴻海間接關聯臻鼎）</td></tr>
+<tr><td>集團定位</td><td>鴻海集團 PCB 事業體核心、產銷分工</td></tr>
+<tr><td>外資持股</td><td>65.24%（偏高集中）</td></tr>
+<tr><td>員工規模</td><td>約 5.3 萬人（2024 推估）</td></tr>
+<tr><td>累計專利</td><td>1,868 件有效專利 + 980 項研發技術秘密</td></tr>
+<tr><td>主要子公司（7 家）</td><td>鵬鼎控股(深圳) 002938.SZ、禮鼎半導體(深圳+秦皇島)、先豐通訊、碁鼎秦皇島、PENG SHEN(泰國)、Avary(印度)、曜鼎環能(深圳)</td></tr>
+<tr><td>全球 PCB 市佔</td><td>7.0%（2017-2023 連續 7 年全球第一，Prismark 統計）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>1.2 產品結構（四大產品線）</h3>
+<div class="card-body">
+<table>
+<tr><th>產品線</th><th>關鍵地位</th><th>2024 表現</th></tr>
+<tr><td><b>軟板 FPC</b></td><td>全球市佔 30%、全球第一</td><td>2024 年報自揭、鴻海集團內部採購</td></tr>
+<tr><td><b>MSAP（半加成法）</b></td><td>全球第一</td><td>技術門檻高</td></tr>
+<tr><td><b>IC 載板（含 ABF）</b></td><td>2024 年成長 +75.6%、全球 ABF 5 家供應商之一</td><td>2 奈米平台重要客戶認證已通過（2024）</td></tr>
+<tr><td><b>硬板 HDI/HLC</b></td><td>先豐通訊整合後升級</td><td>AI 伺服器 PCB 單板值 $705 vs 傳統 $180（+292%）</td></tr>
+</table>
+<p style="font-size:.85em;color:var(--txt2);margin-top:8px">臻鼎是全球唯一同時具備 PCB + IC 載板 + SLP 四合一能力的大廠（One ZDT 一站式）。AI 應用佔合併營收從 2021 年 8% → 2024 年 45%、管理層預估 2025 站穩 <b>70%+</b>。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>1.3 製造能力與研發強度</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">中國產能基地：</b>深圳鵬鼎、淮安鵬鼎、秦皇島禮鼎（業界稱「關燈工廠」高度自動化）、蘇州先豐；2023 中國銷售佔比 12.73%（2019 年 23.41%、5 年 -10.68pp）。</li>
+<li><b style="color:var(--accent)">去中國化布局：</b>泰國 PENG SHEN（2.5 億美元投資、2025-Q2 裝機、H2 試產）+ 高雄 AI 園區（總投資 100 億、ABF 80 億 + HLC/HDI 20 億）+ 印度 Avary。</li>
+<li><b style="color:var(--accent)">2 奈米 ABF 認證（2024 年通過）：</b>全球僅 5 家具備——Ibiden、AT&S、Shinko（2025-06 下市、由 JIC Capital+三井化學+DNP 共同經營）、三星電機、<b>臻鼎（新加入第 5 家）</b>。寡占結構門票。</li>
+<li><b style="color:var(--accent)">研發投入：</b>研發費用率 5.2%（2024），高於同業均 3.8%。</li>
+</ul>
+
+</div>
+</div>
+
+<div class="card">
+<h3>1.4 競爭力雷達圖（Step 3 7 維度，臻鼎 vs 欣興 3037）</h3>
+<div class="card-body">
+
+<div class="data-chart-row">
+<div class="data-col">
+<table style="font-size:.82em">
+<tr><th>維度</th><th>臻鼎 4958</th><th>欣興 3037</th><th>評語</th></tr>
+<tr><td>產品事實</td><td style="color:var(--bull);font-weight:700">4.0</td><td>4.0</td><td>臻鼎綜合力、欣興專注 ABF</td></tr>
+<tr><td>競爭事實</td><td>3.5</td><td>3.5</td><td>全球 13 家大廠競爭</td></tr>
+<tr><td>需求事實</td><td style="color:var(--warn);font-weight:700">2.5</td><td>3.0</td><td>臻鼎客戶集中度偏高</td></tr>
+<tr><td>財務事實</td><td>3.0</td><td>3.0</td><td>波動大、ROE 19.8%</td></tr>
+<tr><td>供應鏈事實</td><td style="color:var(--bull);font-weight:700">4.0</td><td>3.5</td><td>ABF 2 奈米寡占 + 四合一能力</td></tr>
+<tr><td>管理層事實</td><td>3.0</td><td>3.0</td><td>誠信度 82/100、治理獨立性警訊</td></tr>
+<tr><td>市場調查事實</td><td>4.0</td><td>4.0</td><td>Goldman 喊進 ABF 四雄</td></tr>
+<tr style="background:rgba(107,159,114,0.08)"><td><b>均分</b></td><td><b>3.43/5</b></td><td>3.43/5</td><td>中上、窄護城河</td></tr>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap" style="max-height:320px">
+  <canvas id="radarCompetitive" style="max-height:300px"></canvas>
+</div>
+</div>
+</div>
+
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">7 維度均分 3.43/5（中上）；<em>需求維度 2.5 為全 7 維度最低分</em>（客戶集中度為核心紅旗、Apple 為最大單一客戶但具體比例未揭露、年報僅自揭 &gt;60% 國際品牌指定生產）。供應鏈維度 4.0 最強（2 奈米認證 + 四合一能力 + 西碧拉圖譜中心度高）。</p>
+
+</div>
+</div>
+
+<div class="card">
+<h3>1.5 Porter 五力分析（Step 3 產業面）</h3>
+<div class="card-body">
+<table>
+<tr><th>五力</th><th>強度</th><th>說明</th></tr>
+<tr><td>現有競爭者競爭強度</td><td style="color:var(--warn)">高</td><td>全球 13 家國際廠商 + 大陸 2,000+ 小廠</td></tr>
+<tr><td>潛在進入者威脅</td><td>中</td><td>ABF 載板認證障礙高（3-5 年）、硬板/軟板低</td></tr>
+<tr><td>替代品威脅</td><td style="color:var(--warn)">高</td><td>CoWoP 架構（NVIDIA Rubin 後續）2026 後為重大變數</td></tr>
+<tr><td>供應商議價力</td><td style="color:var(--warn)">高</td><td><b>ABF 樹脂由日本 Ajinomoto 全球獨家</b>、Q-glass 日廠主導、銅箔基板台廠集中</td></tr>
+<tr><td>客戶議價力</td><td style="color:var(--warn)">極高</td><td>Apple / NVIDIA / Hyperscaler 強勢議價，PCB 廠微利</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">五力總評：不利（4 高 + 1 中）— 這也是 PCB 產業長期 PE 偏低的結構原因。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>1.6 財務體質（5 年季度軌跡）</h3>
+<div class="card-body">
+
+<div class="data-chart-row">
+<div class="data-col">
+<table style="font-size:.78em">
+<tr><th>指標</th><th>數字</th><th>源文</th></tr>
+<tr><td>2024 合併營收</td><td>1,716.64 億（+13.4%）</td><td>2024 年報致股東</td></tr>
+<tr><td>2024 稅後淨利</td><td>130.96 億（+38.9%）</td><td>2024 年報</td></tr>
+<tr><td>2024 歸母 EPS</td><td>9.67 元</td><td>2024 年報</td></tr>
+<tr><td>2025 全年營收</td><td>1,825.22 億（+6.33%）</td><td>2026-03-12 法說會</td></tr>
+<tr><td>2025 全年 EPS</td><td>6.91 元（<span style="color:var(--warn)">-29%</span>）</td><td>法說會 + finlab 加總 6.87</td></tr>
+<tr><td>2025 Q4 EPS</td><td>3.12 元（季增 32%）</td><td>finlab</td></tr>
+<tr><td>2025 Q4 毛利率</td><td>22.56%（恢復接近歷史高 26.30%）</td><td>finlab</td></tr>
+<tr><td>2022-Q4 毛利率高點</td><td>26.30%</td><td>finlab</td></tr>
+<tr><td>2023-Q2 毛利率低點</td><td><span style="color:var(--warn)">9.02%</span>（營業利益率 -8.02%、EPS -0.09 元）</td><td>finlab</td></tr>
+<tr><td>2024-Q2 營業利益率</td><td><span style="color:var(--warn)">-1.99%</span>（近 2 年第 2 次虧損季）</td><td>finlab</td></tr>
+<tr><td>2024 ROE</td><td>19.8%（優於同業均 12-15%）</td><td>Step 3</td></tr>
+<tr><td>負債比率</td><td>~35%（財務結構穩健）</td><td>2023 年報</td></tr>
+</table>
+</div>
+<div class="chart-col">
+<div class="chart-wrap" style="max-height:240px;margin-bottom:8px">
+  <div style="font-size:.82em;color:var(--txt2);font-weight:600;margin-bottom:4px">季度 EPS 軌跡（2024-Q1 ~ 2025-Q4）</div>
+  <canvas id="epsTrend" style="max-height:220px"></canvas>
+</div>
+<div class="chart-wrap" style="max-height:220px">
+  <div style="font-size:.82em;color:var(--txt2);font-weight:600;margin-bottom:4px">季度毛利率軌跡</div>
+  <canvas id="marginTrend" style="max-height:200px"></canvas>
+</div>
+</div>
+</div>
+
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">獲利波動性極高（標準差 &gt; 5pp、反映 PCB 產業景氣循環 + 四園區折舊爆量 + IC 載板爬坡虧損）；<em>近 2 年出現 2 次營業虧損季</em>（2023-Q2、2024-Q2）；但 2024-Q3 起連續 4 季正向、2025-Q4 毛利率 22.56% 已接近 2022-Q4 歷史高峰 26.30% 的 86%。</p>
+
+</div>
+</div>
+
+<!-- 第一章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從公司概覽看出來的四個重點</h4>
+
+<p><b>1. 鴻海集團 PCB 旗艦 + 全球市佔 7% 連續 7 年第一、但護城河評級「窄」。</b>Morningstar 五大來源平均 2.6/5、Porter 五力 4 高 1 中結構性不利。有效規模（4/5）為最強護城河、網路效應（1/5）最弱。<em>臻鼎是「規模龍頭 + 執行效率」型而非「獨佔技術 + 品牌」型</em>、估值應對標規模龍頭（PE 8-15）而非高成長科技（PE 20-30）。</p>
+
+<p><b>2. 產品組合多元且獨特（軟板/MSAP/IC 載板/硬板四合一），但需求維度 2.5 為最弱。</b>軟板 30% 全球第一 + MSAP 全球第一 + 2 奈米 ABF 認證（全球 5 家寡占）為三大結構優勢。<em>但年報自揭「&gt;60% 來自國際品牌指定生產」</em>、Apple 為最大單一客戶（具體比例未揭露，屬 Step 5 盲點），客戶集中度高於同業欣興/健鼎的 15-20%。</p>
+
+<p><b>3. 獲利波動極高、是「景氣循環成長股」而非「穩定成長股」。</b>毛利率區間 9.02%-26.30%（2.9 倍差）、近 2 年出現 2 次營業虧損季。下半年貢獻全年獲利 84%、典型「下半年概念股」。<em>2026 Capex 800 億（+60% 上修）將進一步拉大折舊壓力</em>，若 AI 訂單能量產放量、毛利率有望突破 26%；若延後則 2026 可能再現營業虧損季。</p>
+
+<p><b>4. 2024 ABF 通過 2 奈米客戶認證是最重要結構轉折點、市場尚未完全 Price-in。</b>全球僅 5 家供應商（Shinko 2025-06 下市後變 4 家），TSMC N2 2025-H2 量產後臻鼎 2026-H2 有機會拿到 10-20% 份額，對應 2027 EPS +3-5 元。Step 4 ACH 分析 E2 為極強診斷力證據、但需 2026-08-15 Q2 季報或 TSMC N2 量產時程確認才能完全釋放剩餘 50% 價值。</p>
+</div>
+
+<!-- 第一章整合結論 -->
+<div class="tip info">
+<b>第一章整合結論</b>
+臻鼎是全球 PCB 市佔第一（7.0%）的鴻海集團旗艦、四合一產品結構獨特（軟板/MSAP/ABF/硬板皆具競爭力）、2024 通過 2 奈米 ABF 寡占認證；但護城河評級「窄」、Porter 五力結構性不利（4 高 1 中）、獲利波動極高（近 2 年 2 次虧損季）。<em>核心變數集中於「AI 應用 45%→70% 能否兌現」+「ABF 2026-Q2 轉盈承諾」+「Apple 集中度與多元化」三軸</em>、屬「景氣循環成長股」估值應用 PE 12-15 區間。本質定位：<b>規模龍頭 + 執行效率、AI 題材兌現中、但結構性風險集中</b>。
+</div>
+
+
+
+
+<!-- ============================================================ -->
+<!-- ===== 二、近期催化劑 / 利多因素 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch2">
+  <div class="section-head">
+    <div class="no">02</div>
+    <div class="tit">
+      <h2>第二章：近期催化劑 / 利多因素</h2>
+      <div class="sub">4 張催化劑情報驗證卡 + 期望值量化 + 時間軸｜合計期望 +25.5%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>2.1 催化劑情報驗證卡（Step 5 F 節、4 張）</h3>
+<div class="card-body">
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">事實</span> 催化劑 #1：2 奈米 ABF 客戶認證已通過（寡占門票）</div>
+  <div class="ev-d">2024 年報明確揭露「ABF 載板通過 2 奈米平台重要客戶認證」。全球 ABF 能做 2 奈米的供應商僅 5 家：Ibiden、AT&S、Shinko（2025-06 下市）、三星電機、<b>臻鼎（新加入第 5 家）</b>。Step 4 ACH 分析 E2 為極強診斷力證據。TSMC N2 預計 2025 H2 量產、臻鼎 2026 H2 有機會拿到 10-20% 份額。認證已通過是事實，實質訂單落地是 2026 H2 前的最大想像空間。<b style="color:var(--accent)">定性：認證已是事實、訂單落地可期待但非必然</b>。</div>
+  <div class="ev-s">來源：2024 年報 + Step 5 催化劑卡 1</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">事實</span>/<span class="fias-a">假設</span> 催化劑 #2：AI 應用 2025 預估 70%+（管理層官方承諾）</div>
+  <div class="ev-d">2024 年報致股東書：「2024 AI 應用佔合併營收 45%，2025 預估 70%+」。2026-03 月營收驗證：伺服器/光通訊 YoY <b>+190% 創單月新高</b>、IC 載板 YoY +70%；但整體月營收 YoY 僅 +7.18% → <em>非 AI 業務（手機為主）仍疲弱</em>、AI 伺服器/光通訊單獨拉動。AI 伺服器 PCB 單板值 &gt;$705 vs 傳統 $180（+292%），佔比拉升直接帶動毛利率結構性提升。管理層官方承諾若未達將直接衝擊信譽（風險卡 2 根源）。<b style="color:var(--accent)">定性：發生高機率（管理層公開承諾）、超預期低機率</b>。</div>
+  <div class="ev-s">來源：2024 年報致股東書 + 2026-03 月營收（管道 B）</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-a">假設</span> 催化劑 #3：ABF 載板 2026-Q2 轉盈（管理層公開承諾）</div>
+  <div class="ev-d">2026-03-12 董座沈慶芳法說會公開承諾「ABF 稼動率達 80% 即可轉盈」。當前稼動率 60-70%、需 Q2 提升 15-20pp。ABF 自 2019 設立禮鼎起連續虧損 6 年多，此承諾若兌現為公司史上首次 ABF 業務轉虧為盈。<b>但歷史紀錄不佳</b>：2023 年管理層曾承諾 2024 轉盈但未達成、加上高雄+泰國新廠折舊同步壓抑、時程過緊。<b style="color:var(--accent)">定性：若兌現最大驚喜（+15-20%）、若失敗最大雙殺（-20-25%），不可押重</b>。</div>
+  <div class="ev-s">來源：2026-03-12 法說會 + Step 5 催化劑卡 3</div>
+</div>
+
+<div class="ev">
+  <div class="ev-t"><span class="fias-f">事實</span> 催化劑 #4：泰國 + 高雄 AI 園區投產（去中國化溢價 + 光通訊滿至 2027）</div>
+  <div class="ev-d">兩大新廠 2025 陸續進入試產：泰國 PENG SHEN 第一期投資 2.5 億美元（~80 億台幣），2025-Q2 裝機 + H2 試產；高雄 AI 園區總投資 100 億（ABF 80 + HLC/HDI 20）、2025 H2 折舊計入。Apple 2024 起明確要求供應商提供「多元地域產能」、臻鼎中國產能從 82% 降至 72% 是客戶加分要件。<b>董座沈慶芳 2026-03-12 法說會親宣「光通訊訂單滿至 2027 年」</b>為第二層確認、Step 4 ACH 極強診斷力證據。短期折舊反壓抑 EPS 1-1.5 元、但長期去中國化溢價為結構利多。<b style="color:var(--accent)">定性：穩住下限（投產機率 75%）、不推上限（短期折舊反壓抑 EPS 1-1.5 元）</b>。</div>
+  <div class="ev-s">來源：2024 年報 + 2026-03-12 法說會 + Step 5 催化劑卡 4</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>2.2 催化劑期望值量化（Step 5 F 節）</h3>
+<div class="card-body">
+<table>
+<tr><th>催化劑</th><th>機率</th><th>影響</th><th>市場反映</th><th>期望值</th><th>時間窗口</th></tr>
+<tr><td>#1 · 2 奈米客戶量產訂單</td><td>62%（55-70% 中位）</td><td>+25%</td><td>50%</td><td style="color:var(--bull);font-weight:700">+7.75%</td><td>2026 H2</td></tr>
+<tr><td>#2 · AI 應用 70% 兌現</td><td>58%（50-65% 中位）</td><td>+35%</td><td>60%</td><td style="color:var(--bull);font-weight:700">+8.12%</td><td>2026 全年</td></tr>
+<tr><td>#3 · ABF Q2 轉盈</td><td>48%（40-55% 中位）</td><td>+17.5%</td><td style="color:var(--warn)">30%</td><td style="color:var(--warn);font-weight:700">+5.88%</td><td>2026-08-15 ★</td></tr>
+<tr><td>#4 · 泰國+高雄投產</td><td>75%（70-80% 中位）</td><td>+12.5%</td><td>60%</td><td style="color:var(--bull)">+3.75%</td><td>2026 H2-2027</td></tr>
+<tr style="background:rgba(107,159,114,0.10)"><td><b>合計（獨立加總）</b></td><td colspan="3"></td><td style="color:var(--bull);font-weight:900">+25.5%</td><td>—</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">期望值公式：機率 × 影響 × (1 - 市場反映)。<b>vs 風險合計 -30.35%</b>（差 -4.85pp 負向不對稱）；考量雙殺機制（C1 失敗 → C3 下修 → 風險卡 2 觸發），實際隱含風險報酬比約 1:0.6 不利。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>2.3 催化劑時間軸（未來 6 個月關鍵節點）</h3>
+<div class="card-body">
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2026-04-16</div>
+    <div class="tl-title">TSMC Q1 法說會（N2 進度）</div>
+    <div class="tl-desc">#1 前置指標。N2 on track → 臻鼎 +3-5%</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-05-10</div>
+    <div class="tl-title">臻鼎 4 月月營收公告</div>
+    <div class="tl-desc">#2 驗證。伺服器/光通訊 YoY 維持 +100%+ → 信心度 +</div>
+  </div>
+  <div class="tl-item critical">
+    <div class="tl-date">2026-05-15</div>
+    <div class="tl-title">臻鼎 Q1 季報（毛利率前置）</div>
+    <div class="tl-desc">#3 前置。毛利率 ≥ 20% → 信心度 +；&lt; 17% → 紅燈</div>
+  </div>
+  <div class="tl-item bull">
+    <div class="tl-date">2026-05 中</div>
+    <div class="tl-title">NVIDIA GTC 春季供應商揭露</div>
+    <div class="tl-desc">隱藏優勢 H6（NVIDIA 長約暗示）。若揭露 +10-15%</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-Q2 中</div>
+    <div class="tl-title">Apple WWDC（AI 策略更新）</div>
+    <div class="tl-desc">客戶集中度指標觀察點</div>
+  </div>
+  <div class="tl-item critical">
+    <div class="tl-date">2026-08-15 ★</div>
+    <div class="tl-title">臻鼎 Q2 季報（單一最重要決策點）</div>
+    <div class="tl-desc">#3 兌現/失望兩極。轉盈 → +15-20%；未轉盈 → -20-25%</div>
+  </div>
+  <div class="tl-item bull">
+    <div class="tl-date">2026-10</div>
+    <div class="tl-title">Apple 10-K 供應商名單揭露</div>
+    <div class="tl-desc">#1 + #4 + 隱藏優勢 H7。新增供應商事實 → +10-20%</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 第二章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從四張催化劑卡看出來的四個重點</h4>
+
+<p><b>1. #1（2 奈米）+ #3（ABF 轉盈）共振是整個催化劑鏈的「收斂點」，不是獨立事件。</b>2 奈米客戶量產正是讓 ABF 稼動率達 80% 的直接驅動力——同一個事件的兩面。若 2026-08-15 Q2 季報能同時驗證「ABF 稼動率 80%+ + 2 奈米訂單明朗」，<em>機率約 30% 雙擊推升股價 +40-50%</em>；反之若 ABF 未轉盈、#1 訂單預期會自動下修、催化劑鏈條從「預期」切換為「失望」、直接觸發風險卡 2 雙殺。看催化劑要看共振對、不是看單卡期望值總和。</p>
+
+<p><b>2. #2（AI 70%）Price-in 60% 已最高、#3（ABF 轉盈）Price-in 30% 才是真正驚喜源頭。</b>當前股價 282 元的 +54.6% 漲幅中、AI 70% 已被權重 35% 反映；剩 40% 未 Price-in 需月營收連續 3 月 YoY +15% 才能釋放。但 #3 ABF 轉盈是市場「願意相信但還沒 Price-in」的項目、多數分析師對 ABF 虧損存疑未納入基準。<em>ABF 真實兌現是最大驚喜（剩 70% 空間）；未兌現則直接觸發 -25% 失望</em>。押注催化劑時、押 #3 比押 #2 報酬風險比更佳。</p>
+
+<p><b>3. 光通訊訂單滿至 2027（Step 4 ACH E14 極強診斷力）為催化劑 #4 的隱性補強。</b>董座 2026-03-12 法說會親宣、Step 4 ACH 矩陣中 E14 為 4 分診斷力（與 E1/E2/E3/E8/E12 並列），<em>意味光通訊業務能見度達 2 年以上</em>、為 H1 AI 爆發路徑的重要基礎。若 2026 光通訊訂單出現變數（客戶砍單 / 競爭加劇），H1 實現機率會立即從 35% 下修至 20-25%。</p>
+
+<p><b>4. 時間軸 8/15 Q2 季報是「整個推衍鏈條的單一最重要節點」。</b>未來 6 個月 7 個關鍵日期中、<em>#1+#3 兌現/失望全部收斂在 8/15</em>——同時驗證 ABF 稼動率、毛利率、AI 佔比三指標。在此之前任何催化劑事件（NVIDIA GTC / Apple WWDC）都只是「先行訊號」、真正定調在 Q2 季報。投資紀律：8/15 之前不擴張部位；ABF 轉盈 + 毛利率 22%+ → 加碼 10-20%；ABF 未轉盈 + 毛利率 &lt; 18% → 立即減碼至停損線 230。</p>
+</div>
+
+<!-- 第二章整合結論 -->
+<div class="tip good">
+<b>第二章整合結論</b>
+4 張催化劑卡合計期望 <b>+25.5%</b>，但風險合計 -30.35% 大於催化劑差 -4.85pp、再加上雙殺機制非線性放大（推論值），實際隱含風險報酬比 1:0.6 不利。<em>#1（2 奈米）+ #3（ABF 轉盈）共振是整鏈條收斂點、8/15 Q2 季報為單一最重要決策節點</em>。當前 282 元已 Price-in 催化劑約 60-70%、剩餘 30-40% 集中於 #3（ABF 轉盈、Price-in 僅 30%）需事件觸發才釋放；若 8/15 失望、下行速度會比上行兌現快 1.5-2 倍。投資建議：催化劑本身合理但價格已透支、等回檔到 240 以下或 Q2 驗證後再評估。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 三、為什麼在漲？市場為什麼買單？ ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch3">
+  <div class="section-head">
+    <div class="no">03</div>
+    <div class="tit">
+      <h2>第三章：為什麼在漲？市場為什麼買單？</h2>
+      <div class="sub">5 大驅動權重 + 隱含 EPS 反推 + 同業漲幅對照｜2026-Q1 漲 +54.6%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>3.1 2026-Q1 +54.6% 漲幅驅動拆解</h3>
+<div class="card-body">
+<table>
+<tr><th>驅動因子</th><th>權重</th><th>性質</th><th>邊際遞減時點</th></tr>
+<tr><td>AI 應用 45%→70% 題材</td><td style="color:var(--bull);font-weight:700">35%</td><td>基本面</td><td>中長期結構性</td></tr>
+<tr><td>2 奈米 ABF 認證（2024 通過）</td><td style="color:var(--bull)">25%</td><td>基本面</td><td>需訂單落地確認</td></tr>
+<tr><td>2026 Capex 500→800 億（+60% 上修）</td><td style="color:var(--warn)">15%</td><td>一次性驚喜</td><td>5 月中後邊際遞減</td></tr>
+<tr><td>Goldman 喊進 ABF 四雄（2026-04-09）</td><td style="color:var(--warn)">10%</td><td>情緒面</td><td>1-2 週內消化</td></tr>
+<tr><td>光通訊滿至 2027 + 法說會加碼題材</td><td style="color:var(--warn)">15%</td><td>一次性驚喜</td><td>Q2 季報前消化</td></tr>
+<tr style="background:rgba(107,159,114,0.08)"><td><b>合計</b></td><td><b>100%</b></td><td>基本面 60% + 一次性 40%</td><td>—</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">基本面佔 60%（AI + 2 奈米）為結構性訊號、可支撐中長期估值；一次性佔 40%（Capex + Goldman + 法說會）邊際遞減於 5 月中 - Q2 季報間。<em>一次性驅動消化後、股價 Base 回落至 240-260 元區間（扣除 +40% × 54.6% ≈ -21.8% 一次性溢價）</em>。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>3.2 隱含 EPS 反推（現價 282 元對應什麼預期？）</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>隱含 EPS</th><th>隱含 PE</th><th>機率</th><th>合理性</th></tr>
+<tr><td>H1 樂觀（當前 Price-in）</td><td>13 元</td><td>22×</td><td>35%</td><td>需 ABF 轉盈 + AI 70% + NVIDIA 長約同時兌現</td></tr>
+<tr><td>H2 執行不順</td><td>8-9 元</td><td>32-35×</td><td>45%</td><td>PE 過高、不合理</td></tr>
+<tr><td>加權期望</td><td>9.45 元（Step 6）</td><td>29.8×</td><td>100%</td><td>PE 遠高於同業均 17.2、過度樂觀</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">當前 282 元對應<em>「2026 H1 樂觀 EPS 13 × PE 22」的單一情境</em>、實際 Step 6 ACH 估算 H1 機率僅 35%、<b>數學期望值為負</b>。股價已 Price-in H1 樂觀但未 Price-in H2/H3/H4 合計 65% 的下行情境。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>3.3 同業漲幅對照（3 個月表現）</h3>
+<div class="card-body">
+<table>
+<tr><th>公司</th><th>3 個月漲幅</th><th>PE</th><th>vs 臻鼎</th></tr>
+<tr><td style="background:rgba(212,136,122,0.08)"><b>臻鼎 4958</b></td><td style="color:var(--warn)"><b>+54.6%</b></td><td><b>40.8×</b></td><td><b>基準</b></td></tr>
+<tr><td>欣興 3037</td><td>+22%</td><td>22.5×</td><td>-2.5× 漲幅</td></tr>
+<tr><td>健鼎 3044</td><td>+15%</td><td>14.2×</td><td>-3.6× 漲幅</td></tr>
+<tr><td>南電 8046</td><td>+12%</td><td>18.7×</td><td>-4.6× 漲幅</td></tr>
+<tr><td>Ibiden 4062.T（日）</td><td>+12%</td><td>16.4×</td><td>-4.6× 漲幅</td></tr>
+<tr><td>AT&S（奧）</td><td>+8%</td><td>13.8×</td><td>-6.8× 漲幅</td></tr>
+<tr style="background:rgba(180,170,155,0.08)"><td><b>同業均（不含臻鼎）</b></td><td>+13.8%</td><td>17.2×</td><td>—</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">臻鼎 +54.6% 領先同業 +13.8% 的 <b>3.96 倍</b>、PE 40.8 vs 同業均 17.2 為 <b>2.37 倍</b>（五年最極端差距）。歷史上同業 PE 差 &gt; 60% 通常 1-2 季內收斂、2018/2021/2023 三次皆然。</p>
+</div>
+</div>
+
+<!-- 第三章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從漲幅拆解看出來的四個重點</h4>
+
+<p><b>1. 2026-Q1 +54.6% 漲幅由基本面 60% + 一次性 40% 驅動、一次性邊際遞減於 5 月中即發生。</b>AI 應用 35% + 2 奈米 25% = 基本面 60% 為結構性訊號可支撐中長期；Capex 驚喜 15% + Goldman 喊進 10% + 法說會加碼 15% = 一次性 40% 已大部分兌現。<em>扣除一次性部分 (-40% × 54.6% ≈ -21.8% 溢價)、合理 Base 約 240-260 元區間</em>。</p>
+
+<p><b>2. 當前 282 元完全對標 H1 樂觀情境、數學期望值為負。</b>現價反推 EPS 13 × PE 22（H1 樂觀）、實際 ACH 估算 H1 機率僅 35%、加權期望 EPS 9.45 × PE 29.8 為不合理。<em>股價 Price-in 的是「H1 為 65%+ 機率」</em>、與實際 35% 差距 30pp 為最大不對稱訊號。</p>
+
+<p><b>3. 籌碼面 37% 槓桿外資是下跌時的「真正放大器」（推論值）。</b>外資 65.24% 看起來像長期信心、但動能型槓桿資金可能佔相當比例（具體比例未揭露、但 Step 3 指出外資急漲後乖離擴大、土洋對作開始）。<em>催化劑兌現時加速買進、風險兌現時下跌加速 1.5-2 倍</em>。2023-Q2 單季 -28% 的歷史教訓即是動能資金集中減碼觸發停損盤連鎖。</p>
+
+<p><b>4. 中期股價必向同業均值收斂、目標區間 220-260 元。</b>臻鼎 PE 40.8 vs 同業均 17.2 差 2.37 倍、為五年最極端。三條收斂路徑：(a) 漲幅路徑——同業追漲至 +50% 以上（機率 20%，需 AI 集體突破）；(b) <em>修正路徑——臻鼎跌回 +25% 區間 225-230 元（機率 60%，最可能）</em>；(c) 極端路徑——Q2 不達預期跌至 180-200 元（機率 20%）。建議：已持有設停損 230；空手者不追高、等回檔至 240 以下或 Q2 驗證後再評估。</p>
+</div>
+
+<!-- 第三章整合結論 -->
+<div class="tip info">
+<b>第三章整合結論</b>
+2026-Q1 +54.6% 漲幅由基本面 60%（AI 35% + 2 奈米 25%）+ 一次性 40%（Capex 15% + Goldman 10% + 法說會 15%）驅動、一次性訊號邊際遞減於 5 月中即發生。當前 282 元完全對標 H1 樂觀情境（EPS 13 × PE 22，機率僅 35%），<em>數學期望值為負</em>；超越分析師均價 172.95 元 +63% 為警戒區、外資急漲後開始土洋對作。中期股價必向同業均值收斂（PE 40.8 vs 均 17.2、2.37 倍）、目標區間 220-260 元（機率 60%）。投資建議：已持有設停損 230；空手者不追高、等回檔至 240 以下或 Q2 季報驗證後再評估。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 四、潛在風險偵測與求證 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch4">
+  <div class="section-head">
+    <div class="no">04</div>
+    <div class="tit">
+      <h2>第四章：潛在風險偵測與求證</h2>
+      <div class="sub">5 張風險情報驗證卡 + 雙殺/三殺機制 + 2023-Q2 歷史類比 + 西碧拉供應鏈風險｜合計期望 -30.35%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>4.1 風險情報驗證卡（致命度由高至低、Step 5 E 節）</h3>
+<div class="card-body">
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-f">事實</span>+<span class="fias-a">假設</span> 風險 #1 · Apple 訂單集中度（致命單點 ⭐⭐⭐⭐⭐）</div>
+  <div class="ev-d">2024 年報自揭「<b>&gt;60% 來自國際品牌指定生產</b>」、<em>Apple 為最大單一客戶為推論（具體比例未揭露、Step 5 D 盲點）</em>。同業欣興 3037 的 15-20% / 健鼎 3044 的 20% 以下。若 Apple iPhone 銷量下滑 10-20%（中國 2025 iPhone 銷量已 YoY -24%）、或 Apple 轉向 Shinko/三星電機採購、或 CoWoP 取代 ABF 載板三路徑任一成立、直接觸發臻鼎 EPS -30~-40% / 股價 -35~-45%。觸發條件：Apple Houston AI 伺服器廠自建 + Apple Private Cloud Compute $14B Capex + FII 內製能力成熟。歷史對比：2023-Q2 Apple iPhone 14 弱於預期時、臻鼎單季 -28%（109→78 元）。<b style="color:var(--accent)">定性：機率中等（25-35%）但致命度最高、唯一能讓股價腰斬的單點風險</b>。</div>
+  <div class="ev-s">來源：2024 年報 + Step 5 風險卡 1 + 2023-Q2 歷史事件</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-a">假設</span> 風險 #2 · ABF 2026-Q2 未轉盈（機率中高）</div>
+  <div class="ev-d">2026-03-12 沈慶芳董座公開承諾「ABF 稼動率 80% 可轉盈」、但歷史紀錄不佳——2023 年曾承諾 2024 年轉盈卻未達。當前稼動率 60-70% 需 Q2 拉升 15-20pp、同時高雄+泰國新廠折舊壓抑、時程壓力大。若未轉盈：① 管理層誠信度受損、② 2 奈米認證優勢被質疑（認證有但稼動不夠代表客戶下單意願低）、③ 分析師下修 2026 EPS 預估 1-1.5 元。8/15 Q2 季報為驗證窗口。<b style="color:var(--accent)">定性：發生機率中高（40-50%），對股價衝擊 -20~-25% 且與 R1 形成共振</b>。</div>
+  <div class="ev-s">來源：2026-03-12 法說會 + 2023 年未達承諾紀錄 + Step 5 風險卡 2</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-f">事實</span> 風險 #3 · ECB#4 2026 集中轉換（機率最高、結構性）</div>
+  <div class="ev-d"><b>ECB 發行歷史：#1 2012-06 美金 1.88 億（全轉）/ #2 2014-06 3 億（幾乎全轉）/ #3 2020-06 4 億（2025 Q3-Q4 集中轉換、股本稀釋 +11.9% 兌現、+1.14 億股）/ #4 2024-01 已發行 4 億美元、尚未大規模轉換</b>。當前股價 282 元遠超 ECB#4 推估轉換價 120-160 元、2026-2027 集中轉換機率 60-70%。若全部轉換、股本再稀釋 7-10%、EPS 結構性下修 -8~-10%。<b style="color:var(--accent)">定性：發生機率 60-70% 最高、但單獨影響不致命、與其他風險共振時放大</b>。</div>
+  <div class="ev-s">來源：2024 年報 ECB 條款 + finlab 股本軌跡驗證 + Step 5 風險卡 3</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-s">推測</span> 風險 #4 · CoWoP 取代 ABF（結構性替代、含反面 flipside）</div>
+  <div class="ev-d">TSMC 的 CoWoP（Chip-on-Wafer-on-Panel）技術 2025 年起試產、tspasemiconductor 報告「業界認為 2026 底量產過度樂觀」（FIAS 等級 S）。若 2027-2028 規模化可直接取代 ABF 載板在 AI 應用的地位。但 CoWoP 目前良率 &lt; 50%、成本高 ABF 2-3 倍、短期 2026-2027 難以規模化、2028 後才是威脅。<b style="color:var(--warn)">反面 flipside（Step 5 風險卡 4 備註、關鍵）</b>：若 CoWoP 採用「PCB 取代 ABF」架構（而非完全不同基板）、對臻鼎 <b>PCB 主業反為利多</b>（規模 + HDI 經驗）、僅 ABF 載板業務受衝擊、淨效果取決於 PCB 補償幅度 vs ABF 損失。<b style="color:var(--accent)">定性：發生機率較低（15-25%）但若成真為結構性毀滅、唯 PCB/ABF 業務替代效果可能抵消 50%+ 衝擊</b>。</div>
+  <div class="ev-s">來源：tspasemiconductor 推測報告 + Step 5 風險卡 4 反面備註</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-f">事實</span>+<span class="fias-i">推論</span> 風險 #5 · 治理獨立性惡化（接班議題 + 治理審視者連續異動）</div>
+  <div class="ev-d">三大治理訊號：① 2025-02-27 簡禎富辭獨董 → 2025-03-01 轉任總經理（獨董任期未滿、2 天冷卻期）、獨董席次從 4/7（57%）降至 3/6（50%）；② 2026-02-24 內部稽核主管辭職（新任待董事會決議）；③ <b>沈慶芳董事長年齡 71-80 歲、接班議題為中長期隱憂</b>。PwC 連續 6 年無保留意見（綠燈）、家族質押 0%、內部人增持 +12.7%（正面訊號）為對沖。若 2026 發生新獨董辭任、PwC 查核意見改為保留、或內部人大量減持任一訊號、治理分數將從 6.0/10 降至 5.0 以下、對應股價 -10~-15%。<b style="color:var(--accent)">定性：發生機率低（10-20%）、不構成迴避理由、但需長期追蹤</b>。</div>
+  <div class="ev-s">來源：2025-02-27 + 2026-02-24 重大訊息公告 + Step 2 紅旗 + Step 5 風險卡 5</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>4.2 風險期望值量化（合計 -30.35%）</h3>
+<div class="card-body">
+<table>
+<tr><th>風險</th><th>致命度</th><th>機率</th><th>影響</th><th>市場反映</th><th>期望值</th></tr>
+<tr><td>#1 · Apple 訂單集中度失守</td><td style="color:var(--warn)">⭐⭐⭐⭐⭐</td><td>30%</td><td>-45%</td><td>0%</td><td style="color:var(--warn);font-weight:700">-13.5%</td></tr>
+<tr><td>#2 · ABF Q2 未轉盈</td><td>⭐⭐⭐⭐</td><td>45%</td><td>-25%</td><td>0%</td><td style="color:var(--warn);font-weight:700">-11.25%</td></tr>
+<tr><td>#3 · ECB#4 集中稀釋</td><td>⭐⭐⭐</td><td>60%</td><td>-11%</td><td>0%</td><td style="color:var(--warn);font-weight:700">-6.6%</td></tr>
+<tr><td>#4 · CoWoP 取代 ABF</td><td>⭐⭐⭐⭐</td><td>20%</td><td>-35%</td><td>0%</td><td style="color:var(--warn)">-7.0%</td></tr>
+<tr><td>#5 · 治理獨立性惡化</td><td>⭐⭐</td><td>15%</td><td>-20%</td><td>0%</td><td style="color:var(--warn)">-3.0%</td></tr>
+<tr style="background:rgba(212,136,122,0.10)"><td><b>合計（獨立加總）</b></td><td colspan="4"></td><td style="color:var(--warn);font-weight:900">-30.35%</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">期望值公式：機率 × 影響 × (1 - 市場反映)。5 項風險「市場反映」皆為 0 — 當前股價 282 元完全 Price-in 樂觀情境、風險完全未反映、這是最大不對稱。<b>vs 催化劑合計 +25.5%，差 -4.85pp 負向不對稱</b>；再考量下方雙殺機制（推論）、實際隱含風險 -35~-40%。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>4.3 風險放大機制（雙殺/三殺、推論值）</h3>
+<div class="card-body">
+<p>獨立加總 -30.35% 是「假設風險彼此不相關」的結果。實際上 R1（Apple）、R2（ABF 未轉盈）、R3（ECB#4）三者共享同一基礎原因——<em>若 2 奈米訂單不如預期、三個風險會同時觸發</em>。下列機率為推論值、非 Step 源文明確計算：</p>
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">雙殺情境 A（Apple + ABF 未轉盈）：</b>推論機率 ~18%、複合影響 <b style="color:var(--warn)">-40%</b>。觸發路徑：Apple iPhone 銷量下修 → 臻鼎 PCB 訂單 -30% → ABF 稼動率被拖累無法達 80% → Q2 季報雙爆炸。</li>
+<li><b style="color:var(--accent)">雙殺情境 B（ABF 未轉盈 + ECB#4 發行）：</b>推論機率 ~22%、複合影響 <b style="color:var(--warn)">-35%</b>。觸發路徑：ABF 未轉盈 → 2026 EPS 下修至 8 元 → 為補充資金發行 ECB#4 → 股本稀釋 + EPS 攤薄雙重打擊。</li>
+<li><b style="color:var(--accent)">三殺情境（Apple + ABF + ECB#4 同時觸發）：</b>推論機率 ~8%、複合影響 <b style="color:var(--warn)">-55%</b>。對應股價從 282 → 127 元、回到 2023 年低點區間。這是停損紀律必設 230 的理由——跌破 230 表示三殺機率從 8% 升至 20%+、需立即降部位。</li>
+</ul>
+
+<p>共振點：三殺情境的單一觸發扳機都是 <b>2026-08-15 Q2 季報</b>。若 Q2 毛利率 &lt; 18% + ABF 稼動率 &lt; 70% + 月營收 YoY 降至 +50% 以下（目前 +100%+ 創高）、三個訊號同時發生機率會從推估 8% 升至 25-30%。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>4.4 2023-Q2 歷史類比（單季 -28% 教訓）</h3>
+<div class="card-body">
+<p>臻鼎 2023-Q2 單季股價跌 <b style="color:var(--warn)">-28%</b>（109 → 78 元）、為近五年最嚴重回檔。當時觸發條件與 2026 當前有高度相似性：</p>
+<table>
+<tr><th>維度</th><th>2023-Q2 實際發生</th><th>2026-Q2 當前狀態</th><th>相似度</th></tr>
+<tr><td>Apple 訂單預期</td><td>iPhone 15 訂單低於預期 15%</td><td>Apple iPhone 銷量中國 -24%</td><td style="color:var(--warn)">極高</td></tr>
+<tr><td>毛利率</td><td>連兩季 &lt; 15%（Q2 9.02%）</td><td>當前 22.56%、但 Q2 若低於 18% 觸發</td><td>待 Q2 驗證</td></tr>
+<tr><td>外資動能</td><td>急漲後集中減碼</td><td>急漲後土洋對作</td><td style="color:var(--warn)">相同</td></tr>
+<tr><td>歷史溢價</td><td>PE 22 高於同業均 14</td><td>PE 40.8 高於同業均 17.2</td><td style="color:var(--warn)">更嚴重</td></tr>
+<tr><td>季報窗口</td><td>8/14 Q2 季報引爆</td><td>8/15 Q2 季報為同等關鍵日</td><td>重演結構</td></tr>
+</table>
+<p style="margin-top:8px">2023-Q2 下跌的核心機制是「預期落差 → 動能資金集中減碼 → 停損盤連鎖觸發」、現在臻鼎 PE 40.8、歷史溢價更極端。<em>若 2026-Q2 季報毛利率未達 20% + ABF 未轉盈、複製 -28% 的機率約 35-40%</em>。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>4.5 西碧拉供應鏈關聯風險</h3>
+<div class="card-body">
+<p>西碧拉圖譜中臻鼎（COMP:4958）位於 AI 封測供應鏈中心（PCB 族群中心度最高、具體指標源文未量化、本處為定性描述），涵蓋上下游多個關聯節點。從圖譜結構看、臻鼎的風險不止於自身、還會透過關係鏈反饋回來。</p>
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">上游單點風險：</b><b>ABF 樹脂由日本 Ajinomoto 全球獨家供應</b>（議價力極強）、Q-glass 高階玻璃纖維布日本廠主導、銅箔基板由台光電/聯茂/台燿等台廠集中供應；任一環節受阻、臻鼎 ABF 投資直接停擺。</li>
+<li><b style="color:var(--accent)">客戶連鎖效應：</b>2024 年報自揭「&gt;60% 來自國際品牌指定生產」、客戶集中度比同業（15-20%）明顯偏高。Apple（最大單一、比例未揭露）+ NVIDIA（推估、Step 8 弱訊號）+ AMD / TSMC / Qualcomm 等。任一客戶砍單、通過產能閒置+折舊剛性效應放大對 EPS 衝擊。</li>
+<li><b style="color:var(--accent)">替代品威脅網絡：</b>CoWoP、FOPLP（Fan-out Panel Level Packaging）、Glass Substrate 三種替代技術於 2027-2028 成熟度上升、臻鼎未有明顯轉型佈局。若三者同時突破（機率推估約 20%）、ABF 結構地位受挑戰。</li>
+<li><b style="color:var(--accent)">同業外溢風險：</b>欣興 3037 若發生重大事件（如 2025-06 Shinko 下市重演）、臻鼎股價會因「PCB 族群情緒」同步受壓 -5~-10%、而非基本面原因。</li>
+</ul>
+</div>
+</div>
+
+<!-- 第四章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從五張風險卡看出來的四個重點</h4>
+
+<p><b>1. Apple（R1）是唯一能單獨讓臻鼎股價腰斬的致命單點風險。</b>R2-R5 四張卡單獨觸發最多 -20~-25%、只有 <em>R1 Apple 切單單獨可造成 -45% 衝擊</em>。機率 25-35% 不低（iPhone 15 類似事件 2023 年已發生一次）、致命度 ⭐⭐⭐⭐⭐ 最高。年報自揭「&gt;60% 國際品牌指定」、Apple 具體比例雖未揭露但推論為最大單一客戶、比同業欣興/健鼎明顯脆弱。<b>投資決策中、Apple 相關指標需納入最高權重監控</b>。</p>
+
+<p><b>2. 雙殺機制讓「獨立加總 -30.35%」嚴重低估真實風險（推論值）。</b>R1/R2/R3 三者共享 2 奈米訂單這個基礎原因、不是獨立事件。雙殺 A（Apple + ABF）推估機率 18%、影響 -40%；雙殺 B（ABF + ECB#4）推估 22%、影響 -35%；<em>三殺推估機率 8% 但影響 -55%</em>。期望值計算若納入雙/三殺機制、實際風險隱含從 -30.35% 放大至 -40~-45%、明顯大於催化劑 +25.5%。<b>這是 282 元不可追高的根本原因</b>。</p>
+
+<p><b>3. 2023-Q2 單季 -28% 的歷史條件正在重演、當前結構更脆弱。</b>五個維度（Apple 訂單預期 / 毛利率 / 外資動能 / 歷史溢價 / 季報窗口）逐項比對、<em>2026-Q2 比 2023-Q2 更脆弱</em>——PE 40.8（2023 時 22）、估值溢價更極端。歷史不是簡單重演、但「預期落差 → 動能資金減碼 → 停損盤連鎖」的機制沒有改變。若 2026-Q2 毛利率 &lt; 20% + ABF 未轉盈、<b>複製 -28% 的機率 35-40%</b>。</p>
+
+<p><b>4. 風險集中於 2026-08-15 Q2 季報的單一決策點、停損紀律必設 230。</b>R1/R2/R3 驗證時機都在 Q2 季報前後、<em>8/15 之後風險曲線才會收斂</em>——在此之前股價波動仍將高於一般水準。230 元是 2023 年低點 + 雙殺機制轉折點的共同支撐位；跌破 230 意味雙殺/三殺機率從 18-22% 升至 30%+、需立即降至 1/3 部位以下。已持有者：先設停損 230；空手者：不追高、Q2 驗證後再評估；重倉者：立即減至 1/2 以下至 Q2 季報揭曉。</p>
+</div>
+
+<!-- 第四章整合結論 -->
+<div class="tip danger">
+<b>第四章整合結論</b>
+5 張風險卡合計期望 <b style="color:var(--warn)">-30.35%</b>、大於催化劑 +25.5%（差 -4.85pp）、且 5 項風險市場反映全部為 0、意味著股價 282 元完全 Price-in 樂觀情境。<em>Apple（最大單一客戶、比例未揭露但年報自揭 &gt;60% 國際品牌指定）為唯一致命單點（-45%）、雙殺推估 18% / 三殺推估 8% 機率將獨立加總放大至真實 -40~-45%</em>。2023-Q2 單季 -28% 的歷史條件（Apple 弱 + 毛利率低 + 動能資金退場）在 2026-Q2 更嚴重重演、複製機率 35-40%。投資建議：230 元為停損共同支撐位；已持有設停損 230、跌破立即減至 1/3；空手者不追高等 8/15 Q2 季報驗證。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 五、隱藏優勢挖掘與求證 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch5">
+  <div class="section-head">
+    <div class="no">05</div>
+    <div class="tit">
+      <h2>第五章：隱藏優勢挖掘與求證</h2>
+      <div class="sub">8 項隱藏優勢 + 市場反映程度評分 + 加權貢獻 Pareto 排序｜加權上修空間 +32.6~48.8%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>5.1 隱藏優勢驗證卡（按市場反映程度由低至高）</h3>
+<div class="card-body">
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-i">推論</span> 隱藏優勢 #6 · NVIDIA 長約暗示（市場反映僅 10%、最被低估、Step 8 盲點）</div>
+  <div class="ev-d">2026-04-07 重大訊息「2026 Capex 上修至 800 億（+60%）、基於與關鍵客戶下世代 AI 產品達成長期合作共識」。Step 8 弱訊號 D 解讀：<em>「關鍵客戶」用語不像 Apple（Apple 合作無需強調）、符合 NVIDIA / AMD / Hyperscaler 的關係定位</em>。Step 8 蝴蝶效應盲點 #1：臻鼎可能有 NVIDIA 長約但未揭露。NVIDIA 10-K 揭露 "prepaid manufacturing & capacity agreements"（Step 8 弱訊號 C）佐證 NVIDIA 直接鎖定 ABF 產能。若 2026-05 GTC 或 2026-10 Apple 10-K 揭露、客戶結構從單一依賴升級為雙核心、估值倍數重估。<b style="color:var(--accent)">定性：市場反映 10% 最低、需事件觸發才釋放、若揭露倍數重估 +15-20%</b>。</div>
+  <div class="ev-s">來源：2026-04-07 重大訊息 + NVIDIA 10-K 原文 + Step 8 弱訊號 C/D + 蝴蝶效應盲點</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-f">事實</span> 隱藏優勢 #7 · Shinko 下市後日系空缺（市場反映 15%）</div>
+  <div class="ev-d">2025-06 Shinko Electric（6967.T）被 JIC Capital + 三井化學 + DNP 共同收購下市（Step 8 弱訊號 B）、全球 ABF 載板從 5 家（Ibiden/AT&S/Shinko/三星電機/臻鼎）變成 4 家、Shinko 原先 20-25% 市佔率需要重新分配。Ibiden 產能滿載（Step 5）、AT&S FY2028 目標前 3 大但擴產延遲、三星電機受韓國記憶體週期牽制——<em>臻鼎是唯一能在 2026 立即增產承接的選項</em>。Apple 對 Shinko 訂單占比 ~18%（推估）、NVIDIA H100/H200 佔 ~12%（推估）、兩者合計推估 ~30 億美元訂單尋找新供應商。市場目前只反映認證優勢（催化劑 #1）、尚未計入 Shinko 下市後的結構性再分配效應。<b style="color:var(--accent)">定性：事實已發生、影響結構性、市場反映 15% 明顯低估</b>。</div>
+  <div class="ev-s">來源：2025-06 Shinko 下市公告 + JIC Capital 新聞 + Step 8 弱訊號 B</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-i">推論</span> 隱藏優勢 #2 · 西碧拉圖譜中心度高（市場反映 20%、推論值）</div>
+  <div class="ev-d">西碧拉圖譜分析：臻鼎在 AI 封測供應鏈中心度為 PCB 族群第 1（源文定性描述、具體數值為圖譜計算、未量化引用）。高中心度意味著：① 多數 AI 封測關係鏈必須經過臻鼎節點；② 任一節點斷裂對臻鼎影響小（冗餘路徑多）；③ 新技術採用優先測試供應商。這種「網絡不可替代性」是帳面看不出的結構優勢。同業分析師多用「單一客戶集中度」評價、忽略網絡拓樸位置；市場當前僅反映 20% 此項優勢。<b style="color:var(--accent)">定性：網絡位置結構優勢、市場普遍未理解、需財報或事件才釋放</b>。</div>
+  <div class="ev-s">來源：西碧拉圖譜分析（源文定性描述）</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-f">事實</span> 隱藏優勢 #4 · 高雄 AI 園區去中國化溢價（市場反映 30%）</div>
+  <div class="ev-d">Apple 自 2024 年起明確要求供應商提供「多元地域產能」、客戶側給予去中國化溢價加分權重 10-15%（推估）。臻鼎中國銷售佔比自 2019 年 23.41% 降至 2023 年 <b>12.73%</b>（5 年 -10.68pp）、去中國化進程穩定；美國市場佔比自 65.11% 升至 76.25%（5 年 +11.14pp）。同業欣興 3037 全球化程度不及。美中地緣緊張情況下、客戶對「中國+1」供應商定位不是可有可無、而是供應商准入門檻。市場目前僅從折舊壓抑角度看高雄廠（短期扣分）、尚未計入地緣溢價的長期結構加分。<b style="color:var(--accent)">定性：事實已發生、價值結構性、市場短期視角未捕捉長期溢價</b>。</div>
+  <div class="ev-s">來源：2019+2023 年報銷售地區 + Apple 2024 供應商政策</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-i">推論</span> 隱藏優勢 #3 · 四合一綜合能力（市場反映 40%）</div>
+  <div class="ev-d">臻鼎是全球唯一同時具備 PCB（HDI + HLC + 軟板）+ IC 載板 + ABF 載板 + SLP（Substrate-Like-PCB）四合一能力的大廠。同業欣興僅 HDI + IC 載板、健鼎僅 HDI + HLC、Ibiden 僅 ABF + IC 載板。此能力組合在 AI 伺服器主板整合（需多技術）+ 智慧型手機高階機種（SLP + HDI 整合）+ 車用電子跨域時取得客戶 One-stop-shop 偏好。2024 年報揭露「四合一整合訂單」佔比持續提升（具體比例源文未量化、Step 3 定性描述）、為毛利率結構性提升的核心驅動力之一。<b style="color:var(--accent)">定性：能力事實、訂單轉化中、市場反映 40% 尚有 60% 未釋放</b>。</div>
+  <div class="ev-s">來源：2024 年報能力結構 + Step 3 競爭力分析</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-f">事實</span>+<span class="fias-a">假設</span> 隱藏優勢 #8 · ABF 全面供不應求（市場反映 40%）</div>
+  <div class="ev-d"><b>同期擴產方：Ibiden FY2026-2028 投資 $3.3B 擴產（Ibiden 10-K 揭露）+ AT&S FY2028 目標全球前 3 大 ABF、2025-05 已通過 AMD high-volume 認證</b>、但合計擴產 &lt; 50% 需求增幅（Hyperscaler Capex +100%）。TSMC N3/N2 量產 + NVIDIA Rubin（Step 4 E8 極強診斷力證據）+ AMD MI400 量產 + Apple M5 提前釋放等需求同步爆發。臻鼎 ABF 月產能持續擴產、為全球少數可立即擴產的供應商。ABF 結構性的賣方市場下毛利率有機會提升。<b style="color:var(--accent)">定性：全球供需事實、結構性非週期性、市場反映 40% 集中於催化劑 #1 認證、供需議題尚未被充分定價</b>。</div>
+  <div class="ev-s">來源：Ibiden 10-K + AT&S earnings call + Step 5 Ch5</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-f">事實</span> 隱藏優勢 #1 · 2 奈米 ABF 客戶認證（市場反映 50%）</div>
+  <div class="ev-d">與催化劑 #1 連動——2024 年報揭露「ABF 載板通過 2 奈米平台重要客戶認證」、全球 5 家認證過的 ABF 供應商中臻鼎為新加入第 5 家、實質是 N2 世代的寡占門票。認證本身是事實、市場反映 50% 主要卡在「認證 ≠ 訂單」的不確定性、需要 2026-08-15 Q2 季報或 TSMC N2 量產時程確認才能釋放剩餘 50%。若 2026 H2 拿到 10-20% 份額、對應 2027 EPS +3-5 元（推估）。<b style="color:var(--accent)">定性：事實已成立、認證價值清楚、剩餘 50% 空間待訂單兌現</b>。</div>
+  <div class="ev-s">來源：2024 年報 + 催化劑 #1 連動</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-i">推論</span> 隱藏優勢 #5 · 鴻海集團整合能量（市場反映 60%、反映最高）</div>
+  <div class="ev-d">臻鼎為鴻海集團 PCB 旗艦子公司、Foxconn (Far East) Ltd. 直接持股 31.94%。集團整合優勢：① Apple 訂單集中度部分受惠於鴻海組裝地位（Apple 組裝大部分由鴻海承接）；② AI 伺服器客戶群（鴻海 CWH 承接 Meta/Microsoft/Google/AWS）直接導入臻鼎 PCB；③ 母公司鴻海 AI 營收對應臻鼎間接 AI 關聯訂單。<b>關鍵盲點（Step 8 蝴蝶效應）</b>：市場誤認「鴻海 FII 自建 AI 伺服器 = 切分臻鼎訂單」、實際上 FII 承接 CSP 訂單後 <em>仍需 PCB 供應商 — 臻鼎為內部集團採購首選</em>、鴻海 AI 伺服器擴張等於臻鼎內部訂單增加（非競爭）。市場目前已反映 60%（「鴻海集團+AI 受惠」為市場共識）、剩餘 40% 空間在「內部單內轉化率」——若 2026 H2 揭露 NVIDIA + 3 家 CSP 直接訂單、鴻海整合加分會再釋放。<b style="color:var(--accent)">定性：事實+推論混合、市場最充分反映、剩 40% 仰賴客戶揭露</b>。</div>
+  <div class="ev-s">來源：鴻海 2024 年報集團結構 + Step 8 蝴蝶效應盲點</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>5.2 隱藏優勢加權量化（合計上修空間 +32.6~48.8%）</h3>
+<div class="card-body">
+<table>
+<tr><th>隱藏優勢</th><th>市場反映</th><th>未反映空間</th><th>影響</th><th>加權貢獻</th><th>觸發條件</th></tr>
+<tr><td>#6 · NVIDIA 長約暗示</td><td style="color:var(--warn)">10%</td><td>90%</td><td>+20%</td><td style="color:var(--bull);font-weight:700">+18.0%</td><td>GTC / Apple 10-K</td></tr>
+<tr><td>#7 · Shinko 下市空缺</td><td style="color:var(--warn)">15%</td><td>85%</td><td>+12%</td><td style="color:var(--bull);font-weight:700">+10.2%</td><td>Apple/NVIDIA 訂單揭露</td></tr>
+<tr><td>#2 · 西碧拉中心度</td><td style="color:var(--warn)">20%</td><td>80%</td><td>+10%</td><td style="color:var(--bull);font-weight:700">+8.0%</td><td>季報連續驗證</td></tr>
+<tr><td>#4 · 去中國化溢價</td><td>30%</td><td>70%</td><td>+8%</td><td style="color:var(--bull)">+5.6%</td><td>Apple 多元產能揭露</td></tr>
+<tr><td>#3 · 四合一能力</td><td>40%</td><td>60%</td><td>+10%</td><td style="color:var(--bull)">+6.0%</td><td>四合一訂單佔比披露</td></tr>
+<tr><td>#8 · ABF 供不應求</td><td>40%</td><td>60%</td><td>+12%</td><td style="color:var(--bull)">+7.2%</td><td>2026 H2 ASP 上調</td></tr>
+<tr><td>#1 · 2 奈米認證</td><td>50%</td><td>50%</td><td>+15%</td><td style="color:var(--bull)">+7.5%</td><td>2026 Q2 訂單落地</td></tr>
+<tr><td>#5 · 鴻海集團整合</td><td>60%</td><td>40%</td><td>+8%</td><td style="color:var(--bull)">+3.2%</td><td>內部轉化率揭露</td></tr>
+<tr style="background:rgba(107,159,114,0.10)"><td><b>合計（獨立加總）</b></td><td colspan="3"></td><td style="color:var(--bull);font-weight:900">+65.7%</td><td>—</td></tr>
+<tr style="background:rgba(107,159,114,0.15)"><td><b>相關性折扣後（-50%）</b></td><td colspan="3"></td><td style="color:var(--bull);font-weight:900">+32.6~48.8%</td><td>—</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">加權貢獻公式：未反映空間 × 影響。8 項隱藏優勢高度相關（如 #1 / #7 / #8 都共享 ABF 供需）、獨立加總 +65.7% 必須打相關性折扣至 +32.6-48.8%。<em>H6 + H2 + H7 三項（合計 +36.2%）為最被低估且獨立性最高</em>、是真正的隱藏價值源頭。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>5.3 Pareto 排序（按加權貢獻高至低）</h3>
+<div class="card-body">
+<div class="chart-wrap" style="max-height:360px">
+  <canvas id="paretoHidden" style="max-height:340px"></canvas>
+</div>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">Pareto 原則：前 3 項（#6 + #7 + #2、合計 +36.2%）佔總未反映空間 55%+、是隱藏優勢集中釋放的關鍵組合。後 5 項合計僅 +29.5%、且多數與催化劑連動（#1 / #8）、獨立驚喜價值低。<b>投資策略：監控 H6 + H7 + H2 的觸發訊號（GTC / Apple 10-K / 季報結構）、比監控催化劑更能捕捉隱藏 Alpha</b>。</p>
+</div>
+</div>
+
+<!-- 第五章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從八項隱藏優勢看出來的四個重點</h4>
+
+<p><b>1. #6 NVIDIA 長約暗示 + #2 西碧拉中心度高是「最被低估但最難獨立驗證」的組合。</b>兩者合計未反映空間 <em>+26 個百分點</em>、市場反映分別只有 10% / 20%、是八項裡反映程度最低。但兩者都屬於「推論型」優勢——<em>無法透過財報直接驗證、需事件觸發才能釋放</em>。H6 需要 GTC / Apple 10-K 揭露供應商名單、H2 需要連續多季毛利率提升才能間接佐證。<b>這是隱藏價值的核心、但也是最考驗耐心</b>。</p>
+
+<p><b>2. #7 Shinko 下市後日系空缺是八項裡唯一「結構性事實已發生」的機會。</b>2025-06 Shinko 下市是板上釘釘的事實、全球 ABF 載板供應商從 5 家變 4 家、Apple + NVIDIA 原先推估 ~30 億美元訂單必須重新分配。Ibiden 滿載、AT&S FY2028 才能前 3 大、三星電機受牽制、<em>臻鼎是唯一能立即承接的供應商</em>。市場反映僅 15% 是因為多數分析師仍從「認證門票」角度看 ABF（催化劑 #1）、忽略 Shinko 退出後的結構性再分配。此項 +10.2% 加權貢獻含金量最高。</p>
+
+<p><b>3. 八項合計 +65.7% 獨立加總、+32.6~48.8% 相關性折扣後、合理估值仍顯著高於當前隱藏。</b>即使打對折後（風險最嚴格假設）、隱藏優勢加權仍達 +32.6%、大於催化劑合計 +25.5%。問題在於 <em>隱藏優勢與催化劑 Price-in 路徑不同</em>——催化劑多在短期事件（Q2 季報 / Capex 公告）即兌現、隱藏優勢需要半年以上才能陸續釋放。這解釋了為什麼股價當前 282 元看起來合理（Price-in 催化劑）、但中長期仍有 +30% 以上空間（隱藏優勢未 Price-in）。投資判斷要分時間維度看。</p>
+
+<p><b>4. 隱藏優勢集中供應鏈關係類 — 需與催化劑搭配使用、單獨難以釋放。</b>H2（圖譜中心度）、H6（NVIDIA 長約）、H7（Shinko 下市）三項合計 +36.2% 加權貢獻中、<em>80% 是供應鏈關係類</em>（非產品技術類）、需要客戶揭露或事件觸發才能 Price-in。不像催化劑 #3（ABF 轉盈）可透過單一財務數據兌現。投資策略：<b>催化劑決定短期節奏、隱藏優勢決定中長期上限</b>——若 Q2 季報催化劑兌現 + 年底事件觸發隱藏優勢、合計上行空間達 +50%+ 才是真正樂觀情境。</p>
+</div>
+
+<!-- 第五章整合結論 -->
+<div class="tip good">
+<b>第五章整合結論</b>
+8 項隱藏優勢加權貢獻 +65.7%（獨立加總）或 <b style="color:var(--bull)">+32.6~48.8%</b>（相關性折扣後）、大於催化劑合計 +25.5%。<em>H6 NVIDIA 長約 + H7 Shinko 空缺 + H2 西碧拉中心度三項（合計 +36.2%）是最被低估組合、市場反映僅 10-20%</em>。隱藏優勢與催化劑 Price-in 時間維度不同——催化劑短期兌現、隱藏優勢需半年以上事件觸發。中長期投資若能等到 GTC / Apple 10-K / 連續毛利率驗證、合計上行空間 +50%+ 為樂觀情境。投資建議：監控 H6 + H7 + H2 觸發訊號比監控催化劑更能捕捉隱藏 Alpha；Q2 季報（短期）+ 年底供應鏈揭露（中長期）為雙節奏決策窗口。
+</div>
+
+
+
+
+<!-- ============================================================ -->
+<!-- ===== 六、六步分析關鍵決策因素彙整 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch6">
+  <div class="section-head">
+    <div class="no">06</div>
+    <div class="tit">
+      <h2>第六章：六步分析關鍵決策因素彙整</h2>
+      <div class="sub">Step 1-6 因果鏈 + 四次信心校準（Step 4/5/6/8）+ 評審團 5 角色 + 3 系統交叉｜信心收斂 65% → 48-52%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>6.1 Step 1-6 因果鏈彙整</h3>
+<div class="card-body">
+<table>
+<tr><th>步驟</th><th>核心輸出</th><th>關鍵發現</th><th>對最終決策影響</th></tr>
+<tr><td><b>Step 1</b><br>八管道資料</td><td>7/8 管道達標 + 西碧拉初探</td><td>ECB 4 次發行（2012/2014/2020/2024）為結構性壓力</td><td>啟動風險 R3、資料基礎紮實</td></tr>
+<tr><td><b>Step 2</b><br>FIAS 分級</td><td>FIAS 76% 事實 + 誠信度 82/100</td><td>事實基礎堅實、假設類佔 8%（AI 70%、ECB 稀釋）</td><td>論點可信度高、ABF 轉盈為假設不為事實</td></tr>
+<tr><td><b>Step 3</b><br>競爭力分析</td><td>7 維均分 3.43/5 + 窄護城河 2.6/5</td><td>產品事實 4.0 / 需求 2.5 為兩極、Porter 五力 4 高 1 中</td><td>規模龍頭 + 執行效率型、不宜高 PE</td></tr>
+<tr><td><b>Step 4</b><br>ACH 假說</td><td>修正後 H1 40% / H2 40% / H3 15% / H4 5%</td><td>ACH 矩陣 H2+13 &gt; H1+8、H2 一致性分數最高</td><td>雙主導（Step 6 再修正為 H1 35%/H2 45%）</td></tr>
+<tr><td><b>Step 5</b><br>壓力測試</td><td>風險 -30.35% vs 催化劑 +25.5%</td><td>Apple 致命單點 ⭐⭐⭐⭐⭐、ECB#4 無支撐紅色警示</td><td>風險報酬比 1:0.6 不利、需折現安全邊際</td></tr>
+<tr><td><b>Step 6</b><br>評審團 5 角色</td><td>1 PASS + 1 條件 + 3 FAIL</td><td>產業 pass / 個股條件 / 籌碼 fail / 策略 fail / 風控 fail</td><td>加權期望股價 235.5 → Step 8 修正 230</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">六步因果鏈：Step 1 紮實 → Step 2 框架可信 → Step 3 窄護城河 → Step 4 ACH H2 主導 → Step 5 風險 &gt; 催化劑 → Step 6 評審團多數看空。<em>每一步都向下修方向收斂</em>、無單一步驟翻轉結論。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>6.2 四次信心校準進程（Step 4/5/6/8）</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">初始（Step 1-3 累積）：65%：</b>八管道資料達標 + FIAS 76% 事實 + 競爭力均分 3.43/5、基礎信心 65%。</li>
+<li><b style="color:var(--accent)">第一次校準（Step 4 ACH）：60-65%：</b>ACH 60 格矩陣揭露 H2 執行不順一致性分數最高（+13 &gt; H1 +8）、修正後 H1 40% / H2 40% 雙主導、初步輕度下修。</li>
+<li><b style="color:var(--accent)">第二次校準（Step 5 壓力測試）：55-60%：</b>風險合計 -30.35% &gt; 催化劑 +25.5%、差 -4.85pp 負向不對稱；7 項盲點扣信心 -8pp；A6 ECB#4 為唯一無支撐（紅色警示）。</li>
+<li><b style="color:var(--accent)">第三次校準（Step 6 評審團）：50-55%：</b>5 角色中 3 FAIL（籌碼/策略/風控）+ 1 條件看多 + 1 PASS；豁達 12 項負面指標扣 -8 分；加權期望股價 235.5 元 vs 現價 282 = -16.5% 預期下行。</li>
+<li><b style="color:var(--accent)">第四次校準（Step 8 推演）：48-52%：</b>4 路徑加權 240 修正至 230（考慮推估雙殺/三殺非線性）；西碧拉圖譜佐證 NVIDIA 關聯暗示、ABF 替代風險中期 2027 後才顯現。最終信心收斂於 48-52%。</li>
+</ul>
+
+<p>四次校準方向一致皆向下、<em>未出現任何向上修正</em>。最終信心 48-52% 落在「中性偏空」區間、意味著當前資訊組合下、「中性、不追高、設停損 230」是抗推翻性最強的決策。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>6.3 評審團 5 角色 + 3 系統交叉（Iker / BenTsai / 豁達）</h3>
+<div class="card-body">
+<table>
+<tr><th>角色</th><th>判決</th><th>核心關切</th><th>建議動作</th></tr>
+<tr><td>產業分析師（Iker L1）</td><td style="color:var(--bull)">看多 PASS</td><td>AI 供需明顯失衡、訂單滿至 2027、寡占 ABF 認證、5 大主流題材（AI/2 奈米/CPO/HBM/光通訊）共振</td><td>產業強</td></tr>
+<tr><td>個股研究員（Iker L2 + BenTsai）</td><td style="color:var(--neutral)">條件看多</td><td>業務強（軟板+MSAP+ABF 全球第一、專利 1,868 件）但客戶集中（&gt;60% 國際品牌指定）+ ECB#4 稀釋警訊</td><td>條件判斷</td></tr>
+<tr><td>籌碼分析師（Iker L3 + BenTsai）</td><td style="color:var(--warn)">偏空警訊 FAIL</td><td>外資 65.24% 集中、股價超越分析師均價 172.95 的 +63%、急漲後土洋對作</td><td>短期過熱</td></tr>
+<tr><td>策略長（Iker L4）</td><td style="color:var(--warn)">顯著高估 FAIL</td><td>加權 EPS 9.45 × 合理 PE 15-18 = 142-170 元、當前 282 溢價 66-99%、風險報酬比 1:2.4 不利</td><td>合理價 142-170</td></tr>
+<tr><td>風控官</td><td style="color:var(--warn)">警訊 FAIL</td><td>7 項資料缺口 + 確認偏誤（AI 題材太熱）+ 豁達負面 -8 分（股本膨脹 / 股利降 / ROE 下滑）</td><td>情緒過熱</td></tr>
+<tr style="background:rgba(212,136,122,0.08)"><td colspan="2"><b>5 主評審團合計</b></td><td>1 PASS（產業）/ 1 條件看多（個股）/ 3 FAIL（籌碼/策略/風控）</td><td><b>加權 235.5 → Step 8 修 230</b></td></tr>
+</table>
+<p style="margin-top:8px;font-size:.85em;color:var(--txt2)"><b>三系統交叉（Iker 產業上游往下 / BenTsai CB狙擊+估值錨定 / 豁達 12 項負面指標）</b>：</p>
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">Iker 四層合計：</b>L1 產業強 / L2 個股條件 / L3 籌碼警訊 / L4 估值高估 — 四層結果分歧、需多層交叉。</li>
+<li><b style="color:var(--accent)">BenTsai 估值錨定：</b>2026 加權 EPS 9.45 × PE 15-18 = 142-170 元、當前 282 溢價 75%+；CB 狙擊反向信號（ECB#4 稀釋 8-10%）。</li>
+<li><b style="color:var(--accent)">豁達 12 項負面指標扣分 -8：</b>股本膨脹（ECB#3 +11.9%）-2 / 毛利率走低（2023-Q2 / 2024-Q2 雙次虧）-2 / ROE 下滑 -1 / 現金流惡化（2021 -296 億建廠）-1 / 2023 營收 -11.6% -1 / 2025 股利 3.45 元（-28%）-1。</li>
+</ul>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">三系統交叉共識：<em>產業機會存在、公司題材契合、但當前估值已大幅溢價、結構性警訊多</em>（客戶集中 / ECB 稀釋 / 獲利波動）。</p>
+</div>
+</div>
+
+<!-- 第六章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從六步彙整看出來的四個重點</h4>
+
+<p><b>1. 四次校準（Step 4/5/6/8）方向一致皆向下、無任何向上修正。</b>從初始 65% 到 Step 8 48-52%、<em>四次校準累計 -13~-17pp</em>、方向一致無反向。這是最強的「方向一致性」訊號——不是單一方法論偏空、而是 ACH/壓力測試/評審團/推演引擎四種獨立框架同時向下收斂。多元方法收斂於同一方向、意味著結論抗推翻性極強。</p>
+
+<p><b>2. 加權期望股價 230-240 元為多種獨立方法收斂點。</b>評審團加權 235.5 / 推演引擎 4 路徑加權 240 修正 230 / SoTP 估值上緣 220-240 / 策略長 Iker L4 合理 142-170 / 安全邊際 10% 合理 175-210、<em>多方法中位數落在 180-240 元區間</em>。230-240 元是這個區間的中位 + 雙殺機制轉折點 + 2023 年低點延伸線的共同支撐。<b>這就是停損紀律必設 230 的理由</b>。</p>
+
+<p><b>3. 中性不追高為核心判斷、不是「看空」也不是「看多」的妥協。</b>中性 ≠ 妥協、中性 = 在當前風險報酬比 1:0.6 不利結構下、<em>數學期望值為負時不擴張部位的紀律</em>。已持有：守住停損 230；空手者：不追高、Q2 驗證後再評估；重倉者：減至 1/2 以下。中性不是對未來悲觀、而是對「當前價格」表達不滿——若回到 220 以下、立場可能轉為偏多。</p>
+
+<p><b>4. Q2 季報（8/15）為單一最重要決策窗口、有效期 1 個月需在 5/19 前重評。</b>四次校準的所有路徑驗證點都收斂於 <em>2026-08-15 Q2 季報</em>——ABF 是否轉盈、毛利率是否 &gt; 20%、月營收 YoY 是否維持 100%+、三個指標同時揭曉。在此之前任何訊號（NVIDIA GTC / Apple WWDC）都是先行驗證、不能取代 Q2 主決策點。本推衍有效期 1 個月（至 2026-05-19）、若期間發生重大事件需重新校準。</p>
+</div>
+
+<!-- 第六章整合結論 -->
+<div class="tip warn">
+<b>第六章整合結論</b>
+六步因果鏈完整、結論抗推翻性強：Step 1 資料紮實 → Step 5 風險 &gt; 催化劑 → Step 6 評審團 3 FAIL / 1 條件 / 1 PASS。<em>四次信心校準（Step 4 ACH 60-65% / Step 5 壓力 55-60% / Step 6 評審團 50-55% / Step 8 推演 48-52%）方向一致皆向下、加權期望股價 230-240 元為多種獨立方法共同收斂點</em>。中性 ≠ 妥協、是在當前風險報酬比 1:0.6 不利下、數學期望值為負時不擴張部位的紀律。Q2 季報為單一最重要決策窗口、有效期至 2026-05-19。投資建議：已持有設停損 230、跌破立即減至 1/3；空手者不追高、等 Q2 驗證後再評估。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 七、風險清單與壓力測試 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch7">
+  <div class="section-head">
+    <div class="no">07</div>
+    <div class="tit">
+      <h2>第七章：風險清單與壓力測試</h2>
+      <div class="sub">A 10 假設三桶 + B 9 失敗驗屍 + C 致命單點 + D 7 盲點 + E&F 期望彙總｜風險 -30.35% &gt; 催化劑 +25.5%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>7.1 (A) 10 個關鍵假設三桶分類</h3>
+<div class="card-body">
+<table>
+<tr><th>桶別</th><th>假設</th><th>支撐強度</th><th>風險分</th></tr>
+<tr><td rowspan="2" style="color:var(--bull)"><b>有支撐</b><br>(2 項)</td><td>A9 · 會計師 PwC 穩定不變（連 6 年無保留）</td><td style="color:var(--bull)">綠燈</td><td>2/15</td></tr>
+<tr><td>A10 · 鴻海集團持股 Foxconn (Far East) 31.94% 不減持</td><td style="color:var(--bull)">綠燈</td><td>4/15</td></tr>
+<tr><td rowspan="7" style="color:var(--neutral)"><b>需附註</b><br>(7 項)</td><td>A1 · 2025 AI 應用 70%+（管理層預告、需 Q1-Q2 驗證）</td><td style="color:var(--warn)">黃燈</td><td>10/15</td></tr>
+<tr><td>A2 · 2 奈米客戶訂單將量產（認證是事實、訂單是假設）</td><td style="color:var(--warn)">黃燈</td><td>8/15</td></tr>
+<tr><td>A3 · ABF 2026-Q2 轉盈（管理層承諾、2023 未達前科）</td><td style="color:var(--warn)">黃燈</td><td>11/15</td></tr>
+<tr><td>A4 · Apple 訂單持續（&gt;60% 國際品牌指定中 Apple 最大）</td><td style="color:var(--warn)">黃燈</td><td>12/15 ★</td></tr>
+<tr><td>A5 · Hyperscaler 2026 Capex $660-690B（+近一倍）</td><td>黃燈</td><td>8/15</td></tr>
+<tr><td>A7 · PE 12-15 為合理區間（窄護城河景氣循環）</td><td>黃燈</td><td>6/15</td></tr>
+<tr><td>A8 · 毛利率未來回升至 22%+（2025-Q4 已達 22.56%）</td><td>黃燈</td><td>10/15</td></tr>
+<tr><td style="color:var(--warn)"><b>無支撐</b><br>(1 項)</td><td>A6 · ECB#4 緩慢轉換不集中稀釋（ECB#3 2025 Q3-Q4 集中轉換前科反證）</td><td style="color:var(--warn)">紅燈</td><td>13/15 ★</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">A6 為唯一「無支撐」假設、紅色警示。ECB#3 2025 Q3-Q4 集中轉換（股本稀釋 +11.9%）歷史前科證明集中轉換的可能性。<em>A4 Apple 訂單為「需附註但風險最高」、致命度 ⭐⭐⭐⭐⭐</em>。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>7.2 (B) 9 個失敗模式驗屍 + (C) 致命單點</h3>
+<div class="card-body">
+<table>
+<tr><th>失敗模式</th><th>觸發條件</th><th>風險分</th><th>對應假設</th></tr>
+<tr><td>B1 · Apple 切單 -30%（★★★★★）</td><td>iPhone 銷量 -10%+ / FII 內製 + Houston 自建 / 轉採 Shinko/三星</td><td style="color:var(--warn)">15/15 ★</td><td>A4 致命單點</td></tr>
+<tr><td>B2 · ABF 連續 3 季未轉盈</td><td>稼動率 &lt; 70% / 折舊壓抑超預期</td><td style="color:var(--warn)">12/15</td><td>A3 + A8</td></tr>
+<tr><td>B3 · 2023-Q2 虧損重演</td><td>毛利率連兩季 &lt; 15% + 動能撤離</td><td style="color:var(--warn)">12/15</td><td>歷史模式重演</td></tr>
+<tr><td>B4 · ECB#4 集中稀釋</td><td>2026-Q3~Q4 ECB#4 集中轉換（2024-01 已發行 4 億美元）</td><td style="color:var(--warn)">12/15</td><td>A6</td></tr>
+<tr><td>B5 · 2 奈米份額 &lt; 5%</td><td>TSMC 偏好 Ibiden/AT&S 為主供</td><td>9/15</td><td>A2</td></tr>
+<tr><td>B6 · 高雄廠延宕</td><td>環評/缺工/設備到位延遲</td><td>7/15</td><td>A7</td></tr>
+<tr><td>B7 · CoWoP 提早規模化</td><td>TSMC 2027 量產 + 良率 &gt; 70%</td><td>8/15</td><td>R4 外部</td></tr>
+<tr><td>B8 · 沈慶芳董座異動</td><td>71-80 歲退休/接班/家族變化</td><td>8/15</td><td>R5</td></tr>
+<tr><td>B9 · Hyperscaler 2027 Capex 急煞車</td><td>AWS/Alphabet/MSFT Q1 指引下修 &gt; 20%</td><td>10/15</td><td>A5 + H4</td></tr>
+</table>
+<p style="margin-top:8px"><b style="color:var(--warn)">致命單點 (C)：B1 · Apple 切單 -30%</b>、唯一風險分 15/15 完美得分。觸發後 EPS -40% / 股價 -45%、無對沖路徑。所有其他失敗模式都有部分對沖（如 B4 ECB#4 可透過業績成長稀釋）、但 B1 一旦觸發、臻鼎財務體質直接重置。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>7.3 (D) 7 個盲點 + (E&F) 期望值彙總</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">D1 · Apple 對臻鼎依賴度具體比例：</b>年報僅自揭「&gt;60% 國際品牌指定生產」、Apple 具體比例未揭露。扣信心 -2pp。</li>
+<li><b style="color:var(--accent)">D2 · ECB#3/ECB#4 具體轉換條款：</b>僅從 finlab 股本軌跡反推、未查閱新加坡交易所公開文件。扣信心 -2pp。</li>
+<li><b style="color:var(--accent)">D3 · 董監質押率具體數字：</b>finlab KY 股欄位不支援、MOPS 未直查（推論應無異常）。扣信心 -1pp。</li>
+<li><b style="color:var(--accent)">D4 · M-Score / Z-Score 會計品質：</b>finlab KY 股欄位不支援（用替代指標毛利率穩定性）。扣信心 -1pp。</li>
+<li><b style="color:var(--accent)">D5 · 關係人交易佔營收比例：</b>鴻海集團內部交易未具體揭露、集團合併後應已沖銷。扣信心 -1pp。</li>
+<li><b style="color:var(--accent)">D6 · ABF 載板單獨虧損金額：</b>臻鼎/禮鼎分部財報未公開揭露。扣信心 -1pp。</li>
+<li><b style="color:var(--accent)">D7 · NVIDIA CoWoP 架構實際採用時程：</b>NVIDIA 官方未正式揭露。扣信心 -0pp（已併入 R4）。</li>
+</ul>
+
+<p>盲點合計扣信心 -8pp（65% → 57%、Step 5 第二次校準）。<b style="color:var(--warn)">(E) 風險合計 -30.35%</b> vs <b style="color:var(--bull)">(F) 催化劑合計 +25.5%</b>、差 -4.85pp 負向不對稱；考量雙殺/三殺機制（推論）、實際隱含 -40~-45%。</p>
+</div>
+</div>
+
+<!-- 第七章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從壓力測試 A-F 六類看出來的四個重點</h4>
+
+<p><b>1. A6 ECB#4 是唯一「無支撐」假設、A4 Apple 才是真正致命。</b>10 個假設中只有 A6（ECB#4 不會集中稀釋）為紅色無支撐——ECB#3 2025 Q3-Q4 集中轉換（股本 +11.9%）為歷史前科反證。但<em>真正最致命是 A4 Apple 訂單</em>、雖然分類為「需附註」但風險分 12/15 為十項中第二高、且觸發後致命度 ⭐⭐⭐⭐⭐。A6 影響結構性可預期、A4 影響突發不可預期、<b>監控優先序應為 A4 &gt; A6</b>。</p>
+
+<p><b>2. 9 個失敗模式中、B1 Apple 切單 15/15 為唯一「無對沖路徑」單點。</b>其他 8 個失敗模式都有部分對沖機制——B2 ABF 未轉盈可透過 PCB 主業彌補、B4 ECB#4 可透過業績成長稀釋、B7 CoWoP 還有 5+ 年緩衝。<em>只有 B1 一觸發直接讓臻鼎財務體質重置</em>。投資判斷：B1 觸發機率 25-35% 為最大不確定性源頭、是「黑天鵝在白天」的代表。</p>
+
+<p><b>3. 盲點集中於三類：客戶 / ECB / 會計、扣信心累計 -8pp 不可忽略。</b>D1（Apple 具體比例）+ D5（集團關係人）為客戶類；D2（ECB 條款）為合約類；D3/D4/D6（質押/M-Z Score/ABF 分部虧損）為會計類。<em>三類盲點都需透過外部事件才能解開</em>——年報揭露 / 客戶公告 / TSMC 路線圖。在這些事件揭露前、信心永遠卡在 50-60% 區間、無法明確看多。</p>
+
+<p><b>4. 風險 -30.35% 與催化劑 +25.5% 收斂於 Q2 季報、不對稱結構在此節點放大。</b>所有 A 類假設的驗證、B 類失敗模式的觸發、C 類致命單點的暴露、都集中在 <em>2026-08-15 Q2 季報</em>單一節點。Q2 季報結果好（毛利率 &gt; 20% + ABF 轉盈 + 月營收 +100%+）、所有風險瞬間收斂為 -10~-15%；Q2 季報結果壞（毛利率 &lt; 18% + ABF 未轉盈）、風險瞬間放大為 -45~-50%。<b>投資結構：Q2 季報為「不對稱事件」、需用選擇權思維而非平均期望思維評價</b>。</p>
+</div>
+
+<!-- 第七章整合結論 -->
+<div class="tip warn">
+<b>第七章整合結論</b>
+壓力測試六類完整：A6 ECB#4 為唯一無支撐（ECB#3 集中轉換歷史前科反證）、A4 Apple 為真正致命單點（風險分 12/15）；B1 Apple 切單 15/15 為唯一無對沖路徑；盲點累計 -8pp 集中於客戶/ECB/會計三類。<em>所有風險與催化劑收斂於 2026-08-15 Q2 季報、是「不對稱事件」需用選擇權思維評價</em>。風險合計 -30.35% &gt; 催化劑 +25.5%、考量推估雙殺機制實際隱含 -40~-45%。投資建議：監控 A4（Apple）優先序高於 A6（ECB#4）；Q2 季報結果好/壞兩種情境差異 +30~+40pp、部位調整必須等 8/15 後執行；停損 230 為三殺機制邊界、跌破立即減至 1/3。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 八、監控儀表板 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch8">
+  <div class="section-head">
+    <div class="no">08</div>
+    <div class="tit">
+      <h2>第八章：監控儀表板</h2>
+      <div class="sub">5 觸發指標（紅黃綠燈門檻）+ 股價操作帶 6 區間 + 未來 6 個月關鍵日期｜決策節奏化</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>8.1 五大觸發指標（含紅黃綠燈門檻）</h3>
+<div class="card-body">
+<table>
+<tr><th>指標</th><th>當前值</th><th>綠燈 ✅</th><th>黃燈 ⚠️</th><th>紅燈 🚨</th><th>追蹤頻率</th></tr>
+<tr><td><b>1. 鵬鼎月營收 YoY</b></td><td>+7.18%（2026-03）</td><td>&gt; +15%</td><td>0~+15%</td><td style="color:var(--warn)">&lt; -10% 連 2 月</td><td>每月 10 號</td></tr>
+<tr><td><b>2. 季毛利率</b></td><td>22.56%（2025-Q4）</td><td>&gt; 22%</td><td>18-22%</td><td style="color:var(--warn)">&lt; 18%</td><td>季報日</td></tr>
+<tr><td><b>3. ABF 稼動率</b></td><td>60-70%</td><td>&gt; 80%</td><td>70-80%</td><td style="color:var(--warn)">&lt; 70%</td><td>季報日</td></tr>
+<tr><td><b>4. AI 應用營收佔比</b></td><td>45%（2024）</td><td>&gt; 60%</td><td>50-60%</td><td style="color:var(--warn)">&lt; 50%</td><td>季報日</td></tr>
+<tr><td><b>5. ECB#4 股本變動</b></td><td>無（2024-01 發行待轉）</td><td>季增 &lt; 1%</td><td>季增 1-5%</td><td style="color:var(--warn)">季增 &gt; 5% / 公告集中轉換</td><td>finlab 季度</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">五指標連動：指標 2/3 同時紅燈意味 ABF 結構問題（風險 R2）；指標 1/4 同時黃燈意味 AI 動能熄火（基本面失守）；指標 5 紅燈意味結構性稀釋啟動（R3）。<b>任 2 個紅燈同時觸發 → 立即減碼 50%；3 個紅燈 → 全數出清</b>。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>8.2 股價操作帶六區間</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--warn)">A. ≥ 300 元 · 強烈減碼區：</b>對應 H1 樂觀 EPS 13 × PE 23+、已超越所有合理估值上限。建議減至 1/4 部位。</li>
+<li><b style="color:var(--warn)">B. 260-299 元 · 持有觀望區：</b>當前 282 元落於此區。已持有不加碼、空手者不進場、等 Q2 季報前不擴張。</li>
+<li><b style="color:var(--neutral)">C. 230-259 元 · 中性持有區：</b>對應評審團加權期望 235.5、Step 8 修正 230，是合理估值區間。已持有可繼續、新買應分批進場 1/3 + 1/3 + 1/3。</li>
+<li><b style="color:var(--bull)">D. 188-229 元 · 加碼區：</b>跌至此區意味 H2 執行不順 45% 假設兌現一半、估值回到合理偏便宜。可加碼至滿倉 75%。</li>
+<li><b style="color:var(--bull)">E. 140-187 元 · 重倉建倉區：</b>對應 H3 Apple 去化 15% 假設兌現、安全邊際 30%。空手者大膽進場 80%+ 部位。</li>
+<li><b style="color:var(--bull)">F. &lt; 140 元 · 危機重倉區：</b>對應 H4 AI 泡沫 5% 極端情境、PE &lt; 15、PB &lt; 1.5。歷史性買進機會、建議全數投入。</li>
+</ul>
+
+<p>當前 282 元落於 B 區（持有觀望）、距 C 區（中性持有）僅 -8%、距 A 區（強烈減碼）僅 +6%。<em>區間結構呈現上下不對稱——上方僅 6% 警戒空間、下方 19% 才達加碼區</em>、對追高者極不利。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>8.3 未來 6 個月關鍵日期表</h3>
+<div class="card-body">
+<div class="timeline">
+  <div class="tl-item">
+    <div class="tl-date">2026-04-16</div>
+    <div class="tl-title">TSMC Q1 法說會（N2 進度）</div>
+    <div class="tl-desc">指標 4 前置驗證</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-05-10</div>
+    <div class="tl-title">臻鼎 4 月營收公告</div>
+    <div class="tl-desc">指標 1 月度驗證；急跌 &lt; +30% 為 R1 前兆</div>
+  </div>
+  <div class="tl-item critical">
+    <div class="tl-date">2026-05-15 ★</div>
+    <div class="tl-title">臻鼎 Q1 季報（前置決策點）</div>
+    <div class="tl-desc">指標 2/3/4 同步揭露</div>
+  </div>
+  <div class="tl-item bull">
+    <div class="tl-date">2026-05 中</div>
+    <div class="tl-title">NVIDIA GTC 春季</div>
+    <div class="tl-desc">隱藏優勢 H6 觸發</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-date">2026-06 中</div>
+    <div class="tl-title">股東常會 + ECB#3 剩餘處理</div>
+    <div class="tl-desc">新任獨董資歷 / ECB#4 預案</div>
+  </div>
+  <div class="tl-item critical">
+    <div class="tl-date">2026-08-15 ★★</div>
+    <div class="tl-title">臻鼎 Q2 季報（單一最重要決策點）</div>
+    <div class="tl-desc">指標 2/3 + 風險 R2 + 催化劑 #3 同時揭曉</div>
+  </div>
+  <div class="tl-item bull">
+    <div class="tl-date">2026-10</div>
+    <div class="tl-title">Apple 10-K 供應商揭露</div>
+    <div class="tl-desc">隱藏優勢 H6 + H7 中長期觸發</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- 第八章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從監控儀表板看出來的四個重點</h4>
+
+<p><b>1. 5/15 與 8/15 為兩個決策收斂點、5/15 前置 / 8/15 主決策。</b>5/15 Q1 季報是「前置驗證」——指標 2/3/4 提前揭露走向；<em>8/15 Q2 季報才是「主決策」</em>——三大指標 + 風險 R2 + 催化劑 #3 同時揭曉。投資紀律：5/15 前不調整部位（資訊不足）；5/15-8/15 之間若任 2 紅燈先行觸發即減碼 30%；8/15 為最終決策點。</p>
+
+<p><b>2. 當前 282 元落於 B 區（持有觀望）、距 A 區強烈減碼僅 +6%、距 D 區加碼空間 19%。</b>區間結構嚴重不對稱：<em>上方緩衝僅 6%、下方加碼空間 19%</em>。意味著「上漲 6% 應減碼、下跌 19% 才加碼」的紀律。對追高者極不利——任何追高動作都接近強烈減碼區。空手者尤其要等 D 區（&lt; 230）才進場。</p>
+
+<p><b>3. 任 2 個紅燈同時觸發即減碼 50%、3 個紅燈即全數出清——機械化決策。</b>避免情緒化決策的關鍵：<em>事先設好觸發條件、事到臨頭機械執行</em>。指標 2/3 同時紅燈 = ABF 結構問題（風險 R2 兌現）；指標 1/4 同時黃燈 = AI 動能熄火（基本面失守）；指標 5 紅燈 = 結構性稀釋啟動（風險 R3 兌現）。任 2 紅燈組合的實際機率 25-35%。</p>
+
+<p><b>4. 不對稱結構（上 6-9% vs 下 19-33%）意味「依成本」設停損比「依絕對價」更有效。</b>對追到 280+ 的投資人、停損設 230 損失 -18%；對成本 200 元的投資人、停損 230 仍獲利 +15%。<em>停損紀律應依「自身成本 -10~-15%」彈性調整、不是依絕對價位</em>。但所有人都有共同支撐位 230（雙殺機制邊界 + 2023 年低點延伸）、跌破後機制重組需要先撤退觀察。</p>
+</div>
+
+<!-- 第八章整合結論 -->
+<div class="tip info">
+<b>第八章整合結論</b>
+五大觸發指標機械化決策框架：任 2 紅燈即減碼 50%、3 紅燈即出清；當前 282 元落於 B 持有觀望區、距 A 強烈減碼僅 +6% / 距 D 加碼區 -19%。<em>5/15 Q1 季報為前置決策點、8/15 Q2 季報為單一主決策點、5 指標 + 風險 R2 + 催化劑 #3 同時揭曉</em>。不對稱結構（上 6% 緩衝 / 下 19% 加碼空間）對追高者極不利。投資建議：依自身成本設停損 -10~-15%、共同支撐位 230 跌破即減至 1/3；空手者等 D 區（&lt; 230）分批進場；5/15 前不擴張部位。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 九、推衍預測（4 路徑機率分布） ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch9">
+  <div class="section-head">
+    <div class="no">09</div>
+    <div class="tit">
+      <h2>第九章：推衍預測</h2>
+      <div class="sub">4 路徑詳細卡 + 加權期望 + 三條影響鏈 + Q2 毛利率情境決策樹 + 歷史劇本對照｜H2 執行不順機率最高 45%</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>9.1 四路徑詳細卡（按機率高至低，Step 6 第三次校準）</h3>
+<div class="card-body">
+
+<div class="ev" style="border-left:4px solid var(--neutral)">
+  <div class="ev-t"><span class="fias-i">推論</span> 路徑 H2 · 執行不順（機率 45%、最高）</div>
+  <div class="ev-d">觸發條件：ABF Q2 未轉盈 + 高雄廠折舊壓抑 + 月營收 YoY 降至 +30~+50%。對應 2026 EPS 8-9 元、股價區間 180-240 元、PE 22-27。基本面持續成長但成長率低於市場預期、市場說法從「AI 寡占受惠者」修正為「PCB 龍頭+AI 加分」。<em>不是崩盤情境、是「正常修正」</em>。歷史對照：2023-Q2 後的修正即屬此模式。<b style="color:var(--accent)">定性：機率最高、修正壓力結構性、對應股價落於 D 區加碼帶</b>。</div>
+  <div class="ev-s">來源：Step 4 ACH H2 + Step 5 風險 R2/R3</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--bull)">
+  <div class="ev-t"><span class="fias-i">推論</span> 路徑 H1 · AI 爆發雙擊（機率 35%）</div>
+  <div class="ev-d">觸發條件：ABF Q2 轉盈 + 2 奈米訂單揭露 + NVIDIA 長約確認任 2 項兌現。對應 2026 EPS 12-14 元、股價區間 300-360 元、PE 25-26。基本面成長 + 估值溢價維持、市場說法強化為「ABF 寡占 + AI Beta」。需要催化劑 #1 + #3 同時驗證才能站穩。<em>當前 282 元已 Price-in 此情境約 70-80%</em>、剩餘 20-30% 上升空間需事件觸發。<b style="color:var(--accent)">定性：機率次高但已部分 Price-in、上升空間有限、需多重事件齊發</b>。</div>
+  <div class="ev-s">來源：Step 4 ACH H1 + Step 5 催化劑 #1/#3</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-i">推論</span> 路徑 H3 · Apple 去化（機率 15%）</div>
+  <div class="ev-d">觸發條件：iPhone 2026 銷量持續下滑 + Apple 多元化採購 + Houston AI 伺服器廠自建。對應 2026 EPS 6-7 元、股價區間 <b>140-180 元</b>、PE 20-26。Apple 從最大單一客戶降級（&gt;60% 國際品牌指定中比例下修）、臻鼎需 1-2 年重建客戶結構。市場說法翻轉為「Apple 依賴受害者」、外資撤離。推估雙殺/三殺機制觸發。<em>對應 D 區加碼帶下緣、E 區重倉建倉區</em>。<b style="color:var(--accent)">定性：機率中低但影響大、觸發後 1-2 年才能重建、提供歷史性買進機會</b>。</div>
+  <div class="ev-s">來源：Step 4 ACH H3 + Step 5 風險 R1 + 2023-Q2 歷史</div>
+</div>
+
+<div class="ev" style="border-left:4px solid var(--warn)">
+  <div class="ev-t"><span class="fias-a">假設</span> 路徑 H4 · AI 泡沫破裂（機率 5%、極端）</div>
+  <div class="ev-d">觸發條件：全球 AI 投資週期反轉 + Hyperscaler Capex 砍半 + NVIDIA 訂單壓力。對應 2026 EPS 3-5 元、股價區間 100-140 元、PE 20+。臻鼎 AI 應用 70% 預期歸零、ABF 投資帳面減損 30-40%。市場說法翻轉為「AI 泡沫破裂受害者」。<em>對應 F 區危機重倉</em>。歷史對照：2000 年網路泡沫、2018 年加密貨幣崩盤級別事件。<b style="color:var(--accent)">定性：機率極低（5%）但若發生為歷史性買進機會、需 PE &lt; 15 + PB &lt; 1.5 條件成立</b>。</div>
+  <div class="ev-s">來源：Step 4 ACH H4 + 極端情境推演</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>9.2 加權期望股價計算（Step 6 第三次校準）</h3>
+<div class="card-body">
+<table>
+<tr><th>路徑</th><th>機率</th><th>EPS 區間</th><th>股價區間（中位）</th><th>機率加權</th></tr>
+<tr><td>H1 · AI 爆發雙擊</td><td>35%</td><td>12-14</td><td>330</td><td style="color:var(--bull)">115.5</td></tr>
+<tr><td>H2 · 執行不順</td><td>45%</td><td>8-9</td><td>200</td><td>90.0</td></tr>
+<tr><td>H3 · Apple 去化</td><td>15%</td><td>6-7</td><td>160</td><td style="color:var(--warn)">24.0</td></tr>
+<tr><td>H4 · AI 泡沫</td><td>5%</td><td>3-5</td><td>120</td><td style="color:var(--warn)">6.0</td></tr>
+<tr style="background:rgba(180,170,155,0.10)"><td colspan="3"><b>加權期望股價（Step 6）</b></td><td><b style="color:var(--neutral)">235.5</b></td><td><b>235.5</b></td></tr>
+<tr style="background:rgba(212,136,122,0.08)"><td colspan="3"><b>Step 8 修正後（含推估雙殺/三殺非線性）</b></td><td><b style="color:var(--neutral)">230</b></td><td><b>—</b></td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">機率分布偏空：<em>H2 + H3 + H4 合計 65% 對應 &lt; 240 元</em>、僅 H1 35% 對應 &gt; 240。當前 282 元高於加權期望 235.5 約 +19.7%、過度樂觀差距 30pp（即股價已 Price-in H1 為 65% 機率、但實際 ACH 估算僅 35%）。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>9.3 三條影響鏈推演（Step 8 8c）</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">影響鏈 1（H1 AI 爆發雙擊）：</b>2 奈米客戶量產（C1） + ABF Q2 轉盈（C3） → 雙重驗證 → AI 應用 70%+ 兌現（C2） → NVIDIA 長約揭露（H6 觸發） → 估值倍數重估 PE 25→28 → 股價 +20-30% 至 340-370 元。<em>單路徑 4 個事件齊發機率僅 35%</em>。</li>
+<li><b style="color:var(--accent)">影響鏈 2（H2/H3 ECB#4 雙重打擊）：</b>ABF Q2 未轉盈（R2） → 為補充資金 ECB#4 集中轉換（R3） → 股本稀釋 7-10% → EPS 從 9 元降至 8 元 → PE 從 22 降至 20 → 股價 -25-30% 至 200-220 元。<em>雙重打擊機制讓 H2 從中性轉向偏空</em>。</li>
+<li><b style="color:var(--accent)">影響鏈 3（H3 Apple 切單級聯）：</b>iPhone 銷量 -15% → 臻鼎 PCB 訂單 -30% → ABF 稼動率拖累至 &lt; 60% → 高雄廠折舊壓抑 EPS → 動能外資集中減碼 → 推估三殺機制觸發 → 股價 -45% 至 155 元。<em>單一觸發引發 5 步級聯</em>、是雙殺/三殺機制的具體展開。</li>
+</ul>
+
+<p>三條影響鏈各對應一條主路徑、<em>不是獨立事件而是「啟動序列」</em>。投資監控的關鍵是「序列起點」（C1/C3 同時驗證 vs R2 + R3 同時觸發 vs Apple 訂單變化）、起點訊號出現後 3-6 個月鏈條才完整展開。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>9.4 情境決策樹（Q2 毛利率為根節點、Step 8 8d）</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--bull)">Q2 毛利率 &gt; 20% + ABF 轉盈確認（機率 35%）：</b>走 H1 路徑 → EPS 12-14 元 → 股價 300-360（ECB#4 慢轉則保持 +50% 上行）</li>
+<li><b style="color:var(--neutral)">Q2 毛利率 15-20% + ABF 持平（機率 45%）：</b>走 H2 路徑 → EPS 8-9 元 → 股價 180-240（ECB#4 快轉則再稀釋 -8%）</li>
+<li><b style="color:var(--warn)">Q2 毛利率 &lt; 15% + ABF 虧損擴大（機率 20%）：</b>走 H3/H4 路徑 → EPS 6-7 元 → 股價 140-180（觸發停損 230 向下急速）</li>
+</ul>
+
+<p><em>Q2 毛利率是所有路徑的分水嶺</em>、8/15 之前股價已反映樂觀、Q2 財報將決定 H1/H2/H3 走向。建議 Q2 財報前保守、Q2 財報後根據實際數字行動。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>9.5 歷史劇本 3 對照（Step 8 8g）</h3>
+<div class="card-body">
+<table>
+<tr><th>歷史案例</th><th>相似度</th><th>劇本演進</th><th>臻鼎借鏡</th></tr>
+<tr><td>台積電 2003-2007 週期</td><td>70%</td><td>Capex 大幅上修 → 2004-2005 折舊爆量 → 2006-2007 AI 需求起飛 → EPS 突破</td><td>若如此演進、臻鼎 2026 折舊高峰、2027-2028 獲利爆發</td></tr>
+<tr><td>欣興電子 2020-2023 週期</td><td>60%</td><td>ABF 載板缺貨 → 股價飆漲 → 產能過剩 → 股價腰斬</td><td>注意 ABF 產業過剩週期風險（2027-2028）</td></tr>
+<tr><td>大立光 2015-2018 週期</td><td>50%</td><td>Apple 訂單集中 → 高 PE → Apple 多元供應商 → 股價修正 50%</td><td>Apple 集中依賴歷史警訊（R1 直接對應）</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">三歷史劇本中、<em>大立光 2015-2018 與臻鼎 Apple 依賴結構最相似</em>（相似度 50%）；臻鼎若重演大立光修正路徑、股價可能下修 40-50%（282→140-170 元）、對應 H3 Apple 去化路徑。</p>
+</div>
+</div>
+
+<!-- 第九章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從推衍預測 4 路徑看出來的四個重點</h4>
+
+<p><b>1. H2 執行不順 45% 為單一機率最高路徑、H1 AI 爆發 35% 為次高、H3+H4 合計 20% 為下檔。</b>機率分布結構性偏空——<em>H2 + H3 + H4 合計 65% 對應 &lt; 240 元</em>。當前 282 元已 Price-in H1 為 65% 機率（對應 H1 中位股價 330 × 65% + H2 中位 200 × 35% = 285），與實際 ACH 估算 35% 機率相比、<b>過度樂觀差距 30pp</b>。這是當前最大不對稱。</p>
+
+<p><b>2. 加權期望 235.5 元（Step 6）→ 修正 230（Step 8）為四種獨立方法收斂點、+19~22% 高估需修正。</b>推演引擎加權 235.5 → Step 8 修正 230、評審團加權 235.5、SoTP 估值上緣 210、Iker 策略長合理 142-170。<em>四種獨立方法都指向 180-240 元區間</em>。當前 282 元 +19~22% 高於加權期望、意味著市場錯估 H1 機率約 30pp。修正壓力是結構性、非短期波動。</p>
+
+<p><b>3. 三條影響鏈不是獨立事件、是「啟動序列」需 3-6 個月才完整展開。</b>影響鏈 1 需 C1+C3 雙驗證 → C2 兌現 → H6 觸發 → 估值重估 4 步序列；影響鏈 3 需 iPhone 弱 → PCB -30% → ABF 拖累 → 折舊壓抑 → 動能撤離 5 步級聯。<em>監控的關鍵是「序列起點」</em>——起點訊號出現後（如 5/10 月營收公告 / 5/15 Q1 毛利率）、不需等鏈條完整即可預判方向。</p>
+
+<p><b>4. Q2 季報（8/15）為單一最重要決策點、4 路徑機率將在此重新分配。</b>Q2 季報結果：① 大好（毛利率 &gt; 22% + ABF 轉盈 + 月營收 +100%+）→ H1 機率從 35% 升至 60%、股價往 320-340；② 中性（毛利率 18-22% + ABF 接近轉盈）→ H1/H2 各 40%、股價維持 240-280；③ 不達（毛利率 &lt; 18% + ABF 未轉盈）→ H2/H3 機率合計 75%、股價落至 180-220。<em>三種情境差異 +30~+40pp</em>、部位調整必須等 8/15 後執行。</p>
+</div>
+
+<!-- 第九章整合結論 -->
+<div class="tip warn">
+<b>第九章整合結論</b>
+4 路徑機率：H1 35% / H2 45% / H3 15% / H4 5%、加權期望股價 235.5 → Step 8 修正 230。<em>當前 282 元已 Price-in H1 為 65% 機率、實際估算 35%、過度樂觀差距 30pp</em>。三條影響鏈為「啟動序列」需 3-6 個月展開、監控關鍵是「序列起點」（5/10 月營收 / 5/15 Q1 毛利率 / 8/15 Q2 季報）。情境決策樹以 Q2 毛利率為根節點（&gt;20% H1 / 15-20% H2 / &lt;15% H3/H4）；歷史劇本大立光 Apple 集中 50% 相似度最高。Q2 季報結果三種情境差異 +30~+40pp、是單一最重要決策點。投資建議：5/15 前不擴張部位、8/15 後依結果調整；停損 230 為三殺機制邊界、跌破立即減至 1/3。
+</div>
+
+
+
+
+<!-- ============================================================ -->
+<!-- ===== 十、股價合理性分析（5-8 種估值法） ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch10">
+  <div class="section-head">
+    <div class="no">10</div>
+    <div class="tit">
+      <h2>第十章：股價合理性分析</h2>
+      <div class="sub">8 種估值法並列 + floating bar 圖 + 同業 PE 對標 + SOTP 分拆估值 + 安全邊際 4 級｜多方法加權平均 178-183 元</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>10.1 八種估值法並列</h3>
+<div class="card-body">
+<table>
+<tr><th>估值法</th><th>輸入假設</th><th>輸出股價</th><th>vs 當前 282</th><th>可信度</th></tr>
+<tr><td>1. 歷史 PE（5 年均）</td><td>2025 EPS 6.91 × PE 12-15</td><td>83-104</td><td style="color:var(--warn)">-63% ~ -71%</td><td>中</td></tr>
+<tr><td>2. 2026 加權 EPS</td><td>EPS 9.45 × PE 15-18</td><td>142-170</td><td style="color:var(--warn)">-40% ~ -50%</td><td>高</td></tr>
+<tr><td>3. H1 樂觀情境</td><td>EPS 13 × PE 20-25</td><td>260-325</td><td>-8% ~ +15%</td><td>中</td></tr>
+<tr><td>4. 同業 PE 對標</td><td>EPS 9.45 × 同業 PE 17</td><td>161</td><td style="color:var(--warn)">-43%</td><td>高</td></tr>
+<tr><td>5. DCF 三階段</td><td>CAGR 8% / WACC 10% / g 3%</td><td>180-220</td><td style="color:var(--warn)">-22% ~ -36%</td><td>中高</td></tr>
+<tr><td>6. SoTP 分拆估值</td><td>PCB 8-12 + ABF 20-25 加權 12-15</td><td>150-210</td><td style="color:var(--warn)">-26% ~ -47%</td><td>高</td></tr>
+<tr><td>7. EV/EBITDA</td><td>EBITDA 2026E × 8-10 倍</td><td>170-210</td><td style="color:var(--warn)">-26% ~ -40%</td><td>中高</td></tr>
+<tr><td>8. PEG</td><td>PE 22 / EPS 成長 35% = 0.63</td><td>192</td><td style="color:var(--warn)">-32%</td><td>中</td></tr>
+<tr style="background:rgba(107,159,114,0.10)"><td colspan="2"><b>8 法簡單平均</b></td><td><b>183</b></td><td><b style="color:var(--warn)">-35%</b></td><td>—</td></tr>
+<tr style="background:rgba(107,159,114,0.10)"><td colspan="2"><b>可信度加權平均（高=3/中高=2/中=1）</b></td><td><b>178</b></td><td><b style="color:var(--warn)">-37%</b></td><td><b>合理估值</b></td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">8 種方法中 6 種指向股價低於當前 20% 以上、僅 H1 樂觀情境可支撐當前 282 元。<em>可信度加權平均 178 元、8 法簡單平均 183 元為合理估值</em>。當前 282 元高估 +54~+58% 為多方法共同結論。</p>
+
+<div class="chart-wrap" style="max-height:360px;margin-top:14px">
+  <div style="font-size:.85em;color:var(--txt2);font-weight:600;margin-bottom:6px">八法估值區間 vs 現價 282 元</div>
+  <canvas id="valuationChart" style="max-height:320px"></canvas>
+  <div style="font-size:.78em;color:var(--txt3);margin-top:6px">區間柱橫跨現價（紫）／整條低於現價（紅，高估）／整條高於現價（綠，低估）。紅色虛線為現價 282 元。</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>10.2 同業 PE 對標</h3>
+<div class="card-body">
+<table>
+<tr><th>公司</th><th>2026E EPS</th><th>PE (倍)</th><th>3 個月漲幅</th><th>vs 臻鼎</th></tr>
+<tr><td style="background:rgba(107,159,114,0.08)"><b>臻鼎 4958</b></td><td>6.91 (2025)</td><td style="color:var(--warn)"><b>40.8</b></td><td style="color:var(--warn)"><b>+54.6%</b></td><td><b>基準</b></td></tr>
+<tr><td>欣興 3037</td><td>5.80</td><td>22.5</td><td>+22%</td><td>-45% PE</td></tr>
+<tr><td>健鼎 3044</td><td>8.30</td><td>14.2</td><td>+15%</td><td>-65% PE</td></tr>
+<tr><td>南電 8046</td><td>2.30</td><td>18.7</td><td>+12%</td><td>-54% PE</td></tr>
+<tr><td>Ibiden 4062.T（日）</td><td>JPY 180</td><td>16.4</td><td>+12%</td><td>-60% PE</td></tr>
+<tr><td>AT&S（奧）</td><td>EUR 1.60</td><td>13.8</td><td>+8%</td><td>-66% PE</td></tr>
+<tr style="background:rgba(180,170,155,0.08)"><td><b>同業均（不含臻鼎）</b></td><td>—</td><td><b>17.2</b></td><td><b>+13.8%</b></td><td>—</td></tr>
+<tr style="background:rgba(212,136,122,0.08)"><td><b>臻鼎溢價倍數</b></td><td>—</td><td style="color:var(--warn)"><b>2.37×</b></td><td style="color:var(--warn)"><b>3.96×</b></td><td style="color:var(--warn)">兩極</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">臻鼎 PE 40.8 vs 同業均 17.2 差 2.37 倍、是五年來最極端差距。<em>歷史上同業 PE 差 &gt; 60% 通常 1-2 季內收斂</em>——2018/2021/2023 三次皆然。臻鼎當前溢價需基本面解釋：AI 情緒 + Capex 驚喜 + 鴻海題材三層溢價、估算合計 +30-40%；超過此水準的 +80% 需事件驗證否則必修正。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>10.3 SoTP 分拆估值</h3>
+<div class="card-body">
+<table>
+<tr><th>事業分拆</th><th>2026E 營收佔比</th><th>對應 PE</th><th>分拆估值貢獻</th></tr>
+<tr><td>PCB 主業（HDI + HLC + 軟板）</td><td>55%</td><td>12</td><td>110 元</td></tr>
+<tr><td>IC 載板 + SLP</td><td>20%</td><td>18</td><td>75 元</td></tr>
+<tr><td>ABF 載板（含 AI/伺服器）</td><td>18%</td><td>22</td><td>85 元</td></tr>
+<tr><td>光通訊 + 新興應用</td><td>7%</td><td>20</td><td>30 元</td></tr>
+<tr style="background:rgba(107,159,114,0.08)"><td><b>加權合計</b></td><td><b>100%</b></td><td><b>15.9</b></td><td><b>150-210</b></td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">SoTP 加權 PE 15.9、接近同業均 17.2、<em>比單一 PE 40.8 更能反映臻鼎多元業務真實價值</em>。分拆估值上緣 210 元為樂觀估計（假設 ABF 2026 H2 轉盈 + AI 應用 70% 兌現）、下緣 150 元為保守估計（ABF 延遲轉盈）。當前 282 元需假設 ABF 對應 PE 40+（ABF 全面開花）才能支撐、與當前稼動率 60-70% 現實落差明顯。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>10.4 安全邊際四級</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">10% 安全邊際：160-185 元：</b>合理估值 178 × (1 - 10%) ~ 可信度加權 × 0.9。當 H2 執行不順部分兌現時的下行目標區間。已持有者於此區間可維持部位。</li>
+<li><b style="color:var(--accent)">20% 安全邊際：142-170 元：</b>對應 H2 完全兌現 + H3 部分觸發。合理估值 × 0.8 為中等安全邊際。新買 50% 部位可於此區間進場。</li>
+<li><b style="color:var(--accent)">30% 安全邊際：125-150 元：</b>對應 H3 Apple 去化完全兌現。合理估值 × 0.7 為高安全邊際。新買 80%+ 部位進場、歷史性買進窗口。</li>
+<li><b style="color:var(--accent)">50% 安全邊際：&lt; 90 元：</b>對應 H4 AI 泡沫 + 極端危機。合理估值 × 0.5 為極端安全邊際。全數投入、長期持有 3+ 年。</li>
+</ul>
+
+<p>當前 282 元 <em>無任何安全邊際</em>——需 282 → 178 跌 37% 才達合理估值、282 → 142 跌 50% 才達 20% 邊際。投資紀律：不追高、等待邊際出現。</p>
+</div>
+</div>
+
+<!-- 第十章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從 8 種估值法看出來的四個重點</h4>
+
+<p><b>1. 所有 8 種估值法中 6 種指向 &lt; 220 元、僅 H1 樂觀情境可支撐當前 282 元。</b>可信度加權平均 178、簡單平均 183、當前 282 元高估 +54~+58% 是多方法共同結論、非單一方法偏差。若任一方法翻轉（如 ABF 大幅轉盈）、最多能合理化 240-250 元；超過 260 需要結構性突破（如 NVIDIA 長約揭露）。</p>
+
+<p><b>2. 臻鼎 PE 40.8 vs 同業均 17.2 差 2.37 倍為五年最極端、歷史收斂速度 1-2 季。</b>2018/2021/2023 三次同業 PE 差 &gt; 60% 情境、<em>收斂速度都在 1-2 季內</em>——通常透過臻鼎股價下跌或同業補漲。當前 +54.6% 漲幅領先同業 +13.8% 的 3.96 倍差距、同業補漲 ≤ 50% 機率（需 AI 集體突破）、臻鼎修正 ≥ 60% 機率（最可能路徑）。向同業均值 17.2 × EPS 9.45 = 161 收斂為中期目標。</p>
+
+<p><b>3. SoTP 分拆估值加權 PE 15.9 更能反映臻鼎多元業務、當前 PE 40+ 需 ABF 全面開花支撐。</b>SoTP 按業務結構分拆：PCB 主業 PE 12 / IC 載板 18 / ABF 22 / 光通訊 20、加權 15.9 接近同業均 17.2。<em>當前 PE 40+ 需假設 ABF 對應 PE 40+（意味 ABF 全面開花、佔比 40%+）、與當前稼動率 60-70%、佔比 18% 現實落差明顯</em>。SoTP 提供比單一 PE 更客觀的估值框架。</p>
+
+<p><b>4. 三層溢價（AI 情緒 + Capex 驚喜 + 鴻海題材）合計 +30-40%、當前超過部分為情緒溢價。</b>拆解臻鼎 +54.6% 漲幅中合理溢價：<em>AI 情緒溢價 +15% + Capex 驚喜 +12% + 鴻海題材 +10% = 合計 +37%</em>、當前 +54.6% 超過合理溢價 +17.6pp 為純情緒溢價。合理情境下股價應回落至 220-240 元（可信度加權 178 + 情緒溢價 +25-35%）、目標區間 220-260 元（機率 60%）為修正目標。142-170 元才是安全邊際 20% 合理買進區。</p>
+</div>
+
+<!-- 第十章整合結論 -->
+<div class="tip warn">
+<b>第十章整合結論</b>
+8 種估值法中 6 種指向股價低於當前 20% 以上、可信度加權平均 <b>178 元</b>、8 法簡單平均 183 元、當前 282 元高估 +54~+58% 為多方法共同結論。<em>臻鼎 PE 40.8 vs 同業均 17.2 差 2.37 倍為五年最極端、歷史上差 &gt; 60% 通常 1-2 季內收斂</em>。SoTP 分拆加權 PE 15.9 接近同業均、當前 PE 40+ 需 ABF 全面開花支撐、與現實 60-70% 稼動率落差大。三層溢價合計 +30-40% 為合理範圍、當前 +54.6% 超過部分為純情緒溢價。投資建議：等待回落至 220-260 元（修正目標）或 142-170 元（20% 安全邊際）；當前 282 元無任何安全邊際、不追高。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 十一、補充分析 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch11">
+  <div class="section-head">
+    <div class="no">11</div>
+    <div class="tit">
+      <h2>第十一章：補充分析</h2>
+      <div class="sub">AI 封測產業鏈定位 + 西碧拉互連節點 + 年度差異比對要點</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>11.1 AI 封測產業鏈定位</h3>
+<div class="card-body">
+<p>臻鼎在 AI 封測供應鏈的完整關係鏈：<b>上游</b> ABF 樹脂（日本 Ajinomoto 全球獨家）+ BT 樹脂（台灣長春化工等）+ Q-glass 玻璃纖維布（日本廠主導）+ 銅箔基板（台光電/聯茂/台燿） → <b>臻鼎</b>（ABF 載板 / HDI / IC 載板）→ <b>下游</b> 封測廠（日月光 + 矽品）→ <b>客戶</b> Apple / NVIDIA / AMD / TSMC。</p>
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">上游議價力：</b>ABF 樹脂由 Ajinomoto 全球獨家（議價力極強）、Q-glass 日廠主導（供應緊張）、BT 樹脂台廠集中供應（議價力中）、銅箔基板台廠集中。成本壓力中等但原料結構穩定。</li>
+<li><b style="color:var(--accent)">下游客戶議價力：</b>「&gt;60% 國際品牌指定生產」（Apple / NVIDIA / AMD / TSMC / Qualcomm 等合計）、議價力「極高」（Step 3 Porter 五力）；Apple 為最大單一客戶（比例未揭露、盲點 D1）。</li>
+<li><b style="color:var(--accent)">替代品威脅：</b>CoWoP（TSMC）+ FOPLP（三星）+ Glass Substrate（康寧）為三大替代技術、2027-2028 成熟度上升。短期 2026-2027 威脅低、中長期需監測。</li>
+<li><b style="color:var(--accent)">新進入者：</b>中國大陸 PCB 廠深南電路/景旺電子/勝宏科技受補貼擴產、2025-2027 高階 HDI 產能 +40%。低階 PCB 受衝擊明顯、高階 ABF/HLC 短期無威脅。</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>11.2 西碧拉互連節點</h3>
+<div class="card-body">
+<p>西碧拉圖譜中臻鼎（COMP:4958）節點的關聯關係（源文定性描述、具體中心度數值未量化引用）：</p>
+<table>
+<tr><th>節點類型</th><th>關聯節點</th><th>關係強度</th></tr>
+<tr><td>客戶（下游）</td><td>Apple / NVIDIA / AMD / TSMC / Qualcomm</td><td>高</td></tr>
+<tr><td>供應商（上游）</td><td>Ajinomoto（日）/ 長春化工 / 日東紡織 / 台光電 / 聯茂</td><td>中</td></tr>
+<tr><td>同業</td><td>欣興 3037 / 健鼎 3044 / 南電 8046 / Ibiden / AT&S / Shinko（2025-06 下市）</td><td>中高</td></tr>
+<tr><td>關係企業</td><td>鴻海 2317（母公司 Foxconn Far East 31.94%）/ 鴻海工業富聯 FII / 鴻華先進</td><td>高</td></tr>
+<tr><td>技術節點</td><td>ABF / HDI / HLC / SLP / 2 奈米平台</td><td>中高</td></tr>
+<tr><td>地緣節點</td><td>中國 / 台灣 / 泰國 / 美國 / 印度</td><td>中</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">臻鼎中心度在 PCB 族群中定性判定為第 1（源文描述、具體數值未量化）。<em>多數 AI 封測關係鏈必須經過臻鼎節點</em>、意味「網絡不可替代性」——是帳面看不出的結構優勢（隱藏優勢 H2）。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>11.3 年度差異比對要點（2019→2024）</h3>
+<div class="card-body">
+
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">AI 應用佔比：</b>2021: 8% → 2024: 45% → 2025E: 70%+。4 年升幅近 9 倍、結構性轉型成功。</li>
+<li><b style="color:var(--accent)">美國市場佔比：</b>2019: 65.11% → 2023: 76.25%（+11.14pp）。依賴美國市場程度提升。</li>
+<li><b style="color:var(--accent)">中國銷售佔比：</b>2019: 23.41% → 2023: 12.73%（-10.68pp）。去中國化進程穩定、美中貿易戰 + 國產替代雙因素。</li>
+<li><b style="color:var(--accent)">ABF 稼動率：</b>2021: 45% → 2024: 60-70% → 2026 目標: 80%+（管理層承諾）。穩定上升但未達管理層承諾。</li>
+<li><b style="color:var(--accent)">研發費用率：</b>2024: 5.2%。高於同業均 3.8%、研發投入持續。</li>
+<li><b style="color:var(--accent)">股本（ECB 連動）：</b>2023-Q2: 9,470,492 千元 → 2025-Q4: 10,705,659 千元（ECB#3 集中轉換 +11.9% 稀釋兌現）。</li>
+<li><b style="color:var(--accent)">毛利率：</b>2022-Q4 高點 26.30% → 2023-Q2 低點 9.02% → 2025-Q4 22.56%。高波動、近 2 年 2 次營業虧損季（2023-Q2 -8.02% / 2024-Q2 -1.99%）。</li>
+<li><b style="color:var(--accent)">EPS：</b>2024 9.67 元 → 2025 6.91 元（-29%、部分因 ECB#3 稀釋）。</li>
+<li><b style="color:var(--accent)">現金股利：</b>2024 年度 4.80 元 → 2025 年度 3.45 元（-28%、配息率 49.92%）。</li>
+<li><b style="color:var(--accent)">ROE：</b>2024: 19.8%（優於同業均 12-15%）。</li>
+</ul>
+
+<p>5 年軌跡顯示臻鼎<em>結構性成功</em>：AI 轉型、地緣分散、ROE 提升。但客戶集中度（美國 76.25%）上升、ECB 結構性稀釋（ECB#3 已 +11.9%、ECB#4 待轉換）、2025 股利 -28% 是三大結構性問題。</p>
+</div>
+</div>
+
+<!-- 第十一章觀點卡 -->
+<div class="view-card">
+<h4>◆ 從補充分析看出來的四個重點</h4>
+
+<p><b>1. 產業鏈議價力結構性不利、Apple 議價力極強為長期隱憂。</b>上游 Ajinomoto 獨家 + Q-glass 日廠主導（議價弱）、下游年報自揭 &gt;60% 國際品牌指定（議價弱）、替代品 CoWoP 中期威脅、新進入者中國 PCB 廠低階衝擊。<em>四大產業鏈力量中三項不利、一項中性</em>。意味臻鼎需要持續技術領先才能維持定價權——研發費用率 5.2% 必須持續投入。</p>
+
+<p><b>2. 西碧拉中心度為 PCB 族群第 1（源文定性描述）、是「網絡不可替代性」。</b>多數 AI 封測關係鏈必須經過臻鼎節點、意味著客戶即使想多元化採購也難以完全擺脫臻鼎。這種結構優勢是<em>帳面看不出的核心價值</em>——傳統財務分析框架無法反映。西碧拉圖譜分析補足了傳統方法論的盲點（隱藏優勢 H2）。</p>
+
+<p><b>3. 5 年軌跡結構性成功但三大問題未解：美國集中度 76.25% + ECB 結構性稀釋 + 股利 -28%。</b>AI 轉型（8% → 45%）+ 去中國化（23.41% → 12.73%）+ ROE 提升（14.2% → 19.8%）三大結構性成功、反映管理層執行力佳。<em>但美國市場佔比從 65.11% 升至 76.25%（+11.14pp）+ ECB#3 已兌現 +11.9% 稀釋 + ECB#4 待集中 + 2025 現金股利 -28% 衰退</em>、三大結構性問題未解。長期投資人需權衡這些結構因素。</p>
+
+<p><b>4. 中長期監測清單：CoWoP 替代 + 中國低階衝擊 + ECB#4 + 獨董再異動、四項同時監測。</b>CoWoP 2027-2028 才顯現、中國 PCB 廠對低階衝擊需觀察 2025-2027 年、ECB#4 2026-Q3~Q4 集中轉換機率 60-70%、獨董異動隨時可能發生（2025-03 簡禎富轉任已是先例）。<em>四項不直接觸發短期股價但影響中長期結構</em>。建議每季檢視一次、累積 2 項紅旗即降低長期持有權重。</p>
+</div>
+
+<!-- 第十一章整合結論 -->
+<div class="tip info">
+<b>第十一章整合結論</b>
+產業鏈四力分析：上游 Ajinomoto 獨家議價極強、下游 &gt;60% 國際品牌指定議價極強、替代品中期威脅、新進入者低階衝擊、結構性不利。<em>西碧拉圖譜中心度 PCB 族群第 1（源文定性）、是傳統財務分析看不出的結構優勢</em>。5 年軌跡結構性成功（AI 轉型 / 去中國化 / ROE 提升）但三大問題未解（美國集中度 76.25% / ECB 稀釋 / 股利 -28%）。投資建議：中長期需監測 CoWoP / 中國低階 / ECB#4 / 獨董異動四項紅旗、累積 2 項即降低長期持有權重；短期仍以 Q2 季報為決策主軸。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 十二、貓膩探索與求證 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch12">
+  <div class="section-head">
+    <div class="no">12</div>
+    <div class="tit">
+      <h2>第十二章：貓膩探索與求證</h2>
+      <div class="sub">市場共識 vs 反共識 + ECB + 治理時點分析 + 六步貓膩探索 + 個案掃描 + 貓膩總評</div>
+    </div>
+  </div>
+
+<div class="card">
+<h3>12.1 市場共識 vs 反共識</h3>
+<div class="card-body">
+<table>
+<tr><th>市場共識</th><th>反共識觀點</th><th>佐證強度</th></tr>
+<tr><td>鴻海集團 PCB 旗艦 = AI 寡占受惠者</td><td>集團整合題材已反映 60%、剩 40% 仰賴 NVIDIA/CSP 直接訂單揭露、單靠「集團定位」無法解釋 PE 40.8 溢價</td><td>高（Ch3 股價拆解 + Ch5 H5 集團整合僅 60% 反映）</td></tr>
+<tr><td>ABF 2026-Q2 稼動率 80% 必轉盈</td><td>管理層 2023 年曾承諾 2024 轉盈未達、當前稼動率 60-70% 要 15-20pp 升幅需 Q2 一次到位、歷史紀錄不佳</td><td>高（Ch4 R2 + 2023 紀錄）</td></tr>
+<tr><td>2 奈米 ABF 認證 = 寡占門票必然擴大份額</td><td>認證是事實、份額是假設；TSMC 可能偏好 Ibiden/AT&S 為主供、臻鼎份額 &lt; 5% 機率存在（壓力測試 B5）</td><td>中（Ch7 B5 失敗模式）</td></tr>
+<tr><td>Apple 為「深度合作」客戶非風險</td><td>年報自揭 &gt;60% 國際品牌指定、Apple 具體比例未揭露（Step 5 D1 盲點）；2023-Q2 iPhone 15 弱 → 單季 -28% 歷史教訓明確</td><td>高（Ch4 R1 + 2023 歷史類比）</td></tr>
+<tr><td>公司基本面紮實、股價應延續上漲</td><td>外資 65.24% 集中、PE 40.8 vs 同業均 17.2（差 2.37 倍為五年最極端）、估值溢價已超出基本面可解釋範圍</td><td>高（Ch10 估值交叉驗證）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>12.2 治理時點分析 — 三項異動的結構巧合</h3>
+<div class="card-body">
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 三項治理異動時間線（2025-2026）</div>
+<div class="ev-d">
+<b>時間線：</b><br>
+2020-06：ECB#3 發行 4 億美元（轉換價推估 120-160 元區間）<br>
+<b>2025-02-27</b>：簡禎富獨立董事辭任（原 5 年任期未滿）<br>
+<b>2025-03-01</b>：簡禎富轉任總經理（2 天冷卻期於法規邊界操作）、獨董席次 4/7 → 3/6（57% → 50%）<br>
+<b>2025 Q3-Q4</b>：ECB#3 大規模轉換、股本 +11.9% 兌現（+1.14 億股）<br>
+<b>2026-02-24</b>：內部稽核主管辭職（新任人選待董事會決議）<br>
+<b>2026-04-07</b>：2026 Capex 上修 500→800 億（+60%、25 天內）<br>
+2026 Q3-Q4：ECB#4（2024-01 已發行 4 億美元）集中轉換機率 60-70%<br>
+<br>
+<b>分析：</b><br>
+(1) 簡禎富辭獨董（2025-03）+ 轉任總經理 + 內部稽核辭職（2026-02）三事件於約 1 年內連續發生為「職能巧合」——<em>這三個職位都涉及公司治理審視角色</em>。若均對 2024 擴大資本支出 / 客戶集中度 / ECB 策略有異議、接連異動是結構性警訊。<br>
+(2) 2026-04-07 Capex 25 天內上修 +60% 為不尋常節奏、暗示未公開的客戶承諾（推論 NVIDIA Rubin 長約、Step 8 弱訊號 D）— 白燈訊號但需追蹤哪個客戶。<br>
+(3) ECB#3 歷史前科（2025 Q3-Q4 集中轉換 +11.9% 稀釋）佐證 ECB#4 集中轉換機率高。若 2026 Q3-Q4 以相似模式轉換、將再稀釋 7-10%、現有股東被動承擔稀釋成本。<br>
+<br>
+<b>反共識觀察：</b>市場將 ECB 視為「標準籌資工具」、獨董轉任為「個人職涯選擇」。但從三項巧合看、<em>連續治理異動 + 25 天內 Capex 大修 + ECB 集中轉換節奏</em>、提示需關注「資金運用與治理獨立性」的結構性問題。<br>
+<br>
+<b>結論：無立即紅旗、但有結構性疑慮。</b>若 2027 年報揭露 ECB#3/4 持有人結構 + 鴻海關係人交易明細 + 2024 治理異動回顧三項透明、可排除疑慮；若繼續黑盒、需納入治理折現因子 -5~-10%。<br><br>
+<b>下一步追蹤建議：</b>(a) 2026 股東常會（約 6 月）審查 ECB#3 剩餘餘額處理方式 + 新任獨董資歷（是否策略型人選）；(b) ECB#4 若公告集中轉換、注意股本增幅是否 &gt; 5% 單季；(c) 新任內部稽核主管資歷是否為外部專業人士或集團內部調任。
+</div>
+<div class="ev-s">來源：2025-02-27 + 2026-02-24 重大訊息公告 + 2026-04-07 Capex 重大訊息 + finlab 股本軌跡</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>12.3 六步貓膩探索</h3>
+<div class="card-body">
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">基礎資料：營收品質 — 有沒有灌水？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+2026-03 月營收 154.43 億（+7.18%）、伺服器/光通訊 YoY +190% 創高、IC 載板 YoY +70%。法說會承諾與月營收實際數字偏差 &lt; 5%（Step 2 誠信度 82 分）、無灌水跡象。<em>但需警戒</em>：若 Q3-Q4 月營收 YoY 急跌（從 +100%+ 降至 &lt; +30%）、可能為 Apple 拉貨效應結束訊號、是 R1 前置警訊。
+</div>
+</details>
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">FIAS 分級：獲利品質 — 賺的錢是真的嗎？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+2024 稅後淨利 130.96 億、歸母淨利 91.80 億、ROE 19.8%。主要來自合併報表 PCB 主業現金獲利（帳面品質高）。ABF 業務自 2019 起累虧拖累 EPS、但並非以權益法認列可操作的會計空間掩蓋。與鴻海集團關係人交易為集團內正常範圍（具體比例未揭露、盲點 D5）。帳面獲利 = 現金獲利匹配度高、無重大疑慮。
+</div>
+</details>
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">競爭力分析：治理品質 — 有沒有掏空風險？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+沈慶芳家族質押比率 <b>0%</b>、PwC 連 6 年無保留意見、紅旗 0/7（Step 2）。但 2025-03 簡禎富辭獨董轉任總經理（獨董 4/7 → 3/6）+ 2026-02-24 內部稽核主管辭職 + 沈慶芳年齡 71-80 歲接班議題為結構疑慮；與鴻海集團關係人交易雖數字正常但內部轉化率細節不透明（盲點 D5）。短期掏空風險極低、長期需追蹤 2026-2027 年關係人交易揭露。
+</div>
+</details>
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">ACH 分析：管理層誠信 — 說過的話做到了嗎？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+誠信度 82/100（Step 2 FIAS 分級）。正面：PwC 連 6 年無保留、內部人增持 +12.7%（沈慶芳）+50%（李定轉）、家族質押 0%、去中國化承諾執行中（23.41% → 12.73%）。負面：<b>2023 年曾承諾 ABF 2024 轉盈未達</b>、2026-03 法說會再度承諾 Q2 轉盈 — 同一承諾不同年份出現兩次、是誠信度的最大壓力點；2026-04-07 Capex 25 天內上修 +60% 為不尋常節奏。<b>追蹤 2026-08-15 Q2 季報為誠信度關鍵測試點</b>。
+</div>
+</details>
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">壓力測試：隱藏風險 — 什麼沒被充分揭露？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+7 項盲點（Step 5 D）：(1) Apple 對臻鼎依賴度具體比例（年報僅 &gt;60% 國際品牌指定）；(2) ECB#3/ECB#4 具體轉換條款；(3) 董監質押率具體數字（finlab KY 股欄位不支援）；(4) M-Score/Z-Score 會計品質分數；(5) 關係人交易佔營收比例；(6) ABF 載板單獨虧損金額；(7) NVIDIA CoWoP 實際採用時程。合計扣信心 -8pp。
+</div>
+</details>
+
+<details>
+<summary style="font-size:.88em;color:var(--accent)">評審團：估值盲點 — 市場可能算錯了什麼？</summary>
+<div style="font-size:.82em;color:var(--txt2);padding:6px 0">
+市場隱含機率定價：現價 282 ÷ 加權期望 EPS 9.45 = PE 29.8x、反推市場假設「2026 H1 樂觀情境 + PE 維持 25x+」機率達 65-70%。但 ACH 分析的 H1 樂觀機率僅 <b>35%</b>、市場高估近 30pp。若任一驗證失敗（Q2 毛利率 &lt; 20% + ABF 未轉盈 + 月營收熄火）、估值修正觸發收斂至 220-260 元。
+</div>
+</details>
+
+</div>
+</div>
+
+<div class="card">
+<h3>12.4 個案貓膩掃描</h3>
+<div class="card-body">
+
+<div class="ev">
+<div class="ev-t"><span class="fias-a">假設</span> 掃描 #1：簡禎富 2025-03 辭獨董轉任總經理（不是離開、是進入管理層）</div>
+<div class="ev-d">簡禎富為清大工業工程系講座教授兼執行副校長、半導體策略規劃領域權威、AI 製造專家、曾任台積電/聯電獨董經驗、屬「策略型獨董」罕見人選。<b>2025-02-27 辭獨董、2025-03-01 轉任總經理（任期未滿、從獨董 4/7 席降至 3/6、獨立性 57%→50%）</b>、原因未公開說明。時點巧合：① <b>辭獨董時點與 ECB#3 2025 Q3-Q4 大規模轉換（股本 +11.9%）期間接近</b> — 若對 ECB 條款有異議、接近退出是結構訊號；② 轉任與 AI 業務大舉擴產前夕接近 — 若對擴產節奏或客戶集中度有策略異議、也可能選擇退出。正面解讀：技術背景強化 AI 製造戰略。追蹤：新任獨董若為「非策略背景」人選、暗示治理審視能力下降。</div>
+<div class="ev-s">來源：2025-02-27 辭獨董公告 + 2025-03-01 總經理就任公告、清大官方公開經歷</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-a">假設</span> 掃描 #2：內部稽核主管 2026-02-24 辭職的時機</div>
+<div class="ev-d">內部稽核主管負責審視公司治理、內控設計、財報揭露完整性。<b>2026-02-24 辭職</b>、新任人選待董事會決議。與簡禎富 2025-03 辭獨董相距約 1 年、但同一任期內連續兩項治理審視者異動。兩種可能性：① <b>結構性訊號</b>：若兩人均對管理層在 2024-2025 擴大資本支出 / 客戶集中度 / ECB 策略有異議、接連退出是警訊；② <b>個人職涯</b>：獨立退休/跳槽/個人原因、無結構意義。辨別關鍵：新任公司治理主管的資歷 — 若為集團內部調任（而非外部招聘）、治理獨立性實質下降。</div>
+<div class="ev-s">來源：2026-02-24 重大訊息公告、人事異動公開資料</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 掃描 #3：2026-04-07 Capex 25 天內上修 500→800 億（+60%）</div>
+<div class="ev-d">Capex 原 2026-03-12 法說會承諾 500 億、2026-04-07 重大訊息上修至 800 億（+60%）、<b>僅 25 天內即大幅上修</b>。重大訊息原文「基於與關鍵客戶下世代 AI 產品達成長期合作共識」。Step 8 弱訊號 D 解讀：<em>「關鍵客戶」用語不像 Apple（Apple 合作無需強調）、符合 NVIDIA / AMD / Hyperscaler 關係定位</em>。若屬實、客戶結構升級為「多核心」為利多；但「25 天上修 +60%」不尋常節奏也可能暗示管理層對某特定客戶「過度承諾」— 兩種可能性並存。白燈訊號、需 NVIDIA GTC 或 Apple 10-K 揭露才能確認。</div>
+<div class="ev-s">來源：2026-03-12 法說會 + 2026-04-07 重大訊息 + Step 8 弱訊號 D</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias-i">推論</span> 掃描 #4：2023-Q2 單季 -28% 的真實原因是否已完整釐清？</div>
+<div class="ev-d">2023-Q2 臻鼎單季股價 109 → 78 元（-28%）、毛利率跌至 9.02%、營業利益率 -8.02%。當時主流歸因為「iPhone 15 訂單預期下修」。但需釐清：若 2023-Q2 的真實原因包括 <b>動能資金撤離 + 估值過熱 + ECB 換股壓力</b> 等結構因素、則 2026-Q2 完全可能重演（當前外資 65.24% + PE 40.8 更極端 + ECB#4 預計 Q3 集中轉換）。2023 未完整釐清 → 2026 歷史類比機率 35-40%（Ch4 歷史類比）。</div>
+<div class="ev-s">來源：2023-Q2 股價資料、同業同期表現對照、Ch4 歷史類比</div>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h3>12.5 貓膩總評（燈號）</h3>
+<div class="card-body">
+<table>
+<tr><th>貓膩項目</th><th>嚴重度</th><th>求證狀態</th><th>對結論的影響</th></tr>
+<tr><td>簡禎富 2025-03 辭獨董轉總經理</td><td><span style="color:var(--warn);font-weight:700">🟡 黃</span></td><td>原因未公告、2 天冷卻期於法規邊界</td><td>治理審視能力可能下降</td></tr>
+<tr><td>內部稽核主管 2026-02-24 辭職</td><td><span style="color:var(--warn);font-weight:700">🟡 黃</span></td><td>新任人選未定、與獨董轉任相距 1 年</td><td>若共因則升級為紅旗</td></tr>
+<tr><td>2026-04-07 Capex 25 天上修 +60%</td><td><span style="font-weight:700">⚪ 白</span></td><td>「關鍵客戶」未明、可能為 NVIDIA</td><td>需 GTC / Apple 10-K 驗證</td></tr>
+<tr><td>ECB#3 集中轉換前科 + ECB#4 待轉</td><td><span style="color:var(--warn);font-weight:700">🟡 黃</span></td><td>2025 Q3-Q4 已兌現 +11.9%、ECB#4 待追蹤</td><td>2026 Q3-Q4 集中轉換機率 60-70%</td></tr>
+<tr><td>2023-Q2 -28% 未完整釐清</td><td><span style="color:var(--warn);font-weight:700">🟡 黃</span></td><td>歷史事件、動能資金因素未確認</td><td>Ch4 歷史類比依據</td></tr>
+<tr><td>家族質押 0% + 內部人增持 +12.7% (沈慶芳) / +50% (李定轉)</td><td><span style="color:var(--bull);font-weight:700">🟢 綠</span></td><td>事實已驗證</td><td>抵消部分治理疑慮</td></tr>
+<tr><td>PwC 連 6 年無保留（徐永堅/馮敏娟簽證）</td><td><span style="color:var(--bull);font-weight:700">🟢 綠</span></td><td>事實已驗證</td><td>財報可信</td></tr>
+<tr style="background:rgba(212,160,23,0.08)"><td style="font-weight:700">總評：燈號</td><td><span style="color:var(--warn);font-weight:700">🟡</span> <b>4 黃 / 1 白 / 2 綠</b></td><td>0 項紅、4 項黃、1 項白、2 項綠</td><td>無致命貓膩、4 項結構疑慮需長期追蹤</td></tr>
+</table>
+<p style="margin-top:6px;font-size:.85em;color:var(--txt2)"><b>總結</b>：FIAS 分級時誠信度 82/100、PwC 連 6 年無保留 + 家族質押 0% + 內部人增持為兩大正面綠燈。但貓膩探索發現 <b>無致命紅旗、4 項結構性疑慮全部黃燈 + 1 白燈</b>。最嚴重組合為「簡禎富轉任 + 稽核辭職 + Capex 25 天上修」時點相關的治理訊號、若 2026 再發生新獨董辭任或 PwC 查核意見降為保留、立即升級為紅旗。2027 年報為 ECB#4 持有人結構 + 關係人交易細節揭露的關鍵檢核點。</p>
+</div>
+</div>
+
+<div class="view-card">
+<h4>◆ 貓膩探索的四個延伸觀察</h4>
+
+<p><b>1. 沒有致命紅旗（公司基本乾淨）、但有「認知差」（市場高估機率組合）。</b>四項黃燈都是「結構性灰區」、無重大會計異常 + 無關聯交易明確違規 + 無內部人異常買賣。但估值盲點的隱含市場機率 65-70% vs 實際 ACH 估算 35% 暗示近 30pp 落差、這就是「認知差」。若市場重新認知、PE 會從 40.8x 向同業均 17.2x 收斂（目標 161 元）— 這就是估值重估的觸發機制。</p>
+
+<p><b>2. 4 項黃燈中「簡禎富 + 稽核辭職 + Capex 25 天上修」時點相關是最可能串聯的組合。</b>如果三項異動的真實原因與 2024-2025 擴大 Capex + ECB 策略 + 客戶集中度有關連、合起來就是<em>「管理層對外承諾 vs 內部實際異議」的結構性警訊</em>。2026 股東會後新任獨董/治理主管的資歷與 2027 年報是否回顧治理異動、是能否串起的關鍵。若新任獨董為集團內部調任、治理獨立性實質下降。</p>
+
+<p><b>3. ECB#4（2024-01 已發行 4 億美元、2026 Q3-Q4 集中轉換機率 60-70%）是本章最值得警戒的發現。</b>ECB#3 2025 Q3-Q4 集中轉換（股本 +11.9% 兌現）為歷史前科；ECB#4 當前股價 282 元遠超推估轉換價 120-160 元、2026 Q3-Q4 集中轉換機率高。若集中轉換、將再稀釋 7-10% + 現有股東被動承擔稀釋成本。2026 股東會 ECB#3 剩餘處理方式 + ECB#4 發行條款為關鍵觀察點。</p>
+
+<p><b>4. 貓膩探索沒改變投資結論（中性 Hold）、但強化了「持有期限」的判斷。</b>4 項全黃意味<em>短期（1 年內）不會發作、長期（3~5 年）有累積發作機率</em>。短線投資人（&lt; 1 年）可以忽略；長期持有者（3 年+）則必須納入治理折現因子 -5~-10%。若 2027 年報能釐清 ECB#4 持有人 + 鴻海關係人交易明細 + 治理異動回顧三項、黃燈可轉綠；反之若 2026 再發生新獨董辭任或 PwC 查核意見改變、立即升級為紅燈。</p>
+
+<p style="margin-top:10px"><b>具體貓膩觸發條件（Step 8 8h 保護策略）：</b></p>
+<ul style="margin:8px 0 8px 22px;line-height:1.8">
+<li><b style="color:var(--warn)">觸發 A · 立即全部出場：</b>簡禎富 6 個月內離職（總經理任期未滿即離任、為治理設計失敗訊號）</li>
+<li><b style="color:var(--warn)">觸發 B · 減碼 50%：</b>內部人（沈慶芳 / 李定轉等）大量申報轉讓（資訊優勢方提前變現訊號）</li>
+<li><b style="color:var(--warn)">觸發 C · 立即減碼 30%：</b>PwC 查核意見從無保留降為保留（會計師對財報真實性質疑）</li>
+<li><b style="color:var(--warn)">觸發 D · 升級為紅燈：</b>2026 再發生新獨董辭任 / 新任稽核主管 6 個月內再辭任（治理獨立性持續惡化）</li>
+</ul>
+</div>
+
+<!-- 第十二章整合結論 -->
+<div class="tip warn">
+<b>第十二章整合結論</b>
+貓膩探索 <b>4 項黃燈 + 1 白燈 + 2 項綠燈</b>（簡禎富轉任 / 稽核辭職 / Capex 25 天上修 / ECB#4 集中轉換 / 2023-Q2 未釐清 / 家族質押 0% / PwC 無保留）、<em>無致命紅旗但有多項結構疑慮</em>。市場共識 vs 反共識對照顯示 5 項市場共識中 5 項皆存在明顯反共識觀點。核心發現：<b>「簡禎富 2025-03 辭獨董轉任 + 2026-02 稽核辭職 + 2026-04 Capex 25 天上修 +60%」時點相關 + ECB#3 歷史前科反證 ECB#4 集中轉換機率高</b>、三項治理訊號合起來構成結構性疑慮；若 2026 再發生新獨董辭任、立即升級為紅旗。投資策略含義：長期持有者（3 年+）納入治理折現因子 -5~-10%；2027 年報為 ECB#4 持有人結構 + 關係人交易明細的關鍵檢核點。
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ===== 十三、投資結論 ===== -->
+<!-- ============================================================ -->
+</section>
+
+<section class="section" id="ch13">
+  <div class="section-head">
+    <div class="no">13</div>
+    <div class="tit">
+      <h2>第十三章：投資結論</h2>
+      <div class="sub">一句話結論 + 綜合評估 + 四情境 + 淨期望值 + 操作建議 + 關鍵追蹤</div>
+    </div>
+  </div>
+
+<!-- 一句話結論 -->
+<div class="tip danger" style="padding:18px 22px;margin:12px 0;font-size:1.02em;line-height:1.8">
+<b style="font-size:1.1em">臻鼎是一家好公司，但 282 元不是好價格。</b><br>
+鴻海集團 PCB 旗艦、全球市佔 7% 連續 7 年第一、2 奈米 ABF 認證（全球 5 家寡占）、AI 應用 45%→70%+ 結構轉型、家族質押 0%、內部人淨增持。但 PE 40.8x（同業均 17.2 的 2.37 倍）+ 年報自揭 &gt;60% 國際品牌指定（客戶集中）+ Q2 ABF 轉盈承諾歷史紀錄不佳 + 八種估值法可信度加權平均 178 元 = 風險報酬比 1:2.4 不利。<b>等 PE 修正至 22-25x（股價 220-260 元）後重新評估</b>。
+</div>
+
+<div class="card">
+<h3>13.1 綜合評估表</h3>
+<div class="card-body">
+<table>
+<tr><th>維度</th><th style="width:90px">評分</th><th>說明</th></tr>
+<tr><td>成長性</td><td style="color:var(--bull)">8 / 10</td><td>AI 應用 8%→45%→70%+ 結構轉型、2026-03 伺服器/光通訊 YoY +190%、Capex 上修 800 億</td></tr>
+<tr><td>獲利品質</td><td style="color:var(--neutral)">6 / 10</td><td>2024 歸母 EPS 9.67 元、ROE 19.8% 優於同業；但 ABF 累虧 + 折舊壓抑持續</td></tr>
+<tr><td>護城河</td><td style="color:var(--neutral)">6 / 10</td><td>2 奈米 ABF 認證（寡占 5 家）+ 四合一能力 + 西碧拉中心度第 1；但窄護城河 2.6/5</td></tr>
+<tr><td>管理層</td><td style="color:var(--warn)">5 / 10</td><td>誠信度 82/100、家族質押 0%、內部人增持；但 2023 年 ABF 轉盈承諾未達 + 2025-03 簡禎富獨董轉任</td></tr>
+<tr><td>估值合理性</td><td style="color:var(--warn)">3 / 10</td><td>PE 40.8x 為同業均 17.2 的 2.37 倍（五年最極端）、8 種估值法 6 種顯示偏貴 20%+</td></tr>
+<tr><td>風險控制</td><td style="color:var(--warn)">4 / 10</td><td>Apple 為最大單一致命單點（&gt;60% 國際品牌指定）、推估雙殺 18% / 三殺 8% 機率、市場反映風險 0%</td></tr>
+<tr><td>股東結構</td><td style="color:var(--bull)">7 / 10</td><td>Foxconn (Far East) 31.94% + 家族質押 0% + 內部人增持；但外資 65.24% 偏高集中</td></tr>
+<tr><td>現金股利</td><td style="color:var(--warn)">5 / 10</td><td>2025 年度 3.45 元（配息率 49.92%）、<b>較 2024 年度 4.80 元 -28%</b>、殖利率 1.22%（282 元基準）</td></tr>
+<tr style="background:rgba(212,160,23,0.10)"><td style="font-weight:700">加權總分</td><td style="font-weight:700;color:var(--warn)">5.5 / 10</td><td>（8+6+6+5+3+4+7+5）/ 8 = 5.5 · 好公司基本面（成長+股東）、估值+風險+管理層+股利拖累</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>13.2 四情境估值彙整（Step 6 第三次校準）</h3>
+<div class="card-body">
+<table>
+<tr><th>情境</th><th>機率</th><th>2026E EPS</th><th>合理 PE</th><th>目標價中位</th><th>vs 現價 282</th></tr>
+<tr style="color:var(--bull)"><td>H1 · AI 爆發雙擊</td><td>35%</td><td>12~14</td><td>25~26×</td><td>330</td><td>+17%</td></tr>
+<tr><td>H2 · 執行不順（主路徑）</td><td>45%</td><td>8~9</td><td>22~27×</td><td>200</td><td>-29%</td></tr>
+<tr style="color:var(--warn)"><td>H3 · Apple 去化</td><td>15%</td><td>6~7</td><td>20~26×</td><td>160</td><td>-43%</td></tr>
+<tr style="color:var(--bear)"><td>H4 · AI 泡沫破裂</td><td>5%</td><td>3~5</td><td>20~28×</td><td>120</td><td>-57%</td></tr>
+<tr style="background:rgba(212,160,23,0.10)"><td style="font-weight:700">概率加權目標（Step 6 計算）</td><td>100%</td><td>—</td><td>—</td><td style="font-weight:900">235.5</td><td style="color:var(--warn);font-weight:900">-16.5%</td></tr>
+<tr style="background:rgba(212,136,122,0.08)"><td style="font-weight:700">Step 8 修正（含推估雙殺/三殺）</td><td>100%</td><td>—</td><td>—</td><td style="font-weight:900">230</td><td style="color:var(--warn);font-weight:900">-18.4%</td></tr>
+</table>
+<p style="font-size:.82em;color:var(--txt3);margin-top:6px">Step 6 加權計算：35%×330 + 45%×200 + 15%×160 + 5%×120 = 115.5 + 90 + 24 + 6 = <b>235.5 元</b>；Step 8 修正為 230 元（含推估雙殺/三殺非線性）。機率分布結構性偏空、H2+H3+H4 合計 65% 對應 &lt; 240 元。</p>
+</div>
+</div>
+
+<div class="card">
+<h3>13.3 淨期望值</h3>
+<div class="card-body">
+<div class="ev">
+<div class="ev-t">風險調整後淨期望值</div>
+<div class="ev-d">
+<b>完整機率結構（100% 覆蓋、以 Step 6 計算基礎）：</b><br>
+• H1 AI 爆發 35% × 期望收益 +17%（330 vs 282）= <b>+5.95%</b><br>
+• H2 執行不順 45% × 期望收益 -29%（200 vs 282）= <b>-13.05%</b><br>
+• H3 Apple 去化 15% × 期望收益 -43%（160 vs 282）= <b>-6.45%</b><br>
+• H4 AI 泡沫 5% × 期望收益 -57%（120 vs 282）= <b>-2.85%</b><br>
+<b>淨期望值 = +5.95% - 13.05% - 6.45% - 2.85% = -16.4%</b><br>
+（Step 8 考量推估雙殺/三殺非線性機制、實際淨期望值約 -18~-22%）<br>
+<br>
+量化意涵：考慮全部四路徑情境（合計 100%）的加權後、在 282 元買入臻鼎的「期望報酬」為負 16~22%。這不是「一定會跌」、而是「機率上更可能虧損」。<em>下行期望（-22.35%）是上行期望（+5.95%）的 3.76 倍</em>——這是本推衍最嚴重的不對稱訊號。理性投資人不應接受淨期望值為負的交易、除非有高度信心認定 H1 會發生（但 H1 機率僅 35%）。
+</div>
+<div class="ev-s">來源：Ch9 推衍預測四路徑 + Ch4 推估雙殺機制 + Ch10 估值交叉驗證</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>13.4 操作建議（依持倉狀態分層）</h3>
+<div class="card-body">
+<table>
+<tr><th>持倉狀態</th><th>建議</th><th>理由</th></tr>
+<tr><td>未持有（空手）</td><td style="color:var(--warn);font-weight:700">不買入、等回檔</td><td>PE 40.8x、淨期望值 -16%~-22%、加權期望股價 230-235。等 PE 回到 22-25x（股價 220-260）分批佈局 30-50%；跌至 170 以下（安全邊際 20%）加碼至 70-80%</td></tr>
+<tr><td>已持有（獲利中、成本 &lt; 200）</td><td style="color:var(--bull);font-weight:700">持有、可加碼 20%</td><td>低成本空間大、獲利保護充足。設停利 &gt; 300、停損 230（共同支撐位）。跌破 230 立即減至 2/3</td></tr>
+<tr><td>已持有（持平、成本 200-260）</td><td style="color:var(--neutral);font-weight:700">持有觀望、不加碼</td><td>加權期望股價 230-235 落於成本區間內、短期波動屬正常。設停損 230 / 跌破減至 1/3；等 Q2 季報（2026-08-15）結果再決策加/減</td></tr>
+<tr><td>已持有（追高中、成本 &gt; 260）</td><td style="color:var(--warn);font-weight:700">減至 1/2、降低成本</td><td>成本接近 H1 樂觀上緣 330、下行空間大於上行。立即減至 1/2 部位回收資金、持續獲利部分設停損 240；跌破 240 再減至 1/3</td></tr>
+<tr><td>長期觀察者</td><td style="color:var(--bull);font-weight:700">放入觀察名單</td><td>臻鼎為鴻海集團 PCB 旗艦、AI 長期 Beta 受惠者、2 奈米 ABF 認證寡占。回到 160-185（10% 安全邊際）+ Q2 轉盈 + 內部人續增持 = 絕佳長期進場機會</td></tr>
+<tr><td>保守存股型</td><td style="color:var(--neutral);font-weight:700">等殖利率 &gt; 4%</td><td>2025 年度現金股利 3.45 元（較 2024 年 4.80 元 -28%）；若要達殖利率 4%+ → 股價需 &lt; 86 元（H4 AI 泡沫極端情境）。當前殖利率 1.22%（282 元基準）、完全不在存股投資人射程內</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>13.5 關鍵追蹤事件</h3>
+<div class="card-body">
+<table>
+<tr><th>事件</th><th>時間</th><th>觀察重點</th></tr>
+<tr><td>4 月月營收公告</td><td>2026-05-10</td><td>指標 1 驗證：伺服器/光通訊 YoY 維持 +100%+ 信心度 +；急跌 &lt; +30% 為 R1 前兆警訊</td></tr>
+<tr><td>★ Q1 2026 季報（前置驗證）</td><td>2026-05-15</td><td>毛利率 / ABF 稼動率 / AI 佔比三指標提前揭露。&gt; 22% + 稼動率 &gt; 72% → 信心 +5pp；&lt; 18% + 稼動率 &lt; 65% → 信心 -8pp 立即減碼</td></tr>
+<tr><td>NVIDIA GTC 春季</td><td>2026-05 中</td><td>隱藏優勢 H6（NVIDIA 長約）前置觸發。若揭露臻鼎為 Rubin 供應商 → +10-15%</td></tr>
+<tr><td>股東常會 + ECB#3 剩餘處理</td><td>2026-06 中</td><td>新任獨董資歷（是否策略型）+ ECB#4 預案是否公告 + 新任稽核主管資歷</td></tr>
+<tr style="background:rgba(212,160,23,0.12)"><td style="font-weight:700">★★ Q2 季報</td><td style="font-weight:700">2026-08-15</td><td style="font-weight:700">單一最重要決策點。毛利率 &gt; 22% + ABF 轉盈 = H1 升至 60%；&lt; 18% + ABF 未轉盈 = H2/H3 合計 75%</td></tr>
+<tr><td>Apple 10-K 揭露</td><td>2026-10</td><td>隱藏優勢 H6 + H7 中長期觸發。若揭露 NVIDIA 為供應商 / Shinko 下市後份額 → +10-20%</td></tr>
+<tr><td>ECB#4 集中轉換</td><td>2026 Q3-Q4</td><td>finlab 股本季增 &gt; 5% = 紅旗；ECB#4（2024-01 已發行 4 億美元）集中轉換機率 60-70%</td></tr>
+<tr><td>CoWoP 量產進度</td><td>2027 起</td><td>TSMC CoWoP 若良率 &gt; 70% 進入量產 = ABF 結構性替代風險 2027-2028 顯現（含 PCB 取代反面 flipside）</td></tr>
+</table>
+</div>
+</div>
+
+<div class="tip warn" style="margin-top:14px;padding:12px 16px">
+<b style="font-size:.95em">免責聲明</b><br>
+本報告為天機閣系統基於公開資料（2026-04-19 取得：年報 2021-2024 四份、月營收資料、法說會紀錄、同業公開資料、finlab 量化比對、西碧拉圖譜關聯、Step 1-8 推衍紀錄）所製作的投資分析參考、不構成投資建議或買賣要約。所有數據均標註 FIAS 信心分級（事實 / 推論 / 假設 / 推測）、分析結論受分級影響。推衍有效期至 2026-05-19。股票投資有風險、過去績效不代表未來、投資人應自行判斷並承擔風險。
+</div>
+
+<!-- 第十三章整合結論 -->
+<div class="tip warn">
+<b>第十三章整合結論</b>
+綜合評分 <b>5.5/10</b>（8 維度加權 44/80 · 好公司基本面 + 估值/風險/管理層/股利拖累）、加權期望股價 <b>230-235.5</b>（Step 6 計算 235.5、Step 8 修正 230、vs 現價 282 溢價 +17~+23%）、淨期望值 <b>-16%~-22%</b>（下行期望是上行期望的 3.76 倍）、8 種估值法可信度加權 178 元、四次信心校準（Step 4/5/6/8）65% → 48-52% 方向一致皆向下。<b>評等：中性（Hold）· 不建議追高。目標進場區間 220-260（PE 22-25x）、安全邊際區 160-185（10%）、142-170（20%）、跌破 140 永久迴避</b>。Q2 季報（2026-08-15）為最關鍵的單一檢核點、三種情境差異 +30~+40pp。推衍有效期至 2026-05-19、之後需重新校準。
+</div>
+</section>
+
+
+    <footer class="footer">
+      天機閣投資分析　·　第七步完整版 V5 套版　·　4958 臻鼎-KY　·　分析基準日 2026-04-19<br>
+      來源：2021-2024 年報 + 2026-03-12 法說會 + finlab 量化資料 + 鵬鼎控股 002938.SZ 月營收 + 西碧拉圖譜 + Step 1-8 推衍紀錄<br>
+      信心校準：Step 4 ACH 60-65% → Step 5 壓力測試 55-60% → Step 6 評審團 50-55% → Step 8 推演 48-52%（四次皆向下）<br>
+      最終評級：中性 Hold · 不建議追高 · 推衍有效期 2026-05-19
+    </footer>
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+
+// ====== 5 Chart 初始化（Ch1 雷達 + EPS/毛利率 + Ch5 Pareto + Ch10 估值 floating bar） ======
+// === Chart.js 全域預設（紀律十一：devicePixelRatio + 字型） ===
+Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.font.weight = '600';
+
+// === 競爭力雷達圖 ===
+(function(){
+  const ctx = document.getElementById('radarCompetitive');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['產品事實','競爭規模','需求/客戶','財務強度','供應鏈位置','管理層治理','市場調查'],
+      datasets: [
+        {
+          label: '臻鼎 4958',
+          data: [8.0, 7.0, 5.0, 6.0, 8.0, 6.0, 8.0],
+          backgroundColor: 'rgba(107,159,114,0.22)',
+          borderColor: '#6b9f72',
+          borderWidth: 2,
+          pointBackgroundColor: '#6b9f72',
+          pointBorderColor: '#1a1a1a',
+          pointRadius: 4
+        },
+        {
+          label: '欣興 3037（同業對照）',
+          data: [8.5, 6.0, 5.0, 6.5, 6.0, 6.5, 8.0],
+          backgroundColor: 'rgba(212,136,122,0.18)',
+          borderColor: '#d4887a',
+          borderWidth: 2,
+          borderDash: [6,4],
+          pointBackgroundColor: '#d4887a',
+          pointBorderColor: '#1a1a1a',
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          suggestedMin: 0,
+          suggestedMax: 10,
+          ticks: {
+            stepSize: 2,
+            color: '#7a7268',
+            backdropColor: 'transparent',
+            font:{size:10}
+          },
+          grid: { color: 'rgba(180,170,155,0.18)' },
+          angleLines: { color: 'rgba(180,170,155,0.22)' },
+          pointLabels: {
+            color: '#e0dcd4',
+            font: { size: 11, weight: '600' }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#e0dcd4', font:{size:12} }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(37,37,37,0.95)',
+          titleColor: '#e8e4dc',
+          bodyColor: '#b8b0a5',
+          borderColor: '#3a3a3a',
+          borderWidth: 1
+        }
+      }
+    }
+  });
+})();
+
+// === 財務圖表通用樣式 ===
+const finChartDefaults = {
+  scales:{
+    x:{ticks:{color:'#7a7268',font:{size:10}},grid:{color:'rgba(180,170,155,0.10)'}},
+    y:{ticks:{color:'#7a7268',font:{size:10}},grid:{color:'rgba(180,170,155,0.12)'}}
+  },
+  plugins:{
+    legend:{labels:{color:'#e0dcd4',font:{size:11}}},
+    tooltip:{backgroundColor:'rgba(37,37,37,0.95)',titleColor:'#e8e4dc',bodyColor:'#b8b0a5',borderColor:'#3a3a3a',borderWidth:1}
+  }
+};
+
+// === EPS 歷年趨勢（2019-2025） ===
+(function(){
+  const ctx = document.getElementById('epsTrend');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['2019','2020','2021','2022','2023','2024','2025'],
+      datasets:[{
+        label:'歸母 EPS（元）',
+        data:[9.93, 8.90, 10.30, 15.02, 6.55, 9.67, 6.91],
+        backgroundColor:['#6b9f72','#6b9f72','#6b9f72','#4caf50','#d4887a','#7ab0c0','#d4a017'],
+        borderWidth:0
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,...finChartDefaults}
+  });
+})();
+
+// === 季度毛利率趨勢 ===
+(function(){
+  const ctx = document.getElementById('marginTrend');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:['21Q1','21Q2','21Q3','21Q4','22Q1','22Q2','22Q3','22Q4','23Q1','23Q2','23Q3','23Q4','24Q1','24Q2','24Q3','24Q4','25Q1','25Q2','25Q3','25Q4'],
+      datasets:[{
+        label:'毛利率（%）',
+        data:[17.47,16.24,21.10,21.56,18.83,19.12,25.97,26.30,16.09,9.02,20.47,21.47,16.42,13.10,22.54,20.43,14.68,18.35,21.98,22.56],
+        borderColor:'#6b9f72',
+        backgroundColor:'rgba(107,159,114,0.12)',
+        tension:0.3,
+        fill:true,
+        pointRadius:3,
+        pointBackgroundColor:'#6b9f72'
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,...finChartDefaults}
+  });
+})();
+
+// === 月營收趨勢（2024/01-2026/03） ===
+(function(){
+  const ctx = document.getElementById('revenueTrend');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:['24/01','24/02','24/03','24/04','24/05','24/06','24/07','24/08','24/09','24/10','24/11','24/12','25/01','25/02','25/03','25/04','25/05','25/06','25/07','25/08','25/09','25/10','25/11','25/12','26/01','26/02','26/03'],
+      datasets:[{
+        label:'月營收（億元）',
+        data:[105.2,93.5,108.6,98.4,112.7,118.3,128.5,142.8,156.3,168.5,178.2,154.0,118.6,108.4,124.5,132.7,138.6,142.3,156.8,168.4,184.2,192.5,178.8,179.4,138.5,122.8,154.43],
+        borderColor:'#7ab0c0',
+        backgroundColor:'rgba(122,176,192,0.12)',
+        tension:0.25,
+        fill:true,
+        pointRadius:2,
+        pointBackgroundColor:'#7ab0c0'
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,...finChartDefaults}
+  });
+})();
+
+// === Ch5 隱藏優勢 Pareto 排序橫條圖 ===
+(function(){
+  const ctx = document.getElementById('paretoHidden');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['#6 NVIDIA 長約','#7 Shinko 空缺','#2 西碧拉中心度','#1 2nm 認證','#8 ABF 供不應求','#3 四合一能力','#4 去中國化','#5 鴻海整合'],
+      datasets:[{
+        label:'加權貢獻 (%)',
+        data:[18.0, 10.2, 8.0, 7.5, 7.2, 6.0, 5.6, 3.2],
+        backgroundColor:['#6b9f72','#6b9f72','#6b9f72','#7ab08a','#7ab08a','#8fb89a','#8fb89a','#a5c0a8'],
+        borderColor:'#3a4a3c',
+        borderWidth:1
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      scales:{
+        x:{
+          beginAtZero:true,
+          title:{display:true,text:'加權貢獻 (%)',color:'#a09981',font:{size:11}},
+          ticks:{color:'#7a7268',font:{size:10}},
+          grid:{color:'rgba(180,170,155,0.10)'}
+        },
+        y:{
+          ticks:{color:'#e0dcd4',font:{size:11,weight:'600'}},
+          grid:{display:false}
+        }
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(37,37,37,0.95)',
+          titleColor:'#e8e4dc',
+          bodyColor:'#b8b0a5',
+          borderColor:'#3a3a3a',
+          borderWidth:1,
+          callbacks:{
+            label:function(ctx){return '加權貢獻 +' + ctx.parsed.x + '%';}
+          }
+        }
+      }
+    }
+  });
+})();
+
+// === Ch10.1 八法估值區間柱 vs 現價 282 元（floating bar + 自繪現價線） ===
+(function(){
+  const currentPrice = 282;
+  const methods = [
+    {label:'1. 歷史 PE（83~104）',      min:83,  max:104, center:93.5, type:'range'},
+    {label:'2. 2026 加權 EPS（142~170）', min:142, max:170, center:156, type:'range'},
+    {label:'3. H1 樂觀（260~325）',      min:260, max:325, center:292.5, type:'range'},
+    {label:'4. 同業 PE (161)',           min:160, max:162, center:161, type:'point'},
+    {label:'5. DCF 三階段（180~220）',   min:180, max:220, center:200, type:'range'},
+    {label:'6. SoTP 分拆（150~210）',    min:150, max:210, center:180, type:'range'},
+    {label:'7. EV/EBITDA（170~210）',    min:170, max:210, center:190, type:'range'},
+    {label:'8. PEG (192)',               min:191, max:193, center:192, type:'point'}
+  ];
+
+  const pickColor = m => {
+    if (m.type === 'range') {
+      if (m.min > currentPrice) return '#6b9f72';
+      if (m.max < currentPrice) return '#d4887a';
+      return 'rgba(155,126,197,0.75)';
+    }
+    const diff = (m.center - currentPrice) / currentPrice;
+    if (diff > 0.10)   return '#6b9f72';
+    if (diff >= -0.10) return '#7ab0c0';
+    if (diff >= -0.30) return '#d4887a';
+    return '#b0544a';
+  };
+
+  const valLabels = methods.map(m => m.label);
+  const valData   = methods.map(m => [m.min, m.max]);
+  const valColors = methods.map(pickColor);
+
+  const currentPriceLinePlugin = {
+    id: 'currentPriceLine',
+    afterDraw(chart) {
+      const {ctx, chartArea, scales} = chart;
+      if (!scales.x) return;
+      const xPos = scales.x.getPixelForValue(currentPrice);
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = '#ff6b6b';
+      ctx.lineWidth = 2;
+      ctx.moveTo(xPos, chartArea.top);
+      ctx.lineTo(xPos, chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.fillStyle = 'rgba(255,107,107,0.95)';
+      ctx.fillText('現價 ' + currentPrice + ' 元', xPos + 6, chartArea.top + 14);
+      ctx.restore();
+    }
+  };
+
+  const canvas = document.getElementById('valuationChart');
+  if(!canvas) return;
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: valLabels,
+      datasets: [{
+        label: '估值區間（元）',
+        data: valData,
+        backgroundColor: valColors,
+        borderWidth: 0,
+        borderRadius: 3,
+        barPercentage: 0.75
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          min: 60, max: 360,
+          title:{display:true,text:'股價（元）',color:'#a09981',font:{size:11}},
+          ticks: {color:'#7a7268', callback:v=>v+'元', font:{size:10}},
+          grid: {color:'rgba(180,170,155,0.12)'}
+        },
+        y: {
+          ticks: {color:'#e0dcd4', font:{size:11,weight:'600'}},
+          grid: {display:false}
+        }
+      },
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          backgroundColor:'rgba(37,37,37,0.95)',
+          titleColor:'#e8e4dc',
+          bodyColor:'#b8b0a5',
+          borderColor:'#3a3a3a',
+          borderWidth:1,
+          callbacks: {
+            label: (ctx) => {
+              const m = methods[ctx.dataIndex];
+              if (m.type === 'range') {
+                const diffMin = ((m.min - currentPrice)/currentPrice*100).toFixed(1);
+                const diffMax = ((m.max - currentPrice)/currentPrice*100).toFixed(1);
+                const diffCtr = ((m.center - currentPrice)/currentPrice*100).toFixed(1);
+                return [
+                  '區間：' + m.min + ' ~ ' + m.max + ' 元',
+                  '中點：' + m.center + ' 元（' + (diffCtr > 0 ? '+' : '') + diffCtr + '%）',
+                  '下緣 ' + diffMin + '% ／ 上緣 ' + (diffMax > 0 ? '+' : '') + diffMax + '%'
+                ];
+              }
+              const diff = ((m.center - currentPrice)/currentPrice*100).toFixed(1);
+              const tag = m.center > currentPrice ? '低估' : '高估';
+              return m.center + ' 元（' + (diff > 0 ? '+' : '') + diff + '%，' + tag + '）';
+            }
+          }
+        }
+      }
+    },
+    plugins: [currentPriceLinePlugin]
+  });
+})();
+</script>
+</body>
+</html>
