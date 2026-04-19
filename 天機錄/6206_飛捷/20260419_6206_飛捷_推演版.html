@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>飛捷 6206 — 推演版｜給朋友的投資觀察</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!--
+====================================================================
+報告通用模板（雙色：淺色 warm paper ↔ 深色 dark paper）
+來源：報告雙色模板.html（2026-04-18 抽離具體內容後通用化）
+結構設計：
+  - 雙色切換（.theme-toggle）：localStorage 記憶主題
+  - Sidebar 目錄自動 scrollspy
+  - 章節數可自由增減，以下示範各類組件，可依需求挑選組合
+可用組件列表（CSS class 速查）：
+  版型：.shell / .sidebar / .main / .section
+  頁首：.masthead / .hero-stats / .chips / .steps（九步進度）
+  段落：.prose .drop（首字放大）/ .plain（引言框）/ .pull（大字金句）
+  資料：.data-grid / .data-row / table.tbl（num/pos/neg/gold/bold/highlight）
+  卡片：.risk（tag: fatal/high/medium/low）/ .minis（bull/bear/gold/neut/accent）
+  強調：.callout（good/warn/bad/info）/ .conclusion（整合結論，每章必備）
+  時序：.timeline（item / item.key）
+  對比：.duo / .scenario（bull/bear）
+  估值：.verdict-head / .confidence-line / .conf（a=警示、n=中性）
+  圖表：.chart + 內嵌 SVG（柱/線/點/區間/分布皆可，axis 樣式用 class）
+  指標：.fias（F=事實 / I=推論 / A=分析 / S=存疑 / IP=待驗證）
+  燈號：.light（g綠/y黃/r紅/x灰）
+  進度條：.bars / .bar-row
+====================================================================
+-->
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <!-- ====================== SIDEBAR ====================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">深度分析</span>
+      <span class="dot"></span>
+      <span class="sub">Investment Deep-Dive</span>
+    </div>
+
+    <div class="meta-block">
+      <div><span class="k">ISSUE</span><span class="v">VOL.8 · 推演版</span></div>
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">6206</span></div>
+      <div><span class="k">PAGES</span><span class="v">9 CH.</span></div>
+    </div>
+
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#ch8a">推演基礎確認</a></li>
+      <li><a href="#ch8b">最新公開資訊更新</a></li>
+      <li><a href="#ch8c">影響鏈分析</a></li>
+      <li><a href="#ch8d">情境模擬（五路徑）</a></li>
+      <li><a href="#ch8e">穩健型投資人建議</a></li>
+      <li><a href="#ch8f">催化劑時間表</a></li>
+      <li><a href="#ch8g">蝴蝶效應推演</a></li>
+      <li><a href="#ch8h">隱藏問題推演</a></li>
+      <li><a href="#ch8i">推演結論</a></li>
+    </ol>
+
+    <div class="side-verdict">
+      <div class="label">Verdict · 信心 47%</div>
+      <strong>觀望。等 5/15 Q1 法說會。</strong><br>
+      NCR-樺漢 ODM 是本次最重要新發現，關鍵訊號 3 週後揭曉。
+    </div>
+  </aside>
+
+  <!-- ====================== MAIN ====================== -->
+  <main class="main">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">ISSUE 08 · 推演版</span>
+        <span>POS/QSR · Small-Mid Cap · 觀望</span>
+      </div>
+      <h1>飛捷<span class="ticker">6206</span></h1>
+      <p class="deck">加入最新公開資訊後，未來 12 個月期望報酬 -8.5%。NCR 事件是本次推演最重要新發現；穩健型投資人建議觀望，等 5/15 Q1 法說會訊號。</p>
+      <div class="byline">
+        <span><b>Analyst</b>天機閣深度分析</span>
+        <span><b>Coverage</b>九步驟 + 蝴蝶效應推演</span>
+        <span><b>FIAS</b>F18 / I12 / A8 / S4</span>
+        <span><b>Confidence</b>信心 47% · 中性偏空</span>
+      </div>
+
+      <!-- 九步進度（如不需要可整段刪除） -->
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1</div>
+        <div class="step done"><span class="dot"></span>S2</div>
+        <div class="step done"><span class="dot"></span>S3</div>
+        <div class="step done"><span class="dot"></span>S4</div>
+        <div class="step done"><span class="dot"></span>S5</div>
+        <div class="step done"><span class="dot"></span>S6</div>
+        <div class="step done"><span class="dot"></span>S7</div>
+        <div class="step active"><span class="dot"></span>S8 ● 推演版</div>
+        <div class="step"><span class="dot"></span>S9</div>
+      </div>
+    </header>
+
+    <!-- HERO STATS（四格核心數字） -->
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價（2026/04/18）</div>
+        <div class="v">102 元</div>
+        <div class="d">101.5-103.5 區間</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">加權期望股價</div>
+        <div class="v warn">93.3 元</div>
+        <div class="d">vs 現價 -8.5%</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">信心評估（第 4 次）</div>
+        <div class="v neut">47%</div>
+        <div class="d">中性偏空</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">關鍵訊號時點</div>
+        <div class="v">5/15</div>
+        <div class="d">Q1 法說會 ± 10 天</div>
+      </div>
+    </section>
+
+    <!-- 標籤 chips（hot/warn/bull/bear 可選） -->
+    <div class="chips">
+      <span class="chip warn">NCR-Ennoconn 紅旗</span>
+      <span class="chip bull">關稅 15% 緩解</span>
+      <span class="chip bull">Q1 營收 +10.96%</span>
+      <span class="chip warn">Berry AI 競爭加劇</span>
+      <span class="chip bear">Toshiba 擴張</span>
+      <span class="chip hot">觀望</span>
+    </div>
+
+    <div class="section-title" id="ch8a">一、推演基礎確認：飛捷目前是什麼樣的公司</div>
+<div class="section-sub">回顧前序深度分析的核心結論，做為推演的出發點</div>
+
+<h3>1.1 飛捷的「三層」本質</h3>
+<p>飛捷是一家台灣中小型科技公司（股本 14.3 億、市值約 146 億），核心業務可分成三層來看：</p>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">硬體主業（88.7% 營收）：</b>商用 POS 機（零售結帳機）與 Kiosk（自助點餐機），全球前三大 POS 品牌（僅次於 NCR Voyix 與 Toshiba TEC），客戶以北美零售、速食連鎖為主。</li>
+<li><b style="color:var(--accent)">軟體第二曲線（2~3% 營收、但題材最吸睛）：</b>持股 70% 的子公司 Berry AI 做得來速 AI 計時器，客戶包含 Wendy's、Zaxbys（970+ 店）、Little Caesars；持股 51% 的 Angible 做店頭數位行銷。</li>
+<li><b style="color:var(--accent)">財務現金流（被低估的護盾）：</b>現金+金融資產 30.4 億（佔市值 21%）、連續 26 年配息、董監質押 0%、KPMG 簽證、2024 年度商譽減損已從查核關鍵事項移除。</li>
+</ul>
+
+<h3>1.2 核心財務快照（第一步-7 基準）</h3>
+<div class="stat-row">
+<div class="stat"><div class="k">2024 基本 EPS</div><div class="v">6.93 元</div><div class="d">含一次性匯兌 1.29 億</div></div>
+<div class="stat"><div class="k">常態 EPS</div><div class="v">6.0 元</div><div class="d">扣一次性後基線</div></div>
+<div class="stat"><div class="k">2024 毛利率</div><div class="v">44.0%</div><div class="d">規模經濟驅動 77.2%</div></div>
+<div class="stat"><div class="k">客戶集中度</div><div class="v">47.39%</div><div class="d">TI + NCR 兩大</div></div>
+<div class="stat"><div class="k">現金/金融資產</div><div class="v">30.4 億</div><div class="d">佔市值 21%</div></div>
+<div class="stat"><div class="k">BVPS</div><div class="v">35.8 元</div><div class="d">股價/BVPS = 2.85</div></div>
+</div>
+
+<h3>1.3 六種未來劇本（原 ACH 假說，改為白話）</h3>
+<p>前面分析（第四步）把飛捷未來可能走的路，歸納成六種劇本。每種劇本有不同的成立條件與股價含義：</p>
+
+<table>
+<tr><th style="width:8%">劇本</th><th style="width:12%">性質</th><th style="width:35%">核心故事</th><th style="width:15%">第四步 機率</th><th>第五步 修正後</th></tr>
+<tr><td><b>H1</b></td><td style="color:var(--bull)">多方</td><td>軟體第二曲線 12-18 個月收斂突圍：Berry AI 2027 損平、NCR ODM 釋單、Yum Kiosk 50%→70% 拉動母業</td><td>25%</td><td>20-22%</td></tr>
+<tr><td><b>H2</b></td><td>中性</td><td>傳統 POS 廠回歸均值 / 箱型整理：毛利率回到 38-40% 區間、EPS 6-7 元震盪</td><td>50%</td><td>48%（仍主導）</td></tr>
+<tr><td><b>H3</b></td><td style="color:var(--bear)">空方</td><td>TI 客戶集中砍單 + 軟體持續燒錢雙殺：EPS 掉至 4-5 元</td><td>-</td><td>5-8%</td></tr>
+<tr><td><b>H4</b></td><td style="color:var(--bear)">空方</td><td>競爭格局崩盤：Toshiba ELERA 搶單 + BK/Chipotle 轉投競品</td><td>-</td><td>3-5%</td></tr>
+<tr><td><b>H5</b></td><td>特殊</td><td>併購 / 被併購情境：家族色彩 + 現金充足 + Berry AI 潛力</td><td>15%</td><td>12-15%</td></tr>
+<tr><td><b>H6</b></td><td style="color:var(--bear)">空方</td><td>地緣 + 關稅 + 匯率三重組合拳：股價腰斬至 50-60 元</td><td>10%</td><td>15-18%（上修）</td></tr>
+</table>
+
+<h3>1.4 前三次信心評估軌跡</h3>
+<p>在前面的分析過程中，對飛捷的總體信心（泛指「投資報酬期望值」，不是「公司好壞」）已做過三次校準：</p>
+
+<div class="stat-row">
+<div class="stat"><div class="k">第一次（ACH）</div><div class="v">55%</div><div class="d">中性偏正</div></div>
+<div class="stat"><div class="k">第二次（壓力測試）</div><div class="v">48-52%</div><div class="d">下行風險量化後</div></div>
+<div class="stat"><div class="k">第三次（評審團+完整版）</div><div class="v">50%</div><div class="d">中性</div></div>
+<div class="stat"><div class="k">第四次（本次推演）</div><div class="v" style="color:var(--warn)">待校準</div><div class="d">看 8b 情報更新</div></div>
+</div>
+
+<h3>1.5 第七步 完整版的四項「認知差」結論</h3>
+<p>在深度分析的最後一步，我們找出四個「市場共識 vs 實際情況」的認知落差 — 這些都是本次推演要重新評估的關鍵：</p>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--warn)">認知差 #1 毛利率結構誤讀：</b>市場把 33% → 44% 的毛利率躍升解讀為「產品升級」，但年報 p.101 拆解顯示 77.2% 來自規模經濟（固定成本被攤薄）、1.29 億來自一次性匯兌收益，真正來自產品升級的貢獻 &lt; 0.2pp。規模退潮時會反轉。</li>
+<li><b style="color:var(--warn)">認知差 #2 Berry AI 規模落差：</b>市場傳言 Berry AI 估值 US$300-500M，但以實際訂閱 ARR $3-10K/店 × 970 店 = US$3-10M 反推，合理估值約 US$45-150M（相差 5-7 倍）。光環效應誤導市場。</li>
+<li><b style="color:var(--warn)">認知差 #3 TI 推論錯置：</b>第一大客戶「TI」是 第三步 推論為 NCR（因時間線吻合），但實際可能是其他客戶。一旦證偽，H1 多方論據崩塌。</li>
+<li><b style="color:var(--warn)">認知差 #4 管理層說法僵化新警訊：</b>客戶集中度自評「分散」與數據「47.39%」矛盾，關稅/匯率提及量從 2020 年 270 次掉到 2024 年 34 次（-76%），對手零提及。管理層對外部風險的說法連 5 年用同一套模板。</li>
+</ul>
+
+<div class="tip info">
+<b>第一區塊結論</b>
+飛捷現在是一家「<b>靜態護盾 + 動態引擎未驗證</b>」的中小型價值股 — 財務護盾（現金、配息、簽證）穩固，但成長引擎（Berry AI、NCR 訂單、Kiosk 浪潮）還沒完全驗證。四項認知差都指向「市場把潛在題材算太樂觀」的方向。這份推演的核心任務，就是納入 2026/04 的最新情報後，看這四個認知差是被修正、還是變得更嚴重。
+</div>
+
+
+<!-- ============== 8b：公開資訊更新 ============== -->
+<div class="section-title" id="ch8b">二、最新公開資訊更新（2026/04 盤點）</div>
+<div class="section-sub">8 個關鍵主題的最新情況，比對 第七步 基準的偏離程度</div>
+
+<h3>2.1 情報差異總表</h3>
+<table>
+<tr><th style="width:18%">主題</th><th style="width:32%">最新情況</th><th style="width:32%">相較 第七步 基準的變化</th><th style="width:18%">對推演的影響</th></tr>
+<tr><td><b>股價</b></td><td>4 月中旬 101.5~103.5 元區間，單日曾 +5.61% 強漲</td><td>102 元基準維持（±1.5%）</td><td style="color:var(--neutral)">中性</td></tr>
+<tr><td><b>2026 Q1 營收</b></td><td>累計 15.10 億、年增 <b>+10.96%</b>；3 月單月 +18.2%</td><td>動能明顯優於保守常態 EPS 6.0</td><td style="color:var(--bull)">正面</td></tr>
+<tr><td><b>美台關稅</b></td><td>2026/1/15 定案 <b>15% 不疊加</b>；電子產品 42% 豁免清單</td><td>比 第七步 壓測的 20%/32% 大幅下修</td><td style="color:var(--bull)">正面</td></tr>
+<tr><td><b>新台幣匯率</b></td><td>USD/TWD 31.4~31.5，12 個月累升 3.57%</td><td>毛利率 44% → 潛在下修 0.3-0.5pp</td><td style="color:var(--warn)">輕微負面</td></tr>
+<tr><td><b>Berry AI</b></td><td>客戶維持 Wendy's+Zaxbys+Little Caesars，無新大單、無融資；Yum! Brands 選 NVIDIA（非 Berry AI）佈 500 店</td><td>70% 持股結構維持，但競爭加劇</td><td style="color:var(--warn)">中性偏負</td></tr>
+<tr style="background:rgba(176,69,56,.08)"><td><b>NCR 客戶</b> ⚠️</td><td><b>NCR Voyix 2026/1/8 公告硬體獨家委外樺漢（鴻海系），2026/3/31 完成轉換，Q2 起佣金認列</b></td><td>第七步 沒抓到；NCR=飛捷 TOP2 客戶地位可能結構性改變</td><td style="color:var(--bear)"><b>最高警訊</b></td></tr>
+<tr><td><b>Toshiba ELERA</b></td><td>2026 VIP Awards「Best Multi-Vendor Commerce Platform」、TRUNO 成首家北美認證通路、EuroShop 歐洲擴張</td><td>競爭壓力較 第七步 升級</td><td style="color:var(--warn)">負面</td></tr>
+<tr><td><b>法人動態</b></td><td>3/12 BofA Asia Tech Conference、3/20 統一證國際法說；4 月籌碼細節未揭</td><td>外資能見度提升</td><td style="color:var(--bull)">輕微正面</td></tr>
+</table>
+
+<h3>2.2 【重大警訊專節】NCR Voyix 硬體獨家委外樺漢：第七步 沒抓到的結構變化</h3>
+
+<div class="tip danger">
+<b>紅旗等級：最高</b>
+這是本次推演相對 第七步 完整版最重要的新發現。NCR Voyix（飛捷 第三步 推論的第一大客戶「TI」身分候選者，也是長期合作夥伴）在 2026 年 1 月公告將 POS 與自助結帳硬體業務「全部委外，獨家合作夥伴為 Ennoconn（樺漢 6414，鴻海旗下）」，合作自 2008 年起。第七步 分析時尚未將此納入，**需要在本推演中以三情境敏感度重新評估**。
+</div>
+
+<h4>2.2.1 事件全貌（四個確認點）</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 確認點 #1：NCR Voyix 2026/1/8 正式 IR 公告</div>
+<div class="ev-d">NCR Voyix 在投資人關係網站正式公告，啟動硬體業務轉型，與 Ennoconn（樺漢）達成獨家 ODM 協議。Ennoconn 負責設計、製造、出貨、保固全鏈條。雙方合作關係可追溯至 2008 年。</div>
+<div class="ev-s">來源：investor.ncrvoyix.com（2026-01-08）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 確認點 #2：2026/3/31 完成轉換，Q2 起佣金淨額認列</div>
+<div class="ev-d">轉換於 2026 年 3 月 31 日完成，2026 Q2 起 NCR Voyix 的硬體收入從「總額認列（Gross）」改為「佣金淨額認列（Net）」— 這是會計上的重大結構調整，意味著 NCR 不再自己設計和生產硬體，而是透過樺漢接單後抽取佣金。</div>
+<div class="ev-s">來源：Business Wire（2026-01-08 發稿、2026-03-31 生效）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 確認點 #3：NCR Voyix 2026 營收指引大幅下修</div>
+<div class="ev-d">NCR Voyix 2026/2/26 法說會宣布 2026 全年營收指引 22.1~23.25 億美元（受硬體會計調整影響大幅下修，pro forma 僅持平微增），調整後 EBITDA 4.4~4.45 億、調整 EPS 0.93~0.96，其中 Q1 最弱。這反映出硬體從總額改淨額的影響在財務報表上是可量化的。</div>
+<div class="ev-s">來源：The Motley Fool 法說會 transcript（2026-02-26）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-a">假設</span> 確認點 #4：飛捷與 NCR 的合作性質目前是「次級 ODM」還是「已被邊緣化」？</div>
+<div class="ev-d">關鍵缺口：飛捷是否為 NCR Voyix 的「次級 ODM」（樺漢為主、飛捷為輔），或已完全被邊緣化？目前**沒有飛捷官方回應**，需等待 5 月 Q1 法說會。這是整個推演的最大不確定性，也是「甲方案」選擇保守處理的根據。</div>
+<div class="ev-s">來源：資訊缺口 — 建議追蹤 2026/05 飛捷法說會與 Q1 財報</div>
+</div>
+
+<h4>2.2.2 三種可能性與對飛捷的影響（三情境）</h4>
+
+<div class="scenario bear">
+<h4>情境 A：NCR 訂單完全流失 <span class="prob">機率 30%</span></h4>
+<p><b>假設：</b>Ennoconn 獨家＝字面獨家，飛捷完全退出 NCR 供應鏈。</p>
+<p><b>對飛捷的影響：</b>NCR 若為飛捷 TOP2 客戶（依 47.39% 客戶集中度的估算，NCR 年貢獻 7-10 億營收），直接衝擊 15-20% 營收；毛利率反而可能略升（因失去的 NCR 訂單是硬體 ODM 中較低毛利部分），但絕對獲利下降。EPS 可能由常態 6.0 元掉至 4.5-5.0 元。股價合理區間下修至 70-85 元（現價 102 元下行 17-31%）。</p>
+<p><b>觸發訊號：</b>2026 Q2-Q3 單月營收 YoY 由 +10% 轉為 -10%~-20%；法說會承認 NCR 訂單流失；毛利率意外上升但營收下滑。</p>
+</div>
+
+<div class="scenario base">
+<h4>情境 B：NCR 次級 ODM、訂單減半 <span class="prob">機率 45%</span></h4>
+<p><b>假設：</b>獨家＝名義獨家，飛捷仍為 NCR 的次級供應商，但訂單份額被腰斬（樺漢吃大部分新單）。</p>
+<p><b>對飛捷的影響：</b>NCR 貢獻從 7-10 億降至 3.5-5 億，營收衝擊 -7~-10%，EPS 由 6.0 元微降至 5.3-5.7 元（-5~-12%）。毛利率變化不大。股價合理區間下修至 85-95 元（現價下行 7-17%）。</p>
+<p><b>觸發訊號：</b>Q2-Q3 月營收維持 5~15% 年增但成長趨緩；法說會低調帶過但不否認；毛利率與 EPS 輕微下修。</p>
+</div>
+
+<div class="scenario bull">
+<h4>情境 C：NCR 合作未受影響或獲意外增量 <span class="prob">機率 25%</span></h4>
+<p><b>假設：</b>公告中的「獨家」實質上只涵蓋新一代產品線，或 Ennoconn 產能不足需要次級供應商分擔，飛捷反而可能獲得部分 overflow 訂單。</p>
+<p><b>對飛捷的影響：</b>NCR 貢獻維持或小幅上升，營收動能（Q1 +10.96%）延續到全年，EPS 6.0-6.5 元。股價合理區間 105-120 元（現價上行 3-18%）。</p>
+<p><b>觸發訊號：</b>Q2-Q3 月營收年增維持 10%+；法說會主動澄清 NCR 關係；毛利率守住 42-44%。</p>
+</div>
+
+<h4>2.2.3 為什麼這個警訊重要：四個關鍵理由</h4>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">推翻 第七步 H1 多方假說的核心論據：</b>H1（軟體第二曲線突圍）的四個支點之一是「NCR ODM 轉型釋單」，現在 NCR 釋單給的是樺漢不是飛捷，H1 的權重需要下修。</li>
+<li><b style="color:var(--accent)">客戶集中度的「保護色」被揭穿：</b>第七步 Ch12 認知差 #3 指出「TI=NCR」是推論非事實，現在 NCR 可能根本不是飛捷主要客戶 — 47.39% 的集中度組成可能需要重新解構。</li>
+<li><b style="color:var(--accent)">與樺漢（鴻海系）是「集團母艦級競爭」：</b>鴻海集團的規模、通路與成本結構都遠超飛捷，若真的是全面競爭，飛捷難有長期勝算，除非走差異化或被整合。</li>
+<li><b style="color:var(--accent)">時間敏感性：Q2 就見真章：</b>NCR Q2 改佣金認列，代表飛捷若仍接單，Q2 的月營收會是第一個公開指標。現在是 4 月 19 日，距 Q2 首月僅 10 天。</li>
+</ul>
+
+<h3>2.3 其他四個情報變化的詳細評估</h3>
+
+<h4>2.3.1 正面變化：對等關稅 15% 定案</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 關稅從 32% → 20% → 15% 不疊加，飛捷受壓轉為受惠</div>
+<div class="ev-d">美台貿易談判 2026/1/15 定案，對等關稅由 2025/4 的 32%、2025/8 的 20%，最終降至 15% 且不疊加原有 MFN 稅率，獲「最優惠盟國待遇」與日、韓、歐盟齊平。台灣出口美國商品中 42% 獲對等關稅豁免（含電子產品），POS 設備屬電子產品範疇，有高機率獲豁免。第七步 H6 地緣三重擊情境的關稅壓力大幅緩解，原本權重 15-18% 應下修 5-8pp。</div>
+<div class="ev-s">來源：104 職場力（2026-01-15）、聯合新聞網、PwC 資誠</div>
+</div>
+
+<h4>2.3.2 輕微負面：台幣續升值（但幅度可控）</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> USD/TWD 31.4~31.5，12 個月累升 3.57%</div>
+<div class="ev-d">4 月中旬 USD/TWD 在 31.4~31.5 區間（2026/4/17 收 31.434），過去 12 個月累升 3.57%，比 第七步 壓測的 10% 升值情境溫和。依凱基證券估算電子下游毛利率受台幣升值 10% 衝擊 1~1.5%，線性推算 3.57% 升值對飛捷毛利率衝擊約 0.3-0.5 pp。第七步 基準 44% 毛利率需輕微下修至 43.5-43.7%。</div>
+<div class="ev-s">來源：Trading Economics、Investing.com、工商時報</div>
+</div>
+
+<h4>2.3.3 動能正面：2026 Q1 營收 +10.96% 優於預期</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> Q1 累計 15.10 億、年增 10.96%；3 月單月 +18.2% 加速</div>
+<div class="ev-d">2026 年 1 月營收年增 5.8%、2 月 +9.37%、3 月 +18.2%，Q1 累計 15.10 億、年增 10.96%。動能顯著優於 第七步 保守基準（常態 EPS 6.0 對應 2026 營收持平假設）。但此營收數據是 NCR 轉型之前（3/31 才完成），Q2 才會見到 NCR ODM 轉型的實際衝擊，所以 Q1 的好不能外推 Q2。建議追蹤 2026 年 4-6 月每月營收是否維持 10%+ 年增，若跌破代表 NCR 訂單實際流失。</div>
+<div class="ev-s">來源：Win 投資、Yahoo 股市、財報狗</div>
+</div>
+
+<h4>2.3.4 中性偏負：Berry AI 無突破，且 Yum!-NVIDIA 挫折</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> Berry AI 持股 70% 穩定，但 Yum! Brands 選 NVIDIA 不選 Berry AI</div>
+<div class="ev-d">Tracxn 資料庫（2026/1/20）確認 Berry AI 至今無任何募資輪次，飛捷 70% 持股維持；客戶群維持 Wendy's+Zaxbys（970 店）+Little Caesars。但 NVIDIA 2026/4 宣布與 Yum! Brands（Taco Bell/KFC/Pizza Hut 合計 50,000+ 店）戰略合作，首批 500 店部署 NVIDIA AI — Berry AI 未列入。這代表 Berry AI 在前三大 QSR（McDonald's/Yum!/Restaurant Brands International）爭奪戰中處於劣勢。第七步 認知差 #2（Berry AI 估值 US$45-150M vs 市場傳言 $300-500M）被進一步驗證。</div>
+<div class="ev-s">來源：Tracxn（2026-01-20）、NVIDIA Blog（2026-04）、PR Newswire</div>
+</div>
+
+<h4>2.3.5 負面：Toshiba TEC ELERA 競爭加速</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> Toshiba 以開放生態+TRUNO 通路北美擴張、EuroShop 歐洲擴張雙線</div>
+<div class="ev-d">Toshiba ELERA 於 2026 VIP Awards 獲「Best Multi-Vendor Commerce Platform」肯定，2026/2 EuroShop 展擴大歐洲合作（Adyen、Datalogic、Worldline 等）、2026/4 TRUNO 成為首家北美認證經銷夥伴。開放生態戰略意味著 Toshiba 不自己做所有硬體，而是邀第三方整合 — 這反而可能創造飛捷被 Toshiba 生態 OEM 的機會（正面想），但也可能導致飛捷既有的中型零售客戶被 Toshiba+TRUNO 搶走（負面想）。兩個方向需等 6-9 個月後才能驗證。</div>
+<div class="ev-s">來源：Business Wire、City A.M.、PR Newswire（2026-02~04）</div>
+</div>
+
+<h3>2.4 總體：修正後的基準</h3>
+<p>納入 5 個 公開資訊變化後，推演基準需要以下調整：</p>
+
+<table>
+<tr><th style="width:25%">項目</th><th style="width:25%">第七步 基準</th><th style="width:25%">第八步 修正基準</th><th>變化原因</th></tr>
+<tr><td>現價</td><td>102 元</td><td>102 元</td><td>維持</td></tr>
+<tr><td>常態 EPS（基線）</td><td>6.0 元</td><td>5.5-6.0 元（含 NCR 流失風險）</td><td>NCR 情境 B 中間值</td></tr>
+<tr><td>毛利率（2026 預估）</td><td>44% 持平</td><td>42-43%</td><td>匯率 -0.5pp、規模退潮 -1pp</td></tr>
+<tr><td>關稅衝擊</td><td>20% 基準、32% 極端</td><td>15% 基準、電子豁免</td><td>2026/1/15 定案</td></tr>
+<tr><td>客戶集中度</td><td>47.39%（TI+NCR）</td><td>37-42%（NCR 若縮水）</td><td>情境 A/B 假設</td></tr>
+<tr><td>H1 多方權重</td><td>20-22%</td><td>12-15%</td><td>NCR 釋單論據垮、Yum!-NVIDIA</td></tr>
+<tr><td>H3 空方權重</td><td>5-8%</td><td>10-15%</td><td>NCR 流失風險加入</td></tr>
+<tr><td>H6 空方權重</td><td>15-18%</td><td>8-12%</td><td>關稅緩解</td></tr>
+</table>
+
+<div class="tip warn">
+<b>第二區塊結論</b>
+本次推演相對 第七步 有五個變化，正負大致相抵（NCR 紅旗 -5~10pp + 關稅緩解 +3pp + 營收動能 +2~3pp = 淨 -0~5pp）。**但最關鍵的是 NCR-樺漢 ODM 這個結構性變化，完全改變了 H1 多方假說的核心論據**。推演信心評估由 第七步 的 50% 初步下修至 45-50% 區間，最終數字看 8i 的綜合校準。需要重點關注 5 月飛捷法說會的 NCR 澄清。
+</div>
+
+<!-- ============== 8c：影響鏈分析 ============== -->
+<div class="section-title" id="ch8c">三、影響鏈分析：NCR 事件的三階連鎖反應</div>
+<div class="section-sub">從「NCR 硬體委外樺漢」這個單一事件，推演它在飛捷的業務、財報、估值、市場說法上會產生哪些連鎖影響</div>
+
+<h3>3.1 為什麼選 NCR 事件當主軸</h3>
+<p>影響鏈分析的做法是從一個關鍵事件出發，推演它第一階（直接影響）、第二階（間接影響）、第三階（外溢影響）的連鎖反應。本次推演的關鍵事件是 NCR Voyix-樺漢獨家 ODM，因為：</p>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">規模衝擊最大：</b>若 NCR 是飛捷 TOP2 客戶（集中度 47.39% 的一部分），流失的絕對金額最大（7-10 億）。</li>
+<li><b style="color:var(--accent)">時間敏感性最高：</b>Q2 4-6 月就能從月營收見到端倪，其他事件（關稅、匯率）需要數季才顯現。</li>
+<li><b style="color:var(--accent)">推翻多方論據的核心：</b>H1 多方假說的四支點之一「NCR ODM 釋單」直接崩塌。</li>
+<li><b style="color:var(--accent)">第七步 沒涵蓋：</b>完整版分析時未揭露，是本推演特別要補上的盲區。</li>
+</ul>
+
+<h3>3.2 影響鏈全景（三階連鎖）</h3>
+
+<div class="chart-box">
+<div class="chart-title">NCR 事件 · 三階影響鏈 · 從事件到股價</div>
+<table style="margin:0">
+<tr style="background:rgba(142,58,44,.08)"><td colspan="4" style="font-weight:700;font-family:var(--serif);font-size:16px;color:var(--danger)">⚠️ 起點事件：NCR Voyix 2026/3/31 完成硬體獨家委外樺漢</td></tr>
+<tr><th style="width:8%">階段</th><th style="width:22%">影響對象</th><th style="width:38%">具體影響</th><th>機率×量化</th></tr>
+
+<tr style="background:rgba(176,128,48,.04)"><td rowspan="4" style="font-weight:700;color:var(--warn)">一階<br>（業務）</td><td><b>飛捷 NCR 訂單</b></td><td>訂單完全流失/腰斬/持平三情境（見 8b）</td><td>30% / 45% / 25%</td></tr>
+<tr style="background:rgba(176,128,48,.04)"><td><b>客戶集中度結構</b></td><td>47.39% 中若 NCR 消失，TOP1 客戶變 TI 單獨 27-30%，集中度反而下降到 40% 以下（分散度提升是意外正面）</td><td>情境 A 下 100% 成立</td></tr>
+<tr style="background:rgba(176,128,48,.04)"><td><b>整體營收</b></td><td>情境 A：-15~-20%；情境 B：-7~-10%；情境 C：持平</td><td>期望值 -8%</td></tr>
+<tr style="background:rgba(176,128,48,.04)"><td><b>產能與人力</b></td><td>NCR 訂單若流失，北美 ODM 產線產能利用率下降，可能減班（影響規模經濟）</td><td>情境 A 下必然</td></tr>
+
+<tr style="background:rgba(176,69,56,.04)"><td rowspan="5" style="font-weight:700;color:var(--bear)">二階<br>（財報）</td><td><b>2026 EPS</b></td><td>情境 A：EPS 4.5-5.0 元（-25~-35% YoY）；情境 B：EPS 5.3-5.7 元（-12~-17%）；情境 C：EPS 6.0-6.5 元（持平或微升）</td><td>期望 EPS 5.4 元</td></tr>
+<tr style="background:rgba(176,69,56,.04)"><td><b>毛利率</b></td><td>情境 A 毛利率**反而可能升至 45-46%**（失去 NCR 低毛利 ODM 部分）；情境 B 毛利率維持 43-44%；情境 C 毛利率 44%（維持）</td><td>與營收方向相反</td></tr>
+<tr style="background:rgba(176,69,56,.04)"><td><b>營業槓桿</b></td><td>固定成本在各情境下不變，但營收縮減導致營業利益率下滑。情境 A 營業利益率由 23% 降至 16-18%；情境 B 降至 20-21%；情境 C 維持 22-23%。</td><td>期望營益率 20%</td></tr>
+<tr style="background:rgba(176,69,56,.04)"><td><b>現金流</b></td><td>應收帳款週轉變化（樺漢與飛捷的客戶結構不同）、庫存可能階段性上升、配息政策若維持 70-80% 配發率則 DPS 隨 EPS 下修</td><td>配息基線 EPS×70%</td></tr>
+<tr style="background:rgba(176,69,56,.04)"><td><b>財務護盾</b></td><td>現金+金融資產 30.4 億不受影響，連續 26 年配息紀錄未破，財務護盾獨立於 NCR 事件</td><td>100% 穩固</td></tr>
+
+<tr style="background:rgba(79,122,148,.04)"><td rowspan="5" style="font-weight:700;color:var(--neutral)">三階<br>（估值）</td><td><b>股價合理區間</b></td><td>依 EPS × PE（16-20x）推算：情境 A 72-100 元；情境 B 85-114 元；情境 C 96-130 元</td><td>期望中點 95 元</td></tr>
+<tr style="background:rgba(79,122,148,.04)"><td><b>市場敘事翻轉</b></td><td>H1 多方假說「NCR 釋單」崩塌 → 市場把飛捷從「NCR 重要供應鏈」改標籤為「POS 三強末段的獨立廠」；PE 倍數從「具題材」的 17-20x 下修到「傳統硬體」的 12-14x</td><td>情境 A 下高機率</td></tr>
+<tr style="background:rgba(79,122,148,.04)"><td><b>SoTP 分拆估值</b></td><td>硬體本業估值下修，但 Berry AI 70% 持股的 US$45-150M 分拆估值不受影響（仍有 NT$14-47 億增值空間）</td><td>Berry 獨立</td></tr>
+<tr style="background:rgba(79,122,148,.04)"><td><b>被併購吸引力</b></td><td>若 NCR 訂單流失但財務護盾強，飛捷對同業（振樺電/研華）或國際 PE 的併購吸引力反而上升（「便宜+現金+技術」組合）。H5 併購情境權重由 12-15% 升至 15-18%</td><td>非壞事</td></tr>
+<tr style="background:rgba(79,122,148,.04)"><td><b>配息殖利率</b></td><td>若股價跌至 80-90 元、EPS 維持 5 元、配息率 70%，則 DPS 3.5 元、殖利率 4-4.4%。變成「收息股」而非「成長股」</td><td>下行保護</td></tr>
+</table>
+<div class="chart-note">三階影響鏈以 NCR 為單一事件起點，每階機率加權後的期望影響值（EPS 5.4 元、股價中點 95 元）做為 8d 情境模擬的基準</div>
+</div>
+
+<h3>3.3 其他事件的次要影響鏈（簡要）</h3>
+
+<h4>3.3.1 關稅 15% 定案（正向緩衝）</h4>
+<div class="card">
+<p><b>一階：</b>飛捷美國出貨的關稅成本從預期 20-32% 降至 15%（實際因電子豁免可能更低），出口成本壓力緩解。</p>
+<p><b>二階：</b>若飛捷原本試圖把關稅成本轉嫁客戶（NCR/TI 等），現在可以減少轉嫁比例，客戶關係改善；北美在地組裝策略（2024 年開始加速）的緊迫性降低，部分產能可回流台灣，規模經濟微升。</p>
+<p><b>三階：</b>H6 地緣三重擊空方假說權重由 15-18% 下修至 8-12%，整體信心評估 +3pp 緩衝效果。</p>
+</div>
+
+<h4>3.3.2 台幣升值 3.57%（輕微負面）</h4>
+<div class="card">
+<p><b>一階：</b>美元計價的營收換回台幣減少 3.57%，但成本也以台幣計價（部分），淨匯損約 0.5-1% 營收。</p>
+<p><b>二階：</b>2024 認列的 1.29 億一次性匯兌收益難再現，2026 甚至可能有小額匯損（估算 0.3-0.5 億）；毛利率被壓低 0.3-0.5pp。</p>
+<p><b>三階：</b>常態 EPS 基線從 6.0 微降至 5.7-5.8 元（不含 NCR 情境影響），對股價影響有限（&lt;3%）。</p>
+</div>
+
+<h4>3.3.3 Berry AI 失守 Yum!（題材下修）</h4>
+<div class="card">
+<p><b>一階：</b>Yum! Brands（Taco Bell/KFC/Pizza Hut）選 NVIDIA 佈 500 店，Berry AI 失去 50,000+ 潛在門市的最大 QSR 客戶之一。</p>
+<p><b>二階：</b>Berry AI 合理估值「光環修正」版維持 US$45-150M（不變），但長期成長曲線的天花板被壓低（從原本的 US$300-500M 樂觀目標 → 實際可達 US$100-200M 的中性目標）。</p>
+<p><b>三階：</b>H1 多方假說「軟體第二曲線突圍」的核心論據（打進前三大 QSR）被動搖，Yum! 失守是第二個負面訊號（第一個是 NCR），H1 權重由 20-22% 下修至 12-15%。</p>
+</div>
+
+<h4>3.3.4 Toshiba ELERA 雙線擴張（中期負面）</h4>
+<div class="card">
+<p><b>一階：</b>Toshiba 開放生態+TRUNO 北美通路，對飛捷的中型零售客戶（非連鎖速食類）形成搶單壓力，但影響會在 6-12 個月後才顯現。</p>
+<p><b>二階：</b>若飛捷不與 Toshiba 生態整合，中型零售客戶可能流失 5-10%；若選擇整合（成為 ELERA 認證 OEM），則可能獲取 Toshiba 生態的訂單流入 — 兩個方向都可能，取決於飛捷管理層策略。</p>
+<p><b>三階：</b>H4 空方「競爭格局崩盤」權重由 3-5% 微升至 5-8%，整體影響有限（中期）。</p>
+</div>
+
+<h3>3.4 跨事件交互作用（容易被忽略）</h3>
+
+<div class="tip info">
+<b>交互 #1：NCR 流失 × 關稅緩解 = 部分抵消</b>
+NCR 訂單若是北美生產，關稅緩解本來是利多，但若 NCR 訂單流失，關稅利多也隨之消失（沒訂單就不用付關稅）。兩個利多因素相互消解。
+</div>
+
+<div class="tip info">
+<b>交互 #2：NCR 流失 × Berry AI 題材 = 估值重定位</b>
+若 NCR 結構性流失，飛捷會從「POS 硬體廠（NCR 釋單題材）」重新被定位為「具 AI 題材的中小型價值股」，Berry AI 的分拆估值變成**最主要題材**。但 Yum! 失守讓 Berry AI 題材上限也被壓低 → 整體題材溢價可能消失。
+</div>
+
+<div class="tip info">
+<b>交互 #3：NCR 流失 × 財務護盾 = 變相增加被併購吸引力</b>
+若飛捷股價因 NCR 事件跌至 80 元以下（市值約 115 億），而現金+金融資產仍 30 億（26% 市值），對併購方的吸引力反而上升：現金護盾充足、本業穩定（扣 NCR 後）、Berry AI 70% 持股有分拆選擇權。H5 併購情境權重應上修。
+</div>
+
+<div class="tip warn">
+<b>第三區塊結論</b>
+NCR 事件的三階影響鏈顯示：**業務面衝擊大（營收 -8% 期望值）、財報面因毛利率反向提升而部分對沖、估值面市場敘事翻轉導致 PE 下修**。淨效應是股價合理區間從 102 元下修至期望中點 95 元（下行 7%），但極端下行可達 72 元（情境 A × 保守 PE 16x）。跨事件交互作用中最重要的是「NCR 流失讓飛捷變成併購候選」這個非直覺發現，H5 併購情境權重由 12-15% 可能上修至 15-18%。
+</div>
+
+<!-- ============== 8d：情境模擬 + 概率樹 ============== -->
+<div class="section-title" id="ch8d">四、情境模擬：未來 12 個月的五種可能路徑</div>
+<div class="section-sub">基於 8c 影響鏈與 8b 公開資訊變化，建構 5 條未來 1-12 個月的可能路徑 + 敏感度分析</div>
+
+<h3>4.1 五條路徑總表（機率 × 股價區間）</h3>
+
+<table>
+<tr><th style="width:8%">路徑</th><th style="width:18%">名稱</th><th style="width:10%">機率</th><th style="width:22%">核心觸發條件</th><th style="width:18%">12 月股價區間</th><th>期望報酬（vs 102）</th></tr>
+<tr style="background:rgba(142,58,44,.05)"><td><b>P1</b></td><td style="color:var(--bear)"><b>NCR 完全流失</b></td><td>25%</td><td>NCR Q2 佣金認列落實＋法說會承認飛捷非 Ennoconn 次級 ODM</td><td>65~85 元</td><td style="color:var(--bear)">-26%（中點 75）</td></tr>
+<tr style="background:rgba(176,128,48,.05)"><td><b>P2</b></td><td style="color:var(--warn)"><b>NCR 次級 ODM（減半）</b></td><td>40%</td><td>NCR 腰斬但保留部分訂單、Q2 月營收成長趨緩至 3-8%</td><td>85~100 元</td><td style="color:var(--warn)">-9%（中點 92）</td></tr>
+<tr style="background:rgba(79,122,148,.05)"><td><b>P3</b></td><td style="color:var(--neutral)"><b>NCR 維持 + 動能延續</b></td><td>20%</td><td>NCR Q2 訂單未明顯縮水、毛利率守住 42%+、Q1 動能延續</td><td>100~115 元</td><td style="color:var(--neutral)">+5%（中點 107）</td></tr>
+<tr style="background:rgba(76,139,86,.05)"><td><b>P4</b></td><td style="color:var(--bull)"><b>併購溢價題材</b></td><td>10%</td><td>股價下行後吸引同業或 PE 出價、Berry AI 分拆傳聞升溫</td><td>120~155 元</td><td style="color:var(--bull)">+35%（中點 138）</td></tr>
+<tr style="background:rgba(142,58,44,.1)"><td><b>P5</b></td><td style="color:var(--danger)"><b>地緣極端衝擊</b></td><td>5%</td><td>台海緊張升級 + 台幣意外大貶 / 232 條款對 POS 追加關稅</td><td>45~65 元</td><td style="color:var(--danger)">-46%（中點 55）</td></tr>
+</table>
+
+<p style="margin-top:12px"><b>加權期望股價：</b> 0.25×75 + 0.40×92 + 0.20×107 + 0.10×138 + 0.05×55 = <b style="color:var(--warn);font-size:16px">93.3 元</b>（vs 現價 102 元，期望報酬 -8.5%）</p>
+
+<div class="chart-box">
+<div class="chart-title">Path Distribution · 未來 12 個月路徑機率分布</div>
+<canvas id="pathTreeChart" style="width:100%;max-height:300px"></canvas>
+<div class="chart-note">加權期望股價 93.3 元、期望報酬 -8.5%；區間下 65 元（P5 下緣）到上 155 元（P4 上緣）</div>
+</div>
+
+<h3>4.2 五條路徑的詳細演進</h3>
+
+<div class="scenario bear">
+<h4>P1 · NCR 完全流失 <span class="prob">機率 25%｜股價區間 65-85 元</span></h4>
+<p><b>觸發條件（任一成立即觸發）：</b></p>
+<ul style="margin:6px 0 10px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">2026/05 法說會：</b>飛捷管理層承認未獲 Ennoconn 次級 ODM 資格</li>
+<li><b style="color:var(--accent)">Q2 4-6 月單月營收：</b>YoY 由 +10% 轉為 -10~-20%</li>
+<li><b style="color:var(--accent)">2026 Q2 財報：</b>北美營收 YoY -30% 以上</li>
+</ul>
+<p><b>演進過程：</b>5 月法說會釋出模糊訊號（股價反應 -5~-10%）→ 6 月月營收跌破 YoY +5%（-8%）→ 7 月跌破 0%（-5%）→ 8 月 Q2 財報確認（-10%）→ 9 月機構下修評等（-5~-8%）→ 12 月底股價落在 65-85 元。</p>
+<p><b>期末 EPS 預估：</b>4.5-5.0 元（-28~-35% YoY），毛利率反向升至 45-46%（失去低毛利 ODM）。</p>
+<p><b>市場敘事：</b>從「NCR 供應鏈重要成員」改稱「獨立 POS 硬體商」，PE 從 16-18x 降至 13-15x。</p>
+</div>
+
+<div class="scenario edge">
+<h4>P2 · NCR 次級 ODM（訂單減半） <span class="prob">機率 40%｜股價區間 85-100 元</span></h4>
+<p><b>觸發條件：</b>NCR 公告的「獨家」實質是主合約獨家，飛捷仍為次級/專案級供應商，但年化訂單規模被腰斬。</p>
+<p><b>演進過程：</b>5 月法說會低調帶過 NCR 議題（股價反應 -3~-5%）→ Q2 月營收年增由 +10% 降至 +3~8%（-5~-8%）→ Q2 財報確認毛利率持平、營收微降（-3%）→ 下半年市場習慣新常態，股價進入 85-100 元箱型。</p>
+<p><b>期末 EPS 預估：</b>5.3-5.7 元（-12~-17% YoY），毛利率 43-44% 維持。</p>
+<p><b>市場敘事：</b>從「成長股」改稱「穩定收息股」，PE 維持 15-17x 但題材溢價消失。</p>
+<p><b>這是本推演評估的最可能路徑（機率 40%），也是基準情境。</b></p>
+</div>
+
+<div class="scenario base">
+<h4>P3 · NCR 維持 + 動能延續 <span class="prob">機率 20%｜股價區間 100-115 元</span></h4>
+<p><b>觸發條件：</b>NCR「獨家」公告實際涵蓋新一代產品線，既有訂單持續；飛捷 Q1 動能外推至全年。</p>
+<p><b>演進過程：</b>5 月法說會澄清 NCR 關係未變（股價 +3~5%）→ Q2 月營收維持 YoY +10%+（+3~5%）→ Q2 財報毛利率守住 44%、EPS 達 1.7 元以上（+5%）→ 外資買超延續，下半年股價升至 108-115 元箱型。</p>
+<p><b>期末 EPS 預估：</b>6.5-7.0 元（-5~+1% YoY），毛利率 43-44% 維持。</p>
+<p><b>市場敘事：</b>H1 多方假說回歸，NCR 釋單+關稅緩解+匯率小幅衝擊組合，PE 17-19x。</p>
+</div>
+
+<div class="scenario bull">
+<h4>P4 · 併購溢價題材 <span class="prob">機率 10%｜股價區間 120-155 元</span></h4>
+<p><b>觸發條件（任一成立即觸發）：</b></p>
+<ul style="margin:6px 0 10px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">同業併購提議：</b>振樺電 8114、研華 2395 或海外 PE 對飛捷提出收購</li>
+<li><b style="color:var(--accent)">Berry AI 分拆：</b>Berry AI 獨立融資獲 US$150M+ 估值、飛捷 70% 持股增值至 NT$50 億</li>
+<li><b style="color:var(--accent)">股價跌至 75-85 元：</b>引發被動指數調入或價值投資者搶進</li>
+</ul>
+<p><b>演進過程：</b>P1 或 P2 路徑先發生（股價下行至 75-90 元）→ 第三方出價提議（+15~20%）→ 董事會公告處理原則（+5~10%）→ 市場溢價反映（+10~15%）→ 年底股價落在 120-155 元。</p>
+<p><b>期末狀態：</b>若併購完成則下市，被併價可能 150-170 元；若併購失敗，股價回吐部分溢價到 100-110 元。</p>
+<p><b>市場敘事：</b>「穩定現金流 + 被低估的 Berry AI 分拆價值 + 家族色彩」變成併購溢價來源。</p>
+</div>
+
+<div class="scenario" style="border-left-color:var(--danger)">
+<h4>P5 · 地緣極端衝擊 <span class="prob">機率 5%｜股價區間 45-65 元</span></h4>
+<p><b>觸發條件（極端情境，任一成立）：</b></p>
+<ul style="margin:6px 0 10px 22px;line-height:1.8">
+<li><b style="color:var(--accent)">台海緊張升級：</b>中美大陸貿易進一步升級，台灣 ETF 遭大量贖回</li>
+<li><b style="color:var(--accent)">232 條款追加關稅：</b>POS 被納入科技關稅追加清單，飛捷美國關稅 35%+</li>
+<li><b style="color:var(--accent)">台幣意外大貶：</b>USD/TWD 升破 33 以上（毛利率 -2pp）</li>
+<li><b style="color:var(--accent)">NCR 完全流失 + Berry AI 全面失守：</b>P1 + Yum/McDonald's 全部選其他 AI 廠</li>
+</ul>
+<p><b>演進過程：</b>外部衝擊驅動 → Q2-Q3 月營收 YoY -30% → Q3 財報 EPS 跌破 4 元 → PE 被動下修至 12-14x → 年底股價 45-65 元（-37~-56%）。</p>
+<p><b>下行保護：</b>即使此情境，現金+金融資產 30.4 億/14.3 億股本 = 2.1 元/股安全值，配合 BVPS 35.8 元，理論底部約 40 元。</p>
+</div>
+
+<h3>4.3 敏感度分析：哪個變數動最會翻盤</h3>
+
+<p>從 5 條路徑的條件組合，找出「對期望報酬最敏感」的三個變數：</p>
+
+<table>
+<tr><th style="width:22%">關鍵變數</th><th style="width:22%">變動幅度</th><th style="width:22%">期望股價衝擊</th><th>敏感度分數（1-5）</th></tr>
+<tr><td><b>NCR 訂單份額</b></td><td>完全保留（P3）→ 完全流失（P1）</td><td>107 → 75（-32 元）</td><td><b style="color:var(--danger)">5（最敏感）</b></td></tr>
+<tr><td><b>2026 Q2-Q3 月營收 YoY</b></td><td>+10% → -15%</td><td>95 → 78（-17 元）</td><td><b style="color:var(--warn)">4</b></td></tr>
+<tr><td><b>毛利率</b></td><td>44% → 38%</td><td>95 → 85（-10 元）</td><td>3</td></tr>
+<tr><td><b>台幣匯率</b></td><td>31.5 → 33.0（貶 5%）</td><td>95 → 92（-3 元）</td><td>2</td></tr>
+<tr><td><b>Berry AI 突破</b></td><td>分拆估值 US$150M 落實</td><td>95 → 108（+13 元）</td><td>3</td></tr>
+<tr><td><b>關稅 232 條款</b></td><td>豁免 → 追加 10%</td><td>95 → 85（-10 元）</td><td>3</td></tr>
+</table>
+
+<h3>4.4 路徑交叉點：何時必須做決定</h3>
+
+<p>如果看到以下「信號交叉」，代表進入新情境，必須重新評估：</p>
+
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">5 月 15 日前（Q1 法說會）：</b>NCR 關係表態 = 決定 P1/P2/P3 的關鍵時點。**建議觀察者屏息等這一刻**，不要在之前下決定。</li>
+<li><b style="color:var(--accent)">6 月 10 日（5 月月營收公告）：</b>若 YoY +5% 以下 → 偏向 P2/P1；若 +10%+ → 偏向 P3。</li>
+<li><b style="color:var(--accent)">8 月初（Q2 財報）：</b>NCR 佣金認列影響首次在財報上顯現。若毛利率意外上升+營收下降 → 確認 P1；若兩者都維持 → 確認 P3。</li>
+<li><b style="color:var(--accent)">股價跌破 85 元：</b>進入 P1 下緣，同時接近 P4 併購觸發區。若跌破是 P1 驅動 → 等待；若跌破後有併購傳聞 → 可能是 P4 起點。</li>
+<li><b style="color:var(--accent)">股價漲破 115 元：</b>偏離 P2 箱型，確認 P3 或 P4 起點。</li>
+</ul>
+
+<div class="tip warn">
+<b>第四區塊結論</b>
+五條路徑的加權期望股價 93.3 元（vs 現價 102），期望報酬 -8.5%，落在 P2「NCR 次級 ODM」情境內（機率 40%、區間 85-100 元）。P2 是最可能路徑，也意味著**現在進場（102 元）等於賭 P3 或 P4（機率合計 30%）**，風險不對稱。敏感度分析顯示 NCR 訂單份額是最關鍵變數（分數 5/5），其次是 Q2-Q3 月營收動能（4/5）。最關鍵的決策時點是 2026/05 的 Q1 法說會，穩健型投資人應等這個信號後再決定。
+</div>
+
+<!-- ============== 8e：穩健型投資人建議 ============== -->
+<div class="section-title" id="ch8e">五、穩健型投資人的具體建議</div>
+<div class="section-sub">給空手 + 穩健偏好 + 無特定時間軸的投資人</div>
+
+<div class="tip info">
+<b>先說結論</b>
+以目前 102 元的價位，**建議「觀望」而非「現在進場」**。期望報酬 -8.5% 不夠吸引，且最關鍵的 NCR 問題要等 5 月 15 日左右的 Q1 法說會才會揭曉。空手的好處是「有權等到訊號明確才行動」。如果法說會釋出正面訊號（NCR 關係維持 / 清楚澄清），且股價回測 95 元下方，則可進入觀察級部位；若法說會釋出負面訊號（NCR 流失確認），則股價可能跌到 75-85 元，屆時再評估是否「逢低分批」— 但要有 EPS 下修到 5 元的心理準備。
+</div>
+
+<h3>5.1 為什麼現在「觀望」比「進場」好：四個理由</h3>
+
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">理由 1 · 期望報酬不對稱：</b>加權期望 -8.5%，下行（P1 -26%、P5 -46%）的機率+幅度合計 &gt; 上行（P3 +5%、P4 +35%）。用「凱利公式」思考：下注不對稱於自己不利 → 最佳策略是不下注或小下注。</li>
+<li><b style="color:var(--accent)">理由 2 · 最關鍵訊號 3 週後就揭曉：</b>5/15 ± 10 天是飛捷 Q1 財報+法說會窗口，NCR 關係、毛利率變化、管理層展望都會在這個時點公開。現在進場等於賭 5/15 前不知道的事情，等三週資訊量會顯著增加。</li>
+<li><b style="color:var(--accent)">理由 3 · 穩健型偏好下行保護：</b>穩健型投資人的核心原則是「先不輸錢，再想贏錢」。現在進場若遇 P1/P5 情境，虧損 26-46%，需要 35%+ 漲幅才能回本。觀望不虧錢是穩健型的勝利。</li>
+<li><b style="color:var(--accent)">理由 4 · 時間機會成本小：</b>「沒特定時間軸」代表不急著布局，3-6 個月等待是合理成本。反之，若此時此刻押注，錯過 5/15 的資訊增量反而是決策浪費。</li>
+</ul>
+
+<h3>5.2 三種未來情境下的具體行動建議</h3>
+
+<div class="scenario bull">
+<h4>情境 I：法說會釋出正面訊號（對應 P3）— 建議「觀察進場」</h4>
+<p><b>觸發條件：</b>5/15 ± 10 天法說會中，管理層主動澄清 NCR 關係未受影響、Q1 EPS 達 1.7 元以上、毛利率守住 43%+。</p>
+<p><b>市場反應：</b>股價可能 1-2 日內回到 108-115 元。此時有兩個選擇：</p>
+<ul style="margin:6px 0 10px 22px">
+<li><b style="color:var(--accent)">方案 A：</b>進場成本價 108-112 元，目標 125-135 元（+13~25%），停損 98 元（-9~12%）。風險報酬比約 1:2，合理。</li>
+<li><b style="color:var(--accent)">方案 B：</b>等股價回測 95-100 元（短線獲利了結潮）再進場，目標不變，停損 90 元。風險報酬比 1:3，較佳。</li>
+</ul>
+<p><b>穩健型建議：</b>方案 B。等股價回測是穩健型的紀律，不為「怕錯過」而進場。</p>
+</div>
+
+<div class="scenario edge">
+<h4>情境 II：法說會釋出模糊訊號（對應 P2）— 建議「繼續觀望」</h4>
+<p><b>觸發條件：</b>法說會低調帶過 NCR 議題、Q1 EPS 1.5-1.7 元、毛利率 42-43%、展望「審慎樂觀」等套話。</p>
+<p><b>市場反應：</b>股價短線小跌 3-5%（-3~5 元），進入 95-102 元箱型。</p>
+<p><b>穩健型建議：</b>不進場。模糊訊號代表情境尚未明朗，股價在區間震盪時是「等待期」而非「布局期」。再等一個月（6 月 10 日的 5 月月營收）確認方向。</p>
+<p><b>觀察指標：</b>若 5 月月營收 YoY 掉破 +5%，確認 P2 惡化至 P1 邊緣，遠離；若維持 +8%+，確認 P2 穩定，可考慮 95 元以下分批。</p>
+</div>
+
+<div class="scenario bear">
+<h4>情境 III：法說會釋出負面訊號（對應 P1）— 建議「保持遠離」</h4>
+<p><b>觸發條件：</b>管理層承認 Ennoconn 獨家影響、Q1 EPS 低於 1.5 元、毛利率跌破 42%、展望「挑戰」等字眼。</p>
+<p><b>市場反應：</b>股價短線大跌 10-15%（-10~15 元），可能跌至 85-90 元；追蹤 1-2 個月跌至 70-85 元。</p>
+<p><b>穩健型建議：</b>不急著逢低買入。P1 情境是結構性改變，EPS 會在 1-2 個季度內下修至 4.5-5.0 元，市場重新定價需要 3-6 個月。直接逢低買入的風險是接下墜的刀。</p>
+<p><b>觀察指標：</b>等待以下三個止跌信號再考慮（任一成立）：</p>
+<ul style="margin:6px 0 10px 22px">
+<li>連續 2 個月月營收 YoY 不再惡化（維持 -10% 左右平穩）</li>
+<li>外資或投信買超轉正</li>
+<li>Berry AI 有突破性揭露（新客戶或分拆傳聞）</li>
+</ul>
+<p>以上信號出現後，股價若仍在 75-85 元，則為 P4 併購題材或 P3 反彈的機率上升，此時可分批（每跌 5 元加一成倉）。</p>
+</div>
+
+<h3>5.3 如果朋友還是想現在進場怎麼辦？四個紀律線</h3>
+
+<p>如果朋友情感上就是覺得「102 元不貴、飛捷體質不錯」堅持要現在進場，至少遵守以下四個紀律線，避免 P1/P5 情境下的重傷：</p>
+
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">紀律 1 · 只配置單押金的 30%：</b>剩下 70% 等法說會後觀察再補。這樣即使最壞情況（P5 股價跌至 55 元）也只虧損原預算的 14%（30% × 46%），可承受。</li>
+<li><b style="color:var(--accent)">紀律 2 · 停損設 92 元（-10%）：</b>跌破 92 元 = 偏向 P2 下緣 + P1 邊緣，訊號確認惡化，應該出場。很多人不設停損結果從 102 元套到 60 元。</li>
+<li><b style="color:var(--accent)">紀律 3 · 不在法說會前一週加碼：</b>5/8 到 5/15 是資訊最不透明的一週，各種傳言會滿天飛。堅持「訊號沒確認前不動」。</li>
+<li><b style="color:var(--accent)">紀律 4 · 每月檢視一次論點：</b>問自己三個問題：(1) NCR 訂單狀況有明朗嗎？(2) Berry AI 題材進度？(3) 毛利率與 EPS 有無顯著偏離 第八步 預估？任一惡化即減碼。</li>
+</ul>
+
+<h3>5.4 下行保護與進場參考價</h3>
+
+<table>
+<tr><th style="width:20%">價位</th><th style="width:25%">對應情境</th><th style="width:25%">此時進場的風險報酬</th><th>建議行動</th></tr>
+<tr style="background:rgba(142,58,44,.05)"><td><b>102 元（現價）</b></td><td>P2 箱型頂部</td><td>-8.5% 期望 / 下行 26-46%</td><td>觀望</td></tr>
+<tr style="background:rgba(176,128,48,.05)"><td><b>95 元</b></td><td>P2 中位 / P3 下緣</td><td>-2% 期望 / 下行 22-42%</td><td>等訊號</td></tr>
+<tr style="background:rgba(79,122,148,.05)"><td><b>85 元</b></td><td>P2 下緣 / P1 上緣</td><td>+10% 期望 / 下行 24% / 上行 65%</td><td>小量試單（10-20%）</td></tr>
+<tr style="background:rgba(76,139,86,.05)"><td><b>75 元</b></td><td>P1 中位</td><td>+24% 期望 / 下行 15% / 上行 85%</td><td>分批布局（逢跌 5 元加碼）</td></tr>
+<tr style="background:rgba(76,139,86,.1)"><td><b>65 元以下</b></td><td>P1 下緣 / P5 上緣</td><td>+43% 期望（現金護盾 21%、BVPS 35.8 保護）</td><td>價值布局（穩健型可重押）</td></tr>
+</table>
+
+<h3>5.5 非價位導向的退出條件</h3>
+
+<p>若已進場，出現以下「非價位」的基本面惡化時應考慮出場（不管當時股價）：</p>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">Q2 月營收年增連續 3 個月 &lt; 0%：</b>NCR 流失確認，基本面結構性惡化。</li>
+<li><b style="color:var(--accent)">Q2 或 Q3 單季 EPS &lt; 1.0 元：</b>年化 EPS 低於 4 元，估值模型崩塌。</li>
+<li><b style="color:var(--accent)">董監持股大量減持（連 2 月合計 -5%+）：</b>內部人退出 = 最強負面訊號。</li>
+<li><b style="color:var(--accent)">KPMG 出具保留意見或年報延遲：</b>第七步 認定的財務護盾被破壞。</li>
+<li><b style="color:var(--accent)">Berry AI 官司或減損：</b>H5 併購情境也落空，H1 論據徹底垮。</li>
+</ul>
+
+<div class="tip good">
+<b>第五區塊結論</b>
+給朋友的建議：**現在 102 元觀望，等 5/15 法說會再決定。** 若法說會正面則等 95 元以下分批進；若模糊則繼續觀望到 6 月月營收揭曉；若負面則等 75-85 元區間出現止跌訊號再考慮。即使朋友堅持現在進場，也只配置預算的 30%、停損設 92 元。穩健型投資人的最大武器是「時間」，不急著衝進未明朗的情境。
+</div>
+
+<!-- ============== 8f：催化劑時間表 ============== -->
+<div class="section-title" id="ch8f">六、未來 12 個月催化劑時間表</div>
+<div class="section-sub">按時間序列列出會影響推演結論的關鍵事件，附觀察指標與預期影響</div>
+
+<h3>6.1 近期重大事件日曆（2026/04 - 2027/04）</h3>
+
+<ul class="timeline">
+<li>
+  <div class="date">2026/05/05 (TUE) ± 5 天</div>
+  <div class="event"><b>飛捷 4 月月營收公告</b>　｜預期：Q2 首月，關鍵動能指標。若 YoY 維持 +10%+ → P3 機率升；跌破 +5% → P2 惡化訊號。<span style="color:var(--bear);font-weight:700">重要度：高</span></div>
+</li>
+<li>
+  <div class="date">2026/05/15 ± 10 天</div>
+  <div class="event"><b>飛捷 2026 Q1 財報 + 法說會</b>　｜<b style="color:var(--danger)">本推演最關鍵事件</b>。管理層必須說明 NCR-Ennoconn 事件的影響；揭曉 Q1 EPS（估 1.6-1.8 元）、毛利率（估 42-44%）；2026 展望是否下修。<span style="color:var(--danger);font-weight:700">重要度：決定性</span></div>
+</li>
+<li>
+  <div class="date">2026/06/10</div>
+  <div class="event"><b>飛捷 5 月月營收公告</b>　｜Q2 第二月。此時 NCR ODM 轉型已完成 2 個月，月營收可部分反映 NCR 訂單變化。觀察 YoY +5%+ 或 -5%- 的方向。<span style="color:var(--warn);font-weight:700">重要度：中高</span></div>
+</li>
+<li>
+  <div class="date">2026/07/10</div>
+  <div class="event"><b>飛捷 6 月月營收公告 + Q2 營收完成</b>　｜Q2 完整月營收揭曉。若累計 Q2 YoY &lt; 0%，偏向 P1；YoY +3~8% 偏 P2；YoY +8%+ 偏 P3。<span style="color:var(--warn);font-weight:700">重要度：中高</span></div>
+</li>
+<li>
+  <div class="date">2026/08/10 ± 5 天</div>
+  <div class="event"><b>飛捷 2026 Q2 財報 + 法說會</b>　｜NCR 佣金認列影響首次在財報上顯現。毛利率若意外升+營收降 = 確認 P1；毛利率與營收皆維持 = 確認 P3。<span style="color:var(--bear);font-weight:700">重要度：高</span></div>
+</li>
+<li>
+  <div class="date">2026/09 - 2026/10</div>
+  <div class="event"><b>Berry AI 潛在大客戶揭露窗口</b>　｜McDonald's 2026 AI 部署決定、Restaurant Brands International（Burger King）Reset 計畫後續、Wendy's 擴大 Berry AI 部署可能性。若有任一大客戶公告，H1 權重上修。<span style="color:var(--warn);font-weight:700">重要度：中</span></div>
+</li>
+<li>
+  <div class="date">2026/11</div>
+  <div class="event"><b>飛捷 Q3 財報</b>　｜NCR 佣金認列影響第二季，趨勢確認。若兩季連續惡化 = P1 不可逆；若反彈 = P3 回歸。<span style="color:var(--warn);font-weight:700">重要度：中</span></div>
+</li>
+<li>
+  <div class="date">2027/03 - 2027/04</div>
+  <div class="event"><b>飛捷 2026 年報 + 股東會</b>　｜NCR 客戶揭露（2026 年報關鍵客戶欄位）、Berry AI 年度虧損/ARR 揭露（估 US$10-20M ARR）、管理層展望。對長期投資人是關鍵窗口。<span style="color:var(--neutral);font-weight:700">重要度：長期</span></div>
+</li>
+</ul>
+
+<h3>6.2 外部事件觸發日曆（與飛捷間接相關）</h3>
+
+<ul class="timeline">
+<li>
+  <div class="date">2026/05 - 2026/06</div>
+  <div class="event"><b>美國 232 條款科技關稅審查</b>　｜若 POS 被納入科技關稅追加名單，飛捷關稅從 15% 升至 25-35%。追蹤 USTR 公告。</div>
+</li>
+<li>
+  <div class="date">2026/07 - 2026/09</div>
+  <div class="event"><b>NCR Voyix Q2 財報（+Ennoconn 合作首次財務影響）</b>　｜NCR 硬體轉佣金認列的完整季度，可從 NCR 方面間接驗證 Ennoconn 產能是否順利。若 NCR 展望修正，可能意味著 Ennoconn 執行不如預期。</div>
+</li>
+<li>
+  <div class="date">2026/08 - 2026/10</div>
+  <div class="event"><b>Toshiba TEC 2026 Q2-Q3 法說會</b>　｜ELERA 擴張執行進度，若 TRUNO 北美訂單大幅增加，飛捷中型零售客戶流失風險升溫。</div>
+</li>
+<li>
+  <div class="date">2026/08 - 2026/12</div>
+  <div class="event"><b>川普政府貿易政策再調整窗口</b>　｜若美中關係惡化、川普宣布新關稅、或台美貿易協定有變，H6 權重可能重新上修。</div>
+</li>
+<li>
+  <div class="date">2026/12 - 2027/02</div>
+  <div class="event"><b>Q4 / 2027 Q1 旺季（北美感恩節 + 耶誕 + 春節）</b>　｜零售商補貨潮是 POS 出貨的傳統旺季。若此時訂單弱，確認 NCR 流失的結構性。</div>
+</li>
+</ul>
+
+<h3>6.3 優先監控指標（由高到低）</h3>
+
+<table>
+<tr><th style="width:20%">指標</th><th style="width:18%">監控頻率</th><th style="width:30%">目前基準</th><th>觸發動作的閾值</th></tr>
+<tr><td><b>NCR 公開表態</b></td><td>即時</td><td>2026/1/8 公告獨家</td><td>飛捷管理層回應＝最高優先</td></tr>
+<tr><td><b>單月營收 YoY</b></td><td>每月 10 日</td><td>3 月 +18.2%</td><td>跌破 +5% → 警示；&lt; 0% → 行動</td></tr>
+<tr><td><b>單季毛利率</b></td><td>每季 45 天</td><td>Q4 2025 45.24%</td><td>升高+營收降 = P1；皆穩 = P3</td></tr>
+<tr><td><b>單季 EPS</b></td><td>每季 45 天</td><td>Q4 2025 1.57 元</td><td>&lt; 1.3 元 = 警示；&lt; 1.0 元 = 出場</td></tr>
+<tr><td><b>USD/TWD</b></td><td>每週</td><td>31.4-31.5</td><td>升破 32.5 = 下修毛利；破 33.5 = 紅旗</td></tr>
+<tr><td><b>Berry AI 新聞</b></td><td>每週</td><td>維持現狀</td><td>新大客戶 = 上修；Yum! 切換等 = 下修</td></tr>
+<tr><td><b>董監持股異動</b></td><td>公告當日</td><td>穩定</td><td>2 個月合計 -5%+ = 退出</td></tr>
+</table>
+
+<div class="tip info">
+<b>第六區塊結論</b>
+未來 12 個月最關鍵的 3 個事件是：**(1) 2026/05/15 ± 10 天的 Q1 法說會（決定性）(2) 2026/08/10 左右的 Q2 財報（NCR 佣金認列首份財報）(3) 2027/03-04 的年報與股東會（客戶結構揭露）**。穩健型投資人的追蹤節奏應該是「5 月後 → 每月月營收公告檢查 → 季報確認」。如果 5 月後 3 個月都沒看到可靠訊號，代表情境曖昧，應繼續觀望而非勉強進場。
+</div>
+
+<!-- ============== 8g：蝴蝶效應推演 ============== -->
+<div class="section-title" id="ch8g">七、蝴蝶效應推演：找出一般分析看不到的連鎖線索</div>
+<div class="section-sub">從被忽略的「弱訊號」出發，逐層推演 3-5 階連鎖反應 + 盲點探索 + 歷史劇本比對</div>
+
+<h3>7.1 為什麼要做蝴蝶效應推演</h3>
+<p>一般投資分析報告看「新聞/財報/法說會」就產出結論，但這些資訊大部分是市場共識，很難取得 alpha（超額報酬）。蝴蝶效應推演的目的是找**「被忽略的弱訊號」**：這些小異常原本不顯眼，但多個同方向時會收斂成大趨勢。深度分析的核心價值就是弱訊號收斂偵測。</p>
+
+<h3>7.2 弱訊號五類掃描（A-E）</h3>
+
+<h4>7.2.1 A 類：產業結構訊號</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> A-1：NCR Voyix 硬體 ODM 外包 = POS 產業結構改變的先聲</div>
+<div class="ev-d">NCR 是全球 POS 龍頭（1984 年起），自己設計+生產+銷售一體。2026/1/8 宣布全面外包給 Ennoconn（樺漢）意味著：**POS 硬體業進入 ODM 化階段**（類似 2000 年代 PC 產業），品牌廠專注軟體/服務/品牌，硬體交給規模化 ODM 廠。這個轉型會倒逼整個產業（Toshiba、Diebold、日本松下）思考同樣的模式，意味著未來 3-5 年 POS 硬體業會寡占化。</div>
+<div class="ev-s">弱訊號強度：★★★★★（5/5 最強）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> A-2：關稅定案 15% + 42% 電子豁免 = POS 業利多「共享」</div>
+<div class="ev-d">關稅緩解對所有出口美國的 POS 廠（振樺電、伍豐、飛捷）都是利多，飛捷的相對優勢沒有被擴大。這個訊號被市場忽略的原因是大家都把關稅當個股利多看，沒有比較「競爭者也享有同樣利多」。</div>
+<div class="ev-s">弱訊號強度：★★★（3/5）</div>
+</div>
+
+<h4>7.2.2 B 類：競爭動態訊號</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> B-1：Yum!-NVIDIA 合作 = 大型 QSR 偏好「綜合型 AI 夥伴」</div>
+<div class="ev-d">Yum! Brands（50,000+ 店）選擇 NVIDIA 而非 Berry AI 佈 AI 500 店，這不是單一客戶決策，反映的是**大型 QSR 客戶對「AI 供應商」的選擇偏好：全棧解決方案 > 專項功能**。Berry AI 只做得來速計時器這一功能，而 NVIDIA 能提供從 GPU 到模型的全棧方案。這意味著 Berry AI 在前三大 QSR 競爭中處於結構劣勢。</div>
+<div class="ev-s">弱訊號強度：★★★★（4/5）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> B-2：Toshiba ELERA「開放生態」戰略 = 不自己做所有硬體，邀第三方整合</div>
+<div class="ev-d">Toshiba ELERA 2026 VIP Awards「Best Multi-Vendor Commerce Platform」表示策略從「獨家垂直整合」轉為「開放生態」。這其實是 Toshiba 面對 NCR-Ennoconn ODM 規模化的反制 — 既然單打規模拚不過，就用生態戰略聚集多家小廠。對飛捷是兩面刃：**如果加入 ELERA 生態 = 有次級訂單管道；不加入 = 中型零售客戶流失**。</div>
+<div class="ev-s">弱訊號強度：★★★（3/5）</div>
+</div>
+
+<h4>7.2.3 C 類：技術/商業模式訊號</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> C-1：生成式 AI 進入 POS/QSR = Berry AI 的護城河邊界縮窄</div>
+<div class="ev-d">2023-2024 Berry AI 的計時器「在攝影機裡用電腦視覺判斷車輛動態」是技術優勢。但 2025-2026 生成式 AI（GPT-4V、NVIDIA Isaac）能同時處理視覺、語音、訂單預測、庫存等多維度任務，**Berry AI 的專項技術優勢被綜合 AI 平台相對化**。這是 第七步 沒抓到的技術演進訊號，但從 Yum!-NVIDIA 合作可以反向驗證。</div>
+<div class="ev-s">弱訊號強度：★★★★（4/5）</div>
+</div>
+
+<h4>7.2.4 D 類：會計/財務異常訊號</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> D-1：規模經濟貢獻毛利率 77.2% ≠ 能力升級，是營收放大紅利</div>
+<div class="ev-d">年報 p.101 已揭露 2024 毛利率 44% 的分拆：規模經濟（固定成本攤薄）貢獻 77.2%、採購議價 19.1%、售價提升 5.3%、產品組合 -1.6%。這意味著「產品升級」的實質貢獻 &lt; 0.2pp。一旦營收下降（如 NCR 流失情境），規模退潮時毛利率會反向下降 5-7pp。</div>
+<div class="ev-s">弱訊號強度：★★★★（4/5）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> D-2：2024 EPS 6.93 含一次性匯兌 1.29 億（≈ 0.9 元/股），真實常態約 6.0</div>
+<div class="ev-d">市場把 EPS 6.93 當估值基準，但扣除一次性匯兌後常態 EPS 約 6.0。PE 倍數在兩個基準下完全不同：102 / 6.93 = 14.7x（看起來便宜）vs 102 / 6.0 = 17.0x（實際合理）。這是常見的「一次性收益遮蔽估值」陷阱，第七步 已提但推演中需持續警惕。</div>
+<div class="ev-s">弱訊號強度：★★★（3/5）</div>
+</div>
+
+<h4>7.2.5 E 類：管理層行為訊號</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> E-1：說法僵化 — 關稅/匯率提及量從 270 次掉到 34 次（-76%）</div>
+<div class="ev-d">對 2020-2024 年五份年報做關鍵字頻率分析：關稅/匯率提及量從 2020 的 270 次、2022 的 270 次（貿易戰+疫情高峰）掉到 2023 的 142 次（-47%）、2024 的 34 次（-76%）。但 2025 新台幣實際升值 10%+ 川普 32% 關稅實施，實際風險在升高。管理層主動降低風險說法 vs 實際風險升高 = 說法僵化。這種僵化通常是新紅旗。</div>
+<div class="ev-s">弱訊號強度：★★★★（4/5）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-a">假設</span> E-2：NCR 事件未在 Q1 法說會預告 = 管理層判斷影響有限 or 刻意延後揭露？</div>
+<div class="ev-d">NCR 公告 2026/1/8，飛捷 2026/3 兩場法說會（3/12 BofA、3/20 統一證）都沒主動揭露此事件對飛捷的影響。兩種可能：(A) 管理層評估影響有限（飛捷仍為次級 ODM）所以不說；(B) 管理層刻意延到 5 月法說會的正式場合。無論哪種，都代表 5 月的揭露會是關鍵。</div>
+<div class="ev-s">弱訊號強度：★★★（3/5）</div>
+</div>
+
+<h3>7.3 蝴蝶效應推演鏈（Top 3）</h3>
+
+<p>從以上弱訊號選 3 個最關鍵，推演 3-5 階連鎖反應：</p>
+
+<h4>7.3.1 推演鏈 #1 · 「POS 產業 ODM 化」的連鎖反應（最重要）</h4>
+<div class="card">
+<table style="margin:0">
+<tr><th style="width:12%">階段</th><th>事件</th></tr>
+<tr><td><b>起點</b></td><td>NCR-Ennoconn 2026/3/31 獨家 ODM 轉型完成</td></tr>
+<tr><td><b>一階</b></td><td>Ennoconn（樺漢）以集團規模+鴻海通路優勢成為 POS ODM 龍頭（未來 1-2 年）</td></tr>
+<tr><td><b>二階</b></td><td>Toshiba TEC、Diebold Nixdorf 等其他品牌廠面臨壓力，需要選擇：(A) 跟進外包 (B) 堅持自製</td></tr>
+<tr><td><b>三階</b></td><td>若 Toshiba/Diebold 跟進：POS ODM 市場集中度 70%+ 被樺漢吃下，飛捷/振樺電等二線 ODM 廠失去大單能力，選擇 ODM 次級或轉軟體/服務</td></tr>
+<tr><td><b>四階</b></td><td>飛捷、振樺電、伍豐三家台廠面臨「三選一」：(1) 被樺漢/鴻海整合 (2) 轉攻軟體/服務（Berry AI 模式）(3) 被日商（Toshiba、Panasonic）逆向整合</td></tr>
+<tr><td><b>五階（終局）</b></td><td>3-5 年後台灣 POS 三強可能變成「鴻海系主導+軟體題材小廠存活」的新結構。飛捷若成功轉軟體路線（Berry AI 突破）可獨立，否則可能被整合</td></tr>
+</table>
+</div>
+
+<h4>7.3.2 推演鏈 #2 · 「Berry AI 題材被 NVIDIA 擠壓」的連鎖反應</h4>
+<div class="card">
+<table style="margin:0">
+<tr><th style="width:12%">階段</th><th>事件</th></tr>
+<tr><td><b>起點</b></td><td>Yum! Brands 2026/4 選 NVIDIA 佈 500 店 AI</td></tr>
+<tr><td><b>一階</b></td><td>Berry AI 失去進入前三大 QSR（McD/Yum/RBI）之一的機會</td></tr>
+<tr><td><b>二階</b></td><td>NVIDIA Isaac 全棧平台示範「一家供應商解決多功能」，其他 QSR（Chipotle、Chick-fil-A、Domino's）可能跟進 NVIDIA 模式</td></tr>
+<tr><td><b>三階</b></td><td>Berry AI 的市場天花板從「全球 QSR 50%+ 滲透」下修至「中型連鎖 20-30% 滲透」，合理估值從 US$300-500M（樂觀）下修至 US$45-150M（中性）— 與 第七步 Ch12 認知差 #2 結論一致</td></tr>
+<tr><td><b>四階</b></td><td>飛捷 70% 持股 Berry AI 的分拆估值上限從 NT$105-175 億（原樂觀）下修至 NT$14-47 億（中性）</td></tr>
+<tr><td><b>五階（終局）</b></td><td>Berry AI 若能在 Wendy's 擴大+Zaxbys 全面部署，維持 Series B 前地位，則 2027-2028 年仍有 US$100-200M 估值潛力；若失去現有大客戶，則可能萎縮至 US$30-50M</td></tr>
+</table>
+</div>
+
+<h4>7.3.3 推演鏈 #3 · 「規模經濟退潮」的連鎖反應</h4>
+<div class="card">
+<table style="margin:0">
+<tr><th style="width:12%">階段</th><th>事件</th></tr>
+<tr><td><b>起點</b></td><td>NCR 訂單若流失（P1 或 P2 情境），飛捷營收 -10~20%</td></tr>
+<tr><td><b>一階</b></td><td>規模經濟反向：固定成本不變+營收減少 → 毛利率反向上升（好事）但營業利益率下降（壞事）</td></tr>
+<tr><td><b>二階</b></td><td>2024 規模經濟貢獻的 77.2% 毛利率紅利退潮，毛利率可能從 44% 逐步回到 38-40%（2021-2022 水準）</td></tr>
+<tr><td><b>三階</b></td><td>市場原本給飛捷「44% 毛利率 = 產品升級」的高 PE 溢價（17-19x）消失，PE 回歸 12-14x（傳統硬體）</td></tr>
+<tr><td><b>四階</b></td><td>雙殺：EPS 下修（5.5 → 5.0 → 4.5 元） × PE 下修（17x → 13x） = 股價合理區間 58-77 元</td></tr>
+<tr><td><b>五階（終局）</b></td><td>進入價值區間後可能吸引併購（P4 情境）或長線價值投資（BVPS 35.8 元 × PB 1.5-2.0 = 54-72 元下檔保護）</td></tr>
+</table>
+</div>
+
+<h3>7.4 盲點探索六策略</h3>
+
+<h4>7.4.1 策略 #1：異常收斂 — Q1 營收強 vs NCR 轉型同時發生</h4>
+<p>Q1 2026 累計營收 +10.96%，但同期 NCR-Ennoconn ODM 轉型完成。兩個信號方向相反。**盲點**：如果 NCR 已經在 Q1 減少下單了（為轉型做準備），為何 Q1 營收仍強？可能答案：(1) NCR 訂單還沒到賬期，Q2 才會顯現 (2) 飛捷其他客戶（TI 以外）加速下單填補 (3) 一次性補庫存。**延伸建議**：5 月法說會必問「Q1 NCR 訂單年增率」。</p>
+
+<h4>7.4.2 策略 #2：反向思考 — NCR 真的完全流失，飛捷產能去哪？</h4>
+<p>假設 P1 情境發生（NCR 完全流失），飛捷北美產線產能利用率下降。**盲點**：飛捷會如何運用閒置產能？三個可能方向：(1) 擴張 Berry AI 硬體（自己接單自己生產）(2) 轉內需市場（台灣+亞洲 POS）(3) 搶歐洲市場（Toshiba ELERA 開放生態的次級供應商）。最可能是 (2)+(3) 組合。**延伸建議**：留意飛捷歐洲訂單或 Kiosk 業務擴張訊號。</p>
+
+<h4>7.4.3 策略 #3：歷史類比 — NCR 上一次外包（2008-2012）誰贏了？</h4>
+<p>NCR 在 2008-2012 也做過類似 ATM 外包決策，當時的 ODM 夥伴是 Diebold（後來 2016 併購 Wincor Nixdorf 成為 Diebold Nixdorf）。從那次歷史看，NCR 外包後：(1) NCR 本身毛利率 2 年內上升但營收下滑 (2) ODM 夥伴獲得規模但毛利率壓縮 (3) 中小型競爭對手被邊緣化。**歷史劇本對比**：飛捷類似「2010 年代的中小型 ATM 製造商」，結果是被整合或退出。相似度估 60%。</p>
+
+<h4>7.4.4 策略 #4：時間軸錯位 — 管理層為何不在 3 月法說提 NCR？</h4>
+<p>NCR 2026/1/8 公告，飛捷 3/12、3/20 兩場法說會都未主動提此事件。**盲點**：管理層可能認為 (A) 影響有限 (B) 還在談判中（想保留談判空間）(C) 等法說正式場合。三選一的機率分配：(A) 30% (B) 45% (C) 25%。**延伸建議**：若 5 月法說仍迴避或答非所問，視為警示升級。</p>
+
+<h4>7.4.5 策略 #5：資訊瓶頸 — Berry AI 為何拒絕揭露 ARR？</h4>
+<p>第七步 已指出 Berry AI 連續 2 季拒絕揭露 ARR，這不是典型的 SaaS 公司行為（反而更像「數字不好看」的公司）。**盲點**：合理揭露模式應該是「ARR 成長率」（如 +50% YoY）或「客戶數」（如 970 店 + 5 新客戶），至少有一個指標可以展示進度。零揭露本身是訊號。**延伸建議**：若 2026 年中仍不揭露，視為 H1 多方論據徹底崩塌。</p>
+
+<h4>7.4.6 策略 #6：利益相對論 — 誰最希望 NCR 完全外包給樺漢？誰最不希望？</h4>
+<p>**最希望的人**：(1) 樺漢自己（吃下最大訂單）(2) 鴻海集團（POS 佈局完成）(3) NCR Voyix 管理層（EBITDA 提升、財報美化）(4) Toshiba/Diebold（NCR 退出硬體競爭，自己壓力降）。**最不希望的人**：(1) 飛捷、振樺電等次級 ODM 廠 (2) NCR 原本的硬體員工 (3) 美國本土製造偏好的政府（政治層面）。從利益相對論看，這個轉型在商業邏輯上對 NCR、樺漢、鴻海都是三贏，所以**實質推翻的機率低**。這意味著飛捷基本上只能在「次級 ODM」或「退出」間選擇，不要期待 NCR-Ennoconn 破局反轉。</p>
+
+<h3>7.5 歷史劇本比對</h3>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> 劇本 #1：2005-2010 PC ODM 崛起（相似度 70%）</div>
+<div class="ev-d">HP、Dell 等 PC 品牌廠在 2005-2010 年逐步將硬體外包給廣達、仁寶、和碩等台廠。結果：(1) PC 品牌廠毛利率 2-3 年內上升 2-4pp (2) PC ODM 三巨頭（廣達、仁寶、和碩）壟斷全球 80%+ NB 產能 (3) 二線 ODM（華宇、華映等）被邊緣化或退出。**類比飛捷**：POS 產業若重演此劇本，樺漢會成為 POS 廣達，飛捷若沒有差異化（Berry AI 題材）可能成為華宇。時間尺度估 3-5 年。</div>
+<div class="ev-s">相似度：70%｜時間尺度：3-5 年</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-i">推論</span> 劇本 #2：2015-2020 印表機墨水匣市場（相似度 50%）</div>
+<div class="ev-d">HP、Canon、Epson 等印表機廠面對低價代工墨水匣（主要來自台廠如上奇）崛起時，採取「綁定印表機序號」等技術反制。結果：(1) 品牌墨水匣毛利率維持 (2) 代工墨水匣廠進入價格戰 (3) 技術整合能力強的廠商（如上奇）存活。**類比飛捷**：POS 硬體若進入價格戰，Berry AI 這類軟體題材的加值是飛捷差異化的關鍵。</div>
+<div class="ev-s">相似度：50%｜時間尺度：5-10 年</div>
+</div>
+
+<h3>7.6 盲點 Top 3（本次推演最重要的被忽略見解）</h3>
+
+<div class="tip warn">
+<b>盲點 #1 · POS 產業進入 ODM 化階段 = 整個產業的結構性變化</b>
+市場仍把 NCR-Ennoconn 當單一事件看，但其實是**整個 POS 產業進入 ODM 化階段的起點**。未來 3-5 年整個產業會洗牌，規模化 ODM 廠（樺漢）+ 軟體題材小廠（Berry AI 模式）兩極化。飛捷需要二選一。這比「NCR 訂單流失」的單點事件更重要。
+</div>
+
+<div class="tip warn">
+<b>盲點 #2 · Berry AI 的技術優勢正在被綜合 AI 平台相對化</b>
+2026 Yum!-NVIDIA 合作暗示大型 QSR 客戶偏好「一家供應商解決多功能」而非「多家專項供應商」。Berry AI 的單項技術優勢（AI 計時器）在生成式 AI 平台衝擊下會被相對化。若 2026-2027 年 Berry AI 沒有進化成「綜合型 AI 平台」（如整合訂單預測、庫存、CRM），市場天花板會被壓低。
+</div>
+
+<div class="tip warn">
+<b>盲點 #3 · 規模經濟紅利的不對稱性</b>
+規模經濟在擴張期是紅利（77.2% 毛利率貢獻）、在收縮期是反向（可能一次退 5-7pp）。市場傾向「延伸」當前趨勢，很少考慮反轉。若 NCR 流失觸發營收收縮，毛利率退潮的速度可能快於市場預期（1-2 季內而非 2-3 年）。
+</div>
+
+<div class="tip info">
+<b>第七區塊結論</b>
+蝴蝶效應推演最關鍵的三個盲點洞察是：**(1) POS 產業進入 ODM 化是結構性變化，不只單點事件 (2) Berry AI 技術優勢被生成式 AI 相對化 (3) 規模經濟退潮時會快於預期**。歷史類比最相似的是 2005-2010 PC ODM 崛起劇本（相似度 70%），暗示飛捷未來 3-5 年必須在「被整合」和「轉軟體/服務」間選擇。對給朋友的建議：這些盲點不會在 5 月法說會立刻被驗證，但會在 2026-2028 年逐步展開，穩健型投資人若進場應以 1-3 年視角觀察產業結構變化，而非單季財報。
+</div>
+
+<!-- ============== 8h：隱藏問題推演（承接 第七步 Ch12） ============== -->
+<div class="section-title" id="ch8h">八、隱藏問題推演：承接「四項認知差」+ 新增第五項</div>
+<div class="section-sub">重新評估 第七步 四項認知差的最新狀態 + 新增 NCR 認知差 + 反轉路徑決策樹 + 保護策略</div>
+
+<h3>8.1 五項認知差狀態更新（含 第八步 新增 #5）</h3>
+
+<table>
+<tr><th style="width:5%">#</th><th style="width:22%">認知差</th><th style="width:22%">第七步 結論</th><th style="width:28%">第八步 最新狀態</th><th>動向</th></tr>
+<tr><td><b>1</b></td><td>毛利率結構誤讀</td><td>77.2% 來自規模經濟而非產品升級</td><td>規模退潮訊號尚未驗證，但 NCR 流失情境會加速檢驗（2026 Q2-Q3）</td><td style="color:var(--warn)">未變 → 即將檢驗</td></tr>
+<tr><td><b>2</b></td><td>Berry AI 規模落差</td><td>US$45-150M 合理 vs 傳言 US$300-500M</td><td>Yum!-NVIDIA 合作驗證 Berry AI 進前三大 QSR 困難，合理估值下限再確認</td><td style="color:var(--bear)">惡化</td></tr>
+<tr><td><b>3</b></td><td>TI 推論錯置</td><td>第一大客戶「TI」推論為 NCR 但未證實</td><td>若 NCR 不是 TI，則 NCR-Ennoconn 事件影響可能小於預期；若 NCR 是 TI，則衝擊更大</td><td style="color:var(--warn)">待 5 月揭曉</td></tr>
+<tr><td><b>4</b></td><td>說法僵化新警訊</td><td>關稅/匯率提及量 -76%、客戶分散樣板 5 年</td><td>3 月法說會未主動揭露 NCR 事件影響，持續驗證說法僵化模式</td><td style="color:var(--bear)">惡化</td></tr>
+<tr style="background:rgba(142,58,44,.08)"><td><b>5</b></td><td><b>NCR「長期客戶」認知差（第八步 新增）</b></td><td>—</td><td>NCR 2026/3/31 完成獨家委外樺漢，飛捷在 NCR 的長期地位可能被高估，實際為次級或邊緣供應商</td><td style="color:var(--bear)"><b>最新發現</b></td></tr>
+</table>
+
+<h3>8.2 新增認知差 #5 的深度剖析</h3>
+
+<h4>8.2.1 市場共識 vs 實際情況</h4>
+<div class="ev">
+<div class="ev-t"><span class="fias fias-s">推測</span> 市場共識：「飛捷是 NCR 長期戰略夥伴」</div>
+<div class="ev-d">市場長期以來把飛捷視為 NCR 的重要供應鏈一環，部分媒體甚至稱「飛捷是 NCR Voyix 的主要 ODM 之一」。這個共識來自：(1) 飛捷 2004 年上市以來多年穩定出貨 (2) 第三步 推論「第一大客戶 TI = NCR」 (3) 北美營收 50%+ 集中的合理解讀。</div>
+<div class="ev-s">共識可信度：M（推論而非揭露）</div>
+</div>
+
+<div class="ev">
+<div class="ev-t"><span class="fias fias-f">事實</span> 實際情況：NCR 選擇樺漢作為獨家 ODM，2026/3/31 完成</div>
+<div class="ev-d">NCR 2026/1/8 IR 公告明確寫「Ennoconn 為獨家 ODM 合作夥伴」，合作可追溯至 2008 年。這意味著：(1) 過去 18 年 NCR 主要硬體供應商就是樺漢，不是飛捷 (2) 飛捷若真的是 NCR 供應商，也只是次要或專案級 (3) 飛捷原本對 NCR 的「長期」依賴可能本來就被市場誇大。</div>
+<div class="ev-s">事實可信度：H（官方 IR 公告）</div>
+</div>
+
+<h4>8.2.2 認知差的含義：三種可能解釋</h4>
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">解釋 A（30% 機率）：飛捷從來不是 NCR 主要客戶，TI ≠ NCR。</b>若此成立，NCR 事件對飛捷影響小，但也意味著飛捷第一大客戶身分仍未揭曉（其他巨頭？），新的不確定性。</li>
+<li><b style="color:var(--accent)">解釋 B（45% 機率）：飛捷是 NCR 次級/專案級 ODM，樺漢是主。</b>NCR 事件影響中等，飛捷訂單可能被壓縮但不會歸零。</li>
+<li><b style="color:var(--accent)">解釋 C（25% 機率）：飛捷原本是 NCR 重要夥伴，現在被替換。</b>NCR 事件影響最大，飛捷訂單可能歸零。</li>
+</ul>
+
+<h3>8.3 反轉路徑決策樹</h3>
+<p>從 5/15 法說會出發，依 NCR 關係明朗程度決定後續路徑：</p>
+
+<div class="chart-box">
+<div class="chart-title">Decision Tree · 反轉路徑決策樹（從 5/15 起算）</div>
+<pre style="font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--ink-2);padding:8px;background:var(--paper-3);border-radius:4px;margin:10px 0">
+                   【2026/05/15 Q1 法說會】
+                           │
+     ┌───────────────────┼───────────────────┐
+     │                   │                   │
+ 正面訊號             模糊訊號             負面訊號
+ （20% 機率）         （45% 機率）         （35% 機率）
+     │                   │                   │
+ P3 基準              P2 基準              P1 基準
+ 股價 100-115         股價 85-100          股價 65-85
+     │                   │                   │
+     │              【2026/06/10】         【2026/08】
+     │             5 月月營收公告           Q2 財報
+     │                   │                   │
+     │              ┌────┴────┐         ┌────┴────┐
+     │           佳(+10%+)  差(-5%-)    穩定    惡化
+     │              │         │          │         │
+     │            P3 鞏固    轉 P1      P1 末段  往 P5
+     │           股價 108+  股價 -10%   75-85    55-65
+     │                                    │         │
+     │                                【Berry AI】  價值底
+     │                                  突破?      35.8
+     │                                   │
+     │                                ┌──┴──┐
+     │                              成功   失敗
+     │                               │      │
+     │                              P4 起   P1 終局
+     │                             120-155  55-75
+     │
+ 進場條件：95 元以下分批
+</pre>
+<div class="chart-note">決策樹以 5/15 法說會為根節點，每個葉節點對應 8d 五情境之一</div>
+</div>
+
+<h3>8.4 保護策略（三層防禦）</h3>
+
+<div class="scenario base">
+<h4>第一層：情境明朗前不進場（空手的優勢）</h4>
+<p>空手是最好的保護。5/15 前的資訊不對稱期，進場 = 賭未知。穩健型投資人的紀律：**不在關鍵資訊公告前 1-2 週進場**。如果朋友問「現在便不便宜」，答案是「現在是最貴的便宜」— 看起來便宜（PE 14.7x 表面），實際若 NCR 流失則常態 EPS 5 元×PE 13 = 65 元才是便宜。</p>
+</div>
+
+<div class="scenario edge">
+<h4>第二層：若已進場（或情境 I 後進場），設停損 + 分批</h4>
+<p>如果朋友已進場或決定進場，**強制三條紀律**：</p>
+<ul style="margin:6px 0 10px 22px">
+<li><b style="color:var(--accent)">停損線 92 元（-10%）：</b>跌破就出場，不戀戰。</li>
+<li><b style="color:var(--accent)">首批配置 30%：</b>剩 70% 等訊號明朗再補。</li>
+<li><b style="color:var(--accent)">月度檢查論點：</b>每個月對照 8f 催化劑表，若有偏離即重新評估。</li>
+</ul>
+</div>
+
+<div class="scenario bull">
+<h4>第三層：若進入 P1/P5 下行，等止跌訊號再分批</h4>
+<p>若情境 III 發生（NCR 確認流失），股價跌至 75-85 元，**不要急著逢低買入**。等待以下任一止跌訊號：</p>
+<ul style="margin:6px 0 10px 22px">
+<li>連續 2 個月月營收年增率不再惡化（維持 -10% 左右平穩）</li>
+<li>外資或投信單月買超轉正</li>
+<li>Berry AI 有新大客戶或分拆傳聞</li>
+<li>董監持股連 3 個月無減持</li>
+</ul>
+<p>信號出現後分批：每跌 5 元加一成倉，目標持有 1-3 年等 P4 併購或 P3 反彈。下檔保護 BVPS 35.8 元×PB 1.5 = 54 元是價值底。</p>
+</div>
+
+<h3>8.5 隱藏問題追蹤清單（月度檢查）</h3>
+
+<table>
+<tr><th style="width:5%">#</th><th style="width:22%">認知差</th><th style="width:28%">確認指標（= 認知差成立）</th><th>否定指標（= 認知差被排除）</th></tr>
+<tr><td><b>1</b></td><td>毛利率結構誤讀</td><td>NCR 流失後毛利率 2 季內跌破 41%</td><td>連續 3 季毛利率 43%+ 且營收穩定</td></tr>
+<tr><td><b>2</b></td><td>Berry AI 規模落差</td><td>2026 年報未揭露 ARR、或揭露 &lt; US$20M</td><td>ARR 揭露 &gt; US$30M 或獲 Series B</td></tr>
+<tr><td><b>3</b></td><td>TI 推論錯置</td><td>2026 年報客戶排行改動、前五大揭露異常</td><td>TI 佔比維持 20%+ 穩定</td></tr>
+<tr><td><b>4</b></td><td>說法僵化</td><td>2025 年報風險章節仍 2024 版本、提及量繼續下降</td><td>新年報主動揭露關稅/匯率具體影響金額</td></tr>
+<tr style="background:rgba(142,58,44,.08)"><td><b>5</b></td><td><b>NCR 長期客戶</b></td><td>5/15 法說確認 NCR 訂單減半或歸零；Q2 月營收 YoY &lt; 0%</td><td>5/15 明確澄清飛捷為次級 ODM 且訂單穩定、Q2 營收仍 +5%+</td></tr>
+</table>
+
+<div class="tip danger">
+<b>第八區塊結論</b>
+第七步 四項認知差中，**#2 Berry AI 規模落差和 #4 說法僵化已持續惡化**；**#1 毛利率誤讀和 #3 TI 推論將在 5/15 後 2-3 個月內被驗證**；**新增 #5 NCR 長期客戶認知差是本次推演最重要的發現**，三種解釋（飛捷非 NCR 主客戶 / 次級 ODM / 被替換）各有 30%/45%/25% 機率。保護策略三層防禦：(1) 空手不進場 (2) 進場則停損 92 + 分批 30% (3) 下行止跌訊號出現前不逢低買入。下檔保護理論底 54-65 元區間。
+</div>
+
+<!-- ============== 8i：推衍結論 + 第四次信心校準 ============== -->
+<div class="section-title" id="ch8i">九、推衍結論與第四次信心校準</div>
+<div class="section-sub">綜合 8a-8h 的推演結果，做第四次（也是最終）信心校準 + 行動建議 + 推衍有效期</div>
+
+<h3>9.1 最可能路徑與綜合判斷</h3>
+
+<p>基於 8d 情境模擬、8g 蝴蝶效應推演、8h 隱藏問題推演的綜合結果：</p>
+
+<div class="stat-row">
+<div class="stat"><div class="k">最可能路徑</div><div class="v" style="color:var(--warn)">P2</div><div class="d">NCR 次級 ODM、機率 40%</div></div>
+<div class="stat"><div class="k">加權期望股價</div><div class="v">93.3 元</div><div class="d">vs 現價 102（-8.5%）</div></div>
+<div class="stat"><div class="k">股價區間</div><div class="v">65-155 元</div><div class="d">P5 下緣 ~ P4 上緣</div></div>
+<div class="stat"><div class="k">關鍵訊號時點</div><div class="v">5/15</div><div class="d">Q1 法說會</div></div>
+</div>
+
+<h3>9.2 第四次信心校準</h3>
+
+<table>
+<tr><th style="width:22%">校準次序</th><th style="width:15%">信心評估</th><th style="width:18%">主要假說權重</th><th>關鍵變動原因</th></tr>
+<tr><td>第一次（ACH，第四步）</td><td>55%</td><td>H2 50%、H1 25%、H5 15%、空方 10%</td><td>基準配置</td></tr>
+<tr><td>第二次（壓測，第五步）</td><td>48-52%</td><td>H2 48%、H1 20-22%、H5 12-15%、H6 15-18%</td><td>H6 上修</td></tr>
+<tr><td>第三次（評審團+完整版，第七步）</td><td>50%</td><td>同 第五步</td><td>評審團微調</td></tr>
+<tr style="background:rgba(176,128,48,.08)"><td><b>第四次（推演，第八步）</b></td><td><b style="color:var(--warn);font-size:15px">45-50%</b></td><td>H1 12-15%（下修）、H2 48%、H3 10-15%（上修）、H6 8-12%（下修）、H5 15-18%（上修）</td><td><b>NCR 紅旗下修 H1、上修 H3；關稅緩解下修 H6；併購 H5 上修</b></td></tr>
+</table>
+
+<p><b>最終信心評估：47%（中性偏空）</b> — 下修 3pp（從 第七步 的 50%），主要由 NCR 事件驅動。這個信心不是「飛捷這家公司好不好」（公司財務護盾仍強），而是「現在 102 元進場，未來 12 個月期望報酬為負」。</p>
+
+<h3>9.3 盲點洞察摘要（最重要的三個見解）</h3>
+
+<div class="tip warn">
+<b>洞察 1 · POS 產業進入 ODM 化階段，飛捷面臨「被整合」或「轉軟體」二擇</b>
+NCR-Ennoconn 不是單一事件，是整個 POS 產業 ODM 化的起點。類比 2005-2010 PC ODM 崛起（相似度 70%），未來 3-5 年樺漢會成為 POS 廣達，飛捷若沒差異化會被邊緣化。Berry AI 題材是飛捷唯一的差異化武器，但 Yum!-NVIDIA 合作顯示該武器正被相對化。
+</div>
+
+<div class="tip warn">
+<b>洞察 2 · 規模經濟紅利在退潮期會不對稱地快速退潮</b>
+第七步 已指出 44% 毛利率 77.2% 來自規模經濟。但推演顯示退潮不是線性的 — NCR 流失若觸發營收縮減，毛利率可能在 1-2 季內就從 44% 退到 38-40%（2021-2022 水準），而非 2-3 年漸進。雙殺效應（EPS 下修 × PE 下修）可能讓股價在 2-3 季內跌至 65-85 元。
+</div>
+
+<div class="tip warn">
+<b>洞察 3 · 飛捷的價值從「成長題材」轉為「穩定收息+被併購候選」</b>
+若 P1/P2 情境實現，飛捷市場標籤會從「POS 硬體 + Berry AI 題材」改為「穩定配息中小型價值股」，PE 從 17-19x 降至 12-14x。但同時**財務護盾（30.4 億現金、BVPS 35.8）+ 家族色彩 + Berry AI 分拆潛力**會讓飛捷變成併購候選（H5 權重上修）。這個從成長股變價值股的過程，對**不同類型投資人有不同吸引力**：成長型投資人應退出，價值型投資人應在低點（75 元以下）布局。
+</div>
+
+<h3>9.4 行動建議（給朋友的明確建議）</h3>
+
+<div class="tip danger">
+<b>立即行動（4/19 - 5/15）：觀望</b>
+以 102 元現價，**不建議進場**。期望報酬 -8.5%、下行風險 26-46%、關鍵訊號 3 週後揭曉。空手的優勢是「有權選擇最好時機」，不必為 3 週的等待焦慮。
+</div>
+
+<div class="tip info">
+<b>法說會後（5/15 - 6/10）：三條路徑</b>
+<ul style="margin:6px 0 10px 22px">
+<li><b style="color:var(--bull)">若法說正面：</b>等股價回測 95-100 元再進場，停損 90 元，目標 120 元。</li>
+<li><b style="color:var(--warn)">若法說模糊：</b>繼續觀望，等 6/10 月營收確認方向。</li>
+<li><b style="color:var(--bear)">若法說負面：</b>保持遠離，等股價 75-85 元出現止跌訊號再分批。</li>
+</ul>
+</div>
+
+<div class="tip good">
+<b>長期視角（12+ 月）：若價值回歸</b>
+若股價跌至 65-75 元區間（P1 終局或 P5 邊緣），飛捷的「現金 21% + BVPS 35.8 + 連 26 年配息 + Berry AI 70% 分拆潛力」組合變得有吸引力。穩健型投資人可在 70 元以下分批（每跌 5 元加一成倉），持有 1-3 年等 P4 併購或 P3 基本面復甦。下檔保護 54-65 元區間。
+</div>
+
+<h3>9.5 觀察清單（下次推衍前必追蹤）</h3>
+
+<ul style="margin:8px 0 14px 22px;line-height:1.9">
+<li><b style="color:var(--accent)">【最高優先】2026/05/15 ± 10 天 Q1 法說會：</b>NCR 關係表態、Q1 EPS、毛利率、2026 展望。</li>
+<li><b style="color:var(--accent)">【高優先】2026/05/10 前後 4 月月營收：</b>YoY 維持 +10%+ 或跌破 +5% 的差異。</li>
+<li><b style="color:var(--accent)">【中優先】2026/06-07 5/6 月月營收：</b>Q2 NCR ODM 轉型實際影響。</li>
+<li><b style="color:var(--accent)">【中優先】2026/08 Q2 財報：</b>毛利率變化 + 營收年增率 = 確認 P1/P2/P3。</li>
+<li><b style="color:var(--accent)">【長期】2026/10-2027/04：</b>Berry AI 新客戶、Toshiba 擴張、併購傳聞。</li>
+</ul>
+
+<h3>9.6 推衍有效期聲明</h3>
+
+<div class="note-box">
+<b>本推衍報告有效期至：2026/05/15 ± 10 天（Q1 法說會後需重新推衍）</b><br>
+• 本報告基於 2026/04/19 可得的所有公開資訊（含 2026/01/08 NCR 公告、2026/03/31 ODM 轉型完成、2026/04 月營收、2026/01/15 關稅定案等）。<br>
+• 最大不確定性：飛捷與 NCR 的實際合作關係，需等 5/15 法說會揭曉。<br>
+• 本報告不構成投資建議，僅為深度分析分享。投資人應自行判斷風險承受度，必要時諮詢合格投顧。<br>
+• 作者與飛捷 6206 無持股、無利益關係。<br>
+• 主要資料來源：飛捷 2020-2024 年報、2024 股東會議事錄、NCR Voyix IR 公告、Business Wire、The Motley Fool、Yahoo 股市、財報狗、Tracxn、NVIDIA Blog、工商時報、Trading Economics、PwC 資誠、104 職場力、PR Newswire、Gartner Peer Insights 等。
+</div>
+
+<div class="tip good" style="margin-top:20px">
+<b>給朋友的一句話總結</b>
+飛捷是一家財務護盾穩、但成長故事正在質疑中的中小型 POS 廠。現在 102 元不便宜、也不貴 — 但**有一個 3 週後就會揭曉的重大訊號（NCR 法說會），不必現在下決定**。空手是優勢，請保持耐心，5/15 後再聊。
+</div>
+
+<div style="margin-top:28px;padding:16px;background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;font-size:12px;color:var(--ink-3);text-align:center">
+飛捷 6206 — 第八步：深度推演版｜2026-04-19 產出<br>
+分析框架：深度投資分析九步驟 × 蝴蝶效應推演 × 隱藏問題探索｜信心評估 47%（中性偏空）
+</div>
+
+    <!-- 免責聲明 -->
+    <section class="disclaimer-section" style="margin-top:40px;padding-top:24px;border-top:1px solid var(--rule-2)">
+      <div class="disclaimer" style="font-size:12.5px;color:var(--ink-3);line-height:1.75">
+        <b style="color:var(--ink-2)">免責聲明：</b>本報告基於 2026/04/19 可得公開資訊整理，屬深度分析分享，<b>不構成投資建議</b>。投資決策請自行承擔風險、必要時諮詢合格投顧。作者與飛捷 6206 無持股、無利益關係。推衍有效期至 2026/05/15 ± 10 天（Q1 法說會後需重新推衍）。
+      </div>
+    </section>
+
+
+    <footer class="footer">
+      飛捷 6206 推演版　·　第八步 · v1.0　·　飛捷 6206　·　分析基準日 2026-04-19<br>
+      來源：年報 2020-2024、法說會、NCR Voyix IR、Business Wire、Motley Fool、Yahoo 股市、財報狗、Tracxn、NVIDIA Blog、工商時報、Trading Economics、PwC、104、PR Newswire、Gartner Peer Insights<br>
+      信心校準：55% (ACH) → 48-52% (壓測) → 50% (評審團+完整版) → 47% (推演，本次)<br>
+      期望股價 93.3 元（vs 現價 102），觀望為上；若 5/15 法說正面等 95 元回測進場，若負面等 75-85 元止跌訊號。
+    </footer>
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// === Chart.js：路徑分布橫條圖（8d） ===
+if (typeof Chart !== 'undefined' && document.getElementById('pathTreeChart')) {
+  new Chart(document.getElementById('pathTreeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['P1 NCR 完全流失', 'P2 NCR 次級 ODM', 'P3 NCR 維持動能延續', 'P4 併購溢價題材', 'P5 地緣極端衝擊'],
+      datasets: [{
+        label: '機率 (%)',
+        data: [25, 40, 20, 10, 5],
+        backgroundColor: ['rgba(176,69,56,0.75)', 'rgba(176,128,48,0.75)', 'rgba(79,122,148,0.75)', 'rgba(76,139,86,0.75)', 'rgba(142,58,44,0.85)'],
+        borderWidth: 0, borderRadius: 3, barPercentage: 0.7
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { min: 0, max: 50, ticks: { color:'#2a2a2a', callback: v => v + '%', font: { size: 11 } }, grid: { color: '#d8d3cc' } },
+        y: { ticks: { color:'#1a1a1a', font: { size: 12 } }, grid: { display: false } }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(37,37,37,0.95)',
+          callbacks: {
+            label: (ctx) => {
+              const stockRanges = ['65-85 元', '85-100 元', '100-115 元', '120-155 元', '45-65 元'];
+              return `機率 ${ctx.parsed.x}% ｜ 股價區間 ${stockRanges[ctx.dataIndex]}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+</body>
+</html>
