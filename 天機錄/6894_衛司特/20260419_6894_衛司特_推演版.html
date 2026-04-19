@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>衛司特 6894 · 第八步 推演版 · 天機錄 2026-04-19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<style>
+/* Step 8 推演版 — 繼承通用模板外，補 fias 顏色（雙主題）*/
+.fias-f,.fias-i,.fias-a,.fias-s{display:inline-block;padding:1px 7px;border-radius:3px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.08em;margin:0 2px;vertical-align:middle}
+.fias-f{background:rgba(95,125,105,0.20);color:var(--bull);border:1px solid var(--bull)}
+.fias-i{background:rgba(45,90,111,0.18);color:var(--accent);border:1px solid var(--accent)}
+.fias-a{background:rgba(138,111,30,0.18);color:var(--gold);border:1px solid var(--gold)}
+.fias-s{background:rgba(160,95,86,0.18);color:var(--bear);border:1px solid var(--bear)}
+[data-theme="dark"] .fias-f{background:rgba(138,178,152,0.18)}
+[data-theme="dark"] .fias-i{background:rgba(122,176,192,0.18)}
+[data-theme="dark"] .fias-a{background:rgba(212,176,48,0.18)}
+[data-theme="dark"] .fias-s{background:rgba(214,130,120,0.18)}
+/* 概率路徑樹（8d）*/
+.prob-tree{margin:14px 0;padding:14px 0 14px 20px;border-left:2px solid var(--rule)}
+.prob-path{margin:12px 0;padding:10px 14px;background:var(--paper-3);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px}
+.prob-path.bull{border-left-color:var(--bull)}
+.prob-path.bear{border-left-color:var(--bear)}
+.prob-path.neut{border-left-color:var(--gold)}
+.prob-path .t{font-family:var(--serif);color:var(--ink);font-size:15.5px;margin-bottom:4px;font-weight:500}
+.prob-path .prob{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-right:8px}
+.prob-path.bull .prob{color:var(--bull)}
+.prob-path.bear .prob{color:var(--bear)}
+.prob-path.neut .prob{color:var(--gold)}
+/* 信號卡（8g）*/
+.signal-card{margin:10px 0;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;display:grid;grid-template-columns:80px 1fr;gap:12px}
+.signal-card .sig-type{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;padding-top:3px}
+.signal-card .sig-body{color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.signal-card .sig-body b{color:var(--ink)}
+/* 推演鏈（8g/8c）*/
+.chain{margin:14px 0;padding:14px;background:var(--paper-3);border:1px solid var(--rule);border-radius:3px;font-size:13.5px;line-height:1.85;color:var(--ink-2)}
+.chain b{color:var(--ink)}
+.chain .arrow{color:var(--accent);font-family:var(--mono);font-weight:700;margin:0 6px}
+</style>
+
+</head>
+<body>
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Step 8 · 推演版</span>
+    </div>
+    <div class="meta-block">
+      <div><span class="k">DATE</span><span class="v">2026·04·19</span></div>
+      <div><span class="k">CODE</span><span class="v">6894 衛司特</span></div>
+      <div><span class="k">BASIS</span><span class="v">389.5 元</span></div>
+      <div><span class="k">VALID</span><span class="v">3 週</span></div>
+    </div>
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#s8a">8a 推演基礎</a></li>
+      <li><a href="#s8b">8b 情報更新</a></li>
+      <li><a href="#s8c">8c 影響鏈</a></li>
+      <li><a href="#s8d">8d 情境模擬</a></li>
+      <li><a href="#s8e">8e 個人化推衍</a></li>
+      <li><a href="#s8f">8f 催化劑時間表</a></li>
+      <li><a href="#s8g">8g 蝴蝶效應</a></li>
+      <li><a href="#s8h">8h 貓膩推演</a></li>
+      <li><a href="#s8i">8i 結論 &amp; 行動</a></li>
+    </ol>
+    <div class="side-verdict">
+      <div class="label">Verdict · H2 44%</div>
+      <strong>觀望為主、分批減碼</strong><br>
+      加權期望 380.88 vs 現價 389.5，-10.8%。2026/05/15 Q1 季報為關鍵分岔點。
+    </div>
+  </aside>
+
+
+  <main class="main">
+
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">天機錄 · ISSUE 2026-04-19 · Step 8 推演版</span>
+        <span>投資分析 · 台股上櫃 · 未來 3 個月路徑推衍</span>
+      </div>
+      <h1>衛司特 · 推演<span class="ticker">6894 · STEP 8</span></h1>
+      <p class="deck">從 2026/04/19 出發推衍未來三個月路徑。2026/05/15 Q1 季報是第一個關鍵分岔點；若 H2 中性（44%）成立 → 區間整理 340~400；若 H3 看空（21%）觸發 → 急殺至 280~320；H1 看多（35%）需 Q1 毛利率 ≥ 36%。</p>
+      <div class="byline">
+        <span><b>Basis</b>現價 389.5 元（6 週 +52.7%）</span>
+        <span><b>Anchor</b>加權期望 380.88 元（-10.8%）</span>
+        <span><b>Valid</b>~3 週（至 2026/05/10，Q1 季報前）</span>
+        <span><b>Confidence</b>H2 44% · H1 35% · H3 21%</span>
+      </div>
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1</div>
+        <div class="step done"><span class="dot"></span>S2</div>
+        <div class="step done"><span class="dot"></span>S3</div>
+        <div class="step done"><span class="dot"></span>S4</div>
+        <div class="step done"><span class="dot"></span>S5</div>
+        <div class="step done"><span class="dot"></span>S6</div>
+        <div class="step done"><span class="dot"></span>S7 完整版</div>
+        <div class="step active"><span class="dot"></span>S8 ● 推演版</div>
+        <div class="step"><span class="dot"></span>S9</div>
+      </div>
+    </header>
+
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價 / 基準</div>
+        <div class="v gold">389.5 元</div>
+        <div class="d">6 週漲幅 <span class="up">+52.7%</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H2 中性主導</div>
+        <div class="v up">44%</div>
+        <div class="d">區間 340~400</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H1 看多</div>
+        <div class="v up">35%</div>
+        <div class="d">需 Q1 毛利率 ≥ 36%</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H3 看空</div>
+        <div class="v neut">21%</div>
+        <div class="d">三重頂部破 → 280~320</div>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip hot">Q1 季報 2026/05/15</span>
+      <span class="chip warn">三重頂部信號</span>
+      <span class="chip bear">2026/03/31 急殺 -20% 實證</span>
+      <span class="chip bull">林浚丞接班</span>
+      <span class="chip">BOO 模式</span>
+      <span class="chip">2028~2029 三變數重疊</span>
+    </div>
+
+
+
+    <section class="section" id="s8a">
+      <div class="section-head">
+        <div class="no">8a</div>
+        <div class="tit">
+          <h2>推演基礎確認</h2>
+          <div class="sub">回溯原始資料 — 公司核心事實 / ACH 假說 / 燈號 / 估值</div>
+        </div>
+      </div>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">核心事業</div><div class="v"><b>電子廢水處理 BOO 模式</b>，服務半導體先進製程（2nm/Arizona）。2024 營收 29.4 億、毛利率 38.52%（Q4 驟降 30.14% 為警訊）<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">領導層</div><div class="v">林浚丞三合一接班：清大化工博士+台積電背景，2025/05/26 股東會正式上任；父親林世民為創辦人<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">ACH 主導假說</div><div class="v"><b>H2 中性（44%）</b>：六週漲幅透支部分基本面利多；H1 看多（35%）需 Q1 毛利率回升驗證；H3 看空（21%）由三重頂部+三變數重疊觸發<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">當前燈號</div><div class="v">5 綠 4 黃 3 紅（紅：現價／估值／技術面）<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">估值錨定</div><div class="v">加權期望 380.88 元 = PE 25× × 常態 EPS 15.2 × 0.35 + DCF 400 × 0.44 + SoTP 360 × 0.21；現價 389.5 已在中性區上緣<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">關鍵催化劑</div><div class="v">2026/05/15 Q1 季報（第一驗證點）→ 2026/07 股東會配息（6.80 或 8.50）→ 2028~2029 CB/韓國/De Nora 三變數重疊<span class="fias-f">F</span></div></div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8a　推演基礎結論</div>
+        <h4>好公司、好題材、壞價格三位一體；Q1 季報是近期第一個決勝負分岔點。</h4>
+        <div class="rows">
+          <div class="row"><div class="k">結論</div><div class="v">基本面（BOO 獨特性+半導體擴產共振+接班）支撐 H1/H2，估值（6 週漲 52.7%、PE 高位）支撐 H3；Q1 季報毛利率將決定接下來三個月是「繼續漲」還是「估值正常化」。在未出訊號前，44% 中性假說為主導路徑。</div></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8b">
+      <div class="section-head">
+        <div class="no">8b</div>
+        <div class="tit">
+          <h2>情報更新差異表</h2>
+          <div class="sub">分析日（2026/04/18）vs 最新（2026/04/19）</div>
+        </div>
+      </div>
+
+      <table class="tbl">
+        <caption>情報差異表 — 最新 24 小時變化</caption>
+        <thead><tr><th>指標</th><th>分析日 · 04/18</th><th>最新 · 04/19</th><th>變化</th><th>含義</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">收盤價</td><td class="num">392.0</td><td class="num">389.5</td><td class="num neg">-0.64%</td><td>小幅回檔，量縮</td></tr>
+          <tr><td class="bold">6 週累積漲幅</td><td class="num">+53.9%</td><td class="num">+52.7%</td><td class="num">-1.2pp</td><td>熱度仍高但見頂訊號</td></tr>
+          <tr><td class="bold">2026/03 單月營收</td><td class="num">2.86 億</td><td class="num">2.86 億（不變）</td><td class="num">—</td><td>YoY +68.64% 已確認</td></tr>
+          <tr><td class="bold">股價 vs 加權期望</td><td class="num neg">+2.9%</td><td class="num neg">+2.3%</td><td class="num">-0.6pp</td><td>仍高估但差距縮小</td></tr>
+          <tr class="highlight"><td class="bold">關鍵事件倒數</td><td class="num">Q1 季報 T-27</td><td class="num">Q1 季報 T-26</td><td class="num">-1 日</td><td>前置驗證窗口開啟</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="label">新情報解讀</span>
+        <p><b>1. 小幅回檔 -0.64%</b>：在 6 週漲 52.7% 的基礎上，單日 -0.64% 是典型的「頂部整理」行為，不是趨勢反轉，但顯示追價動能已減弱。</p>
+        <p><b>2. Q1 季報倒數</b>：距離 2026/05/15 僅 26 日，市場開始為「季報業績」定價。任何關於毛利率、銥金屬成本、新訂單的傳聞都會放大股價波動。</p>
+        <p><b>3. 三重頂部信號仍在</b>：技術面 389.5 已觸及 2023/2024/2026 三次高點連線（約 400 元），未突破前動能受壓。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8c">
+      <div class="section-head">
+        <div class="no">8c</div>
+        <div class="tit">
+          <h2>影響鏈分析</h2>
+          <div class="sub">天機閣推衍方法一 — 事件 → 一階 → 二階 → 三階</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:12px 0 6px">鏈 1 · Q1 季報毛利率路徑分岔</h4>
+      <div class="chain">
+        <b>Q1 2026 毛利率（5/15 公告）</b>
+        <span class="arrow">→</span> 若 ≥ 36%（H1 路徑）
+        <span class="arrow">→</span> 市場認證「2024Q4 驟降僅為單季雜訊」
+        <span class="arrow">→</span> PE 25× 維持／甚至擴張至 28×
+        <span class="arrow">→</span> <b style="color:var(--bull)">股價測試 420~450</b>
+        <br><br>
+        <span class="arrow">→</span> 若 32~36%（H2 路徑 · 最可能）
+        <span class="arrow">→</span> 市場無新資訊、維持觀望
+        <span class="arrow">→</span> PE 維持 25×、等待 Q2 再驗證
+        <span class="arrow">→</span> <b style="color:var(--gold)">區間整理 360~400</b>
+        <br><br>
+        <span class="arrow">→</span> 若 &lt; 32%（H3 路徑）
+        <span class="arrow">→</span> 2024Q4 驟降被確認為結構性（銥金屬成本擠壓／新廠折舊攤提）
+        <span class="arrow">→</span> PE 被砍至 18~20×、EPS 下修至 12
+        <span class="arrow">→</span> <b style="color:var(--bear)">急殺至 220~280</b>（-30%~-45%）
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 6px">鏈 2 · 台積電 2nm 擴產節奏</h4>
+      <div class="chain">
+        <b>台積電 2025/Q4 法說會承諾 2nm 量產節奏</b>
+        <span class="arrow">→</span> 若 Arizona P1 2027 如期量產
+        <span class="arrow">→</span> 衛司特 BOO 新約 2026H2 簽訂（5~8 億／年）
+        <span class="arrow">→</span> 2027 營收 +30% 確定
+        <span class="arrow">→</span> <b style="color:var(--bull)">估值鎖定長線上漲動能</b>
+        <br><br>
+        <span class="arrow">→</span> 若延後至 2028（情境 B）
+        <span class="arrow">→</span> 衛司特新約推遲、2027 營收成長僅 +10%
+        <span class="arrow">→</span> 市場失望、PE 修正
+        <span class="arrow">→</span> <b style="color:var(--bear)">2028 成長斷層風險</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:22px 0 6px">鏈 3 · 三重頂部 + 稀釋預期 + 三變數重疊（看空放大鏈）</h4>
+      <div class="chain">
+        <b>2028~2029 三變數同時成熟</b>：① CB 轉換（歷史稀釋偏好 + 3 億元 CB）② 韓國 BOO 45% 股權邊界（無法完全控制）③ De Nora 續約（上游議價）
+        <span class="arrow">→</span> 任一惡化即觸發 → 三重頂部破下（380 元支撐失守）
+        <span class="arrow">→</span> PE 降至 18× + EPS 下修
+        <span class="arrow">→</span> <b style="color:var(--bear)">極限下行 240~280（-30%~-38%）</b>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">跨鏈交互作用</span>
+        <p><b>鏈 1（Q1 季報）</b>是短期催化劑、<b>鏈 2（台積電）</b>是中期錨定、<b>鏈 3（三變數）</b>是長期尾部風險。<br>三鏈<b>同時看空</b>的機率僅 ~8%（相互獨立假設下 0.21 × 0.40 × 0.10），但任一觸發都會使其他兩鏈的空頭機率提升 5~10pp（情緒連動）。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8d">
+      <div class="section-head">
+        <div class="no">8d</div>
+        <div class="tit">
+          <h2>情境模擬 · 概率路徑樹</h2>
+          <div class="sub">未來 3 個月（至 2026/07/15）三條主要路徑</div>
+        </div>
+      </div>
+
+      <div class="prob-tree">
+
+        <div class="prob-path bull">
+          <div class="t"><span class="prob">H1 · 35%</span> 看多劇本 · 重新定價為成長股</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：2026/05/15 Q1 毛利率 ≥ 36%（雙因素：銥金屬價格回落 + Arizona 新訂單簽訂）<br>
+          <b>演進</b>：5/15 季報 → 法人大幅調高 EPS 預估（14 → 17）→ PE 從 25× 擴張至 28~30× → 股價站上 420 → Q2 季報再度驗證 → 測試 450<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--bull)">420~470 元</b>（相對現價 +7%~+20%）
+          </p>
+        </div>
+
+        <div class="prob-path neut">
+          <div class="t"><span class="prob">H2 · 44%</span> 中性劇本 · 估值消化、等基本面驗證</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：Q1 毛利率 32~36%（區間值、無意外）、三重頂部無實質突破、6 月法說會維持承諾但無升級<br>
+          <b>演進</b>：市場缺乏新資訊 → 高檔震盪、量能萎縮 → 獲利了結賣盤＋融資盤解套賣壓同時出現 → 技術面修正至 360~380 → Q2 財報前等待<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--gold)">340~400 元</b>（相對現價 -13%~+3%）
+          </p>
+        </div>
+
+        <div class="prob-path bear">
+          <div class="t"><span class="prob">H3 · 21%</span> 看空劇本 · 估值正常化 + 稀釋預期</div>
+          <p style="font-size:13.5px;line-height:1.75;color:var(--ink-2);margin-top:6px">
+          <b>觸發鏈</b>：任一條件觸發 — ① Q1 毛利率 &lt; 32%、② 三重頂部跌破 380、③ CB 轉股公告、④ De Nora 續約傳出不利、⑤ 韓國 BOO 子公司出現問題<br>
+          <b>演進</b>：首條觸發 → 5 日急殺 -15% 至 330 → 技術支撐失守 → 空頭回補延遲賣壓 → 月線跌破 300 → 接近加權期望的中位估值<br>
+          <b>歷史參照</b>：2026/03/25~03/31 已有 5 日急殺 -20% 的實證（當時由技術面 + 低量能觸發）<br>
+          <b>最終狀態 · 2026/07</b>：<b style="color:var(--bear)">240~320 元</b>（相對現價 -18%~-38%）
+          </p>
+        </div>
+
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 10px;font-weight:600">敏感度分析</h4>
+      <table class="tbl">
+        <thead><tr><th>變數</th><th>+1σ 影響</th><th>-1σ 影響</th><th>優先度</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Q1 毛利率</td><td class="pos">+15%（H1 機率 +10pp）</td><td class="neg">-20%（H3 機率 +8pp）</td><td class="num gold">★★★★★</td></tr>
+          <tr><td class="bold">銥金屬現貨價</td><td class="neg">-8%（壓毛利率）</td><td class="pos">+5%（H1 鎖定）</td><td class="num gold">★★★★</td></tr>
+          <tr><td class="bold">台積電 2nm 進度</td><td class="pos">+5%（中長期）</td><td class="neg">-10%（鏈 2 破）</td><td class="num">★★★</td></tr>
+          <tr><td class="bold">CB 轉股時點</td><td class="neg">-6%（稀釋 EPS）</td><td class="pos">+2%（利空出盡）</td><td class="num">★★</td></tr>
+          <tr><td class="bold">整體大盤情緒</td><td class="pos">+5%</td><td class="neg">-8%</td><td class="num">★★</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="label">路徑交叉點 · 何時必須做決定</span>
+        <p><b>2026/05/10 前</b>：Q1 季報前 5 日，傳聞與預期開始定價，若仍持有需決定是否減碼對沖。<br>
+        <b>2026/05/15 盤後</b>：Q1 毛利率公告當日，決定路徑分岔；此為主要決策時點。<br>
+        <b>2026/06/01 前</b>：若走 H2 中性路徑，需在月線跌破 380 前決定是否續抱等 Q2。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8e">
+      <div class="section-head">
+        <div class="no">8e</div>
+        <div class="tit">
+          <h2>個人化推衍 · 分情境行動建議</h2>
+          <div class="sub">依持股狀態 / 風險偏好 / 時間軸適配</div>
+        </div>
+      </div>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">情境 A · 空手者 · 觀望中</div>
+          <p style="line-height:1.75"><b>建議</b>：等 Q1 季報後再進，避免在三重頂部接刀。<br><br>
+          <b>進場條件</b>：① 現價回到 340 以下（對應 H2 中性下緣）且量能放大 → 首批 1/3 倉位；② Q1 毛利率 ≥ 36% 且股價已站上 400 → 追第二批 1/3；③ 站穩 420 後第三批 1/3。<br><br>
+          <b>停損</b>：一旦跌破 280（加權期望 -26%）全出。<br>
+          <b>目標價位</b>：420（H1 情境）／450（若 Q2 再驗證）。</p>
+        </div>
+
+        <div class="scenario bear">
+          <div class="hd">情境 B · 現有持倉 · 成本偏低（&lt; 300）</div>
+          <p style="line-height:1.75"><b>建議</b>：分批減碼、鎖利 2/3、保留 1/3 長線部位。<br><br>
+          <b>減碼節奏</b>：① 現價 390 減 1/3；② 若反彈至 400~410 減第 2 批；③ 若 Q1 後突破 420 暫停；④ 若跌破 380 啟動全面減倉。<br><br>
+          <b>核心邏輯</b>：6 週漲 52.7%、加權期望 -10.8%，短線風險報酬比不佳；長線 BOO+接班故事仍成立，保留底倉等低點再加。</p>
+        </div>
+      </div>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">情境 C · 現有持倉 · 成本偏高（&gt; 380）</div>
+          <p style="line-height:1.75"><b>建議</b>：減碼到「心理舒適」水位後長抱，等 Q2 再評估。<br><br>
+          <b>行動</b>：① 若能接受 -10~-15% 虧損上限 → 跌破 350 全出；② 若看好長線 → 現價減 1/2、剩下續抱但設 300 為硬停損。<br><br>
+          <b>不建議</b>：向下攤平（在 H3 機率 21% 的情況下，攤平可能放大損失）。</p>
+        </div>
+
+        <div class="scenario bear">
+          <div class="hd">情境 D · 避險需求（對沖）</div>
+          <p style="line-height:1.75"><b>建議</b>：若有券商期貨／選擇權管道，可買 Put 或期貨空單對沖 1/3~1/2 倉位。<br><br>
+          <b>成本</b>：3 個月價外 Put 權利金約 3~5% 倉位價值，相對於 H3 路徑 -30% 的潛在損失，保險比划算。<br><br>
+          <b>不建議</b>：沒有衍生性商品經驗者不要為了「避險」而開新工具。</p>
+        </div>
+      </div>
+
+      <div class="callout good">
+        <span class="label">普遍建議 — 不論哪種情境</span>
+        <p><b>1.</b> 2026/05/10~05/15（Q1 季報前後）絕不重倉進場／加碼。<br>
+        <b>2.</b> 每週檢查三重頂部（380 / 389.5 / 400 三個關鍵位）是否失守。<br>
+        <b>3.</b> 關注銥金屬現貨價（影響毛利率直接 ±5%）。</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8f">
+      <div class="section-head">
+        <div class="no">8f</div>
+        <div class="tit">
+          <h2>催化劑時間表 · 未來 3 個月</h2>
+          <div class="sub">關鍵事件日曆 + 影響方向 + 觀察指標</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="item key">
+          <div class="date">2026 · 04 · 20 ~ 04 · 30</div>
+          <div class="t">Q1 法說會／Q1 業績預告（若有）</div>
+          <div class="d">部分同業會在月底提前預告業績走勢，衛司特歷史上不預告但市場會猜。觀察指標：分析師 EPS 預估變化（Bloomberg consensus）。<br><b>影響方向</b>：預告偏正 → H1 機率 +5pp；預告偏負 → H3 機率 +5pp。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · 05 · 06</div>
+          <div class="t">4 月單月營收公告</div>
+          <div class="d">4 月為 Q2 首月、也是 Arizona 首批 BOO 營收認列的可能時點。觀察指標：4 月營收 YoY +50% 以上 → 動能延續；YoY &lt; +30% → 動能衰退訊號。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · 05 · 15 ★★★</div>
+          <div class="t">Q1 2026 季報公告（最關鍵）</div>
+          <div class="d">毛利率 36% 以上 → H1 路徑確認；32~36% → H2 中性；&lt; 32% → H3 急殺啟動。同時觀察：營業費用／折舊攤提／新廠產能利用率。此為未來 3 個月最重要的單一事件。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 06 · 05</div>
+          <div class="t">5 月單月營收公告</div>
+          <div class="d">驗證 Q2 營收動能是否延續 Q1 趨勢。若 Q1 亮眼 + 5 月動能延續 → H1 路徑加速；若 Q1 平淡 + 5 月轉弱 → H3 風險上升。</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · 06 · 15 ~ 06 · 30</div>
+          <div class="t">上半年法說會／董事會決議配息</div>
+          <div class="d">原分析股利 6.80（B-1.8 已修訂為 8.50 備註）。觀察指標：董事會是否公告 CB 轉股條件（若是 → H3 機率 +3pp）；股利決議 ≥ 8.50 → 釋放誠意訊號。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 07 · 10 ~ 07 · 15</div>
+          <div class="t">2026 股東會（配息除權日前）</div>
+          <div class="d">配息除權對股價有約 -2%~-3% 的技術性修正；若除息後填息力道強 → 市場信心高；若貼息 → H2/H3 風險同時上升。</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2028 ~ 2029 · 遠端地雷（提前預警）</div>
+          <div class="d">三變數重疊窗口：① CB 轉換截止、② 韓國 BOO 合約檢討、③ De Nora 獨家供應條約續約。此三者任一惡化都可能引發連鎖。目前距離 2 年，尚未進入定價區，但需納入長期追蹤。</div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8g">
+      <div class="section-head">
+        <div class="no">8g</div>
+        <div class="tit">
+          <h2>蝴蝶效應推衍 ★★★</h2>
+          <div class="sub">弱訊號雷達 + Top 3 推演鏈 + 盲點洞察 + 歷史模式比對</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 12px;font-weight:600">弱訊號雷達（五類）</h4>
+
+      <div class="signal-card">
+        <div class="sig-type">A · 產業</div>
+        <div class="sig-body"><b>De Nora 2023/2024 出貨集中度 65.89%</b>（單一上游供應商）。市場普遍知悉，但少有人推演「若 De Nora 2028 續約不續 → 衛司特技術護城河評估需大幅下修」。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">B · 財務</div>
+        <div class="sig-body"><b>2024Q4 毛利率驟降 30.14%</b>（Q1~Q3 平均 40.5%）。市場假設是單季雜訊，但若結構性（銥金屬 + 新廠折舊）則是 H3 路徑的第一張多米諾骨牌。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">C · 治理</div>
+        <div class="sig-body"><b>陳柏阜 2025/05/26 股東會辭任獨董</b>（13 年任期結束）。辭任原因未揭露、同時間點林浚丞接班；市場未細查是否有治理結構調整的訊號。<span class="fias-i">I</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">D · 法人</div>
+        <div class="sig-body"><b>歷史稀釋偏好</b>：2018/2021/2024 三次增資 + 2025 CB 3 億元 = 近 10 年股本擴張 33%。管理層偏好用稀釋籌資，投資人需對 CB 轉股時點高度敏感。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">E · 供應鏈</div>
+        <div class="sig-body"><b>韓國 BOO 子公司持股 45%（非控制權）</b>。母公司衛司特只能「影響」不能「指揮」韓國 BOO，若當地合資方有異動，衛司特必須被動接受。跨國 BOO 複製的邊界條件。<span class="fias-f">F</span></div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">Top 3 蝴蝶效應推演鏈</h4>
+
+      <div class="chain">
+        <b style="color:var(--bear)">推演 1 · 銥金屬 → 毛利率雪崩鏈</b><br>
+        銥現貨價 2026/03 衝至 4,500 USD/oz（vs 2024 平均 3,200）
+        <span class="arrow">→</span> 衛司特 2026Q1 原料成本 +41%
+        <span class="arrow">→</span> Q1 毛利率壓至 28~30%
+        <span class="arrow">→</span> 市場認定 2024Q4 是結構性
+        <span class="arrow">→</span> PE 25× → 18×、EPS 14 → 11
+        <span class="arrow">→</span> <b>股價 389.5 → 220（-43%）</b>
+      </div>
+
+      <div class="chain">
+        <b style="color:var(--bear)">推演 2 · CB 3 億 + 增資預期 → 籌碼崩潰鏈</b><br>
+        2026/06 董事會公告 CB 轉股條件為 350 元（低於現價 10%）
+        <span class="arrow">→</span> 市場推測即將轉股 → 股本擴張 9%
+        <span class="arrow">→</span> EPS 被稀釋至 12.7（-16%）
+        <span class="arrow">→</span> 加上歷史稀釋偏好的信任折價 → PE 再砍 2×
+        <span class="arrow">→</span> <b>短期跌至 280（-28%）</b>
+      </div>
+
+      <div class="chain">
+        <b style="color:var(--bull)">推演 3 · 台積電 Arizona 超預期 → 基本面全面升級（少見但可能）</b><br>
+        台積電 2026/05 公告 Arizona P2 加速（從 2028 拉到 2027H2）
+        <span class="arrow">→</span> 衛司特 2026H2 新 BOO 訂單簽訂提前 6 個月
+        <span class="arrow">→</span> 2027 EPS 估值從 17 升至 19
+        <span class="arrow">→</span> PE 擴張至 28~30×（成長股估值）
+        <span class="arrow">→</span> <b>股價測試 540~570（+38%~+46%）</b>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">Top 3 盲點洞察</span>
+        <p><b>洞察 1</b>：<b>「韓國 45% 邊界」被市場完全忽略</b>。報告公告時皆強調「跨國複製 BOO 成功」，但 45% 持股意味衛司特對韓國業務的實質控制力有限；若當地合資方要求增資或退出，衛司特只能被動。</p>
+        <p><b>洞察 2</b>：<b>研發費用僅 1.63% vs 產業平均 3~5%</b>。這不是「護城河深」而是「護城河淺到只靠 De Nora 技術代理」。若 De Nora 撤出或被收購，衛司特技術獨立性將暴露。</p>
+        <p><b>洞察 3</b>：<b>接班不等於能力</b>。林浚丞清大化工博士+台積電背景是亮點，但「三合一接班」（總經理+董事長+控股家族）也代表決策集中、缺乏制衡；2025/05 到 2028 的 3 年績效將是真正驗證期。</p>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">歷史劇本對照</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">最相似案例 1</div><div class="v"><b>崇越（5434）2019~2021</b>：類似的半導體特化通路商+接班二代+急漲至估值偏高，之後進入 18 個月的區間整理（-20%~+10%）才再度突破。相似度 75%。</div></div>
+        <div class="data-row"><div class="k">最相似案例 2</div><div class="v"><b>日月光投控（3711）2017</b>：主要客戶（台積電）擴產週期受惠，但原物料上漲擠壓毛利，股價高檔拉回 -25% 後才續攻。相似度 60%。</div></div>
+        <div class="data-row"><div class="k">差異點</div><div class="v">衛司特規模小很多（營收 29 億 vs 上述兩家百億級），波動率較高；BOO 模式的折舊結構也讓 Q/Q 波動大於一般股。</div></div>
+      </div>
+    </section>
+
+
+    <section class="section" id="s8h">
+      <div class="section-head">
+        <div class="no">8h</div>
+        <div class="tit">
+          <h2>貓膩推衍 ★★★</h2>
+          <div class="sub">承接第七步 Ch12 結論 — 誠信度拆解 + 歷史劇本推演</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 12px;font-weight:600">8h-1 · 承接貓膩結論</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">貓膩燈號</div><div class="v"><b>黃燈（留意但非警報）</b> · 誠信度 87/100<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">核心假說</div><div class="v">歷史稀釋偏好（3 次增資 + CB 3 億）+ 陳柏阜辭任時序巧合 + 會計師具名（羅文振/陳明宏 — 資誠）+ 競零 94123650 工商追蹤 = 治理結構需持續檢視<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">成立機率</div><div class="v">核心結論成立（治理需關注）~65%；放大為會計舞弊級別的嚴重程度 ~10%<span class="fias-a">A</span></div></div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-2 · 歷史劇本推演（若貓膩成立）</h4>
+      <div class="chain">
+        <b>情境 A · 溫和貓膩（機率 45%）</b> — 僅為稀釋偏好、沒有虛增收入<br>
+        時間軸：<b>2026H2</b> CB 轉股公告
+        <span class="arrow">→</span> EPS 稀釋 -16%
+        <span class="arrow">→</span> 股價 -10~-15%
+        <span class="arrow">→</span> 基本面未受損、長期仍可買<br>
+        歷史相似度：70%（類似 2018/2021 增資後的走勢）
+      </div>
+
+      <div class="chain">
+        <b>情境 B · 中度貓膩（機率 10%）</b> — 關聯交易／未揭露風險<br>
+        時間軸：<b>2026Q3~Q4</b> 媒體揭露關聯公司不當利益輸送
+        <span class="arrow">→</span> 5 日急殺 -25%
+        <span class="arrow">→</span> 會計師撤回意見 / 重大訊息
+        <span class="arrow">→</span> 股價 -40~-50%<br>
+        歷史相似度：30%（參考 2023 F-再生股案）
+      </div>
+
+      <div class="chain">
+        <b>情境 C · 嚴重貓膩（機率 &lt; 5%）</b> — 財報虛增／下市風險<br>
+        目前無任何實證訊號支持此情境；此情境需「會計師撤回意見+主管機關立案+ 3 個月內連續重大訊息」三件齊發才可能。<br>
+        歷史相似度：&lt; 10%
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-3 · 反轉路徑決策樹</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">最早逃生信號</div><div class="v">會計師事務所更換、或負責會計師（羅文振/陳明宏）離職／變更<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">次要信號</div><div class="v">CB 轉股條件公告低於現價 10% 以上（大幅折讓 = 急於稀釋）<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">第三信號</div><div class="v">競零（94123650）與衛司特的關聯交易未合理揭露<span class="fias-i">I</span></div></div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-4 · 保護策略</h4>
+      <div class="callout good">
+        <span class="label">相信貓膩存在者</span>
+        <p>減碼至 1/3 或以下、設 -10% 停損、設置新聞快訊關鍵字（羅文振 / 陳明宏 / 94123650 / 衛司特增資）。</p>
+      </div>
+      <div class="callout info">
+        <span class="label">不確定者（最多數）</span>
+        <p>維持現有倉位、設 -15% 硬停損、每季末檢查會計師具名與 CB 狀態。此策略兩邊都不吃虧（貓膩成立時停損有效、不成立時仍可享長線漲勢）。</p>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-5 · 貓膩追蹤清單</h4>
+      <table class="tbl">
+        <thead><tr><th>追蹤項</th><th>門檻</th><th>頻率</th><th>來源</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">會計師具名</td><td>更換或離職</td><td>每季報</td><td>年報／季報附註</td></tr>
+          <tr><td class="bold">CB 3 億狀態</td><td>轉股條件公告</td><td>每月</td><td>公開資訊觀測站重訊</td></tr>
+          <tr><td class="bold">競零 94123650</td><td>資本額變動 / 關聯交易揭露</td><td>每半年</td><td>工商登記 / 年報附註</td></tr>
+          <tr><td class="bold">誠信度 87 重估</td><td>扣分事件 ≥ -5</td><td>每半年</td><td>媒體 + 法說會</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <section class="section" id="s8i">
+      <div class="section-head">
+        <div class="no">8i</div>
+        <div class="tit">
+          <h2>推衍結論 &amp; 行動清單</h2>
+          <div class="sub">綜合判斷 + 蝴蝶效應洞察 + 行動建議 + 有效期</div>
+        </div>
+      </div>
+
+      <div class="verdict-head">
+        <div class="mark">Final Verdict · 44% 中性主導</div>
+        <h3>最可能路徑：H2 區間整理 340~400。<br>2026/05/15 Q1 季報為決勝分岔點。</h3>
+        <div class="coda">推衍有效期至 2026/05/10（Q1 季報前 5 日）；季報後需重跑推衍。</div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8i · 01　蝴蝶效應洞察摘要</div>
+        <h4>三個被市場忽略的關鍵見解</h4>
+        <div class="rows">
+          <div class="row"><div class="k">01</div><div class="v"><b>韓國 45% 邊界</b>：BOO 跨國複製有實質控制力差異，不能直接等同台灣模式。</div></div>
+          <div class="row"><div class="k">02</div><div class="v"><b>研發 1.63%</b>：技術護城河本質是 De Nora 代理，非自主研發；De Nora 風險即公司風險。</div></div>
+          <div class="row"><div class="k">03</div><div class="v"><b>三合一接班</b>：決策集中、缺乏制衡，2025/05 到 2028 是實質驗證期。</div></div>
+        </div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8i · 02　貓膩推演摘要</div>
+        <h4>黃燈 · 誠信度 87 · 溫和稀釋偏好為主導風險</h4>
+        <div class="rows">
+          <div class="row"><div class="k">最關鍵影響</div><div class="v">若 CB 轉股條件公告低於現價 10% 以上 → 短期急殺 -10%~-15% + 誠信度下修 5~8 分。</div></div>
+          <div class="row"><div class="k">保護策略</div><div class="v">設 -15% 硬停損、每季末檢查會計師具名（羅文振/陳明宏）與 CB 狀態。</div></div>
+        </div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8i · 03　行動清單</div>
+        <h4>三種情境的操作建議</h4>
+        <div class="rows">
+          <div class="row"><div class="k">空手</div><div class="v">等 Q1 季報後進；若回 340 以下首批 1/3；Q1 毛利率 ≥ 36% 且站穩 400 追第二批；停損 280。</div></div>
+          <div class="row"><div class="k">成本低</div><div class="v">現價 390 減 1/3；反彈 400~410 再減 1/3；保留 1/3 長線；硬停損 280。</div></div>
+          <div class="row"><div class="k">成本高</div><div class="v">接受 -10%~-15% 虧損上限者跌破 350 全出；長線信念強者減 1/2、硬停損 300。</div></div>
+          <div class="row"><div class="k">避險需求</div><div class="v">有衍生商品經驗者可買 3 個月價外 Put 對沖 1/3~1/2 倉位（成本 3~5%）。</div></div>
+        </div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8i · 04　觀察清單（下次推衍前必追蹤）</div>
+        <h4>五項硬指標</h4>
+        <div class="rows">
+          <div class="row"><div class="k">01</div><div class="v">2026/05/15 Q1 毛利率（36% 為 H1 / 32% 為 H3 分界）</div></div>
+          <div class="row"><div class="k">02</div><div class="v">銥金屬現貨價（USD/oz，超過 4,500 → H3 機率 +10pp）</div></div>
+          <div class="row"><div class="k">03</div><div class="v">三重頂部（380/389/400 三個技術位）是否失守</div></div>
+          <div class="row"><div class="k">04</div><div class="v">台積電 2026Q1 法說會 Arizona 進度更新</div></div>
+          <div class="row"><div class="k">05</div><div class="v">CB 3 億轉股公告（條件、時點）</div></div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <b>推衍有效期聲明：</b>本推演版基於 2026/04/19 所有原始資料與前述分析結論，有效期約 3 週（至 2026/05/10）。2026/05/15 Q1 季報公告後須重跑推衍。本報告為深度調查型投資分析，不構成投資建議；機率與路徑為分析師主觀判定，非市場共識。決策前請自行評估風險、諮詢合格投資顧問。
+      </div>
+    </section>
+
+    <!-- ============== 跨標的互連 ============== -->
+    <section class="section" id="related">
+      <div class="section-head">
+        <div class="no">＋</div>
+        <div class="tit">
+          <h2>相關報告連結</h2>
+          <div class="sub">同產業鏈／類比案例 — 預設收合</div>
+        </div>
+      </div>
+      <details style="margin:14px 0">
+        <summary style="cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-2);padding:12px 14px;background:var(--paper-3);border:1px solid var(--rule);border-radius:3px;user-select:none">
+          點開查看關聯報告 ▾
+        </summary>
+        <div class="data-grid" style="margin-top:14px">
+          <div class="data-row"><div class="k">本案完整版</div><div class="v"><a href="20260419_6894_衛司特_完整版.html" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>衛司特 6894 · 第七步 完整版（13 章質化分析）</b></a></div></div>
+          <div class="data-row"><div class="k">2330 台積電</div><div class="v"><a href="../2330_台積電/20260329_2330_台積電_完整版.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>BOO 終端客戶 · Arizona/2nm 擴產驅動</b></a></div></div>
+          <div class="data-row"><div class="k">5234 達興材料</div><div class="v"><a href="../5234_達興材料/20260322_5234_達興材料_完整版.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>電子特化同產業鏈</b></a></div></div>
+          <div class="data-row"><div class="k">3105 穩懋</div><div class="v"><a href="../3105_穩懋/20260326_3105_穩懋_完整版.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)"><b>半導體擴產估值節奏類比</b></a></div></div>
+        </div>
+      </details>
+    </section>
+
+
+    <footer class="footer">
+      天機錄 · 第八步 推演版　·　衛司特 6894　·　推衍基準日 2026-04-19 · 有效期至 2026-05-10<br>
+      方法：影響鏈分析 + 情境模擬 + 個人化推衍 + 蝴蝶效應推衍 + 貓膩推演（8a~8i 九區塊）<br>
+      基礎：第七步完整版 225 KB 分析 + 2021~2024 年報原文 + 8 場法說會 + 量化財務數據<br>
+      本報告為深度調查型投資分析，不構成投資建議。決策前請自行評估風險、諮詢合格投資顧問。
+    </footer>
+
+  </main>
+</div>
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// === Chart.js 主題感知橋接（條件執行：僅當頁面有 Chart.js 時啟用） ===
+// 通用片段：淺/深主題切換自動重繪所有 chart 實例的字色、格線、強調色
+const __chartInstances = [];
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd', title:'#a09981',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    accentBlue:'#7ab0c0', accentGold:'#d4b030'
+  } : {
+    tick:'#2a2a2a', label:'#1a1a1a', title:'#3a3a3a',
+    grid:'#d8d3cc', radarGrid:'rgba(80,75,68,0.35)',
+    accentBlue:'#2d5a6f', accentGold:'#8a6f1e'
+  };
+}
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.devicePixelRatio = Math.max(2, window.devicePixelRatio || 1);
+  Chart.defaults.font.family = '"Inter","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.font.weight = '600';
+  Chart.defaults.color = getChartTheme().label;
+  Chart.register({
+    id:'themeTracker',
+    afterInit(chart){ __chartInstances.push(chart); },
+    beforeDestroy(chart){
+      const i = __chartInstances.indexOf(chart);
+      if (i >= 0) __chartInstances.splice(i,1);
+    }
+  });
+}
+function syncChartTheme(){
+  if (typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  __chartInstances.forEach(chart=>{
+    const scales = chart.options.scales || {};
+    const hasDualAxis = !!scales.y1;
+    Object.entries(scales).forEach(([key,scale])=>{
+      if (!scale) return;
+      const isBlue = (key==='y');
+      const isGold = (key==='y1');
+      if (scale.ticks){
+        if (hasDualAxis && isBlue) scale.ticks.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.ticks.color = t.accentGold;
+        else scale.ticks.color = t.tick;
+      }
+      if (scale.grid && scale.grid.color !== undefined && scale.grid.color !== false){
+        scale.grid.color = (key==='r') ? t.radarGrid : t.grid;
+      }
+      if (scale.title){
+        if (hasDualAxis && isBlue) scale.title.color = t.accentBlue;
+        else if (hasDualAxis && isGold) scale.title.color = t.accentGold;
+        else scale.title.color = t.title;
+      }
+      if (scale.pointLabels) scale.pointLabels.color = t.label;
+      if (scale.angleLines) scale.angleLines.color = t.radarGrid;
+    });
+    if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = t.label;
+    }
+    chart.update('none');
+  });
+}
+// 監聽 data-theme 變更 → 重繪所有圖表
+(function(){
+  if (typeof MutationObserver === 'undefined') return;
+  new MutationObserver(ms=>{
+    for (const m of ms) if (m.attributeName === 'data-theme'){ syncChartTheme(); break; }
+  }).observe(document.documentElement,{attributes:true});
+})();
+if (document.readyState === 'complete') { syncChartTheme(); }
+else { window.addEventListener('load', ()=>syncChartTheme()); }
+
+// Scrollspy for sidebar TOC
+(function(){
+  const links = document.querySelectorAll('.toc-list a');
+  const map = {};
+  links.forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(sec) map[id] = {link:a, sec};
+  });
+  function update(){
+    let active = null;
+    const y = window.scrollY + 120;
+    for(const id in map){
+      if(map[id].sec.offsetTop <= y) active = id;
+    }
+    links.forEach(a=>a.classList.remove('active'));
+    if(active && map[active]) map[active].link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+</script>
+</body>
+</html>
