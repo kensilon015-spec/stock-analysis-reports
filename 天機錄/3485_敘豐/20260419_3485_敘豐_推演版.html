@@ -16,7 +16,6 @@
   --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
   --serif:'Fraunces','Noto Serif TC','Inter',serif;
   --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
-  /* LEGACY MAPS — 保舊類別不壞 */
   --bg:var(--paper);--panel:var(--paper-2);--hover:var(--paper-3);--border:var(--rule);
   --txt:var(--ink);--txt2:var(--ink-2);--txt3:var(--ink-3);
   --danger:var(--bear);--safe:var(--bull);--link:var(--neutral);
@@ -145,13 +144,52 @@ details > *:last-child{padding-bottom:14px}
 .toc a{color:var(--ink-2);text-decoration:none;font-size:13px;display:block;padding:3px 0}
 .toc a:hover{color:var(--accent)}
 
-/* Chart 容器 */
-.chart-wrap{min-height:280px;margin:16px 0;padding:14px;background:var(--paper-2);border:1px solid var(--rule-2)}
-.chart-wrap canvas{max-height:320px}
+/* =========== 【補強】data + chart 兩欄並列 =========== */
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;align-items:start}
+@media(max-width:720px){.data-chart-row{grid-template-columns:1fr}}
+.data-col{min-width:0}
+.data-col table{margin:0;font-size:12px}
+.chart-col{min-width:0}
+.chart-box{padding:12px;background:var(--paper-2);border:1px solid var(--rule-2)}
+.chart-box canvas{max-height:260px;width:100% !important}
+.chart-wrap{margin:0;padding:12px;background:var(--paper-2);border:1px solid var(--rule-2);min-height:auto}
+.chart-wrap canvas{max-height:240px;width:100% !important}
+.chart-title{font-family:var(--serif);font-size:13px;color:var(--accent);text-align:center;font-weight:700;margin-bottom:6px}
+.chart-note{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-align:center;margin-top:6px;font-style:normal;letter-spacing:0.02em}
 
-/* risk / reviewer / timeline / tl-item / fork-tree 等衛司特沿用類別 */
-.risk-card{margin:12px 0;padding:16px 18px;background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bear)}
-.risk-card h4{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px}
+/* =========== 【補強】risk-card 卡片細項一段式（不換行） =========== */
+.risk-card{margin:14px 0;padding:0;background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bear);border-radius:0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:baseline;padding:12px 16px;border-bottom:1px solid var(--rule-2);gap:12px;flex-wrap:wrap}
+.risk-card .rc-title{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);line-height:1.3;flex:1;min-width:0}
+.risk-card .rc-level{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;font-weight:600;padding:3px 9px;border:1px solid;text-transform:uppercase;white-space:nowrap}
+.rc-level.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.rc-level.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.rc-level.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.rc-level.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+.risk-card .rc-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.risk-card .rc-row{display:block;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.risk-card .rc-row > .rc-label{display:inline;font-family:var(--mono);font-weight:600;font-size:11.5px;color:var(--ink-3);letter-spacing:0.04em;text-transform:uppercase;margin-right:4px}
+.risk-card .rc-row > div:not(.rc-label){display:inline}
+
+/* =========== 【補強】fork-tree 路徑分支樹 =========== */
+.fork-tree{margin:16px 0;padding:0;background:transparent;border:none;font-family:var(--sans);font-size:13.5px;line-height:1.65;color:var(--ink-2);white-space:normal}
+.fork-root{margin-bottom:14px;text-align:center}
+.fork-node{display:inline-block;padding:8px 16px;background:var(--paper-2);border:1.5px solid var(--ink-3);font-family:var(--serif);font-weight:700;font-size:14px;color:var(--ink)}
+.fork-branches{display:grid;gap:12px;margin-top:8px}
+.fork-branches.b3{grid-template-columns:repeat(3,1fr)}
+.fork-branches.b4{grid-template-columns:repeat(2,1fr)}
+@media(max-width:780px){.fork-branches.b3,.fork-branches.b4{grid-template-columns:1fr}}
+.fork-branch{padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--ink-3)}
+.fork-branch .fb-label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;font-weight:700;margin-bottom:6px;text-transform:uppercase}
+.fork-branch .fb-title{font-family:var(--serif);font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px;line-height:1.35}
+.fork-branch .fb-price{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-bottom:6px;padding-bottom:6px;border-bottom:1px dotted var(--rule-2)}
+.fork-branch .fb-desc{font-size:13px;line-height:1.6;color:var(--ink-2)}
+.fb-label.fb-bull{color:var(--bull)} .fork-branch:has(.fb-bull){border-top-color:var(--bull)}
+.fb-label.fb-neutral{color:var(--neutral)} .fork-branch:has(.fb-neutral){border-top-color:var(--neutral)}
+.fb-label.fb-warn{color:var(--warn)} .fork-branch:has(.fb-warn){border-top-color:var(--warn)}
+.fb-label.fb-bear{color:var(--bear)} .fork-branch:has(.fb-bear){border-top-color:var(--bear)}
+
+/* reviewer / timeline（衛司特樣式沿用） */
 .reviewer{margin:10px 0;padding:12px 16px;background:var(--paper-2);border-left:3px solid var(--neutral);font-size:13.5px}
 .reviewer .name{font-family:var(--serif);font-weight:700;color:var(--ink);margin-bottom:4px}
 .timeline{position:relative;margin:18px 0;padding-left:0;border-left:1px solid var(--rule)}
@@ -160,9 +198,6 @@ details > *:last-child{padding-bottom:14px}
 .tl-date{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;color:var(--accent);font-weight:600}
 .tl-title{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink);margin-top:2px}
 .tl-desc{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
-.fork-tree{margin:14px 0;padding:14px 16px;background:var(--paper-2);border:1px solid var(--rule);font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--ink-2);white-space:pre-wrap}
-
-/* 整合結論專用（tip.info/good/warn/danger 已有色） */
 .radar-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
 @media(max-width:700px){.radar-compare-grid{grid-template-columns:1fr}}
 
@@ -177,7 +212,7 @@ details > *:last-child{padding-bottom:14px}
 <div class="brand"><span class="mark">天機閣</span><span class="dot"></span><span class="sub">Tianji Pavilion</span></div>
 <div class="meta">
 <div><span class="k">代號</span><span class="v">3485 · 敘豐</span></div>
-<div><span class="k">市場</span><span class="v">興櫃（籌上櫃）</span></div>
+<div><span class="k">市場</span><span class="v">興櫃(籌上櫃)</span></div>
 <div><span class="k">產業</span><span class="v">FCBGA 濕製程設備</span></div>
 <div><span class="k">步驟</span><span class="v">Step 8 推演版</span></div>
 <div><span class="k">日期</span><span class="v">2026-04-19</span></div>
@@ -724,7 +759,6 @@ new Chart(document.getElementById('calib4').getContext('2d'),{
   document.addEventListener('DOMContentLoaded', function(){
     const btn = document.querySelector('.theme-toggle');
     if(btn) btn.textContent = saved === 'dark' ? '☀ 淺色' : '☾ 深色';
-    // scroll-spy TOC
     const links = document.querySelectorAll('.toc-list a');
     const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
     function onScroll(){

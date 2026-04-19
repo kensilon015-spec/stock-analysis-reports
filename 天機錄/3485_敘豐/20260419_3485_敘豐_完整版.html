@@ -21,7 +21,6 @@
   --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
   --serif:'Fraunces','Noto Serif TC','Inter',serif;
   --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
-  /* LEGACY MAPS — 保舊類別不壞 */
   --bg:var(--paper);--panel:var(--paper-2);--hover:var(--paper-3);--border:var(--rule);
   --txt:var(--ink);--txt2:var(--ink-2);--txt3:var(--ink-3);
   --danger:var(--bear);--safe:var(--bull);--link:var(--neutral);
@@ -150,13 +149,52 @@ details > *:last-child{padding-bottom:14px}
 .toc a{color:var(--ink-2);text-decoration:none;font-size:13px;display:block;padding:3px 0}
 .toc a:hover{color:var(--accent)}
 
-/* Chart 容器 */
-.chart-wrap{min-height:280px;margin:16px 0;padding:14px;background:var(--paper-2);border:1px solid var(--rule-2)}
-.chart-wrap canvas{max-height:320px}
+/* =========== 【補強】data + chart 兩欄並列 =========== */
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;align-items:start}
+@media(max-width:720px){.data-chart-row{grid-template-columns:1fr}}
+.data-col{min-width:0}
+.data-col table{margin:0;font-size:12px}
+.chart-col{min-width:0}
+.chart-box{padding:12px;background:var(--paper-2);border:1px solid var(--rule-2)}
+.chart-box canvas{max-height:260px;width:100% !important}
+.chart-wrap{margin:0;padding:12px;background:var(--paper-2);border:1px solid var(--rule-2);min-height:auto}
+.chart-wrap canvas{max-height:240px;width:100% !important}
+.chart-title{font-family:var(--serif);font-size:13px;color:var(--accent);text-align:center;font-weight:700;margin-bottom:6px}
+.chart-note{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-align:center;margin-top:6px;font-style:normal;letter-spacing:0.02em}
 
-/* risk / reviewer / timeline / tl-item / fork-tree 等衛司特沿用類別 */
-.risk-card{margin:12px 0;padding:16px 18px;background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bear)}
-.risk-card h4{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);margin-bottom:8px}
+/* =========== 【補強】risk-card 卡片細項一段式（不換行） =========== */
+.risk-card{margin:14px 0;padding:0;background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bear);border-radius:0}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:baseline;padding:12px 16px;border-bottom:1px solid var(--rule-2);gap:12px;flex-wrap:wrap}
+.risk-card .rc-title{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);line-height:1.3;flex:1;min-width:0}
+.risk-card .rc-level{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;font-weight:600;padding:3px 9px;border:1px solid;text-transform:uppercase;white-space:nowrap}
+.rc-level.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.rc-level.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.rc-level.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.rc-level.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+.risk-card .rc-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.risk-card .rc-row{display:block;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.risk-card .rc-row > .rc-label{display:inline;font-family:var(--mono);font-weight:600;font-size:11.5px;color:var(--ink-3);letter-spacing:0.04em;text-transform:uppercase;margin-right:4px}
+.risk-card .rc-row > div:not(.rc-label){display:inline}
+
+/* =========== 【補強】fork-tree 路徑分支樹 =========== */
+.fork-tree{margin:16px 0;padding:0;background:transparent;border:none;font-family:var(--sans);font-size:13.5px;line-height:1.65;color:var(--ink-2);white-space:normal}
+.fork-root{margin-bottom:14px;text-align:center}
+.fork-node{display:inline-block;padding:8px 16px;background:var(--paper-2);border:1.5px solid var(--ink-3);font-family:var(--serif);font-weight:700;font-size:14px;color:var(--ink)}
+.fork-branches{display:grid;gap:12px;margin-top:8px}
+.fork-branches.b3{grid-template-columns:repeat(3,1fr)}
+.fork-branches.b4{grid-template-columns:repeat(2,1fr)}
+@media(max-width:780px){.fork-branches.b3,.fork-branches.b4{grid-template-columns:1fr}}
+.fork-branch{padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--ink-3)}
+.fork-branch .fb-label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;font-weight:700;margin-bottom:6px;text-transform:uppercase}
+.fork-branch .fb-title{font-family:var(--serif);font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px;line-height:1.35}
+.fork-branch .fb-price{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-bottom:6px;padding-bottom:6px;border-bottom:1px dotted var(--rule-2)}
+.fork-branch .fb-desc{font-size:13px;line-height:1.6;color:var(--ink-2)}
+.fb-label.fb-bull{color:var(--bull)} .fork-branch:has(.fb-bull){border-top-color:var(--bull)}
+.fb-label.fb-neutral{color:var(--neutral)} .fork-branch:has(.fb-neutral){border-top-color:var(--neutral)}
+.fb-label.fb-warn{color:var(--warn)} .fork-branch:has(.fb-warn){border-top-color:var(--warn)}
+.fb-label.fb-bear{color:var(--bear)} .fork-branch:has(.fb-bear){border-top-color:var(--bear)}
+
+/* reviewer / timeline（衛司特樣式沿用） */
 .reviewer{margin:10px 0;padding:12px 16px;background:var(--paper-2);border-left:3px solid var(--neutral);font-size:13.5px}
 .reviewer .name{font-family:var(--serif);font-weight:700;color:var(--ink);margin-bottom:4px}
 .timeline{position:relative;margin:18px 0;padding-left:0;border-left:1px solid var(--rule)}
@@ -165,9 +203,6 @@ details > *:last-child{padding-bottom:14px}
 .tl-date{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;color:var(--accent);font-weight:600}
 .tl-title{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink);margin-top:2px}
 .tl-desc{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
-.fork-tree{margin:14px 0;padding:14px 16px;background:var(--paper-2);border:1px solid var(--rule);font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--ink-2);white-space:pre-wrap}
-
-/* 整合結論專用（tip.info/good/warn/danger 已有色） */
 .radar-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
 @media(max-width:700px){.radar-compare-grid{grid-template-columns:1fr}}
 
@@ -182,7 +217,7 @@ details > *:last-child{padding-bottom:14px}
 <div class="brand"><span class="mark">天機閣</span><span class="dot"></span><span class="sub">Tianji Pavilion</span></div>
 <div class="meta">
 <div><span class="k">代號</span><span class="v">3485 · 敘豐</span></div>
-<div><span class="k">市場</span><span class="v">興櫃（籌上櫃）</span></div>
+<div><span class="k">市場</span><span class="v">興櫃(籌上櫃)</span></div>
 <div><span class="k">產業</span><span class="v">FCBGA 濕製程設備</span></div>
 <div><span class="k">步驟</span><span class="v">Step 7 / Phase C</span></div>
 <div><span class="k">日期</span><span class="v">2026-04-19</span></div>
@@ -324,7 +359,7 @@ details > *:last-child{padding-bottom:14px}
 
 <div class="ev">
     <div class="ev-t"><span class="fias-f">F</span> 證據卡 1-2：全球市佔率與規模定位</div>
-    <div class="ev-d">敘豐 2024 年營收約新台幣 6.1 億（約 1,900 萬美元），以全球 FCBGA 載板設備市場規模約 15-20 億美元估計，敘豐市佔約 1-1.5%，屬<b>全球微型利基廠</b>。但若限定「水平式 FCBGA 濕製程主設備」範疇，敘豐在台灣市場（全球最大 ABF 載板生產國，台廠合計佔全球 32.8% 產值）領先同業，尤其欣興新豐廠、山鶯廠的主設備採購中敘豐市佔領先。這種「全球小但台灣強」的雙軌地位支撐其毛利率 47.76%（同業 Atotech ~40%、SCHMID ~35%）。白話說：<b>敘豐是全球 FCBGA 設備市場的小蝦米，但綁死了台灣最大載板廠欣興的供應鏈關係</b>。</div>
+    <div class="ev-d">敘豐 2024 年營收約新台幣 6.1 億（約 1,900 萬美元），以全球 FCBGA 載板設備市場規模約 15-20 億美元估計，敘豐市佔約 1-1.5%，屬<b>全球微型利基廠</b>。但若限定「水平式 FCBGA 濕製程主設備」範疇，敘豐在台灣市場（全球最大 ABF 載板生產國，台廠合計佔全球 32.8% 產值）領先同業，尤其欣興新豐廠、山鶯廠的主設備採購中敘豐市佔領先。這種「全球小但台灣強」的雙軌地位支撐其毛利率 47.76%（同業 Atotech ~40%、SCHMID ~35%）。<b>敘豐是全球 FCBGA 設備市場的規模偏小廠商，但綁死了台灣最大載板廠欣興的供應鏈關係</b>。</div>
     <div class="ev-s">來源：2024 年報 p.47-48 + TPCA 全球 PCB 報告 + 同業 Atotech 10-K / SCHMID 年報</div>
 </div>
 
@@ -347,7 +382,7 @@ details > *:last-child{padding-bottom:14px}
 </table>
 
 <div class="tip warn">
-<b>白話說：</b>敘豐幾乎是「純 FCBGA 設備公司」——93.90% 營收來自單一產品類別，沒有 LCD/自動化/其他產業做風險分散。<b>一旦 FCBGA 載板需求週期下行，敘豐沒有任何避風港</b>。2022 峰值營收 762M 後，2023 腰斬 -20%、2024 停滯 +0.3%、2025 推估 -10%，本質是「週期股披著利基設備商的外衣」。
+敘豐屬於「純 FCBGA 設備公司」——93.90% 營收來自單一產品類別，沒有 LCD/自動化/其他產業做風險分散。<b>一旦 FCBGA 載板需求週期下行，敘豐缺乏產品分散</b>。2022 峰值營收 762M 後，2023 腰斬 -20%、2024 停滯 +0.3%、2025 推估 -10%，本質是「週期股披著利基設備商的外衣」。
 </div>
 
 <div class="ev">
@@ -369,7 +404,7 @@ details > *:last-child{padding-bottom:14px}
     <tr><td>2023</td><td style="text-align:right;color:var(--bear)">93.92%</td><td style="text-align:right">6.08%</td></tr>
     <tr><td>2024</td><td style="text-align:right;color:var(--bear)">93.90%</td><td style="text-align:right">6.10%</td></tr>
     </table>
-    <div class="tip info"><b>白話說：</b>FCBGA 佔比連四年穩定 93%+，意味著敘豐已無退路只能綁死此產品線，VSP/TGV/FOPLP 新產品若 2026-2027 無法兌現，敘豐將繼續承受 FCBGA 週期波動。</div>
+    <div class="tip info">FCBGA 佔比連四年穩定 93%+，意味著敘豐已無退路只能綁死此產品線，VSP/TGV/FOPLP 新產品若 2026-2027 無法兌現，敘豐將繼續承受 FCBGA 週期波動。</div>
   </div>
   <div class="chart-col">
     <div class="chart-box">
@@ -471,7 +506,7 @@ details > *:last-child{padding-bottom:14px}
 
 <div class="ev">
     <div class="ev-t"><span class="fias-f">F</span> 證據卡 1-8：買方議價力最高（4.5/5）是核心結構問題</div>
-    <div class="ev-d">敘豐 Porter 五力綜合分數 3.2/5 偏中等偏高，但其中買方議價力 4.5/5 為最高扣分項。具體運作機制：(1) 欣興採購部門定期邀請敘豐、Atotech、SCHMID 三家同時報價，敘豐必須降價才能保住訂單；(2) 欣興下游客戶台積電 2024 Q4 對 FCBGA 載板 ASP 壓 -5~8%，此壓力直接傳導至敘豐；(3) 敘豐缺 D 集團/新客戶平衡，無法用「報價給其他客戶」威脅欣興。白話說：<b>欣興想壓敘豐價，敘豐幾乎沒有還手餘地</b>。這是毛利率從 2022 的 41.3% 升至 2023 的 52.2% 後，2024-2025 已回落至 47-50% 區間的根本原因。</div>
+    <div class="ev-d">敘豐 Porter 五力綜合分數 3.2/5 偏中等偏高，但其中買方議價力 4.5/5 為最高扣分項。具體運作機制：(1) 欣興採購部門定期邀請敘豐、Atotech、SCHMID 三家同時報價，敘豐必須降價才能保住訂單；(2) 欣興下游客戶台積電 2024 Q4 對 FCBGA 載板 ASP 壓 -5~8%，此壓力直接傳導至敘豐；(3) 敘豐缺 D 集團/新客戶平衡，無法用「報價給其他客戶」威脅欣興。<b>欣興想壓敘豐價，敘豐幾乎沒有議價空間</b>。這是毛利率從 2022 的 41.3% 升至 2023 的 52.2% 後，2024-2025 已回落至 47-50% 區間的根本原因。</div>
     <div class="ev-s">來源：Step 3 Porter 分析 + 2024 年報客戶集中度 + 欣興下游 ASP 壓力推論</div>
 </div>
 </details>
@@ -603,7 +638,7 @@ details > *:last-child{padding-bottom:14px}
 </div>
 
 <div class="tip info">
-<b>白話說：敘豐的財務體質「零負債、現金滿倉、但本業正在虛弱」</b>
+<b>敘豐的財務體質「零負債、現金滿倉、但本業正在虛弱」</b>
 <p>敘豐的資本結構面是中小型設備股中的頂級：負債比 26%、現金 10.7 億、零 CB 無稀釋、2024 營業現金流 317,473 仟元 YoY +206%、配息率 77%。這些是<b>下檔保護</b>——最壞情境不致破產、可持續配息、有財務實力熬週期。但損益表揭露「本業正在虛弱」：2024 本業淨利 -16% 靠匯兌 +50,617 撐稅後 +9%、2025 Q2→Q4 營利率斷崖 -17pp、EPS Q4 YoY -54%。<b>投資邏輯是：若承接位夠低（200 元以下），現金護城河能讓你熬過 2-3 年週期；但若現價承接（307.5），沒有「下檔有限」的安全邊際，承受的是「業績下修+估值回歸」雙打擊</b>。</p>
 </div>
 </details>
@@ -620,7 +655,7 @@ details > *:last-child{padding-bottom:14px}
 </table>
 
 <div class="tip info">
-<b>白話說：敘豐的財務體質「零負債、現金滿倉、但本業正在虛弱」</b>
+<b>敘豐的財務體質「零負債、現金滿倉、但本業正在虛弱」</b>
 </div>
 </div>
 <!-- /殘留區塊清除 -->
@@ -2412,7 +2447,6 @@ new Chart(document.getElementById('chartRevYoY').getContext('2d'),{
   document.addEventListener('DOMContentLoaded', function(){
     const btn = document.querySelector('.theme-toggle');
     if(btn) btn.textContent = saved === 'dark' ? '☀ 淺色' : '☾ 深色';
-    // scroll-spy TOC
     const links = document.querySelectorAll('.toc-list a');
     const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
     function onScroll(){
