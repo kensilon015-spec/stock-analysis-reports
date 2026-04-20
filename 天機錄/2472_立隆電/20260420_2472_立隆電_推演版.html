@@ -13,7 +13,133 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
+<script id="chartjs-font-config">
+if(typeof Chart !== 'undefined'){
+  Chart.defaults.font.family = "'Inter','Noto Sans TC','Fraunces',system-ui,sans-serif";
+  Chart.defaults.font.size = 12;
+}
+function getChartColors(){
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {tick:isDark?'#a09981':'#3d3830', label:isDark?'#f5efdd':'#1c1a16', grid:isDark?'rgba(245,239,221,0.18)':'rgba(28,26,22,0.15)'};
+}
+function applyChartTheme(){
+  if(typeof Chart === 'undefined') return;
+  var c = getChartColors(); Chart.defaults.color = c.tick;
+  document.querySelectorAll('canvas').forEach(function(canvas){
+    var chart = Chart.getChart(canvas); if(!chart || !chart.options) return;
+    var scales = chart.options.scales || {};
+    Object.keys(scales).forEach(function(k){
+      var s = scales[k]; if(!s) return;
+      if(s.ticks){ s.ticks.color = c.tick; if('backdropColor' in s.ticks) s.ticks.backdropColor='rgba(0,0,0,0)'; }
+      if(s.pointLabels) s.pointLabels.color = c.label;
+      if(s.grid) s.grid.color = c.grid;
+      if(s.angleLines) s.angleLines.color = c.grid;
+    });
+    if(chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) chart.options.plugins.legend.labels.color = c.label;
+    chart.update('none');
+  });
+}
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(applyChartTheme, 50); });
+window.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyChartTheme, 100);
+  new MutationObserver(applyChartTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+});
+</script>
+<style id="template-overlay">
+/* 套版 Compatibility Layer — 與第七步完整版同步 */
+:root{
+  --paper:#f5f1e8; --paper-2:#ece6d6; --paper-3:#e1d9c4;
+  --ink:#1c1a16; --ink-2:#3d3830; --ink-3:#6b6357; --ink-4:#a39b8a;
+  --rule:#c9bfa8; --rule-2:#ddd3bc;
+  --tpl-accent:#2f5a3d; --tpl-accent-wash:#e3e8dc;
+  --tpl-bull:#2f6b3d; --tpl-bear:#8e3a2c; --tpl-gold:#8a6a1f; --tpl-warn:#a67318; --tpl-neutral:#3d6378;
+}
+[data-theme="dark"]{
+  --paper:#262319; --paper-2:#2f2b20; --paper-3:#3a3527;
+  --ink:#f5efdd; --ink-2:#d6cfb6; --ink-3:#a09981; --ink-4:#6e6955;
+  --rule:#3f3a2b; --rule-2:#363221;
+  --tpl-accent:#a8c095; --tpl-accent-wash:#1f2a1d;
+  --tpl-bull:#86b58d; --tpl-bear:#d48a7a; --tpl-gold:#d6ad5c; --tpl-warn:#d6ad5c; --tpl-neutral:#8fb3c4;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter','Noto Sans TC',sans-serif!important;background:var(--paper)!important;color:var(--ink)!important;transition:background-color .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%)}
+[data-theme="dark"] body::before{background:radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%)}
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1440px;margin:0 auto;position:relative;z-index:1}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;padding:36px 28px 28px;border-right:1px solid var(--rule);background:var(--paper);overflow-y:auto;font-size:13px}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{font-family:'Fraunces',serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink)}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--tpl-accent);display:inline-block}
+.brand .sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.8;color:var(--ink-3);letter-spacing:0.05em}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4.toc-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-4);margin:28px 0 10px;font-weight:600}
+.toc-list{list-style:none;counter-reset:toc;padding:0;margin:0}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;padding:7px 0;color:var(--ink-2);text-decoration:none;font-size:12.5px;line-height:1.4;transition:color .15s}
+.toc-list a::before{content:counter(toc,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-4);letter-spacing:0.05em}
+.toc-list a:hover{color:var(--tpl-accent)}
+.toc-list a.active{color:var(--tpl-accent);font-weight:600}
+.side-verdict{margin-top:22px;padding:14px;background:var(--tpl-accent-wash);border-left:2px solid var(--tpl-accent);font-size:12px;line-height:1.55;color:var(--ink-2)}
+.side-verdict .label{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--tpl-accent);margin-bottom:4px;font-weight:600}
+.theme-toggle{position:fixed;top:16px;right:20px;z-index:200;background:var(--paper-2);border:1px solid var(--rule);color:var(--ink);padding:8px 14px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:all .2s}
+.theme-toggle:hover{border-color:var(--tpl-accent);color:var(--tpl-accent)}
+.main-wrap{padding:40px 56px 60px;max-width:1100px;margin:0 auto}
+@media(max-width:960px){.main-wrap{padding:32px 24px 60px}}
+.shell .main-wrap .wrap{max-width:none;padding:0}
+.masthead{border-top:4px double var(--ink);border-bottom:1px solid var(--rule);padding:24px 0 28px;margin-bottom:30px}
+.masthead .eyebrow{display:flex;justify-content:space-between;align-items:baseline;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+.masthead .eyebrow .issue{color:var(--tpl-accent);font-weight:600}
+.masthead h1.tpl-h1{font-family:'Fraunces',serif;font-weight:700;font-size:52px;line-height:0.96;letter-spacing:-0.035em;color:var(--ink)}
+.masthead h1.tpl-h1 .ticker{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500;color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;vertical-align:middle}
+.masthead .deck{font-family:'Fraunces',serif;font-size:18px;line-height:1.5;color:var(--ink-2);margin-top:14px;max-width:680px;font-style:italic}
+.masthead .byline{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule-2);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);letter-spacing:0.05em}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+.shell .main-wrap .hero{display:none}
+.shell .main-wrap .card,.shell .main-wrap .scenario,.shell .main-wrap .mini-card,.shell .main-wrap .snap-card,.shell .main-wrap .chart-wrap{background:var(--paper-2)!important;border:1px solid var(--rule)!important;color:var(--ink-2)!important}
+.shell .main-wrap table th{background:transparent!important;color:var(--ink-3)!important;border-top:1.5px solid var(--ink)!important;border-bottom:1px solid var(--ink)!important;font-family:'JetBrains Mono',monospace!important;font-size:11px!important;letter-spacing:0.1em;text-transform:uppercase}
+.shell .main-wrap table td{background:var(--paper)!important;color:var(--ink-2)!important;border-bottom:1px solid var(--rule-2)!important;vertical-align:top}
+.shell .main-wrap table tr:hover td{background:var(--paper-2)!important}
+.shell .main-wrap .tip{background:var(--paper-2)!important;border-left:3px solid var(--ink-3)!important;color:var(--ink-2)!important}
+.shell .main-wrap .tip > b:first-child{color:var(--ink)!important}
+.shell .main-wrap .tip.good{background:rgba(168,192,149,.10)!important;border-left-color:var(--tpl-accent)!important}
+.shell .main-wrap .tip.good > b:first-child{color:var(--tpl-accent)!important}
+.shell .main-wrap .tip.warn{background:rgba(214,173,92,.10)!important;border-left-color:var(--tpl-warn)!important}
+.shell .main-wrap .tip.warn > b:first-child{color:var(--tpl-warn)!important}
+.shell .main-wrap .tip.danger{background:rgba(212,138,122,.10)!important;border-left-color:var(--tpl-bear)!important}
+.shell .main-wrap .tip.danger > b:first-child{color:var(--tpl-bear)!important}
+.shell .main-wrap .tip.info{background:rgba(143,179,196,.10)!important;border-left-color:var(--tpl-neutral)!important}
+.shell .main-wrap .tip.info > b:first-child{color:var(--tpl-neutral)!important}
+.shell .main-wrap .scenario h4{color:var(--ink)!important;font-family:'Fraunces',serif!important}
+.shell .main-wrap .scenario.bull{border-left:4px solid var(--tpl-bull)!important} .shell .main-wrap .scenario.warn{border-left:4px solid var(--tpl-warn)!important} .shell .main-wrap .scenario.bear{border-left:4px solid var(--tpl-bear)!important} .shell .main-wrap .scenario.neutral{border-left:4px solid var(--tpl-neutral)!important}
+.shell .main-wrap .mini-card .num,.shell .main-wrap .snap-card .snap-num{color:var(--ink)!important;font-family:'Fraunces',serif!important}
+.shell .main-wrap .mini-card .title,.shell .main-wrap .snap-card .snap-title,.shell .main-wrap .snap-card .snap-sub{color:var(--ink-3)!important}
+.shell .main-wrap details.section > summary{color:var(--ink)!important;font-family:'Fraunces',serif!important;border-top:2px solid var(--ink)!important}
+.shell .main-wrap details.sub{background:var(--paper-2)!important;border:1px solid var(--rule)!important}
+.shell .main-wrap details.sub > summary{color:var(--ink)!important;font-family:'Fraunces',serif!important}
+.shell .main-wrap details.sub > summary:hover{background:var(--paper-3)!important}
+.shell .main-wrap .footer{color:var(--ink-3)!important;border-top:1px solid var(--rule)!important}
+.shell .main-wrap code{background:var(--paper-3)!important;color:var(--tpl-accent)!important}
+.shell .main-wrap .causal{background:var(--paper-2)!important;border:1px solid var(--tpl-neutral)!important;color:var(--ink-2)!important}
+.shell .main-wrap .causal .cn{color:var(--tpl-neutral)!important}
+.shell .main-wrap .timeline{border-left:1px solid var(--rule)!important}
+.shell .main-wrap .timeline .item .date{color:var(--tpl-accent)!important;font-family:'JetBrains Mono',monospace!important}
+.shell .main-wrap .timeline .item .t{color:var(--ink)!important;font-family:'Fraunces',serif!important}
+.shell .main-wrap .timeline .item .d{color:var(--ink-3)!important}
+.shell .main-wrap .timeline .item::before{background:var(--paper)!important;border-color:var(--tpl-accent)!important}
+.shell .main-wrap .fias-f{background:rgba(168,192,149,.15)!important;color:var(--tpl-accent)!important}
+.shell .main-wrap .fias-i{background:rgba(143,179,196,.15)!important;color:var(--tpl-neutral)!important}
+.shell .main-wrap .fias-a{background:rgba(214,173,92,.15)!important;color:var(--tpl-warn)!important}
+.shell .main-wrap .chip{background:var(--paper-2)!important;border:1px solid var(--rule)!important;color:var(--ink-2)!important;font-family:'JetBrains Mono',monospace!important}
+.shell .main-wrap .chip.bull{color:var(--tpl-bull)!important;border-color:var(--tpl-bull)!important}
+.shell .main-wrap .chip.bear{color:var(--tpl-bear)!important;border-color:var(--tpl-bear)!important}
+.shell .main-wrap .chip.warn{color:var(--tpl-warn)!important;border-color:var(--tpl-warn)!important}
+.shell .main-wrap .chip.gold{color:var(--tpl-gold)!important;border-color:var(--tpl-gold)!important}
+</style>
+<style id="legacy-style">
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;--serif:'Fraunces','Noto Sans TC',serif;--sans:'Inter','Noto Sans TC',sans-serif;--mono:'JetBrains Mono',monospace}
 body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.65}
@@ -90,6 +216,58 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">☀ 切換暗色</button>
+
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand">
+    <span class="mark">天機閣</span>
+    <span class="dot"></span>
+    <span class="sub">Tianji Pavilion</span>
+  </div>
+  <div class="meta-block">
+    <div><span class="k">標的</span><span class="v">2472 立隆電</span></div>
+    <div><span class="k">類型</span><span class="v">推演版報告</span></div>
+    <div><span class="k">日期</span><span class="v">2026-04-20</span></div>
+    <div><span class="k">章節</span><span class="v">9 章（8a-8i）</span></div>
+    <div><span class="k">有效期</span><span class="v">2026-05-15</span></div>
+  </div>
+  <h4 class="toc-title">推演章節</h4>
+  <ol class="toc-list">
+    <li><a href="#8a">推演基礎確認</a></li>
+    <li><a href="#8b">公開資訊更新</a></li>
+    <li><a href="#8c">影響鏈分析</a></li>
+    <li><a href="#8d">情境模擬</a></li>
+    <li><a href="#8e">個人化推衍</a></li>
+    <li><a href="#8f">催化劑時間表</a></li>
+    <li><a href="#8g">蝴蝶效應推衍</a></li>
+    <li><a href="#8h">貓膩推衍</a></li>
+    <li><a href="#8i">推衍結論</a></li>
+  </ol>
+  <div class="side-verdict">
+    <div class="label">第四次校準</div>
+    <strong>H1 看多 47%</strong> · 最可能路徑 B 基本兌現（40%）<br>
+    建議部位 15-20% · 等回調至 150-160 進場
+  </div>
+</aside>
+
+<main class="main-wrap">
+<div class="masthead">
+  <div class="eyebrow">
+    <span>立隆電子工業 · 推演版報告</span>
+    <span class="issue">VOL.8 · 2026/04/20</span>
+  </div>
+  <h1 class="tpl-h1">立隆電<span class="ticker">2472 · TWSE</span></h1>
+  <div class="deck">9 章獨立推衍 · 第四次信心校準（H1 47%）· 推衍有效期至 2026-05-15（Q1 財報公告日）</div>
+  <div class="byline">
+    <span><b>產出</b>2026-04-20</span>
+    <span><b>基準股價</b>178.5</span>
+    <span><b>加權預期</b>167-187</span>
+    <span><b>致命因子</b>A4 NVIDIA Rubin</span>
+    <span><b>建議部位</b>15-20%</span>
+  </div>
+</div>
+
 <div class="wrap">
 
 <!-- ========== HERO ========== -->
@@ -119,7 +297,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </div>
 
 <!-- ========== 8a 推演基礎 ========== -->
-<details class="section" open>
+<details class="section" open id="8a">
 <summary>8a · 推演基礎確認</summary>
 <div class="section-sub">回溯原始資料確認的關鍵事實 + 三次信心校準起點</div>
 
@@ -143,7 +321,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8b OSINT 情報更新 ========== -->
-<details class="section" open>
+<details class="section" open id="8b">
 <summary>8b · 公開資訊更新（推演基準日：2026-04-20）</summary>
 <div class="section-sub">完整版 OSINT 截止 2026/4/18 → 2 日內無重大新訊但需追蹤紅旗信號</div>
 
@@ -166,7 +344,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8c 影響鏈分析 ========== -->
-<details class="section" open>
+<details class="section" open id="8c">
 <summary>8c · 影響鏈分析</summary>
 <div class="section-sub">關鍵事件 → 一階 → 二階 → 三階影響推演</div>
 
@@ -231,7 +409,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8d 情境模擬 ========== -->
-<details class="section" open>
+<details class="section" open id="8d">
 <summary>8d · 情境模擬（5 路徑概率樹）</summary>
 <div class="section-sub">未來 12 個月 5 條路徑 + 觸發條件 + 機率 + 目標股價</div>
 
@@ -290,7 +468,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8e 個人化推衍 ========== -->
-<details class="section" open>
+<details class="section" open id="8e">
 <summary>8e · 個人化推衍（依風險偏好分三套方案）</summary>
 <div class="section-sub">投資人持股狀況 + 風險偏好 + 時間軸三維度適配</div>
 
@@ -344,7 +522,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8f 催化劑時間表 ========== -->
-<details class="section" open>
+<details class="section" open id="8f">
 <summary>8f · 催化劑時間表（未來 6 個月）</summary>
 <div class="section-sub">關鍵事件日曆 + 預期影響方向 + 觀察指標</div>
 
@@ -404,7 +582,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8g 蝴蝶效應推衍 ========== -->
-<details class="section" open>
+<details class="section" open id="8g">
 <summary>8g · 蝴蝶效應推衍（弱訊號 + 推演鏈 + 盲點）</summary>
 <div class="section-sub">B-1 複習新發現 6 項微弱訊號收斂 + 蝴蝶效應推演鏈 Top 3</div>
 
@@ -485,7 +663,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8h 貓膩推衍 ========== -->
-<details class="section" open>
+<details class="section" open id="8h">
 <summary>8h · 貓膩推衍（承接完整版第十二章 D 求證結論）</summary>
 <div class="section-sub">貓膩 🟡 黃 → 歷史劇本 + 反轉路徑 + 保護策略 + 追蹤清單</div>
 
@@ -577,7 +755,7 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </details>
 
 <!-- ========== 8i 推衍結論 ========== -->
-<details class="section" open>
+<details class="section" open id="8i">
 <summary>8i · 推衍結論（第四次信心校準）</summary>
 <div class="section-sub">最可能路徑 + 蝴蝶效應洞察 + 貓膩推衍摘要 + 行動清單 + 推衍有效期</div>
 
@@ -676,5 +854,40 @@ code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);f
 </div>
 
 </div>
+</main>
+</div><!-- /.shell -->
+
+<script>
+function toggleTheme(){
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('lelon-step8-theme', next);
+  document.getElementById('themeToggleBtn').innerHTML = next === 'dark' ? '☼ 切換亮色' : '☽ 切換暗色';
+}
+(function(){
+  var saved = localStorage.getItem('lelon-step8-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggleBtn');
+    if(btn) btn.innerHTML = saved === 'dark' ? '☼ 切換亮色' : '☽ 切換暗色';
+  });
+})();
+window.addEventListener('DOMContentLoaded', function(){
+  var tocLinks = document.querySelectorAll('.toc-list a');
+  var sections = document.querySelectorAll('details.section[id]');
+  function updateActive(){
+    var active = null;
+    sections.forEach(function(s){
+      var rect = s.getBoundingClientRect();
+      if(rect.top < 200) active = s.id;
+    });
+    tocLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === '#' + active); });
+  }
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+});
+</script>
 </body>
 </html>
