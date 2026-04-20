@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>金山電（8042）天機閣推衍報告 — 第八步推演版</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<!-- 圖表引擎（AI 依資料需要自主判斷是否使用） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<style>
+/* === 圖表容器 === */
+.chart-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0}
+.chart-wrap .chart-title{font-size:.82em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.chart-wrap .chart-note{font-size:.75em;color:var(--txt3);margin-top:4px;font-style:italic}
+.chart-wrap canvas{width:100%!important}
+.chart-wrap .echart{width:100%!important}
+/* 雙圖並排 */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+@media(max-width:650px){.chart-row{grid-template-columns:1fr}}
+/* 左右分欄：左=資料（表格/文字），右=圖表 */
+.data-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+.data-chart-row .chart-col .chart-wrap{margin:0}
+@media(max-width:750px){.data-chart-row{grid-template-columns:1fr}}
+/* === 基底重置 === */
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* === 色彩變數（深色版） === */
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+
+/* === 全域 === */
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+
+/* === Hero 標題區 === */
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+
+/* === 卡片（點擊展開/收合） === */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+
+/* === 表格 === */
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+
+/* === 提示框 === */
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+
+/* === 收合區塊 === */
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+
+/* === FIAS 標籤 === */
+.fias-f{color:#2e7d32;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(46,125,50,.25)}
+.fias-i{color:#1565c0;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(21,101,192,.25)}
+.fias-a{color:#b8960c;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(184,150,12,.25)}
+.fias-s{color:#c62828;font-weight:700;font-size:.75em;padding:2px 6px;border-radius:4px;background:rgba(198,40,40,.25)}
+
+/* === 段落標題 === */
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+
+/* === 網格佈局 === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* === 迷你卡片 === */
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.mini-card .num{font-size:1.4em;font-weight:900;margin:2px 0}
+.mini-card .title{font-weight:700;font-size:.8em;color:var(--base)}
+.mini-card .desc{font-size:.75em;color:var(--txt3);margin-top:2px}
+.bull-card{border-left:4px solid var(--bull)}
+.bear-card{border-left:4px solid var(--bear)}
+.neutral-card{border-left:4px solid var(--neutral)}
+
+/* === 估值區塊（ev 證據卡片） === */
+.ev{padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.84em;border:1px solid var(--border);background:var(--panel)}
+.ev .ev-t{font-weight:700;color:var(--base);margin-bottom:2px}
+.ev .ev-d{color:var(--txt2);font-size:.88em}
+.ev .ev-s{color:var(--txt3);font-size:.78em;margin-top:2px}
+
+/* === 信號燈 === */
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.light.green{background:#4caf50}.light.yellow{background:#ffc107}.light.red{background:#f44336}
+
+/* === 展開收合控制列 === */
+.toggle-bar{display:flex;gap:8px;justify-content:center;margin:0 0 12px}
+.toggle-btn{padding:4px 14px;border-radius:6px;font-size:.78em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--base);transition:background .15s}
+.toggle-btn:hover{background:var(--hover)}
+
+/* === 目錄 === */
+.toc{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.toc a{color:var(--link);text-decoration:none;font-size:.84em;display:block;padding:2px 0}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+
+/* === 時間軸 === */
+.timeline{position:relative;padding-left:24px;margin:10px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin:10px 0;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.tl-item .tl-date{font-size:.75em;color:var(--accent);font-weight:700}
+.tl-item .tl-title{font-size:.88em;font-weight:700;color:var(--base)}
+.tl-item .tl-desc{font-size:.82em;color:var(--txt2)}
+
+/* === 概率樹（第八步專用） === */
+.prob-tree{margin:8px 0}
+.prob-path{border:1px solid var(--border);border-radius:8px;margin:6px 0;overflow:hidden}
+.prob-header{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-weight:700;font-size:.88em;cursor:pointer;user-select:none}
+.prob-header:hover{background:var(--hover)}
+.prob-body{padding:6px 14px 10px;font-size:.82em;color:var(--txt2);border-top:1px solid var(--border)}
+.prob-bar{height:8px;border-radius:4px;margin-top:4px}
+.path-a{background:rgba(76,175,80,.1)}.path-a .prob-header{color:var(--bull)}
+.path-a .prob-bar{background:var(--bull)}
+.path-b{background:rgba(122,176,192,.08)}.path-b .prob-header{color:var(--neutral)}
+.path-b .prob-bar{background:var(--neutral)}
+.path-c{background:rgba(212,160,23,.08)}.path-c .prob-header{color:var(--warn)}
+.path-c .prob-bar{background:var(--warn)}
+.path-d{background:rgba(239,83,80,.08)}.path-d .prob-header{color:var(--bear)}
+.path-d .prob-bar{background:var(--bear)}
+
+/* === 蝴蝶效應信號卡（第八步專用） === */
+.signal-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin:5px 0}
+.signal-card .sig-type{font-size:.72em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px}
+.sig-type.sig-a{background:rgba(21,101,192,.2);color:#7ab0c0}   /* 基本面 */
+.sig-type.sig-b{background:rgba(184,150,12,.2);color:#d4b030}   /* 產業 */
+.sig-type.sig-c{background:rgba(90,125,96,.2);color:#6b9f72}    /* 市場籌碼 */
+.sig-type.sig-d{background:rgba(198,40,40,.2);color:#d4887a}    /* 地緣/政策 */
+.sig-type.sig-e{background:rgba(122,176,192,.2);color:#7ab0c0}  /* 技術面 */
+.signal-card .sig-title{font-weight:700;font-size:.86em;color:var(--base)}
+.signal-card .sig-desc{font-size:.82em;color:var(--txt2);margin-top:2px}
+
+/* === 推演鏈（第八步專用） === */
+.chain{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:6px 0}
+.chain .chain-title{font-weight:700;font-size:.88em;color:var(--base);margin-bottom:4px}
+.chain .chain-flow{font-size:.82em;color:var(--txt2);line-height:1.8}
+.chain-arrow{color:var(--accent);font-weight:700;margin:0 4px}
+
+/* === 信心校準表格（第八步專用） === */
+.calib-table th{text-align:center}
+.calib-table td{text-align:center}
+
+/* === 頁尾 === */
+.footer{text-align:center;padding:14px;color:var(--txt3);font-size:.75em;border-top:1.5px solid var(--border);margin-top:18px}
+
+/* === 互動流程圖（來源：小天對話流程說明.html） === */
+.flowchart{position:relative;padding:20px 0}
+.fnode{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-size:.9em;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;z-index:2;min-width:160px}
+.fnode:hover{transform:scale(1.05);z-index:10;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.fnode .icon{margin-right:6px;font-size:1.1em}
+.fnode.start{background:linear-gradient(135deg,#2a4a2a,#1a3a1a);border:2px solid var(--accent);color:var(--accent)}
+.fnode.process{background:#1a2a3a;border:1.5px solid #3a5a7a;color:var(--link)}
+.fnode.decision{background:#3a2a20;border:1.5px solid #7a5a3a;color:var(--gold);border-radius:4px;clip-path:polygon(8% 0%,92% 0%,100% 50%,92% 100%,8% 100%,0% 50%);padding:14px 32px}
+.fnode.action{background:#2a3a2a;border:1.5px solid #4a6a4a;color:var(--safe)}
+.fnode.error{background:#3a1a1a;border:1.5px solid #7a3a3a;color:var(--danger)}
+.fnode.end{background:#1a1a2a;border:2px solid var(--neutral);color:var(--neutral);border-radius:20px}
+.fnode.highlight{background:#2a2a1a;border:2px solid var(--gold);color:var(--gold)}
+.fnode .tooltip{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:10px;width:340px;max-width:90vw;background:#1e1e1e;border:1.5px solid var(--accent);border-radius:10px;padding:14px 16px;text-align:left;font-weight:400;font-size:.82em;color:var(--txt2);line-height:1.6;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.6);pointer-events:none}
+.fnode:hover .tooltip{display:block}
+.tooltip::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-bottom-color:var(--accent)}
+.tooltip .tt-title{font-weight:700;color:var(--base);font-size:.95em;margin-bottom:6px}
+.tooltip .tt-desc{color:var(--txt2);margin-bottom:4px}
+.flow-row{display:flex;justify-content:center;align-items:center;gap:12px;margin:0;flex-wrap:wrap}
+.flow-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.arrow-down{width:2px;height:28px;background:var(--border);position:relative;margin:0 auto}
+.arrow-down::after{content:'';position:absolute;bottom:-5px;left:-4px;border:5px solid transparent;border-top-color:var(--border)}
+.arrow-down.short{height:16px}
+.arrow-label{font-size:.75em;color:var(--txt3);text-align:center;padding:2px 8px}
+.arrow-right{width:30px;height:2px;background:var(--border);position:relative}
+.arrow-right::after{content:'';position:absolute;right:-5px;top:-4px;border:5px solid transparent;border-left-color:var(--border)}
+.branch-group{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:4px 0}
+.branch{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;min-width:140px;max-width:280px}
+.branch-label{font-size:.78em;color:var(--warn);font-weight:600;padding:2px 8px;background:#2a2a1a;border-radius:4px;margin-bottom:2px}
+.flow-section{margin:20px 0;padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:12px}
+.flow-section-title{font-size:.95em;font-weight:700;color:var(--accent);margin-bottom:12px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* === 列印 === */
+@media print{body{background:#fff}.card{box-shadow:none;break-inside:avoid}.card.collapsed .card-body{display:block}.card h3::after{display:none}details[open] summary{border-bottom:none}}
+</style>
+</head>
+<body>
+
+<div class="date-fixed">📅 2026-04-20</div>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>金山電 (8042) — 天機閣推衍版</h1>
+    <div class="sub">Step 8 推演版 · 敘事主軸三訊號組合 A/B/C 路徑推演 · 第四次信心校準</div>
+    <div class="desc">
+        <b>推衍基礎</b>：Step 7 Phase C-2 完整版（224 KB，2026-04-19 完稿）+ 最新情報（2026-04-10 基準）<br>
+        <b>推衍核心</b>：2026 Q2 前三項驗證點（AI 占比 / 資誠查核 / 配息率）決定解讀 A/B/C<br>
+        <b>推衍有效期</b>：2026-05-15 Q1 季報公告即需重校準
+    </div>
+    <div class="tags">
+        <span class="tag">8042 金山電</span>
+        <span class="tag">現價 NT$56</span>
+        <span class="tag">加權期望 NT$51.35</span>
+        <span class="tag">第四次校準 35%</span>
+        <span class="tag">12 月淨期望 -8% ~ +1.8%</span>
+        <span class="tag">風險報酬 1.3:1 偏不利</span>
+    </div>
+</div>
+
+<!-- 快照總覽 -->
+<div class="grid4">
+    <div class="mini-card neutral-card">
+        <div class="title">主假說 H1</div>
+        <div class="num" style="color:var(--link)">35% → ?</div>
+        <div class="desc">第四次校準待 Q1 季報</div>
+    </div>
+    <div class="mini-card warn-card">
+        <div class="title">三解讀分布</div>
+        <div class="num" style="color:var(--warn)">A 35 / B 30 / C 20</div>
+        <div class="desc">混合 15%</div>
+    </div>
+    <div class="mini-card bear-card">
+        <div class="title">下行不對稱</div>
+        <div class="num" style="color:var(--danger)">2.2x</div>
+        <div class="desc">上 25% vs 下 55%</div>
+    </div>
+    <div class="mini-card neutral-card">
+        <div class="title">關鍵時點</div>
+        <div class="num" style="color:var(--link)">2026/05-08</div>
+        <div class="desc">Q1 + 資誠 + Q2 三驗證</div>
+    </div>
+</div>
+
+<!-- 目錄 -->
+<div class="toc">
+    <strong style="font-size:.9em;color:var(--base)">推演版結構（9 章 8a-8i）</strong>
+    <a href="#ch8a">8a 推衍基礎確認 — 回溯 Step 1-7 事實錨點</a>
+    <a href="#ch8b">8b 最新情報更新（2026-04-10 至今差異）</a>
+    <a href="#ch8c">8c 影響鏈分析 — 三訊號組合三階級聯</a>
+    <a href="#ch8d">8d 情境模擬 — 四路徑決策樹</a>
+    <a href="#ch8e">8e 個人化推演 — 三種持倉情境行動建議</a>
+    <a href="#ch8f">8f 催化劑時間表 — 2026-05 至 2027-Q1</a>
+    <a href="#ch8g">8g 蝴蝶效應推演 — 5 類弱訊號 + Top 3 推演鏈</a>
+    <a href="#ch8h">8h 貓膩推演 — 承接 Step 7 Ch12 反共識六步</a>
+    <a href="#ch8i">8i 推演結論 — 第四次信心校準 + 行動清單</a>
+</div>
+
+<div class="toggle-bar">
+    <button class="toggle-btn" onclick="toggleAll(true)">全部展開</button>
+    <button class="toggle-btn" onclick="toggleAll(false)">全部收合</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8a 推衍基礎確認 -->
+<!-- ============================================================ -->
+<details open id="ch8a">
+<summary class="section-title">8a · 推衍基礎確認 — 回溯事實錨點</summary>
+<div class="section-sub">從原始資料（年報 / finlab / MOPS / 法說）確認 Step 1-7 推衍所依靠的核心事實</div>
+
+<table>
+    <tr><th style="width:30%">事實錨點</th><th>數值</th><th>出處</th><th style="width:60px">FIAS</th></tr>
+    <tr><td>2024 EPS</td><td>0.60 元（衰退 -16.7%，所得稅 +43% + 營業外轉虧）</td><td>2024 年報 p.1 + p.91</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>2025 全年 EPS</td><td>0.89 元（+48% V 型反轉；Q4 單季 0.65 元）</td><td>finlab 單季加總</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>2025 Q4 毛利率</td><td>23.66%（近 3 年單季高，2023 全年 17.33%）</td><td>finlab</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>2026-02 月營收</td><td>YoY +50.17%（連 6 月平均 +21.8%）</td><td>finlab + winvest</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>配息率</td><td>233%（1.4 / 0.60 動用歷年盈餘）+ 資本公積發放 0.1 元隱性減資</td><td>2024 年報 p.76</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>2025 研發預算</td><td>NT$5,000-7,000 萬（vs 2024 實際 NT$9,323 萬，-25~-46%）</td><td>2024 年報 p.96</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>廣州金立背書保證</td><td>CNY 8,600 萬 ≈ NT$3.6 億（占股本 27.8% / 淨值 8.7%）</td><td>2024 年報 p.65</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>泰國三廠 2025Q3 量產</td><td>新聞證實挹注營運（原承諾 2024Q3 延遲 1 年）</td><td>Yahoo 新聞 + 2024 年報</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>AI 切入層級</td><td>ODM 間接（主機 PCB/PSU/BBU/Power Shelf 四層）</td><td>2025-12-22 法說</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>2026 AI +30% guidance</td><td>管理層承諾（時程偏樂觀慣性需折扣 15-20%）</td><td>2025-12-22 法說</td><td><span class="fias-a">假設</span></td></tr>
+    <tr><td>現價 / PE</td><td>NT$56 / PE 62.92x（歷史 15-25x）</td><td>finlab 2026-04-10</td><td><span class="fias-f">事實</span></td></tr>
+    <tr><td>廣州金日 × HITACHI AIC</td><td>合資子公司（非單純技術授權）</td><td>年度差異比對 JSON subsidiary_evolution</td><td><span class="fias-f">事實</span></td></tr>
+</table>
+
+<div class="tip info">
+    <b>8a 推衍基礎重點</b>
+    12 項事實錨點全數回溯至年報 / finlab / MOPS / 法說原始來源。核心推衍變數 AI 占比（基本盤 10-15% 推估、管理層承諾 +30% 隱含 20% 以上）仍未直接揭露，是後續所有推演的最大不確定性源。三訊號組合（業績兌現 / 制度準備 / 反差財務）為敘事主軸基礎。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8b 最新情報更新 -->
+<!-- ============================================================ -->
+<details open id="ch8b">
+<summary class="section-title">8b · 最新情報更新（基準日 2026-04-10 → 今日 2026-04-20 差異）</summary>
+<div class="section-sub">10 天差異期間的情報盤點 + 紅旗專節</div>
+
+<table>
+    <tr><th>面向</th><th>Step 7 基準（2026-04-10）</th><th>最新狀態（2026-04-20）</th><th>差異</th></tr>
+    <tr><td>股價</td><td>NT$56.0</td><td>需即時查詢</td><td>10 日波動（本次推演不做即時查價）</td></tr>
+    <tr><td>2026-04 月營收</td><td>YoY +20.54%（已公告）</td><td>未變</td><td>無新月營收公告（5 月 10 日前後）</td></tr>
+    <tr><td>Q1 季報日期</td><td>預告 2026-05-15</td><td>日期未變</td><td>進入季報靜默期（25 天倒數）</td></tr>
+    <tr><td>資誠查核進度</td><td>預告 2026 Q2 公告</td><td>無公開更新</td><td>IR 未主動揭露換所原因</td></tr>
+    <tr><td>LME 銀/銅/釕</td><td>高檔震盪（銀 USD 103/oz）</td><td>維持</td><td>漲價潮延續</td></tr>
+    <tr><td>川普貿易政策</td><td>Section 301 審查中</td><td>無新擴大</td><td>觀察中</td></tr>
+    <tr><td>立隆電 / 鈺邦動態</td><td>立隆電 2026 Q1 累計 29.43 億（+9.25%）</td><td>無新法說</td><td>等待 Q1 季報同步</td></tr>
+</table>
+
+<div class="tip info" style="margin-top:8px">
+    <b>8b 10 天差異期間無重大結構性訊號更新</b>
+    2026-04-10 至 2026-04-20 為「Q1 季報前靜默期」，管理層、會計師、法人皆進入觀望狀態，無新重大訊息釋出。Step 7 推衍基礎仍有效，不需開設紅旗專節。<b>推演有效期維持至 2026-05-15 Q1 季報公告日</b>，該日之後必須重跑第四次信心校準。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8c 影響鏈分析 -->
+<!-- ============================================================ -->
+<details open id="ch8c">
+<summary class="section-title">8c · 影響鏈分析 — 三訊號組合三階級聯</summary>
+<div class="section-sub">從敘事主軸三訊號組合延伸出一階→二階→三階的影響鏈推演</div>
+
+<div class="grid3">
+    <div class="signal-card sc-bull">
+        <div class="sc-head">訊號組 1 影響鏈（業績催化）</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6">
+        <b>一階</b>：Q1 EPS ≥ 0.5 + AI 占比 ≥ 15% 公告<br>
+        ↓<br>
+        <b>二階</b>：月營收動能驗證 + 投信 2026/09 開始建倉 + 外資加碼<br>
+        ↓<br>
+        <b>三階</b>：PE 維持 55-60x + EPS 上修至 1.9-2.0 元 + 股價挑戰 NT$70-80<br>
+        <b>實現機率</b>：35%（= H1 主假說）
+        </div>
+    </div>
+    <div class="signal-card sc-neutral">
+        <div class="sc-head">訊號組 2 影響鏈（制度準備）</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6">
+        <b>一階</b>：資誠 2026 Q2 首份查核無保留意見公告<br>
+        ↓<br>
+        <b>二階</b>：治理黃燈 3 盞轉綠 + ESG 資金流入 + 法人重新評價<br>
+        ↓<br>
+        <b>三階</b>：PE 錨定至「治理升級溢價」28-35x 中上緣 + A7 隱藏優勢被市場定價<br>
+        <b>實現機率</b>：50%（高於 H1，因查核例行通過機率較高）
+        </div>
+    </div>
+    <div class="signal-card sc-bear">
+        <div class="sc-head">訊號組 3 影響鏈（反差財務）</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6">
+        <b>一階</b>：2025 配息率仍 &gt; 200% 或 2026 研發費率續降<br>
+        ↓<br>
+        <b>二階</b>：市場重新解讀為解讀 B 穩股或 C 收割（H2 上修、H3 上修）<br>
+        ↓<br>
+        <b>三階</b>：PE 收斂至 35-40x 或更低，股價修正 15-35%<br>
+        <b>實現機率</b>：50%（解讀 B 30% + C 20%）
+        </div>
+    </div>
+</div>
+
+<div class="tip warn" style="margin-top:8px">
+    <b>8c 跨鏈交互作用觀察</b>
+    三條影響鏈並非獨立：(a) 訊號組 1 + 訊號組 2 兌現（解讀 A 確認）→ PE 65-70x 上緣 + 股價挑戰 NT$80；(b) 訊號組 1 兌現 + 訊號組 3 出現（混合狀態）→ H1 增強但配息爭議 → PE 45-55x 震盪；(c) 訊號組 1 失敗 + 訊號組 3 強化（解讀 C 確認）→ H3 + H4 啟動 + 骨牌 D 觸發 → PE 25-30x + 股價 38-45。<b>最關鍵的跨鏈交叉點是 2026 Q2 Q1 季報 + 資誠查核同步發生的時窗</b>。
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8d 情境模擬 -->
+<!-- ============================================================ -->
+<details open id="ch8d">
+<summary class="section-title">8d · 情境模擬 — 四路徑決策樹</summary>
+<div class="section-sub">以敘事主軸四條路徑（A/B/D/C）做未來 12 月推演</div>
+
+<div class="fork-tree">
+<div class="fork-root"><div class="fork-node">2026-05 Q1 季報 + 06 資誠查核 + 08 Q2 季報</div></div>
+<div class="fork-branches b4">
+    <div class="fork-branch">
+        <div class="fb-label fb-bull">路徑 A (35%)</div>
+        <div class="fb-title">積極準備型兌現</div>
+        <div class="fb-price">NT$70-80 · PE 35x</div>
+        <div class="fb-desc">Q1 EPS ≥ 0.5 + AI 占比 ≥ 15% + 資誠無保留 + 配息率回常態。解讀 A 確認，H1 上修至 55%，投信二階段進場。</div>
+    </div>
+    <div class="fork-branch">
+        <div class="fb-label fb-neutral">路徑 B (30%)</div>
+        <div class="fb-title">題材穩股型延續</div>
+        <div class="fb-price">NT$50-60 · PE 50x</div>
+        <div class="fb-desc">Q1 EPS 0.4-0.5 + AI 占比 10-15% + 資誠無保留 + 配息率仍 &gt; 200%。H2 強化至 40%，股價震盪但不突破。</div>
+    </div>
+    <div class="fork-branch">
+        <div class="fb-label fb-warn">路徑 D (15%)</div>
+        <div class="fb-title">混合狀態</div>
+        <div class="fb-price">NT$45-58 · PE 40-55x</div>
+        <div class="fb-desc">三項驗證中兩項通過一項失守。市場暫時無法定調，PE 震盪於 45x 左右，等待第二輪驗證（Q2 季報）。</div>
+    </div>
+    <div class="fork-branch">
+        <div class="fb-label fb-bear">路徑 C (20%)</div>
+        <div class="fb-title">結構性收割型</div>
+        <div class="fb-price">NT$36-45 · PE 22-28x</div>
+        <div class="fb-desc">Q1 EPS &lt; 0.4 + AI 占比 &lt; 10% + 資誠保留意見 或 治理事件爆發。解讀 C 啟動，骨牌 A/C/D 連鎖觸發。</div>
+    </div>
+</div>
+</div>
+
+<div class="chart-wrap" style="margin-top:12px">
+    <div class="chart-title">四路徑期望股價加權（2026 Q2 前一輪驗證後）</div>
+    <div style="position:relative;height:200px">
+        <canvas id="pathWeight"></canvas>
+    </div>
+    <div class="chart-note">A 35% × 75 + B 30% × 55 + D 15% × 51 + C 20% × 40 = NT$54.30（-3.0% 於現價 56）</div>
+</div>
+
+<table style="margin-top:12px">
+    <tr><th>敏感度變數</th><th>變化 +1 單位</th><th>股價影響</th><th>關鍵驗證時點</th></tr>
+    <tr><td>Q1 AI 占比</td><td>+1pp 揭露</td><td>+2~3% 股價</td><td>2026-05-15 法說</td></tr>
+    <tr><td>Q2 毛利率</td><td>+1pp 維持</td><td>+5~7%</td><td>2026-08-14 季報</td></tr>
+    <tr><td>PE 估值</td><td>-5 倍收斂</td><td>-8~10%</td><td>投信持股變化</td></tr>
+    <tr><td>配息率</td><td>回到 120% 常態</td><td>+3~5%（解讀 A 強化）</td><td>2026-06 股東會</td></tr>
+</table>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8e 個人化推演 -->
+<!-- ============================================================ -->
+<details open id="ch8e">
+<summary class="section-title">8e · 個人化推演 — 三種持倉情境行動建議</summary>
+<div class="section-sub">依閣主可能情境（空手 / 已持有獲利 / 長期觀察）分層建議</div>
+
+<details open>
+<summary class="sub-section">8e.1 情境 A — 閣主空手（觀望中）</summary>
+<div class="tip info">
+    <b>行動建議（空手觀望）</b>
+    <b>不追高，等驗證 + 回檔</b>。現價 NT$56 在觀望區上緣（50-65），合理進場區 NT$40-50（PE 23-28x）尚有 12-28% 距離。
+    <br><br>
+    <b>進場觸發條件（6 條缺一不可）</b>：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>✅ 股價跌至 NT$40-50（PE 23-28x）或 EPS 上修至 1.3+</li>
+        <li>✅ 2026 Q1 EPS ≥ 0.5 元</li>
+        <li>✅ Q1 法說會揭露 AI 占比 ≥ 15%</li>
+        <li>✅ 投信 30 日累積轉為淨買超（連 3 週）</li>
+        <li>✅ 資誠首份查核無保留 + 無治理事件</li>
+        <li>✅ 2025 配息率回到 80-120% 常態（股東會公告後驗證）</li>
+    </ul>
+    6 項全通過才分批佈局 30-50%。
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8e.2 情境 B — 閣主已持有（獲利中）</summary>
+<div class="tip warn">
+    <b>行動建議（獲利中）</b>
+    <b>分批停利 + 設三道停損</b>。現價 NT$56 高於加權期望 NT$51.35（-8.3%），上行空間有限。
+    <br><br>
+    <b>部位管理</b>：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>短期持有者（6 個月內）：留 1/3 倉位、2/3 退出等回檔</li>
+        <li>長期持有者（1 年以上）：按三道停損線分層</li>
+    </ul>
+    <b>三道停損線</b>：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>🟡 跌破 NT$50 → 減碼 50%</li>
+        <li>🟠 跌破 NT$40 → 全出</li>
+        <li>🔴 跌破 NT$25 → 永久迴避、不再納入投資池</li>
+    </ul>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8e.3 情境 C — 閣主已持有（套牢中）</summary>
+<div class="tip good">
+    <b>行動建議（套牢中）</b>
+    <b>持有觀望，等三驗證</b>。基本面沒崩壞，不宜恐慌性賣出。
+    <br><br>
+    <b>決策節點</b>：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>2026-05 Q1 季報 + AI 占比 → 若 EPS ≥ 0.5 + AI ≥ 15% = 加碼或續抱；若 EPS &lt; 0.4 或 AI &lt; 10% = 全出</li>
+        <li>2026-06 資誠查核 → 無保留 = 續抱；保留 = 全出永久迴避</li>
+        <li>2026-08 Q2 季報 → EPS ≥ 0.55 + 毛利 ≥ 22% = 加碼；跳票 = 全出</li>
+    </ul>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8e.4 情境 D — 長期觀察者</summary>
+<div class="tip info">
+    <b>行動建議（長期觀察名單）</b>
+    金山電具備結構護城河（HITACHI AIC 合資 + 一貫化 + 家族穩定 + A7 制度準備），值得長期追蹤。等回到<b>安全邊際區 NT$32-40（PE 18-23x）+ 解讀 A 確認</b> = 絕佳長期進場機會（3-5 年持有）。
+</div>
+</details>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8f 催化劑時間表 -->
+<!-- ============================================================ -->
+<details open id="ch8f">
+<summary class="section-title">8f · 催化劑時間表（2026-05 至 2027-Q1）</summary>
+<div class="section-sub">未來 12 個月關鍵事件日曆 + 預期影響方向 + 觀察指標</div>
+
+<div class="timeline">
+    <div class="tl-item future">
+        <div class="tl-date">2026-05 月初</div>
+        <div class="tl-title">2026-04 月營收公告（5/10 前）</div>
+        <div class="tl-desc">連 5 月 YoY ≥ +20% 支持 H1；跌破 +15% = 動能減弱訊號。本事件為 Q1 季報的前置指標。</div>
+    </div>
+    <div class="tl-item critical">
+        <div class="tl-date">2026-05-15 ★★★</div>
+        <div class="tl-title">2026 Q1 季報 + 法說會 AI 占比揭露</div>
+        <div class="tl-desc">整年最關鍵驗證點。Q1 EPS ≥ 0.5 + AI ≥ 15% = 解讀 A 啟動、H1 上修至 50%；&lt; 0.4 或 &lt; 10% = 解讀 C 觸發、骨牌 A 啟動。</div>
+    </div>
+    <div class="tl-item future">
+        <div class="tl-date">2026-06</div>
+        <div class="tl-title">2025 年度股東會 + 股利公告</div>
+        <div class="tl-desc">觀察：(a) 2025 配息率 — 若仍 &gt; 200% 則訊號組 3 解讀 B/C 強化；(b) 黃文琪獨董是否被質詢通嘉科技 2402 競業；(c) 新任三席董事答詢品質。</div>
+    </div>
+    <div class="tl-item critical">
+        <div class="tl-date">2026 Q2（6月中）★★★</div>
+        <div class="tl-title">資誠首份查核報告公告</div>
+        <div class="tl-desc">整年最關鍵治理檢核。無保留 → C6 隱性催化劑兌現 + A7 被市場定價；非無保留 → R3 觸發、骨牌 C 啟動、永久迴避條件達成。</div>
+    </div>
+    <div class="tl-item future">
+        <div class="tl-date">2026-07</div>
+        <div class="tl-title">川普貿易政策動態 + Section 301 擴大可能</div>
+        <div class="tl-desc">若擴大至電子零組件 → R2 中國曝險觸發。需 IR 配合揭露地區別細分（中國大陸推估 30-50%）才能量化衝擊。</div>
+    </div>
+    <div class="tl-item critical">
+        <div class="tl-date">2026-08-14 ★★★</div>
+        <div class="tl-title">2026 Q2 季報（整年最關鍵單一驗證點）</div>
+        <div class="tl-desc">毛利率 ≥ 22% + EPS ≥ 0.55 = H1 兌現、信心升至 55%（中度確信）；毛利 &lt; 20% 或 EPS &lt; 0.4 = H1 崩解、骨牌 D 啟動、股價 -25~-35%。</div>
+    </div>
+    <div class="tl-item future">
+        <div class="tl-date">2026-09 ~ 10</div>
+        <div class="tl-title">投信進場窗口（Q2 後 2-4 週）</div>
+        <div class="tl-desc">投信連 3 週淨買超 = 主力確認、可加碼至 70-80%；若 Q2 兌現但投信仍 0 張 = 機構對管理層承諾可信度仍存疑（深層警訊）。</div>
+    </div>
+    <div class="tl-item future">
+        <div class="tl-date">2026-11</div>
+        <div class="tl-title">Q3 法說會（AI 占比第二次驗證）</div>
+        <div class="tl-desc">若 Q1+Q2+Q3 累計 AI 占比呈上升軌跡 → H1 結構性確認；若維持低占比 → H2 勝出。</div>
+    </div>
+    <div class="tl-item future">
+        <div class="tl-date">2027 Q1</div>
+        <div class="tl-title">立隆電 NVIDIA Rubin 認證 + 鈺邦 V-Chip 擴產完成</div>
+        <div class="tl-desc">H4 ODM 擠出假說觸發點。若金山電 AI 月營收 2027 Q1 開始相對立隆電/鈺邦走弱 = R4 觸發、中長期看空。</div>
+    </div>
+</div>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8g 蝴蝶效應推演 -->
+<!-- ============================================================ -->
+<details open id="ch8g">
+<summary class="section-title">8g · 蝴蝶效應推演 — 5 類弱訊號 + Top 3 推演鏈</summary>
+<div class="section-sub">從本次分析所有資料中找出被忽略的弱訊號，推演 3-5 階連鎖反應</div>
+
+<details open>
+<summary class="sub-section">8g.1 弱訊號雷達（5 類）</summary>
+<table>
+    <tr><th>類別</th><th>弱訊號</th><th>被忽略的原因</th><th>潛在影響</th></tr>
+    <tr><td>A 財務微弱</td><td><b>2025 研發預算下降至 NT$5,000-7,000 萬</b>（vs 2024 實際 NT$9,323 萬，-25~-46%）</td><td>大部分分析只看「研發費率上升趨勢」2019-2024 數字，忽略 2025 預算下降</td><td>2027-2028 新品儲備不足 → H4 ODM 擠出加速</td></tr>
+    <tr><td>B 管理層語言</td><td><b>2025-12-22 法說原話「AI 應用將<u>彌補</u>消費性電子低迷」</b></td><td>市場聚焦「AI +30%」，忽略「彌補」二字透露的傳統業務衰退</td><td>月營收爆衝可能是 AI 補貼衰退而非雙引擎齊發，Q2 若消費性回穩則毛利率可能反而承壓</td></tr>
+    <tr><td>C 結構偏離</td><td><b>資本公積發放現金 0.1 元（NT$1,295 萬）隱性減資</b></td><td>傳統配息分析只看股利金額，忽略資金來源（盈餘 vs 資本公積）</td><td>若連續多年資本公積發放 → 淨值持續減少 → ROE 被動虛高的結構性風險</td></tr>
+    <tr><td>D 時序巧合</td><td><b>2024 年內六件治理事件同期密集</b>（換所 + 背書保證 + 董事會改制 + 章程修訂 + 永續委員會）</td><td>投資人習慣看單一事件，忽略「同期密集」本身的戰略意義</td><td>可能是訊號組 2「系統性制度準備」的實證（解讀 A）或訊號組 3「制度變動下的資金運用重整」（解讀 B/C）</td></tr>
+    <tr><td>E 外部訊號</td><td><b>52% 鋁電解製造商轉向 polymer-hybrid</b>（Business Research Insights 產業報告）</td><td>金山電分析聚焦自身業績，忽略產業級「液態電容正成為少數派」的趨勢</td><td>金山電液態 75% 產品結構若 3 年內不轉型，可能成為產業逆風中的退場者</td></tr>
+</table>
+</details>
+
+<details open>
+<summary class="sub-section">8g.2 Top 3 蝴蝶效應推演鏈</summary>
+
+<div class="ev">
+    <div class="ev-t">推演鏈 1 · 研發預算下降 → ODM 擠出（從 A 類弱訊號延伸）</div>
+    <div class="ev-d">
+    <b>起點</b>：2025 研發預算降 25-46%<br>
+    → <b>1 階</b>：2025-2027 新品量產速度減緩（vs 2024 量產 4 項新品）<br>
+    → <b>2 階</b>：立隆電（松下 Hybrid 專利）+ 鈺邦（純固態）2027 擴產完成，金山電新品庫存落後 1-2 代<br>
+    → <b>3 階</b>：ODM 客戶（Dell/HPE/SMCI）簡化供應鏈，優先採用第一梯隊（立隆電/鈺邦）而非次段（金山電）<br>
+    → <b>4 階</b>：金山電 AI 營收占比從 2026 的 10-15% 回落至 2028 的 5-8%，H4 ODM 擠出假說兌現<br>
+    <b>機率</b>：25%（= H4 + R4 機率）<br>
+    <b>衝擊</b>：股價修正 25-35%，PE 回到歷史中位 20x
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">推演鏈 2 · 「彌補」語言 → 毛利率結構性承壓（從 B 類弱訊號延伸）</div>
+    <div class="ev-d">
+    <b>起點</b>：管理層原話「AI 應用將彌補消費性電子低迷」<br>
+    → <b>1 階</b>：2025 年整體營收成長主要來自 AI 補貼衰退（非雙引擎）<br>
+    → <b>2 階</b>：若 2026 消費性電子因終端需求回穩而出現「需求回升但毛利率低」→ 營收組合中低毛利部分擴大<br>
+    → <b>3 階</b>：Q2 2026 毛利率可能從 2025Q4 的 23.66% 回落至 20-21%（低毛利消費性電子占比回升）<br>
+    → <b>4 階</b>：市場誤解為「漲價反轉」→ H3 估值修正觸發 → PE 快速收斂<br>
+    <b>機率</b>：18%<br>
+    <b>衝擊</b>：股價 -15~-22%，Q2 季報成為反轉觸發點
+    </div>
+</div>
+
+<div class="ev">
+    <div class="ev-t">推演鏈 3 · 隱性減資 → ROE 虛高結構性風險（從 C 類弱訊號延伸）</div>
+    <div class="ev-d">
+    <b>起點</b>：2024 資本公積發放 0.1 元 = NT$1,295 萬隱性減資<br>
+    → <b>1 階</b>：若 2025-2027 連續維持此模式，3 年累計減資 NT$3,884 萬（每股淨值減 0.30 元）<br>
+    → <b>2 階</b>：ROE 分母（淨值）持續縮小 → ROE 數字看似上升但實質獲利能力未改善<br>
+    → <b>3 階</b>：若 2027 年 ROE 看似回到 10% 但實質獲利能力 8%，市場發現「ROE 虛高」<br>
+    → <b>4 階</b>：PE 回到「結構性低獲利能力」的 12-15x（鋁電解傳統廠歷史下緣）<br>
+    <b>機率</b>：12%（解讀 C 子路徑）<br>
+    <b>衝擊</b>：股價 -30~-40%，長期結構性折價
+    </div>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8g.3 盲點獵手（3 個被忽略的角度）</summary>
+<table>
+    <tr><th>盲點</th><th>內容</th><th>對推演的影響</th></tr>
+    <tr><td>盲點 1：產品組合結構演化</td><td>Step 1-7 分析聚焦金山電「固態 25% / 液態 75%」當下組合，但未深入推估「3 年後能否拉升固態至 35-40%」的確定性 — 需要 R&D 持續投入支持，但 2025 研發預算下降是反向訊號</td><td>若產品組合演化失敗 → H6 結構升級假說（18%）降至 8-10%</td></tr>
+    <tr><td>盲點 2：永續發展子公司戰略意義</td><td>2023 新設永續發展股份有限公司（廢棄物處理業）虧損 NT$1,663 萬，但這可能是金山電「多金屬/材料回收平台」的早期布局（與衛司特 6894 有重疊）— 若 2027+ 開始產生貢獻，是未定價的長期選擇權</td><td>可能使 H6 結構升級假說從 18% 上修至 22-25%（長期）</td></tr>
+    <tr><td>盲點 3：家族接班第三代可見性</td><td>江士勲（70-80 歲）→ 江慶信（40-50 歲）傳承完成，但未看到第三代布局。若江慶信 2030+ 面臨個人健康/其他退出 — 第二次接班是完全未定價的結構風險</td><td>長期（5 年+）潛在 R8 風險，Step 7-8 未納入</td></tr>
+</table>
+</details>
+
+<details open>
+<summary class="sub-section">8g.4 歷史劇本比對</summary>
+<div class="ev">
+    <div class="ev-t">歷史相似案例：2008-2010 金山電 CB 密集轉增資期</div>
+    <div class="ev-d">
+    當前 2024-2025 年的治理升級 + 股權反差行為（配息 233% + 資本公積發放）與金山電<b>2008-2010 年密集 CB 轉增資期</b>有相似結構 — 當時股本快速膨脹 + 配息維持、毛利率震盪、最終 2018 第五次 CB 全數結案。<br>
+    <b>歷史相似度評分</b>：35/100（部分結構類似，但時代背景、產業位階、技術合作層級均已改變，不宜完全類推）。<br>
+    <b>關鍵差異</b>：2024-2025 的治理升級是<b>首次</b>系統性動作（非 2008-2010 純財務操作），這是訊號組 2 的正面訊號。
+    </div>
+    <div class="ev-s">來源：2024 年報 p.70-73 股本變動表歷史對照 + 2008-2010 歷次 CB 公告</div>
+</div>
+</details>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8h 貓膩推演 -->
+<!-- ============================================================ -->
+<details open id="ch8h">
+<summary class="section-title">8h · 貓膩推演 — 承接 Step 7 Ch12 反共識偵測</summary>
+<div class="section-sub">貓膩燈號承接（4 黃 / 2 綠）+ 歷史劇本推演 + 反轉路徑 + 保護策略 + 追蹤清單</div>
+
+<details open>
+<summary class="sub-section">8h.1 承接 Step 7 貓膩結論</summary>
+<table>
+    <tr><th>貓膩項</th><th>Step 7 燈號</th><th>核心假說</th><th>成立機率</th></tr>
+    <tr><td>會計異常</td><td>🟢 綠</td><td>資誠尚無保留意見跡象</td><td>5-10%</td></tr>
+    <tr><td>關聯交易違規（黃文琪 × 通嘉科技推論）</td><td>🟡 黃</td><td>解除競業禁止對象未公開</td><td>15-20%</td></tr>
+    <tr><td>內部人異常買賣</td><td>🟢 綠</td><td>江家無減持、新任持股 0</td><td>5%</td></tr>
+    <tr><td>治理揭露品質（p.66 口徑差異）</td><td>🟡 黃</td><td>口徑差異非矛盾但揭露不完整</td><td>20-25%</td></tr>
+    <tr><td>管理層承諾可信度</td><td>🟡 黃</td><td>泰國廠延遲 1 年反映慣性</td><td>30-35%</td></tr>
+    <tr style="background:rgba(212,160,23,.08)"><td>🆕 訊號組 3 反差行為</td><td>🟡 黃</td><td>解讀 B/C 可能真實</td><td>50%（B+C）</td></tr>
+</table>
+</details>
+
+<details open>
+<summary class="sub-section">8h.2 歷史劇本推演（若解讀 C 成立）</summary>
+<div class="ev">
+    <div class="ev-t">如果訊號組 3 解讀 C（結構性收割）成立</div>
+    <div class="ev-d">
+    <b>最接近的歷史劇本</b>：台股「老牌傳統電子廠 AI 題材熱炒後退場」的典型路徑 — 多出現於 2017-2018 伺服器熱炒尾聲、2020-2021 5G 熱炒尾聲。<br>
+    <b>時間跨度（從轉折點到估值回歸）</b>：<br>
+    - 最快：3-6 個月（如 2026-08 Q2 季報直接觸發 H1 崩解 + R1 + R3 連鎖）<br>
+    - 最慢：12-18 個月（題材延續至 2027 Q1 立隆電擴產完成才明顯擠壓）<br>
+    - 最可能：6-9 個月（2026-05 Q1 + 08 Q2 連續跳票）<br>
+    <b>影響範圍（歷史跌幅參考）</b>：<br>
+    - 估值修正區間：PE 62.92x → 20-25x（跌 68-71%）<br>
+    - 股價跌幅：現價 56 → NT$25-32（-43~-55%）<br>
+    - EPS 不變情境下若 PE 回到歷史中位 20x × EPS 1.5 = NT$30<br>
+    <b>歷史相似度</b>：40/100（部分結構類似但金山電有 HITACHI AIC 合資與家族控股作為結構差異化緩衝）
+    </div>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8h.3 反轉路徑決策樹</summary>
+<div class="fork-tree">
+<div class="fork-root"><div class="fork-node">反轉觸發時點</div></div>
+<div class="fork-branches b3">
+    <div class="fork-branch">
+        <div class="fb-label fb-bear">觸發點 1</div>
+        <div class="fb-title">2026-05 Q1 季報跳票</div>
+        <div class="fb-price">股價 -15~20% 急修</div>
+        <div class="fb-desc">Q1 EPS &lt; 0.4 + AI 占比未揭露或 &lt; 10% → H1 機率下修至 15% → PE 收斂至 40x → 股價 43-47</div>
+    </div>
+    <div class="fork-branch">
+        <div class="fb-label fb-bear">觸發點 2</div>
+        <div class="fb-title">2026 Q2 資誠保留意見</div>
+        <div class="fb-price">股價 -20~30% 單日重挫</div>
+        <div class="fb-desc">治理信心崩解 → H5 機率從 8% 跳至 30% → PE 25-30x → 股價 35-42，屬不可逆永久傷害</div>
+    </div>
+    <div class="fork-branch">
+        <div class="fb-label fb-bear">觸發點 3</div>
+        <div class="fb-title">2026-08 Q2 季報雙跳票</div>
+        <div class="fb-price">股價 -25~35% 連續修正</div>
+        <div class="fb-desc">毛利 &lt; 20% + EPS &lt; 0.4 → 骨牌 D 收割型觸發 → PE 20-25x → 股價 28-35</div>
+    </div>
+</div>
+</div>
+
+<div class="tip warn" style="margin-top:8px">
+    <b>先知先覺者領先指標</b>
+    股價從 2026-02-26 的 61.3 元開始見頂回落，4/2 跌至 51.0 後反彈。期間<b>投信 30 日累積始終為 0 張 + 融券維持 2 張</b>顯示機構 / 空方皆未進場 — 這本身就是「先知先覺者尚未行動」的中性訊號。若任一觸發點啟動，投信可能提前 1-2 週賣超（通常在重大訊息公告前 5-10 個交易日）。
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8h.4 保護策略</summary>
+<table>
+    <tr><th>情境</th><th>策略</th><th>具體執行</th></tr>
+    <tr><td>相信貓膩存在（50%）</td><td>減碼 + 設停損</td><td>現價減碼 30-50%，剩餘部位設跌破 NT$50 減碼、NT$40 全出</td></tr>
+    <tr><td>不確定（30%）</td><td>部位中性配置</td><td>維持 30-50% 倉位，設動態停損（跟隨 PE 50x 線走）</td></tr>
+    <tr><td>相信清白（20%）</td><td>等驗證再加碼</td><td>等資誠無保留 + Q1 EPS 達標再分批建倉</td></tr>
+</table>
+
+<div class="tip good" style="margin-top:8px">
+    <b>最早的逃生信號</b>
+    <b>投信 30 日累積由 0 張轉為淨賣超</b>（即使每日僅賣超 10-50 張）是最早的機構預警信號。若配合融券餘額從 2 張跳升至 100+ 張（空方開始建倉），則反轉機率大幅上升。這兩個指標<b>通常領先重大訊息 5-10 個交易日</b>，可作為快速反應依據。
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8h.5 貓膩追蹤清單</summary>
+<table>
+    <tr><th>追蹤項</th><th>確認指標（貓膩被證實）</th><th>否定指標（貓膩被排除）</th><th>檢查頻率</th></tr>
+    <tr><td>資誠查核意見</td><td>保留 / 無法表示意見 / 強調事項</td><td>無保留意見且無特殊聲明</td><td>每月 MOPS 查訊</td></tr>
+    <tr><td>配息政策變化</td><td>2025 年度配息率仍 &gt; 200% + 再度發放資本公積</td><td>2025 年度配息率回到 80-120% 常態 + 無資本公積發放</td><td>2026-06 股東會後</td></tr>
+    <tr><td>黃文琪 × 通嘉科技</td><td>股東會質詢 / MOPS 關聯交易揭露 / 媒體報導</td><td>IR 主動澄清無交易往來</td><td>每季</td></tr>
+    <tr><td>研發費率</td><td>2026 年度實際研發費率 &lt; 2%（vs 2024 的 2.72%）</td><td>2026 年度研發費率回升至 2.5%+</td><td>每季季報</td></tr>
+    <tr><td>新任三席董事穩定性</td><td>2026 年內有任一席請辭</td><td>2027 年前無任一席變動</td><td>每月 MOPS</td></tr>
+    <tr><td>投信持股動向</td><td>連續 30 日 0 張 + 融券跳升至 100+ 張</td><td>投信連 3 週淨買超</td><td>每日 / 週</td></tr>
+    <tr><td>下次檢查日期</td><td colspan="2">2026-05-15（Q1 季報公告當日）</td><td>季度</td></tr>
+</table>
+</details>
+</details>
+
+<!-- ============================================================ -->
+<!-- 8i 推演結論 + 第四次信心校準 -->
+<!-- ============================================================ -->
+<details open id="ch8i">
+<summary class="section-title">8i · 推演結論 — 第四次信心校準</summary>
+<div class="section-sub">綜合 8a-8h 推演結果 + 蝴蝶效應洞察 + 行動清單 + 有效期聲明</div>
+
+<details open>
+<summary class="sub-section">8i.1 第四次信心校準</summary>
+<table>
+    <tr><th>假說</th><th>Step 4 ACH</th><th>Step 5 壓力</th><th>Step 6 評審團</th><th>Step 8 推演（第四次）</th><th>累計變化</th></tr>
+    <tr style="background:rgba(107,159,114,.08)"><td><b>H1 AI 擴散（主）</b></td><td>42%</td><td>38%</td><td>35%</td><td><b>33%</b></td><td style="color:var(--warn)">-9%（研發預算下降弱訊號扣 2%）</td></tr>
+    <tr><td>H2 成本因子</td><td>33%</td><td>33%</td><td>33%</td><td>33%</td><td>0%</td></tr>
+    <tr><td>H3 估值過高</td><td>15%</td><td>18%</td><td>20%</td><td><b>22%</b></td><td style="color:var(--warn)">+7%（訊號組 3 弱訊號累計）</td></tr>
+    <tr><td>H4 ODM 擠出</td><td>12%</td><td>12%</td><td>12%</td><td><b>13%</b></td><td style="color:var(--warn)">+1%（產業 52% 轉 polymer-hybrid 訊號）</td></tr>
+    <tr><td>H5 治理風險</td><td>7%</td><td>8%</td><td>10%→8%</td><td>8%</td><td>+1%</td></tr>
+    <tr><td>H6 結構升級</td><td>22%</td><td>20%</td><td>18%</td><td><b>19%</b></td><td style="color:var(--neutral)">+1%（永續子公司盲點上修）</td></tr>
+    <tr style="background:rgba(212,160,23,.08)"><td><b>主流看多（H1+H2+H6）</b></td><td>97%</td><td>91%</td><td>86%</td><td><b>85%</b></td><td style="color:var(--warn)">-12% 持續收縮</td></tr>
+    <tr><td><b>反面看空（H3+H4）</b></td><td>27%</td><td>30%</td><td>32%</td><td><b>35%</b></td><td style="color:var(--warn)">+8% 持續擴大</td></tr>
+</table>
+
+<div class="chart-wrap" style="margin-top:12px">
+    <div class="chart-title">ACH 四次信心校準軌跡（Step 4 → 5 → 6 → 8）</div>
+    <div style="position:relative;height:220px">
+        <canvas id="fourCalibration"></canvas>
+    </div>
+    <div class="chart-note">H1 累計 -9%（42→33）、H3 累計 +7%（15→22）— 主流看多持續收縮、反面看空持續擴大</div>
+</div>
+
+<div class="tip warn" style="margin-top:8px">
+    <b>第四次校準關鍵訊號：反面 H3 持續上修</b>
+    H3 估值過度樂觀從 Step 4 的 15% 連續四次上修至 Step 8 的 22%（累計 +7%），主流看多從 97% 收縮至 85%（累計 -12%）。若 2026 Q1 季報後進入 Step 9 追蹤，預估 H3 可能續升至 25-28%。<b>這意味著每一次獨立方法論的深入檢視，反面假說都獲得邊際強化 — 這是重要的分析警訊</b>（避免「信心遞減」被忽略）。
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8i.2 蝴蝶效應洞察摘要（最重要的 3 個被忽略見解）</summary>
+<div class="grid3">
+    <div class="signal-card sc-warn">
+        <div class="sc-head">洞察 1：研發預算下降是 H4 ODM 擠出的加速器</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6;margin-top:6px">2025 研發預算 -25~-46% 不僅是單年緊縮，而是 2027-2028 新品儲備的結構性不足。若立隆電 / 鈺邦 2027 Q1 擴產完成，金山電可能失去 ODM 間接切入的位置。</div>
+    </div>
+    <div class="signal-card sc-warn">
+        <div class="sc-head">洞察 2：「彌補」二字透露消費性業務在衰退</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6;margin-top:6px">管理層 2025-12-22 法說原話「AI 應用將彌補消費性電子低迷」— 月營收爆衝可能是 AI 補貼衰退而非雙引擎齊發。若 2026 消費性回穩但毛利較低，Q2 毛利率反而承壓。</div>
+    </div>
+    <div class="signal-card sc-warn">
+        <div class="sc-head">洞察 3：資本公積發放隱性減資是 ROE 虛高風險</div>
+        <div style="font-size:.82em;color:var(--txt2);line-height:1.6;margin-top:6px">2024 資本公積發放 0.1 元 = NT$1,295 萬淨值直接減少。若連續多年維持，3 年累計減資 NT$3,884 萬（每股淨值減 0.30 元），ROE 分母縮小使數字虛高，真實獲利能力未改善。</div>
+    </div>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8i.3 貓膩推演摘要</summary>
+<div class="tip warn">
+    <b>若貓膩成立的最關鍵影響 + 保護策略</b>
+    <b>最關鍵影響</b>：訊號組 3（配息 233% + 研發預算下降 + 資本公積發放隱性減資）若被市場重新解讀為解讀 B（題材穩股）或 C（結構性收割），則 2026 Q2 資誠查核或 Q2 季報後可能觸發「敘事主軸翻轉」— 這不是單純 EPS 下修或估值修正，而是整個「積極準備型」敘事被重估為「末升段收割」，修正幅度可達 -32~-55%（骨牌 D 情境）。
+    <br><br>
+    <b>保護策略</b>：
+    <ol style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>投信 30 日累積轉淨賣超 = 立即減碼 30%</li>
+        <li>融券餘額跳升至 100+ 張 = 再減碼 30%</li>
+        <li>跌破 NT$50 = 減碼剩餘部位 50%</li>
+        <li>跌破 NT$40 = 全出</li>
+        <li>資誠保留意見 = 永久迴避，不再納入投資池</li>
+    </ol>
+</div>
+</details>
+
+<details open>
+<summary class="sub-section">8i.4 最終行動清單</summary>
+<table>
+    <tr><th>角色</th><th>當前建議</th><th>觸發調整條件</th></tr>
+    <tr><td>空手觀望者</td><td>不追高、等 6 項進場條件齊備</td><td>PE ≤ 45x + Q1 EPS ≥ 0.5 + AI ≥ 15% + 投信轉買 + 資誠無保留 + 配息率常態化</td></tr>
+    <tr><td>獲利中持有者</td><td>留 1/3 倉位、2/3 退出等回檔</td><td>三道停損：50 減碼 50% / 40 全出 / 25 永久迴避</td></tr>
+    <tr><td>套牢中持有者</td><td>持有觀望等三驗證</td><td>Q1 / 資誠 / Q2 任一失守即全出</td></tr>
+    <tr><td>長期觀察者</td><td>放入觀察名單</td><td>等回到 NT$32-40 + 解讀 A 確認 = 絕佳進場機會</td></tr>
+</table>
+</details>
+
+<details open>
+<summary class="sub-section">8i.5 推演有效期聲明</summary>
+<div class="tip info">
+    <b>推演有效期：2026-05-15 前（Q1 季報公告日）</b>
+    本推演（2026-04-20 執行）基於 2026-04-10 基準資料 + 敘事主軸三訊號組合 A/B/C 框架。<b>有效期至 2026-05-15 Q1 季報公告當日</b>，該日後：
+    <ul style="padding-left:20px;margin-top:4px;line-height:1.7">
+        <li>Q1 EPS 實際值 + AI 占比揭露會使四次校準重新配置</li>
+        <li>若 Q1 表現偏離 H1 預期（EPS ≥ 0.5），則進入 Step 9 追蹤並重跑第八步推演</li>
+        <li>若 Q1 跳票（EPS &lt; 0.4），則立即執行骨牌 A 連鎖保護策略，Step 9 追蹤啟動減碼</li>
+        <li>資誠首份查核報告（2026 Q2 中）為整年單點決定因子，獨立於 Q1/Q2 季報</li>
+    </ul>
+</div>
+</details>
+</details>
+
+<div class="footer">
+    <p><b>天機閣 — 推衍系統 / 投資分析 Step 8 推演版</b></p>
+    <p>報告日期：2026-04-20 | 推衍有效期：2026-05-15 | 第四次信心校準：H1 主假說 33%</p>
+    <p>產出：第八步_推演版.html（本檔）。基於 Step 7 Phase C-2 正式版（224 KB）+ 敘事主軸三訊號組合</p>
+    <p style="margin-top:4px">免責聲明：所有分析報告僅供個人研究參考，不構成任何投資建議。</p>
+</div>
+
+</div>
+
+<script>
+function toggleAll(expand){
+    document.querySelectorAll('details').forEach(function(d){ d.open = expand; });
+}
+
+(function(){
+    if (typeof Chart === 'undefined') return;
+
+    // 8d 四路徑期望股價加權
+    const pathCtx = document.getElementById('pathWeight');
+    if (pathCtx) new Chart(pathCtx, {
+        type: 'bar',
+        data: {
+            labels: ['路徑 A 35%', '路徑 B 30%', '路徑 D 15%', '路徑 C 20%'],
+            datasets: [{
+                label: '目標價中位 (NT$)',
+                data: [75, 55, 51, 40],
+                backgroundColor: ['rgba(76,175,80,0.55)','rgba(122,176,192,0.55)','rgba(212,160,23,0.55)','rgba(239,83,80,0.55)'],
+                borderColor: ['rgba(76,175,80,1)','rgba(122,176,192,1)','rgba(212,160,23,1)','rgba(239,83,80,1)'],
+                borderWidth: 1.5, yAxisID: 'y'
+            },{
+                label: '加權貢獻 (NT$)',
+                data: [26.25, 16.5, 7.65, 8.0],
+                type: 'line',
+                borderColor: 'rgba(212,176,48,1)',
+                backgroundColor: 'rgba(212,176,48,0.15)',
+                borderWidth: 2, tension: 0.25, yAxisID: 'y1',
+                pointBackgroundColor: 'rgba(212,176,48,1)', pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                y: {position: 'left', ticks: {color: '#b8b0a5', font: {size: 10}}, grid: {color: 'rgba(255,255,255,0.08)'}, title: {display: true, text: '目標價', color: '#b8b0a5', font: {size: 10}}},
+                y1: {position: 'right', ticks: {color: '#d4b030', font: {size: 10}}, grid: {display: false}, title: {display: true, text: '加權', color: '#d4b030', font: {size: 10}}},
+                x: {ticks: {color: '#b8b0a5', font: {size: 10}}, grid: {display: false}}
+            },
+            plugins: {legend: {labels: {color: '#e8e4dc', font: {size: 10}}}}
+        }
+    });
+
+    // 8i 四次信心校準軌跡
+    const fourCtx = document.getElementById('fourCalibration');
+    if (fourCtx) new Chart(fourCtx, {
+        type: 'line',
+        data: {
+            labels: ['Step 4 ACH', 'Step 5 壓力', 'Step 6 評審團', 'Step 8 推演'],
+            datasets: [
+                {label:'H1 AI 擴散 (主)', data:[42, 38, 35, 33], borderColor:'rgba(107,159,114,1)', backgroundColor:'rgba(107,159,114,0.1)', borderWidth:3, tension:0.2, pointRadius:5},
+                {label:'H2 成本因子', data:[33, 33, 33, 33], borderColor:'rgba(122,176,192,1)', borderWidth:2, tension:0.2, pointRadius:4},
+                {label:'H3 估值過高', data:[15, 18, 20, 22], borderColor:'rgba(212,160,23,1)', borderWidth:2, tension:0.2, pointRadius:4, borderDash:[5,3]},
+                {label:'H4 ODM 擠出', data:[12, 12, 12, 13], borderColor:'rgba(212,136,122,0.7)', borderWidth:1.5, tension:0.2, pointRadius:3, borderDash:[5,3]},
+                {label:'H5 治理風險', data:[7, 8, 8, 8], borderColor:'rgba(239,83,80,1)', borderWidth:2, tension:0.2, pointRadius:4, borderDash:[3,3]},
+                {label:'H6 結構升級', data:[22, 20, 18, 19], borderColor:'rgba(212,176,48,0.85)', borderWidth:1.5, tension:0.2, pointRadius:3}
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                y: {min:0, max:50, ticks:{color:'#b8b0a5', font:{size:10}, callback:function(v){return v+'%';}}, grid:{color:'rgba(255,255,255,0.08)'}, title:{display:true, text:'信心 %', color:'#b8b0a5', font:{size:10}}},
+                x: {ticks:{color:'#b8b0a5', font:{size:10}}, grid:{display:false}}
+            },
+            plugins: {legend: {labels: {color:'#e8e4dc', font:{size:10}, boxWidth:20}, position:'bottom'}}
+        }
+    });
+})();
+</script>
+</body>
+</html>
