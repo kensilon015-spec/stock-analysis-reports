@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>臺慶科 3357 — 第八步 推演版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+
+/* ===== 模板標準擴充 CSS（2026-04-19 新增）===== */
+/* 防呆：無 class 的 table 也能看（搭配 table.tbl 強化樣式）*/
+.main table{
+  width:100%;border-collapse:collapse;font-size:13px;margin:14px 0;
+  font-variant-numeric:tabular-nums;background:transparent;
+}
+.main table th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);padding:8px 10px;text-align:left;
+  border-top:1px solid var(--ink-3);border-bottom:1px solid var(--ink-3);background:var(--paper-2);
+}
+.main table td{
+  padding:8px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;line-height:1.55;
+}
+.main table tbody tr:last-child td{border-bottom:1px solid var(--ink-3)}
+[data-theme="dark"] .main table th{background:var(--paper-2)}
+
+/* toggle-controls 全部展開收合按鈕 */
+.toggle-controls{text-align:right;margin:14px 0;padding:10px 0;border-top:1px dashed var(--rule);border-bottom:1px dashed var(--rule)}
+.toggle-controls button{background:var(--paper-2);color:var(--ink-2);border:1px solid var(--rule);padding:6px 14px;margin-left:8px;border-radius:3px;cursor:pointer;font-size:12.5px;font-family:var(--mono);letter-spacing:0.05em}
+.toggle-controls button:hover{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+/* cat-card 催化劑單段卡 */
+.cat-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--bull);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.cat-card h4{margin:0 0 8px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-family:var(--serif);font-weight:700;flex-wrap:wrap;gap:8px}
+.cat-card .cc-exp{color:var(--bull);font-weight:700;font-size:13px;font-family:var(--mono);letter-spacing:0.05em}
+.cat-card .cc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75}
+.cat-card .cc-verdict{display:block;margin-top:8px;color:var(--accent);font-weight:700}
+
+/* risk-card 風險卡四色左側條（rc-fatal/high/medium/low）*/
+.risk-card{background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--bear);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.risk-card.rc-fatal{border-left-color:var(--bear)}
+.risk-card.rc-high{border-left-color:#c04a3a}
+.risk-card.rc-medium{border-left-color:var(--warn)}
+.risk-card.rc-low{border-left-color:var(--bull)}
+.risk-card h4{margin:0 0 8px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-family:var(--serif);font-weight:700;flex-wrap:wrap;gap:8px}
+.risk-card .rc-exp{color:var(--bear);font-weight:700;font-size:13px;font-family:var(--mono);letter-spacing:0.05em}
+.risk-card .rc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75}
+.risk-card .rc-verdict{display:block;margin-top:8px;color:var(--bear);font-weight:700}
+
+/* hidden-card 隱藏優勢四欄 */
+.hidden-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65}
+.hidden-card h4{margin:0 0 10px;color:var(--ink);font-size:15px;font-family:var(--serif);font-weight:700}
+.hidden-card .hc-row{margin:6px 0;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.hidden-card .hc-label{color:var(--accent);font-weight:700;display:inline-block;min-width:104px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
+
+/* dash-item 監控儀表板 */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.dash-item{background:var(--paper-2);border:1px solid var(--rule);padding:12px 14px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.dash-item .dash-light{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dash-item .dash-light.green{background:var(--bull)}
+.dash-item .dash-light.yellow{background:var(--warn)}
+.dash-item .dash-light.red{background:var(--bear)}
+.dash-item .dash-name{font-weight:700;color:var(--ink);font-family:var(--serif);font-size:14px}
+.dash-item .dash-val{color:var(--ink-2);font-size:14px;margin:6px 0;font-family:var(--mono);font-weight:600}
+.dash-item .dash-info{color:var(--ink-3);font-size:11px;font-family:var(--mono);letter-spacing:0.02em}
+
+/* tip 整合結論四色（相容 .callout 的進階選擇）*/
+.tip{padding:14px 18px;margin:16px 0;border-left:3px solid var(--ink-3);background:var(--paper-2);font-size:14px;line-height:1.65;color:var(--ink-2)}
+.tip.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.tip.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.tip.danger{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.tip.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+.tip > b:first-child{display:block;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:15px;margin-bottom:8px}
+
+/* mini-card + mini-grid（相容命名）*/
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.mini-card{padding:14px 14px;border:1px solid var(--rule);background:var(--paper-2)}
+.mini-card .m-label{font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.mini-card .m-val{font-family:var(--serif);font-weight:700;font-size:24px;line-height:1;color:var(--ink);letter-spacing:-0.02em}
+.mini-card .m-note{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini-card.accent{border-top:3px solid var(--accent)}
+.mini-card.bull{border-top:3px solid var(--bull)}
+.mini-card.bear{border-top:3px solid var(--bear)}
+.mini-card.gold{border-top:3px solid var(--gold)}
+
+/* FIAS 標籤 */
+.fias-f{padding:1px 6px;background:rgba(47,107,61,.12);color:var(--bull);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-i{padding:1px 6px;background:rgba(61,99,120,.12);color:var(--neutral);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-a{padding:1px 6px;background:rgba(166,115,24,.14);color:var(--warn);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-s{padding:1px 6px;background:rgba(142,58,44,.12);color:var(--bear);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+
+/* ev 證據卡 */
+.ev{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bull);padding:10px 14px;margin:10px 0;font-size:13.5px}
+.ev.i{border-left-color:var(--neutral)}
+.ev.a{border-left-color:var(--warn)}
+.ev.s{border-left-color:var(--bear)}
+.ev-t{font-weight:700;color:var(--ink);margin-bottom:4px;font-family:var(--serif)}
+.ev-d{color:var(--ink-2);margin:4px 0;line-height:1.7}
+.ev-s{color:var(--ink-3);font-size:11.5px;margin-top:4px;font-style:italic;font-family:var(--mono);letter-spacing:0.02em}
+
+/* view-card 觀點卡（4 段式）*/
+.view-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:14px 18px;margin:14px 0;font-size:14px;line-height:1.75}
+.view-card h4{color:var(--accent);font-family:var(--serif);font-size:15.5px;font-weight:700;margin:0 0 10px}
+.view-card p{margin:8px 0;color:var(--ink-2)}
+.view-card b{color:var(--ink)}
+.view-card em{color:var(--accent);font-style:normal;font-weight:700}
+
+/* reviewer 評審團卡 */
+.reviewer{background:var(--paper-2);border:1px solid var(--rule);padding:10px 14px;margin:8px 0}
+.reviewer h4{margin:0 0 4px;color:var(--ink);font-family:var(--serif);font-size:14px;font-weight:700}
+.reviewer .r-body{color:var(--ink-2);font-size:13px;margin:4px 0;line-height:1.65}
+.reviewer .r-verdict{margin-top:6px;padding:6px 10px;border-radius:3px;font-size:12px;font-weight:700;display:inline-block;font-family:var(--mono);letter-spacing:0.05em;text-transform:uppercase}
+.r-verdict.pass{background:rgba(47,107,61,.12);color:var(--bull);border:1px solid var(--bull)}
+.r-verdict.cond{background:rgba(166,115,24,.12);color:var(--warn);border:1px solid var(--warn)}
+.r-verdict.fail{background:rgba(142,58,44,.12);color:var(--bear);border:1px solid var(--bear)}
+
+/* section-sub 章節副標 */
+.section-sub{color:var(--ink-3);font-family:var(--mono);font-size:11.5px;letter-spacing:0.04em;margin:-6px 0 14px 0;font-style:italic}
+
+/* date-fixed 避免跟 theme toggle 衝突 */
+.date-fixed{display:none}
+
+/* main h3/h4 強化（避免被主區包裹後樣式丟失）*/
+.main h3{color:var(--accent);font-family:var(--serif);font-size:19px;margin:24px 0 12px;font-weight:700;padding-left:14px;border-left:4px solid var(--accent);line-height:1.3}
+.main h4{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:14px 0 8px}
+
+/* main details/summary 相容（v4 用內嵌 details 收合）*/
+.main details{background:var(--paper-2);border:1px solid var(--rule);padding:12px 16px;margin:12px 0}
+.main details summary{cursor:pointer;font-family:var(--serif);font-weight:700;color:var(--accent);font-size:14px;padding:4px 0}
+.main details[open] summary{border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px}
+
+/* tag 分級標籤 */
+.tag{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10.5px;font-weight:600;font-family:var(--mono);letter-spacing:0.08em;text-transform:uppercase;margin-right:4px}
+.tag.fatal{background:rgba(142,58,44,.1);color:var(--bear);border:1px solid var(--bear)}
+.tag.high{background:rgba(214,173,92,.1);color:var(--warn);border:1px solid var(--warn)}
+.tag.medium{background:rgba(143,179,196,.1);color:var(--neutral);border:1px solid var(--neutral)}
+.tag.low{background:rgba(168,192,149,.1);color:var(--accent);border:1px solid var(--accent)}
+.tag.good{background:rgba(168,192,149,.1);color:var(--accent)}
+.tag.warn{background:rgba(214,173,92,.1);color:var(--warn)}
+.tag.bad{background:rgba(142,58,44,.1);color:var(--bear)}
+.tag.neu{background:rgba(143,179,196,.1);color:var(--neutral)}
+
+/* timeline + tl-item（相容命名，與模板原 .item 並存）*/
+.main .timeline{border-left:2px solid var(--rule);padding-left:20px;margin:14px 0}
+.main .tl-item{margin:10px 0;position:relative}
+.main .tl-item::before{content:"●";color:var(--accent);position:absolute;left:-26px;font-size:14px}
+.main .tl-item .tl-date{color:var(--accent);font-weight:700;font-size:11px;font-family:var(--mono);letter-spacing:0.1em;text-transform:uppercase}
+.main .tl-item .tl-text{color:var(--ink-2);font-size:13.5px;font-family:var(--sans);margin-top:2px}
+
+/* data-chart-row 左表右圖 */
+.data-chart-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);gap:16px;margin:16px 0;align-items:stretch}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .data-col table{height:100%}
+.data-chart-row .chart-col{min-width:0;display:flex;flex-direction:column}
+@media(max-width:720px){.data-chart-row{grid-template-columns:1fr}}
+
+/* fork-branch 分岔因果樹四路徑 */
+.fork-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.fork-branch{background:var(--paper-2);border:1px solid var(--rule);border-top:4px solid var(--neutral);padding:12px 14px}
+.fork-branch.fb-bull{border-top-color:var(--bull)}
+.fork-branch.fb-bear{border-top-color:var(--bear)}
+.fork-branch.fb-neutral{border-top-color:var(--warn)}
+.fork-branch h5{margin:0 0 6px;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:14px}
+.fork-branch .fb-prob{color:var(--accent);font-weight:700;font-size:12px;font-family:var(--mono);letter-spacing:0.05em}
+.fork-branch .fb-body{color:var(--ink-2);font-size:13px;margin:6px 0;line-height:1.55}
+
+/* chart-row + chart-wrap 圖表容器 */
+.chart-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:12px 0}
+@media(max-width:720px){.chart-row{grid-template-columns:1fr}}
+.chart-wrap{background:var(--paper-2);border:1px solid var(--rule);padding:12px;height:100%}
+.chart-wrap canvas{max-width:100%;max-height:300px}
+.chart-title{color:var(--accent);font-weight:700;font-size:12.5px;margin-bottom:6px;text-align:center;font-family:var(--mono);letter-spacing:0.1em;text-transform:uppercase}
+.chart-note{color:var(--ink-3);font-size:11px;margin-top:6px;text-align:center;font-style:italic;font-family:var(--mono)}
+
+/* radar-compare-grid 雷達對照 */
+.radar-compare-grid{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:14px;margin:16px 0;align-items:stretch}
+.radar-compare-grid .data-col{background:transparent;padding:0}
+.radar-compare-grid .data-col table{height:100%}
+@media(max-width:720px){.radar-compare-grid{grid-template-columns:1fr}}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+
+<style>
+/* Phase C-2 compatibility CSS — 臺慶科 3357 */
+.section-title, summary.section-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:22px;letter-spacing:-0.02em;padding:18px 0 8px;margin:28px 0 6px;border-top:2px solid var(--ink);list-style:none;cursor:pointer}
+summary.subsection{color:var(--accent);font-family:var(--serif);font-weight:700;font-size:15px;padding:6px 0;cursor:pointer}
+.chapter-num{display:inline-block;font-family:var(--serif);color:var(--accent);font-weight:700;font-size:28px;margin-right:10px;letter-spacing:-0.04em}
+
+/* 催化劑卡 */
+.catalyst-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--bull);padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.7;color:var(--ink-2)}
+.catalyst-card.medium{border-left-color:var(--accent)}
+.catalyst-card .cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px}
+.catalyst-card .cc-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:15px;flex:1;min-width:240px}
+.catalyst-card .cc-ev{font-family:var(--mono);color:var(--gold);font-weight:700;font-size:13px;letter-spacing:0.05em}
+.catalyst-card .cc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75;margin:6px 0}
+.catalyst-card .verdict{display:block;margin-top:8px;color:var(--accent);font-weight:700;font-size:13.5px}
+.catalyst-card .cc-quant{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 4px}
+@media(max-width:700px){.catalyst-card .cc-quant{grid-template-columns:repeat(2,1fr)}}
+.catalyst-card .cc-q{background:var(--paper);border:1px solid var(--rule-2);padding:7px 8px;text-align:center}
+.catalyst-card .cc-q-label{color:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase}
+.catalyst-card .cc-q-val{color:var(--ink);font-family:var(--serif);font-weight:700;font-size:15px;margin-top:3px}
+.catalyst-card .cc-q-val.ev{color:var(--gold)}
+.catalyst-card .cc-source{color:var(--ink-3);font-family:var(--mono);font-size:10.5px;margin-top:6px;padding-top:4px;border-top:1px dashed var(--rule)}
+
+/* 驅動力卡 */
+.driver-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--bull);padding:16px 20px;margin:14px 0}
+.driver-card.bear{border-left-color:var(--bear)}
+.driver-card .dc-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.driver-card .dc-num{width:32px;height:32px;line-height:32px;text-align:center;background:var(--accent);color:var(--paper);border-radius:50%;font-family:var(--serif);font-weight:700;font-size:16px;flex-shrink:0}
+.driver-card.bear .dc-num{background:var(--bear)}
+.driver-card .dc-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:16px;flex:1;min-width:260px}
+.driver-card .dc-tag{font-family:var(--mono);font-size:10px;padding:3px 9px;background:var(--accent-wash);color:var(--accent);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+.driver-card .dc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75;margin:8px 0}
+.driver-card .dc-body p{margin:6px 0}
+
+/* quote-block */
+.quote-block{background:var(--paper);border-left:3px solid var(--neutral);padding:12px 16px;margin:8px 0;font-size:13.5px;color:var(--ink);font-style:italic;line-height:1.7;font-family:var(--serif)}
+.quote-block .qb-zh{display:block;font-style:normal;font-size:14px;color:var(--ink-2);line-height:1.75;margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule);font-family:var(--sans)}
+.quote-block .qb-zh::before{content:'🇹🇼 ';font-style:normal}
+.quote-block .qb-en-tag::before{content:'🇺🇸 ';font-style:normal}
+.quote-block .qb-src{display:block;font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:6px;padding-top:4px;border-top:1px dashed var(--rule);letter-spacing:0.02em}
+
+/* 風險卡（fatal/high/medium/low → 色票）*/
+.risk-card{background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--bear);padding:14px 18px;margin:12px 0}
+.risk-card.fatal{border-left-color:var(--bear)}
+.risk-card.high{border-left-color:var(--warn)}
+.risk-card.medium{border-left-color:var(--neutral)}
+.risk-card.low{border-left-color:var(--bull)}
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px}
+.risk-card .rc-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:15px;flex:1;min-width:260px}
+.risk-card .rc-ev{font-family:var(--mono);color:var(--bear);font-weight:700;font-size:13px}
+.risk-card .rc-level{font-family:var(--mono);font-size:10px;padding:3px 9px;letter-spacing:0.1em;font-weight:700;border:1px solid}
+.risk-card.fatal .rc-level{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,0.08)}
+.risk-card.high .rc-level{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,0.08)}
+.risk-card.medium .rc-level{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,0.08)}
+.risk-card.low .rc-level{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,0.08)}
+.risk-card .rc-body{color:var(--ink-2);font-size:13.5px;line-height:1.7;margin:6px 0}
+.risk-card .rc-rows{margin:8px 0;font-size:13px}
+.risk-card .rc-row{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:5px 0;border-bottom:1px dashed var(--rule-2)}
+.risk-card .rc-row:last-child{border-bottom:none}
+.risk-card .rc-label{color:var(--accent);font-weight:700;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase}
+.risk-card .rc-val{color:var(--ink-2);line-height:1.6}
+.risk-card .rc-source{color:var(--ink-3);font-family:var(--mono);font-size:10.5px;margin-top:6px;padding-top:4px;border-top:1px dashed var(--rule)}
+
+/* 隱藏優勢卡 */
+.advantage-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--bull);padding:14px 18px;margin:12px 0}
+.advantage-card .ac-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px}
+.advantage-card .ac-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:15px;flex:1;min-width:260px}
+.advantage-card .ac-gain{font-family:var(--mono);color:var(--bull);font-weight:700;font-size:13px}
+.advantage-card .ac-tag{font-family:var(--mono);font-size:10px;padding:3px 9px;background:rgba(134,181,141,0.15);color:var(--bull);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+.advantage-card .ac-rows{margin:8px 0;font-size:13px}
+.advantage-card .ac-row{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:5px 0;border-bottom:1px dashed var(--rule-2)}
+.advantage-card .ac-row:last-child{border-bottom:none}
+.advantage-card .ac-label{color:var(--accent);font-weight:700;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase}
+.advantage-card .ac-val{color:var(--ink-2);line-height:1.6}
+.advantage-card .ac-source{color:var(--ink-3);font-family:var(--mono);font-size:10.5px;margin-top:6px;padding-top:4px;border-top:1px dashed var(--rule)}
+
+/* Step 卡 */
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+@media(max-width:700px){.step-grid{grid-template-columns:1fr}}
+.step-card{background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--accent);padding:14px 16px}
+.step-card .sc-tag{display:inline-block;padding:2px 8px;background:var(--accent-wash);color:var(--accent);font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
+.step-card .sc-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:4px}
+.step-card .sc-body{font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.step-card .sc-key{color:var(--gold);font-weight:700;font-family:var(--mono);letter-spacing:0.02em}
+
+/* 陪審團卡 jury-card */
+.jury-card{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--accent);padding:12px 16px;margin:8px 0}
+.jury-card.dispute{border-left-color:var(--warn)}
+.jury-card .jc-role{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:4px}
+.jury-card .jc-verdict{font-family:var(--mono);font-size:10px;padding:2px 8px;border:1px solid;letter-spacing:0.05em;font-weight:700;margin-left:6px;text-transform:uppercase}
+.jc-verdict.pass{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,0.08)}
+.jc-verdict.cond{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,0.08)}
+.jc-verdict.fail{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,0.08)}
+.jury-card .jc-body{color:var(--ink-2);font-size:13px;line-height:1.7;margin-top:4px}
+.jury-card .r-layer{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.05em}
+
+/* 分岔樹 fork-branch */
+.fork-tree{margin:14px 0}
+.fork-root{text-align:center;margin-bottom:14px}
+.fork-root .fork-node{display:inline-block;background:var(--paper-2);border:2px solid var(--accent);padding:10px 20px;font-family:var(--serif);font-weight:700;color:var(--ink);font-size:14px}
+.fork-branches{display:grid;gap:14px;margin-top:6px}
+.fork-branches.b2{grid-template-columns:1fr 1fr}
+.fork-branches.b3{grid-template-columns:1fr 1fr 1fr}
+.fork-branches.b4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:800px){.fork-branches.b2,.fork-branches.b3,.fork-branches.b4{grid-template-columns:1fr}}
+.fork-branch{background:var(--paper-2);border:1px solid var(--rule);padding:14px 16px;position:relative;display:flex;flex-direction:column}
+.fork-branch::before{content:'▼';position:absolute;top:-16px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:13px}
+.fork-branch .fb-label{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:3px 9px;font-weight:700;margin-bottom:8px;align-self:flex-start;text-transform:uppercase}
+.fb-bull{background:rgba(134,181,141,0.14);color:var(--bull);border:1px solid var(--bull)}
+.fb-bear{background:rgba(212,138,122,0.14);color:var(--bear);border:1px solid var(--bear)}
+.fb-neutral{background:rgba(143,179,196,0.14);color:var(--neutral);border:1px solid var(--neutral)}
+.fork-branch .fb-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:14px;margin:4px 0 6px;line-height:1.4}
+.fork-branch .fb-price{font-family:var(--mono);color:var(--gold);font-weight:700;font-size:12.5px;margin:6px 0 10px;padding:6px 0;border-top:1px dashed rgba(138,106,31,0.32);border-bottom:1px dashed rgba(138,106,31,0.32);text-align:center;letter-spacing:0.05em}
+.fork-branch .fb-desc{color:var(--ink-2);font-size:13px;line-height:1.75;flex:1}
+
+/* 時間軸 tl-item */
+.main .timeline{border-left:2px solid var(--rule);padding-left:20px;margin:14px 0;background:transparent;padding-top:8px;padding-bottom:8px}
+.main .tl-item{margin:12px 0;position:relative;padding-left:0}
+.main .tl-item::before{content:'●';color:var(--accent);position:absolute;left:-27px;top:0;font-size:14px}
+.tl-item.past::before{color:var(--ink-4)}
+.tl-item.risk::before{color:var(--bear)}
+.tl-item .tl-date{color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;font-weight:700;text-transform:uppercase}
+.tl-item.past .tl-date{color:var(--ink-4)}
+.tl-item.risk .tl-date{color:var(--bear)}
+.tl-item .tl-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:14px;margin-top:2px}
+.tl-item .tl-desc{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.6}
+
+/* hero 舊版隱藏 */
+.wrap>.hero{display:none}
+.wrap>.toc{display:none}
+.date-fix{display:none}
+
+/* ev 證據卡變體 */
+.ev.good{border-left-color:var(--accent)}
+.ev.bad,.ev.warn{border-left-color:var(--warn)}
+
+/* EV 合計表 */
+.ev-total{background:rgba(138,106,31,0.08);border:1px solid var(--gold);padding:12px 16px;margin:12px 0;font-size:13.5px}
+.ev-total>b:first-child{display:block;color:var(--gold);font-family:var(--serif);font-weight:700;font-size:15px;margin-bottom:6px}
+.ev-total b{color:var(--gold);font-family:var(--mono);font-weight:700}
+
+/* 雙圖 */
+.dual-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:800px){.dual-chart-row{grid-template-columns:1fr}}
+.dual-chart-row .chart-box{background:var(--paper-2);border:1px solid var(--rule);padding:14px}
+.dual-chart-row .chart-box h5{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:13.5px;margin-bottom:6px;text-align:center}
+.dual-chart-row .chart-box .chart-wrap{max-height:260px}
+
+/* 雷達圖 radar-row */
+.radar-row{display:grid;grid-template-columns:minmax(0,2.5fr) minmax(0,1fr);gap:16px;margin:12px 0;align-items:stretch}
+@media(max-width:800px){.radar-row{grid-template-columns:1fr}}
+.radar-row .data-col{display:flex;flex-direction:column}
+.radar-row .data-col table{height:100%}
+.radar-row .chart-col{display:flex;align-items:center;justify-content:center;background:var(--paper-2);border:1px solid var(--rule);padding:12px}
+.radar-row .chart-col canvas{max-width:100%;max-height:320px}
+
+/* 安全邊際 */
+.safety-zones{margin:12px 0}
+.safety-zones .zone-row{display:grid;grid-template-columns:140px 130px 1fr 180px;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-2);align-items:center;font-size:13.5px}
+@media(max-width:700px){.safety-zones .zone-row{grid-template-columns:1fr;gap:4px}}
+.safety-zones .zone-row.hot{background:rgba(212,138,122,0.05)}
+.safety-zones .zone-row.warn{background:rgba(214,173,92,0.05)}
+.safety-zones .zone-row.ok{background:rgba(134,181,141,0.05)}
+.safety-zones .zone-row.buy{background:rgba(134,181,141,0.08)}
+.zone-price{font-family:var(--mono);font-weight:700;color:var(--gold)}
+.zone-pe{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.zone-action{font-family:var(--serif);font-weight:700}
+
+/* 光點 */
+.light{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.light.red{background:var(--bear)}.light.yellow{background:var(--warn)}.light.green{background:var(--bull)}
+
+/* clean list */
+ul.clean{margin:6px 0 6px 22px;color:var(--ink-2);font-size:13.5px;line-height:1.8}
+ul.clean li{margin:4px 0}
+ul.clean li b{color:var(--accent)}
+
+/* 強調色 */
+.hl-gold{color:var(--gold);font-weight:700;font-family:var(--mono)}
+.hl-good{color:var(--bull);font-weight:700}
+.hl-bad{color:var(--bear);font-weight:700}
+.hl-num{color:var(--gold);font-family:var(--mono);font-weight:700}
+.hl-key{background:rgba(214,173,92,0.12);padding:1px 5px;border-radius:2px}
+
+/* code */
+code{font-family:var(--mono);font-size:12.5px;background:var(--paper-3);padding:1px 5px;border-radius:2px;color:var(--accent)}
+
+/* main table */
+.main table{background:transparent;color:var(--ink-2)}
+.main table th{background:var(--paper-2);color:var(--ink);font-family:var(--mono);font-weight:600;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase}
+.main table td{background:transparent;color:var(--ink-2)}
+.main table tr:hover td{background:var(--paper-3)}
+.main table.compact th,.main table.compact td{padding:5px 9px;font-size:12.5px}
+
+/* snapshot (6 mini-cards) */
+.snapshot{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:16px 0 20px}
+@media(max-width:900px){.snapshot{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.snapshot{grid-template-columns:repeat(2,1fr)}}
+.snapshot .mini-card{background:var(--paper-2);border:1px solid var(--rule);padding:12px 10px;text-align:center}
+.snapshot .mini-card .title{font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;color:var(--ink-3);text-transform:uppercase}
+.snapshot .mini-card .num{font-family:var(--serif);font-size:22px;color:var(--ink);font-weight:700;margin:3px 0;letter-spacing:-0.02em}
+.snapshot .mini-card .desc{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:3px}
+.snapshot .bull-card{border-top:3px solid var(--bull)}
+.snapshot .bear-card{border-top:3px solid var(--bear)}
+.snapshot .neutral-card{border-top:3px solid var(--neutral)}
+.snapshot .gold-card{border-top:3px solid var(--gold)}
+.snapshot .warn-card{border-top:3px solid var(--warn)}
+.snapshot .safe-card{border-top:3px solid var(--accent)}
+
+/* toggle bar */
+.toggle-bar{text-align:center;margin:14px 0}
+.toggle-bar .toggle-btn{background:var(--paper-2);border:1px solid var(--rule);padding:6px 14px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;color:var(--ink-2);cursor:pointer;margin:0 4px}
+.toggle-bar .toggle-btn:hover{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+/* wrap 適配 */
+.wrap{max-width:none;padding:0}
+</style>
+
+
+</head>
+<body>
+
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+
+
+<div class="shell">
+
+<aside class="sidebar">
+<div class="brand">
+  <span class="mark">天機閣</span>
+  <span class="dot"></span>
+  <span class="sub">Tianji Vault</span>
+</div>
+
+<div class="meta-block">
+  <div><span class="k">TICKER</span><span class="v">3357 · TWO</span></div>
+  <div><span class="k">DATE</span><span class="v">2026·04·20</span></div>
+  <div><span class="k">STEP</span><span class="v">08 / 09</span></div>
+  <div><span class="k">VALID</span><span class="v">2026·05·18</span></div>
+</div>
+
+<h4>Contents</h4>
+<ol class="toc-list">
+  <li><a href="#ch8a">8a 推衍基礎確認</a></li>
+  <li><a href="#ch8b">8b 最新情報更新</a></li>
+  <li><a href="#ch8c">8c 影響鏈分析</a></li>
+  <li><a href="#ch8d">8d 情境模擬 5 路徑</a></li>
+  <li><a href="#ch8e">8e 個人化推衍</a></li>
+  <li><a href="#ch8f">8f 催化劑時間表</a></li>
+  <li><a href="#ch8g">8g 蝴蝶效應推衍 ★</a></li>
+  <li><a href="#ch8h">8h 貓膩推衍 ★</a></li>
+  <li><a href="#ch8i">8i 推衍結論 + 第四次校準</a></li>
+</ol>
+
+<div class="side-verdict">
+  <div class="label">Verdict · 第四次校準</div>
+  <strong>H1 42% ↑ · 加權 195 元</strong><br>
+  正面劇本 83% · 有效期 4 週<br>
+  2026·05·18 失效
+</div>
+</aside>
+
+<main class="main">
+
+<header class="masthead">
+<div class="eyebrow">
+  <span class="issue">Tianji Vault · 推演版 第八步</span>
+  <span>2026 · 04 · 20 · 被動元件 / 電感</span>
+</div>
+<h1>臺慶科 <span class="ticker">3357</span></h1>
+<p class="deck">第八步推演版 — 以 Step 7 十三章結論為基礎，推衍未來 4-12 個月關鍵路徑。蝴蝶效應推衍 + 貓膩推衍 + 第四次信心校準，產出獨立於 Step 7 的前瞻報告。推衍有效期 4 週（2026/04/20 → 2026/05/18）。</p>
+<div class="byline">
+  <span><b>Analyst</b>天機閣推衍系統</span>
+  <span><b>Base</b>Step 7 完整版 283.6 KB</span>
+  <span><b>Price</b>~153 元</span>
+  <span><b>Confidence</b>H1 42% · H2 28% · H6 13%</span>
+</div>
+
+<div class="steps">
+  <div class="step done"><span class="dot"></span>S1</div>
+  <div class="step done"><span class="dot"></span>S2</div>
+  <div class="step done"><span class="dot"></span>S3</div>
+  <div class="step done"><span class="dot"></span>S4</div>
+  <div class="step done"><span class="dot"></span>S5</div>
+  <div class="step done"><span class="dot"></span>S6</div>
+  <div class="step done"><span class="dot"></span>S7</div>
+  <div class="step active"><span class="dot"></span>S8 ● 推演版</div>
+  <div class="step"><span class="dot"></span>S9</div>
+</div>
+</header>
+
+<section class="hero-stats">
+<div class="hero-stat">
+  <div class="k">當前股價</div>
+  <div class="v">153</div>
+  <div class="d">元 · 合理區下緣</div>
+</div>
+<div class="hero-stat">
+  <div class="k">加權目標</div>
+  <div class="v gold">195</div>
+  <div class="d">元 · <span class="up">+27%</span> · 第四次校準</div>
+</div>
+<div class="hero-stat">
+  <div class="k">H1 大多頭</div>
+  <div class="v up">42%</div>
+  <div class="d">Step 6→8 微升 2pp</div>
+</div>
+<div class="hero-stat">
+  <div class="k">有效期</div>
+  <div class="v neut">4 週</div>
+  <div class="d">至 2026·05·18</div>
+</div>
+</section>
+
+<div class="chips">
+<span class="chip hot">第四次信心校準</span>
+<span class="chip hot">蝴蝶效應推衍</span>
+<span class="chip hot">貓膩推衍承接</span>
+<span class="chip bull">正面劇本 83%</span>
+<span class="chip warn">CB 2026/10 倒數</span>
+<span class="chip">2026 Q1-Q2 驗證窗口</span>
+<span class="chip">鈺邦雙劇本</span>
+</div>
+
+
+
+<!-- ============ 8a 推衍基礎確認 ============ -->
+<details open id="ch8a">
+<summary class="section-title"><span class="chapter-num">8a</span>推衍基礎確認</summary>
+<div class="section-sub">承接 Step 7 十三章 + Phase B 補強結論 · 推衍起點的事實與假說機率</div>
+
+<table>
+<tr><th>類別</th><th>基礎事實 / 假說</th><th>量化值</th></tr>
+<tr><td>ACH 假說機率</td><td>H1 大多頭 / H2 穩健 / H6 鈺邦 / H4 CB 稀釋 / H3 轉型不及 / H5 產業頂</td><td>40% / 30% / 13% / 12% / 3% / 2%（Step 6 評審團）</td></tr>
+<tr><td>加權目標價</td><td>Step 6 評審團 / Step 7 三情境 / Step 7 淨期望值</td><td>192 / 192 / 179 元</td></tr>
+<tr><td>8 法估值加權中位</td><td>Ch10 交叉驗證區間</td><td><b>180 元</b>（180-211 區間）</td></tr>
+<tr><td>催化劑 EV 合計</td><td>Ch2 六催化劑合計</td><td class="hl-good">+24.6%</td></tr>
+<tr><td>風險 EV 合計</td><td>Ch4 R1-R7 / Ch7 致命因子</td><td class="hl-bad">-23.3% / -31.8%</td></tr>
+<tr><td>獨立隱藏優勢</td><td>Ch5 A1+A2+A3（Ch2 未涵蓋部分）</td><td class="hl-good">+15.7%</td></tr>
+<tr><td>儀表板 8 項燈號</td><td>7 綠 + 1 黃偏綠（I8 DSO）</td><td>H1 維持</td></tr>
+<tr><td>貓膩黃燈</td><td>Ch12 六項結構性灰區</td><td>0 紅 6 黃 0 綠</td></tr>
+<tr><td>事前驗屍失敗劇本</td><td>Ch7 5 劇本合計機率</td><td>20%（對應下檔停損 120）</td></tr>
+</table>
+
+<div class="callout good">
+<span class="label">推衍基礎確認</span>
+Step 7 十三章結論穩健，四次信心校準（Step 4 → 5 → 6 → 8）收斂於 H1 40-45% 區間，正面劇本 82-85% 穩定。催化劑 +24.6% 與風險 -23.3% 時間分布不對稱（風險多為「可能」、催化劑含「已發生」），市場實際定價 15 倍本益比偏多頭。本推演版以此基礎向未來 4-12 個月推演關鍵路徑。
+</div>
+</details>
+
+<!-- ============ 8b 最新情報更新 ============ -->
+<details open id="ch8b">
+<summary class="section-title"><span class="chapter-num">8b</span>最新情報更新（OSINT）</summary>
+<div class="section-sub">2026-04 最新公開資訊 · 與 Step 7 基準對照</div>
+
+<table>
+<tr><th>情報項</th><th>Step 7 基準</th><th>最新（2026-04）</th><th>推演影響</th></tr>
+<tr><td>2025 全年 EPS</td><td>法說預估 ~10</td><td class="hl-good">實際 10.26（+40%）</td><td>超標 2.6%，H1 驗證</td></tr>
+<tr><td>2025 Q4 毛利率</td><td>Q3 法說預測 &gt;26%</td><td class="hl-good">實際 28.44%</td><td>超標 2.4pp，新常態確立</td></tr>
+<tr><td>2026 Q1 月營收累計</td><td>—</td><td class="hl-good">17.35 億（+11.29%）</td><td>I4 綠燈</td></tr>
+<tr><td>CB 狀態</td><td>正常交易</td><td class="hl-bad">2026/3/2 達注意交易</td><td>I5 黃燈預警</td></tr>
+<tr><td>鈺邦 6449 2025 Q4 EPS</td><td>—</td><td class="hl-good">2.57 元（連四季上升）</td><td>Best Bliss 權益法延續</td></tr>
+<tr><td>鈺邦 2025 Q4 毛利率</td><td>—</td><td class="hl-good">36.12%</td><td>Best Bliss 一次性風險降低</td></tr>
+<tr><td>馬來西亞廠</td><td>2026 Q4 客戶導入</td><td>2025/12 ISO9001 · 2026/07 車規（計畫中）</td><td>進度符合預期</td></tr>
+<tr><td>銀漿成本</td><td>持續上漲</td><td>已代理端轉嫁 15%+</td><td>毛利壓力吸收</td></tr>
+</table>
+
+<div class="callout good">
+<span class="label">情報更新淨效應：正面驗證</span>
+7 項關鍵情報中 <b>5 項超標或符合預期</b>、1 項微延（馬廠，可控）、1 項需警覺（CB 注意交易）。<b>最強驗證</b>：2025 Q4 毛利率 28.44% 超越 Q3 法說預測 2.4pp + 鈺邦 2025 Q4 EPS 2.57 元連四季上升 + 2026 Q1 月營收 +11.29% 達 I4 綠燈標準 — 三重證據強化 H1 大多頭路徑。<b>需警覺</b>：CB 2026/3/2 達注意交易標準代表市場開始反映 2026 H2 轉換潮，但鈺邦 2025 Q4 毛利率 36.12% 同步創高，降低 Best Bliss 76% 權益法為「一次性」的機率。
+</div>
+</details>
+
+<!-- ============ 8c 影響鏈分析 ============ -->
+<details open id="ch8c">
+<summary class="section-title"><span class="chapter-num">8c</span>影響鏈分析</summary>
+<div class="section-sub">從最新情報挑 3 條關鍵事件鏈 · 三階影響 · 跨鏈交互</div>
+
+<h3>鏈 1：AI TLVR 美系客戶量產爬升</h3>
+<div class="callout">
+<b>事件</b>：2025 Q3 臺慶科 TLVR 966411/110511 與美系 GPU 大廠共同設計量產 →<br>
+<b>一階影響</b>（2026 H1）：AI 相關營收占比從 10% 升至 12-13%、單價漲幅 30-50% 貢獻毛利率 +0.8-1.0pp →<br>
+<b>二階影響</b>（2026 H2）：共同設計產品鎖定客戶，轉換成本從 7.5 升到 9，護城河從「窄偏寬」升「寬」的前兆 →<br>
+<b>三階影響</b>（2027）：被市場列入「AI 伺服器供應鏈受惠股」，本益比從 15 倍重估至 18-20 倍，股價向 220-260 推升
+</div>
+
+<h3>鏈 2：CB 2026/10 到期（9.01% 稀釋）</h3>
+<div class="callout warn">
+<b>事件</b>：CB 11 億、轉換價 108.9、股價 153 溢價 40%、2026/10/31 到期 →<br>
+<b>一階影響</b>（2026 H2）：持有人大量轉換（預估 70-90%），股本膨脹 9%、EPS 攤薄 6-8% →<br>
+<b>二階影響</b>：公司 11 億現金免償債、資產負債表改善（負債比 37.9% → 28%）→<br>
+<b>三階影響</b>（2027 起）：進入「無 CB 新常態」，估值重估催化劑<b>消除稀釋貼水</b>、反而推升本益比。對於 2027 進場者屬正面
+</div>
+
+<h3>鏈 3：Vishay 退出小尺寸高量 × 臺慶科接盤</h3>
+<div class="callout good">
+<b>事件</b>：Vishay Q4 2024 明言「pull back on small size high volume」+ TDK 被動利益 -36.8% →<br>
+<b>一階影響</b>（2025-2026）：全球中低階電感市場 5-8 億美元釋出，台廠（臺慶科/千如/佳邦）瓜分 2-3 億 →<br>
+<b>二階影響</b>（2026-2027）：臺慶科市占從 2.6% 向 3.2-3.5% 成長，加上鈺邦整合可達 4-5% →<br>
+<b>三階影響</b>（2028+）：若進入 Vishay 10-K primary 名單，國際能見度重估、外資持股大幅提升
+</div>
+
+<h3>跨鏈交互</h3>
+<div class="callout info">
+<b>三條鏈的共同週期點</b>：2026 H2（鏈 1 AI TLVR 爬升 + 鏈 2 CB 到期 + 鏈 3 市占擴張驗證）— 這三股力量<b>同時作用</b>會造成股價「先壓後揚」：CB 轉換潮短期賣壓 -5-10% → 但被 AI + 市占推升覆蓋 → 淨效應向上。Step 9 監控應密切追蹤此視窗。
+</div>
+</details>
+
+<!-- ============ 8d 情境模擬 5 路徑 ============ -->
+<details open id="ch8d">
+<summary class="section-title"><span class="chapter-num">8d</span>情境模擬 — 5 路徑概率樹</summary>
+<div class="section-sub">2026-2027 股價路徑 · 機率 + 股價區間 + 敏感度</div>
+
+<div class="fork-tree">
+<div class="fork-root"><div class="fork-node">2026-2027 臺慶科股價情境</div></div>
+<div class="fork-branches b5" style="grid-template-columns:repeat(5,1fr)">
+<div class="fork-branch">
+<div class="fb-label fb-bull">路徑 A (40%)</div>
+<div class="fb-title">H1 大多頭</div>
+<div class="fb-price">2026 EPS 12 · 股價 200-220</div>
+<div class="fb-desc">車用 40%+ 達標 + AI TLVR 訂單擴大 + 毛利率 27%+ 新常態 + Vishay 退出窗口被證實。本益比從 15 重估至 18，2027 股價 220-240。</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-neutral">路徑 B (30%)</div>
+<div class="fb-title">H2 穩健成長</div>
+<div class="fb-price">2026 EPS 11 · 股價 165-195</div>
+<div class="fb-desc">車用持續成長但未破 40% + AI TLVR 貢獻有限 + 毛利率 26% 穩定。本益比維持 15-16 倍，股價 170-200 區間震盪。</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-bull">路徑 C (13%)</div>
+<div class="fb-title">H6 鈺邦整合</div>
+<div class="fb-price">2027 股價 260-280</div>
+<div class="fb-desc">鈺邦合作深化或合併公告（機率低但影響大）。規模 +50%、進 Vishay primary 名單。2028 股價 280-300。</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-bear">路徑 D (12%)</div>
+<div class="fb-title">H4 CB 大量稀釋</div>
+<div class="fb-price">2026 EPS 9.5 · 股價 140-160</div>
+<div class="fb-desc">CB 全數轉換 + EPS 攤薄 8% + 估值重估 -10%。短期賣壓後 2027 恢復，但損失 2026 的上漲空間。</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-bear">路徑 E (5%)</div>
+<div class="fb-title">H3/H5 轉型不及 + 地緣</div>
+<div class="fb-price">2026 股價 120-140 · 停損 120</div>
+<div class="fb-desc">毛利率 &lt;24% 或陸系突破車用 + 美中新關稅雙擊。觸發 Step 7 事前驗屍劇本 1+2+4，股價下檔至停損區。</div>
+</div>
+</div>
+</div>
+
+<div class="callout gold">
+<span class="label">機率加權計算</span>
+210 × 0.40 + 180 × 0.30 + 270 × 0.13 + 150 × 0.12 + 130 × 0.05 = 84 + 54 + 35.1 + 18 + 6.5 = <b>197.6 元</b>（對應 +29%）<br>
+與 Step 6 評審團 192 + Step 7 淨期望值 179 + Ch10 加權中位 180 交叉驗證，<b>第四次校準合理區間 180-200 元</b>（加權中位 <b>195 元</b>）。
+</div>
+
+<h3>路徑敏感度</h3>
+<div class="callout info">
+<b>H1 vs H2 關鍵分野</b>：AI TLVR 美系訂單放大規模（若 2026 Q3 訂單擴大至 AI 相關占比 15%+ → A 路徑；若僅維持 10-12% → B 路徑）。<br>
+<b>H4 vs 其他</b>：CB 轉換率（&gt;80% = 路徑 D；&lt;60% = 其他）。<br>
+<b>路徑 E 觸發條件</b>：2026 Q2 毛利率 &lt;24% 或陸系突破車用任一，兩者同時發生則 E 機率升至 12%。
+</div>
+</details>
+
+<!-- ============ 8e 個人化推衍 ============ -->
+<details open id="ch8e">
+<summary class="section-title"><span class="chapter-num">8e</span>個人化推衍 — 依持倉狀況建議</summary>
+<div class="section-sub">4 類持倉情境 · 具體進出場 / 加碼 / 停損條件</div>
+
+<table>
+<tr><th>持倉狀態</th><th>推衍建議</th><th>關鍵門檻</th></tr>
+<tr><td><b>空手（未持有）</b></td><td>優先在 <b>140-155 元</b>分批建倉 30-40%，回檔 125-140 加碼至 60-70%，110-125 最後加碼 100%</td><td>現價 153 為合理區下緣，PE 13.3 便宜；140-155 為主力建倉區</td></tr>
+<tr><td><b>輕度持有（&lt; 3%）</b></td><td>持有觀望，待 <b>125-140 元</b>回檔加碼；175+ 分批減碼保留核心部位</td><td>若 CB 2026 H2 轉換潮造成回檔，125-140 是長期勝率最高的加碼區</td></tr>
+<tr><td><b>中度持有（3-5%）</b></td><td>持有至 <b>2026 Q3-Q4</b> 等 AI TLVR 訂單放大 + 馬廠導入雙催化劑；175+ 減碼 30-50%</td><td>2026 Q2-Q3 為四連擊時間窗口（毛利率驗證/馬廠導入/AI 量產/車規認證）</td></tr>
+<tr><td><b>重度持有（&gt; 5%）</b></td><td><b>175+ 開始分批減碼</b>（部位過度集中），210+ 全數減碼；120 停損保留底線</td><td>樂觀情境 260+ 但無需押重；B+ 評級適合分散而非集中</td></tr>
+</table>
+
+<div class="callout">
+<b>統一進出場價格表</b><br>
+🟢 建倉區 140-155（初步 30-40%）→ 🟢🟢 加碼區 125-140（累計 60-70%）→ 🟢🟢🟢 深度加碼 110-125（100%）→ 🔴 停損 &lt;120 → 🟡 觀望 155-175 → ⚠ 減碼 175+ → ❌ 全出 210+
+</div>
+</details>
+
+<!-- ============ 8f 催化劑時間表 ============ -->
+<details open id="ch8f">
+<summary class="section-title"><span class="chapter-num">8f</span>催化劑時間表 — 未來 6-12 個月</summary>
+<div class="section-sub">關鍵事件日曆 · 預期影響 · 觀察指標</div>
+
+<div class="timeline">
+<div class="tl-item">
+<div class="tl-date">2026 Q2（5 月）</div>
+<div class="tl-title">🔑 Q1 財報照妖鏡時刻</div>
+<div class="tl-desc">4 項同時驗證：毛利率 ≥26% / 車用占比 / 權益法比例（Best Bliss 一次性判定）/ 私募狀態。若全綠 → H1 鞏固、股價上修 +8-12%；若 2 項紅 → 觸發減碼</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/05/23</div>
+<div class="tl-title">股東常會 · 5 元現金股利</div>
+<div class="tl-desc">殖利率 3.3% 基準；除息行情短期波動</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026 Q2（6 月）</div>
+<div class="tl-title">馬廠美系大廠客戶導入</div>
+<div class="tl-desc">馬廠第一單落地、I6 確認綠燈、股價 +5-10%</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026/07</div>
+<div class="tl-title">🔑 馬廠車規認證通過</div>
+<div class="tl-desc">歐洲 Tier1 車廠可下單、CBAM 對沖、車用占比衝 40% 重要推力、股價 +10%</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026 Q3（8-10 月）</div>
+<div class="tl-title">🔑 AI TLVR 次世代量產爬升</div>
+<div class="tl-desc">美系客戶訂單規模揭露，若超預期 → 股價 +15-20%</div>
+</div>
+<div class="tl-item risk">
+<div class="tl-date">2026/10/31</div>
+<div class="tl-title">⚠ CB 到期（稀釋 9.01% 倒數歸零）</div>
+<div class="tl-desc">2026 H2 轉換高峰，短期股價壓力 -5-10%；轉換後進入無 CB 新常態，反而是再加碼時機</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2026 年報（2027 Q1）</div>
+<div class="tl-title">車用占比 40% 目標驗證</div>
+<div class="tl-desc">若達標 → H1 大多頭完整確認、本益比重估至 17-18 倍</div>
+</div>
+<div class="tl-item">
+<div class="tl-date">2027 H1</div>
+<div class="tl-title">鈺邦合作深化 / 合併可能性</div>
+<div class="tl-desc">合併機率 &lt;15% 但影響最大（規模 +50%、進 Vishay primary、股價 +40%）</div>
+</div>
+</div>
+</details>
+
+<!-- ============ 8g 蝴蝶效應推衍 ============ -->
+<details open id="ch8g">
+<summary class="section-title"><span class="chapter-num">8g</span>蝴蝶效應推衍 ★★★</summary>
+<div class="section-sub">弱訊號雷達 · 推演鏈 Top 3 · 盲點 Top 3 · 歷史劇本</div>
+
+<h3>弱訊號雷達（A-E 五類）</h3>
+<table>
+<tr><th>類別</th><th>弱訊號</th><th>可能連鎖效應</th></tr>
+<tr><td>A 行為</td><td>2024 下半年集團重整（4 個月完成西普爾品牌統一 + 將大併入）</td><td>可能為 M&amp;A 或子公司 IPO 鋪路（Ch5 A2）</td></tr>
+<tr><td>B 數字</td><td>Best Bliss +4.14 億 + Fixed Rock +2.22 億 權益法 6.36 億，76% 未解</td><td>若含一次性 → 2025 年報回落至 15% 以下 → EPS 基期重估</td></tr>
+<tr><td>B 數字</td><td><b>Phase B-1 #2：客戶 A 採購 YoY +29% &gt; 營收 YoY +24%</b></td><td>客戶集中度 2026 可能升至 16.5-17%、歐洲 EV 景氣傳導放大</td></tr>
+<tr><td>C 情緒</td><td>2024 致股東書「投入資本進行被動元件同業股權轉投資」</td><td>未公開標的可能持續加碼（Best Bliss 下層）</td></tr>
+<tr><td>D 政策</td><td>CBAM 2026 碳稅上路 + 美中新關稅風險</td><td>歐洲出口成本壓力 + 中國 49% 營收不確定性</td></tr>
+<tr><td>E 產業</td><td>Vishay Q4 2024「退出小尺寸高量」+ <b>Phase B-1 #7 Vishay 10-K 新增 Bourns</b></td><td>台廠擴張窗口 + 未來有機會進入 primary 名單</td></tr>
+<tr><td>B 數字</td><td><b>Phase B-1 #5：鈺邦 2025 季度毛利率波動 31-36%</b></td><td>權益法貢獻會有季度起伏，Best Bliss 即使非一次性仍有波動</td></tr>
+</table>
+
+<h3>Top 3 蝴蝶效應推演鏈</h3>
+
+<div class="callout good">
+<b>鏈 1（機率 30%）：鈺邦合作深化 → 電感+電容 bundle → 車用/AI Tier1 訂單放大</b><br>
+階 1：2026 H2 臺慶科取得鈺邦 1-2 席董事席位 →<br>
+階 2：2027 推出「電感+固態電容 bundle」給 NVIDIA/AMD/車用 Tier1 →<br>
+階 3：2028 合計市占升至 4-5%，進入 Vishay primary 名單 →<br>
+階 4：2028 EPS 14+ 元、股價 280-300（路徑 C 兌現）
+</div>
+
+<div class="callout good">
+<b>鏈 2（機率 35%）：馬來西亞廠美系認證 → 擴產 → 去中化加速</b><br>
+階 1：2026 Q2-Q4 馬廠美系客戶導入 →<br>
+階 2：2027 第二階段擴產啟動（視訂單）→<br>
+階 3：2027-2028 馬廠產能占比從 6-7% 升至 15-20%、中國占比從 49% 降至 35% →<br>
+階 4：去中化完成、地緣風險折價消失、估值重估 +15-20%
+</div>
+
+<div class="callout warn">
+<b>鏈 3（機率 20%）：陸系突破車用 Tier1 → 產業結構性變化 → H3 觸發</b><br>
+階 1：2026-2027 順絡/風華高科獲比亞迪/蔚來車用認證 →<br>
+階 2：臺慶科車用份額被瓜分、Tier1 談判權下降 →<br>
+階 3：毛利率回落至 24%、車用占比無法達 40% →<br>
+階 4：H1→H3 降級、股價回至 130-140 區間（驗屍劇本 2 兌現）
+</div>
+
+<h3>Top 3 盲點</h3>
+
+<div class="callout">
+<b>盲點 1：市場過度關注 AI TLVR，但 TLVR 只占 2-3% 營收</b><br>
+真正的金雞母仍是車用一體成型功率電感（2024 YoY +39.2%、獲利最佳）。市場若把 AI TLVR 當主戲，反而低估車用本業。
+</div>
+
+<div class="callout">
+<b>盲點 2：鈺邦 28.10% 持股被市場嚴重低估</b><br>
+市場只看臺慶科本業，忽略鈺邦 2025 Q4 毛利率 36.12%（比臺慶科 28.44 還高 7.7pp）+ EPS 連四季上升。Phase B-1 #5 揭示鈺邦季度波動 31-36%，但整體趨勢向上 — 長期是「隱藏增長引擎」。
+</div>
+
+<div class="callout">
+<b>盲點 3：CB 稀釋落地後進入「無 CB 新常態」反而是利多</b><br>
+市場把 CB 倒數計時當壓力，但 2026/10 之後進入「無稀釋預期 + 資產負債表改善」新階段，實質是<b>消除估值折價的觸媒</b>。2027 起反而是重估時機。
+</div>
+
+<h3>歷史劇本對照</h3>
+<div class="callout info">
+<b>最相似案例</b>：2010-2015 台灣電子零組件業，某中型廠（類似臺慶科規模）因轉型車用+工業高階產品，從 PE 12 倍重估至 18 倍、股價 2 年翻倍。類比要點：(1) 轉型前已有深厚 know-how；(2) 日系廠戰略退出中低階；(3) 車用認證週期 2-3 年後開花結果。<b>不同處</b>：臺慶科多了 AI TLVR 新戰場 + 鈺邦持股 bundle 籌碼。
+</div>
+</details>
+
+<!-- ============ 8h 貓膩推衍 ============ -->
+<details open id="ch8h">
+<summary class="section-title"><span class="chapter-num">8h</span>貓膩推衍 ★★★（承接 Ch12）</summary>
+<div class="section-sub">Ch12 黃燈 6 項的歷史劇本 · 反轉路徑 · 保護策略 · 追蹤清單</div>
+
+<h3>貓膩結論承接</h3>
+<table>
+<tr><th>#</th><th>貓膩項</th><th>燈號</th><th>本推演階段狀態</th></tr>
+<tr><td>1</td><td>2024 集團品牌重整 4 個月完成</td><td><span class="light yellow"></span> 黃</td><td>持續追蹤 2026 H2 是否公告 M&amp;A</td></tr>
+<tr><td>2</td><td><b>Best Bliss 76% 權益法未解</b></td><td><span class="light yellow"></span> 黃</td><td>鈺邦 2025 Q4 EPS 2.57 + 毛利 36.12% 連四季上升，降低「一次性」機率</td></tr>
+<tr><td>3</td><td>西普爾控股（新）實際受益人</td><td><span class="light yellow"></span> 黃</td><td>中期追蹤，不影響短期推衍</td></tr>
+<tr><td>4</td><td>擬辦理私募普通股案狀態</td><td><span class="light yellow"></span> 黃</td><td>若 2026 Q2 實施為額外稀釋（除 CB 外）</td></tr>
+<tr><td>5</td><td>客戶 A 身份（Würth 58%）</td><td><span class="light yellow"></span> 黃</td><td>Phase B-1 #2 客戶 A 採購 +29% 顯示集中度擴大</td></tr>
+<tr><td>6</td><td>陸系突破車用 Tier1 時點</td><td><span class="light yellow"></span> 黃</td><td>當前無突破傳聞，但需季度追蹤</td></tr>
+</table>
+
+<h3>歷史劇本推演（若貓膩成立）</h3>
+
+<div class="callout bad">
+<b>劇本 1：Best Bliss 76% 揭露為一次性（機率 25% 下修自 50%）</b><br>
+時間軸：2026 Q1 財報若權益法比例 &lt; 15% → 市場確認 2024 含一次性 → EPS 基期從 2024 的 7.33 重估為 6-6.5 → 用 2025 的 10.26 反算本業約 8.5-9（業外貢獻 1.2-1.7）→ 2026 若業外回歸 0.5-1，實際本業 EPS 仍有 10-11 → <b>估值略下修但非崩盤</b>，股價 140-150。<br>
+<b>與 Phase B-1 #5 矛盾</b>：鈺邦毛利率 36.12% 連四季上升，為「結構性延續」而非「一次性」提供正面證據 → 此劇本機率從 Step 7 的 50% 下修至 25%。
+</div>
+
+<div class="callout warn">
+<b>劇本 2：擬辦理私募實施（機率 30%）</b><br>
+時間軸：2026 H1 MOPS 公告 → 對象可能是鈺邦或美系策略客戶（機率 30%）、財務投資者（機率 15%）、撤銷（機率 55%）。若實施規模 3-8%，對 EPS 影響 -3-8%、股價短期 -5-10%。<br>
+<b>長期反饋</b>：若對象是策略夥伴，反而是「Ch5 A2 集團重整暗示 M&amp;A」的實質進展 → 長期利多。
+</div>
+
+<h3>反轉路徑決策樹</h3>
+
+<div class="fork-tree">
+<div class="fork-root"><div class="fork-node">2026 Q1 財報（2026/05 公布）反轉路徑</div></div>
+<div class="fork-branches b3">
+<div class="fork-branch">
+<div class="fb-label fb-bull">50%</div>
+<div class="fb-title">4 項全綠</div>
+<div class="fb-price">股價上修 +8-12%</div>
+<div class="fb-desc">毛利率 ≥26% / 車用 ≥35% / 權益法 ≥20% / 私募未實施 → H1 鞏固、170-180 元</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-neutral">35%</div>
+<div class="fb-title">2-3 綠 1-2 黃</div>
+<div class="fb-price">持平 145-160 元</div>
+<div class="fb-desc">部分驗證、部分延後 → H1 vs H2 延後分歧 → Q2 財報再驗</div>
+</div>
+<div class="fork-branch">
+<div class="fb-label fb-bear">15%</div>
+<div class="fb-title">2 項以上紅</div>
+<div class="fb-price">減碼 50% · 130-140 元</div>
+<div class="fb-desc">觸發減碼、降級至 H2 或更悲觀 → 等 Q2 再評估</div>
+</div>
+</div>
+</div>
+
+<h3>保護策略</h3>
+<div class="callout">
+<b>若閣主相信貓膩存在（Best Bliss 一次性機率 &gt; 40%）</b>：減碼至 &lt; 3% 部位，等 2026 Q1 財報後再加碼。<br>
+<b>若閣主不確定</b>：當前分批建倉 140-155 元維持 30-40% 部位，留空間在 125-140 元回檔加碼。<br>
+<b>最早逃生信號</b>：2026 Q1 財報權益法比例突降至 &lt; 10%（最直接訊號）、或陸系廠單月被爆獲車用 Tier1 認證。
+</div>
+
+<h3>貓膩追蹤清單（Step 9 用）</h3>
+<table>
+<tr><th>追蹤項</th><th>確認指標（貓膩成立）</th><th>否定指標（排除）</th><th>檢查頻率</th></tr>
+<tr><td>Best Bliss 76%</td><td>2026 Q1 權益法 &lt; 15%</td><td>2026 Q1 權益法 ≥ 20%</td><td>季度</td></tr>
+<tr><td>客戶 A 集中度</td><td>2026 年報客戶 A ≥ 18%</td><td>客戶 A ≤ 15%</td><td>年度</td></tr>
+<tr><td>擬私募實施</td><td>MOPS 正式公告</td><td>2027 年報確認無實施</td><td>月度</td></tr>
+<tr><td>陸系車用突破</td><td>順絡/風華高科月度法說會車用業務揭露</td><td>無動向</td><td>月度</td></tr>
+<tr><td>集團 M&amp;A</td><td>MOPS 重大訊息併購公告</td><td>2027 年無動作</td><td>持續</td></tr>
+</table>
+</details>
+
+<!-- ============ 8i 推衍結論 + 第四次信心校準 ============ -->
+<details open id="ch8i">
+<summary class="section-title"><span class="chapter-num">8i</span>推衍結論 + 第四次信心校準</summary>
+<div class="section-sub">四次校準收斂 · 最可能路徑 · 行動清單 · 有效期</div>
+
+<h3>四次信心校準進程對比</h3>
+<table>
+<tr><th>校準點</th><th>H1 大多頭</th><th>H2 穩健</th><th>H6 鈺邦</th><th>目標價</th></tr>
+<tr><td>Step 4 ACH</td><td>45%</td><td>25%</td><td>15%</td><td>196 元</td></tr>
+<tr><td>Step 5 壓力測試</td><td>42%</td><td>28%</td><td>12%</td><td>196 元</td></tr>
+<tr><td>Step 6 評審團</td><td>40%</td><td>30%</td><td>13%</td><td>192 元</td></tr>
+<tr class="highlight"><td><b>Step 8 推演（第四次）</b></td><td class="hl-good"><b>42%</b></td><td>28%</td><td>13%</td><td class="hl-gold"><b>195 元</b></td></tr>
+</table>
+
+<div class="callout good">
+<span class="label">第四次校準調整理由</span>
+<ul class="clean">
+<li><b>H1 從 40% → 42%</b>（+2 pp）：2025 Q4 毛利率 28.44% + EPS 10.26 + 鈺邦 Q4 EPS 2.57 + 毛利 36.12% 四重超預期驗證，強化 H1 路徑</li>
+<li><b>H2 維持 28%</b>：若 AI TLVR 貢獻不如預期，H2 穩健接力的機率不變</li>
+<li><b>H6 鈺邦 13% 維持</b>：鈺邦表現強勁但合作深化進度未公告</li>
+<li><b>加權目標從 192 升至 195</b>（+3 元）：H1 微升影響</li>
+</ul>
+</div>
+
+<h3>最可能路徑判斷</h3>
+<div class="callout good">
+<b>最可能路徑：H1 + H2 混合路徑（合計 70%）</b>
+<ul class="clean">
+<li><b>2026 預期</b>：營收 80 億（+20%）、毛利率 26-27%、EPS 11-12 元、股價 165-200（若 AI TLVR 發酵）</li>
+<li><b>2027 預期</b>：股價 200-230 元（+30-50%），車用占比達 40%</li>
+<li><b>2028 預期</b>：股價 220-260 元（+44-70%）、鈺邦合作若深化可達 280+</li>
+</ul>
+</div>
+
+<h3>行動清單</h3>
+<div class="callout">
+✅ <b>140-155 元分批建倉</b>（30-40% 部位）— 當前位置<br>
+✅ <b>125-140 元中段加碼</b>（累計 60-70%）<br>
+✅ <b>110-125 元最後加碼</b>（累計 100%，CB 到期壓力最大時）<br>
+⚠ <b>175 元以上分批減碼</b>（部分獲利）<br>
+❌ <b>120 元以下停損</b>（H3 轉型不及驗證）<br>
+🔎 <b>監控 8 項燈號</b>：毛利率 / 車用占比 / AI TLVR 訂單 / 月營收 YoY / CB 轉換率 / 馬廠進度 / 陸系車用認證 / DSO
+</div>
+
+<h3>觀察清單（下次推衍前追蹤）</h3>
+<ol>
+<li>2026 Q1 財報毛利率（綠燈 ≥26%、觸發 H1 vs H2 分岔）</li>
+<li>2026 Q1 財報權益法貢獻比例（貓膩追蹤，綠燈 ≥20%）</li>
+<li>2026/5/23 股東常會決議 + 2026/7 馬廠車規認證</li>
+<li>2026 月度月營收與 I4 綠燈維持</li>
+<li>CB 2026 月度轉換率（H2 升至 &gt;70% 為正常）</li>
+<li>鈺邦 6449 月營收與法說會內容</li>
+<li>陸系廠（順絡/風華高科）車用業務揭露動向</li>
+<li>擬辦理私募普通股案 MOPS 公告</li>
+</ol>
+
+<div class="verdict-head">
+<div class="mark">PHASE 8 · TIANJI VAULT · 第四次信心校準</div>
+<h3>H1 大多頭 42% · 加權目標 195 元 · 正面劇本 83%</h3>
+<p class="coda">
+臺慶科 3357 第四次信心校準維持「正面劇本 83% · 加權目標價 195 元 · +27% 空間」。最可能路徑 H1+H2 混合（合計 70%）對應 2026 股價區間 160-200，2027 200-230，2028 220-260。
+車用 40% 目標 + AI TLVR 美系量產 + 鈺邦 Q4 毛利 36.12% 連四季上升 + Vishay 退出擴張窗口 四項事實層驗證強度高。
+CB 2026/10 稀釋 9.01% 為確定倒數事件，轉換潮期間短期壓力 -5-10% 但不改變長期路徑。分批建倉 140-155 / 125-140 / 110-125、175 減碼、120 停損。
+</p>
+</div>
+
+<div class="conclusion">
+<div class="mark">推衍有效期</div>
+<h4>2026/04/20 → 2026/05/18（4 週）</h4>
+<div class="rows">
+<div class="row"><div class="k">失效觸發</div><div class="v">以下任一即需重新推衍：① 2026 Q1 財報公布（毛利率實際值）② 重大國際事件（美中關稅 / CBAM 細則）③ 鈺邦或臺慶科重大訊息公告（M&amp;A / 私募 / 董事異動）</div></div>
+<div class="row"><div class="k">下次推衍</div><div class="v">預期 2026/05/10 Q1 月營收公布後 + 2026/05/15 Q1 財報公布後執行 Step 8 更新版</div></div>
+<div class="row"><div class="k">保留條件</div><div class="v">若 Q1 財報符合或超過預期（毛利率 ≥26% + 權益法 ≥20%），本推衍基準可延長至 2026/08 Q2 財報</div></div>
+</div>
+</div>
+</details>
+
+
+
+<div class="disclaimer">
+<b>⚠ 免責聲明</b>：本推演版基於公開資訊及 Step 7 結論推衍，<b>僅供閣主個人研究參考，不構成投資建議</b>。所有機率估計、目標價、操作建議均基於當前資訊與假設推估；推演有時效性（4 週），實際結果受總體經濟、產業變化、公司執行、地緣政治等多重因素影響，可能與本推演出現重大偏差。投資有風險，入市需謹慎。
+</div>
+
+<footer class="footer">
+<p>天機閣 — 推衍系統 / 投資分析引擎</p>
+<p>臺慶科 3357 · 第八步 推演版 · 2026-04-20 · 有效期至 2026-05-18</p>
+</footer>
+
+</main>
+</div>
+
+
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('taiji-theme') || 'dark';
+  root.setAttribute('data-theme', saved);
+  document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.themeBtn === saved);
+    btn.setAttribute('aria-pressed', btn.dataset.themeBtn === saved);
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.themeBtn;
+      root.setAttribute('data-theme', t);
+      localStorage.setItem('taiji-theme', t);
+      document.querySelectorAll('[data-theme-btn]').forEach(b => {
+        b.classList.toggle('on', b.dataset.themeBtn === t);
+        b.setAttribute('aria-pressed', b.dataset.themeBtn === t);
+      });
+    });
+  });
+  // Scrollspy
+  const links = document.querySelectorAll('.toc-list a');
+  const targets = document.querySelectorAll('details[id^="ch8"]');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      }
+    });
+  }, {rootMargin: '-30% 0px -60% 0px'});
+  targets.forEach(t => spy.observe(t));
+})();
+</script>
+
+
+</body>
+</html>
