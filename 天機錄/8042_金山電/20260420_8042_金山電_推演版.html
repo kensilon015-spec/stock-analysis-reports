@@ -12,18 +12,44 @@ if(typeof Chart !== 'undefined'){
   Chart.defaults.font.family = "'Inter','Noto Sans TC','Fraunces',system-ui,sans-serif";
   Chart.defaults.font.size = 12;
 }
-// webfont 載入完成後重新繪製所有 chart
-if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(function(){
-    setTimeout(function(){
-      if(typeof Chart === 'undefined') return;
-      document.querySelectorAll('canvas').forEach(function(canvas){
-        var chart = Chart.getChart(canvas);
-        if(chart) chart.update();
-      });
-    }, 50);
+// 主題感知字色（亮/暗自動切換）
+function getChartColors(){
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    tick:  isDark ? '#a09981' : '#3d3830',
+    label: isDark ? '#f5efdd' : '#1c1a16',
+    grid:  isDark ? 'rgba(245,239,221,0.18)' : 'rgba(28,26,22,0.15)'
+  };
+}
+// 套用主題色到所有 chart（含主題切換）
+function applyChartTheme(){
+  if(typeof Chart === 'undefined') return;
+  var c = getChartColors();
+  Chart.defaults.color = c.tick;
+  document.querySelectorAll('canvas').forEach(function(canvas){
+    var chart = Chart.getChart(canvas);
+    if(!chart || !chart.options) return;
+    var scales = chart.options.scales || {};
+    Object.keys(scales).forEach(function(k){
+      var s = scales[k]; if(!s) return;
+      if(s.ticks){ s.ticks.color = c.tick; if('backdropColor' in s.ticks) s.ticks.backdropColor='rgba(0,0,0,0)'; }
+      if(s.pointLabels){ s.pointLabels.color = c.label; }
+      if(s.grid){ s.grid.color = c.grid; }
+      if(s.angleLines){ s.angleLines.color = c.grid; }
+    });
+    if(chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = c.label;
+    }
+    chart.update('none');
   });
 }
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(function(){ setTimeout(applyChartTheme, 50); });
+}
+window.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyChartTheme, 100);
+  new MutationObserver(applyChartTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
