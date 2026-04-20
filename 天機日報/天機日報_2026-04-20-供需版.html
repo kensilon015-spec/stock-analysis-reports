@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>供需失衡偵測報告 — 2026-04-20</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;
+  --txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;
+  --accent:#6b9f72;--danger:#d4887a;--safe:#6b8f71;
+  --base:#e8e4dc;--link:#7ab0c0;--table-header:#333;
+  --code-bg:#111;--gold:#d4b030;--warn:#d4a017;
+  --bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0
+}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5;padding:0}
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px;overflow-x:auto}
+.hero{text-align:center;padding:18px 16px 14px;margin-bottom:14px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-size:1.6em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .sub{font-size:.9em;color:var(--accent);font-weight:700;margin-top:3px}
+.hero .desc{font-size:.82em;color:var(--txt3);margin-top:5px;line-height:1.5}
+.tags{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.tag{padding:2px 10px;border-radius:6px;font-size:.75em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
+.card h3{font-size:1em;font-weight:700;color:var(--base);padding:10px 16px;margin:0;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+.card h3::after{content:'\25BC';font-size:.6em;color:var(--txt3);transition:transform .2s}
+.card.collapsed h3::after{transform:rotate(-90deg)}
+.card h3:hover{background:var(--hover)}
+.card .card-body{padding:0 16px 12px}
+.card.collapsed .card-body{display:none}
+.card p{font-size:.85em;color:var(--txt2);margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:.82em;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+th{background:var(--table-header);color:#e0dcd4;padding:6px 10px;text-align:left;font-weight:600}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel)}
+tr:hover td{background:var(--hover)}
+.tip{padding:8px 12px;border-radius:6px;margin:6px 0;border-left:3px solid;font-size:.84em}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.18)}
+.tip.danger b{color:var(--danger);display:block;margin-bottom:2px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.18)}
+.tip.good b{color:var(--accent);display:block;margin-bottom:2px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.15)}
+.tip.warn b{color:var(--warn);display:block;margin-bottom:2px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.18)}
+.tip.info b{color:var(--link);display:block;margin-bottom:2px}
+details{margin:5px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--base);padding:4px 0;font-size:.9em;user-select:none}
+details summary:hover{color:var(--accent)}
+details[open] summary{margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.section-title{font-size:1.15em;font-weight:900;color:var(--base);margin:18px 0 3px;padding-top:12px;border-top:1.5px solid var(--border)}
+.section-sub{font-size:.82em;color:var(--txt3);margin-bottom:8px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+.alert-box{border:2px solid var(--danger);border-radius:10px;padding:12px 16px;margin:10px 0;background:rgba(194,124,110,.12)}
+.alert-box.critical{border-color:#ff4444;background:rgba(255,68,68,.15);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,.3)}50%{box-shadow:0 0 12px 4px rgba(255,68,68,.15)}}
+.signal{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.signal.red{background:#ef5350}.signal.yellow{background:#ffc107}.signal.green{background:#4caf50}.signal.fire{background:#ff4444;box-shadow:0 0 6px #ff4444}
+.badge{display:inline-block;padding:1px 8px;border-radius:4px;font-size:.72em;font-weight:700}
+.badge.hot{background:rgba(239,83,80,.3);color:#ef5350}
+.badge.warm{background:rgba(255,193,7,.3);color:#ffc107}
+.badge.cool{background:rgba(76,175,80,.3);color:#4caf50}
+.badge.overheat{background:rgba(255,68,68,.4);color:#ff6666}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+<h1>供需失衡偵測報告</h1>
+<div class="sub">v8.0 全量掃描 — 2026-04-20（W17）</div>
+<div class="desc">52 品項（核心 15 × 10 維 + 邊緣 37 × 3 維）｜4 層動態監控 ｜ 三重告警機制</div>
+<div class="tags">
+<span class="tag">Phase 0A 產業報價</span>
+<span class="tag">Phase 0B 法說會</span>
+<span class="tag">Phase 0C 題材雷達</span>
+<span class="tag">Phase 0D 壟斷者</span>
+<span class="tag">Phase 1-2B 驗證篩選</span>
+</div>
+</div>
+
+<!-- ===== CH 0: 重大告警 ===== -->
+<div class="section-title">0. 🔔 本週重大告警</div>
+<div class="section-sub">三重機制觸發 + 荷莫茲海峽突發地緣事件</div>
+
+<div class="alert-box critical">
+<b style="color:#ff4444;font-size:1.05em">🔥🔥 超級紅燈：荷莫茲海峽危機（2026-03-04 起）</b>
+<p style="margin-top:6px">伊朗 IRGC 宣布封鎖荷莫茲海峽，已發動 21 次確認攻擊商船、佈設海雷。油輪通行量一度降至零。4 月 8 日停火後通行仍遠低於正常水準。</p>
+<table>
+<tr><th>指標</th><th>數據</th><th>影響</th></tr>
+<tr><td>全球海運石油影響</td><td>25%</td><td>WTI 急漲至 $89/桶（單日+6%）</td></tr>
+<tr><td>全球 LNG 影響</td><td>20%</td><td>QatarEnergy LNG 廠遭飛彈損壞（修復需 5 年）</td></tr>
+<tr><td>每日 GDP 損失</td><td>~$200 億</td><td>IEA 稱史上最大石油供給中斷</td></tr>
+<tr><td>新興短缺品項</td><td>氦氣/尿素/塑料</td><td>卡達佔氦氣 1/3；尿素 46% 經此海峽</td></tr>
+</table>
+</div>
+
+<div class="alert-box">
+<b style="color:var(--danger);font-size:1.05em">🔥 超紅燈：ABF 載板 5 維同向供緊（S-05 + S-06 + M-01 + M-02）</b>
+<p style="margin-top:6px"><b>多參數鐵證</b>：價格↑（年漲 20%，特殊品 +30%）+ 交期↑ + 壟斷者漲價（Palliser 要求味之素 +30%）+ 次上游瓶頸（T-Glass 訂滿到年底）+ 規格升級（吞產能 x10-15）。供需缺口：2026H2 10% → 2027 21% → 2028 42%。Hyperscaler 已開始預付款建新產線。</p>
+</div>
+
+<div class="alert-box">
+<b style="color:var(--danger);font-size:1.05em">🔴 紅燈：記憶體超級漲價循環（DRAM + NAND 同步）</b>
+<p style="margin-top:6px">DRAM 合約價 Q1 +55% QoQ｜NAND Q1 +55-60%、Q2 預估 +70-75%｜DDR4/DDR5 價格倒掛（S-01 觸發）｜HBM 排擠效應（Micron 3:1 轉換比）。短缺預計持續到 2027 Q4。DDR4 現貨價較合約高 172%。</p>
+</div>
+
+<div class="alert-box">
+<b style="color:var(--danger)">🔴 紅燈：GPU + CoWoS 4 維同向供緊</b>
+<p style="margin-top:6px">NVIDIA Blackwell 積壓 360 萬顆｜CoWoS 全訂滿（CEO 魏哲家：「非常緊張」）｜台積電年底目標 13 萬片/月（從 7.5-8 萬）｜NVIDIA 預約 >50% 的 2026-27 CoWoS 產能。</p>
+</div>
+
+<div class="alert-box">
+<b style="color:var(--danger)">🔴 紅燈：變壓器交期 >100 週，缺口 30%</b>
+<p style="margin-top:6px">需求較 2024 增長 21%｜PJM 電網低於可靠性目標 6.6 GW（其中 5.1 GW 來自資料中心）｜Hitachi $10 億+擴產但 2028 才投產｜至 2030 年仍結構性短缺。</p>
+</div>
+
+<!-- ===== CH 1: 儀表板 ===== -->
+<div class="section-title">1. 📊 52 項儀表板狀態</div>
+<div class="section-sub">核心 15 項（10 維）+ 邊緣 37 項（3 維）— 本次為 v8.0 基線建立</div>
+
+<details open>
+<summary>核心 15 項總覽</summary>
+<table>
+<tr><th>ID</th><th>品項</th><th>類別</th><th>信號</th><th>生命週期</th><th>熱度</th><th>關鍵數據</th></tr>
+<tr><td>C01</td><td>HBM3e/HBM4</td><td>算力</td><td><span class="signal red"></span>🔴</td><td><span class="badge hot">加速</span></td><td>75</td><td>漲價 20%；2026 全年售罄；Micron 僅能滿足 50-66% 需求</td></tr>
+<tr><td>C02</td><td>GPU NVIDIA</td><td>算力</td><td><span class="signal red"></span>🔴</td><td><span class="badge overheat">過熱</span></td><td>85</td><td>積壓 360 萬顆；B300 交期 12-20 週；售罄到年中</td></tr>
+<tr><td>C03</td><td>CoWoS 先進封裝</td><td>算力</td><td><span class="signal red"></span>🔴</td><td><span class="badge overheat">過熱</span></td><td>88</td><td>月產能 7.5→13 萬片目標；全訂滿；外包 OSAT</td></tr>
+<tr><td>C04</td><td>ABF 載板</td><td>PCB</td><td><span class="signal fire"></span>🔥</td><td><span class="badge overheat">過熱</span></td><td>90</td><td>缺口 10%→21%→42%；Palliser 要求味之素漲 30%+</td></tr>
+<tr><td>C05</td><td>散熱液冷</td><td>算力</td><td><span class="signal yellow"></span>🟡</td><td><span class="badge warm">加速</span></td><td>72</td><td>市場 YoY +156%；CDU 40 家競爭；無明確短缺</td></tr>
+<tr><td>C06</td><td>變壓器交期</td><td>電力</td><td><span class="signal red"></span>🔴</td><td><span class="badge hot">成熟</span></td><td>78</td><td>>100 週交期；30% 缺口；需求 +21% YoY</td></tr>
+<tr><td>C07</td><td>鈾 U3O8</td><td>電力</td><td><span class="signal yellow"></span>🟡</td><td><span class="badge warm">加速</span></td><td>65</td><td>$85/lb 穩定；SMR + Hyperscaler PPA 推動需求</td></tr>
+<tr><td>C08</td><td>銅</td><td>原物料</td><td><span class="signal red"></span>🔴</td><td><span class="badge hot">成熟</span></td><td>68</td><td>$12,630/噸近歷史高；33 萬噸缺口；中國減產 10%</td></tr>
+<tr><td>C09</td><td>鋰</td><td>原物料</td><td><span class="signal yellow"></span>🟡</td><td><span class="badge cool">降溫</span></td><td>30</td><td>$22,500/噸反彈 130%；但 2026-28 新產能有供過於求風險</td></tr>
+<tr><td>C10</td><td>稀土 NdPr</td><td>原物料</td><td><span class="signal yellow"></span>🟡</td><td><span class="badge warm">加速</span></td><td>55</td><td>$103.76/kg（翻倍）；中國暫停出口禁令至 11 月</td></tr>
+<tr><td>C11</td><td>BDI/SCFI</td><td>物流</td><td><span class="signal red"></span>🔴</td><td><span class="badge hot">成熟</span></td><td>50→65↑</td><td>SCFI ~1,266；紅海繞行持續；荷莫茲危機疊加</td></tr>
+<tr><td>C12</td><td>DRAM 合約價</td><td>記憶體</td><td><span class="signal fire"></span>🔥</td><td><span class="badge overheat">過熱</span></td><td>90</td><td>Q1 +55% QoQ；Q2 繼續漲；HBM 排擠 3:1</td></tr>
+<tr><td>C13</td><td>NAND Flash</td><td>記憶體</td><td><span class="signal fire"></span>🔥</td><td><span class="badge overheat">過熱</span></td><td>80→90↑</td><td>Q1 +55-60%；Q2 預估 +70-75%；短缺到 2027 末</td></tr>
+<tr><td>C14</td><td>WTI 原油</td><td>能源</td><td><span class="signal red"></span>🔴</td><td><span class="badge hot">成熟</span></td><td>45→70↑</td><td>$89/桶；荷莫茲危機衝擊；OPEC+ 增產 20.6 萬桶</td></tr>
+<tr><td>C15</td><td>GLP-1 減重藥</td><td>醫藥</td><td><span class="signal green"></span>🟢</td><td><span class="badge overheat">過熱→降溫</span></td><td>88→55↓</td><td>FDA 解除缺藥清單；Novo $60 億擴產；Wegovy 口服上市</td></tr>
+</table>
+</details>
+
+<details>
+<summary>邊緣 37 項重點摘要（告警觸發項目）</summary>
+<table>
+<tr><th>ID</th><th>品項</th><th>信號</th><th>熱度</th><th>關鍵數據</th></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E01</td><td>DDR4 現貨</td><td>🔴</td><td>85</td><td>現貨較合約高 172%；三大廠停產 EOL 觸發恐慌囤貨</td></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E03</td><td>DDR4/DDR5 價差比</td><td>🔴 S-01</td><td>85</td><td>價格倒掛確認（DDR4 部分規格貴於 DDR5）</td></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E04</td><td>NOR Flash</td><td>🟡</td><td>70</td><td>汽車/伺服器需求推升；旺宏 2337 庫存下降</td></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E10</td><td>InP 磷化銦</td><td>🟡</td><td>68</td><td>CPO + 矽光子推動 800G→1.6T 光模組換代</td></tr>
+<tr style="background:rgba(239,83,80,.15)"><td>E11</td><td>T-Glass 玻纖布</td><td>🔥</td><td>82</td><td>「2026 AI 最大瓶頸」；日東紡訂滿到年底；南亞自製中</td></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E12</td><td>矽鋼片 GO 鋼</td><td>🔴</td><td>75</td><td>變壓器短缺的上游瓶頸；新日鐵/浦項寡佔</td></tr>
+<tr style="background:rgba(239,83,80,.12)"><td>E13</td><td>CCL 銅箔基板</td><td>🔴</td><td>78</td><td>價格 +45%；配額制；交期 6 個月；三大原料同步漲</td></tr>
+<tr><td>E14</td><td>IC 載板</td><td>🟡</td><td>72</td><td>AI 封裝需求推動；BT 載板漲價中</td></tr>
+<tr style="background:rgba(239,83,80,.08)"><td>E15</td><td>AI 伺服器積壓</td><td>🔴</td><td>85</td><td>Hyperscaler 大單持續；鴻海/廣達/緯穎訂單創高</td></tr>
+<tr><td>E16</td><td>800G 光模組</td><td>🟡</td><td>68</td><td>量增價穩；1.6T 升級時程推進</td></tr>
+<tr><td>E17</td><td>開關設備</td><td>🟡</td><td>68</td><td>AI DC 推動訂單；中興電/亞力受惠</td></tr>
+<tr><td>E18</td><td>HVDC 電纜</td><td>🟡</td><td>70</td><td>離岸風電 + 跨國互聯推動</td></tr>
+<tr style="background:rgba(239,83,80,.12)"><td>E19</td><td>PJM/ERCOT 電網</td><td>🔴</td><td>78</td><td>PJM 低於目標 6.6 GW；ERCOT 申請量暴增 4 倍至 230 GW</td></tr>
+<tr><td>E22</td><td>NATO 軍費</td><td>🟡</td><td>62</td><td>多國上修至 GDP 2.5%+</td></tr>
+<tr><td>E25</td><td>155mm 砲彈</td><td>🟡</td><td>65</td><td>消耗 > 補充；新彈藥廠動工</td></tr>
+<tr><td>E27</td><td>中印 API</td><td>🟡</td><td>65</td><td>原料藥供應集中度風險</td></tr>
+<tr><td>E28</td><td>CDMO 稼動率</td><td>🟡</td><td>72</td><td>代工費率上漲；產能偏緊</td></tr>
+<tr><td>E36</td><td>TFT-LCD</td><td>🟢</td><td>38</td><td>面板價平穩；稼動率偏低</td></tr>
+</table>
+<p style="font-size:.78em;color:var(--txt3)">*未列出的邊緣品項本週無重大異動，維持上次評估狀態。</p>
+</details>
+
+<div class="tip danger">
+<b>第 1 章整合結論</b>
+本週 52 品項中 <b>11 項觸發紅燈以上</b>（C01/C02/C03/C04/C06/C08/C12/C13/C14 + E11/E13），為 v8.0 上線以來信號密度最高的一次。供緊信號高度集中在三大主軸：<b>(1) AI 算力全鏈（HBM→CoWoS→ABF→T-Glass→CCL→GPU→液冷）</b>形成從上游材料到下游組裝的完整瓶頸鏈；<b>(2) 記憶體超級循環</b>（DRAM/NAND 同步漲價＋DDR4 結構性消亡）屬「壟斷者人為供給側管理」而非景氣循環；<b>(3) 荷莫茲海峽危機</b>在能源/化工/物流疊加紅海繞行，形成雙重地緣瓶頸。三條主軸互相強化：AI 驅動電力需求→變壓器缺→PJM 電網不足→AI DC 延宕→反過來延長 GPU 等候期。唯一明確供寬品項為 GLP-1（FDA 解除缺藥）和鋰（從底部反彈但新產能將至）。
+</div>
+
+<!-- ===== CH 2: 題材萌芽 ===== -->
+<div class="section-title">2. 🔭 題材萌芽雷達（Phase 0C）</div>
+<div class="section-sub">首次填充候選池 — 荷莫茲海峽危機為最大新興供需衝擊源</div>
+
+<table>
+<tr><th>品項</th><th>訊號來源</th><th>供需方向</th><th>關聯上市公司</th><th>狀態</th></tr>
+<tr><td><b>氦氣 (Helium)</b></td><td>卡達佔全球 1/3，LNG 廠遭飛彈損壞</td><td>供緊（突發中斷）</td><td>Air Products APD、Linde LIN</td><td>新入候選</td></tr>
+<tr><td><b>尿素肥料 (Urea)</b></td><td>46% 全球尿素貿易經荷莫茲；春耕季</td><td>供緊（地緣+季節）</td><td>CF Industries CF、Nutrien NTR</td><td>新入候選</td></tr>
+<tr><td><b>塑料樹脂 (Resins)</b></td><td>中東石化原料中斷；全球配額措施出現</td><td>供緊（原料中斷）</td><td>台塑化 6505、Dow DOW</td><td>新入候選</td></tr>
+<tr><td><b>鎢 (Tungsten)</b></td><td>戰略瓶頸材料；中國佔全球 80%+</td><td>供緊（戰略材料）</td><td>暫無直接上市公司</td><td>新入候選</td></tr>
+</table>
+
+<div class="tip info">
+<b>第 2 章整合結論</b>
+荷莫茲危機一次性催生 3 個候選品項（氦氣/尿素/塑料），均具地緣突發中斷特性。若危機持續超過 8 週，氦氣最有可能升級至邊緣品項（半導體級氦氣為製程必需且替代來源極少）。鎢則是與中國出口管制政策連動的長線觀察品項。下週追蹤重點：停火後通行量恢復速度、卡達 LNG 廠損壞評估、美國玉米期貨走勢。
+</div>
+
+<!-- ===== CH 3: 壟斷者 ===== -->
+<div class="section-title">3. 🏛 壟斷者事件警報（Phase 0D）</div>
+<div class="section-sub">15 家咽喉廠掃描 — 7 家觸發事件</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">🔥 味之素 Ajinomoto — ABF 樹脂（市佔 >95%）</h3>
+<div class="card-body">
+<p><b>事件</b>：Palliser Capital（英國維權基金）2026-03-31 宣布成為前 25 大股東，要求 ABF 樹脂漲價 30% 以上。稱味之素為「AI 基礎建設中全球最被低估的壟斷」。</p>
+<p><b>同步事件</b>：Hyperscaler（Apple/NVIDIA/Google/Amazon）已開始預付款協助建新產線鎖定產能（M-02 超紅燈觸發）。</p>
+<p><b>連動</b>：C04 ABF 載板 → E13 CCL → E14 IC 載板。<b>投資含義</b>：欣興 3037/南電 8046/景碩 3189 為直接受惠。</p>
+</div>
+</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">🔴 日東紡 Nitto Boseki — T-Glass（獨佔）</h3>
+<div class="card-body">
+<p><b>事件</b>：訂單排滿至 2026 年底。被業界稱為「2026 年 AI 產業最大的瓶頸」。Apple/NVIDIA/Google/Amazon 均在搶貨。</p>
+<p><b>對策</b>：投資 150 億日圓擴產，但新產能最快 2027 年。南亞塑膠與日東紡合作自製，目標 2027 年生產約 20% 特殊纖維。</p>
+<p><b>連動</b>：C04 ABF → E11 T-Glass → E13 CCL。<b>投資含義</b>：台光電 2383/聯茂 6213 有垂直整合優勢。</p>
+</div>
+</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">🔴 SK Hynix / Samsung / TSMC — 三大核心壟斷者</h3>
+<div class="card-body">
+<p><b>SK Hynix</b>：HBM3e 漲價 20%；M15X 新廠量產中；UBS 預測 HBM4 市佔 70%；Q1 法說會 4/24。</p>
+<p><b>Samsung</b>：HBM 產能 +50%；DDR4 幾乎停產 → EOL 觸發恐慌。</p>
+<p><b>TSMC</b>：CoWoS 月產能年底衝 13 萬片；NVIDIA 預約 >50%；CEO 坦承「非常緊張」。</p>
+<p><b>共同效應</b>：三大廠將傳統 DRAM 產能大幅轉向 HBM，Micron 3:1 轉換比，加劇 DDR4/DDR5 結構性短缺。</p>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">🔴 Hitachi Energy — 變壓器（全球龍頭）</h3>
+<div class="card-body">
+<p>投資 >$10 億北美擴產。南波士頓 $4.57 億（美國最大電力變壓器廠，2028 投產）。全球交期 >100 週。2030 年前仍結構性短缺。</p>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">🟡 中國煉銅廠 — 集體減產 10%</h3>
+<div class="card-body">
+<p>因礦砂供應緊張、TC/RC 費率下降。LME 銅價 $12,630/噸近歷史高。全球精煉銅缺口 33 萬噸。</p>
+</div>
+</div>
+
+<div class="tip danger">
+<b>第 3 章整合結論</b>
+15 家咽喉廠中 7 家觸發事件，觸發率 47%——歷來最高。最嚴重的是味之素 + 日東紡的「雙壟斷連鎖」：味之素 ABF 樹脂（>95% 市佔）受維權基金施壓漲價 30%+，而 ABF 的關鍵上游 T-Glass 被日東紡獨佔且訂滿到年底。這形成「壟斷者的壟斷者」結構——下游即便有錢也買不到足夠材料。記憶體三大廠的同步行為（HBM 轉移+漲價）本質上是卡特爾式供給管理。TSMC CoWoS 全訂滿是 AI 算力瓶頸的物理極限。
+</div>
+
+<!-- ===== CH 4: 法說會 ===== -->
+<div class="section-title">4. 🌐 海外法說會收斂警報（Phase 0B）</div>
+<div class="section-sub">SK Hynix Q1 2026 法說會：2026-04-24（距今 4 天，±3 天內觸發）</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">SK Hynix Q1 2026 法說會預覽（4/24）</h3>
+<div class="card-body">
+<table>
+<tr><th>變數</th><th>市場預期</th><th>方向判定</th></tr>
+<tr><td>營收</td><td>55.8 兆韓元（+210.8% YoY）</td><td>需求極強確認</td></tr>
+<tr><td>營業利益</td><td>35.6 兆韓元（+410.6% YoY）</td><td>HBM 溢價利潤率極高</td></tr>
+<tr><td>CapEx 配置</td><td>HBM 佔比持續擴大</td><td>→ 傳統 DDR 供給更緊</td></tr>
+<tr><td>HBM4 進度</td><td>2Q26 量產，NVIDIA Rubin 平台 70% 市佔</td><td>→ 下一代產能吞噬加速</td></tr>
+<tr><td>合約價 Guidance</td><td>DRAM +55% QoQ（Q1 已確認）</td><td>→ Q2 繼續上行</td></tr>
+<tr><td>庫存 DOI</td><td>極低水位</td><td>→ 無去庫壓力</td></tr>
+</table>
+<p style="margin-top:8px"><b>收斂規則</b>：若 SK Hynix 確認 CapEx 持續轉 HBM + 合約價上行，結合 Samsung/Micron 法說會同向 → EC-01 收斂觸發「產業級供緊確認」。</p>
+<p><b>追蹤行動</b>：4/24 法說會後 24 小時內更新 6 變數方向，比對 Samsung（已公布 Q1）確認收斂。</p>
+</div>
+</div>
+
+<div class="tip warn">
+<b>第 4 章整合結論</b>
+SK Hynix Q1 法說會將是本季記憶體供需的最關鍵確認點。市場已預期營收+210% YoY，若實際數字超預期且 HBM4 進度提前，將觸發 EC-01 收斂規則（多廠同向確認）。核心觀察：CapEx 中 HBM 佔比是否進一步擠壓傳統 DRAM 產線——這直接決定 DDR4/DDR5 短缺的嚴重程度。
+</div>
+
+<!-- ===== CH 5: 執行摘要 ===== -->
+<div class="section-title">5. 📋 執行摘要</div>
+<div class="section-sub">四刀篩選結果總覽</div>
+
+<div class="grid-2">
+<div class="tip danger">
+<b>供緊確認（投資機會）</b><br>
+• <b>AI 算力全鏈</b>：HBM/CoWoS/ABF/T-Glass/CCL — 至少持續到 2027 年中<br>
+• <b>記憶體超級循環</b>：DRAM/NAND/DDR4 結構性短缺 — 持續到 2027 Q4<br>
+• <b>電力基建</b>：變壓器/開關設備/GO 鋼 — 持續到 2030 年<br>
+• <b>銅</b>：33 萬噸缺口 + AI/EV/電網三重需求 — 結構性<br>
+• <b>荷莫茲危機</b>：WTI/LNG/航運 — 視停火落實進度
+</div>
+<div class="tip good">
+<b>供寬確認（迴避或反轉預警）</b><br>
+• <b>GLP-1</b>：FDA 解除缺藥清單；口服劑上市；產能追趕 → 短缺結束<br>
+• <b>鋰</b>：底部反彈中但 2026-28 新產能湧入 → 供過於求風險<br>
+• <b>液冷散熱</b>：市場爆發但 40 家 CDU 廠競爭 → 價格壓力 → 非缺貨驅動<br>
+• <b>TFT-LCD</b>：面板價平穩；稼動率偏低 → 供寬
+</div>
+</div>
+
+<!-- ===== CH 6: 趨勢追蹤表 ===== -->
+<div class="section-title">6. 📈 供需趨勢追蹤表</div>
+<div class="section-sub">核心 15 項 — 現狀 + 趨勢 + 預判（v8.0 基線）</div>
+
+<table>
+<tr><th>品項</th><th>現狀</th><th>趨勢（3-6 月）</th><th>預判</th><th>驅動面</th></tr>
+<tr><td>C01 HBM</td><td>售罄、漲價 20%</td><td>↑ 需求持續超供給</td><td>2027H1 前不緩解</td><td>雙重（供給轉移+需求暴增）</td></tr>
+<tr><td>C02 GPU</td><td>積壓 360 萬顆</td><td>↑ B300 ramp 消化慢</td><td>年中略改善</td><td>需求驅動</td></tr>
+<tr><td>C03 CoWoS</td><td>全訂滿</td><td>→↑ 擴產中但需求更快</td><td>2027 緩解</td><td>供給驅動（產能物理限制）</td></tr>
+<tr><td>C04 ABF</td><td>缺口 10%</td><td>↑↑ 缺口擴大</td><td>2028 年 42% 缺口</td><td>雙重（最強信號）</td></tr>
+<tr><td>C05 液冷</td><td>供需平衡偏緊</td><td>→ 競爭加劇</td><td>價格趨降</td><td>需求驅動</td></tr>
+<tr><td>C06 變壓器</td><td>交期 >100 週</td><td>→ 無改善</td><td>2030 前不緩解</td><td>供給驅動</td></tr>
+<tr><td>C07 鈾</td><td>$85/lb 穩定</td><td>↑ SMR 商轉推動</td><td>長期供緊</td><td>需求驅動</td></tr>
+<tr><td>C08 銅</td><td>$12,630 近歷史高</td><td>↑ 結構性缺口</td><td>長期看漲</td><td>雙重</td></tr>
+<tr><td>C09 鋰</td><td>$22,500 反彈中</td><td>→↓ 新產能釋放</td><td>2026H2 可能回落</td><td>供給驅動（供過於求風險）</td></tr>
+<tr><td>C10 稀土</td><td>$103.76 翻倍</td><td>→ 中國政策觀望</td><td>11 月前穩定</td><td>政策驅動</td></tr>
+<tr><td>C11 BDI/SCFI</td><td>偏高但穩</td><td>↑ 荷莫茲疊加</td><td>視停火進展</td><td>事件驅動</td></tr>
+<tr><td>C12 DRAM</td><td>+55% QoQ</td><td>↑ Q2 繼續漲</td><td>2027Q4 前不緩解</td><td>雙重（壟斷者管理+需求）</td></tr>
+<tr><td>C13 NAND</td><td>+55-60% QoQ</td><td>↑↑ Q2 +70-75%</td><td>2027 末</td><td>雙重</td></tr>
+<tr><td>C14 WTI</td><td>$89（波動劇烈）</td><td>↕ 高度不確定</td><td>視中東局勢</td><td>事件驅動</td></tr>
+<tr><td>C15 GLP-1</td><td>供需改善</td><td>↓ 產能追趕</td><td>短缺結束</td><td>供給改善</td></tr>
+</table>
+
+<!-- ===== CH 7: 四刀篩選 ===== -->
+<div class="section-title">7. 🔪 四刀篩選名單</div>
+<div class="section-sub">從供需失衡中找出真正受惠標的</div>
+
+<details open>
+<summary>✅ 通過四刀篩選 — 真受惠名單</summary>
+<table>
+<tr><th>標的</th><th>缺貨品項</th><th>刀一（賣X）</th><th>刀二（營收加速）</th><th>刀三（法人）</th><th>刀四（佔營收）</th></tr>
+<tr><td><b>南電 8046</b></td><td>ABF 載板</td><td>✅ 賣 ABF</td><td>✅ 高盛估 81% CAGR</td><td>✅ 外資升評</td><td>✅ >80%</td></tr>
+<tr><td><b>景碩 3189</b></td><td>ABF 載板</td><td>✅ 賣 ABF</td><td>✅ 高盛目標價上修</td><td>✅ 升評</td><td>✅ >60%</td></tr>
+<tr><td><b>華邦電 2344</b></td><td>DRAM/NOR</td><td>✅ 賣記憶體</td><td>✅ DDR4 漲價直接受惠</td><td>✅ 外資點名</td><td>✅ >70%</td></tr>
+<tr><td><b>南亞科 2408</b></td><td>DRAM DDR4/DDR5</td><td>✅ 賣 DRAM</td><td>✅ DDR4 漲價+DDR5 轉換</td><td>✅ 法人加碼</td><td>✅ >90%</td></tr>
+<tr><td><b>旺宏 2337</b></td><td>NOR Flash</td><td>✅ 賣 NOR</td><td>🟡 漲幅溫和</td><td>🟡 待確認</td><td>✅ >80%</td></tr>
+<tr><td><b>士電 1503</b></td><td>變壓器</td><td>✅ 賣變壓器</td><td>✅ 訂單積壓</td><td>✅ 外資買超</td><td>✅ >60%</td></tr>
+<tr><td><b>華城 1519</b></td><td>變壓器</td><td>✅ 賣變壓器</td><td>✅ 營收創高</td><td>✅ 外資加碼</td><td>✅ >70%</td></tr>
+<tr><td><b>台光電 2383</b></td><td>CCL</td><td>✅ 賣 CCL</td><td>✅ 漲價傳導</td><td>🟡 觀望</td><td>✅ >70%</td></tr>
+</table>
+</details>
+
+<details>
+<summary>❌ 淘汰或待觀察</summary>
+<table>
+<tr><th>標的</th><th>淘汰原因</th></tr>
+<tr><td>欣興 3037</td><td>刀四未過：70%+ 長約保護限制定價彈性；擴產進度較慢（外資報告指出）。非淘汰但上檔受限。</td></tr>
+<tr><td>奇鋐 3017</td><td>刀一未過：液冷市場無明確缺貨；40 家 CDU 競爭加劇；營收增速靠量非價</td></tr>
+<tr><td>雙鴻 3324</td><td>同奇鋐：液冷需求強但非缺貨驅動</td></tr>
+<tr><td>友達 2409</td><td>供寬品項：面板稼動率偏低，無缺貨</td></tr>
+<tr><td>台塑化 6505</td><td>荷莫茲危機受害方（原料成本上升）而非受惠方</td></tr>
+</table>
+</details>
+
+<div class="tip warn">
+<b>第 7 章整合結論</b>
+通過四刀篩選的 8 檔台股集中在三大受惠主軸：ABF 載板（南電/景碩 > 欣興）、記憶體（華邦電/南亞科 > 旺宏）、變壓器（士電/華城）。ABF 族群的獲利爆發力最強（高盛估南電 2026-28 獲利 CAGR 81%），但注意股價可能已部分反映。記憶體族群受惠於 DDR4 結構性消亡，是「非景氣循環」的漲價——比過去任何記憶體漲價週期更持久。變壓器族群的持續性最佳（到 2030 年），但成長斜率較緩。台光電 2383 是 CCL 漲價的最佳代理標的。
+</div>
+
+<!-- ===== CH 8: 反轉預警 ===== -->
+<div class="section-title">8. ⚠️ 供需反轉預警儀表板</div>
+<div class="section-sub">監控「快要不缺了」的信號</div>
+
+<table>
+<tr><th>品項</th><th>反轉信號</th><th>目前狀態</th><th>預估反轉時點</th></tr>
+<tr><td>C15 GLP-1</td><td>FDA 解除缺藥、口服劑上市、產能擴建</td><td><span class="signal green"></span><b>已反轉</b></td><td>已發生（2025Q4）</td></tr>
+<tr><td>C09 鋰</td><td>新礦/鹽湖投產（阿根廷/澳洲）</td><td><span class="signal yellow"></span>反彈中但新產能逼近</td><td>2026H2-2027H1</td></tr>
+<tr><td>C05 液冷</td><td>CDU 廠商暴增至 40 家；單機價值下降</td><td><span class="signal yellow"></span>競爭加劇中</td><td>2026H2（價格壓力）</td></tr>
+<tr><td>C03 CoWoS</td><td>台積電產能 4 倍擴張 + OSAT 外包</td><td><span class="signal yellow"></span>擴產中</td><td>2027H1（供需趨平衡）</td></tr>
+<tr><td>C12 DRAM</td><td>新 DRAM 廠投產（Micron 愛達荷/Samsung 平澤）</td><td><span class="signal red"></span>尚無反轉跡象</td><td>2027Q4 最早</td></tr>
+<tr><td>C04 ABF</td><td>味之素+台廠擴產追上規格升級速度</td><td><span class="signal red"></span>缺口擴大中</td><td>2028+ 最早</td></tr>
+<tr><td>C06 變壓器</td><td>Hitachi/Siemens 新廠投產</td><td><span class="signal red"></span>無反轉跡象</td><td>2028-2030</td></tr>
+</table>
+
+<div class="tip info">
+<b>第 8 章整合結論</b>
+反轉風險最高的品項是 GLP-1（已完成反轉）和鋰（2026H2 可能重回供過於求）。液冷/CoWoS 在 2027 年有結構性改善可能。最不可能短期反轉的是 ABF 載板（規格升級速度遠超擴產）和變壓器（物理產能建設需 2-3 年）。記憶體雖然新廠在建，但 HBM 吞噬效應持續，反轉時點至少在 2027Q4。<b>閣主需特別注意：鋰從「供寬」到「供緊」的反覆振盪——底部反彈不等於結構性轉強。</b>
+</div>
+
+<!-- ===== CH 9: 迴避清單 ===== -->
+<div class="section-title">9. 🚫 迴避清單</div>
+<div class="section-sub">供給增加 + 需求減弱的產業/標的</div>
+
+<table>
+<tr><th>品項/產業</th><th>迴避原因</th><th>相關標的</th></tr>
+<tr><td>TFT-LCD 大尺寸面板</td><td>稼動率偏低；無結構性需求；供過於求</td><td>友達 2409、群創 3481</td></tr>
+<tr><td>鋰礦商（短線）</td><td>2026-28 新產能湧入風險；反彈可能是技術面而非基本面</td><td>ALB、SQM（短線迴避）</td></tr>
+<tr><td>鈷</td><td>無鈷電池（LFP）替代加速；價格低迷</td><td>—</td></tr>
+<tr><td>荷莫茲受害方</td><td>原料成本急漲、供應中斷</td><td>台塑化 6505（石化成本增）、航空業（燃油飆漲）</td></tr>
+</table>
+
+<!-- ===== CH 10: 行動建議 ===== -->
+<div class="section-title">10. 🎯 行動建議</div>
+<div class="section-sub">按營收爆發力排序 + 迴避提醒</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">最高優先：ABF 載板族群</h3>
+<div class="card-body">
+<p><b>南電 8046</b>（首選）：高盛估 2026/27/28 EPS 18.83/44.46/65.8 元，CAGR 81%。定價權最強（非長約保護）。</p>
+<p><b>景碩 3189</b>：同受惠 ABF 缺貨漲價。特殊品（AI 伺服器用）漲幅 >30%。</p>
+<p><b>台光電 2383</b>：CCL 漲價 45% 的直接受惠方。</p>
+<p><b>催化劑</b>：味之素漲價 30%+ 落地時間、Q2 法說會漲價確認、ABF 缺口數據更新。</p>
+</div>
+</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">高優先：記憶體族群</h3>
+<div class="card-body">
+<p><b>華邦電 2344</b>：DDR4 + NOR 雙受惠。目標價 120 元、2026 EPS 上看 7.5 元。</p>
+<p><b>南亞科 2408</b>：DDR4 漲價最直接受惠（台灣唯一 DRAM 設計製造）。DDR5 轉換同步進行。</p>
+<p><b>旺宏 2337</b>：NOR Flash 汽車+伺服器需求。但漲幅不如 DRAM。</p>
+<p><b>催化劑</b>：4/24 SK Hynix 法說會確認方向；Q2 合約價談判結果。</p>
+</div>
+</div>
+
+<div class="card">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">穩定優先：變壓器族群</h3>
+<div class="card-body">
+<p><b>華城 1519</b>、<b>士電 1503</b>：訂單積壓 2-3 年，營收能見度極高。缺口到 2030 年不緩解。</p>
+<p><b>中興電 1513</b>：開關設備 + 電力工程雙受惠。</p>
+<p><b>催化劑</b>：PJM/ERCOT 新電力投資公告；5/3 OPEC+ 會議。</p>
+</div>
+</div>
+
+<div class="card collapsed">
+<h3 onclick="this.parentElement.classList.toggle('collapsed')">荷莫茲危機觀察：美股受惠方</h3>
+<div class="card-body">
+<p><b>非台股標的（觀察）</b>：Air Products APD（氦氣）、CF Industries CF（肥料）、Dow DOW（塑料）——均為「美國本土供應商」受惠於中東供應中斷。</p>
+<p><b>注意</b>：荷莫茲危機為事件驅動，停火落實後可能快速反轉。不宜重倉。</p>
+</div>
+</div>
+
+<div class="tip danger">
+<b>第 10 章整合結論</b>
+本週供需偵測的核心投資邏輯：<b>AI 算力供應鏈的瓶頸正在從「晶片」向「材料」和「基礎設施」蔓延</b>。最確定的受惠方不在晶片設計端（NVIDIA 股價已反映），而在上游材料（ABF/T-Glass/CCL/GO 鋼）和配套基建（變壓器/電網）。記憶體因壟斷者行為（HBM 排擠）形成「非週期性短缺」，持續性超過任何過去的記憶體漲價循環。荷莫茲危機是變數最大的不確定因子——如果停火完全落實，油價/運費相關信號將快速消退；如果升級，所有品項的供給成本都會進一步推高。
+</div>
+
+<!-- ===== CH 11: 領先信號 ===== -->
+<div class="section-title">11. 📡 領先信號追蹤</div>
+<div class="section-sub">下週關鍵事件日曆</div>
+
+<table>
+<tr><th>日期</th><th>事件</th><th>影響品項</th><th>追蹤重點</th></tr>
+<tr><td>4/24</td><td>SK Hynix Q1 法說會</td><td>C01/C12/C13</td><td>HBM4 進度、CapEx 配置比、合約價指引</td></tr>
+<tr><td>4/24</td><td>台積電月營收公布</td><td>C03</td><td>CoWoS 相關營收成長率</td></tr>
+<tr><td>4/29</td><td>Samsung Q1 法說會</td><td>C01/C04/C12</td><td>HBM 良率、DDR4 產能退出進度</td></tr>
+<tr><td>5/3</td><td>OPEC+ 部長級會議</td><td>C14</td><td>增產/減產決議→油價方向</td></tr>
+<tr><td>5月中</td><td>Micron Q2 法說會</td><td>C01/C12</td><td>HBM 營收佔比、愛達荷新廠進度</td></tr>
+<tr><td>持續</td><td>荷莫茲海峽通行恢復率</td><td>C11/C14/候選池</td><td>通行量每週追蹤→判斷危機是否實質結束</td></tr>
+<tr><td>持續</td><td>味之素對 Palliser 回應</td><td>C04/E11/E13</td><td>若同意漲價 30%+ → ABF 族群重大催化劑</td></tr>
+</table>
+
+<!-- ===== CH 12: 附錄 ===== -->
+<div class="section-title">12. 📎 附錄</div>
+<div class="section-sub">搜尋來源與方法論</div>
+
+<details>
+<summary>搜尋來源清單</summary>
+<p style="font-size:.8em;color:var(--txt3);line-height:1.8">
+<b>產業報價</b>：TrendForce（DRAM/NAND/面板）、LME/COMEX（銅/鋁）、CME（鈾）、TradingEconomics（原油/運費）<br>
+<b>法說會/財報</b>：SK Hynix IR、Samsung IR、Micron IR、TSMC IR、Hitachi Energy<br>
+<b>產業新聞</b>：Digitimes、Tom's Hardware、SemiAnalysis、TechNews 科技新報、工商時報<br>
+<b>投行研究</b>：Goldman Sachs（ABF 升評）、Morgan Stanley（SK Hynix）、UBS（HBM4）、LS Securities<br>
+<b>宏觀/地緣</b>：IEA Oil Market Report、Bloomberg（Hormuz）、WEF、Brookings、Atlantic Council<br>
+<b>維權基金</b>：Palliser Capital（Ajinomoto ABF 30% 漲價要求）<br>
+<b>電網</b>：PJM、ERCOT、Wood Mackenzie（變壓器市場）、PowerMag<br>
+<b>FDA</b>：Drug Shortage List、GLP-1 pipeline updates<br>
+<b>掃描工具</b>：天機閣外網模組 + WebSearch（20 管道覆蓋）
+</p>
+</details>
+
+<details>
+<summary>方法論</summary>
+<p style="font-size:.8em;color:var(--txt3);line-height:1.8">
+<b>版本</b>：供需偵測 v8.0（2026-04-20）<br>
+<b>架構</b>：四層動態監控（核心 15 × 10 維 + 邊緣 37 × 3 維 + 低頻邊緣 + 候選池）<br>
+<b>告警機制</b>：三重（單參數閾值 → 多參數紅燈 → 壟斷者事件紅色警報）<br>
+<b>篩選</b>：四刀（供應鏈位置 → 營收加速度 → 法人行為 → 缺貨佔營收比重）<br>
+<b>掃描範圍</b>：Phase 0A（52 品項）+ 0B（SK Hynix Q1）+ 0C（題材雷達 4 新品項）+ 0D（15 壟斷者）+ Phase 1（20 管道）+ 2/2B（驗證+篩選）<br>
+<b>快照存檔</b>：天機閣-藏經閣/產業報價/weekly/2026-W17_週掃.json（基線）<br>
+<b>告警存檔</b>：天機閣-藏經閣/產業報價/告警/2026-04-20_波動警示.json + 壟斷者事件.json<br>
+<b>題材雷達</b>：天機閣-藏經閣/產業報價/題材雷達/2026-W17_萌芽.json
+</p>
+</details>
+
+<div style="text-align:center;margin-top:24px;padding:12px;border-top:1px solid var(--border)">
+<p style="font-size:.78em;color:var(--txt3)">天機閣 供需失衡偵測系統 v8.0 ｜ 2026-04-20 ｜ 本報告為投資研究參考，不構成買賣建議</p>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+// 收合/展開功能
+document.querySelectorAll('.card h3').forEach(h=>{
+  // 預設不收合（除非有 collapsed class）
+});
+</script>
+</body>
+</html>
