@@ -25,6 +25,8 @@ def get_tag(filename):
         return '完整版', ''
     elif '推演版' in filename or '推衍版' in filename:
         return '推演版', ''
+    elif '朋友回饋' in filename or '回饋整合' in filename:
+        return '回饋整合', 'background:#3d6378'
     else:
         return '報告', ''
 
@@ -66,13 +68,14 @@ def scan_folders():
                     'mtime_str': mtime_str,
                 })
 
-        # 排序：完整版優先 → 推演版 → 其他，同優先級按步驟順序
+        # 排序：完整版優先 → 推演版 → 回饋整合 → 向量版 → 其他，同優先級按步驟順序
         def sort_key(x):
             name = x['name']
             if '完整版' in name: priority = 0
             elif '推演版' in name: priority = 1
-            elif '向量' in name or '演算' in name: priority = 2
-            else: priority = 3
+            elif '朋友回饋' in name or '回饋整合' in name: priority = 2
+            elif '向量' in name or '演算' in name: priority = 3
+            else: priority = 4
             # 同優先級內按檔名排序（第七步 < 第八步）
             return (priority, name)
         files.sort(key=sort_key)
