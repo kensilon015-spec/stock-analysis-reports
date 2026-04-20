@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<!--
+  立隆電 2472 第八步 推演版（獨立推演報告）
+  分析日期：2026-04-20
+  推衍有效期：2026-05-15（Q1 財報公告即需重新校準）
+  9 章結構：8a 推演基礎 → 8b 情報更新 → 8c 影響鏈 → 8d 情境模擬 → 8e 個人化推衍 → 8f 催化劑時間表 → 8g 蝴蝶效應 → 8h 貓膩推衍 → 8i 推衍結論
+-->
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>立隆電 2472 — 推演版報告 ｜ 天機閣</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a1a;--panel:#252525;--hover:#303030;--border:#3a3a3a;--txt:#e0dcd4;--txt2:#b8b0a5;--txt3:#7a7268;--accent:#6b9f72;--danger:#d4887a;--base:#e8e4dc;--link:#7ab0c0;--gold:#d4b030;--warn:#d4a017;--bull:#4caf50;--bear:#ef5350;--neutral:#7ab0c0;--serif:'Fraunces','Noto Sans TC',serif;--sans:'Inter','Noto Sans TC',sans-serif;--mono:'JetBrains Mono',monospace}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.65}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:24px 18px 18px;margin-bottom:18px;border-bottom:1.5px solid var(--border)}
+.hero h1{font-family:var(--serif);font-size:2em;font-weight:900;color:var(--base);letter-spacing:.02em}
+.hero .ticker{font-family:var(--mono);font-size:.5em;color:var(--accent);background:rgba(107,159,114,.15);padding:3px 10px;border-radius:6px;margin-left:10px;vertical-align:middle}
+.hero .sub{font-size:1em;color:var(--accent);font-weight:700;margin-top:6px}
+.hero .desc{font-size:.85em;color:var(--txt3);margin-top:6px;line-height:1.7}
+.chips{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.chip{padding:3px 10px;border-radius:6px;font-size:.78em;border:1px solid var(--border);background:var(--panel);color:var(--txt2)}
+.chip.bull{color:var(--bull);border-color:var(--bull)}
+.chip.bear{color:var(--bear);border-color:var(--bear)}
+.chip.warn{color:var(--warn);border-color:var(--warn)}
+.chip.gold{color:var(--gold);border-color:var(--gold)}
+.snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 18px}
+@media(max-width:700px){.snapshot{grid-template-columns:repeat(2,1fr)}}
+.snap-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:11px;text-align:center}
+.snap-card .snap-title{font-size:.78em;color:var(--txt3);margin-bottom:3px}
+.snap-card .snap-num{font-size:1.3em;font-weight:900;color:var(--base);margin:2px 0;font-family:var(--serif)}
+.snap-card .snap-sub{font-size:.74em;color:var(--txt3)}
+.snap-card.bull{border-left:3px solid var(--bull)}
+.snap-card.warn{border-left:3px solid var(--warn)}
+.snap-card.neutral{border-left:3px solid var(--neutral)}
+details.section{margin:24px 0 6px;padding-top:14px;border-top:1.5px solid var(--border)}
+details.section > summary{font-family:var(--serif);font-size:1.4em;font-weight:900;color:var(--base);cursor:pointer;padding:6px 0;list-style:none;display:flex;align-items:center;gap:10px}
+details.section > summary::before{content:'▾';font-size:.6em;color:var(--accent);transition:transform .2s}
+details.section:not([open]) > summary::before{transform:rotate(-90deg)}
+details.section .section-sub{font-size:.84em;color:var(--txt3);margin:2px 0 12px;padding-left:18px}
+details.sub{margin:8px 0;background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+details.sub > summary{padding:10px 14px;font-weight:700;color:var(--base);font-size:.98em;cursor:pointer;list-style:none}
+details.sub > summary::before{content:'▸';font-size:.7em;color:var(--txt3);transition:transform .2s;margin-right:6px}
+details.sub[open] > summary::before{transform:rotate(90deg)}
+details.sub > .sub-body{padding:2px 14px 14px}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.84em;border-radius:6px;overflow:hidden}
+th{background:#333;color:#e0dcd4;padding:7px 10px;text-align:left;font-weight:700}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--txt2);background:var(--panel);vertical-align:top}
+tr:hover td{background:var(--hover)}
+.tip{padding:10px 13px;border-radius:6px;margin:10px 0;border-left:3px solid;font-size:.87em;line-height:1.65}
+.tip.danger{border-color:var(--danger);background:rgba(194,124,110,.15)}
+.tip.danger > b:first-child{color:var(--danger);display:block;margin-bottom:3px}
+.tip.good{border-color:var(--accent);background:rgba(90,125,96,.15)}
+.tip.good > b:first-child{color:var(--accent);display:block;margin-bottom:3px}
+.tip.warn{border-color:var(--warn);background:rgba(212,160,23,.12)}
+.tip.warn > b:first-child{color:var(--warn);display:block;margin-bottom:3px}
+.tip.info{border-color:var(--link);background:rgba(90,125,140,.15)}
+.tip.info > b:first-child{color:var(--link);display:block;margin-bottom:3px}
+.causal{background:rgba(90,125,140,.08);border:1px solid var(--link);border-radius:6px;padding:10px 14px;margin:10px 0;font-size:.87em;line-height:1.7}
+.causal .cn{color:var(--link);font-weight:700;display:inline-block;min-width:70px}
+.scenario{background:var(--panel);border:1px solid var(--border);border-left:4px solid;border-radius:6px;padding:14px;margin:10px 0}
+.scenario.bull{border-left-color:var(--bull)} .scenario.warn{border-left-color:var(--warn)} .scenario.bear{border-left-color:var(--bear)} .scenario.neutral{border-left-color:var(--neutral)}
+.scenario h4{color:var(--base);margin-bottom:6px;font-family:var(--serif)}
+.scenario .meta{font-family:var(--mono);font-size:.78em;color:var(--txt3);margin-bottom:6px}
+.timeline{position:relative;margin:14px 0;padding-left:0;border-left:1px solid var(--border)}
+.timeline .item{position:relative;padding:0 0 16px 28px}
+.timeline .item::before{content:'';position:absolute;left:-5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--panel);border:2px solid var(--accent)}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{font-family:var(--mono);font-size:.78em;letter-spacing:0.05em;color:var(--accent);font-weight:600}
+.timeline .item .t{font-family:var(--serif);font-weight:700;font-size:.95em;color:var(--base);margin-top:2px}
+.timeline .item .d{font-size:.83em;color:var(--txt3);margin-top:3px;line-height:1.55}
+.fias-f{color:#a5d6a7;font-weight:700;font-size:.72em;padding:2px 5px;border-radius:4px;background:rgba(76,175,80,.22)}
+.fias-i{color:#90caf9;font-weight:700;font-size:.72em;padding:2px 5px;border-radius:4px;background:rgba(33,150,243,.22)}
+.fias-a{color:#ffe082;font-weight:700;font-size:.72em;padding:2px 5px;border-radius:4px;background:rgba(255,193,7,.22)}
+.mini-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:11px;text-align:center}
+.mini-card .num{font-size:1.25em;font-weight:900;margin:3px 0;color:var(--base);font-family:var(--serif)}
+.mini-card .title{font-weight:700;font-size:.82em;color:var(--base)}
+.mini-card .desc{font-size:.74em;color:var(--txt3);margin-top:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.footer{margin-top:32px;padding-top:16px;border-top:1.5px solid var(--border);text-align:center;color:var(--txt3);font-size:.8em}
+code{background:#111;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:.82em;color:#a5d6a7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+<h1>立隆電<span class="ticker">2472 · TWSE</span></h1>
+<div class="sub">推演版報告 · 9 章獨立推衍 · 第四次信心校準</div>
+<div class="desc">天機閣推衍系統 ｜ 推衍日期：2026-04-20 ｜ 基準股價：178.5（2026/4/18）｜ 推衍有效期：2026-05-15（Q1 財報公告即需重新校準）</div>
+
+<div class="chips">
+<span class="chip bull">H1 看多 47% (校準後)</span>
+<span class="chip warn">H3 結構轉變 26%</span>
+<span class="chip bear">H2 看空 18%</span>
+<span class="chip">H4 黑天鵝 9%</span>
+<span class="chip warn">致命因子 A4 NVIDIA Rubin</span>
+<span class="chip gold">弱訊號 6 項收斂</span>
+<span class="chip warn">貓膩 🟡 黃</span>
+<span class="chip bull">蝴蝶效應 Top 3 推演</span>
+</div>
+</div>
+
+<!-- ========== 快照總覽 ========== -->
+<div class="snapshot">
+<div class="snap-card neutral"><div class="snap-title">基準股價</div><div class="snap-num">178.5</div><div class="snap-sub">2026/4/18 收盤</div></div>
+<div class="snap-card warn"><div class="snap-title">加權期望價</div><div class="snap-num">167-187</div><div class="snap-sub">三情境加權</div></div>
+<div class="snap-card bull"><div class="snap-title">最可能路徑</div><div class="snap-num">基本兌現</div><div class="snap-sub">機率 40%</div></div>
+<div class="snap-card warn"><div class="snap-title">建議部位</div><div class="snap-num">15-20%</div><div class="snap-sub">等回調 150-160</div></div>
+</div>
+
+<!-- ========== 8a 推演基礎 ========== -->
+<details class="section" open>
+<summary>8a · 推演基礎確認</summary>
+<div class="section-sub">回溯原始資料確認的關鍵事實 + 三次信心校準起點</div>
+
+<div class="tip info"><b>推演定位</b>
+本推演版以完整版質化分析（13 章 / 321 KB）為基礎，承接三次信心校準結論，調用<b>影響鏈分析 + 情境模擬 + 個人化推衍 + 蝴蝶效應推衍 + 貓膩推衍</b>五大方法，產出未來 1-12 個月的預測與行動建議。推演有效期至 2026-05-15（Q1 財報公告日）。</div>
+
+<table>
+<tr><th>核心事實</th><th>數值</th><th>原始資料來源</th></tr>
+<tr><td>基準股價（推演起點）</td><td>178.5 元（2026/4/18 收盤 +9.85%）</td><td>WebSearch 即時股價</td></tr>
+<tr><td>2025 全年 EPS</td><td>8.73 元（YoY+25%）</td><td>2026/3/13 董事會公告</td></tr>
+<tr><td>2026 預估 EPS</td><td>10.44 元（管理層目標 YoY+19.6%）</td><td>2026/3/23 法說會</td></tr>
+<tr><td>當前 Forward PE</td><td>17.1x（介於傳統 vs AI 供應鏈中間）</td><td>計算：178.5/10.44</td></tr>
+<tr><td>主假說 H1 信心（三次校準後）</td><td>45% → 微調 47%（含 B-1 收斂）</td><td>評審分析階段 + B-1 新發現</td></tr>
+<tr><td>致命因子</td><td>A4 NVIDIA Rubin 規格變更（EPS -55%）</td><td>壓力測試階段 KA2</td></tr>
+<tr><td>催化劑期望值</td><td>+18.04%</td><td>催化劑情報驗證卡 6 張</td></tr>
+<tr><td>風險期望損失</td><td>-27.5%</td><td>風險情報驗證卡 7 張</td></tr>
+<tr><td>淨期望值</td><td>-9.5%（純事件驅動）</td><td>催化劑 - 風險</td></tr>
+<tr><td>監控儀表板燈號</td><td>4 紅 / 5 黃 / 3 綠</td><td>監控儀表板章</td></tr>
+</table>
+
+</details>
+
+<!-- ========== 8b OSINT 情報更新 ========== -->
+<details class="section" open>
+<summary>8b · 公開資訊更新（推演基準日：2026-04-20）</summary>
+<div class="section-sub">完整版 OSINT 截止 2026/4/18 → 2 日內無重大新訊但需追蹤紅旗信號</div>
+
+<div class="tip warn"><b>更新狀態說明</b>
+完整版 OSINT 截止 2026/4/18 18:00，至本推演版 2026/4/20 兩個交易日內：① 立隆官方無 MOPS 重大訊息發布；② 同業（NCC/Nichicon/江海/艾華）無新季報公告；③ NVIDIA 無 Rubin 供應商相關更新；④ 4/19（週六）+ 4/20（週日）為非交易日，5/10 月營收公告 + 5/15 Q1 財報為下次重大訊息時點。本推演基於 4/18 OSINT 為基礎，<b>未來 14 日為觀察空窗期</b>。</div>
+
+<table>
+<tr><th>追蹤項目</th><th>4/18 狀態</th><th>下次更新</th><th>觀察重點</th></tr>
+<tr><td>立隆股價</td><td>178.5 元 +9.85%</td><td>4/21 開盤</td><td>注意股期內 5 日累計漲跌追蹤（處置股觸發 ≥50%）</td></tr>
+<tr><td>4 月月營收</td><td>未公告</td><td>2026/5/10</td><td>YoY ≥+10% = C-5 動能延續 / &lt;+5% = R-7 警示</td></tr>
+<tr><td>2026 Q1 財報</td><td>未公告</td><td>2026/5/15</td><td>EPS ≥2.5 + 毛利率 ≥32% = H1 強化</td></tr>
+<tr><td>NVIDIA Rubin 公告</td><td>無新訊</td><td>2027/3 GTC</td><td>立隆是否列入供應商清單（A4 致命因子驗證）</td></tr>
+<tr><td>江海 H2 半年報</td><td>無新訊</td><td>2027/3 公告</td><td>江海超容 AI 客戶名單揭露</td></tr>
+<tr><td>NCC FY2026 預告</td><td>無新訊</td><td>2027/2-3</td><td>NCC 是否復甦反攻</td></tr>
+</table>
+
+<div class="tip info"><b>對前序假設的衝擊評估</b>
+2 日內無重大新訊 → <b>Step 7 全部假設與信心校準維持有效</b>。但 4/18 +9.85% 大漲後可能已接近處置股觸發門檻（5 日累計需追蹤），這是「籌碼面短期過熱」的延續訊號，不改變基本面結論但加重「不追高」操作建議。</div>
+
+</details>
+
+<!-- ========== 8c 影響鏈分析 ========== -->
+<details class="section" open>
+<summary>8c · 影響鏈分析</summary>
+<div class="section-sub">關鍵事件 → 一階 → 二階 → 三階影響推演</div>
+
+<details class="sub" open>
+<summary>影響鏈 #1：NVIDIA Rubin 2027 GTC 公告供應商清單（最強事件，機率 60-70%）</summary>
+<div class="sub-body">
+<div class="causal">
+<p><span class="cn">起點事件</span>NVIDIA 2027/3 GTC 公告 Rubin 量產規格 + 供應商清單</p>
+<p><span class="cn">一階影響</span>立隆若列入清單 → 訂單能見度從推論升至事實 → AI 比重從 4% 規劃升至 8-10%</p>
+<p><span class="cn">二階影響</span>立隆 2027 EPS 從 10.44 推升至 11.5-12.5 → 法人覆蓋從 3 家升至 8-10 家 → 估值重估 PE 17x → 19-21x</p>
+<p><span class="cn">三階影響</span>股價推升至 218-260 元（+22-46%）→ 0050 入選機率上升（市值 360-430 億）→ 長期持有資金進場</p>
+<p><span class="cn">反向情境</span>立隆未列入清單 → A4 致命因子觸發 → EPS 重估至 5-7 元 → PE 12-14x → 股價跌至 75-105（-58 至 -41%）</p>
+</div>
+<div class="tip warn"><b>影響鏈 #1 機率與淨影響</b>
+正面情境機率 60-70% × 影響 +30%（中位）= +20%；反面情境機率 15-20% × 影響 -50%（中位）= -8%。<b>淨期望影響 +12%</b>，但波動性極大（標準差 ±25%）。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>影響鏈 #2：上游東陽光韶關啟動議價（機率 25-40%）</summary>
+<div class="sub-body">
+<div class="causal">
+<p><span class="cn">起點事件</span>2026 H2 中國工業電價調控 + 國際鋁價持續上漲 → 東陽光成本壓力</p>
+<p><span class="cn">一階影響</span>東陽光對立隆鋁箔調漲 8-12% → 立隆 2026 H2 毛利率從 32% 降至 29-30%</p>
+<p><span class="cn">二階影響</span>立隆 2026 EPS 從目標 10.44 降至 8.5-9.0 → 法人下修 2027 EPS 預估至 9.5-10.5</p>
+<p><span class="cn">三階影響</span>PE 重估 17x → 14-15x → 股價回落至 122-150 元（-16 至 -32%）→ H3 結構轉變假說機率上修至 35-40%</p>
+<p><span class="cn">緩解路徑</span>立敦自有鋁箔產能擴張 + 立隆轉向日系 JCC/昭和電工備援 → 6-12 個月可部分對沖</p>
+</div>
+<div class="tip warn"><b>影響鏈 #2 淨期望影響</b>
+機率 30% × 影響 -24%（中位）= <b>-7.2%</b>。此影響鏈與 R-1 期望損失 -7.5% 高度一致，是立隆案最不可忽略的結構性風險。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>影響鏈 #3：江海超容取得 NVIDIA BBU 主力訂單（機率 20-35%）</summary>
+<div class="sub-body">
+<div class="causal">
+<p><span class="cn">起點事件</span>江海 2026 H2 半年報 / NVIDIA BBU 規格公告 → 江海超容列入主力供應商</p>
+<p><span class="cn">一階影響</span>立隆 BBU 題材消失（雖 GPU 板獨家保留）→ AI 應用比重從預期 8-10% 下修至 5-6%</p>
+<p><span class="cn">二階影響</span>2027 EPS 從預期 12 降至 9-10 → 法人重新分類「立隆從 AI 供應鏈降回鋁電容主流」→ PE 重估 17x → 14-15x</p>
+<p><span class="cn">三階影響</span>股價回落至 130-150 元（-16 至 -27%）→ 江海股價同期可能 +30-50%（題材轉移效應）</p>
+</div>
+<div class="tip warn"><b>影響鏈 #3 淨期望影響</b>
+機率 27.5% × 影響 -21%（中位）= <b>-5.8%</b>。此影響與 R-3 期望損失 -7% 略有差距（影響鏈考慮到立隆 GPU 板獨家保留的緩解效應）。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>跨鏈交互作用</summary>
+<div class="sub-body">
+<table>
+<tr><th>交互</th><th>性質</th><th>合計影響</th></tr>
+<tr><td>影響鏈 #1（Rubin 公告）+ 影響鏈 #2（上游漲價）</td><td>部分抵消（Rubin 兌現帶來的 EPS 提升被毛利率下降部分吃掉）</td><td>淨 +5-10%</td></tr>
+<tr><td>影響鏈 #1（反面）+ 影響鏈 #3（江海搶 BBU）</td><td>同向加重（雙重打擊）</td><td>淨 -25-35%（極端情境）</td></tr>
+<tr><td>影響鏈 #2 + 影響鏈 #3</td><td>同向加重（毛利率 + 題材雙殺）</td><td>淨 -15-25%</td></tr>
+</table>
+<div class="tip danger"><b>最危險組合：影響鏈 #1 反面 + #3 同時發生</b>
+機率約 5-10%（兩條件相關性中等），淨影響 -25-35% → 對應 H4 黑天鵝 9% 機率區間，是部位上限 20-25% 的核心約束理由。</div>
+</div>
+</details>
+
+</details>
+
+<!-- ========== 8d 情境模擬 ========== -->
+<details class="section" open>
+<summary>8d · 情境模擬（5 路徑概率樹）</summary>
+<div class="section-sub">未來 12 個月 5 條路徑 + 觸發條件 + 機率 + 目標股價</div>
+
+<div class="grid2">
+
+<div class="scenario bull">
+<h4>路徑 A：強上行（機率 18%）</h4>
+<div class="meta">12 個月目標：220-260 元 / +23-46%</div>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>觸發條件</b>：2027/3 GTC 公告立隆 Rubin 獨家 + 2026 Q1-Q4 EPS 連 4 季 ≥ 2.5 + 毛利率突破 33% + 泰國廠 H2 規模量產 + 德系 Tier 1 認證取得</p>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>演進</b>：基本面強勢延續 → 2027 EPS 達 12-13 → 法人覆蓋升至 10+ 家 → PE 重估至 19-21x → 0050 入選機率上升</p>
+</div>
+
+<div class="scenario neutral">
+<h4>路徑 B：基本兌現（機率 40%）</h4>
+<div class="meta">12 個月目標：170-200 元 / -5 至 +12%</div>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>觸發條件</b>：H1+H3 共識（部分兌現+結構性風險不爆）。Rubin 部分兌現 / 泰國廠延後 1 季 / 江海超容威脅維持但未搶 BBU 主力</p>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>演進</b>：2026 EPS 達管理層目標 10.44 / 2027 EPS 11-12 / PE 維持 16-19x / 股價在 170-200 區間整理</p>
+</div>
+
+<div class="scenario warn">
+<h4>路徑 C：震盪整理（機率 22%）</h4>
+<div class="meta">12 個月目標：150-180 元 / -16 至 +1%</div>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>觸發條件</b>：Rubin 不確定 + 月營收 Q2-Q3 重現 9-11 月衰退 + 注意股 → 處置股觸發</p>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>演進</b>：基本面延續但動能放緩 → 2026 EPS 9.5-10 / 2027 EPS 10-11 / PE 14-17x 震盪 / 股價在 150-180 大區間</p>
+</div>
+
+<div class="scenario bear">
+<h4>路徑 D：下行修正（機率 15%）</h4>
+<div class="meta">12 個月目標：120-150 元 / -33 至 -16%</div>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>觸發條件</b>：H2 看空兌現（Rubin 取消 / R-1 上游漲價 / 月營收連 3 月轉負任一）</p>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>演進</b>：基本面動能耗盡 → 2026 EPS 降至 8-9 / 2027 EPS 7-8 / PE 重估至 13-15x / 股價跌至 120-150</p>
+</div>
+
+<div class="scenario bear" style="grid-column:1 / -1">
+<h4>路徑 E：結構崩塌（機率 5%）</h4>
+<div class="meta">12 個月目標：80-120 元 / -55 至 -33%</div>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>觸發條件</b>：影響鏈 #1 反面 + #3 同時發生 → Rubin 取消 + 江海搶 BBU + R-1 上游漲價 + R-6 兩岸地緣 任三項同時觸發</p>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)"><b>演進</b>：黑天鵝級別三重打擊 → 2026 EPS 6-7 / 2027 EPS 5-6 / PE 重估至 12x / 股價跌至 80-120 元（-55 至 -33%）→ 下跌速度可能 1-3 個月內完成（事件驅動）</p>
+</div>
+
+</div>
+
+<div class="tip warn"><b>5 路徑加權預期</b>
+0.18×240 + 0.40×185 + 0.22×165 + 0.15×135 + 0.05×100 = 43.2 + 74 + 36.3 + 20.25 + 5 = <b>178.75 元</b>（與基準股價 178.5 持平 ±0.14%）。意味<b>當前 178.5 為市場效率價</b> — 已 Price-in 全部 5 路徑機率加權，無明顯估值錯誤。</div>
+
+<div class="tip info"><b>敏感度分析（哪個變數改變最影響結果）</b>
+1. <b>Rubin 兌現機率</b>（影響 ±10pp）：若從 60-70% 降至 30-40%，加權預期股價降至 152-160（-10-15%）
+2. <b>毛利率傳導</b>（影響 ±5pp）：若從 32% 降至 29%，路徑 D 機率從 15% 升至 25%
+3. <b>江海 BBU</b>（影響 ±15pp）：若機率從 27.5% 升至 50%，路徑 D+E 機率合計從 20% 升至 30%</div>
+
+<div class="tip warn"><b>路徑交叉點（何時必須做決定）</b>
+① <b>2026/5/15 Q1 財報</b>：路徑 A vs 路徑 D 分歧點（EPS ≥2.5 偏 A / &lt;2.0 偏 D）
+② <b>2026/8/14 Q2 法說</b>：路徑 B vs 路徑 C 分歧點（Rubin 揭露具體性決定）
+③ <b>2027/3 GTC</b>：路徑 A vs 路徑 E 終極分歧點</div>
+
+</details>
+
+<!-- ========== 8e 個人化推衍 ========== -->
+<details class="section" open>
+<summary>8e · 個人化推衍（依風險偏好分三套方案）</summary>
+<div class="section-sub">投資人持股狀況 + 風險偏好 + 時間軸三維度適配</div>
+
+<div class="grid3">
+
+<div class="scenario bull">
+<h4>方案 A：積極型（高風險容忍）</h4>
+<table style="font-size:.78em;margin-top:6px">
+<tr><td>當前 178.5 進場</td><td>5-10% 試單</td></tr>
+<tr><td>停損</td><td>165 元（-7.5%）</td></tr>
+<tr><td>5/15 Q1 ≥2.5</td><td>加碼至 15-20%</td></tr>
+<tr><td>2027 GTC 列入</td><td>加碼至 20-25%</td></tr>
+<tr><td>退場觸發</td><td>EPS QoQ -25% / Rubin 排除</td></tr>
+<tr><td>預期報酬</td><td>+20-40%（機率 35%）</td></tr>
+</table>
+</div>
+
+<div class="scenario neutral">
+<h4>方案 B：穩健型（中等風險）★ 推薦</h4>
+<table style="font-size:.78em;margin-top:6px">
+<tr><td>當前 178.5</td><td>不進場</td></tr>
+<tr><td>等回調至 150-160</td><td>建立 10-15%</td></tr>
+<tr><td>停損</td><td>140 元</td></tr>
+<tr><td>5/15 Q1 + 8/14 Q2 雙驗證</td><td>加至 15-20%</td></tr>
+<tr><td>退場觸發</td><td>月營收連 2 月轉負 / 毛利率 ≤30%</td></tr>
+<tr><td>預期報酬</td><td>+10-25%（機率 50%）</td></tr>
+</table>
+</div>
+
+<div class="scenario warn">
+<h4>方案 C：保守型（低風險容忍）</h4>
+<table style="font-size:.78em;margin-top:6px">
+<tr><td>當前 178.5</td><td>不進場</td></tr>
+<tr><td>等回調至 134-142</td><td>建立 5-10%</td></tr>
+<tr><td>停損</td><td>125 元</td></tr>
+<tr><td>2027/3 GTC 確認後</td><td>加至 10-15%</td></tr>
+<tr><td>退場觸發</td><td>任一致命因子訊號</td></tr>
+<tr><td>預期報酬</td><td>+8-18%（機率 60%）</td></tr>
+</table>
+</div>
+
+</div>
+
+<div class="tip good"><b>三方案核心差異</b>
+① <b>進場時點</b>：A 當前可試單 / B 等回調 -10-16% / C 等回調 -20-25%
+② <b>停損嚴格度</b>：A 165（-7.5%）/ B 140（-22%）/ C 125（-30%）
+③ <b>部位上限</b>：A 25% / B 20% / C 15%
+④ <b>預期報酬比</b>：A 高風險高報酬（35%）/ B 中等（50%）/ C 低風險低報酬（60%）
+推薦：B 穩健型對應 H1 信心 47% 中度傾向，最適合大多數投資人。</div>
+
+</details>
+
+<!-- ========== 8f 催化劑時間表 ========== -->
+<details class="section" open>
+<summary>8f · 催化劑時間表（未來 6 個月）</summary>
+<div class="section-sub">關鍵事件日曆 + 預期影響方向 + 觀察指標</div>
+
+<div class="timeline">
+<div class="item key">
+<div class="date">2026-05-10</div>
+<div class="t">立隆 4 月營收公告（最近期關鍵時點）</div>
+<div class="d">YoY ≥+10% = 強勢延續（H1 強化）/ &lt;+5% = R-7 警示（H2 升溫）。實質決定路徑 A vs D 分歧</div>
+</div>
+<div class="item key">
+<div class="date">2026-05-15</div>
+<div class="t">立隆 2026 Q1 財報 + 法說會</div>
+<div class="d">EPS ≥2.5 + 毛利率 ≥32% = 第四次校準上修；EPS &lt;2.0 = 第四次校準下修。同時注意股期解除</div>
+</div>
+<div class="item">
+<div class="date">2026-05-15 後</div>
+<div class="t">注意股期 30 日後解除</div>
+<div class="d">交易限制解除，進場條件改善（規避 R-4 風險）</div>
+</div>
+<div class="item">
+<div class="date">2026-06 上旬</div>
+<div class="t">立隆股東常會（含私募議案？）</div>
+<div class="d">追蹤 R-5 私募 1,640 萬股是否啟用，啟用則股價下修 -10%</div>
+</div>
+<div class="item">
+<div class="date">2026-06-10</div>
+<div class="t">立隆 5 月營收公告</div>
+<div class="d">連續性驗證點，Q2 動能定調起點</div>
+</div>
+<div class="item">
+<div class="date">2026-07-10</div>
+<div class="t">立隆 6 月營收公告（Q2 三月份齊全）</div>
+<div class="d">2026 H1 動能定調，影響 8/14 Q2 財報預期</div>
+</div>
+<div class="item key">
+<div class="date">2026-08-14</div>
+<div class="t">立隆 2026 Q2 財報 + 法說會（核心驗證點）</div>
+<div class="d">Rubin 訂單能見度首次具體揭露機會。EPS ≥2.5 + Rubin 訂單 = H1 升至 60%；無 Rubin 揭露 = 路徑 C 機率上修</div>
+</div>
+<div class="item">
+<div class="date">2026-08 上旬</div>
+<div class="t">立敦 6175 H1 半年報公告</div>
+<div class="d">S-2 對沖效力驗證，立敦營收+獲利貢獻立隆權益法</div>
+</div>
+<div class="item">
+<div class="date">2026-09 上旬</div>
+<div class="t">江海 002484 H1 半年報公告（中國 8 月底前）</div>
+<div class="d">江海超容 AI 客戶名單揭露，R-3 風險驗證點</div>
+</div>
+<div class="item">
+<div class="date">2026-11-14</div>
+<div class="t">立隆 2026 Q3 財報</div>
+<div class="d">全年方向定調（2026 EPS 是否達 10.44），泰國廠 H2 量產進度首次揭露</div>
+</div>
+</div>
+
+</details>
+
+<!-- ========== 8g 蝴蝶效應推衍 ========== -->
+<details class="section" open>
+<summary>8g · 蝴蝶效應推衍（弱訊號 + 推演鏈 + 盲點）</summary>
+<div class="section-sub">B-1 複習新發現 6 項微弱訊號收斂 + 蝴蝶效應推演鏈 Top 3</div>
+
+<details class="sub" open>
+<summary>弱訊號雷達（5 類分類）</summary>
+<div class="sub-body">
+<table>
+<tr><th>類別</th><th>弱訊號</th><th>當前狀態</th><th>推衍方向</th></tr>
+<tr><td>A. 員工指標類</td><td>員工 -9.6%（2024Q4 2,710 → 2025Q4 2,451）vs 同期營收 +7.68%</td><td>已發生</td><td>自動化效益實質兌現 → 對 R-1 上游漲價的緩衝增強</td></tr>
+<tr><td>B. 財務結構類</td><td>2021 海外子公司貢獻稅前淨利 71%</td><td>長期事實</td><td>泰國廠規模量產若延後 6 月，海外獲利結構受衝擊</td></tr>
+<tr><td>C. 管理層語言類</td><td>致股東報告書 4 年語氣演進與財務軌跡完全吻合（無「畫大餅」紀錄）</td><td>長期一致</td><td>2026 年報語氣若轉趨保守 → H2 看空假說提早觸發</td></tr>
+<tr><td>D. 產業競爭類</td><td>立隆官網已揭露超容產品線</td><td>已發生</td><td>江海 BBU 競爭非完全落後，可能在 2027 H2 推出競品</td></tr>
+<tr><td>E. 歷史前科類</td><td>2021 ELNA 鉭質電容合資失敗清算</td><td>歷史事實</td><td>跨國合作有失敗先例，提示 NVIDIA Rubin 獨家不應過度樂觀</td></tr>
+</table>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>蝴蝶效應推演鏈 Top 3</summary>
+<div class="sub-body">
+
+<div class="causal" style="margin-bottom:14px">
+<p><b>推演鏈 #1：員工 -9.6% + 自動化兌現 → 鋁箔成本傳導能力提升</b></p>
+<p><span class="cn">第 1 階</span>立隆 2024-2025 員工 -9.6% 同時營收 +7.68% → 人均產值大幅提升</p>
+<p><span class="cn">第 2 階</span>自動化提升的成本節省可吸收原料漲價 3-5pp（vs 同業吸收能力 1-2pp）</p>
+<p><span class="cn">第 3 階</span>R-1 東陽光調漲 10% 的衝擊從 -7.5% EPS 降至 -3-4% EPS</p>
+<p><span class="cn">第 4 階</span>2026-2027 毛利率支撐力強於市場預期 → H1 信心可上修 2-3pp</p>
+</div>
+
+<div class="causal" style="margin-bottom:14px">
+<p><b>推演鏈 #2：超容產品線揭露 + 江海競爭 → 立隆 BBU 防守反擊</b></p>
+<p><span class="cn">第 1 階</span>立隆官網已有超容產品線（雖未量產）→ 技術基礎存在</p>
+<p><span class="cn">第 2 階</span>2026 H2 若江海超容拿下 NVIDIA BBU 主力，立隆可能 6-12 個月內推出競品（基於現有產品線）</p>
+<p><span class="cn">第 3 階</span>立隆 BBU 若以「次要供應商」進入，雖未拿主力但保留 1-2 億新台幣年訂單</p>
+<p><span class="cn">第 4 階</span>R-3 江海搶 BBU 風險的影響從 -7% 降至 -4-5%</p>
+</div>
+
+<div class="causal">
+<p><b>推演鏈 #3：致股東 4 年語氣一致 → 2026 年報語氣為關鍵領先指標</b></p>
+<p><span class="cn">第 1 階</span>立隆 2021-2024 年報致股東語氣連續演進與財務軌跡吻合 → 管理層誠信度高</p>
+<p><span class="cn">第 2 階</span>若 2026 年報（2027/3 公告）語氣突然轉趨保守 → 反映管理層內部已知 H2 看空風險</p>
+<p><span class="cn">第 3 階</span>內部訊號比外部驗證早 6-12 月，可作為 H1 信心下修的領先指標</p>
+<p><span class="cn">第 4 階</span>追蹤 2026 年報致股東語氣為 2027 年第五次校準的關鍵輸入</p>
+</div>
+
+</div>
+</details>
+
+<details class="sub" open>
+<summary>盲點獵手（Top 3 被忽略的見解）</summary>
+<div class="sub-body">
+<div class="tip warn"><b>盲點 #1：立敦對立隆權益法獲利的真實貢獻未獨立追蹤</b>
+立隆持立敦 33.09% 為對沖 R-1 上游關係人的核心工具，但立敦 2024 全年合併營收+對立隆權益法貢獻具體數字未獨立查證。若立敦 2026-2027 財務轉差（如自有鋁箔產能擴張失敗），對立隆獲利的負面影響可能超過 1-2 億新台幣/年（佔稅後淨利 7-14%），是被忽略的中度風險。</div>
+
+<div class="tip warn"><b>盲點 #2：產業圖譜識別「時報 8923 partner」性質未明</b>
+立隆與時報資訊（出版/媒體）的合作關係性質未明，可能是策略合作或圖譜建模誤判。若為實質合作（如數位轉型/IT 系統供應商），對立隆無重大影響；若為投資/股權關係未揭露，則屬治理透明度問題。需進一步驗證。</div>
+
+<div class="tip warn"><b>盲點 #3：2025/9-11 月營收衰退期間具體客戶端去庫存原因</b>
+2025/9-11 月營收連 3 月 YoY 有 2 月轉負，雖 2026/3 已跳空 +37.7% MoM 解除警報，但具體衰退原因（中國消費電子去庫存？AI/車用接棒延後？）未明。若 2026 H2 重現此模式，需追蹤具體去庫存節奏，這是被分析淺帶過的中度盲點。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>歷史模式比對</summary>
+<div class="sub-body">
+<table>
+<tr><th>歷史案例</th><th>相似度</th><th>關鍵差異</th><th>對立隆啟示</th></tr>
+<tr><td>國巨 2018-2020 MLCC 缺貨大週期（200→1300→350，-73%）</td><td>40%</td><td>立隆是「結構轉型」非「缺貨炒作」</td><td>立隆 PE 重估幅度小於國巨，下行風險較有限</td></tr>
+<tr><td>禾伸堂 2020-2022 IC 設計超級週期（-50%）</td><td>30%</td><td>立隆無 IC 設計週期</td><td>下行模式不完全適用</td></tr>
+<tr><td>NCC 2017-2019 鋁電容缺貨期（部分案例可參考）</td><td>50%</td><td>立隆是失守者份額承接而非缺貨主導</td><td>NCC 當年缺貨後跌幅 -40%，立隆風險上限參考</td></tr>
+<tr><td>聯亞 3081 結構轉型（AI 切入）</td><td>35%</td><td>立隆規模較大、家族治理較穩</td><td>結構轉型題材的估值波動模式類似</td></tr>
+</table>
+<div class="tip info"><b>歷史模式洞察</b>
+立隆案最相似的歷史劇本為「<b>NCC 2017-2019 鋁電容缺貨期</b>」（相似度 50%），但本輪立隆是失守者份額承接而非缺貨主導，下行風險上限約 -40%（vs 國巨/禾伸堂 -50-73%）。歷史模式不適用 H1 看多 47% 信心的結構性反駁，但提供「下行風險邊界」參考。</div>
+</div>
+</details>
+
+</details>
+
+<!-- ========== 8h 貓膩推衍 ========== -->
+<details class="section" open>
+<summary>8h · 貓膩推衍（承接完整版第十二章 D 求證結論）</summary>
+<div class="section-sub">貓膩 🟡 黃 → 歷史劇本 + 反轉路徑 + 保護策略 + 追蹤清單</div>
+
+<details class="sub" open>
+<summary>8h-1 貓膩結論承接</summary>
+<div class="sub-body">
+<table>
+<tr><th>項目</th><th>結論</th></tr>
+<tr><td>貓膩風險燈號</td><td>🟡 黃（有疑點需觀察，未到 🔴 高度可疑）</td></tr>
+<tr><td>4 個獨立貓膩假說機率</td><td>H-貓-1 Rubin 訂單規模有限 30-40% / H-貓-2 吳家信託提前布局 20-30% / H-貓-3 上游關係人利潤輸送 15-25% / H-貓-4 私募高位啟用 10-20%</td></tr>
+<tr><td>合併機率</td><td>核心貓膩（H-貓-1 + H-貓-2）= 35-45%</td></tr>
+<tr><td>影響</td><td>若貓膩成立，PE 從 17.1x 重估至 12-14x，目標 125-146 元（-18 至 -30%）</td></tr>
+</table>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>8h-2 歷史劇本推演（如果貓膩成立）</summary>
+<div class="sub-body">
+<div class="tip danger"><b>歷史相似案例：MLCC 國巨 2018-2020 + 中國康友 KY 2020 撤台</b>
+最相似案例：① <b>國巨 2018-2020 MLCC 大週期</b>：題材式炒作 → 估值膨脹 → 缺貨敘事破滅 → 跌幅 -73%。立隆案差異：立隆有真實基本面（毛利率 32% / EPS 8.73）非純題材；②  <b>中國康友 KY 2020 KY 股風險</b>：未涉立隆但提示「資訊不對稱套利」歷史案例存在。</div>
+
+<table>
+<tr><th>時間軸推估</th><th>最快</th><th>最可能</th><th>最慢</th></tr>
+<tr><td>從轉折點到崩盤</td><td>1-3 個月（事件驅動）</td><td>6-9 個月（緩慢減倉）</td><td>12-18 個月（題材逐步褪色）</td></tr>
+<tr><td>股價跌幅</td><td>-30-40%（單一事件 Rubin 取消）</td><td>-20-25%（基本面+題材雙修正）</td><td>-15-20%（純估值回歸）</td></tr>
+<tr><td>EPS 影響</td><td>2026 EPS 從 10.44 降至 6-7（-30-43%）</td><td>2026 EPS 8.5-9 / 2027 EPS 7-8</td><td>2026 EPS 達標 / 2027 EPS 緩降至 9-10</td></tr>
+</table>
+
+<div class="tip warn"><b>歷史相似度評分：60/100</b>
+立隆與最相似歷史案例的差異點：① 立隆有真實基本面+結構轉型實質兌現；② 立隆無做空報告/無會計師質疑紀錄；③ 家族治理較穩固。但相似點：① PE 估值擴張過快（10.5x→17.1x，+63%）；② 法人覆蓋低 + 媒體散播敘事 vs 公司沉默不對稱；③ 內部人時點巧合（吳德銓家族信託）。<b>結論</b>：歷史模式部分適用，下行幅度應比歷史案例緩和（-20-30% 而非 -50-70%）。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>8h-3 反轉路徑推演</summary>
+<div class="sub-body">
+<div class="causal">
+<p><span class="cn">觸發信號 1</span><b>2026/5/15 Q1 EPS &lt; 2.0 元</b>（vs 2025 Q4 3.54 大幅衰退） → <b>市場第一波反應</b>：股價 1-3 日跌 -10-15%</p>
+<p><span class="cn">觸發信號 2</span><b>2026 Q1 法說無 Rubin 訂單能見度具體揭露</b> → 第二波反應：1-2 週內跌 -10-15%</p>
+<p><span class="cn">觸發信號 3</span><b>立隆 5/10 4 月營收 YoY 轉負</b> → 第三波反應：跌停 -10%</p>
+<p><span class="cn">先知先覺者領先指標</b></p>
+<p><span class="cn">領先 1</span>外資突然連 5 日大幅賣超 ≥1,000 張 → 機構先知</p>
+<p><span class="cn">領先 2</span>媒體開始質疑 Rubin 真實性（如郭明錤級分析師發文）→ 共識動搖</p>
+<p><span class="cn">領先 3</span>同業（金山電/鈺邦）股價提前回落 → 產業風向轉變</p>
+</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>8h-4 保護策略推演</summary>
+<div class="sub-body">
+<div class="grid3">
+<div class="scenario bull">
+<h4>策略 A：相信貓膩存在</h4>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)">完全不進場 / 觀望至 2027/3 GTC 確認 / 預期股價回落至 130-150</p>
+</div>
+<div class="scenario warn">
+<h4>策略 B：不確定（推薦）</h4>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)">小部位 5-10% 試單 / 165 元短期停損 / 等 5/15 Q1 + 8/14 Q2 雙驗證後加碼或減碼</p>
+</div>
+<div class="scenario bear">
+<h4>策略 C：不相信貓膩</h4>
+<p style="font-size:.85em;line-height:1.65;color:var(--txt2)">建立 15-20% 部位 / 130 元長期停損 / 預期股價推升至 220+</p>
+</div>
+</div>
+
+<div class="tip warn"><b>最早逃生信號（哪個指標先動 = 該行動了）</b>
+按優先級：① <b>5/10 4 月營收 YoY 轉負</b>（最近期，逃生機會最早）→ ② <b>5/15 Q1 EPS &lt; 2.0 元</b>（強驗證）→ ③ <b>8/14 Q2 法說無 Rubin 揭露</b>（題材破滅）→ ④ <b>2027/3 GTC 立隆排除</b>（致命因子觸發）。前三個信號出現任一即應減倉至 5%；第四個信號出現立即清倉。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>8h-5 貓膩追蹤清單</summary>
+<div class="sub-body">
+<table>
+<tr><th>貓膩假說</th><th>追蹤指標</th><th>確認指標</th><th>否定指標</th><th>檢查頻率</th></tr>
+<tr><td>H-貓-1 Rubin 訂單有限</td><td>立隆 AI 應用比重</td><td>2026 Q4 法說 AI 比重 ≤5%</td><td>2026 Q2 法說 AI 比重 ≥6%</td><td>每季</td></tr>
+<tr><td>H-貓-2 吳家信託提前布局</td><td>峰婕/哲學/中詠投資公司董事變化</td><td>三家投資公司轉手第三方</td><td>三家投資公司董事為吳家成員確認</td><td>每月（MOPS）</td></tr>
+<tr><td>H-貓-3 上游利潤輸送</td><td>立隆毛利率 vs 同業</td><td>毛利率單季 -3pp 以上 vs 同業</td><td>毛利率與同業差距維持</td><td>每季</td></tr>
+<tr><td>H-貓-4 私募高位啟用</td><td>MOPS 重大訊息</td><td>1,640 萬股私募啟用公告</td><td>2026 Q4 私募授權到期未啟用</td><td>每月</td></tr>
+</table>
+
+<div class="tip info"><b>下次檢查日期：2026-05-15（Q1 財報公告日）</b>
+四個貓膩假說將在 5/15 Q1 財報後重新評估。若 Q1 EPS + 毛利率 + AI 比重三項皆達標 → 4 個假說機率合計可從 30-40% 降至 20-25%；若任二項不達標 → 機率上修至 45-55%。</div>
+</div>
+</details>
+
+</details>
+
+<!-- ========== 8i 推衍結論 ========== -->
+<details class="section" open>
+<summary>8i · 推衍結論（第四次信心校準）</summary>
+<div class="section-sub">最可能路徑 + 蝴蝶效應洞察 + 貓膩推衍摘要 + 行動清單 + 推衍有效期</div>
+
+<details class="sub" open>
+<summary>第四次信心校準（vs 第三次評審分析後）</summary>
+<div class="sub-body">
+<table>
+<tr><th>假說</th><th>第三次校準</th><th>第四次校準</th><th>變動</th><th>主因</th></tr>
+<tr><td>H1 看多</td><td>45%</td><td><b>47%</b></td><td>+2pp</td><td>B-1 微弱訊號收斂（員工自動化+海外 71%+致股東一致）</td></tr>
+<tr><td>H3 結構轉變</td><td>27%</td><td>26%</td><td>-1pp</td><td>蝴蝶效應推演鏈 #1 緩解 R-1 衝擊</td></tr>
+<tr><td>H2 看空</td><td>20%</td><td>18%</td><td>-2pp</td><td>新發現 #4 海外 71% 結構性貢獻支持</td></tr>
+<tr><td>H4 黑天鵝</td><td>8%</td><td>9%</td><td>+1pp</td><td>新發現 #2 ELNA 合資失敗反面證據</td></tr>
+<tr><td>合計</td><td>100%</td><td>100%</td><td>—</td><td>—</td></tr>
+</table>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>最可能路徑判斷</summary>
+<div class="sub-body">
+<div class="tip good"><b>最可能路徑：路徑 B 基本兌現（機率 40%）</b>
+未來 12 個月最可能股價區間 170-200 元（vs 現價 178.5 -5 至 +12%）。觸發條件：H1+H3 共識 → 部分兌現+結構性風險不爆。立隆 2026 EPS 達管理層目標 10.44 / 2027 EPS 11-12 / PE 維持 16-19x。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>蝴蝶效應洞察摘要（Top 3）</summary>
+<div class="sub-body">
+<ol style="padding-left:24px;line-height:1.85;color:var(--txt2)">
+<li><b>員工 -9.6% 自動化兌現提供 R-1 上游漲價的緩衝</b>（吸收 3-5pp 原料漲價 vs 同業 1-2pp） — 將 R-1 衝擊從 -7.5% 降至 -3-4%，是被市場低估的結構性優勢</li>
+<li><b>立隆官網超容產品線雖未量產但提供 BBU 防守反擊基礎</b> — R-3 江海搶 BBU 風險的影響可降至 -4-5%（vs 原 -7%），立隆可能 6-12 個月內推出競品</li>
+<li><b>致股東 4 年語氣一致是長期可信度錨點，2026 年報（2027/3 公告）語氣為第五次校準關鍵輸入</b> — 內部訊號比外部驗證早 6-12 月</li>
+</ol>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>貓膩推衍摘要</summary>
+<div class="sub-body">
+<div class="tip warn"><b>核心貓膩假說合計機率 35-45%（中度可疑）</b>
+若貓膩成立，最可能影響：股價回落至 125-146 元（-18 至 -30%），PE 從 17.1x 重估至 12-14x。
+<b>保護策略</b>：策略 B（不確定）為推薦 — 小部位 5-10% 試單 + 165 元停損 + 等 5/15+8/14 雙驗證。
+<b>最早逃生信號</b>：2026/5/10 4 月營收 YoY 轉負（最近期且影響大）。</div>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>最終行動清單</summary>
+<div class="sub-body">
+<table>
+<tr><th>階段</th><th>條件</th><th>動作</th><th>部位</th></tr>
+<tr><td>當前 2026/4/20</td><td>178.5 元 / 注意股期 / 短期過熱</td><td><b style="color:#ef9a9a">不進場 / 觀望</b></td><td>0%</td></tr>
+<tr><td>2026/5/10</td><td>4 月營收 YoY ≥+10%</td><td>確認動能延續</td><td>觀望</td></tr>
+<tr><td>2026/5/15</td><td>Q1 EPS ≥2.5 + 毛利率 ≥32%</td><td>動能驗證確認</td><td>觀望</td></tr>
+<tr><td>5/15 後（注意股解除）</td><td>股價回調至 150-160</td><td><b style="color:#a5d6a7">第一批進場 5-10%</b></td><td>5-10%</td></tr>
+<tr><td>2026/6 月</td><td>無私募啟用 / 5 月營收延續</td><td>第二批加碼</td><td>10-15%</td></tr>
+<tr><td>2026/8/14</td><td>Q2 法說 Rubin 揭露 + EPS ≥2.5</td><td><b style="color:#a5d6a7">建立完整部位</b></td><td>15-20%</td></tr>
+<tr><td>2027/3</td><td>NVIDIA GTC 確認立隆</td><td>長期持有 / 可加碼</td><td>20-25%</td></tr>
+<tr><td>退場 1</td><td>NVIDIA 排除立隆 / Q1 EPS QoQ -25%</td><td><b style="color:#ef9a9a">立即減倉至 0-5%</b></td><td>0-5%</td></tr>
+<tr><td>退場 2</td><td>月營收連 2 月轉負 + 毛利率 ≤30%</td><td>減倉至 5-10%</td><td>5-10%</td></tr>
+<tr><td>緊急退場</td><td>董監質押突增 / 會計師非無保留 / 私募高位啟用</td><td><b style="color:#ef9a9a">立即清倉</b></td><td>0%</td></tr>
+</table>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>觀察清單（下次推衍前需追蹤）</summary>
+<div class="sub-body">
+<table>
+<tr><th>類別</th><th>追蹤項目</th><th>頻率</th></tr>
+<tr><td>每日</td><td>立隆股價 5 日累計漲跌（處置股觸發 ≥50%）</td><td>每日</td></tr>
+<tr><td>每月</td><td>立隆月營收 YoY/MoM、外資持股、董監質押變動、MOPS 重大訊息</td><td>每月 5-15 日</td></tr>
+<tr><td>每季</td><td>立隆季 EPS+毛利率、立敦/江海/NCC/Nichicon 季報</td><td>5/15、8/14、11/14</td></tr>
+<tr><td>每年</td><td>立隆年報（致股東語氣演進）、會計師意見</td><td>3/31</td></tr>
+<tr><td>事件驅動</td><td>NVIDIA GTC 公告、立隆法說會、私募/增資公告</td><td>事件即時</td></tr>
+</table>
+</div>
+</details>
+
+<details class="sub" open>
+<summary>推衍有效期聲明</summary>
+<div class="sub-body">
+<div class="tip danger"><b>本推衍有效期：2026-04-20 至 2026-05-15（約 25 天）</b>
+本推衍以 2026/4/18 OSINT 為基礎，5/15 Q1 財報公告後須重新校準（特別是 EPS、毛利率、Rubin 訂單能見度三項）。重大事件觸發（如 NVIDIA 突發公告、立隆重大訊息、地緣風險升溫）可隨時要求即時更新推衍版。</div>
+</div>
+</details>
+
+</details>
+
+<!-- ========== Footer ========== -->
+<div class="footer">
+天機閣 ｜ 2472 立隆電 ｜ 推演版報告（9 章獨立推衍 · 第四次信心校準）｜ 2026-04-20 完成<br>
+推衍基礎：完整版質化分析 13 章 / B-1 新發現 10 條 / B-2 審閱 12 項 / 八種估值法 / 三次校準軌跡<br>
+<b style="color:var(--base)">免責聲明</b>：本報告為投資研究分析，非投資建議。任何投資決策應由分析師自行判斷，盈虧自負。<br>
+<b style="color:var(--accent)">推衍有效期</b>：2026-05-15 前（Q1 財報公告日）
+</div>
+
+</div>
+</body>
+</html>
