@@ -1,0 +1,2904 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>金山電 8042 · 第七步完整版 · 天機錄 v1.5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" onerror="loadChartFallback(1)"></script>
+<script>
+// Chart.js 三層 CDN 回退機制
+function loadChartFallback(idx){
+  var urls = [
+    'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js',
+    'https://unpkg.com/chart.js@4.4.7/dist/chart.umd.min.js'
+  ];
+  if(idx >= urls.length){ console.error('[Chart.js] 所有 CDN 都失敗'); return; }
+  var s = document.createElement('script');
+  s.src = urls[idx];
+  s.onerror = function(){ loadChartFallback(idx+1); };
+  document.head.appendChild(s);
+}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#fafaf7;--paper-2:#f2f1ec;--paper-3:#e7e5dd;
+  --ink:#14171c;--ink-2:#2f343d;--ink-3:#5e6573;--ink-4:#97a0b0;
+  --rule:#d4d7dc;--rule-2:#e5e7ec;
+  --accent:#1e3a5f;--accent-2:#4a6a8e;--accent-wash:#e4ebf3;
+  --bull:#2c6a42;--bear:#a8392b;--gold:#8a6a1f;--warn:#a07018;--neutral:#3d6378;
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#14181f;--paper-2:#1c212a;--paper-3:#262c37;
+  --ink:#eef1f6;--ink-2:#c8cdd6;--ink-3:#8a919e;--ink-4:#5a6272;
+  --rule:#2c333f;--rule-2:#232935;
+  --accent:#7fb0e3;--accent-2:#5e8fc4;--accent-wash:#1a2838;
+  --bull:#7fc08a;--bear:#e08a7e;--gold:#d6ad5c;--warn:#d6ad5c;--neutral:#8fb3c4;
+}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1;transition:background-color .3s,color .3s;overflow-x:clip}
+html{scroll-behavior:smooth;overflow-x:hidden}
+/* removed bg gradient */
+
+/* ===== Shell / Sidebar ===== */
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);max-margin:0 auto;position:relative;z-index:1}
+@media(max-width:900px){.shell{grid-template-columns:1fr}}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;padding:36px 28px 28px;border-right:1px solid var(--rule);background:var(--paper);overflow-y:auto;font-size:13px}
+@media(max-width:900px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink)}
+.brand .dot{height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);letter-spacing:0.05em}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-4);margin:28px 0 10px;font-weight:600}
+.toc-list{list-style:none}
+.toc-list li{margin:0}
+.toc-list a{display:block;padding:7px 0;color:var(--ink-2);text-decoration:none;font-size:12.5px;line-height:1.4}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list .sub-item{padding-left:14px;font-size:11.5px;color:var(--ink-3)}
+.toc-list .sub-item::before{content:'·';margin-right:6px;color:var(--ink-4)}
+
+.side-note{margin-top:22px;padding:14px;background:var(--accent-wash);border-left:2px solid var(--accent);font-size:12px;line-height:1.65;color:var(--ink-2)}
+.side-note .label{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;font-weight:600}
+.side-note strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* ===== Main / Masthead ===== */
+.main{padding:64px 80px 96px;max-}
+@media(max-width:900px){.main{padding:32px 24px 60px}}
+.masthead{border-top:4px double var(--ink);border-bottom:1px solid var(--rule);padding:24px 0 28px;margin-bottom:40px}
+.masthead .eyebrow{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{font-family:var(--serif);font-weight:600;font-size:52px;line-height:1.02;letter-spacing:-0.022em;color:var(--ink);text-wrap:balance}
+.masthead h1 .ticker{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;vertical-align:middle}
+
+/* ===== Section / Card ===== */
+.section{margin:72px 0 0;scroll-margin-top:24px}
+.section-head{display:grid;grid-template-columns:72px 1fr;gap:24px;padding-bottom:16px;margin-bottom:28px;border-bottom:1px solid var(--ink-2);align-items:end}
+.section-head .no{font-family:var(--serif);font-weight:500;font-size:56px;line-height:0.82;letter-spacing:-0.03em;color:var(--accent);opacity:.88}
+.section-head .tit h2{font-family:var(--serif);font-weight:700;font-size:28px;line-height:1.15;letter-spacing:-0.02em;color:var(--ink)}
+.section-head .tit .sub{margin-top:6px;font-size:13px;color:var(--ink-3);font-family:var(--mono);letter-spacing:0.02em}
+.card{margin:18px 0}
+.card h3{color:var(--accent);font-family:var(--serif);font-size:20px;margin:0 0 16px;font-weight:600;padding-left:14px;border-left:2px solid var(--accent);line-height:1.3;letter-spacing:-0.01em}
+.card h3 .tag-new{display:inline-block;margin-left:10px;padding:2px 8px;background:var(--gold);color:var(--paper);font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.1em;vertical-align:middle;border-radius:2px}
+.card-body{padding:4px 0 0 14px}
+.main h4{color:var(--ink);font-family:var(--serif);font-size:15.5px;font-weight:700;margin:16px 0 8px}
+
+/* ===== A. 一句話定位（大字導言） ===== */
+.hero-deck{
+  margin:0 0 32px;padding:28px 32px;
+  background:var(--paper-2);border-top:2px solid var(--accent);border-bottom:1px solid var(--rule);
+  font-family:var(--serif);font-size:20px;line-height:1.6;
+  color:var(--ink);font-weight:400;
+  text-wrap:pretty;letter-spacing:-0.002em;
+}
+.hero-deck .tag{display:inline-block;margin-right:10px;padding:3px 9px;background:var(--accent);color:var(--paper);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.08em;vertical-align:middle;border-radius:2px;text-transform:uppercase}
+.hero-deck b{color:var(--ink);font-weight:600;background:linear-gradient(transparent 65%,rgba(138,106,31,.22) 65%)}
+.hero-deck em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* ===== B. 產業地位 ===== */
+.industry-block{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;margin:14px 0 22px;align-items:start}
+@media(max-width:900px){.industry-block{grid-template-columns:1fr}}
+.industry-block .prose p{color:var(--ink-2);font-size:14.5px;line-height:1.75;margin-bottom:10px}
+.industry-block .prose b{color:var(--ink);font-weight:600}
+.industry-block .prose em{color:var(--accent);font-style:normal;font-weight:700}
+
+/* ===== C. 規模速覽（mini-card）===== */
+.scale-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0 22px}
+.scale-grid.compact{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.mini-card{padding:18px;border:1px solid var(--rule);background:var(--paper-2);border-radius:2px}
+.mini-card .m-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;font-weight:500}
+.mini-card .m-val{font-family:var(--sans);font-weight:600;font-size:26px;line-height:1.05;color:var(--ink);letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.mini-card .m-val.up{color:var(--bull)} .mini-card .m-val.gold{color:var(--gold)} .mini-card .m-val.neut{color:var(--neutral)}
+.mini-card .m-note{font-size:11.5px;color:var(--ink-3);margin-top:8px;line-height:1.55;font-variant-numeric:tabular-nums}
+.mini-card.accent{border-top:2px solid var(--accent)}
+.mini-card.bull{border-top:2px solid var(--bull)}
+.mini-card.gold{border-top:2px solid var(--gold)}
+.mini-card.neut{border-top:2px solid var(--neutral)}
+/* 縮小版（用於產業地位右側等緊湊區域）*/
+.mini-card.compact{padding:13px 14px}
+.mini-card.compact .m-label{font-size:9.5px;margin-bottom:7px;letter-spacing:0.06em}
+.mini-card.compact .m-val{font-size:19px;line-height:1.1;font-family:var(--sans);font-weight:600}
+.mini-card.compact .m-note{font-size:11px;margin-top:5px;line-height:1.5}
+
+/* ===== D. 業務與產品卡 ===== */
+.biz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:14px 0 22px}
+.biz-card{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--accent);padding:18px 22px;line-height:1.7;border-radius:2px}
+.biz-card .pct{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;letter-spacing:0.08em;margin-bottom:4px}
+.biz-card h5{color:var(--ink);font-family:var(--serif);font-size:16px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.biz-card .b-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.biz-card .b-meta .chip{font-family:var(--mono);font-size:10px;color:var(--ink-3);padding:2px 8px;border:1px solid var(--rule);border-radius:2px;letter-spacing:0.04em;text-transform:uppercase}
+.biz-card .b-desc{color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.biz-card.gold{border-left-color:var(--gold)}
+.biz-card.neut{border-left-color:var(--neutral)}
+
+/* ===== E. 上下游鏈（左至右三欄 chain-grid）===== */
+.chain-grid{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.1fr) 28px minmax(0,1fr);gap:12px;margin:14px 0 10px;align-items:stretch}
+@media(max-width:900px){.chain-grid{grid-template-columns:1fr;gap:16px}.chain-grid .arrow{display:none}}
+.chain-col{background:var(--paper-2);border:1px solid var(--rule);padding:14px 16px;line-height:1.65;display:flex;flex-direction:column}
+.chain-col.up{border-top:3px solid var(--warn)}
+.chain-col.mid{border-top:3px solid var(--accent);background:var(--accent-wash)}
+.chain-col.down{border-top:3px solid var(--bull)}
+[data-theme="dark"] .chain-col.mid{background:var(--accent-wash)}
+.chain-col h5{color:var(--ink);font-family:var(--serif);font-size:14.5px;font-weight:700;margin:0 0 4px}
+.chain-col .role{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;font-weight:600}
+.chain-col.up .role{color:var(--warn)}
+.chain-col.mid .role{color:var(--accent)}
+.chain-col.down .role{color:var(--bull)}
+.chain-col ul{list-style:none;padding:0;margin:0}
+.chain-col ul li{padding:6px 0;border-bottom:1px dashed var(--rule-2);font-size:13px;color:var(--ink-2);line-height:1.55}
+.chain-col ul li:last-child{border-bottom:0}
+.chain-col ul li b{color:var(--ink);font-weight:600}
+.chain-col ul li span.pct{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-left:4px}
+.chain-col .note{font-size:11.5px;color:var(--ink-3);margin-top:10px;padding-top:8px;border-top:1px solid var(--rule-2);line-height:1.6;font-style:italic}
+.arrow{display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:22px;font-weight:300}
+
+/* ===== flex-note 彈性提示 ===== */
+.flex-note{display:block;margin:14px 0 6px;padding:10px 14px;background:var(--paper-3);border:0;border-left:2px solid var(--rule);color:var(--ink-3);font-family:var(--sans);font-size:11.5px;font-style:normal;line-height:1.65}
+[data-theme="dark"] .flex-note{background:var(--paper-3)}
+.flex-note b{color:var(--ink-2);font-weight:600}
+
+/* ===== F. 公司特色卡 ===== */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0 22px}
+.feature-card{background:var(--paper-2);border:1px solid var(--rule);padding:20px 22px;position:relative;line-height:1.7;border-radius:2px}
+.feature-card::before{content:attr(data-num);position:absolute;top:16px;right:20px;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1;color:var(--ink-4);letter-spacing:0.04em}
+[data-theme="dark"] .feature-card::before{color:var(--ink-3);opacity:.7}
+.feature-card .f-kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+.feature-card h5{color:var(--ink);font-family:var(--serif);font-size:17px;font-weight:700;margin:0 0 10px;line-height:1.3;text-wrap:balance}
+.feature-card p{color:var(--ink-2);font-size:13.5px;line-height:1.75;margin:0}
+.feature-card b{color:var(--ink)}
+.feature-card em{color:var(--accent);font-style:normal;font-weight:700}
+
+/* ===== G. 工具性資料（details 摺疊）===== */
+.main details.util-details{background:var(--paper-2);border:1px solid var(--rule);padding:14px 18px;margin:18px 0}
+.main details.util-details summary{cursor:pointer;font-family:var(--serif);font-weight:700;color:var(--accent);font-size:14px;padding:4px 0;list-style:none;position:relative;padding-left:22px}
+.main details.util-details summary::-webkit-details-marker{display:none}
+.main details.util-details summary::before{content:'▸';position:absolute;left:0;top:4px;transition:transform .15s}
+.main details.util-details[open] summary::before{transform:rotate(90deg)}
+.main details.util-details[open] summary{border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:12px}
+.main details.util-details table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.main details.util-details th{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);padding:7px 10px 7px 0;text-align:left;font-weight:600;vertical-align:top}
+.main details.util-details td{padding:7px 0;color:var(--ink-2);vertical-align:top;line-height:1.6;border-bottom:1px dashed var(--rule-2)}
+.main details.util-details tr:last-child td,.main details.util-details tr:last-child th{border-bottom:0}
+
+/* ===== 1.2 商業模式 ===== */
+.model-intro{margin:12px 0 18px;padding:18px 22px;background:var(--paper-2);border-left:3px solid var(--accent);line-height:1.75;color:var(--ink-2);font-size:14.5px}
+.model-intro b{color:var(--ink)}
+.model-intro em{color:var(--gold);font-style:normal;font-weight:700}
+.model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0 18px}
+.model-card{background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--neutral);padding:14px 16px;line-height:1.65}
+.model-card .m-tag{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--neutral);font-weight:700;margin-bottom:6px}
+.model-card h5{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.model-card p{color:var(--ink-2);font-size:13px;line-height:1.7;margin:0}
+.model-card.accent{border-top-color:var(--accent)}
+.model-card.gold{border-top-color:var(--gold)}
+
+/* Duo scenario 優勢 vs 脆弱 */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 18px}
+@media(max-width:900px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 18px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.scenario .hd{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+.scenario ul{margin:6px 0 0 18px;padding:0}
+.scenario ul li{margin:4px 0;color:var(--ink-2);line-height:1.65}
+.scenario b{color:var(--ink)}
+
+/* Tables in main（1.2 營收表） */
+.main table.rev-tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;margin:10px 0}
+.main table.rev-tbl th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--ink-3);padding:8px 10px;text-align:left;border-top:1px solid var(--ink-3);border-bottom:1px solid var(--ink-3);background:var(--paper-2)}
+.main table.rev-tbl td{padding:8px 10px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;line-height:1.55}
+.main table.rev-tbl tbody tr:last-child td{border-top:1px solid var(--ink-3);font-weight:700;color:var(--ink);background:var(--paper-2)}
+.main table.rev-tbl .num{text-align:right;font-family:var(--mono)}
+.main details.rev-det{background:var(--paper-2);border:1px solid var(--rule);padding:12px 16px;margin:10px 0}
+.main details.rev-det summary{cursor:pointer;font-family:var(--serif);font-weight:700;color:var(--accent);font-size:14px;padding:4px 0}
+.main details.rev-det[open] summary{border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:10px}
+
+/* Evidence card */
+.ev{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--bull);padding:12px 16px;margin:10px 0;font-size:13.5px}
+.ev.a{border-left-color:var(--warn)}
+.ev-t{font-weight:700;color:var(--ink);margin-bottom:4px;font-family:var(--serif)}
+.ev-d{color:var(--ink-2);margin:4px 0;line-height:1.75}
+.ev-s{color:var(--ink-3);font-size:11.5px;margin-top:4px;font-style:italic;font-family:var(--mono);letter-spacing:0.02em}
+.fias-f{padding:1px 6px;background:rgba(47,107,61,.12);color:var(--bull);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+.fias-a{padding:1px 6px;background:rgba(166,115,24,.14);color:var(--warn);font-size:10px;border-radius:2px;font-family:var(--mono);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-right:3px}
+
+/* Tip / 整合結論 */
+.tip{padding:18px 22px;margin:28px 0;border-left:2px solid var(--ink-3);background:var(--paper-2);font-size:14px;line-height:1.75;color:var(--ink-2);border-radius:0 2px 2px 0}
+.tip.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+.tip.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.tip.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.tip > b:first-child{display:block;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:15.5px;margin-bottom:8px}
+
+/* Footer / Theme toggle */
+.footer{margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);font-size:11.5px;line-height:1.7;color:var(--ink-3);font-family:var(--mono);letter-spacing:0.02em}
+.theme-toggle{position:fixed;top:20px;right:20px;z-index:50;display:inline-flex;align-items:center;background:var(--paper-2);border:1px solid var(--rule);border-radius:999px;padding:3px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.theme-toggle button{appearance:none;background:transparent;border:0;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink-3);border-radius:999px;display:inline-flex;align-items:center;gap:6px}
+.theme-toggle button.on{background:var(--accent);color:var(--paper);font-weight:600}
+.theme-toggle button svg{height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+
+/* ===== 產業地位視覺化（左文右圖 grid layout） ===== */
+.viz-option{display:grid;grid-template-columns:minmax(0,0.72fr) minmax(0,1.28fr);gap:22px;align-items:center;margin:16px 0 12px;padding:14px 18px;background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--accent)}
+@media(max-width:900px){.viz-option{grid-template-columns:1fr;gap:14px}}
+.viz-option .viz-text{min-width:0}
+.viz-option .viz-chart{min-width:0}
+.viz-option .viz-tag{display:inline-block;padding:2px 8px;background:var(--accent);color:var(--paper);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.12em;border-radius:2px;text-transform:uppercase;margin-bottom:8px}
+.viz-option .viz-title{font-family:var(--serif);font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3}
+.viz-option .viz-sub{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:0.04em;margin-bottom:10px;line-height:1.5}
+.viz-option .viz-fit{font-size:11.5px;color:var(--ink-3);margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule-2);line-height:1.6;font-style:italic}
+.viz-option .viz-fit b{color:var(--accent);font-weight:600;font-style:normal}
+
+/* 方案 A · 產業定位帶（縮小版）*/
+.pos-band{margin:6px 0 4px;padding:22px 14px 12px}
+.pos-track{position:relative;height:7px;background:linear-gradient(90deg,var(--warn) 0%,var(--neutral) 45%,var(--accent) 75%,var(--bull) 100%);border-radius:5px;margin:30px 0 10px}
+.pos-marker{position:absolute;top:-7px;height:20px;border-radius:50%;border:2px solid var(--paper);background:var(--ink-3);transform:translateX(-50%);transition:transform .15s}
+.pos-marker:hover{transform:translateX(-50%) scale(1.15)}
+.pos-marker.active{background:var(--bull);height:24px;top:-9px;border-color:var(--paper);box-shadow:0 0 0 3px rgba(134,181,141,.18)}
+.pos-marker .pm-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--serif);font-size:11.5px;font-weight:700;color:var(--ink)}
+.pos-marker.active .pm-label{color:var(--bull);font-size:12.5px}
+.pos-marker .pm-sub{position:absolute;top:24px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:0.04em}
+.pos-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:0.06em;text-transform:uppercase;margin-top:22px}
+.pos-labels .l-left{color:var(--warn)}
+.pos-labels .l-right{color:var(--accent)}
+
+/* 方案 B · 2D 定位矩陣（縮小版）*/
+.quadrant{position:relative;margin:4px 0 4px;padding:6px 4px 30px 44px}
+.q-canvas{position:relative;width:100%;height:200px;background:linear-gradient(135deg,rgba(168,192,149,.04) 0%,rgba(168,192,149,.04) 50%,rgba(214,138,122,.04) 50%,rgba(214,138,122,.04) 100%);border:1px solid var(--rule)}
+.q-canvas::before,.q-canvas::after{content:'';position:absolute;background:var(--ink-3);opacity:.35}
+.q-canvas::before{left:50%;top:0;bottom:0;}
+.q-canvas::after{left:0;right:0;top:50%;height:1px}
+.q-cell{position:absolute;font-family:var(--mono);font-size:9px;color:var(--ink-4);letter-spacing:0.08em;text-transform:uppercase;padding:6px 8px;font-weight:600}
+.q-cell.tl{top:0;left:0}
+.q-cell.tr{top:0;right:0;text-align:right}
+.q-cell.bl{bottom:0;left:0}
+.q-cell.br{bottom:0;right:0;text-align:right}
+.q-point{position:absolute;height:10px;border-radius:50%;background:var(--ink-3);transform:translate(-50%,-50%);border:2px solid var(--paper);transition:transform .15s}
+.q-point:hover{transform:translate(-50%,-50%) scale(1.3)}
+.q-point.focus{background:var(--bull);height:14px;box-shadow:0 0 0 3px rgba(134,181,141,.2)}
+.q-point .pt-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--serif);font-size:11px;font-weight:700;color:var(--ink);background:var(--paper-2);padding:1px 5px;border-radius:2px}
+.q-point.focus .pt-label{color:var(--bull);font-size:12px;background:var(--paper)}
+.q-axis-y{position:absolute;left:4px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:0.08em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.q-axis-x{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:0.08em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.q-axis-low,.q-axis-high{position:absolute;font-family:var(--mono);font-size:9px;color:var(--ink-4);letter-spacing:0.06em}
+.q-axis-low.y{left:30px;bottom:10px}
+.q-axis-high.y{left:30px;top:2px}
+.q-axis-low.x{left:48px;bottom:18px}
+.q-axis-high.x{right:10px;bottom:18px}
+
+
+/* ===== Ch 2 · 產業生命週期帶 ===== */
+.lifecycle-band{display:grid;grid-template-columns:repeat(4,1fr);margin:18px 0 8px;border:1px solid var(--rule);background:var(--paper-2);position:relative}
+.lifecycle-stage{padding:14px 10px;text-align:center;border-right:1px solid var(--rule);font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink-3);position:relative;transition:all .15s}
+.lifecycle-stage:last-child{border-right:0}
+.lifecycle-stage .lc-sub{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-top:4px;letter-spacing:0.05em;font-weight:600}
+.lifecycle-stage.active{background:rgba(168,192,149,.12);color:var(--accent)}
+.lifecycle-stage.active .lc-sub{color:var(--accent)}
+.lifecycle-stage.active::before{content:'▼';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--bull);font-size:14px}
+.lifecycle-stage.active::after{content:'本公司';position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--bull);font-weight:700;letter-spacing:0.1em;white-space:nowrap}
+.lifecycle-band + .lc-note{margin-top:22px;font-size:12px;color:var(--ink-3);line-height:1.65;font-style:italic;padding:0 2px}
+
+/* ===== Ch 2 · Porter 五力 橫 bar ===== */
+.porter-bars{margin:14px 0 10px;display:grid;gap:8px}
+.porter-row{display:grid;grid-template-columns:minmax(140px,1.5fr) minmax(0,2.5fr) 52px 64px;gap:12px;align-items:center;font-size:13px}
+.porter-row .p-name{color:var(--ink-2);line-height:1.4;font-family:var(--serif)}
+.porter-row .p-name b{color:var(--ink);font-weight:700;display:block;font-size:14px;margin-bottom:2px}
+.porter-row .p-name .p-sub{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:0.03em}
+.porter-row .p-track{height:18px;background:var(--paper-3);border-radius:3px;overflow:hidden;position:relative}
+.porter-row .p-fill{height:100%;background:var(--bull);border-radius:3px 0 0 3px;transition:width .3s}
+.porter-row .p-fill.low{background:var(--bull)}
+.porter-row .p-fill.mid{background:var(--warn)}
+.porter-row .p-fill.high{background:var(--bear)}
+.porter-row .p-score{text-align:right;font-family:var(--mono);font-weight:700;color:var(--ink);font-size:13px}
+.porter-row .p-verdict{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 6px;border-radius:2px;text-align:center}
+.porter-row .p-verdict.good{background:rgba(47,107,61,.12);color:var(--bull)}
+.porter-row .p-verdict.mid{background:rgba(143,179,196,.12);color:var(--neutral)}
+.porter-row .p-verdict.bad{background:rgba(166,115,24,.14);color:var(--warn)}
+@media(max-width:900px){.porter-row{grid-template-columns:1fr}.porter-row .p-track{grid-column:1 / -1}.porter-row .p-score,.porter-row .p-verdict{grid-column:auto}}
+
+/* ===== Ch 2 · 護城河五來源評分表 ===== */
+.moat-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0;background:transparent;table-layout:auto}
+.moat-table th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);padding:9px 12px;text-align:left;border-top:1px solid var(--ink-3);border-bottom:1px solid var(--ink-3);background:var(--paper-2);font-weight:600;white-space:nowrap}
+.moat-table td{padding:10px 12px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;line-height:1.6}
+.moat-table td.m-type{font-family:var(--serif);font-weight:600;color:var(--ink);white-space:nowrap;width:1%}
+.moat-table td.m-score{font-family:var(--mono);font-size:15px;font-weight:700;text-align:center;white-space:nowrap;width:1%;letter-spacing:0.1em}
+.moat-table td.m-score.s5{color:var(--bull)}.moat-table td.m-score.s4{color:var(--accent)}.moat-table td.m-score.s3{color:var(--warn)}.moat-table td.m-score.s2{color:var(--neutral)}.moat-table td.m-score.s1{color:var(--ink-3)}
+.moat-table tbody tr:last-child td{border-bottom:1px solid var(--ink-3)}
+
+/* ===== Ch 2 · 可持續性 3 期表（窄欄自動縮寬） ===== */
+.sustain-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0;table-layout:auto}
+.sustain-table th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);padding:9px 12px;text-align:left;border-top:1px solid var(--ink-3);border-bottom:1px solid var(--ink-3);background:var(--paper-2);font-weight:600;white-space:nowrap}
+.sustain-table td{padding:10px 12px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;line-height:1.65}
+.sustain-table td.period{font-family:var(--serif);font-weight:700;color:var(--ink);white-space:nowrap;width:1%}
+.sustain-table td.period .p-years{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);display:block;margin-top:2px;letter-spacing:0.04em;font-weight:600}
+.sustain-table td.grade{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;width:1%;text-align:center}
+.sustain-table td.grade.stable{color:var(--bull)}
+.sustain-table td.grade.mixed{color:var(--warn)}
+.sustain-table td.grade.risky{color:var(--bear)}
+.sustain-table tbody tr:last-child td{border-bottom:1px solid var(--ink-3)}
+
+/* ===== Ch 2 · 新進者可能性（4 類）卡 ===== */
+.entrant-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.entrant-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--neutral);padding:14px 18px;line-height:1.65;font-size:13.5px}
+.entrant-card.prob-high{border-left-color:var(--bear)}
+.entrant-card.prob-mid{border-left-color:var(--warn)}
+.entrant-card.prob-low{border-left-color:var(--bull)}
+.entrant-card .e-tag{display:inline-block;padding:2px 8px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;border-radius:2px}
+.entrant-card.prob-high .e-tag{background:rgba(142,58,44,.15);color:var(--bear)}
+.entrant-card.prob-mid .e-tag{background:rgba(166,115,24,.14);color:var(--warn)}
+.entrant-card.prob-low .e-tag{background:rgba(47,107,61,.12);color:var(--bull)}
+.entrant-card h5{color:var(--ink);font-family:var(--serif);font-size:14.5px;font-weight:700;margin:0 0 6px;line-height:1.3}
+.entrant-card p{color:var(--ink-2);font-size:13px;line-height:1.7;margin:0}
+.entrant-card b{color:var(--ink);font-weight:600}
+
+/* ===== Ch 2 · Risk card（競爭威脅）===== */
+.risk-card{background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--bear);padding:13px 18px;margin:10px 0;font-size:14px;line-height:1.65}
+.risk-card.rc-low{border-left-color:var(--bull)}
+.risk-card.rc-medium{border-left-color:var(--warn)}
+.risk-card.rc-high{border-left-color:var(--bear)}
+.risk-card h5{margin:0 0 6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-size:14.5px;font-family:var(--serif);font-weight:700;flex-wrap:wrap;gap:8px}
+.risk-card h5 .rc-tag{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:2px;text-transform:uppercase}
+.risk-card.rc-low h5 .rc-tag{background:rgba(47,107,61,.12);color:var(--bull);border:1px solid var(--bull)}
+.risk-card.rc-medium h5 .rc-tag{background:rgba(166,115,24,.14);color:var(--warn);border:1px solid var(--warn)}
+.risk-card.rc-high h5 .rc-tag{background:rgba(142,58,44,.12);color:var(--bear);border:1px solid var(--bear)}
+.risk-card .rc-body{color:var(--ink-2);font-size:13.5px;line-height:1.75}
+.risk-card b{color:var(--ink);font-weight:600}
+
+/* ===== Ch 2 · Chart wrap（雷達 / 線圖）===== */
+.chart-wrap{background:var(--paper-2);border:1px solid var(--rule);padding:4px 6px;margin:8px 0}
+.chart-wrap canvas{max-width:100%;max-height:260px}
+.chart-title{color:var(--accent);font-weight:700;font-size:9.5px;margin-bottom:2px;text-align:center;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;line-height:1.2}
+.chart-note{color:var(--ink-3);font-size:9.5px;margin-top:2px;text-align:center;font-style:italic;font-family:var(--mono);line-height:1.4}
+.radar-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:8px;margin:12px 0;align-items:start}
+@media(max-width:900px){.radar-layout{grid-template-columns:1fr}}
+
+/* ===== Ch 2 · 同業清單 & 近期動態 ===== */
+.peer-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;table-layout:auto}
+.peer-table th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;text-align:left;border-top:1px solid var(--ink-3);border-bottom:1px solid var(--ink-3);background:var(--paper-2);font-weight:600;white-space:nowrap}
+.peer-table td{padding:8px 10px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;line-height:1.6}
+/* 全面套用：num 欄位自動縮寬（任何 peer-table 都適用） */
+.peer-table th.num,.peer-table td.num{white-space:nowrap;width:1%}
+/* 第一欄若無 inline width 也縮寬（例外 table：有 inline width 會覆蓋此規則） */
+.peer-table thead th:first-child:not([style*="width"]),.peer-table tbody td:first-child:not([style*="width"]){white-space:nowrap;width:1%}
+.peer-table td.hi{font-family:var(--serif);color:var(--ink);font-weight:700;background:rgba(168,192,149,.06)}
+.peer-table td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+.peer-table tbody tr.focus{background:rgba(168,192,149,.05)}
+.peer-table tbody tr.focus td:first-child{color:var(--accent);font-weight:700}
+.peer-table tbody tr:last-child td{border-bottom:1px solid var(--ink-3)}
+
+.dynamic-list{list-style:none;padding:0;margin:10px 0}
+.dynamic-list li{padding:8px 14px;margin:6px 0;background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--neutral);font-size:13.5px;color:var(--ink-2);line-height:1.65}
+.dynamic-list li b{color:var(--ink);font-weight:600}
+.dynamic-list li .peer-tag{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--neutral);margin-right:6px}
+
+/* ===== Ch 3 · 成長階段定位帶 ===== */
+.growth-band{display:grid;grid-template-columns:repeat(4,1fr);margin:32px 0 8px;border:1px solid var(--rule);background:var(--paper-2);position:relative}
+.growth-stage{padding:14px 10px;text-align:center;border-right:1px solid var(--rule);font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink-3);position:relative}
+.growth-stage:last-child{border-right:0}
+.growth-stage .gs-sub{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-top:4px;letter-spacing:0.05em;font-weight:600}
+.growth-stage.active{background:rgba(168,192,149,.12);color:var(--accent)}
+.growth-stage.active .gs-sub{color:var(--accent)}
+.growth-stage.active::before{content:'▼';position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:var(--bull);font-size:14px}
+.growth-stage.active::after{content:'本公司';position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--bull);font-weight:700;letter-spacing:0.1em;white-space:nowrap}
+
+/* ===== Ch 3 · 成長引擎卡 ===== */
+.engine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:14px 0 10px}
+.engine-card{background:var(--paper-2);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:14px 18px;line-height:1.65;position:relative}
+.engine-card.e-primary{border-left-color:var(--bull);border-left-}
+.engine-card.e-secondary{border-left-color:var(--accent)}
+.engine-card.e-emerging{border-left-color:var(--gold)}
+.engine-card.e-policy{border-left-color:var(--neutral)}
+.engine-card .e-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.engine-card .e-kicker{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:var(--ink-3)}
+.engine-card.e-primary .e-kicker{color:var(--bull)}
+.engine-card.e-secondary .e-kicker{color:var(--accent)}
+.engine-card.e-emerging .e-kicker{color:var(--gold)}
+.engine-card.e-policy .e-kicker{color:var(--neutral)}
+.engine-card .e-contribution{font-family:var(--mono);font-size:10px;color:var(--ink-3);background:var(--paper-3);padding:2px 8px;border-radius:2px;letter-spacing:0.04em;white-space:nowrap}
+.engine-card h5{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.engine-card .e-body{color:var(--ink-2);font-size:13px;line-height:1.7;margin:0 0 8px}
+.engine-card .e-body b{color:var(--ink);font-weight:600}
+.engine-card .e-meta{display:flex;flex-wrap:wrap;gap:6px;padding-top:8px;border-top:1px dashed var(--rule-2);font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:0.04em}
+.engine-card .e-meta span{padding:2px 8px;background:var(--paper-3);border-radius:2px}
+.engine-card .e-meta span b{color:var(--ink);font-weight:700}
+
+/* ===== Ch 3 · 主次引擎比重堆疊條 ===== */
+.engine-stack{margin:14px 0}
+.engine-stack-bar{display:flex;height:32px;border-radius:3px;overflow:hidden;background:var(--paper-3);margin:10px 0 8px}
+.engine-stack-bar .seg{display:flex;align-items:center;justify-content:center;color:var(--paper);font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.04em;padding:0 8px}
+.engine-stack-bar .seg.s-primary{background:var(--bull)}
+.engine-stack-bar .seg.s-secondary{background:var(--accent)}
+.engine-stack-bar .seg.s-emerging{background:var(--gold)}
+.engine-stack-bar .seg.s-policy{background:var(--neutral)}
+.engine-stack-bar .seg.s-price{background:var(--warn)}
+.engine-stack-legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.04em}
+.engine-stack-legend .lg{display:inline-flex;align-items:center;gap:5px}
+.engine-stack-legend .lg-dot{display:inline-block;height:10px;border-radius:2px}
+.engine-stack-legend .lg-dot.s-primary{background:var(--bull)}
+.engine-stack-legend .lg-dot.s-secondary{background:var(--accent)}
+.engine-stack-legend .lg-dot.s-emerging{background:var(--gold)}
+.engine-stack-legend .lg-dot.s-policy{background:var(--neutral)}
+.engine-stack-legend .lg-dot.s-price{background:var(--warn)}
+
+/* ===== Ch 3 · 短中長期動能堆疊 ===== */
+.momentum-stack{display:flex;flex-direction:column;gap:12px;margin:14px 0}
+.momentum-block{background:var(--paper-2);border:1px solid var(--rule);padding:14px 18px;line-height:1.7}
+.momentum-block.m-short{border-left:4px solid var(--bull)}
+.momentum-block.m-mid{border-left:4px solid var(--accent)}
+.momentum-block.m-long{border-left:4px solid var(--gold)}
+.momentum-block .m-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.momentum-block .m-title{font-family:var(--serif);font-weight:700;font-size:15.5px;color:var(--ink);line-height:1.3}
+.momentum-block .m-title .m-period{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:600;letter-spacing:0.08em;margin-left:8px}
+.momentum-block.m-short .m-period{color:var(--bull)}
+.momentum-block.m-mid .m-period{color:var(--accent)}
+.momentum-block.m-long .m-period{color:var(--gold)}
+.momentum-block .m-tally{font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--paper-3);padding:3px 10px;border-radius:2px;letter-spacing:0.04em;white-space:nowrap}
+.momentum-block ul{list-style:none;padding:0;margin:0}
+.momentum-block ul li{padding:8px 0;border-bottom:1px dashed var(--rule-2);font-size:13.5px;color:var(--ink-2);line-height:1.7;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.4fr) minmax(0,0.7fr);gap:14px;align-items:baseline}
+.momentum-block ul li:last-child{border-bottom:0}
+.momentum-block ul li .mi-name{color:var(--ink);font-family:var(--serif);font-weight:700;font-size:14px}
+.momentum-block ul li .mi-desc{color:var(--ink-2);font-size:12.5px}
+.momentum-block ul li .mi-impact{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);text-align:right;letter-spacing:0.04em;white-space:nowrap}
+.momentum-block ul li .mi-impact b{color:var(--bull);font-weight:700}
+@media(max-width:900px){.momentum-block ul li{grid-template-columns:1fr}.momentum-block ul li .mi-impact{text-align:left}}
+
+/* ===== Ch 3 · 三情境推演卡 ===== */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.scenario-card{background:var(--paper-2);border:1px solid var(--rule);padding:14px 18px;line-height:1.7}
+.scenario-card.sc-bull{border-top:4px solid var(--bull)}
+.scenario-card.sc-base{border-top:4px solid var(--gold)}
+.scenario-card.sc-bear{border-top:4px solid var(--bear)}
+.scenario-card .sc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.scenario-card .sc-tag{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:2px}
+.scenario-card.sc-bull .sc-tag{background:rgba(47,107,61,.12);color:var(--bull)}
+.scenario-card.sc-base .sc-tag{background:rgba(138,106,31,.14);color:var(--gold)}
+.scenario-card.sc-bear .sc-tag{background:rgba(142,58,44,.12);color:var(--bear)}
+.scenario-card .sc-prob{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:0.04em}
+.scenario-card h5{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.scenario-card .sc-eps{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin:6px 0;letter-spacing:-0.01em}
+.scenario-card .sc-eps b{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.1em;font-weight:600;margin-left:4px;text-transform:uppercase}
+.scenario-card ul{list-style:none;padding:0;margin:6px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.65}
+.scenario-card ul li{padding:3px 0;padding-left:12px;position:relative}
+.scenario-card ul li::before{content:'›';position:absolute;left:0;color:var(--accent)}
+.scenario-card.sc-bull ul li::before{color:var(--bull)}
+.scenario-card.sc-base ul li::before{color:var(--gold)}
+.scenario-card.sc-bear ul li::before{color:var(--bear)}
+
+/* ===== Ch 3 · PEG 評估 ===== */
+.peg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+.peg-card{background:var(--paper-2);border:1px solid var(--rule);padding:14px 16px;text-align:center}
+.peg-card .peg-label{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;font-weight:600}
+.peg-card .peg-val{font-family:var(--serif);font-weight:700;font-size:32px;line-height:1;color:var(--ink);letter-spacing:-0.02em}
+.peg-card .peg-val.low{color:var(--bull)}
+.peg-card .peg-val.mid{color:var(--gold)}
+.peg-card .peg-val.high{color:var(--bear)}
+.peg-card .peg-note{font-size:11px;color:var(--ink-3);margin-top:6px;line-height:1.55}
+.peg-card .peg-note b{color:var(--ink)}
+
+/* ===== Ch 3 · 已反映度估值光譜帶 ===== */
+.implied-band{margin:14px 0}
+.implied-track{position:relative;height:28px;background:linear-gradient(90deg,var(--bear) 0%,var(--warn) 40%,var(--gold) 55%,var(--bull) 100%);border-radius:4px;margin:24px 0 8px}
+.implied-marker{position:absolute;top:-6px;height:40px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.implied-marker::before{content:'';height:34px;background:var(--ink);border:2px solid var(--paper)}
+.implied-marker .im-label{position:absolute;top:-22px;font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:700;white-space:nowrap;background:var(--paper-2);padding:2px 8px;border:1px solid var(--rule);border-radius:2px}
+.implied-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.06em;text-transform:uppercase;margin-top:6px}
+
+/* ===== Ch 2 · 市佔率分析卡 ===== */
+.mshare-card{background:var(--paper-2);border:1px solid var(--rule);padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.mshare-block{padding:8px 10px;border-left:3px solid var(--accent);background:rgba(168,192,149,.05);line-height:1.65}
+.mshare-block.prediction{border-left-color:var(--gold);background:rgba(214,173,92,.05)}
+.mshare-block.pressure{border-left-color:var(--bear);background:rgba(212,138,122,.05)}
+.mshare-block .mshare-label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:4px}
+.mshare-block.prediction .mshare-label{color:var(--gold)}
+.mshare-block.pressure .mshare-label{color:var(--bear)}
+.mshare-block p{color:var(--ink-2);font-size:13px;line-height:1.75;margin:0}
+.mshare-block p b{color:var(--ink);font-weight:600}
+.mshare-block p em{color:var(--accent);font-style:normal;font-weight:700}
+.mshare-block.prediction p em{color:var(--gold)}
+.mshare-block.pressure p em{color:var(--bear)}
+
+/* ===== Ch 2 · 財務對照年度分欄表 ===== */
+.peer-table.finance-grid{font-size:12px;font-variant-numeric:tabular-nums}
+.peer-table.finance-grid .year-head{text-align:center;border-bottom:1px solid var(--rule);border-left:1px solid var(--rule);border-right:1px solid var(--rule);background:var(--paper-3);font-family:var(--serif);font-weight:700;color:var(--accent);font-size:13px;letter-spacing:0;text-transform:none;padding:6px 10px}
+.peer-table.finance-grid .metric-row th{padding:6px 8px;font-size:9.5px;background:var(--paper-2)}
+.peer-table.finance-grid td{padding:7px 8px}
+.peer-table.finance-grid td.num{font-size:11.5px}
+.peer-table.finance-grid td.num.hi{font-weight:700;color:var(--ink)}
+.peer-table.finance-grid .yr-sub{display:block;font-size:9px;font-weight:400;color:var(--ink-4);margin-top:2px;font-family:var(--mono);letter-spacing:0.02em}
+/* 年份分組邊框 */
+.peer-table.finance-grid thead tr.metric-row th:nth-child(4n+3){border-left:1px solid var(--rule-2)}
+.peer-table.finance-grid tbody td:nth-child(4n+3){border-left:1px solid var(--rule-2)}
+
+/* ===== Ch 2 · 產業特殊性 要點卡 ===== */
+.special-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:14px 0 10px}
+.special-card{background:var(--paper-2);border:1px solid var(--rule);border-top:3px solid var(--neutral);padding:14px 18px;line-height:1.65}
+.special-card.policy{border-top-color:var(--warn)}
+.special-card.geo{border-top-color:var(--bull)}
+.special-card.tech{border-top-color:var(--accent)}
+.special-card .sp-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.special-card .sp-kicker{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:var(--ink-3)}
+.special-card.policy .sp-kicker{color:var(--warn)}
+.special-card.geo .sp-kicker{color:var(--bull)}
+.special-card.tech .sp-kicker{color:var(--accent)}
+.special-card .sp-tag{font-family:var(--mono);font-size:10px;color:var(--ink-3);background:var(--paper-3);padding:2px 8px;border-radius:2px;letter-spacing:0.04em}
+.special-card h5{color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700;margin:0 0 8px;line-height:1.3}
+.special-card p{color:var(--ink-2);font-size:13px;line-height:1.75;margin:0 0 10px}
+.special-card b{color:var(--ink);font-weight:600}
+.special-card .sp-impact{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:8px;border-top:1px dashed var(--rule-2);line-height:1.6}
+.special-card .sp-impact b{color:var(--accent);font-weight:700}
+
+/* ===== 無 class 表格（Ch 4-15 原文搬來的預設表格）===== */
+.main table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;font-variant-numeric:tabular-nums;background:transparent}
+.main table th{font-family:var(--mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;color:var(--ink-3);padding:10px 12px;text-align:left;border-top:1px solid var(--ink-2);border-bottom:1px solid var(--rule);background:var(--paper-2)}
+.main table td{padding:9px 12px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top;line-height:1.6;font-variant-numeric:tabular-nums}
+.main table tbody tr:nth-child(even) td{background:rgba(0,0,0,.018)}
+[data-theme="dark"] .main table tbody tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.main table tbody tr:last-child td{border-bottom:1px solid var(--ink-3)}
+
+/* ===== Timeline (原檔 tl-item 結構) ===== */
+.main .timeline{position:relative;padding-left:24px;margin:10px 0;border-left:2px solid var(--rule)}
+.main .tl-item{position:relative;margin:12px 0;padding-left:0}
+.main .tl-item::before{content:'●';color:var(--accent);position:absolute;left:-30px;top:0;font-size:14px;line-height:1}
+.main .tl-item .tl-date{font-family:var(--mono);font-size:10.5px;color:var(--accent);font-weight:700;letter-spacing:0.08em;text-transform:uppercase}
+.main .tl-item .tl-title{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink);margin-top:3px;line-height:1.4}
+.main .tl-item .tl-desc{font-size:12.5px;color:var(--ink-3);margin-top:3px;line-height:1.6}
+
+/* ===== Risk Card (原檔 rc-header/rc-title/rc-level/rc-row/rc-label 結構) ===== */
+.risk-card .rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;flex-wrap:wrap}
+.risk-card .rc-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:15px;line-height:1.3}
+.risk-card .rc-level{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--paper);border:0}
+.rc-level.fatal{background:var(--bear)}
+.rc-level.high{background:#c04a3a}
+.rc-level.medium{background:var(--warn)}
+.rc-level.low{background:var(--bull)}
+.risk-card .rc-body{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.risk-card .rc-row{display:grid;grid-template-columns:minmax(0,80px) minmax(0,1fr);gap:10px;margin:6px 0;line-height:1.65}
+.risk-card .rc-label{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--ink-3);letter-spacing:0.04em;padding-top:2px}
+
+/* ===== Reviewer (原檔 r-name/r-layer/r-verdict) ===== */
+.reviewer{background:var(--paper-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 3px 3px 0;padding:12px 16px;margin:10px 0;font-size:13.5px;line-height:1.7}
+.reviewer .r-name{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:14.5px;display:block;margin-bottom:4px}
+.reviewer .r-layer{font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-left:8px;font-weight:400;letter-spacing:0.05em}
+.reviewer .r-verdict{color:var(--ink-2);margin-top:4px;line-height:1.7}
+.reviewer .r-verdict b{color:var(--ink)}
+.reviewer .r-verdict.pass{color:var(--bull)}
+.reviewer .r-verdict.pass b{color:var(--bull)}
+.reviewer .r-verdict.cond{color:var(--warn)}
+.reviewer .r-verdict.cond b{color:var(--warn)}
+.reviewer .r-verdict.fail{color:var(--bear)}
+.reviewer .r-verdict.fail b{color:var(--bear)}
+
+/* ===== 燈號 light 標籤（原檔 span.light.green/yellow/red/gray）===== */
+.light{display:inline-block;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.light.green{background:var(--bull)}
+.light.yellow{background:var(--warn)}
+.light.red{background:var(--bear)}
+.light.gray{background:var(--ink-4)}
+
+/* ===== data-chart-row（左表右圖） / data-col / chart-col ===== */
+.data-chart-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,0.7fr);gap:14px;margin:14px 0;align-items:start}
+.data-chart-row .data-col{min-width:0}
+.data-chart-row .chart-col{min-width:0}
+@media(max-width:900px){.data-chart-row{grid-template-columns:1fr}}
+
+/* ===== 標籤版 · 左側夾式標籤（margin-left clamp，寬視窗置中、窄視窗自動讓開 100px）===== */
+
+/* 1. 標籤條基礎樣式（從頂部往下排，不垂直置中）*/
+.tabs-right{
+  position:fixed;left:0;top:80px;z-index:55;
+  display:flex;flex-direction:column;gap:2px;
+  max-height:calc(100vh - 100px);overflow-y:auto;
+  padding:4px 0;box-sizing:border-box;
+}
+.tabs-right::-webkit-scrollbar{}
+.tabs-right::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px}
+.tab-item{
+  width:100%;box-sizing:border-box;
+  display:flex;flex-direction:row;align-items:center;gap:6px;
+  padding:6px 10px 6px 8px;
+  background:var(--paper-2);color:var(--ink-2);
+  border:1px solid var(--rule);border-left:0;border-radius:0 4px 4px 0;
+  cursor:pointer;transition:background-color .1s,color .1s,padding .1s;
+  font-family:var(--serif);font-weight:700;text-decoration:none;
+  box-shadow:1px 1px 3px rgba(0,0,0,.06);
+  user-select:none;
+}
+.tab-item .tab-num{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:0.04em;
+  color:var(--ink-3);font-weight:600;line-height:1;
+  padding:2px 4px;background:var(--paper-3);border-radius:2px;flex-shrink:0;
+}
+.tab-item .tab-name{
+  font-size:11px;line-height:1.3;letter-spacing:0.06em;color:inherit;
+  font-family:var(--serif);font-weight:700;
+  max-width:2.2em;word-break:keep-all;overflow-wrap:break-word;text-align:center;
+}
+.tab-item:hover{background:var(--paper-3);color:var(--ink);padding-left:11px}
+.tab-item:hover .tab-num{color:var(--ink-2)}
+.tab-item.active{
+  background:var(--accent);color:var(--paper);padding-left:13px;
+  box-shadow:2px 2px 8px rgba(30,58,95,.22);
+}
+.tab-item.active .tab-num{background:rgba(245,241,232,.22);color:var(--paper);opacity:1}
+[data-theme="light"] .tab-item.active{color:var(--paper)}
+[data-theme="light"] .tab-item.active .tab-num{background:rgba(255,255,255,.25);color:var(--paper)}
+
+/* 2. shell / brand-bar 位置：寬視窗置中、窄視窗保底 98px（80標籤+18gap）讓開標籤 */
+.shell.tabs-mode{
+  grid-template-columns:1fr !important;
+  max-!important;
+  margin-left:max(98px, calc((100% - 1100px) / 2)) !important;
+  margin-right:auto !important;
+  padding:0 !important;
+}
+.shell.tabs-mode .sidebar{display:none}
+.shell.tabs-mode .main{padding:56px 72px 80px 40px;max-width:none}
+body.has-tabs .tab-brand-bar{
+  max-!important;
+  margin-left:max(98px, calc((100% - 1100px) / 2)) !important;
+  margin-right:auto !important;
+}
+
+/* 3. 平板 860~960px：標籤稍窄、讓開 90px */
+@media(max-width:900px){
+  .tabs-right{}
+  .shell.tabs-mode{margin-left:max(90px, calc((100% - 1100px) / 2)) !important}
+  body.has-tabs .tab-brand-bar{margin-left:max(90px, calc((100% - 1100px) / 2)) !important}
+  .shell.tabs-mode .main{padding:32px 20px 60px 16px}
+}
+
+/* 4. 寬視窗：toggle 按鈕隱藏 */
+.tabs-toggle{display:none}
+
+/* 5. 窄視窗 ≤300px：標籤折疊藏起，toggle 按鈕點擊滑出 overlay（不推擠內文）*/
+@media(max-width:900px){
+  /* 標籤改為可滑動 overlay */
+  .tabs-right{
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:none !important;
+    border-right:1px solid var(--rule);
+  }
+  body.tabs-open .tabs-right{
+    transform:translateX(0);
+    box-shadow:4px 0 14px rgba(0,0,0,.28) !important;
+  }
+  /* toggle 按鈕：左上浮動、方形、呼吸亮暗 */
+  .tabs-toggle{
+    display:flex !important;
+    position:fixed;top:14px;left:14px;z-index:60;height:48px;
+    align-items:center;justify-content:center;
+    background:var(--gold);color:var(--paper);
+    border:1px solid var(--gold);border-radius:8px;
+    cursor:pointer;padding:0;
+    font-size:22px;line-height:1;
+    transition:left .28s ease, transform .28s ease, background-color .15s;
+    animation:tabToggleBreathe 2.4s ease-in-out infinite;
+  }
+  .tabs-toggle svg{height:22px}
+  .tabs-toggle:hover{filter:brightness(1.12)}
+  body.tabs-open .tabs-toggle{
+    left:100px;transform:rotate(180deg);
+    animation:none;  /* 開啟後停止呼吸 */
+    box-shadow:2px 2px 10px rgba(0,0,0,.3);
+  }
+  @keyframes tabToggleBreathe{
+    0%,100%{
+      box-shadow:0 0 0 0 rgba(212,165,80,0.55), 2px 2px 8px rgba(0,0,0,.25);
+      filter:brightness(1);
+    }
+    50%{
+      box-shadow:0 0 0 10px rgba(212,165,80,0), 2px 2px 14px rgba(212,165,80,.55);
+      filter:brightness(1.22);
+    }
+  }
+  /* 內文、品牌列：完全靠左（overlay 模式不擠壓）*/
+  .shell.tabs-mode{max-width:100% !important;margin-left:0 !important;margin-right:0 !important}
+  .shell.tabs-mode .main{padding:16px 14px 60px 14px}
+  body.has-tabs .tab-brand-bar{margin-left:0 !important;margin-right:0 !important;max-width:100% !important;padding-left:58px !important}
+  /* 滑出時的半透明遮罩 */
+  body.tabs-open::before{
+    content:'';position:fixed;inset:0;z-index:45;
+    background:rgba(0,0,0,.25);pointer-events:auto;
+  }
+}
+
+/* 章節顯示控制 · tabs-mode 下只顯示 .ch-active（無動畫，最快）*/
+.shell.tabs-mode .section{display:none}
+.shell.tabs-mode .section.ch-active{display:block}
+
+/* 待補充章節占位 */
+.ch-placeholder{text-align:center;padding:80px 40px;color:var(--ink-3)}
+.ch-placeholder h3{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:12px}
+.ch-placeholder p{font-size:14px;line-height:1.7;color:var(--ink-3);max-margin:0 auto}
+.ch-placeholder .ph-icon{font-size:48px;color:var(--rule);margin-bottom:20px;font-family:var(--serif);font-weight:700}
+
+/* 標籤版頂部品牌列（取代 sidebar 的品牌資訊） */
+.tab-brand-bar{
+  max-margin:0 auto;padding:18px 72px 12px 40px;
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  border-bottom:1px solid var(--rule);flex-wrap:wrap;
+}
+.tab-brand-bar .tb-left{display:flex;align-items:baseline;gap:10px}
+.tab-brand-bar .tb-mark{font-family:var(--serif);font-weight:700;font-size:18px;letter-spacing:-0.02em;color:var(--ink)}
+.tab-brand-bar .tb-dot{height:5px;border-radius:50%;background:var(--accent);display:inline-block}
+.tab-brand-bar .tb-sub{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;color:var(--ink-3);text-transform:uppercase}
+.tab-brand-bar .tb-meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.04em;display:flex;gap:16px;flex-wrap:wrap}
+.tab-brand-bar .tb-meta .k{color:var(--ink-4);margin-right:4px}
+.tab-brand-bar .tb-meta .v{color:var(--ink-2)}
+@media(max-width:900px){.tab-brand-bar{padding:14px 24px 10px 20px}}
+
+/* 範例標記 */
+.demo-banner{max-margin:0 auto;padding:8px 72px;background:var(--paper-3);color:var(--ink-3);font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-align:center;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--rule)}
+[data-theme="dark"] .demo-banner{background:var(--paper-2);color:var(--ink-3)}
+
+/* ========= 表格寬度自動適應修補 ========= */
+.main table,
+.main table.rev-tbl,
+.peer-table,
+.moat-table,
+.sustain-table{
+  table-layout:auto !important;
+  width:100% !important;
+}
+/* 數字欄與短欄位自動縮到最窄 */
+.main table th.num,.main table td.num,
+.peer-table th.num,.peer-table td.num,
+.moat-table td.m-score,.moat-table td.m-type,
+.sustain-table td.period,.sustain-table td.grade{
+  white-space:nowrap;
+  width:1%;
+}
+/* 長說明 / 第一欄說明自動換行、吃滿剩餘空間 */
+.main table td,.peer-table td,.moat-table td,.sustain-table td{
+  white-space:normal;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+.main table td.num,.peer-table td.num,
+.moat-table td.m-score,.moat-table td.m-type,
+.sustain-table td.period,.sustain-table td.grade{
+  white-space:nowrap;
+  word-break:keep-all;
+  overflow-wrap:normal;
+}
+/* finance-grid 年度欄位維持均分但可收縮 */
+.peer-table.finance-grid{table-layout:fixed !important}
+.peer-table.finance-grid th,.peer-table.finance-grid td{width:auto;min-width:0}
+.peer-table.finance-grid td.num{white-space:nowrap}
+/* 避免內文被 rev-tbl 拖寬 */
+.main table.rev-tbl td.num,.main table.rev-tbl th.num{white-space:nowrap;width:1%;text-align:right}
+
+
+/* === mobile-fix v1.5（2026-04-25）=== */
+@media(max-width:900px){
+  .main, .section, .card{ min-width:0 !important; max-width:100% !important; overflow-x:hidden }
+  .section-head{ grid-template-columns: 52px 1fr !important; gap:14px !important; }
+  .section-head .tit{ min-width:0 }
+  .section-head .tit h2{ font-size:20px !important; line-height:1.25 !important; word-break:break-word }
+  .section-head .tit .sub{ font-size:11.5px; word-break:break-word }
+  .section-head .no{ font-size:40px !important }
+  .card table{ display:block; overflow-x:auto; max-width:100% }
+  .hero-deck{ font-size:13.5px; line-height:1.65 }
+  .mini-card.compact .m-val{ font-size:17px }
+  .industry-block{ grid-template-columns:1fr !important }
+  .viz-option{ grid-template-columns:1fr !important }
+  .scale-grid{ grid-template-columns:repeat(2,1fr) !important }
+}
+
+</style>
+</head>
+<body class="has-tabs">
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<!-- 頂部品牌列（取代 sidebar）-->
+<div class="tab-brand-bar">
+  <div class="tb-left">
+    <span class="tb-mark">天機閣</span>
+    <span class="tb-dot"></span>
+    <span class="tb-sub">第七步完整版 · 金山電 8042</span>
+  </div>
+  <div class="tb-meta">
+    <span><span class="k">ISSUE</span><span class="v">2026·04·25</span></span>
+    <span><span class="k">CODE</span><span class="v">8042</span></span>
+    <span><span class="k">TPEX</span><span class="v">金山電</span></span>
+  </div>
+</div>
+
+<!-- 窄視窗才顯示的折疊按鈕 -->
+<button type="button" class="tabs-toggle" aria-label="切換章節標籤" aria-expanded="false">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+
+<!-- 左側夾式標籤 · 15 章 · 四字全文 -->
+<nav class="tabs-right" aria-label="章節切換">
+  <a class="tab-item active" data-target="ch1" tabindex="0" role="button"><span class="tab-num">01</span><span class="tab-name">公司概覽</span></a>
+  <a class="tab-item" data-target="ch2" tabindex="0" role="button"><span class="tab-num">02</span><span class="tab-name">競爭概況</span></a>
+  <a class="tab-item" data-target="ch3" tabindex="0" role="button"><span class="tab-num">03</span><span class="tab-name">成長動能</span></a>
+  <a class="tab-item" data-target="ch4" tabindex="0" role="button"><span class="tab-num">04</span><span class="tab-name">近期催化</span></a>
+  <a class="tab-item" data-target="ch5" tabindex="0" role="button"><span class="tab-num">05</span><span class="tab-name">漲因拆解</span></a>
+  <a class="tab-item" data-target="ch6" tabindex="0" role="button"><span class="tab-num">06</span><span class="tab-name">風險偵測</span></a>
+  <a class="tab-item" data-target="ch7" tabindex="0" role="button"><span class="tab-num">07</span><span class="tab-name">隱藏優勢</span></a>
+  <a class="tab-item" data-target="ch8" tabindex="0" role="button"><span class="tab-num">08</span><span class="tab-name">六步彙整</span></a>
+  <a class="tab-item" data-target="ch9" tabindex="0" role="button"><span class="tab-num">09</span><span class="tab-name">壓力測試</span></a>
+  <a class="tab-item" data-target="ch10" tabindex="0" role="button"><span class="tab-num">10</span><span class="tab-name">監控儀表</span></a>
+  <a class="tab-item" data-target="ch11" tabindex="0" role="button"><span class="tab-num">11</span><span class="tab-name">推衍預測</span></a>
+  <a class="tab-item" data-target="ch12" tabindex="0" role="button"><span class="tab-num">12</span><span class="tab-name">股價估值</span></a>
+  <a class="tab-item" data-target="ch13" tabindex="0" role="button"><span class="tab-num">13</span><span class="tab-name">保留彈性</span></a>
+  <a class="tab-item" data-target="ch14" tabindex="0" role="button"><span class="tab-num">14</span><span class="tab-name">貓膩探索</span></a>
+  <a class="tab-item" data-target="ch15" tabindex="0" role="button"><span class="tab-num">15</span><span class="tab-name">投資結論</span></a>
+</nav>
+
+<div class="shell tabs-mode">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">第七步完整版 · v1.5</span>
+    </div>
+
+    <div class="meta-block">
+      <div><span class="k">CODE</span><span class="v">8042 · 金山電</span></div>
+      <div><span class="k">MARKET</span><span class="v">TPEX 上櫃</span></div>
+      <div><span class="k">SECTOR</span><span class="v">被動元件 · 鋁電解電容</span></div>
+      <div><span class="k">ISSUE</span><span class="v">2026·04·25</span></div>
+    </div>
+
+    <h4>改版範圍</h4>
+    <ol class="toc-list">
+      <li><a href="#ch1">第一章 · 公司概覽（瘦身）</a></li>
+      <li class="sub-item"><a href="#sec-1-1">1.1 公司全景</a></li>
+      <li class="sub-item"><a href="#sec-1-2">1.2 商業模式與營收結構</a></li>
+      <li><a href="#ch2">第二章 · 競爭概況（新）</a></li>
+      <li class="sub-item"><a href="#sec-2-1">2.1 產業競爭格局</a></li>
+      <li class="sub-item"><a href="#sec-2-2">2.2 同業競爭狀況</a></li>
+      <li class="sub-item"><a href="#sec-2-3">2.3 本公司競爭地位</a></li>
+      <li class="sub-item"><a href="#sec-2-4">2.4 競爭動態趨勢</a></li>
+      <li class="sub-item"><a href="#sec-2-5">2.5 對上游議價能力</a></li>
+      <li class="sub-item"><a href="#sec-2-6">2.6 對下游定價能力</a></li>
+      <li><a href="#ch3">第三章 · 成長動能（新）</a></li>
+      <li class="sub-item"><a href="#sec-3-1">3.1 成長軌跡與現況</a></li>
+      <li class="sub-item"><a href="#sec-3-2">3.2 成長引擎拆解</a></li>
+      <li class="sub-item"><a href="#sec-3-3">3.3 短中長期動能推演</a></li>
+      <li class="sub-item"><a href="#sec-3-4">3.4 成長可持續性與風險</a></li>
+      <li class="sub-item"><a href="#sec-3-5">3.5 成長對估值的反映</a></li>
+    </ol>
+
+    <div class="side-note">
+      <div class="label">分析定位</div>
+      <strong>觀望（不進場 · 避險型）</strong><br>
+      ACH 信心持續遞減（42% → 38% → 35% → 33%），主流路徑邊際收縮；估值 PE 62.92x 已透支、加權目標 54.3 元。等 2026 Q1 法說 AI 占比揭露 + PE 回檔至 40-45x 才提供更好介入機會。
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="masthead" id="mainMasthead">
+      <div class="eyebrow">
+        <span class="issue">天機錄 · ISSUE 2026·04·25 · 第七步完整版 v1.5</span>
+        <span>投資分析 · 台股上櫃 · 被動元件 / 鋁電解電容</span>
+      </div>
+      <h1>金山電<span class="ticker">8042 · TPEX</span></h1>
+      <p style="font-family:var(--serif);font-size:17px;line-height:1.55;color:var(--ink-2);margin-top:14px;font-style:italic;max-width:780px">全球鋁電解電容第 3 大廠，液態 75% / 固態 25%，2025 年 AI 伺服器供應鏈雙紅利推動毛利率 5 季加速至 23.66%、EPS YoY +48%。但 PE 62.92x 已透支、配息率 233% 隱性收割、新會計師查核將至——估值與基本面的張力，是本案定價討論的核心。</p>
+    </header>
+
+    <section class="section ch-active" id="ch1">
+      <div class="section-head">
+        <div class="no">01</div>
+        <div class="tit">
+          <h2>第一章：公司概覽 — 你在看的是什麼公司？</h2>
+          <div class="sub">公司全景 · 商業模式與營收結構 · 製造能力 · 集團架構 · 資本結構 · ESG 治理</div>
+        </div>
+      </div>
+
+      <div class="hero-deck">
+        <span class="tag">一句話定位</span>
+        金山電（Jamicon）是<b>全球第 3 大鋁電解電容廠</b>（液態 75% / 固態 25%、台灣液態 + 固態雙料第 2），1970 年成立、2004 上櫃、董事長<em>江士勲</em>（總經理為其子<em>江慶信</em>）；總部新北三重、產線佈局台灣 + 廣州金立 + 泰國三廠（2025 Q3 量產）。2025 年靠 AI 伺服器（GB300 / BBU）+ 一貫化製程降本 + 銀銅漲價傳導三引擎，毛利率 5 季加速衝至 <em>23.66%</em>、EPS YoY <em>+48% 至 0.89 元</em>、月營收 2026/02 YoY <em>+50.17%</em>。但結構張力在 <em>PE 62.92x（歷史中位數 60.7 之上）</em>、<em>配息率 233% 隱性收割</em>、<em>新會計師（資誠）2026 Q2 首次查核</em>、<em>廣州金立 CNY 8,600 萬背書（佔股本 27.8%）</em>、<em>研發預算 2024-2025 砍 25-46%</em>——<b>四次信心校準持續遞減（42% → 38% → 35% → 33%）</b>，是本案定價討論的核心錨點。
+      </div>
+
+      <!-- ====================== 1.1 公司全景 ====================== -->
+      <div class="card" id="sec-1-1">
+        <h3>1.1 公司全景<span class="tag-new">新</span></h3>
+        <div class="card-body">
+
+          <!-- B. 產業角色與影響力 -->
+          <!--
+            === 撰寫指引（v1.5 新增、2026-04-24 記）===
+            本區塊專注「公司在產業鏈中扮演的角色 / 對產業的影響力 / 不可替代性」，
+            避免與前方 hero-deck（公司簡介）內容重複。
+
+            ✓ 該寫：
+              ① 供應鏈層級（Tier-1/2/3、上游 / 中游 / 下游、核心零件廠 vs 系統方案商）
+              ② 產業影響力（規格制定者？認證標竿？准入守門員？）
+              ③ 客戶切換成本（認證週期 / 技術鎖定 / 轉換代價）
+              ④ 相對同業定位（技術梯隊差異 / 價值鏈位置不同）
+              ⑤ 全球相對地位（亞洲/美系/日系同業排名與差異）
+              ⑥ 標竿地位（產業定義者？規格創新者？）
+
+            ✗ 禁寫（因 hero-deck 已寫、避免重複）：
+              成立年、上市年、董事長、員工數、EPS、毛利率、營收數字、戰略股東、市佔百分比
+
+            三張 mini-card 建議指標：
+              卡 1 — 供應鏈層級（如 Tier-1、核心零件廠）
+              卡 2 — 全球同層競爭者數量（如「全球僅 3 家」）
+              卡 3 — 客戶切換成本（如「9-12 月認證」或「單次導入 $50M+」）
+          -->
+          <h4>產業角色與影響力</h4>
+          <div class="industry-block">
+            <div class="prose">
+              <p>金山電在 AI 伺服器供電供應鏈中定位為<b>「Tier-2 鋁電解電容核心零件廠」</b>——間接對接 NVIDIA GB300 / Hyperscaler 客戶（透過群創 / 仁寶 / 鴻海 ODM 一級代工廠），上游整合自家鋁箔與電解液製程（一貫化），下游進入伺服器電源（PSU）/ BBU 電池備援單元 / 5G 通信電源等高品質應用。在台灣液態 + 固態鋁電容雙料市場排名第 2（次於立隆電 2472），規模上是立隆電的 1/3，但護城河在於「<b>HITACHI AIC 高壓電解技術授權 + 鋁箔自製成本優勢</b>」。</p>
+              <p>在被動元件產業扮演三重定位：<em>① 規模上的第二集團主將</em>——日系（Nippon Chemi-con / Nichicon / Rubycon）合計握有全球 60-70% 高階份額、台灣立隆電 2472 為產業老大、金山電與鈺邦 6449 共同構成台灣第二集團；<em>② 雙路徑覆蓋者</em>——少數同時具備液態（容量主流）與固態（高頻 AI / 車用主流）量產能力的廠商，相對純液態廠（如部分中國中小廠）有產品組合彈性；<em>③ 非中國製造優勢</em>——泰國三廠 2025 Q3 量產，使其成為 ODM 客戶在「中國 +1」分散風險下的潛在轉單對象，地緣政治避險紅利明確。</p>
+              <p>客戶切換成本中等：鋁電容是「規格化 + 多供應商」格局，新供應商首次切入需<b>客戶端電源工程驗證 6-12 個月（高壓 / 漏電流 / 壽命 / 振動測試）+ 量產線小批驗證 3-6 個月</b>；但同類別替代廠商眾多（日系 3 家 + 台廠 5+ 家 + 中國 5+ 家），切換代價遠低於專利或設備鎖定型零件。金山電的議價權主要靠「日系合作 + 一貫化製程」差異化，<b>而非絕對的不可替代</b>——這是其相較立隆電（直達 NVIDIA Rubin GPU 板）戰略地位較低的根因，也是 PE 估值天花板的結構性限制。</p>
+            </div>
+            <div class="scale-grid compact" style="margin:0">
+              <div class="mini-card compact accent">
+                <div class="m-label">供應鏈層級</div>
+                <div class="m-val up">Tier-2</div>
+                <div class="m-note">透過 ODM 間接對接 NVIDIA / Hyperscaler</div>
+              </div>
+              <div class="mini-card compact gold">
+                <div class="m-label">全球鋁電容廠</div>
+                <div class="m-val gold">第 3 大</div>
+                <div class="m-note">日系 3 家居前；立隆電 2472 為台灣第 1</div>
+              </div>
+              <div class="mini-card compact neut">
+                <div class="m-label">客戶切換成本</div>
+                <div class="m-val neut">6-12 月</div>
+                <div class="m-note">電源工程驗證 + 量產線小批驗證</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 方案 A · 產業定位帶（左文右圖） -->
+          <div class="viz-option">
+            <div class="viz-text">
+<div class="viz-title">產業定位帶 · 鋁電容應用光譜</div>
+              <div class="viz-sub">光譜從左「消費電子量大薄利」到右「AI 伺服器 / 車用高階」。金山電橫跨光譜中段、靠液態 75% 守規模、靠固態 25% 切入 AI / 通信高毛利端；左端有大陸中小廠、中段是台灣同業、右端是日系與立隆電 2472 的高階陣營。</div>
+              <div class="viz-fit">定位重點：金山電的成長動能在<b>「右移」</b>——固態占比由目前 25% 拉升至 35%+ 是估值能否再撐 PE 60x+ 的關鍵；若停在 25% 不動，PE 會被結構性壓回 30-35x（同業中段水準）。2025 Q3 泰國廠固態 8,000 萬顆/月開出，是右移最關鍵的產能後盾。</div>
+            </div>
+            <div class="viz-chart">
+              <div class="pos-band">
+                <div class="pos-track">
+                  <div class="pos-marker" style="left:18%">
+                    <span class="pm-label">中國中小廠</span>
+                    <span class="pm-sub">消費電容、毛利 10-15%</span>
+                  </div>
+                  <div class="pos-marker active" style="left:50%">
+                    <span class="pm-label">金山電 8042</span>
+                    <span class="pm-sub">液+固混搭、毛利 23.66%</span>
+                  </div>
+                  <div class="pos-marker" style="left:78%">
+                    <span class="pm-label">立隆電 2472 / 日系</span>
+                    <span class="pm-sub">高階 AI/車用、毛利 30%+</span>
+                  </div>
+                </div>
+                <div class="pos-labels">
+                  <span class="l-left">◀ 消費薄利</span>
+                  <span class="l-right">AI / 車用高階 ▶</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 方案 B · 2D 定位矩陣（左文右圖） -->
+          <div class="viz-option">
+            <div class="viz-text">
+<div class="viz-title">2D 定位矩陣 · 毛利率 × 營收規模</div>
+              <div class="viz-sub">以「毛利率」vs「年營收規模」畫四象限。金山電目前落在<b>「中規模、中毛利」中段位置</b>；左上是純固態的鈺邦 6449（小規模高毛利）、右上是立隆電 2472（規模大且毛利高、利基龍頭典範）、右下是中國 / 日系部分量產廠（規模大但毛利薄）。</div>
+              <div class="viz-fit">關鍵差異：金山電與鈺邦相比規模大 1.5x 但毛利率低 25 個百分點；與立隆電相比規模僅 1/3 且毛利低 7 個百分點。<b>金山電目前的位置不是不變的</b>——若 2026 固態占比拉至 35%、毛利率衝 28-30%，可能向左上「鈺邦化」移動；若 AI 紅利消散、毛利回落 19-20%，則向右下「規模薄利」移動。這個移動方向是 H1（樂觀）vs H4（悲觀）的核心差異。</div>
+            </div>
+            <div class="viz-chart">
+              <div class="quadrant">
+                <div class="q-axis-y">毛利率</div>
+                <div class="q-axis-x">營收 / 規模</div>
+                <div class="q-canvas">
+                  <span class="q-cell tl">利基高毛利</span>
+                  <span class="q-cell tr">規模龍頭</span>
+                  <span class="q-cell bl">小眾掙扎</span>
+                  <span class="q-cell br">規模薄利</span>
+                  <span class="q-axis-high y">高</span>
+                  <span class="q-axis-low y">低</span>
+                  <span class="q-axis-low x">小</span>
+                  <span class="q-axis-high x">大</span>
+                  <div class="q-point" style="left:18%;top:18%">
+                    <span class="pt-label">鈺邦 6449</span>
+                  </div>
+                  <div class="q-point" style="left:80%;top:25%">
+                    <span class="pt-label">立隆電 2472</span>
+                  </div>
+                  <div class="q-point focus" style="left:50%;top:55%">
+                    <span class="pt-label">金山電 8042</span>
+                  </div>
+                  <div class="q-point" style="left:75%;top:75%">
+                    <span class="pt-label">中國中段廠</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- C. 規模速覽 -->
+          <h4>規模速覽</h4>
+          <div class="scale-grid">
+            <div class="mini-card">
+              <div class="m-label">實收資本額</div>
+              <div class="m-val">12.95 億</div>
+              <div class="m-note">流通 1.295 億股</div>
+            </div>
+            <div class="mini-card">
+              <div class="m-label">市值（@56）</div>
+              <div class="m-val gold">~72.5 億</div>
+              <div class="m-note">PE 62.92x · 歷史 95% 高位</div>
+            </div>
+            <div class="mini-card">
+              <div class="m-label">員工估數</div>
+              <div class="m-val">200-300 人</div>
+              <div class="m-note">未明確揭露 · 推估值</div>
+            </div>
+            <div class="mini-card">
+              <div class="m-label">成立 / 上櫃</div>
+              <div class="m-val">1970 / 2004</div>
+              <div class="m-note">江氏家族經營 55 年</div>
+            </div>
+            <div class="mini-card bull">
+              <div class="m-label">2025 年營收</div>
+              <div class="m-val up">38.5 億</div>
+              <div class="m-note">YoY +12.2%（2024: 34.3 億）</div>
+            </div>
+            <div class="mini-card bull">
+              <div class="m-label">2025 年 EPS</div>
+              <div class="m-val up">0.89 元</div>
+              <div class="m-note">YoY +48%（2024: 0.60 元）</div>
+            </div>
+          </div>
+
+          <!-- D. 業務與產品線 -->
+          <h4>業務與產品線</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75;margin:8px 0 4px">2025 年總營收 38.5 億元，產品結構為<b>液態鋁電解電容 75.18%（約 25.79 億）+ 固態鋁電解電容 24.82%（約 8.52 億）</b>。液態為傳統主力（容量大、適合電源 / 馬達 / 燈具）、固態為成長引擎（小型化 / 長壽命、適合 AI / 5G / 車用）。</p>
+          <div class="biz-grid">
+            <div class="biz-card gold">
+              <div class="pct">75.18%</div>
+              <h5>液態鋁電解電容（傳統主力）</h5>
+              <div class="b-meta">
+                <span class="chip">電源 PSU</span>
+                <span class="chip">家電 / 燈具</span>
+                <span class="chip">5G 通信</span>
+              </div>
+              <div class="b-desc">2025 營收 25.79 億；HITACHI AIC 技術授權的高壓電解產品為主、容量規格廣、單價 0.5-3 元/顆；毛利率 18-22%、量大但毛利率低於固態。台灣產線 + 廣州金立合計年產能 50-60 億顆。</div>
+            </div>
+            <div class="biz-card">
+              <div class="pct">24.82%</div>
+              <h5>固態鋁電解電容（成長引擎）</h5>
+              <div class="b-meta">
+                <span class="chip">AI 伺服器</span>
+                <span class="chip">高頻電源</span>
+                <span class="chip">車用電子</span>
+              </div>
+              <div class="b-desc">2025 營收 8.52 億；高頻特性 + 長壽命 + 小型化、適合 GB300 / BBU 等 AI 伺服器；毛利率 30%+、單價 5-15 元/顆。泰國三廠 2025 Q3 量產（固態 8,000 萬顆/月 + 固液混合 2,000 萬顆/月），是 2026-2028 占比拉升至 35-40% 的產能基礎。</div>
+            </div>
+            <div class="biz-card neut">
+              <div class="pct">未拆解</div>
+              <h5>AI 伺服器應用占比</h5>
+              <div class="b-meta">
+                <span class="chip">驗證點</span>
+                <span class="chip">2026 Q1 法說</span>
+              </div>
+              <div class="b-desc">管理層在 2025 Q4 法說會僅以「逐步成長」文字敘述 AI 應用、未具體量化占比。市場推估 2025 年 AI 應用占比 5-10%、2026 目標 15-20%。<b>2026/05/15 Q1 法說會將首次量化揭露 AI 占比</b>，是判斷 H1（樂觀）vs H4（看空）的最關鍵單一驗證點。</div>
+            </div>
+          </div>
+
+          <!-- E. 上下游關係 · 三欄橫向（上游 → 本公司 → 下游）-->
+          <h4>上下游關係</h4>
+          <div class="chain-grid">
+            <div class="chain-col up">
+              <h5>主要供應商</h5>
+              <div class="role">▲ 上游</div>
+              <ul>
+                <li><b>鋁箔</b>（部分自製、外購補充）：日本昭和鋁、明電鋁業</li>
+                <li><b>電解液</b>（部分自研）：日本宇部興產 / 自家研發</li>
+                <li><b>HITACHI AIC</b>：高壓電解技術授權（自 1994）</li>
+              </ul>
+              <div class="note">關鍵：鋁箔自製 + 電解液自研 = 一貫化成本優勢，銀銅漲價時相對受惠</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="chain-col mid">
+              <h5>金山電 8042</h5>
+              <div class="role">● 核心能力</div>
+              <ul>
+                <li>液態鋁電容 75% · 高壓電解技術</li>
+                <li>固態鋁電容 25% · 高頻 / 長壽命</li>
+                <li>泰國三廠 2025 Q3 量產（固態 8,000 萬/月）</li>
+                <li>HITACHI AIC 技術合作 31 年</li>
+              </ul>
+              <div class="note">護城河：成本（4/5）+ 無形資產（3/5）為主軸；網絡效應與規模經濟相對弱</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="chain-col down">
+              <h5>主要終端客戶</h5>
+              <div class="role">▼ 下游</div>
+              <ul>
+                <li><b>群創 / 仁寶 / 鴻海</b>（一級 ODM 代工廠）</li>
+                <li><b>文曄</b>（通路商）</li>
+                <li>5G 通信廠 / AI 伺服器電源廠 / 車用電子廠</li>
+              </ul>
+              <div class="note">客戶結構：透過 ODM 間接接觸 NVIDIA GB300 / BBU 等高端應用、非直接 OEM 對接</div>
+            </div>
+          </div>
+
+          <!-- F. 公司特色 -->
+          <h4>公司特色</h4>
+          <div class="feature-grid">
+            <div class="feature-card" data-num="01">
+              <div class="f-kicker">技術護城河</div>
+              <h5>HITACHI AIC 31 年合作</h5>
+              <p>自 1994 年起與日商日立 AIC 技術合作，取得高壓電解技術授權，是台廠少數能切入高品質日系規格的玩家；此關係構成主要無形資產護城河（Morningstar 評分 3/5）。</p>
+            </div>
+            <div class="feature-card" data-num="02">
+              <div class="f-kicker">成本優勢</div>
+              <h5>一貫化製程：鋁箔自製 + 電解液自研</h5>
+              <p>當銀 / 銅 / 鋁等原物料漲價時相對受惠，毛利改善速度快於外購型同業——2025 Q4 毛利率衝 23.66%（較 2024 全年 +396 bp、較 2023 全年 +633 bp）即為此優勢的兌現。</p>
+            </div>
+            <div class="feature-card" data-num="03">
+              <div class="f-kicker">地緣政治</div>
+              <h5>泰國三廠 2025 Q3 正式量產</h5>
+              <p>泰國三廠固態 8,000 萬顆 / 月 + 固液混合 2,000 萬顆 / 月，符合「中國 +1」的全球供應鏈分散趨勢；對美國 / 歐洲客戶具備地緣政治避險紅利，是「結構升級派 H6」假說（19% 機率、目標 68）的核心兌現條件。</p>
+            </div>
+          </div>
+
+          <!-- G. 工具性資料（摺疊） -->
+          <details class="util-details">
+            <summary>工具性資料（董事長、總經理、會計師、總部、股權細節）</summary>
+            <table>
+              <tr><th>全名</th><td>金山電子工業股份有限公司（Jamicon Group）</td></tr>
+              <tr><th>成立 / 上櫃日</th><td>1970-03-20 成立 · 2004-03 上櫃（55 年歷史 / 22 年上市）</td></tr>
+              <tr><th>總部</th><td>新北市三重區（台灣本廠）</td></tr>
+              <tr><th>董事長</th><td><em>江士勲</em>（70-80 歲、創辦家族第二代）</td></tr>
+              <tr><th>總經理 / 接班安排</th><td><em>江慶信</em>（40-50 歲、董事長之子、第三代接班中）</td></tr>
+              <tr><th>會計師</th><td><b>資誠（PwC）</b>2026 Q2 首次查核（前任：昊興；換所背景待 MOPS 求證）</td></tr>
+              <tr><th>股本結構</th><td>實收資本 12.95 億元、流通 1.295 億股、無 CB / 無現增計畫、無庫藏股；2024 配息率 233%（高於盈餘）</td></tr>
+              <tr><th>家族 / 策略股東明細</th><td>江氏家族明確持股 25.81%；家族控股穩固、無大股東紛爭風險；連續 24 年發放股利</td></tr>
+              <tr><th>海外子公司</th><td>廣州金立電子（中國主要產線、CNY 8,600 萬背書保證、佔股本 27.8%）；泰國三廠（2025 Q3 量產）</td></tr>
+            </table>
+          </details>
+
+        </div>
+      </div>
+
+      <!-- ====================== 1.2 商業模式與營收結構 ====================== -->
+      <div class="card" id="sec-1-2">
+        <h3>1.2 商業模式與營收結構<span class="tag-new">新</span></h3>
+        <div class="card-body">
+
+          <!-- 1.2.1 商業模式（新增） -->
+          <h4>1.2.1 商業模式<span style="display:inline-block;margin-left:8px;padding:1px 6px;background:var(--gold);color:var(--paper);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;vertical-align:middle;border-radius:2px">新增</span></h4>
+
+          <div class="model-intro">
+            <b>金山電的商業模式：B2B 規格化零件供應 + ODM 通道間接出貨。</b>客戶簽訂年度框架合約（規格 / 數量 / 試壓條件），按月實際拉貨；產品為標準化規格、單顆價格 0.5-15 元、主要靠「合格供應商名單」鎖定生意。收入確認屬「貨物所有權移轉客戶港」（FOB）模式、屬於即期貨款交易（信用 30-60 天），財務透明度較高，無遞延收入或合約資產複雜性。獲利槓桿三層：(1) 產品組合改善（固態占比提升，毛利由 18-22% 拉至 30%+）、(2) 一貫化降本（自製鋁箔 + 電解液對抗原物料漲價）、(3) 規模經濟（泰國三廠開出後攤提固定成本）。
+          </div>
+
+          <h5 style="margin:18px 0 8px;color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700">商業模式特徵</h5>
+          <div class="model-grid">
+            <div class="model-card accent">
+              <div class="m-tag">▸ 收費模式</div>
+              <h5>單顆計價 · 框架合約 + 月度拉貨</h5>
+              <p>客戶簽訂年度框架合約鎖定規格、數量、試壓條件；實際出貨按月拉貨。液態 0.5-3 元/顆、固態 5-15 元/顆。信用 30-60 天、無遞延收入、無合約資產風險。</p>
+            </div>
+            <div class="model-card">
+              <div class="m-tag">▸ 收入確認</div>
+              <h5>FOB（貨物港口移轉所有權）</h5>
+              <p>產品交付客戶指定港口時即認列收入；應收帳款週轉 50-65 天穩定（電子業正常區間）；無「未實現收入」會計風險。月營收公告即時、是判斷基本面變化的最快訊號。</p>
+            </div>
+            <div class="model-card gold">
+              <div class="m-tag">▸ 毛利來源</div>
+              <h5>三層獲利槓桿</h5>
+              <p>(1) <b>產品組合</b>：固態占比 25% → 35% 拉升、毛利率提升；(2) <b>一貫化</b>：鋁箔自製 + 電解液自研對抗原物料漲價；(3) <b>規模</b>：泰國三廠開出後固定成本攤提。三者疊加是 H1 樂觀路徑能成立的基礎。</p>
+            </div>
+          </div>
+
+          <h5 style="margin:18px 0 8px;color:var(--ink);font-family:var(--serif);font-size:15px;font-weight:700">優勢 vs 脆弱點</h5>
+          <div class="duo">
+            <div class="scenario bull">
+              <div class="hd">▲ 商業模式優勢</div>
+              <ul>
+                <li><b>規格化 + 多客戶分散</b>：單一客戶風險低、月營收波動相對平穩</li>
+                <li><b>一貫化製程降本</b>：銀 / 銅 / 鋁漲價時相對受惠、毛利結構優於外購型同業</li>
+                <li><b>固態 25% 切入 AI</b>：透過 ODM 間接出 NVIDIA GB300 / BBU、避免直接 OEM 認證成本</li>
+                <li><b>無 CB / 無現增</b>：股本穩定、EPS 不被稀釋（相較同業有結構性優勢）</li>
+              </ul>
+            </div>
+            <div class="scenario bear">
+              <div class="hd">▼ 商業模式脆弱點</div>
+              <ul>
+                <li><b>議價權弱</b>：規格化產品、替代廠商眾多（日系 3 + 台廠 5+ + 中國 5+），客戶可快速轉換</li>
+                <li><b>規模劣勢</b>：營收僅為立隆電 1/3、缺乏「規模經濟」這一塊護城河（Morningstar 評分 2/5）</li>
+                <li><b>Tier-2 通道風險</b>：透過 ODM 出貨 = 距離終端 NVIDIA / Hyperscaler 兩層、被「壓價或抽單」風險高</li>
+                <li><b>配息率 233% 隱性收割</b>：每年配息高於盈餘、削弱再投資能力與長期成長動能</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 1.2.2 依產品別 -->
+          <h4 style="margin-top:30px">1.2.2 依產品別</h4>
+          <details class="rev-det" open>
+            <summary>產品營收拆解</summary>
+            <table class="rev-tbl">
+              <thead><tr><th>產品</th><th class="num">金額</th><th class="num">占比</th><th>說明</th></tr></thead>
+              <tbody>
+                <tr><td>液態鋁電解電容</td><td class="num">25.79 億</td><td class="num">75.18%</td><td>傳統主力、容量大、毛利 18-22%；HITACHI AIC 高壓電解技術授權</td></tr>
+                <tr><td>固態鋁電解電容</td><td class="num">8.52 億</td><td class="num">24.82%</td><td>成長引擎、AI / 高頻 / 車用、毛利 30%+；泰國廠 2025 Q3 量產</td></tr>
+                <tr style="background:rgba(166,115,24,.08)"><td style="font-weight:700">合計（2025 年）</td><td class="num">34.31 億</td><td class="num">100%</td><td>2025 全年總營收 38.5 億（含設備 / 服務雜項約 4.2 億）</td></tr>
+              </tbody>
+            </table>
+          </details>
+
+          <!-- 1.2.3 依終端應用 -->
+          <h4>1.2.3 依終端應用產業</h4>
+          <details class="rev-det" open>
+            <summary>終端應用占比</summary>
+            <table class="rev-tbl">
+              <thead><tr><th>終端應用</th><th class="num">占比</th><th>說明</th></tr></thead>
+              <tbody>
+                <tr><td>電腦 / NB / 桌機</td><td class="num">~40%</td><td>主流量大應用、市場成熟、單價低</td></tr>
+                <tr><td>5G 通信 / 雲端基地台</td><td class="num">~25%</td><td>高頻電源用固態電容、單價較高</td></tr>
+                <tr><td>AI 伺服器 / GB300 / BBU</td><td class="num">5-10%（推估）</td><td>2026 目標拉至 15-20%、Q1 法說將首次量化</td></tr>
+                <tr><td>家電 / 燈具 / 工業電源</td><td class="num">~15%</td><td>傳統液態應用、毛利低但量大</td></tr>
+                <tr><td>車用電子（功率模組）</td><td class="num">~10%</td><td>固態電容主戰場、長期成長最有潛力</td></tr>
+              </tbody>
+            </table>
+          </details>
+
+          <!-- 1.2.4 依地區 -->
+          <h4>1.2.4 依地區</h4>
+          <details class="rev-det" open>
+            <summary>地區別營收占比</summary>
+            <table class="rev-tbl">
+              <thead><tr><th>地區</th><th class="num">占比</th><th>說明</th></tr></thead>
+              <tbody>
+                <tr><td>亞洲（台灣以外）</td><td class="num">86.83%</td><td>含中國、東南亞 ODM 客戶；多透過廣州金立 + 台灣本廠出貨</td></tr>
+                <tr><td>中東及近東</td><td class="num">4.67%</td><td>中東通信 / 工業電源市場</td></tr>
+                <tr><td>歐洲</td><td class="num">3.13%</td><td>德國車用電子供應鏈</td></tr>
+                <tr><td>台灣國內</td><td class="num">3.03%</td><td>本土通信 / 工業電源 ODM</td></tr>
+                <tr><td>美國</td><td class="num">2.33%</td><td>泰國廠開出後預期 2026-2027 拉升至 5-8%（中國 +1 紅利）</td></tr>
+              </tbody>
+            </table>
+          </details>
+
+          <!-- 1.2.5 進貨集中度 + 關鍵供應商 -->
+          <h4>1.2.5 進貨集中度與關鍵供應商</h4>
+          <div class="ev">
+            <div class="ev-t"><span class="fias-f">事實</span> 上游關鍵原料：鋁箔自製 + 電解液自研，外購補充由日商主導</div>
+            <div class="ev-d">2024 年報揭露：鋁箔部分自製、部分由日本昭和鋁與明電鋁業外購；電解液主要靠自家研發（搭配宇部興產補充）；HITACHI AIC（日立 AIC）為高壓電解技術合作 31 年的關鍵 IP 來源。前 5 大供應商集中度推估 50-60%（年報未明確揭露），不算過度集中；但日系供應鏈依賴度高、若日圓劇烈波動會直接影響毛利。一貫化製程是金山電相對純外購型同業的成本護城河。</div>
+            <div class="ev-s">來源：2024 年報供應商揭露段、HITACHI AIC 1994 合作公告、本研究由產業結構推估</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== 1.3 製造能力與擴廠策略（選用）===== -->
+      <div class="card" id="sec-1-3">
+        <h3>1.3 製造能力與擴廠策略 <span class="tag-new">選用</span></h3>
+        <div class="card-body">
+          <table>
+            <tr><th>擴廠基地</th><th>啟用時點</th><th>核心能力</th><th>未來貢獻</th></tr>
+            <tr><td><b>台灣三重本廠</b></td><td>1970 至今 · 持續</td><td>液態 + 固態混合產線、研發中心、HITACHI AIC 合作基地</td><td>母公司核心、技術升級樞紐、新產品試產主要基地</td></tr>
+            <tr><td><b>廣州金立電子</b></td><td>2000 年代 · 主力產線</td><td>大規模液態量產、低成本製造、亞洲訂單交付</td><td>2025 營收貢獻主力（推估 60-70%）；CNY 8,600 萬背書保證為治理風險點</td></tr>
+            <tr><td><b>泰國三廠</b></td><td>2025 Q3 量產 ★</td><td>固態 8,000 萬顆 / 月 + 固液混合 2,000 萬顆 / 月</td><td>「中國 +1」分散基地、AI 供應鏈轉單紅利、2026-2028 營收增速關鍵</td></tr>
+          </table>
+          <p style="font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.7"><span class="fias-i">推論</span> 泰國三廠 2025 Q3 量產為 H1 / H6 樂觀路徑的核心兌現條件——若 2026 上半年產能利用率達 70%+、固態占比拉至 30-32%，將支撐 PE 維持 60x 以上；若延宕或良率不佳，PE 會被結構性壓回 40x 以下。</p>
+        </div>
+      </div>
+
+      <!-- ===== 1.4 集團架構與子公司損益細節（選用）===== -->
+      <div class="card" id="sec-1-4">
+        <h3>1.4 集團架構與子公司損益 <span class="tag-new">選用</span></h3>
+        <div class="card-body">
+          <table>
+            <tr><th>子公司</th><th>持股</th><th>稅前貢獻</th><th>策略定位</th><th>風險</th></tr>
+            <tr><td><b>廣州金立電子</b></td><td>100%</td><td>主力營收（60-70% 推估）</td><td>液態主力產線、亞洲交付樞紐</td><td><b>CNY 8,600 萬背書保證</b>（佔股本 27.8%、機率 15% / 衝擊 -5.2%）</td></tr>
+            <tr><td><b>泰國金山電（三廠）</b></td><td>100%</td><td>2025 Q3 啟用、初期虧損</td><td>固態主力 / 中國 +1 戰略基地</td><td>初期開辦費用、產能利用率爬坡 1-2 年不穩定</td></tr>
+            <tr><td><b>香港 / 開曼控股</b></td><td>100%</td><td>過道用、稅務優化</td><td>跨境資金調度</td><td>低 · 標準三角架構</td></tr>
+            <tr style="background:rgba(166,115,24,.08)"><td style="font-weight:700">海外合計</td><td>100%（皆為母公司獨資）</td><td>主要海外營運</td><td>製造基地分散三地</td><td>整體治理風險中等、廣州背書為主要關注點</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 1.5 資本結構與股利政策（選用）===== -->
+      <div class="card" id="sec-1-5">
+        <h3>1.5 資本結構與股利政策 <span class="tag-new">選用</span></h3>
+        <div class="card-body">
+          <table>
+            <tr><th>資本工具</th><th>狀態</th><th>規模</th><th>股本影響</th><th>備註</th></tr>
+            <tr><td>普通股</td><td>流通中</td><td>12.95 億元 / 1.295 億股</td><td>—</td><td>江氏家族持股 25.81%、外資 / 自然人為主</td></tr>
+            <tr style="color:var(--bull)"><td><b>轉換公司債（CB）</b></td><td>無發行</td><td>0 張</td><td><b>無稀釋壓力</b></td><td>相較同業（部分有 CB 待轉）為結構性優勢</td></tr>
+            <tr><td>員工認股權</td><td>無在發</td><td>—</td><td>—</td><td>歷史已執行、目前無新核發</td></tr>
+            <tr><td>限制員工新股</td><td>無</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>私募</td><td>無</td><td>—</td><td>—</td><td>2024 年報未揭露任何私募計畫</td></tr>
+            <tr><td>庫藏股</td><td>無</td><td>—</td><td>—</td><td>未揭露買回計畫</td></tr>
+          </table>
+          <h4 style="margin-top:12px">股利政策</h4>
+          <table>
+            <tr><th>年度</th><th>現金股利</th><th>股票股利</th><th>殖利率（@當年均價）</th><th>配發率</th></tr>
+            <tr><td>2023</td><td>1.4 元</td><td>0</td><td>~3.5%</td><td>~194%（高於盈餘）</td></tr>
+            <tr><td>2024</td><td>1.4 元</td><td>0</td><td>~3.0%</td><td><b>233%</b>（隱性收割警訊）</td></tr>
+            <tr><td>2025（待 6/15 股東會決議）</td><td>預估 1.5-1.8 元</td><td>0</td><td>~3.0%</td><td>預估 170-200%（仍高於盈餘）</td></tr>
+          </table>
+          <p style="font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.7"><span class="fias-i">推論</span> <b>配息率 200%+ 連年偏高為金山電的結構性警訊</b>——每年配息高於盈餘代表動用累積保留盈餘 / 資本公積、削弱再投資能力（研發預算 2024-2025 砍 25-46% 即為此影響的兌現）。<b>2026-06-15 股東常會配息率決議是 H4「配息率正常化」假說的關鍵驗證點</b>，若仍維持 200%+ 將觸發信心進一步遞減。</p>
+        </div>
+      </div>
+
+      <!-- ===== 1.6 關係人交易 / ESG / 治理（選用）===== -->
+      <div class="card" id="sec-1-6">
+        <h3>1.6 關係人交易 / ESG / 治理 <span class="tag-new">選用</span></h3>
+        <div class="card-body">
+          <h4>關聯交易</h4>
+          <table>
+            <tr><th>交易對象</th><th>類型</th><th>金額</th><th>條件合理性</th></tr>
+            <tr><td>廣州金立電子</td><td>母子公司資金背書 / 進貨</td><td>CNY 8,600 萬背書 + 進貨集中</td><td>背書佔股本 27.8% 為高度集中、需密切監控</td></tr>
+            <tr><td>HITACHI AIC（日本日立）</td><td>技術授權 + 部分供應</td><td>權利金 + 採購（金額未揭露）</td><td>長期合作 31 年、關聯交易條件未明確揭露細節</td></tr>
+          </table>
+          <h4 style="margin-top:12px">ESG 進度</h4>
+          <table>
+            <tr><th>項目</th><th>進度</th><th>合規時程</th></tr>
+            <tr><td>TCFD 揭露</td><td>2024 年報已揭露氣候相關財務資訊</td><td>2026 深化情境分析</td></tr>
+            <tr><td>碳盤查</td><td>2024 完成範疇 1-2 盤查</td><td>2026 範疇 3 完整盤查</td></tr>
+            <tr><td>循環經濟貢獻</td><td>鋁箔回收、廢電解液處理</td><td>2027 推進綠電憑證認證</td></tr>
+            <tr><td>董事會多元性</td><td>家族經營為主、女性董事 1 席</td><td>持續優化、接班計畫公開為下一步</td></tr>
+            <tr><td>研發投資</td><td><b>2024-2025 預算砍 25-46%</b>（警訊）</td><td>2026 上半年是否回升為信心驗證點</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="view-card">
+        <h4>◆ 看完第一章，這家公司是什麼樣的？</h4>
+        <p><b>• 全球第 3 大鋁電容廠、台灣液態 + 固態雙料第 2，但本質是「Tier-2 規格化零件廠」。</b>規模上是立隆電 2472 的 1/3，靠「HITACHI AIC 31 年技術合作 + 鋁箔自製 + 電解液自研」的一貫化降本撐護城河（Morningstar 護城河 3.0/5 Narrow Moat）。透過 ODM 間接出貨 NVIDIA GB300 / BBU、不是直接 OEM 供應，戰略地位介於主流與利基之間。</p>
+        <p><b>• 2025 年雙紅利驅動毛利率 5 季加速：23.66%、EPS YoY +48%。</b>三層獲利槓桿同步啟動：(1) 銀銅漲價 + 一貫化製程相對受惠；(2) 固態占比 25% 切入 AI；(3) 泰國三廠 2025 Q3 量產降低中國風險。月營收 2026/02 YoY +50.17% 為罕見級別、短期動能強烈。</p>
+        <p><b>• 但結構張力極大、信心持續遞減。</b>(1) PE 62.92x 為歷史中位數 60.7 之上、估值已透支；(2) 配息率 233% 隱性收割研發資源（2024-2025 研發預算砍 25-46%）；(3) 廣州金立 CNY 8,600 萬背書佔股本 27.8% 為治理隱患；(4) 新會計師資誠 2026 Q2 首次查核結果未明；(5) 4 次信心校準（42% → 38% → 35% → 33%）持續下修。</p>
+        <p><b>• 江氏家族經營 55 年、第三代接班中、無 CB / 無現增為相對優勢。</b>家族明確持股 25.81%、控股穩固、連續 24 年發放股利示信心。籌碼面相較有 CB 待轉的同業乾淨；但「家族經營」也意味缺乏外部監督機制，配息率高與研發砍預算的決策權集中。</p>
+        <p><b>• 決策含義：好故事 + 已 price-in、不追高、等驗證。</b>當前股價 56 元位於 56-65 元觀望區上緣、PE 62.92x 已透支；建議等 2026/05/15 Q1 法說 AI 占比量化揭露 + 2026/06/30 資誠首次查核結果 + 2026/06/15 股東會配息率決議，三個關鍵驗證點完成後再判斷是否進場。理想分批進場區為 50-54（PE 35-40x）、停損 50。</p>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         CH 2 · 競爭概況（新章）· 骨架模板
+         ======================================================================== -->
+    <section class="section" id="ch2">
+      <div class="section-head">
+        <div class="no">02</div>
+        <div class="tit">
+          <h2>第二章：競爭概況</h2>
+          <div class="sub">產業格局 · 同業狀況 · 本公司競爭地位 · 未來 3 年動態趨勢</div>
+        </div>
+      </div>
+
+      <!-- ===== 2.1 產業競爭格局 ===== -->
+      <div class="card" id="sec-2-1">
+        <h3>2.1 產業競爭格局</h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75;margin-bottom:14px">鋁電解電容（Aluminum Electrolytic Capacitor, AEC）是被動元件的子類，全球規模約 90 億美元、年成長 5-7%。日系（Nippon Chemi-con / Nichicon / Rubycon）合計握有 60-70% 高階份額，台廠（立隆電 2472 / 金山電 8042 / 鈺邦 6449）為第二集團、合計約 15-20% 中階份額，中國中小廠瓜分剩餘 15-20% 低階市場。AI 伺服器供應鏈擴散與電動車普及為兩大結構性成長動能。</p>
+
+          <h4>產業定義與範圍</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75;margin:6px 0 14px">鋁電解電容主要分兩大類：<b>液態鋁電容（容量大、單價低、毛利 18-22%）</b>用於電源 / 家電 / 工業應用；<b>固態鋁電容（高頻 / 長壽命、單價高、毛利 30%+）</b>用於 AI 伺服器 / 5G 通信 / 車用電子。金山電同時跨足兩類（75%/25%）、屬於少數雙路徑覆蓋廠商。</p>
+
+          <h4>產業生命週期定位</h4>
+          <div class="lifecycle-band">
+            <div class="lifecycle-stage">萌芽<span class="lc-sub">Emerging</span></div>
+            <div class="lifecycle-stage active">成長<span class="lc-sub">Growth</span></div>
+            <div class="lifecycle-stage">成熟<span class="lc-sub">Mature</span></div>
+            <div class="lifecycle-stage">衰退<span class="lc-sub">Decline</span></div>
+          </div>
+          <p class="lc-note">液態鋁電容處於「成熟期」（穩定 5-7% 成長）；固態鋁電容處於「成長期」（年成長 15-25%、AI / 車用驅動）。整體產業混合定位為「成長期偏中後段」——產能 / 毛利率改善空間有限，主要靠 AI 應用拉新需求。</p>
+
+          <h4>Porter 五力量化（0~10 越高越有利）</h4>
+          <div class="radar-layout">
+            <table class="peer-table" style="font-size:12.5px">
+              <thead>
+                <tr><th>力量</th><th class="num">分數</th><th style="text-align:center">判定</th><th>看法</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><b>現有競爭者</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">Rivalry</span></td><td class="num hi">3</td><td style="text-align:center">不利</td><td>日系 3 大 + 台廠 3 + 中國 5+ 廠商眾多、規格化價格戰激烈</td></tr>
+                <tr><td><b>新進者威脅</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">New Entrants</span></td><td class="num hi">6</td><td style="text-align:center">中性偏利</td><td>固態高階技術門檻高（研發 + 設備 + 認證 5 年起跳）；液態低階中國新廠不斷湧現</td></tr>
+                <tr><td><b>替代品威脅</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">Substitutes</span></td><td class="num hi">5</td><td style="text-align:center">中性</td><td>陶瓷 / 鉭電容部分替代、但鋁電容在大容量 / 高耐壓領域仍不可取代</td></tr>
+                <tr><td><b>供應商議價</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">Supplier Power</span></td><td class="num hi">5</td><td style="text-align:center">中性</td><td>鋁箔 / 電解液關鍵原料由日系主導；金山電一貫化降低部分依賴</td></tr>
+                <tr><td><b>客戶議價</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">Buyer Power</span></td><td class="num hi">3</td><td style="text-align:center">不利</td><td>下游 ODM（群創 / 仁寶 / 鴻海）規模大、議價權強；金山電作為 Tier-2 議價弱</td></tr>
+              </tbody>
+            </table>
+            <div class="chart-wrap">
+              <div class="chart-title">Porter 五力雷達 · 越大越有利</div>
+              <canvas id="porterRadar"></canvas>
+              <div class="chart-note">總體 Porter 分數約 22/50（44%）；現有競爭與客戶議價兩項拖累、新進者門檻為主要正向</div>
+            </div>
+          </div>
+
+          <h4>產業集中度</h4>
+          <div class="scale-grid compact">
+            <div class="mini-card compact accent"><div class="m-label">CR3（前三名）</div><div class="m-val up">~50%</div><div class="m-note">日系三大主導全球高階份額</div></div>
+            <div class="mini-card compact gold"><div class="m-label">CR10（前十名）</div><div class="m-val gold">~75%</div><div class="m-note">台廠三家合計約 15-20%</div></div>
+            <div class="mini-card compact neut"><div class="m-label">中國新廠占比</div><div class="m-val neut">~15-20%</div><div class="m-note">低階液態擠壓加劇</div></div>
+          </div>
+
+          <h4>產業特殊性 · 外部變因</h4>
+          <div class="special-grid">
+            <div class="special-card policy">
+              <div class="sp-head"><span class="sp-kicker">政策</span><span class="sp-tag">中國 +1</span></div>
+              <h5>美國 CHIPS 法案 + 中國 +1 分散</h5>
+              <p>美國要求關鍵供應鏈「非中國製造」、台廠泰國 / 越南布局獲得轉單紅利。金山電泰國三廠 2025 Q3 量產正好對應此趨勢。</p>
+              <div class="sp-impact">中性偏正向（金山電直接受惠、轉單紅利進行中）</div>
+            </div>
+            <div class="special-card policy">
+              <div class="sp-head"><span class="sp-kicker">政策</span><span class="sp-tag">EU</span></div>
+              <h5>歐盟 RoHS / WEEE 環保限制</h5>
+              <p>歐盟對電子產品環保要求趨嚴、鋁電容業者需投入 ESG 揭露。金山電 2024 已完成範疇 1-2 碳盤查、2026 範疇 3。</p>
+              <div class="sp-impact">中性（合規成本增加、但門檻提升淘汰中小競爭者）</div>
+            </div>
+            <div class="special-card geo">
+              <div class="sp-head"><span class="sp-kicker">地緣</span><span class="sp-tag">日圓</span></div>
+              <h5>日圓波動 → 日系成本壓力</h5>
+              <p>2025-2026 日圓貶值疲態、日系大廠出口競爭力提升；台廠相對承壓但金山電一貫化部分對沖。</p>
+              <div class="sp-impact">中性偏負向（日系競爭壓力增加、但金山電有對沖機制）</div>
+            </div>
+            <div class="special-card tech">
+              <div class="sp-head"><span class="sp-kicker">技術</span><span class="sp-tag">AI</span></div>
+              <h5>AI 伺服器 GB300 / Rubin 量產</h5>
+              <p>NVIDIA 平台代際切換 + Hyperscaler capex 放大；高頻固態電容需求結構性放大、毛利率有結構性提升空間。</p>
+              <div class="sp-impact">正向（金山電透過 ODM 間接受惠、待 5/15 法說量化驗證）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 2.2 同業競爭狀況 ===== -->
+      <div class="card" id="sec-2-2">
+        <h3>2.2 同業競爭狀況</h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75;margin-bottom:14px">鋁電容產業競爭格局：<b>日系 3 大主導 + 台灣第二集團 3 家 + 中國新廠群</b>。金山電位於台灣第二集團，相對立隆電 2472（規模大、AI 直達 NVIDIA）為第二、相對鈺邦 6449（純固態高毛利）為產品結構不同。本節盤點 4 家同業財務與動態。</p>
+
+          <h4>同業盤點清單</h4>
+          <table class="peer-table">
+            <thead><tr><th style="white-space:normal;min-width:90px">公司／代號</th><th>產業定位</th><th>主力產品 / 商業模式</th><th>競爭力概述</th><th>利害關係（對本公司）</th></tr></thead>
+            <tbody>
+              <tr class="focus">
+                <td style="white-space:normal;min-width:90px"><b>金山電</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--ink-3)">8042 · TPEX</span></td>
+                <td>台灣第二集團、雙路徑（液+固）</td>
+                <td>液態 75% + 固態 25% / 框架合約 + 月度拉貨</td>
+                <td>HITACHI AIC 31 年合作、一貫化降本、泰國三廠 2025 Q3 量產</td>
+                <td><span class="tag-new" style="background:var(--ink-3)">本公司</span><br><span style="font-size:12px;color:var(--ink-3);line-height:1.6">基準</span></td>
+              </tr>
+              <tr>
+                <td style="white-space:normal;min-width:90px"><b>立隆電</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--ink-3)">2472 · TWSE</span></td>
+                <td>台灣龍頭、AI 直達 NVIDIA</td>
+                <td>液態為主、年營收 ~100 億 / 毛利 30%+</td>
+                <td>規模大金山電 3x、直接 OEM 對接 NVIDIA Rubin GPU 板</td>
+                <td><span class="tag-new" style="background:var(--bear)">主要競爭</span><br><span style="font-size:12px;line-height:1.6">中段以上應用直接搶單</span></td>
+              </tr>
+              <tr>
+                <td style="white-space:normal;min-width:90px"><b>鈺邦</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--ink-3)">6449 · TWSE</span></td>
+                <td>純固態 / 利基高毛利</td>
+                <td>100% 固態、年營收 ~60 億 / 毛利 50%+</td>
+                <td>純高頻應用、毛利結構最強、規模次於金山電</td>
+                <td><span class="tag-new" style="background:var(--warn);color:var(--paper)">差異化</span><br><span style="font-size:12px;line-height:1.6">同業但非直接競爭</span></td>
+              </tr>
+              <tr>
+                <td style="white-space:normal;min-width:90px"><b>Nippon Chemi-con</b><br><span style="font-family:var(--mono);font-size:10.5px;color:var(--ink-3)">日系 #1</span></td>
+                <td>全球龍頭、品牌力第一</td>
+                <td>液 + 固全產線 / 年營收 USD ~10 億 / 毛利 40%+</td>
+                <td>技術 / 品牌 / 規模三冠王</td>
+                <td><span class="tag-new" style="background:var(--bear)">高階對手</span><br><span style="font-size:12px;line-height:1.6">難正面競爭、避其鋒芒</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>近 3 年財務對照（毛利率 / 營益率 / ROE / EPS）</h4>
+          <div style="overflow-x:auto">
+          <table class="peer-table finance-grid">
+            <thead>
+              <tr class="year-row">
+                <th rowspan="2" style="width:13%;vertical-align:middle">公司</th>
+                <th rowspan="2" class="num" style="width:9%;vertical-align:middle">目前股價<br><span class="yr-sub">2026·04</span></th>
+                <th colspan="4" class="year-head">2023</th>
+                <th colspan="4" class="year-head">2024</th>
+                <th colspan="4" class="year-head">2025</th>
+              </tr>
+              <tr class="metric-row">
+                <th class="num">毛利</th><th class="num">營益</th><th class="num">ROE</th><th class="num">EPS</th>
+                <th class="num">毛利</th><th class="num">營益</th><th class="num">ROE</th><th class="num">EPS</th>
+                <th class="num">毛利</th><th class="num">營益</th><th class="num">ROE</th><th class="num">EPS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="focus">
+                <td><b>金山電</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">8042</span></td>
+                <td class="num hi">56.0</td>
+                <td class="num">17.3%</td><td class="num">3.5%</td><td class="num">1.5%</td><td class="num">0.72</td>
+                <td class="num">19.7%</td><td class="num">5.2%</td><td class="num">1.3%</td><td class="num">0.60</td>
+                <td class="num">23.7%</td><td class="num">9.3%</td><td class="num">1.94%</td><td class="num">0.89</td>
+              </tr>
+              <tr>
+                <td><b>立隆電</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">2472</span></td>
+                <td class="num">95.0</td>
+                <td class="num">28%</td><td class="num">12%</td><td class="num">14%</td><td class="num">5.20</td>
+                <td class="num">30%</td><td class="num">14%</td><td class="num">15%</td><td class="num">6.10</td>
+                <td class="num">32%</td><td class="num">16%</td><td class="num">17%</td><td class="num">7.45</td>
+              </tr>
+              <tr>
+                <td><b>鈺邦</b><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">6449</span></td>
+                <td class="num">125.0</td>
+                <td class="num">45%</td><td class="num">22%</td><td class="num">18%</td><td class="num">3.80</td>
+                <td class="num">48%</td><td class="num">25%</td><td class="num">20%</td><td class="num">4.50</td>
+                <td class="num">50%</td><td class="num">27%</td><td class="num">22%</td><td class="num">5.20</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <p style="font-size:11.5px;color:var(--ink-3);margin-top:6px;font-family:var(--mono);letter-spacing:0.02em;line-height:1.65">※ 金山電毛利率 5 季加速從 17.3% 提升至 23.7%（+640bp），改善幅度同業最大；但絕對水準仍低於立隆電 32% 與鈺邦 50%。EPS 0.89 同業最低（次於立隆電 7.45 與鈺邦 5.20）。</p>
+
+          <h4>策略群組地圖 · 毛利率 × 規模</h4>
+          <div class="quadrant">
+            <div class="q-axis-y">毛利率</div>
+            <div class="q-axis-x">營收 / 規模</div>
+            <div class="q-canvas">
+              <span class="q-cell tl">利基高毛利</span>
+              <span class="q-cell tr">規模龍頭</span>
+              <span class="q-cell bl">小眾掙扎</span>
+              <span class="q-cell br">規模薄利</span>
+              <span class="q-axis-high y">高</span>
+              <span class="q-axis-low y">低</span>
+              <span class="q-axis-low x">小</span>
+              <span class="q-axis-high x">大</span>
+              <div class="q-point" style="left:18%;top:15%"><span class="pt-label">鈺邦 6449</span></div>
+              <div class="q-point" style="left:75%;top:25%"><span class="pt-label">立隆電 2472</span></div>
+              <div class="q-point focus" style="left:45%;top:55%"><span class="pt-label">金山電 8042</span></div>
+              <div class="q-point" style="left:80%;top:75%"><span class="pt-label">中國中段廠</span></div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:6px;line-height:1.65;font-style:italic">金山電目前位於「中規模、中毛利」中段；H1 樂觀路徑要求向左上「鈺邦化」（毛利衝 28-30%），H4 看空路徑要求向右下「規模薄利」（毛利回 19-20%）。2026 是這個移動方向的決定性年。</p>
+
+          <h4>同業近期動態</h4>
+          <ul class="dynamic-list">
+            <li><span class="peer-tag">立隆電</span><b>2472</b>：2026 Q1 直達 NVIDIA Rubin GPU 板、營收 YoY +30%、毛利率衝 33%；競爭壓力增加。</li>
+            <li><span class="peer-tag">鈺邦</span><b>6449</b>：2026 Q1 純固態 AI 應用占比達 45%、毛利率突破 52%；高毛利帶動 PE 衝 50x。</li>
+            <li><span class="peer-tag">Nippon Chemi-con</span><b>日系</b>：2026 計畫擴產越南廠固態產能 +30%、強化非中國製造布局；對台廠擠壓中等。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ===== 2.3 本公司競爭地位（精簡）===== -->
+      <div class="card" id="sec-2-3">
+        <h3>2.3 本公司競爭地位</h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">本公司在鋁電容第二集團中為「規模次大、毛利中段、AI 應用初期」的定位。相對立隆電 2472（規模 3x、AI 直達），金山電靠「一貫化降本 + 雙路徑覆蓋 + 泰國中國 +1 紅利」差異化；相對鈺邦 6449（純固態高毛利），金山電靠「規模 1.5x + 液態現金牛」對沖。Morningstar 護城河 3.0/5（Narrow Moat）為合理評價。</p>
+
+          <h4>7 維競爭力雷達對照</h4>
+          <table class="peer-table">
+            <thead><tr><th>維度</th><th class="num">金山電</th><th class="num">立隆電</th><th class="num">鈺邦</th><th class="num">日系平均</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td>技術深度</td><td class="num">7</td><td class="num">8</td><td class="num">9</td><td class="num">10</td><td>HITACHI AIC 合作給予中上水準</td></tr>
+              <tr><td>規模經濟</td><td class="num">5</td><td class="num">8</td><td class="num">6</td><td class="num">10</td><td>規模次於立隆電與日系</td></tr>
+              <tr><td>毛利率</td><td class="num">6</td><td class="num">8</td><td class="num">10</td><td class="num">9</td><td>23.7% 低於同業中段</td></tr>
+              <tr><td>客戶結構</td><td class="num">6</td><td class="num">9</td><td class="num">8</td><td class="num">10</td><td>Tier-2 ODM 通道、被分潤</td></tr>
+              <tr><td>產品多元</td><td class="num">8</td><td class="num">7</td><td class="num">5</td><td class="num">10</td><td>液+固雙路徑覆蓋為優勢</td></tr>
+              <tr><td>地緣布局</td><td class="num">8</td><td class="num">7</td><td class="num">6</td><td class="num">7</td><td>泰國 2025 Q3 量產領先台廠</td></tr>
+              <tr><td>財務體質</td><td class="num">6</td><td class="num">8</td><td class="num">8</td><td class="num">9</td><td>配息率 233% 高、研發砍 25-46%</td></tr>
+              <tr style="background:rgba(166,115,24,.08)"><td><b>合計</b></td><td class="num"><b>46/70</b></td><td class="num"><b>55/70</b></td><td class="num"><b>52/70</b></td><td class="num"><b>65/70</b></td><td>金山電總分為第二集團中段</td></tr>
+            </tbody>
+          </table>
+
+          <h4>護城河五來源評分（Morningstar 框架）</h4>
+          <table class="peer-table">
+            <thead><tr><th>來源</th><th class="num">分數</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td>無形資產</td><td class="num">3/5</td><td>HITACHI AIC 31 年合作 + 高壓電解技術授權；非獨家、可替代性中等</td></tr>
+              <tr><td>轉換成本</td><td class="num">3/5</td><td>客戶認證 6-12 月、但替代廠商眾多、轉換代價中等</td></tr>
+              <tr><td>成本優勢</td><td class="num">4/5</td><td>鋁箔自製 + 電解液自研一貫化、原物料漲價時相對受惠</td></tr>
+              <tr><td>網絡效應</td><td class="num">1/5</td><td>規格化產品、無網絡效應</td></tr>
+              <tr><td>規模經濟</td><td class="num">2/5</td><td>規模僅為立隆電 1/3、固定成本攤提弱</td></tr>
+              <tr style="background:rgba(166,115,24,.08)"><td><b>總評</b></td><td class="num"><b>3.0/5</b></td><td><b>Narrow Moat（窄護城河）</b>：成本 + 無形資產為主要支柱，缺規模與網絡</td></tr>
+            </tbody>
+          </table>
+
+          <h4>市佔率動態（近 5 年）</h4>
+          <div class="chart-wrap" style="padding:14px 16px">
+            <div class="chart-title">全球鋁電容市佔（含估計、2021-2025）</div>
+            <canvas id="marketShare" style="max-height:240px"></canvas>
+            <div class="chart-note">金山電全球市佔約 3-4%（穩定）、台灣液態 + 固態雙料第 2；2025 因泰國廠開出有微幅向上彈性</div>
+          </div>
+
+          <h4>競爭優勢可持續性（短 / 中 / 長期分期）</h4>
+          <table class="peer-table">
+            <thead><tr><th>期程</th><th>主要優勢</th><th>持續性評分</th><th>關鍵條件</th></tr></thead>
+            <tbody>
+              <tr><td>短期（1 年）</td><td>原物料漲價傳導 + AI 應用爆發 + 泰國廠初期紅利</td><td>高（8/10）</td><td>銀銅持續強勢、月營收 YoY 維持 +30%+</td></tr>
+              <tr><td>中期（2-3 年）</td><td>固態占比拉至 35%+ + ODM 客戶 AI 需求結構性</td><td>中（6/10）</td><td>泰國廠產能利用率達 70%+、AI 應用占比 ≥20%</td></tr>
+              <tr><td>長期（5 年）</td><td>HITACHI AIC 合作技術 + 全球非中國分散</td><td>中（5/10）</td><td>家族接班順利、研發投入回升、護城河不被立隆電 / 日系超越</td></tr>
+            </tbody>
+          </table>
+
+          <h4>潛在競爭威脅偵測</h4>
+          <div class="ev">
+            <div class="ev-t"><span class="fias-i">推論</span> 三大潛在威脅：中國新廠價格戰、立隆電直達 NVIDIA、日系越南擴產</div>
+            <div class="ev-d">中國中小廠（永銘 / 艾華等）持續擠壓低階液態市場（占金山電營收 40%+）；立隆電 2472 直達 NVIDIA Rubin GPU 板搶走中高階訂單；Nippon Chemi-con 越南擴產 +30% 強化非中國布局競爭。三者疊加可能在 2026-2027 對金山電毛利率與市佔造成 -3 至 -8% 衝擊。</div>
+            <div class="ev-s">來源：本研究綜合產業動態與同業 2026 Q1 法說會揭露</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 2.4 競爭動態趨勢（精簡）===== -->
+      <div class="card" id="sec-2-4">
+        <h3>2.4 競爭動態趨勢</h3>
+        <div class="card-body">
+          <h4>未來 3 年可能的新進競爭者</h4>
+          <ul style="color:var(--ink-2);font-size:14px;line-height:1.75">
+            <li><b>中國新廠</b>（如華新科 / 永銘擴產）：低階液態擠壓加劇、毛利壓力增加 -3%</li>
+            <li><b>日系越南布局</b>（Nippon Chemi-con / Nichicon）：高階固態搶單、客戶可能轉移</li>
+            <li><b>韓國新進者</b>（Samsung Electro-Mechanics）：尚未實質切入但有潛在威脅</li>
+            <li><b>替代技術</b>（陶瓷 / 鉭電容）：部分高頻應用威脅、但鋁電容仍主流</li>
+          </ul>
+
+          <h4>現有同業未來 3 年動向推演</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">立隆電 2472 將擴大 AI 直達優勢、預計 2027 直接服務 NVIDIA Rubin Ultra；鈺邦 6449 純固態策略持續、可能跨入車用功率電容；日系 Nippon Chemi-con 越南廠 2026 Q4 量產、瓜分台廠中高階份額；金山電必須在 2026-2027 拉升固態占比至 35%+ 才能維持競爭地位。</p>
+
+          <h4>3 年整體展望 · 三情境機率</h4>
+          <table class="peer-table">
+            <thead><tr><th>情境</th><th class="num">機率</th><th>金山電影響</th></tr></thead>
+            <tbody>
+              <tr><td><b>樂觀</b>：AI 結構性擴散持續 + 中國 +1 紅利強化</td><td class="num">25%</td><td>市佔提升至 5%、毛利衝 28%、EPS 上看 1.5-2.0</td></tr>
+              <tr><td><b>基準</b>：AI 緩成長 + 同業競爭加劇但金山電維持地位</td><td class="num">50%</td><td>市佔維持 3-4%、毛利在 22-25% 區間、EPS 1.0-1.4</td></tr>
+              <tr><td><b>悲觀</b>：AI 紅利消散 + 立隆電 / 日系全面擠壓</td><td class="num">25%</td><td>市佔降至 2-3%、毛利回 19-20%、EPS 0.5-0.8</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 2.5 對上游議價能力（精簡）===== -->
+      <div class="card" id="sec-2-5">
+        <h3>2.5 對上游議價能力</h3>
+        <div class="card-body">
+          <h4>上游供應商集中度與替代性</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">關鍵原料：<b>鋁箔（昭和鋁 / 明電鋁業）+ 電解液（宇部興產 + 自研）+ HITACHI AIC 技術授權</b>。前 5 大供應商集中度推估 50-60%、日系主導。金山電一貫化（鋁箔自製 + 電解液自研）部分降低依賴、是相對同業的成本護城河。</p>
+
+          <h4>議價力結構性弱勢的根源</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">(1) 規模次於立隆電 / 日系、採購量無法談大幅折扣；(2) HITACHI AIC 技術授權有權利金支付、議價空間有限；(3) 日圓波動直接影響採購成本（無法完全對沖）。</p>
+
+          <h4>關鍵情境 · 對毛利率衝擊試算</h4>
+          <table class="peer-table">
+            <thead><tr><th>情境</th><th class="num">機率</th><th class="num">對毛利衝擊</th></tr></thead>
+            <tbody>
+              <tr><td>銀銅鋁持續漲價（2026 +10-15%）</td><td class="num">55%</td><td class="num up">+1-2 pp</td></tr>
+              <tr><td>銀銅鋁回穩或回跌（2026 持平 ~ -5%）</td><td class="num">30%</td><td class="num">-1 至 0 pp</td></tr>
+              <tr><td>銀銅鋁大幅下跌（2026 -10% 以上）</td><td class="num">15%</td><td class="num bear">-2 至 -3 pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 2.6 對下游定價能力（精簡）===== -->
+      <div class="card" id="sec-2-6">
+        <h3>2.6 對下游定價能力</h3>
+        <div class="card-body">
+          <h4>下游客群定價力解剖</h4>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">主要客戶為 Tier-1 ODM（群創 / 仁寶 / 鴻海）、文曄通路、5G / AI 終端品牌。客戶集中度推估前 5 大占 60-70%（年報未明確揭露）。<b>定價力中等偏弱</b>：規格化產品 + 多供應商格局、ODM 議價權強；金山電靠「規格 / 良率 / 交期」差異化、非價格戰勝出。</p>
+
+          <h4>毛利率拆解</h4>
+          <table class="peer-table">
+            <thead><tr><th>產品線</th><th class="num">毛利率</th><th>拆解原因</th></tr></thead>
+            <tbody>
+              <tr><td>液態（75%）</td><td class="num">18-22%</td><td>規模化量產、議價權弱、毛利受原料影響大</td></tr>
+              <tr><td>固態（25%）</td><td class="num">30-35%</td><td>高頻應用單價高、AI / 車用客戶議價權相對弱</td></tr>
+              <tr style="background:rgba(166,115,24,.08)"><td><b>整體（混合）</b></td><td class="num"><b>23.66%</b></td><td>固態占比拉升是毛利率提升的核心驅動</td></tr>
+            </tbody>
+          </table>
+
+          <h4>定價力風險訊號儀表板</h4>
+          <ul style="color:var(--ink-2);font-size:14px;line-height:1.75">
+            <li><b>綠燈</b>：固態占比 25% 維持、毛利 23.66% 創新高</li>
+            <li><b>黃燈</b>：研發預算砍 25-46%（新品儲備可能不足）</li>
+            <li><b>紅燈</b>：若 2026 Q1 法說 AI 占比 &lt;10%，動能崩潰、毛利可能回 19-20%</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="view-card">
+        <h4>◆ 看完第二章，這家公司的護城河夠不夠硬？</h4>
+        <p><b>• 金山電是「Narrow Moat 第二集團中段」，不是規模龍頭也不是純利基。</b>Morningstar 護城河 3.0/5、7 維競爭力 46/70（次於立隆電 55、鈺邦 52、日系 65）。靠「成本（4/5）+ 無形資產（3/5）」雙主軸支撐護城河，但「規模（2/5）+ 網絡（1/5）」為結構性弱項。</p>
+        <p><b>• Porter 五力總分 22/50（44%）：競爭環境不利。</b>現有競爭（3/10）與客戶議價（3/10）兩項拖累；新進者門檻（6/10）為主要正向。整體屬於「規格化 + 多供應商 + Tier-2 通道」的不利組合。</p>
+        <p><b>• 同業比較：規模次於立隆電 1/3、毛利率低於立隆電 8 pp / 鈺邦 26 pp。</b>金山電 2025 EPS 0.89 < 立隆電 7.45 < 鈺邦 5.20。但毛利率改善幅度（5 季 +640bp）為同業最大、是 V 反故事的重點。</p>
+        <p><b>• 3 年展望基準情境機率 50%：市佔維持、EPS 1.0-1.4。</b>樂觀 25%（EPS 1.5-2.0）、悲觀 25%（EPS 0.5-0.8）。當前股價 56 元對應 PE 62.92x 已 price-in 樂觀預期、安全邊際不足。</p>
+        <p><b>• 決策含義：競爭結構決定 PE 天花板。</b>金山電的 PE 不太可能持續超過鈺邦（PE ~24x，純固態高毛利）+ 立隆電（PE ~13x，規模龍頭）的中段水位（PE 30-40x）；當前 62.92x 為「題材性溢價」、需 2026/05/15 Q1 法說 AI 占比量化驗證才能撐住。</p>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         CH 3         CH 3 · 成長動能篇（新章）· 骨架模板
+         ======================================================================== -->
+    <section class="section" id="ch3">
+      <div class="section-head">
+        <div class="no">03</div>
+        <div class="tit">
+          <h2>第三章：成長動能</h2>
+          <div class="sub">軌跡與現況 · 引擎拆解 · 短中長期推演 · 可持續性 · 估值反映</div>
+        </div>
+      </div>
+
+      <!-- ===== 3.1 成長軌跡與現況 ===== -->
+      <div class="card" id="sec-3-1">
+        <h3>3.1 成長軌跡與現況<span class="tag-new">新</span></h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75;margin-bottom:14px">金山電 2021-2024 處於<b>「景氣下行 + 結構低谷」</b>（營收從 39.27 億 → 34.30 億 / EPS 從 1.24 → 0.60），2025 年才開始<b>「V 型反轉」</b>：營收回升 38.5 億 YoY +12.2%、EPS 跳升 0.89 元 YoY +48%、Q4 毛利率衝歷史新高 23.66%。月營收 2026/02 YoY +50.17% 為近 5 年罕見爆發級別。本章拆解：成長動能來自哪裡？是結構性還是基期效應？</p>
+
+          <h4>近 5 年財務成長軌跡</h4>
+          <div class="chart-wrap" style="padding:14px 16px">
+            <div class="chart-title">營收 / EPS / 毛利率 / ROE 五年演進</div>
+            <canvas id="growthTrend" style="max-height:260px"></canvas>
+            <div class="chart-note">營收：2021 39.27 → 2025 38.5 億（U 型復甦）；EPS：1.24 → 0.60 → 0.89（V 型反轉）；毛利率持續改善至 23.66%；2026 是延續或熄火的關鍵年</div>
+          </div>
+
+          <h4>成長階段定位</h4>
+          <div class="growth-band">
+            <div class="growth-stage active">剛起飛<span class="gs-sub">Take-off</span></div>
+            <div class="growth-stage">加速中<span class="gs-sub">Accelerating</span></div>
+            <div class="growth-stage">高原<span class="gs-sub">Plateau</span></div>
+            <div class="growth-stage">減速<span class="gs-sub">Decelerating</span></div>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink-3);margin-top:12px;line-height:1.7;font-style:italic">2025 年才走出 4 年低谷、處於「剛起飛」階段；H1 樂觀路徑要求 2026 進入「加速中」（EPS YoY +50%+、固態占比拉至 35%+），H4 看空路徑則認為「起飛即熄火」（基期效應消退、AI 占比未達 15%）。</p>
+
+          <h4>最新加速訊號</h4>
+          <div class="scale-grid compact">
+            <div class="mini-card compact bull">
+              <div class="m-label">月營收 2026/02</div>
+              <div class="m-val up">+50.17%</div>
+              <div class="m-note">罕見爆發級別 YoY</div>
+            </div>
+            <div class="mini-card compact bull">
+              <div class="m-label">2025 EPS YoY</div>
+              <div class="m-val up">+48%</div>
+              <div class="m-note">0.60 → 0.89 元（V 反）</div>
+            </div>
+            <div class="mini-card compact gold">
+              <div class="m-label">2025Q4 毛利率</div>
+              <div class="m-val gold">23.66%</div>
+              <div class="m-note">5 季加速、創歷史新高</div>
+            </div>
+            <div class="mini-card compact accent">
+              <div class="m-label">泰國廠量產</div>
+              <div class="m-val">2025 Q3</div>
+              <div class="m-note">固態 8,000 萬顆/月、產能基礎</div>
+            </div>
+          </div>
+
+          <h4>歷史 vs 同業 CAGR 對照</h4>
+          <table class="peer-table" style="font-size:12.5px">
+            <thead>
+              <tr>
+                <th>公司</th>
+                <th class="num">營收 5 年 CAGR</th>
+                <th class="num">EPS 5 年 CAGR</th>
+                <th class="num">近年 YoY</th>
+                <th>評語</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="focus">
+                <td><b>金山電 8042</b></td>
+                <td class="num hi">-0.4%</td>
+                <td class="num hi">-6.4%</td>
+                <td class="num hi">+48%</td>
+                <td>5 年走鬱、2025 V 反；CAGR 受 2022-24 谷底拖累</td>
+              </tr>
+              <tr>
+                <td>立隆電 2472</td>
+                <td class="num">+8.5%</td>
+                <td class="num">+15.2%</td>
+                <td class="num">+22%</td>
+                <td>規模成長穩定、AI 直達 NVIDIA Rubin 為差異</td>
+              </tr>
+              <tr>
+                <td>鈺邦 6449</td>
+                <td class="num">+5.8%</td>
+                <td class="num">+12.3%</td>
+                <td class="num">+18%</td>
+                <td>純固態高毛利、規模較小但體質強</td>
+              </tr>
+              <tr>
+                <td>Nippon Chemi-con</td>
+                <td class="num">+3.2%</td>
+                <td class="num">+6.5%</td>
+                <td class="num">+8%</td>
+                <td>全球龍頭穩定、品牌與高毛利並存</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 3.2 成長引擎拆解 ===== -->
+      <div class="card" id="sec-3-2">
+        <h3>3.2 成長引擎拆解</h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75"><b>金山電 2026-2028 成長動能來自三個並行引擎：</b>(1) 主引擎 <em>AI 伺服器擴散</em>（GB300 / BBU 經 ODM 拉動）；(2) 次引擎 <em>原物料漲價傳導</em>（銀銅鋁 + 一貫化降本）；(3) 新興引擎 <em>泰國廠中國 +1 紅利</em>（2025 Q3 量產、地緣分散）。三者疊加是 H1 樂觀路徑成立的基礎；若任一引擎熄火，立即降級至 H2 / H3。</p>
+          <h4>三引擎結構</h4>
+          <table class="peer-table">
+            <thead><tr><th>引擎</th><th>確定性</th><th>時程</th><th>毛利貢獻</th><th>2026E 營收貢獻</th></tr></thead>
+            <tbody>
+              <tr><td><b>主引擎 · AI 伺服器擴散</b>（GB300 / BBU）</td><td>中（待 5/15 法說量化）</td><td>2026-2028</td><td>30%+</td><td>15-20%（推估）</td></tr>
+              <tr><td>次引擎 · 銀銅漲價 + 一貫化降本</td><td>高（已兌現中）</td><td>2025-2026</td><td>+1-2 pp</td><td>不直接、但提升整體毛利</td></tr>
+              <tr><td>新興引擎 · 泰國廠中國 +1</td><td>中高（產能已開出）</td><td>2026-2028</td><td>30%+（固態為主）</td><td>10-15%（爬坡中）</td></tr>
+              <tr style="color:var(--bear)"><td>反向風險 · 立隆電 / 日系擠壓</td><td>中</td><td>2026-2027</td><td>-2 至 -3 pp</td><td>-3 至 -5%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="sec-3-3">
+        <h3>3.3 短中長期動能推演</h3>
+        <div class="card-body">
+          <table class="peer-table">
+            <thead><tr><th>期程</th><th>動能來源</th><th>EPS 預估</th><th>關鍵驗證點</th></tr></thead>
+            <tbody>
+              <tr><td><b>短期（3-6 月）</b></td><td>月營收 YoY +30-50%、Q1 毛利率維持 23%+</td><td>2026 Q1 EPS 0.30-0.40</td><td>2026/05/10 月營收、5/15 法說 AI 占比</td></tr>
+              <tr><td><b>中期（6-18 月）</b></td><td>泰國廠產能利用率達 70%+、固態占比拉至 30-32%</td><td>2026 全年 EPS 1.5-2.0（H1）/ 1.0-1.4（H2）</td><td>2026 Q2 法說、Q3 月營收、配息決議</td></tr>
+              <tr><td><b>長期（2-5 年）</b></td><td>固態占比達 35-40% + AI 應用達 25-30%</td><td>2028 EPS 2.5-3.5（H1 樂觀）</td><td>立隆電 / 日系競爭、研發回升、家族接班</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="sec-3-4">
+        <h3>3.4 成長可持續性與風險</h3>
+        <div class="card-body">
+          <ul style="color:var(--ink-2);font-size:14px;line-height:1.75">
+            <li><b>基期效應消退</b>：2025 EPS YoY +48% 部分來自 2024 0.60 元低基期；2026 同期基期已正常化、YoY 將收斂至 +20-30%</li>
+            <li><b>立隆電 / 日系直接競爭</b>：立隆電 2472 直達 NVIDIA Rubin、日系越南擴產、可能擠壓金山電中高階份額</li>
+            <li><b>研發預算砍 25-46% 的延遲衝擊</b>：2024-2025 研發砍預算可能在 2027-2028 顯現新品儲備不足</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" id="sec-3-5">
+        <h3>3.5 成長對估值的反映</h3>
+        <div class="card-body">
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75">當前股價 56 元 / PE 62.92x 已 price-in <b>2026 EPS 達 1.5-1.8 元（PEG ~1.0）</b>。若實際達 1.8-2.0（H1），PE 可從 62x 收斂至 28-35x；若僅 1.0-1.4（H2），PE 維持 40-55x；若跌回 0.8（H3），PE 衝 70x+ 嚴重透支。</p>
+          <p style="color:var(--ink-2);font-size:14px;line-height:1.75"><b>結論：當前股價隱含「H1 已大致兌現」、安全邊際薄弱。</b>等 5/15 法說 AI 占比量化才能判斷是否 H1 真實兌現。</p>
+        </div>
+      </div>
+
+      <div class="view-card">
+        <h4>◆ 看完第三章，這家公司的成長動能能不能持續？</h4>
+        <p><b>• 2025 V 反成長真實，但 CAGR 仍受 2022-24 谷底拖累。</b>5 年 EPS CAGR -6.4%、5 年營收 CAGR -0.4%，均落後同業（立隆電 EPS +15.2%、鈺邦 +12.3%）。本案是「短期動能極強、長期 CAGR 弱」的分裂結構。</p>
+        <p><b>• 三引擎並行：AI 主 + 漲價次 + 泰國廠新興。</b>三者疊加是 H1 樂觀路徑（EPS 上看 1.5-2.0）成立的基礎；若主引擎 AI 占比未達 15%（5/15 法說），降級至 H2（EPS 1.0-1.4）為主流。</p>
+        <p><b>• 估值已 price-in H1、安全邊際薄弱。</b>當前 PE 62.92x 對應 PEG ~1.0、隱含 2026 EPS 1.5-1.8；若實際只 1.0-1.4，PE 維持 40-55x（H2）。理性策略：等 5/15 法說量化、PE 回檔至 40-45x 再進場（股價 50-54）。</p>
+      </div>
+
+    </section>
+
+    <!-- ===== Ch 4~15 待補充占位 ===== -->
+    <section class="section" id="ch4">
+      <div class="section-head">
+        <div class="no">04</div>
+        <div class="tit">
+          <h2>第四章：近期催化劑 / 利多因素</h2>
+          <div class="sub">5 大催化劑 + 時間軸 + EPS 影響推估</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>4.1 催化劑驗證卡</h3>
+        <div class="card-body">
+          <table>
+            <tr><th>催化劑</th><th>實現機率</th><th>若兌現可推升</th><th>市場已反映</th><th>剩餘空間</th><th>關鍵驗證點</th></tr>
+            <tr><td>2026/05/15 Q1 法說 AI 占比 ≥ 15%</td><td>40%</td><td>+8-12%</td><td>30%</td><td>+5-8%</td><td>5/15 法說 AI 應用占比首次量化</td></tr>
+            <tr><td>2026/05/10 4 月月營收 YoY ≥ 30%</td><td>60%</td><td>+3-5%</td><td>40%</td><td>+2-3%</td><td>5/10 月營收公告</td></tr>
+            <tr><td>2026 Q2 毛利率維持 ≥ 23%</td><td>55%</td><td>+5-7%</td><td>35%</td><td>+3-5%</td><td>8/14 Q2 季報</td></tr>
+            <tr><td>2026/06/30 資誠首次查核無保留</td><td>85%</td><td>+2-4%</td><td>60%</td><td>+1-2%</td><td>6/30 Q2 查核報告</td></tr>
+            <tr><td>2026/06/15 配息率回常態（&lt;150%）</td><td>30%</td><td>+5-8%</td><td>10%</td><td>+4-7%</td><td>6/15 股東常會配息決議</td></tr>
+            <tr style="background:rgba(107,159,114,0.10)"><td style="font-weight:700">合計</td><td>機率加權</td><td>+15-25%</td><td>已 price-in 35%</td><td style="color:var(--bull);font-weight:900">+10-15%</td><td>2026 5-7 月密集驗證</td></tr>
+          </table>
+          <div class="ev" style="margin-top:10px">
+            <div class="ev-t"><span class="fias-f">事實</span> 月營收 2026/02 YoY +50.17% 為近 5 年罕見爆發</div>
+            <div class="ev-d">月營收 2025/12-2026/02 連續 3 月 YoY +30%+，2/02 達 +50.17% 高峰；推估 Q1 營收 ~10 億 +25-30% YoY、Q1 EPS 0.30-0.40 元（佔全年 35-40%）。動能強烈但需 5/15 法說驗證 AI 占比是否 ≥15%。</div>
+            <div class="ev-s">來源：金山電月營收公告、finlab 月度資料</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>4.2 催化劑時間軸</h3>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-date">2026-05-10</div><div class="tl-title">4 月月營收公告</div><div class="tl-desc">YoY ≥ 30% 為動能延續訊號</div></div>
+            <div class="tl-item"><div class="tl-date">2026-05-15 ★★★</div><div class="tl-title">Q1 法說 + 季報</div><div class="tl-desc">AI 占比首次量化（決定性）+ 毛利率指引</div></div>
+            <div class="tl-item"><div class="tl-date">2026-06-15 ★</div><div class="tl-title">股東常會 + 配息決議</div><div class="tl-desc">配息率是否回常態（&lt;150%）</div></div>
+            <div class="tl-item"><div class="tl-date">2026-06-30 ★★</div><div class="tl-title">資誠 Q2 首次查核</div><div class="tl-desc">查核意見是否無保留</div></div>
+            <div class="tl-item"><div class="tl-date">2026-08-14 ★</div><div class="tl-title">Q2 季報</div><div class="tl-desc">毛利率延續性、固態占比變化</div></div>
+            <div class="tl-item"><div class="tl-date">2026-11-14</div><div class="tl-title">Q3 季報</div><div class="tl-desc">泰國廠產能利用率達 70%+</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="view-card">
+        <h4>◆ 看完第四章，催化劑該怎麼看？</h4>
+        <p><b>• 5 大催化劑「2 事實 + 3 假設」、5-7 月密集驗證。</b>事實類（月營收 + 動能）已支撐股價；假設類（AI 占比 / 配息率 / 查核）為決定性變數。市場已 price-in 35%、剩餘 10-15% 待驗證。</p>
+        <p><b>• 5/15 Q1 法說為單一決定性事件。</b>AI 占比若 ≥ 15% 加分 +8%、若 &lt; 10% 減分 -8%。是判斷 H1（樂觀）vs H4（看空）的決定性訊號。</p>
+        <p><b>• 配息率正常化機率僅 30%。</b>2024 配息率 233%、2023 194%；江氏家族傾向高配息維持股價穩定，2026 預期仍維持 200%+。若意外回到 150% 以下，視為信心回升訊號。</p>
+        <p><b>• 決策含義：等 5/15 法說 + 6/30 查核三件事完成再判斷。</b>當前股價 56 元已 price-in 樂觀路徑，安全邊際不足；若 AI 占比 + 配息正常化 + 查核無保留三項齊備，可考慮 50-54 區間進場。</p>
+      </div>
+    </section>
+    <section class="section" id="ch5">
+      <div class="section-head">
+        <div class="no">05</div>
+        <div class="tit">
+          <h2>第五章：為什麼在漲？市場為什麼買單？</h2>
+          <div class="sub">市場說法 + 資金面 + 漲幅歸因</div>
+        </div>
+      </div>
+      <div class="card"><h3>5.1 市場說法拆解</h3><div class="card-body">
+        <p style="font-size:.85em;color:var(--ink-3);margin-bottom:6px">2024-10 以來股價從 31.5 元 → 56 元（+78%），過去 12 個月市場主流說法可拆為「事實」（2 個）、「推論」（2 個）、「假設」（1 個）五類。</p>
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 說法 #1：2025 EPS 0.89 YoY +48% / 2025 Q4 毛利率 23.66% 創歷史新高</div><div class="ev-d">EPS 跳升 + 毛利率 5 季加速為基本面改善的最強驗證；非一次性業外、由產品組合改善 + 一貫化降本驅動。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 說法 #2：泰國三廠 2025 Q3 量產 + 月營收 2026/02 YoY +50.17%</div><div class="ev-d">產能擴張 + 短期動能爆發雙驗證；2026 Q1 營收推估 +25-30% YoY 為延續動能。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 說法 #3：「AI 伺服器擴散透過 ODM 拉動」</div><div class="ev-d">市場推論金山電透過群創 / 仁寶 / 鴻海 ODM 切入 NVIDIA GB300 / BBU；但 AI 占比未量化、屬推論類說法。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 說法 #4：「銀銅漲價傳導 + 一貫化降本紅利」</div><div class="ev-d">推論銀銅漲價時金山電一貫化製程相對受惠；2025 Q4 毛利率衝 23.66% 部分驗證、但持續性待 2026 觀察。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-a">假設</span> 說法 #5：「2026 EPS 上看 1.5-2.0 元」（H1 樂觀）</div><div class="ev-d">市場樂觀派預估 2026 EPS 雙倍於 2025；但需 AI 占比 ≥ 15% + 毛利率 25% + 泰國廠 70% 利用率三條件齊備、機率僅 33%。</div></div>
+      </div></div>
+      <div class="card"><h3>5.2 市場資金面觀察</h3><div class="card-body">
+        <table>
+          <tr><th>資金面指標</th><th>最新數據</th><th>解讀</th></tr>
+          <tr><td>近 20 日外資累計</td><td>小幅買超（+200 萬股）</td><td>機構謹慎追價</td></tr>
+          <tr><td>近 30 日投信累計</td><td>+約 50 萬股</td><td>跟進但幅度有限</td></tr>
+          <tr><td>PE 擴張</td><td>33 → 62.92x（+91%）</td><td>估值重估激烈、已 95% 高位</td></tr>
+          <tr><td>融資餘額</td><td>約 5,500 張（30 日 +25%）</td><td>融資快速膨脹、追價熱度高</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>5.3 漲幅歸因：EPS vs PE</h3><div class="card-body">
+        <table>
+          <tr><th>漲幅來源</th><th>計算</th><th>佔比</th></tr>
+          <tr><td>EPS 實質上修</td><td>2024 EPS 0.60 → 2025 0.89（+48%）</td><td>62%</td></tr>
+          <tr><td>PE 估值倍數擴張</td><td>33 → 62.92x（+91%），扣 EPS 重疊約 +30%</td><td>38%</td></tr>
+          <tr style="background:rgba(107,159,114,0.10)"><td style="font-weight:700">合計</td><td>31.5 → 56 元（+78%）</td><td style="font-weight:900">100%</td></tr>
+        </table>
+        <p style="font-size:.85em;color:var(--ink-3);margin-top:6px">漲幅 6 成靠基本面、4 成靠估值重估。屬「基本面 + 估值雙驅動」尾段；若 5/15 Q1 法說未達預期，估值部分有 -15-20% 回落壓力。<span class="fias-i">推論</span></p>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第五章，這輪漲勢怎麼看？</h4>
+        <p><b>• 漲幅 6 成基本面、4 成估值重估，非純泡沫。</b>EPS 貢獻 62% 為主要驅動，與「估值泡沫」（EPS &lt; 30%）不同；但 PE 已從 33x 擴張至 62.92x、處 12 月區間 95% 高位。</p>
+        <p><b>• 5 大說法 2 事實 + 2 推論 + 1 假設，敘事偏樂觀。</b>事實類已驗證、推論類待 5/15 法說 AI 占比量化、假設類「2026 EPS 上看 1.5-2.0」為高機率落空項。</p>
+        <p><b>• 估值已至 PE 區間 95% 高位，短期空間有限。</b>正常均值回歸有 -20-25% 壓力；若 H1 樂觀路徑兌現可撐 60x+、若 H2 中性路徑則回到 40-50x（股價 36-50 元）。</p>
+      </div>
+    </section>
+    <section class="section" id="ch6">
+      <div class="section-head">
+        <div class="no">06</div>
+        <div class="tit">
+          <h2>第六章：潛在風險偵測與求證</h2>
+          <div class="sub">7 大風險：致命 + 高度 + 中度</div>
+        </div>
+      </div>
+      <div class="card"><h3>6.1 致命風險（高機率 × 大衝擊）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> R4 資誠首次查核保留意見（機率 8%、衝擊 -12%）</div><div class="ev-d">2026/06/30 資誠首次查核若出具保留意見將為最大利空；若僅技術瑕疵調整、衝擊有限。新會計師通常傾向「乾淨開局」，機率不高但衝擊極大。</div></div>
+      </div></div>
+      <div class="card"><h3>6.2 高度風險（中機率 × 中大衝擊）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> R5 PE 62.92x 歷史 95% 高位（機率 60%、衝擊 -10%）</div><div class="ev-d">當前 PE 僅次於歷史最高 394x（2018 高峰）、較中位數 60.7x 略高；正常均值回歸有 -15-20% 壓力。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> R2 研發預算 2024-2025 砍 25-46%（機率 70%、衝擊 -8%）</div><div class="ev-d">研發砍預算可能在 2027-2028 顯現新品儲備不足；當前未直接影響短期、但結構性削弱中長期競爭力。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> R1 配息率 233% 隱性收割（機率 65%、衝擊 -7%）</div><div class="ev-d">每年配息高於盈餘、削弱再投資能力；2026/06/15 股東會若維持 200%+ 觸發信心進一步遞減。</div></div>
+      </div></div>
+      <div class="card"><h3>6.3 中度風險群組</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> R3 廣州金立 CNY 8,600 萬背書（機率 15%、衝擊 -5%）</div><div class="ev-d">背書佔股本 27.8% 為集中度高；若中國子公司違約、母公司承擔。地緣政治升級時風險放大。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> R6 AI 占比未量化揭露（機率 55%、衝擊 -5%）</div><div class="ev-d">管理層僅文字敘述「逐步成長」、市場難以驗證；5/15 法說若仍未量化、信心進一步流失。</div></div>
+        <div class="ev"><div class="ev-t"><span class="fias-a">假設</span> R7 海外子公司財務盲點（機率 40%、衝擊 -3%）</div><div class="ev-d">年報未完整揭露海外子公司財務狀態；資誠首次查核可能改善揭露完整性。</div></div>
+      </div></div>
+      <div class="card"><h3>6.4 風險總覽</h3><div class="card-body">
+        <p style="color:var(--ink-2);font-size:14px;line-height:1.75">7 大風險按嚴重度排序：R4（致命）→ R5 / R2 / R1（高度）→ R3 / R6 / R7（中度）。<b>合計風險加權衝擊：-49.5%</b>（若全部觸發）。實際情境下、單一風險觸發機率 8-70%、合計加權衝擊較有可能在 -10 至 -25% 區間。</p>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第六章，風險到底大不大？</h4>
+        <p><b>• 致命風險僅 R4 資誠查核（機率 8%、衝擊 -12%）。</b>單一最壞情境、但機率低；6/30 查核結果是關鍵時點。</p>
+        <p><b>• 三大高度風險：估值 + 研發砍預算 + 配息率隱性收割。</b>三者疊加加權衝擊 -25%；不會立即觸發但會持續壓制股價空間。</p>
+        <p><b>• 信心遞減趨勢明確（42% → 38% → 35% → 33%）。</b>四次校準持續下修為最重要的「警訊本身」、即使單一風險未觸發、信心持續遞減就足以引發股價修正。</p>
+      </div>
+    </section>
+    <section class="section" id="ch7">
+      <div class="section-head">
+        <div class="no">07</div>
+        <div class="tit">
+          <h2>第七章：隱藏優勢挖掘與求證</h2>
+          <div class="sub">5 項市場未充分定價的正面因素</div>
+        </div>
+      </div>
+      <div class="card"><h3>7.1 一貫化製程成本優勢（市場低估）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 鋁箔自製 + 電解液自研、銀銅漲價時毛利改善幅度同業最大</div><div class="ev-d">2025 Q4 毛利率 23.66%（5 季 +640bp 為同業最大改善幅度）；當銀銅鋁原物料漲價時、外購型同業毛利受擠、金山電一貫化製程相對受惠。市場給予的估值溢價（PE 62x）部分反映此優勢、但未充分。</div></div>
+      </div></div>
+      <div class="card"><h3>7.2 泰國三廠中國 +1 紅利（市場部分定價）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 2025 Q3 量產、固態 8,000 萬顆/月 + 固液混合 2,000 萬顆/月</div><div class="ev-d">符合「中國 +1」分散風險全球趨勢；對美國 / 歐洲 ODM 客戶具地緣政治避險紅利。預期 2026-2027 美洲營收占比由 2.33% 拉升至 5-8%。</div></div>
+      </div></div>
+      <div class="card"><h3>7.3 HITACHI AIC 31 年技術合作（市場低估）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-f">事實</span> 自 1994 年合作、高壓電解技術授權、是台廠少數能切入高品質日系規格的玩家</div><div class="ev-d">31 年合作關係建立的信任 + 技術 know-how 轉移、是無形資產護城河來源（Morningstar 評分 3/5）。市場僅以「日系合作」一句話帶過、但實質授權深度遠超表面。</div></div>
+      </div></div>
+      <div class="card"><h3>7.4 ODM 通道對接 NVIDIA 生態鏈（市場關注）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-i">推論</span> 透過群創 / 仁寶 / 鴻海 ODM 接觸到 GB300 / BBU 等高端產品</div><div class="ev-d">雖為間接 Tier-2、但獲得 NVIDIA 高端訂單潛力；單一訂單規模可能 5-10 億級別。AI 占比量化（5/15 法說）將驗證此優勢實質性。</div></div>
+      </div></div>
+      <div class="card"><h3>7.5 隱藏優勢實現機率與潛在溢價</h3><div class="card-body">
+        <table>
+          <tr><th>隱藏優勢</th><th>實現機率</th><th>若兌現可貢獻</th><th>市場已定價</th></tr>
+          <tr><td>7.1 一貫化降本</td><td>高（已兌現中）</td><td>+1-2 pp 毛利</td><td>~70%</td></tr>
+          <tr><td>7.2 泰國廠中國 +1</td><td>中高（產能已開出）</td><td>+5-8% 營收</td><td>~50%</td></tr>
+          <tr><td>7.3 HITACHI AIC 合作</td><td>持續</td><td>無形資產護城河</td><td>~30%</td></tr>
+          <tr><td>7.4 ODM 接觸 NVIDIA</td><td>中（待 5/15 量化）</td><td>+10-15% 營收</td><td>~50%</td></tr>
+          <tr><td>7.5 家族 55 年穩定經營</td><td>持續</td><td>治理穩定性</td><td>~20%</td></tr>
+          <tr style="background:rgba(107,159,114,0.10)"><td style="font-weight:700">合計潛在溢價</td><td>機率加權</td><td style="color:var(--bull);font-weight:900">+5-15%（短期）</td><td>當前 PE 62x 已部分反映</td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第七章，這家公司有什麼被市場忽略的優勢？</h4>
+        <p><b>• 一貫化製程 + 泰國廠 + HITACHI AIC + ODM 通道 + 家族穩定五項結構性正向。</b>五項加權潛在溢價 +5-15%、對應股價可上看 60-65 元；但當前 PE 62x 已部分 price-in。</p>
+        <p><b>• HITACHI AIC 31 年合作為市場最忽略的強訊號。</b>無形資產護城河深度遠超「日系合作」表面、是 Morningstar 護城河 3.0/5 的關鍵來源。</p>
+        <p><b>• ODM 通道接觸 NVIDIA 是雙面刃。</b>潛在訂單規模大、但 Tier-2 通道毛利被 ODM 分潤；5/15 法說 AI 占比量化將驗證實質性。</p>
+      </div>
+    </section>
+    <section class="section" id="ch8">
+      <div class="section-head"><div class="no">08</div><div class="tit"><h2>第八章：六步分析關鍵決策因素彙整</h2><div class="sub">ACH + 4 次校準 + 評審團</div></div></div>
+      <div class="card"><h3>8.1 ACH 競爭假說分析</h3><div class="card-body">
+        <table>
+          <tr><th>假說</th><th>描述</th><th>機率</th><th>目標價</th></tr>
+          <tr><td>H1 AI 紅利擴散</td><td>2026 EPS ≥ 2.0、毛利 25%、固態占比 35%</td><td>33%</td><td>75</td></tr>
+          <tr style="background:rgba(212,160,23,0.08)"><td>H2 成本因子（次假說）</td><td>2026 EPS 1.5-2.0、AI 占比 &lt;15%、漲價傳導為主</td><td>33%</td><td>55</td></tr>
+          <tr><td>H3 題材穩定</td><td>2026 EPS 1.0-1.4、估值高震</td><td>15%</td><td>51</td></tr>
+          <tr><td>H4 結構性收割</td><td>立隆電擠壓、AI 占比 &lt;10%、配息率隱性收割</td><td>13%</td><td>40</td></tr>
+          <tr><td>H5 治理利益衝突</td><td>廣州背書 + 查核保留 + 換所動機不明</td><td>8%</td><td>25</td></tr>
+        </table>
+        <div class="chart-wrap" style="margin-top:8px"><div class="chart-title">ACH 四次信心校準軌跡</div><canvas id="achTrack" height="180"></canvas><div class="chart-note">42% → 38% → 35% → 33%（持續遞減）</div></div>
+        <div class="ev" style="margin-top:8px"><div class="ev-t"><span class="fias-i">推論</span> H1 + H2 合計 66%、加權目標 54.3 元（較現價 -3%）</div><div class="ev-d">主流看多路徑（H1+H2+H6）合計 85% 但持續邊際收縮；反面（H3+H4+H5）合計 36% 持續強化。加權期望股價 54.3 元、較現價 56 元仍 -3%、安全邊際不足。</div></div>
+      </div></div>
+      <div class="card"><h3>8.2 六步決策因素匯總</h3><div class="card-body">
+        <table>
+          <tr><th>步驟</th><th>關鍵發現</th></tr>
+          <tr><td>Step 1 資料</td><td>2025 營收 38.5 億、EPS 0.89、Q4 毛利 23.66%；江氏家族 25.81%</td></tr>
+          <tr><td>Step 2 FIAS</td><td>大部分為事實 / 推論；管理層 AI 占比未量化為主要假設區</td></tr>
+          <tr><td>Step 3 競爭力</td><td>Morningstar 護城河 3.0/5 Narrow Moat、7 維 46/70</td></tr>
+          <tr><td>Step 4 ACH</td><td>H1+H2 合計 66% 為主場景、4 次校準持續下修</td></tr>
+          <tr><td>Step 5 壓力測試</td><td>R4 資誠查核（致命）+ R5/R2/R1（高度）合計加權 -25%</td></tr>
+          <tr><td>Step 6 評審團</td><td>3 條件通過 + 2 FAIL = 整體「條件通過」</td></tr>
+          <tr style="background:rgba(212,160,23,0.10)"><td><b>匯總</b></td><td><b>「好故事 + 已 price-in」、不追高、等驗證</b></td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第八章，六步彙整後該怎麼讀？</h4>
+        <p><b>• 本案本質：基本面真實 + 估值已 price-in。</b>六步交叉驗證確認金山電 V 反真實、護城河 Narrow、AI 占比待量化；當前 PE 62.92x 已透支樂觀預期。</p>
+        <p><b>• 4 次信心校準持續下修（42→38→35→33%）為最關鍵警訊。</b>每次分析深化都邊際強化反面、是「動能股 + 信心遞減」的雙重訊號。</p>
+        <p><b>• 加權目標 54.3 元 vs 現價 56 元 = -3% 安全邊際。</b>風險報酬比不成立（上行 +1.8% vs 下行 -49.5%）；理性策略：等 5/15 法說 AI 占比量化、PE 回檔至 40-45x（股價 50-54）再進場。</p>
+      </div>
+    </section>
+    <section class="section" id="ch9">
+      <div class="section-head"><div class="no">09</div><div class="tit"><h2>第九章：風險清單與壓力測試</h2><div class="sub">7 大風險 × 4 情境壓力測試</div></div></div>
+      <div class="card"><h3>9.1 風險矩陣（7 大）</h3><div class="card-body">
+        <table>
+          <tr><th>風險</th><th>機率</th><th>衝擊</th><th>嚴重度</th></tr>
+          <tr><td>R1 配息率 233% 隱性收割</td><td>65%</td><td>-7%</td><td>高度</td></tr>
+          <tr><td>R2 研發砍 25-46%</td><td>70%</td><td>-8%</td><td>高度</td></tr>
+          <tr><td>R3 廣州金立背書</td><td>15%</td><td>-5%</td><td>中度</td></tr>
+          <tr><td>R4 資誠查核保留</td><td>8%</td><td>-12%</td><td>致命</td></tr>
+          <tr><td>R5 PE 62x 歷史 95% 高位</td><td>60%</td><td>-10%</td><td>高度</td></tr>
+          <tr><td>R6 AI 占比未量化</td><td>55%</td><td>-5%</td><td>中度</td></tr>
+          <tr><td>R7 海外子公司財務盲點</td><td>40%</td><td>-3%</td><td>中度</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>9.2 4 情境壓力測試</h3><div class="card-body">
+        <table>
+          <tr><th>情境</th><th>觸發條件</th><th>機率</th><th>股價衝擊</th></tr>
+          <tr><td>樂觀（H1）</td><td>AI 占比 ≥15% + 毛利 25% + 泰國廠 70% 利用率</td><td>33%</td><td>+34%（→75）</td></tr>
+          <tr><td>基準（H2）</td><td>AI 占比 &lt;15%、漲價傳導為主、EPS 1.5-2.0</td><td>33%</td><td>-2%（→55）</td></tr>
+          <tr><td>悲觀（H3+H4）</td><td>立隆電擠壓 + 配息率 200%+ + Q1 毛利下滑</td><td>28%</td><td>-29%（→40）</td></tr>
+          <tr><td>極端（H5）</td><td>資誠保留 + 廣州違約 + 換所負評</td><td>8%</td><td>-55%（→25）</td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第九章，壓力測試告訴我什麼？</h4>
+        <p><b>• 加權期望報酬 +1.8% vs 加權期望損失 -49.5%、風險報酬比不成立。</b>當前股價 56 元已透支 H1 樂觀情境、安全邊際不足。</p>
+        <p><b>• 致命風險 R4（資誠查核）機率僅 8% 但衝擊 -12%。</b>單一最壞情境 → 6/30 是必須關注的關鍵時點。</p>
+        <p><b>• 結論：應等多重驗證齊備再進場。</b>建議分批進場區 50-54 元（PE 35-40x）、停損 50 元、永不追高 65 元以上。</p>
+      </div>
+    </section>
+    <section class="section" id="ch10">
+      <div class="section-head"><div class="no">10</div><div class="tit"><h2>第十章：監控儀表板</h2><div class="sub">12 燈號 + 關鍵時點 + 進出條件</div></div></div>
+      <div class="card"><h3>10.1 即時燈號</h3><div class="card-body">
+        <table>
+          <tr><th>指標</th><th>燈號</th><th>目前值</th><th>說明</th></tr>
+          <tr><td>月營收 YoY</td><td><span class="pill good">綠</span></td><td>2026/02 +50.17%</td><td>近 5 年罕見爆發</td></tr>
+          <tr><td>季度毛利率</td><td><span class="pill good">綠</span></td><td>2025 Q4 23.66%</td><td>5 季加速、創新高</td></tr>
+          <tr><td>本益比 PE</td><td><span class="pill bad">紅</span></td><td>62.92x</td><td>歷史 95% 高位、嚴重透支</td></tr>
+          <tr><td>融資餘額</td><td><span class="pill warn">黃</span></td><td>~5,500 張（30 日 +25%）</td><td>追價熱度高、回檔壓力</td></tr>
+          <tr><td>外資動態</td><td><span class="pill warn">黃</span></td><td>近 20 日小買 +200 萬股</td><td>機構謹慎</td></tr>
+          <tr><td>固態占比</td><td><span class="pill warn">黃</span></td><td>25%</td><td>2026 目標 30-35%</td></tr>
+          <tr><td>泰國廠進度</td><td><span class="pill good">綠</span></td><td>2025 Q3 量產中</td><td>產能利用率爬坡</td></tr>
+          <tr><td>研發預算</td><td><span class="pill bad">紅</span></td><td>2024-2025 砍 25-46%</td><td>長期競爭力削弱</td></tr>
+          <tr><td>配息率</td><td><span class="pill bad">紅</span></td><td>2024 233%</td><td>隱性收割</td></tr>
+          <tr><td>AI 占比</td><td><span class="pill warn">黃</span></td><td>未量化（推估 5-10%）</td><td>5/15 法說決定性</td></tr>
+          <tr><td>會計師查核</td><td><span class="pill warn">黃</span></td><td>資誠首次（6/30）</td><td>結果未明</td></tr>
+          <tr><td>家族治理</td><td><span class="pill good">綠</span></td><td>江家 25.81% 穩定</td><td>但接班集中決策</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>10.2 關鍵時點</h3><div class="card-body">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-date">2026-05-10</div><div class="tl-title">4 月月營收</div><div class="tl-desc">YoY ≥ 30% 為動能延續</div></div>
+          <div class="tl-item"><div class="tl-date">2026-05-15 ★★★</div><div class="tl-title">Q1 法說 + 季報</div><div class="tl-desc">AI 占比首次量化、決定性</div></div>
+          <div class="tl-item"><div class="tl-date">2026-06-15 ★</div><div class="tl-title">股東常會 + 配息</div><div class="tl-desc">配息率回常態？</div></div>
+          <div class="tl-item"><div class="tl-date">2026-06-30 ★★</div><div class="tl-title">資誠首次查核</div><div class="tl-desc">無保留為基本要求</div></div>
+          <div class="tl-item"><div class="tl-date">2026-08-14</div><div class="tl-title">Q2 季報</div><div class="tl-desc">毛利率延續性</div></div>
+          <div class="tl-item"><div class="tl-date">2026-11-14</div><div class="tl-title">Q3 季報</div><div class="tl-desc">泰國廠產能利用率</div></div>
+        </div>
+      </div></div>
+      <div class="card"><h3>10.3 進場條件清單</h3><div class="card-body">
+        <table>
+          <tr><th>動作</th><th>條件（需同時成立）</th><th>目前狀態</th></tr>
+          <tr><td style="color:var(--bull);font-weight:700">首次進場 30%</td><td>股價 50-54 + AI 占比 ≥ 15% + 配息率 &lt; 200%</td><td>❌ 現價 56、未驗證</td></tr>
+          <tr><td style="color:var(--bull);font-weight:700">加碼至 60%</td><td>股價 40-50 + Q2 毛利 ≥ 22% + 查核無保留</td><td>❌ 現價偏離</td></tr>
+          <tr><td style="color:var(--bull);font-weight:700">重壓至 100%</td><td>股價 &lt; 40 + 基本面未破壞</td><td>❌ 壓力情境才可能</td></tr>
+          <tr><td style="color:var(--warn);font-weight:700">減碼 50%</td><td>月營收 YoY 連 3 月 &lt; +10% / 毛利連 2 季 &lt; 20%</td><td>⚠ 未觸發</td></tr>
+          <tr><td style="color:var(--bear);font-weight:700">全出 100%</td><td>跌破 50 / 資誠保留 / 廣州違約 三擇一</td><td>⚠ 未觸發</td></tr>
+        </table>
+        <p style="margin-top:6px;font-size:.82em;color:var(--ink-3)">目前 5 綠 5 黃 2 紅、<b>觀望</b>為理性策略。首次進場需股價回落至 50-54 區間（-4-11%）+ 三條件同時成立。</p>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第十章，怎麼監控這家公司？</h4>
+        <p><b>• 12 燈號 5 綠 + 5 黃 + 2 紅、AI 動能強但估值警戒。</b>綠燈：月營收 / 毛利 / 泰國廠 / 家族治理 / 趨勢；紅燈：PE 62x / 研發砍 / 配息 233%。</p>
+        <p><b>• 三個關鍵時點：5/15 法說、6/15 配息、6/30 查核。</b>三項齊備才考慮進場。</p>
+        <p><b>• 停損 50 為加權目標 54.3 - 8% 緩衝。</b>跌破 50 即停損；&lt; 40 為強買區（但需基本面未破壞）。</p>
+      </div>
+    </section>
+    <section class="section" id="ch11">
+      <div class="section-head"><div class="no">11</div><div class="tit"><h2>第十一章：推衍預測</h2><div class="sub">短中長期 3 路徑情境</div></div></div>
+      <div class="card"><h3>11.1 短期推衍（3-6 月）</h3><div class="card-body">
+        <div class="scenario-grid">
+          <div class="scenario-card sc-bull">
+            <div class="sc-head"><span class="sc-tag">A · 樂觀</span><span class="sc-prob">25%</span></div>
+            <h5>Q1 法說 AI 占比 ≥ 15% + 毛利維持 23%</h5>
+            <div class="sc-eps">2026 Q1 EPS 0.40+<b>股價 65-75</b></div>
+            <ul><li>5/15 法說 AI 占比明確 +8%</li><li>毛利維持 23-24% 動能延續</li><li>融資 +25% 持續、外資轉買</li><li>PE 衝 70x、股價挑戰 65-75</li></ul>
+          </div>
+          <div class="scenario-card sc-base">
+            <div class="sc-head"><span class="sc-tag">B · 基準 ★</span><span class="sc-prob">50%</span></div>
+            <h5>AI 占比 8-12%、毛利 22-23%</h5>
+            <div class="sc-eps">2026 Q1 EPS 0.30-0.40<b>區間 50-58</b></div>
+            <ul><li>AI 占比未達樂觀預期但仍正成長</li><li>毛利維持 22-23%、漲價傳導減弱</li><li>融資回落至 4,500-5,000 張</li><li>PE 回 50-58x、股價區間震盪</li></ul>
+          </div>
+          <div class="scenario-card sc-bear">
+            <div class="sc-head"><span class="sc-tag">C · 悲觀</span><span class="sc-prob">25%</span></div>
+            <h5>AI 占比 &lt; 10% + 毛利 &lt; 22%</h5>
+            <div class="sc-eps">2026 Q1 EPS 0.20-0.28<b>回測 40-50</b></div>
+            <ul><li>5/15 法說 AI 占比令市場失望</li><li>毛利率回落、敘事破裂</li><li>融資連降、外資轉賣</li><li>PE 回 30-40x、股價測 40-50</li></ul>
+          </div>
+        </div>
+      </div></div>
+      <div class="card"><h3>11.2 中期推衍（6-18 月）</h3><div class="card-body">
+        <div class="scenario-grid">
+          <div class="scenario-card sc-bull"><div class="sc-head"><span class="sc-tag">A · 樂觀</span><span class="sc-prob">30%</span></div><h5>泰國廠 70%+ + 固態 30-32% + AI 20%</h5><div class="sc-eps">2026 EPS 1.5-2.0<b>股價 75-100</b></div><ul><li>三引擎全部兌現、毛利 25%+</li><li>立隆電 / 日系競爭可控</li><li>2027 加碼擴泰國廠至 12,000 萬顆/月</li></ul></div>
+          <div class="scenario-card sc-base"><div class="sc-head"><span class="sc-tag">B · 基準 ★</span><span class="sc-prob">50%</span></div><h5>三引擎部分兌現、EPS 1.0-1.4</h5><div class="sc-eps">2026 EPS 1.0-1.4<b>股價 50-70</b></div><ul><li>泰國廠利用率 50-60%</li><li>固態占比 27-30%、緩慢提升</li><li>毛利 22-25%、震盪</li></ul></div>
+          <div class="scenario-card sc-bear"><div class="sc-head"><span class="sc-tag">C · 悲觀</span><span class="sc-prob">20%</span></div><h5>立隆電擠壓 + 配息率 200%+ + AI 占比 &lt; 10%</h5><div class="sc-eps">2026 EPS 0.5-0.8<b>股價 25-40</b></div><ul><li>市佔下滑至 2-3%</li><li>毛利回 19-20%</li><li>PE 收縮至 30x、加深悲觀</li></ul></div>
+        </div>
+      </div></div>
+      <div class="card"><h3>11.3 長期推衍（2-5 年）</h3><div class="card-body">
+        <div class="ev"><div class="ev-t"><span class="fias-s">推測</span> 三推衍鏈</div><div class="ev-d">
+          <p><b>鏈 1（樂觀，30%）：</b>2027-2028 固態 35-40% + AI 應用 25-30% + 泰國廠完全產能。2028 EPS 2.5-3.5、股價 90-130（PE 30-40x）。觸發：NVIDIA Rubin 大放量 + 立隆電 / 日系競爭可控 + 接班順利。</p>
+          <p><b>鏈 2（基準，50%）：</b>2027-2028 固態 30-32% + AI 15-20%。2028 EPS 1.8-2.5、股價 60-90（PE 30-40x）。觸發：產業緩成長 + 漲價傳導減弱 + 競爭中性。</p>
+          <p><b>鏈 3（悲觀，20%）：</b>2027-2028 立隆電全面擠壓 + 研發砍預算延遲衝擊。2028 EPS 0.8-1.5、股價 25-50（PE 25-35x）。觸發：AI 占比未達 10% + 毛利回 19-20% + 接班衝擊。</p>
+        </div></div>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第十一章，推衍預測怎麼指導行動？</h4>
+        <p><b>• 短期（3-6 月）基準路徑 50% 主導 — 區間震盪 50-58。</b>5/15 法說後若 AI 占比 8-12%、PE 回 50-58x、股價區間。</p>
+        <p><b>• 中期（6-18 月）路徑 A 30% × 路徑 C 20% 略偏樂觀。</b>期望股價 ~57（30%×88 + 50%×60 + 20%×33）與目前接近。</p>
+        <p><b>• 長期（2-5 年）鏈 1+2 合計 80% 為正向。</b>2028 期望 EPS ~2.0、股價 60-90 區間，但需 AI 占比拉至 25-30% 為前提。</p>
+      </div>
+    </section>
+    <section class="section" id="ch12">
+      <div class="section-head"><div class="no">12</div><div class="tit"><h2>第十二章：股價合理性分析</h2><div class="sub">7 法估值 + 安全邊際 + 操作帶</div></div></div>
+      <div class="card"><h3>12.1 估值方法總覽</h3><div class="card-body">
+        <div class="chart-wrap" style="padding:14px 16px;margin-bottom:12px"><div class="chart-title">7 法估值區間 vs 現價</div><canvas id="valuationChart" style="max-height:320px"></canvas><div class="chart-note">7 法合理價中位數 ~50；現價 56 高於中位數 12%、接近 DCF 樂觀上緣</div></div>
+        <table style="font-size:.78em">
+          <tr><th>#</th><th>方法</th><th>合理價</th><th>vs 現價</th></tr>
+          <tr><td>1</td><td>PE 30x × 2026 EPS 1.5 (H2)</td><td>45</td><td>-19.6%</td></tr>
+          <tr><td>2</td><td>PEG 1.0 × 3 年 CAGR ~30%</td><td>45-55</td><td>-19% ~ -2%</td></tr>
+          <tr><td>3</td><td>PB 4-6x × BVPS ~10</td><td>40-60</td><td>-29% ~ +7%</td></tr>
+          <tr><td>4</td><td>EV/EBITDA 10-15x</td><td>42-55</td><td>-25% ~ -2%</td></tr>
+          <tr><td>5</td><td>歷史循環 PE 25-40x</td><td>22-36</td><td>-61% ~ -36%</td></tr>
+          <tr><td>6</td><td>分拆估值（液 + 固）</td><td>48-62</td><td>-14% ~ +11%</td></tr>
+          <tr><td>7</td><td>DCF 雙版本</td><td>40-65</td><td>-29% ~ +16%</td></tr>
+          <tr style="background:rgba(212,160,23,0.10)"><td style="font-weight:700" colspan="2">加權中位數（追蹤 v2.0）</td><td style="font-weight:900">54.3 元</td><td>-3.0%</td></tr>
+        </table>
+        <p style="font-size:.85em;color:var(--ink-3);margin-top:8px">7 法估值加權中位數 54.3 元、現價 56 元溢價 3.0%。多數方法（PE / PEG / 歷史循環 / EV/EBITDA）顯示偏貴；分拆估值與 DCF 樂觀版勉強支撐現價。<b>估值已 price-in H1 樂觀路徑、安全邊際薄弱</b>。</p>
+      </div></div>
+      <div class="card"><h3>12.2 安全邊際分析</h3><div class="card-body">
+        <table>
+          <tr><th>區間</th><th>股價</th><th>對應 PE</th><th>對應情境</th><th>建議操作</th></tr>
+          <tr><td>過熱區</td><td>&gt; 65</td><td>&gt; 73x</td><td>H1 樂觀過度反映</td><td>逢高減碼、永不追高</td></tr>
+          <tr><td>觀望區（當前）</td><td>56-65</td><td>62-73x</td><td>H1+H2 已 price-in</td><td>不買不賣、等驗證</td></tr>
+          <tr><td>合理進場區</td><td>50-54</td><td>56-60x → 35-40x（若 EPS 1.5）</td><td>H2 基準 + PE 回歸</td><td>首次進場 30%</td></tr>
+          <tr><td>安全邊際區</td><td>40-50</td><td>45-56x → 27-33x</td><td>H3 中性回檔</td><td>加碼至 60%</td></tr>
+          <tr><td>強力買入區</td><td>30-40</td><td>34-45x → 20-27x</td><td>H4 過度恐慌</td><td>重壓至 100%</td></tr>
+          <tr><td>永久迴避區</td><td>&lt; 25</td><td>&lt; 28x</td><td>H5 治理利益衝突</td><td>停損 50；&lt; 25 永久迴避</td></tr>
+        </table>
+        <p style="margin-top:8px;font-size:.85em;color:var(--ink-3)"><b>當前股價 56 元位於「觀望區」下緣</b>。不買不賣 — 基本面強但估值已透支。等回落至 50-54 合理進場區（需 5/15 法說後）才首次 30%、40-50 加碼至 60%、30-40 重壓 100%。</p>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第十二章，現價是貴還是便宜？</h4>
+        <p><b>• 現價 56 元偏貴 3%（vs 加權目標 54.3）、安全邊際薄弱。</b>7 法估值多數顯示偏貴；僅分拆與 DCF 樂觀版勉強支撐。</p>
+        <p><b>• PEG / 歷史循環兩法給最嚴格評價、DCF 樂觀給最寬容。</b>歷史循環 PE 25-40x 暗示 22-36 元為長期合理區間。</p>
+        <p><b>• 操作帶六區間：當前「觀望區」、理想進場「50-54」。</b>現價 56 = 觀望區下緣、對應「不買不賣」；等回落 50-54 才首次 30%；40-50 加碼 60%；30-40 重壓 100%。</p>
+        <p><b>• 停損 50 為「加權目標 54.3 - 8% 緩衝」依據。</b>跌破 50 即進入 H3 中性 + H4 看空交疊區、結構性停損。</p>
+      </div>
+    </section>
+    <section class="section" id="ch13">
+      <div class="section-head"><div class="no">13</div><div class="tit"><h2>第十三章：保留彈性（補充分析）</h2><div class="sub">股權 + 同業 + 5 年敘事 + ESG</div></div></div>
+      <div class="card"><h3>13.1 股東權益與稀釋分析</h3><div class="card-body">
+        <table>
+          <tr><th>項目</th><th>現況</th><th>稀釋影響</th></tr>
+          <tr><td>股本</td><td>12.95 億元 / 1.295 億股</td><td>無 CB / 無現增、股本穩定</td></tr>
+          <tr style="color:var(--bull)"><td><b>無 CB / 無現增</b></td><td>2025 年底無任何 CB 流通</td><td><b>無稀釋壓力</b></td></tr>
+          <tr><td>江氏家族持股</td><td>25.81%（穩定）</td><td>家族經營 55 年無紛爭</td></tr>
+          <tr><td>配息率 2024</td><td>233%（高於盈餘）</td><td>動用累積保留盈餘、削弱再投資</td></tr>
+          <tr><td>研發預算</td><td>2024-2025 砍 25-46%</td><td>長期競爭力削弱</td></tr>
+          <tr><td>BVPS</td><td>~10 元（推估）</td><td>PB 5.6x（較同業偏高）</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>13.2 同業財務比較深化</h3><div class="card-body">
+        <table>
+          <tr><th>指標</th><th>金山電 8042</th><th>立隆電 2472</th><th>鈺邦 6449</th><th>Nippon Chemi-con</th></tr>
+          <tr><td>商業模式</td><td>液 75% + 固 25%</td><td>液態為主、AI 直達</td><td>純固態</td><td>全產線 + 品牌</td></tr>
+          <tr><td>2025 營收（億）</td><td>38.5</td><td>~100</td><td>~60</td><td>USD ~10 億</td></tr>
+          <tr><td>毛利率</td><td>23.66%</td><td>32%</td><td>50%</td><td>40%+</td></tr>
+          <tr><td>EPS 2025</td><td>0.89</td><td>7.45</td><td>5.20</td><td>—</td></tr>
+          <tr><td>PE</td><td>62.92x</td><td>~13x</td><td>~24x</td><td>~12x</td></tr>
+          <tr><td>CB / 現增</td><td><b>無</b></td><td>無</td><td>無</td><td>無</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>13.3 5 年敘事軌跡</h3><div class="card-body">
+        <table>
+          <tr><th>年度</th><th>當年敘事</th><th>EPS</th></tr>
+          <tr><td>2021</td><td>液態主力、傳統電源 + 家電</td><td>1.24</td></tr>
+          <tr><td>2022</td><td>後疫情需求高峰、毛利率 18.5%</td><td>0.81</td></tr>
+          <tr><td>2023</td><td>庫存調整谷底、毛利率 17.3%</td><td>0.72</td></tr>
+          <tr><td>2024</td><td>泰國廠籌建、固態切入起步</td><td>0.60（低點）</td></tr>
+          <tr><td>2025</td><td>V 反 + AI 受惠、Q4 毛利 23.66%</td><td>0.89（YoY +48%）</td></tr>
+          <tr><td>2026-2028</td><td>AI 占比 + 泰國廠 + 固態占比拉升</td><td>(目標) 1.5-2.0 → 2.5-3.5</td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第十三章，這家公司該被放進哪個族群？</h4>
+        <p><b>• 「Tier-2 鋁電容廠 × V 反故事 × 估值已 price-in」三性質族群。</b>與立隆電（規模龍頭）/ 鈺邦（純固態高毛利）定位不同；屬「中段第二集團」+「2025 V 反 + 2026 待驗證」。</p>
+        <p><b>• 5 年敘事從「液態主力」升級到「V 反 + AI 切入」。</b>2025 年是分水嶺；2026 是延續或熄火的關鍵驗證年。</p>
+        <p><b>• 無 CB / 無現增為相對優勢，但配息率 233% 為結構性警訊。</b>江氏家族傾向高配息維持股價穩定、削弱再投資；研發砍 25-46% 為長期競爭力風險。</p>
+      </div>
+    </section>
+    <section class="section" id="ch14">
+      <div class="section-head"><div class="no">14</div><div class="tit"><h2>第十四章：貓膩探索與求證</h2><div class="sub">市場共識 vs 反共識 + 6 步貓膩 + 紅旗檢查</div></div></div>
+      <div class="card"><h3>14.1 市場共識 vs 反共識</h3><div class="card-body">
+        <table>
+          <tr><th>市場共識</th><th>反共識觀點</th><th>佐證強度</th></tr>
+          <tr><td>「AI 紅利擴散、EPS 上看 2.0」</td><td>透過 ODM 通道、AI 占比未量化、無法驗證</td><td>中（待 5/15 法說）</td></tr>
+          <tr><td>「毛利率 5 季加速、23.66% 為新常態」</td><td>部分源於原物料漲價傳導、若銀銅回穩可能回 19-20%</td><td>強（敏感性測試已建模）</td></tr>
+          <tr><td>「泰國廠中國 +1 紅利」</td><td>產能爬坡 1-2 年不穩定、初期攤提虧損</td><td>強（事實）</td></tr>
+          <tr><td>「家族 55 年穩定經營」</td><td>家族集中決策、配息率高、研發砍預算為治理隱患</td><td>強（事實）</td></tr>
+          <tr><td>「PE 62x 反映 AI 紅利」</td><td>歷史循環 PE 25-40x、12 月區間 95% 高位</td><td>強（事實）</td></tr>
+        </table>
+      </div></div>
+      <div class="card"><h3>14.2 時點分析 — 管理層的資本棋局</h3><div class="card-body">
+        <div class="ev"><div class="ev-t">會計師換所 + 董事會換血時序 <span class="fias-i">推論</span></div><div class="ev-d">
+          <b>時序：</b>2025 末會計師從昊興換為資誠（PwC）；董事會大換血（114.01-03 三席同日請辭）。<br>
+          <b>分析：</b>換所 + 董事會換血幾乎同步發生、可解讀為「主動加強財務治理揭露」也可能為「規避前任風險」。資誠首次查核（2026/06/30）的結論將驗證真實動機。<br>
+          <b>結論：</b>非典型紅旗（無重大財報重編 / 內線交易）、但時序耦合需密切追蹤。
+        </div></div>
+      </div></div>
+      <div class="card"><h3>14.3 6 步貓膩探索</h3><div class="card-body">
+        <details><summary style="font-size:.88em;color:var(--accent)">資料品質 — 營收灌水？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">2025 營收 38.5 億、營業現金流穩定；應收帳款週轉 50-65 天屬正常區間。<b>無灌水嫌疑</b>。</div></details>
+        <details><summary style="font-size:.88em;color:var(--accent)">獲利品質 — 賺的錢真的嗎？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">2025 EPS 0.89 對應自由現金流，毛利改善由可驗證驅動（漲價傳導 + 一貫化降本 + 產品組合）。<b>獲利品質中高</b>。</div></details>
+        <details><summary style="font-size:.88em;color:var(--accent)">治理品質 — 掏空風險？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">江家 25.81% 控股穩定；廣州金立 CNY 8,600 萬背書佔股本 27.8% 為集中度高警戒；無掏空跡象但需追蹤背書執行狀況。<b>治理品質中等</b>。</div></details>
+        <details><summary style="font-size:.88em;color:var(--accent)">管理層誠信 — 說過的話做到了？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">2024 承諾泰國廠 2025 Q3 量產 → 已兌現；2025 法說「逐步成長 AI 應用」未量化承諾。<b>誠信中高、量化具體性待 5/15 法說提升</b>。</div></details>
+        <details><summary style="font-size:.88em;color:var(--accent)">隱藏風險 — 什麼沒被充分揭露？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">(1) AI 占比未量化；(2) 海外子公司財務拆解不完整；(3) 廣州背書詳細條款；(4) 換所背景；(5) 接班計畫細節。<b>5 項揭露不足</b>。</div></details>
+        <details><summary style="font-size:.88em;color:var(--accent)">估值盲點 — 市場可能算錯了什麼？</summary><div style="font-size:.82em;color:var(--ink-3);padding:6px 0">(1) 高估短期動能持續性（基期效應）；(2) 低估配息率隱性收割；(3) 高估 AI 占比上限（Tier-2 通道分潤）。<b>盲點偏向高估</b>。</div></details>
+      </div></div>
+      <div class="card"><h3>14.4 貓膩總評</h3><div class="card-body">
+        <table>
+          <tr><th>項目</th><th>嚴重度</th><th>對結論影響</th></tr>
+          <tr><td>會計師換所 + 董事會換血時序耦合</td><td><span class="pill warn">中</span></td><td>需 6/30 查核驗證、暫無法判斷</td></tr>
+          <tr><td>廣州金立 8,600 萬背書集中</td><td><span class="pill warn">中</span></td><td>佔股本 27.8% 高、若違約 -5%</td></tr>
+          <tr><td>配息率 233% 隱性收割</td><td><span class="pill bad">高</span></td><td>結構性削弱、-7%</td></tr>
+          <tr><td>研發砍 25-46% 延遲衝擊</td><td><span class="pill bad">高</span></td><td>長期 -8%</td></tr>
+          <tr><td>AI 占比未量化（透明度）</td><td><span class="pill warn">中</span></td><td>市場難驗證、-5%</td></tr>
+          <tr style="background:rgba(212,160,23,0.08)"><td><b>總評：燈號</b></td><td><b>黃燈偏紅</b></td><td>無重大造假、但治理透明度有改善空間</td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 看完第十四章，這家公司有沒有貓膩？</h4>
+        <p><b>• 無重大造假紅旗、但「黃燈偏紅」總評。</b>主要警戒：配息率 233%、研發砍預算、AI 占比未量化、廣州背書集中。對結論影響合計約 -10 至 -15%。</p>
+        <p><b>• 會計師換所 + 董事會換血時序耦合需密切追蹤。</b>2026/06/30 資誠首次查核是驗證真實動機的關鍵時點。</p>
+        <p><b>• 決策含義：黃燈不擋進場、但影響進場價位。</b>等股價 50-54 區間 + 三項驗證齊備（5/15 + 6/15 + 6/30）才首次進場 30%。</p>
+      </div>
+    </section>
+    <section class="section" id="ch15">
+      <div class="section-head"><div class="no">15</div><div class="tit"><h2>第十五章：投資結論</h2><div class="sub">推衍鏈 + 加權期望 + 進場策略</div></div></div>
+      <div class="card"><h3>15.1 三推衍鏈整合</h3><div class="card-body">
+        <table>
+          <tr><th>路徑</th><th>機率</th><th>觸發條件</th><th>2026 EPS</th><th>目標股價</th><th>3-5 年期望</th></tr>
+          <tr style="color:var(--bull)"><td><b>樂觀（H1+H6）</b></td><td>52%</td><td>AI 占比 ≥ 15% + 毛利 25% + 泰國廠 70%+</td><td>1.5-2.0</td><td>75（H1）/ 68（H6）</td><td>+30-50%</td></tr>
+          <tr style="background:rgba(212,160,23,0.10)"><td><b>基準（H2 主）</b></td><td>33%</td><td>AI 占比 8-15% + 毛利 22-23% + 漲價傳導為主</td><td>1.0-1.4</td><td>55</td><td>-2% ~ +10%</td></tr>
+          <tr style="color:var(--bear)"><td><b>悲觀（H3+H4+H5）</b></td><td>36%</td><td>AI 占比 &lt; 10% + 立隆電擠壓 + 配息收割 / 查核保留</td><td>0.5-0.8</td><td>40 / 25</td><td>-30 ~ -55%</td></tr>
+        </table>
+        <p style="font-size:.85em;color:var(--ink-3);margin-top:8px"><b>加權期望股價 54.3 元</b>（追蹤 v2.0 校準），較現價 56 元 -3.0%。風險報酬比 0.04（極低）— 上行 +1.8% vs 下行 -49.5%。</p>
+      </div></div>
+      <div class="card"><h3>15.2 進場策略</h3><div class="card-body">
+        <table>
+          <tr><th>區間</th><th>股價</th><th>動作</th><th>倉位</th></tr>
+          <tr><td>過熱永避</td><td>&gt; 65</td><td>禁追高、減碼出場</td><td>0%</td></tr>
+          <tr><td>觀望（當前）</td><td>56-65</td><td>不買不賣、等驗證</td><td>0%</td></tr>
+          <tr><td>合理進場</td><td>50-54</td><td>首次 30%（需 5/15+6/15+6/30 三驗證）</td><td>30%</td></tr>
+          <tr><td>安全邊際</td><td>40-50</td><td>加碼至 60%</td><td>60%</td></tr>
+          <tr><td>強力買入</td><td>30-40</td><td>重壓 100%（需基本面未破）</td><td>100%</td></tr>
+          <tr><td>永久迴避</td><td>&lt; 25</td><td>停損 50；&lt; 25 永久出場</td><td>0%</td></tr>
+        </table>
+      </div></div>
+      <div class="view-card">
+        <h4>◆ 投資結論：金山電該怎麼操作？</h4>
+        <p><b>• 結論：觀望（不進場、避險型）。</b>當前股價 56 元 PE 62.92x 已 price-in H1 樂觀路徑、安全邊際不足；4 次信心校準持續遞減（42→38→35→33%）為最關鍵警訊。</p>
+        <p><b>• 等三項驗證齊備再進場。</b>(1) 2026/05/15 Q1 法說 AI 占比 ≥ 15%；(2) 2026/06/15 配息率 &lt; 200%；(3) 2026/06/30 資誠查核無保留。三項齊備後 50-54 元首次 30%。</p>
+        <p><b>• 加權期望股價 54.3 元、停損 50。</b>樂觀路徑 52%（目標 75）、基準 33%（55）、悲觀 36%（40-25）。風險報酬比 0.04 極低、不適合追高。</p>
+        <p><b>• 中長期 24-36 月若 H1+H6 雙驗證，目標 75-100 元成立。</b>但需 AI 占比拉至 25-30% + 固態占比 35%+ + 毛利 25%+ 三條件齊備。</p>
+        <p><b>• 風險清單：R4 資誠查核（致命 8%）、R5 PE 高位（高度 60%）、R2 研發砍（高度 70%）、R1 配息率（高度 65%）。</b>加權衝擊若全部觸發 -49.5%；單一觸發概率高的為 R5 PE 修正。</p>
+      </div>
+    </section>
+
+    <!-- 模板使用說明 -->
+    <div class="tip good" style="margin-top:40px">
+      <b>▸ 第七步章節模板 v1 · 使用說明</b>
+      本檔含完整 15 章結構、所有 view-card 結論（問句標題 + 圓點）、圖表（Chart.js + 三層 CDN 回退）、彈性提示（flex-note）、選用章節標籤（tag-new 選用）。<br>
+      <b>使用方式</b>：複製本檔為新報告 → 替換 meta（title / ISSUE / masthead）→ 依 flex-note 提示逐節填入目標公司實際資料 → 依該公司條件決定選用章節是否保留。<br>
+      <b>不要遺漏</b>：每章末 view-card 結論（問句 + 圓點）、Chart.js 圖表與 CDN 回退邏輯、tabs-mode 單章切換 JS。
+    </div>
+
+    <footer class="footer">
+      天機閣 · 第七步 · 章節模板 v1<br>
+      來源格式：年報 + 公開說明書 + 法說會 + 月營收 + 財報資料庫 + 西碧拉供應鏈圖譜<br>
+      信心校準鏈：競爭力分析 → ACH 分析 → 壓力測試 → 評審團 → 推演分析<br>
+      所有數據均需標註 FIAS（事實/推論/假設/存疑）信心分級
+    </footer>
+  </main>
+</div>
+
+<script>
+// ===== 標籤切換 · 夾式報告模式（懶載 Chart.js）=====
+(function(){
+  const tabs = document.querySelectorAll('.tab-item');
+  if(!tabs.length) return;
+
+  // 已初始化過的章節
+  const initedSections = new Set();
+
+  function initSectionCharts(sectionId){
+    if(initedSections.has(sectionId)) return;
+    initedSections.add(sectionId);
+    if(typeof window.initChartsFor === 'function'){
+      window.initChartsFor(sectionId);
+    }
+  }
+
+  function resizeSectionCharts(sectionId){
+    if(typeof Chart === 'undefined') return;
+    const section = document.getElementById(sectionId);
+    if(!section) return;
+    section.querySelectorAll('canvas').forEach(canvas => {
+      const chart = Chart.getChart(canvas);
+      if(chart) chart.resize();
+    });
+  }
+
+  function activate(targetId){
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('ch-active'));
+    const target = document.getElementById(targetId);
+    if(target) target.classList.add('ch-active');
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.target === targetId));
+    // Masthead 只在 Ch 1 顯示
+    const masthead = document.getElementById('mainMasthead');
+    if(masthead) masthead.style.display = (targetId === 'ch1') ? '' : 'none';
+    window.scrollTo(0, 0); // 瞬間捲回（不用 smooth，省 400ms）
+    // 第一次點到該章才初始化它的圖表
+    initSectionCharts(targetId);
+    // 已初始化的圖表做 resize 確保尺寸正確
+    requestAnimationFrame(() => resizeSectionCharts(targetId));
+    // 讓 active tab 滑動置中（當標籤列需捲動時生效）
+    const activeTab = document.querySelector('.tab-item.active');
+    const nav = document.querySelector('.tabs-right');
+    if(activeTab && nav){
+      const navRect = nav.getBoundingClientRect();
+      const tabRect = activeTab.getBoundingClientRect();
+      const offset = (tabRect.top + tabRect.height/2) - (navRect.top + navRect.height/2);
+      nav.scrollTo({top: nav.scrollTop + offset, behavior:'smooth'});
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', e => {
+      e.preventDefault();
+      activate(tab.dataset.target);
+    });
+    tab.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        activate(tab.dataset.target);
+      }
+    });
+  });
+
+  // 頁面載入時：初始化預設 active 章節的圖表（Ch 1 無圖，幾乎不花時間）
+  window.addEventListener('load', () => {
+    const active = document.querySelector('.tab-item.active');
+    if(active) initSectionCharts(active.dataset.target);
+  });
+
+  // ===== 窄視窗折疊開關（toggle + 遮罩點擊關閉 + resize 自動清理）=====
+  const toggleBtn = document.querySelector('.tabs-toggle');
+  const BREAKPOINT = 300;
+  const isNarrow = () => window.innerWidth <= BREAKPOINT;
+
+  function openTabs(){
+    document.body.classList.add('tabs-open');
+    if(toggleBtn) toggleBtn.setAttribute('aria-expanded','true');
+  }
+  function closeTabs(){
+    document.body.classList.remove('tabs-open');
+    if(toggleBtn) toggleBtn.setAttribute('aria-expanded','false');
+  }
+
+  if(toggleBtn){
+    toggleBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if(document.body.classList.contains('tabs-open')) closeTabs();
+      else openTabs();
+    });
+  }
+
+  // 點章節後自動關閉（窄視窗）
+  tabs.forEach(t => t.addEventListener('click', () => {
+    if(isNarrow()) closeTabs();
+  }));
+
+  // 點遮罩或內文外部也關閉
+  document.addEventListener('click', e => {
+    if(!document.body.classList.contains('tabs-open')) return;
+    const nav = document.querySelector('.tabs-right');
+    if(nav && nav.contains(e.target)) return;
+    if(toggleBtn && toggleBtn.contains(e.target)) return;
+    closeTabs();
+  });
+
+  // resize：回到寬視窗時清除 open 狀態
+  let rzTimer = null;
+  window.addEventListener('resize', () => {
+    if(rzTimer) clearTimeout(rzTimer);
+    rzTimer = setTimeout(() => {
+      if(!isNarrow() && document.body.classList.contains('tabs-open')) closeTabs();
+    }, 80);
+  });
+})();
+
+// ===== Theme toggle =====
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme');
+  if(saved === 'light') root.removeAttribute('data-theme');
+  else root.setAttribute('data-theme','dark');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+    if(typeof window.refreshCharts === 'function') window.refreshCharts();
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// ===== Chart.js · 主題感知配色 =====
+function getChartTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return isDark ? {
+    tick:'#d6cfb6', label:'#f5efdd',
+    grid:'rgba(245,239,221,0.10)', radarGrid:'rgba(245,239,221,0.18)',
+    line1:'#86b58d', line2:'#d48a7a', line3:'#d6ad5c', line4:'#8fb3c4',
+    fill1:'rgba(134,181,141,0.22)', fill2:'rgba(212,138,122,0.16)'
+  } : {
+    tick:'#3d3830', label:'#1c1a16',
+    grid:'rgba(28,26,22,0.10)', radarGrid:'rgba(28,26,22,0.35)',
+    line1:'#2f6b3d', line2:'#8e3a2c', line3:'#8a6a1f', line4:'#3d6378',
+    fill1:'rgba(47,107,61,0.15)', fill2:'rgba(142,58,44,0.12)'
+  };
+}
+
+let chartRadar = null, chartMarket = null, chartPorter = null, chartMoat = null;
+let chartGrowth = null, chartScenarioEPS = null, chartScenarioPrice = null;
+let chartPricePE = null, chartAchTrack = null, chartValuation = null;
+
+function _chartDefaults(){
+  if(typeof Chart === 'undefined') return null;
+  const t = getChartTheme();
+  Chart.defaults.font.family = "'Inter','Noto Sans TC',system-ui,sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = t.label;
+  return t;
+}
+
+function initCharts(){
+  const t = _chartDefaults();
+  if(!t) return;
+
+  // Porter 五力雷達（越大越有利 · 評分 = 對公司有利程度）
+  const pEl = document.getElementById('porterRadar');
+  if(pEl){
+    chartPorter = new Chart(pEl, {
+      type:'radar',
+      data:{
+        labels:['現有競爭者','新進者威脅','替代品威脅','供應商議價','客戶議價'],
+        datasets:[
+          {label:'本公司有利程度', data:[8,7,6,2.5,5], backgroundColor:t.fill1, borderColor:t.line1, borderWidth:2, pointBackgroundColor:t.line1, pointRadius:4}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        scales:{r:{suggestedMin:0, suggestedMax:10, ticks:{stepSize:2, color:t.tick, backdropColor:'transparent', font:{size:10}}, grid:{color:t.radarGrid}, angleLines:{color:t.radarGrid}, pointLabels:{color:t.label, font:{size:10.5, weight:'600'}, padding:6}}},
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:11}}}}
+      }
+    });
+  }
+
+  // 護城河五來源雷達（0~5）
+  const mtEl = document.getElementById('moatRadar');
+  if(mtEl){
+    chartMoat = new Chart(mtEl, {
+      type:'radar',
+      data:{
+        labels:['無形資產','轉換成本','網絡效應','成本優勢','高效規模'],
+        datasets:[
+          {label:'本公司護城河', data:[4,5,2,3,3], backgroundColor:t.fill1, borderColor:t.line1, borderWidth:2, pointBackgroundColor:t.line1, pointRadius:4}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        scales:{r:{suggestedMin:0, suggestedMax:5, ticks:{stepSize:1, color:t.tick, backdropColor:'transparent', font:{size:10}}, grid:{color:t.radarGrid}, angleLines:{color:t.radarGrid}, pointLabels:{color:t.label, font:{size:10.5, weight:'600'}, padding:6}}},
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:11}}}}
+      }
+    });
+  }
+
+  // 7 維雷達（本公司 vs 對標同業）
+  const rEl = document.getElementById('radarCompete');
+  if(rEl){
+    chartRadar = new Chart(rEl, {
+      type:'radar',
+      data:{
+        labels:['技術能力','製造規模','定價權','客戶黏著','財務強度','產品組合','股東/接班'],
+        datasets:[
+          {label:'本公司', data:[8.0,3.0,8.6,8.0,7.5,6.0,7.5], backgroundColor:t.fill1, borderColor:t.line1, borderWidth:2, pointBackgroundColor:t.line1, pointRadius:4},
+          {label:'對標同業', data:[5.0,4.5,3.5,4.0,3.0,5.5,5.0], backgroundColor:t.fill2, borderColor:t.line2, borderWidth:2, borderDash:[6,4], pointBackgroundColor:t.line2, pointRadius:3}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        scales:{r:{suggestedMin:0, suggestedMax:10, ticks:{stepSize:2, color:t.tick, backdropColor:'transparent', font:{size:10}}, grid:{color:t.radarGrid}, angleLines:{color:t.radarGrid}, pointLabels:{color:t.label, font:{size:10.5, weight:'600'}, padding:6}}},
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:11}}}}
+      }
+    });
+  }
+
+  // Ch 3.1 成長軌跡（營收/EPS/毛利率/ROE 五年）雙軸
+  const gEl = document.getElementById('growthTrend');
+  if(gEl){
+    chartGrowth = new Chart(gEl, {
+      type:'line',
+      data:{
+        labels:['2021','2022','2023','2024','2025'],
+        datasets:[
+          {label:'營收（億）', data:[7.0,8.6,7.76,9.80,13.79], borderColor:t.line1, backgroundColor:t.fill1, tension:0.3, fill:false, pointRadius:4, pointBackgroundColor:t.line1, borderWidth:2.5, yAxisID:'y'},
+          {label:'EPS（元）', data:[8.55,9.32,7.85,8.49,10.99], borderColor:t.line3, backgroundColor:'rgba(138,106,31,0.08)', tension:0.3, fill:false, pointRadius:4, pointBackgroundColor:t.line3, borderWidth:2.5, yAxisID:'y1'},
+          {label:'毛利率（%）', data:[42,40,39.5,38.6,36.7], borderColor:t.line2, backgroundColor:t.fill2, tension:0.3, fill:false, pointRadius:3, borderWidth:1.8, borderDash:[5,3], yAxisID:'y2'},
+          {label:'ROE（%）', data:[null,null,16.5,14.6,18.0], borderColor:t.line4, backgroundColor:'rgba(143,179,196,0.08)', tension:0.3, fill:false, pointRadius:3, borderWidth:1.8, borderDash:[5,3], yAxisID:'y2'}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}},
+          y:{type:'linear', position:'left', ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}, title:{display:true, text:'營收（億）', color:t.label, font:{size:10}}},
+          y1:{type:'linear', position:'right', ticks:{color:t.line3, font:{size:10}}, grid:{drawOnChartArea:false}, title:{display:true, text:'EPS（元）', color:t.line3, font:{size:10}}},
+          y2:{type:'linear', display:false, min:0, max:50}
+        },
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}}}
+      }
+    });
+  }
+
+  // Ch 3.3 三情境 EPS 推演
+  const seEl = document.getElementById('scenarioEPS');
+  if(seEl){
+    chartScenarioEPS = new Chart(seEl, {
+      type:'line',
+      data:{
+        labels:['2025','2026','2027','2028'],
+        datasets:[
+          {label:'樂觀（25%）', data:[10.99,12.5,14.8,17.0], borderColor:t.line1, backgroundColor:t.fill1, tension:0.25, fill:false, pointRadius:4, pointBackgroundColor:t.line1, borderWidth:2.5},
+          {label:'基準（50%）', data:[10.99,12.2,13.0,13.5], borderColor:t.line3, backgroundColor:'rgba(138,106,31,0.08)', tension:0.25, fill:false, pointRadius:4, pointBackgroundColor:t.line3, borderWidth:2.5},
+          {label:'悲觀（25%）', data:[10.99,11.0,10.0,9.0], borderColor:t.line2, backgroundColor:t.fill2, tension:0.25, fill:false, pointRadius:4, pointBackgroundColor:t.line2, borderWidth:2.5, borderDash:[6,4]}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}},
+          y:{ticks:{color:t.tick, font:{size:10}, callback:v=>v+' 元'}, grid:{color:t.grid}, suggestedMin:5, suggestedMax:20, title:{display:true, text:'EPS', color:t.label, font:{size:10}}}
+        },
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}}}
+      }
+    });
+  }
+
+  // Ch 5.2 股價 + PE 雙軸（原 Ch 3 pricePE）
+  const ppEl = document.getElementById('pricePE');
+  if(ppEl){
+    chartPricePE = new Chart(ppEl, {
+      type:'line',
+      data:{
+        labels:['02/25','02/26','03/02','03/06','03/12','03/18','03/24','03/30','04/02','04/08','04/10'],
+        datasets:[
+          {label:'股價（元）',data:[255.0,280.5,299.5,291.5,327.0,372.0,374.5,333.0,312.5,351.0,389.5],borderColor:t.line1,backgroundColor:t.fill1,tension:0.25,fill:false,pointRadius:3,yAxisID:'y',borderWidth:2.5},
+          {label:'PE（倍）',data:[25.32,27.86,29.74,28.95,29.75,33.85,34.08,30.30,28.43,31.94,35.44],borderColor:t.line3,backgroundColor:'rgba(138,106,31,0.12)',tension:0.25,fill:false,pointRadius:3,yAxisID:'y1',borderWidth:2}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}},
+          y:{type:'linear',position:'left',ticks:{color:t.line1, font:{size:10}}, grid:{color:t.grid}, title:{display:true, text:'股價', color:t.line1, font:{size:10}}},
+          y1:{type:'linear',position:'right',ticks:{color:t.line3, font:{size:10}}, grid:{drawOnChartArea:false}, title:{display:true, text:'PE', color:t.line3, font:{size:10}}}
+        },
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}}}
+      }
+    });
+  }
+
+  // Ch 8.1 ACH 四次信心校準軌跡（原 Ch 6 achTrack）
+  const atEl = document.getElementById('achTrack');
+  if(atEl){
+    chartAchTrack = new Chart(atEl, {
+      type:'line',
+      data:{
+        labels:['競爭力分析','ACH 分析','壓力測試','評審團','推演分析'],
+        datasets:[
+          {label:'H1 看多',data:[35,30,26,27,28],borderColor:t.line1,backgroundColor:'rgba(134,181,141,0.1)',tension:0.25,pointRadius:3,borderWidth:2},
+          {label:'H2 中性 ★',data:[30,38,42,43,44],borderColor:t.line3,backgroundColor:'rgba(138,106,31,0.15)',tension:0.25,pointRadius:4,borderWidth:3},
+          {label:'H3 結構壓力',data:[20,22,22,22,21],borderColor:t.line4,backgroundColor:'rgba(143,179,196,0.1)',tension:0.25,pointRadius:3,borderWidth:2},
+          {label:'H4 看空深度',data:[15,10,10,8,7],borderColor:t.line2,backgroundColor:'rgba(212,138,122,0.1)',tension:0.25,pointRadius:3,borderWidth:2}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}},
+          y:{ticks:{color:t.tick, font:{size:10}, callback:v=>v+'%'}, grid:{color:t.grid}, suggestedMin:0, suggestedMax:50}
+        },
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}}}
+      }
+    });
+  }
+
+  // Ch 12.1 七法估值區間柱 vs 現價（原 Ch 10 valuationChart）
+  const vcEl = document.getElementById('valuationChart');
+  if(vcEl){
+    const currentPrice = 389.5;
+    const methods = [
+      {label:'PE 法', min:242, max:464},
+      {label:'PEG 法', min:270, max:280},
+      {label:'PB 法', min:292, max:302},
+      {label:'EV/EBITDA', min:290, max:320},
+      {label:'歷史循環', min:280, max:320},
+      {label:'分拆估值', min:325, max:365},
+      {label:'DCF 雙版本', min:305, max:430}
+    ];
+    const pickColor = m => {
+      if(m.min > currentPrice) return t.line1;
+      if(m.max < currentPrice) return t.line2;
+      return 'rgba(155,126,197,0.7)';
+    };
+    const currentPriceLinePlugin = {
+      id:'currentPriceLine',
+      afterDraw(chart){
+        const {ctx, chartArea, scales} = chart;
+        if(!scales.x) return;
+        const xPos = scales.x.getPixelForValue(currentPrice);
+        ctx.save();
+        ctx.beginPath();
+        ctx.setLineDash([6,4]);
+        ctx.strokeStyle = t.line2;
+        ctx.lineWidth = 2;
+        ctx.moveTo(xPos, chartArea.top);
+        ctx.lineTo(xPos, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '600 11px Inter, sans-serif';
+        ctx.fillStyle = t.line2;
+        ctx.fillText(`現價 ${currentPrice}`, xPos + 6, chartArea.top + 14);
+        ctx.restore();
+      }
+    };
+    chartValuation = new Chart(vcEl, {
+      type:'bar',
+      data:{
+        labels:methods.map(m=>m.label),
+        datasets:[{label:'估值區間（元）', data:methods.map(m=>[m.min,m.max]), backgroundColor:methods.map(pickColor), borderWidth:0, borderRadius:3, barPercentage:0.75}]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{min:200, max:500, ticks:{color:t.tick, callback:v=>v+' 元', font:{size:10}}, grid:{color:t.grid}},
+          y:{ticks:{color:t.label, font:{size:10}}, grid:{display:false}}
+        },
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>{const m=methods[ctx.dataIndex]; return `${m.min} ~ ${m.max} 元`;}}}
+        }
+      },
+      plugins:[currentPriceLinePlugin]
+    });
+  }
+
+  // Ch 3.5 三情境目標價（bar）
+  const spEl = document.getElementById('scenarioPrice');
+  if(spEl){
+    chartScenarioPrice = new Chart(spEl, {
+      type:'bar',
+      data:{
+        labels:['樂觀情境','基準情境','悲觀情境'],
+        datasets:[
+          {label:'目標價下緣', data:[500,400,240], backgroundColor:t.fill1, borderColor:t.line1, borderWidth:1, stack:'range'},
+          {label:'區間上限增量', data:[100,50,60], backgroundColor:'rgba(214,173,92,0.3)', borderColor:t.line3, borderWidth:1, stack:'range'}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:11, weight:'600'}}, grid:{display:false}},
+          y:{ticks:{color:t.tick, font:{size:10}, callback:v=>v+' 元'}, grid:{color:t.grid}, suggestedMin:200, suggestedMax:650, title:{display:true, text:'股價（元）', color:t.label, font:{size:10}}}
+        },
+        plugins:{
+          legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}},
+          tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' 元';}}}
+        }
+      }
+    });
+  }
+
+  // 市佔率時序（示範資料）
+  const mEl = document.getElementById('marketShare');
+  if(mEl){
+    chartMarket = new Chart(mEl, {
+      type:'line',
+      data:{
+        labels:['—','—','—','—','—'],
+        datasets:[
+          {label:'本公司 · 主業務', data:[100,100,100,100,100], borderColor:t.line1, backgroundColor:t.fill1, tension:0.2, fill:false, pointRadius:4, pointBackgroundColor:t.line1, borderWidth:2.5},
+          {label:'本公司 · 次業務', data:[8,9,10,11,12], borderColor:t.line3, backgroundColor:'rgba(138,106,31,0.08)', tension:0.3, fill:false, pointRadius:3, borderWidth:2, borderDash:[4,3]},
+          {label:'同業 A', data:[18,17,16,16,15], borderColor:t.line2, backgroundColor:t.fill2, tension:0.3, fill:false, pointRadius:3, borderWidth:1.8, borderDash:[6,4]},
+          {label:'同業 B', data:[22,21,20,19,18], borderColor:t.line4, backgroundColor:'rgba(143,179,196,0.08)', tension:0.3, fill:false, pointRadius:3, borderWidth:1.8, borderDash:[6,4]}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:t.tick, font:{size:10}}, grid:{color:t.grid}},
+          y:{ticks:{color:t.tick, font:{size:10}, callback:v=>v+'%'}, grid:{color:t.grid}, suggestedMin:0, suggestedMax:100, title:{display:true, text:'市佔率', color:t.label, font:{size:10}}}
+        },
+        plugins:{legend:{position:'bottom', labels:{color:t.label, font:{size:10.5}}}}
+      }
+    });
+  }
+}
+
+// 主題切換時重繪
+window.refreshCharts = function(){
+  if(typeof Chart === 'undefined') return;
+  const t = getChartTheme();
+  Chart.defaults.color = t.label;
+  [chartRadar, chartMarket, chartPorter, chartMoat, chartGrowth, chartScenarioEPS, chartScenarioPrice, chartPricePE, chartAchTrack, chartValuation].forEach(ch=>{
+    if(!ch) return;
+    const scales = ch.options.scales || {};
+    Object.values(scales).forEach(s=>{
+      if(!s) return;
+      if(s.ticks){ s.ticks.color = t.tick; if('backdropColor' in s.ticks) s.ticks.backdropColor='transparent'; }
+      if(s.pointLabels){ s.pointLabels.color = t.label; }
+      if(s.grid){ s.grid.color = s===scales.r ? t.radarGrid : t.grid; }
+      if(s.angleLines){ s.angleLines.color = t.radarGrid; }
+      if(s.title){ s.title.color = t.label; }
+    });
+    if(ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels){
+      ch.options.plugins.legend.labels.color = t.label;
+    }
+    ch.update('none');
+  });
+};
+
+// Chart.js 就緒等待器：最多等 6 秒、每 300ms 檢查一次
+function waitForChart(callback, retries){
+  retries = (retries == null) ? 20 : retries;
+  if(typeof Chart !== 'undefined') return callback();
+  if(retries <= 0){ showAllChartError(); return; }
+  setTimeout(function(){ waitForChart(callback, retries - 1); }, 300);
+}
+
+// 所有圖表載入失敗時的視覺提示
+function showAllChartError(){
+  document.querySelectorAll('.chart-wrap').forEach(function(w){
+    if(w.querySelector('.chart-error')) return;
+    var c = w.querySelector('canvas');
+    if(c) c.style.display = 'none';
+    var d = document.createElement('div');
+    d.className = 'chart-error';
+    d.style.cssText = 'padding:28px 14px;text-align:center;color:var(--bear);font-size:12px;line-height:1.8';
+    d.innerHTML = '⚠️ 圖表載入失敗<br><span style="color:var(--ink-3)">請檢查網路後重新整理頁面</span>';
+    w.appendChild(d);
+  });
+}
+
+// 懶載入：圖表不在頁面載入時全部初始化，改由 tab 切換時按需初始化
+window.initChartsFor = function(sectionId){
+  // Ch 2 / Ch 3 有圖表；Ch 1 和 placeholder 沒有
+  if(sectionId !== 'ch2' && sectionId !== 'ch3') return;
+  if(window._chartsInited) return;
+  waitForChart(function(){
+    window._chartsInited = true;
+    try { initCharts(); }
+    catch(e){ console.error('[initCharts] 失敗:', e); showAllChartError(); }
+  });
+};
+</script>
+</body>
+</html>
