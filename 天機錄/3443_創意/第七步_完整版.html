@@ -419,8 +419,8 @@ html{scroll-behavior:smooth;overflow-x:hidden}
 .risk-card b{color:var(--ink);font-weight:600}
 
 /* ===== Ch 2 · Chart wrap（雷達 / 線圖）===== */
-.chart-wrap{background:var(--paper-2);border:1px solid var(--rule);padding:4px 6px;margin:8px 0}
-.chart-wrap canvas{max-width:100%;max-height:260px}
+.chart-wrap{background:var(--paper-2);border:1px solid var(--rule);padding:4px 6px;margin:8px 0;min-height:300px;display:flex;flex-direction:column}
+.chart-wrap canvas{max-width:100%;max-height:280px;min-height:240px;flex:1 1 240px;display:block}
 .chart-title{color:var(--accent);font-weight:700;font-size:9.5px;margin-bottom:2px;text-align:center;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;line-height:1.2}
 .chart-note{color:var(--ink-3);font-size:9.5px;margin-top:2px;text-align:center;font-style:italic;font-family:var(--mono);line-height:1.4}
 .radar-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:8px;margin:12px 0;align-items:start}
@@ -6053,13 +6053,21 @@ function showAllChartError(){
 
 // 懶載入：圖表不在頁面載入時全部初始化，改由 tab 切換時按需初始化
 window.initChartsFor = function(sectionId){
-  // Ch 2 / Ch 3 有圖表；Ch 1 和 placeholder 沒有
-  if(sectionId !== 'ch2' && sectionId !== 'ch3') return;
+  // 含 canvas 的章節：ch2 / ch3 / ch5 / ch8 / ch12
+  if(!['ch2','ch3','ch5','ch8','ch12'].includes(sectionId)) return;
   if(window._chartsInited) return;
   waitForChart(function(){
     window._chartsInited = true;
-    try { initCharts(); }
-    catch(e){ console.error('[initCharts] 失敗:', e); showAllChartError(); }
+    try {
+      initCharts();
+      // 建立完成後強制 resize 確保所有 canvas 尺寸正確
+      requestAnimationFrame(() => {
+        document.querySelectorAll('canvas').forEach(c => {
+          const ch = Chart.getChart(c);
+          if(ch) ch.resize();
+        });
+      });
+    } catch(e){ console.error('[initCharts] 失敗:', e); showAllChartError(); }
   });
 };
 </script>
