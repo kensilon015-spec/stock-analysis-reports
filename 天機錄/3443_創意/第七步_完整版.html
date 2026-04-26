@@ -92,29 +92,39 @@ html{scroll-behavior:smooth;overflow-x:hidden}
 .card-body{padding:4px 0 0 14px}
 .main h4{color:var(--ink);font-family:var(--serif);font-size:15.5px;font-weight:700;margin:16px 0 8px}
 
-/* ===== 手機版：禁橫向捲動，強制換行自動調整寬度（v2.3 修正 2026-04-26）===== */
+/* ===== 手機版：禁橫向捲動，強制換行自動調整寬度（v2.4 修正 2026-04-26）===== */
 @media(max-width:860px){
-  .main{padding:24px 16px 60px;max-width:100%;overflow-x:hidden}
-  .card-body{padding:4px 0 0 0;max-width:100%}
-  .card{max-width:100%}
+  .main{padding:24px 16px 60px;max-width:100%;overflow-x:hidden;box-sizing:border-box}
+  .card-body{padding:4px 0 0 0;max-width:100%;box-sizing:border-box}
+  .card,.section{max-width:100%;box-sizing:border-box}
+  /* duo / scenario 等 grid 強制單欄（覆蓋 inline style）*/
+  .duo{grid-template-columns:1fr !important;display:grid !important}
+  .duo .scenario,.scenario{max-width:100% !important;min-width:0 !important;width:auto !important;box-sizing:border-box}
   /* 表格 fixed-layout 強制平均分配欄寬 */
   .main table,.moat-table,.sustain-table,.peer-table{
-    table-layout:fixed !important;width:100% !important;font-size:11.5px;word-break:break-all
+    table-layout:fixed !important;width:100% !important;max-width:100% !important;
+    font-size:11.5px;word-break:break-all;box-sizing:border-box
   }
-  /* 強制所有 cell 可換行，覆蓋 nowrap */
+  /* 強制所有 cell 可換行，覆蓋 nowrap 與 width:1% */
   .main table th,.main table td,
   .moat-table th,.moat-table td,
   .sustain-table th,.sustain-table td,
-  .peer-table th,.peer-table td{
+  .peer-table th,.peer-table td,
+  .peer-table th.num,.peer-table td.num,
+  .moat-table td.m-type,.moat-table td.m-score,
+  .sustain-table td.period,.sustain-table td.grade{
     white-space:normal !important;word-break:break-all;overflow-wrap:break-word;
-    padding:6px 5px;width:auto !important;min-width:0 !important;vertical-align:top;line-height:1.45
+    padding:5px 4px;width:auto !important;min-width:0 !important;max-width:100% !important;
+    vertical-align:top;line-height:1.4;box-sizing:border-box
   }
   /* 標題與字體縮小 */
   .card h3{font-size:16.5px;padding-left:10px}
   .main h4{font-size:14px}
   /* view-card 與 tip 也要適應 */
-  .view-card,.tip{padding:12px 14px}
-  .view-card p,.tip p{font-size:13px;line-height:1.65}
+  .view-card,.tip{padding:12px 14px;max-width:100%;box-sizing:border-box}
+  .view-card p,.tip p{font-size:13px;line-height:1.65;word-break:break-word}
+  /* 圖表 canvas 寬度限制 */
+  .chart-wrap,.chart-wrap canvas{max-width:100% !important}
 }
 /* ===== 更窄手機（≤480px）字體再縮 ===== */
 @media(max-width:480px){
@@ -805,33 +815,36 @@ body.has-tabs .tab-brand-bar{
   table-layout:auto !important;
   width:100% !important;
 }
-/* 數字欄與短欄位自動縮到最窄 */
-.main table th.num,.main table td.num,
-.peer-table th.num,.peer-table td.num,
-.moat-table td.m-score,.moat-table td.m-type,
-.sustain-table td.period,.sustain-table td.grade{
-  white-space:nowrap;
-  width:1%;
+/* === 桌面版才套用 nowrap / width:1% — 手機自然 wrap（v2.5 修正 2026-04-26）=== */
+@media(min-width:861px){
+  /* 數字欄與短欄位自動縮到最窄 */
+  .main table th.num,.main table td.num,
+  .peer-table th.num,.peer-table td.num,
+  .moat-table td.m-score,.moat-table td.m-type,
+  .sustain-table td.period,.sustain-table td.grade{
+    white-space:nowrap;
+    width:1%;
+  }
+  /* 長說明 / 第一欄說明自動換行、吃滿剩餘空間 */
+  .main table td,.peer-table td,.moat-table td,.sustain-table td{
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
+  .main table td.num,.peer-table td.num,
+  .moat-table td.m-score,.moat-table td.m-type,
+  .sustain-table td.period,.sustain-table td.grade{
+    white-space:nowrap;
+    word-break:keep-all;
+    overflow-wrap:normal;
+  }
+  /* finance-grid 年度欄位維持均分但可收縮 */
+  .peer-table.finance-grid{table-layout:fixed !important}
+  .peer-table.finance-grid th,.peer-table.finance-grid td{width:auto;min-width:0}
+  .peer-table.finance-grid td.num{white-space:nowrap}
+  /* 避免內文被 rev-tbl 拖寬 */
+  .main table.rev-tbl td.num,.main table.rev-tbl th.num{white-space:nowrap;width:1%;text-align:right}
 }
-/* 長說明 / 第一欄說明自動換行、吃滿剩餘空間 */
-.main table td,.peer-table td,.moat-table td,.sustain-table td{
-  white-space:normal;
-  word-break:break-word;
-  overflow-wrap:anywhere;
-}
-.main table td.num,.peer-table td.num,
-.moat-table td.m-score,.moat-table td.m-type,
-.sustain-table td.period,.sustain-table td.grade{
-  white-space:nowrap;
-  word-break:keep-all;
-  overflow-wrap:normal;
-}
-/* finance-grid 年度欄位維持均分但可收縮 */
-.peer-table.finance-grid{table-layout:fixed !important}
-.peer-table.finance-grid th,.peer-table.finance-grid td{width:auto;min-width:0}
-.peer-table.finance-grid td.num{white-space:nowrap}
-/* 避免內文被 rev-tbl 拖寬 */
-.main table.rev-tbl td.num,.main table.rev-tbl th.num{white-space:nowrap;width:1%;text-align:right}
 
 </style>
 </head>
