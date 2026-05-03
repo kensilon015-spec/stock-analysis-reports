@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AES-KY 6781 · 第八步 推演版 · 天機錄 2026-05-03</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  /* LIGHT — default: warm paper */
+  --paper:#f5f1e8;
+  --paper-2:#ece6d6;
+  --paper-3:#e1d9c4;
+  --ink:#1c1a16;
+  --ink-2:#3d3830;
+  --ink-3:#6b6357;
+  --ink-4:#a39b8a;
+  --rule:#c9bfa8;
+  --rule-2:#ddd3bc;
+  --accent:#2f5a3d;
+  --accent-2:#6a8d5f;
+  --accent-wash:#e3e8dc;
+  --bull:#2f6b3d;
+  --bear:#8e3a2c;
+  --gold:#8a6a1f;
+  --warn:#a67318;
+  --neutral:#3d6378;
+  --noise-opacity:0;
+  --plain-bg:transparent;
+  --table-hl:rgba(47,90,61,.05);
+  --sans:'Inter','Noto Sans TC',system-ui,sans-serif;
+  --serif:'Fraunces','Noto Sans TC','Inter',sans-serif;
+  --mono:'JetBrains Mono','Noto Sans TC',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --paper:#262319;
+  --paper-2:#2f2b20;
+  --paper-3:#3a3527;
+  --ink:#f5efdd;
+  --ink-2:#d6cfb6;
+  --ink-3:#a09981;
+  --ink-4:#6e6955;
+  --rule:#3f3a2b;
+  --rule-2:#363221;
+  --accent:#a8c095;
+  --accent-2:#6a8d5f;
+  --accent-wash:#1f2a1d;
+  --bull:#86b58d;
+  --bear:#d48a7a;
+  --gold:#d6ad5c;
+  --warn:#d6ad5c;
+  --neutral:#8fb3c4;
+  --noise-opacity:.35;
+  --plain-bg:rgba(168,192,149,.04);
+  --table-hl:rgba(168,192,149,.06);
+}
+body{transition:background-color .3s ease,color .3s ease}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  font-feature-settings:"ss01","cv11";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(169,145,100,.06),transparent 50%),
+    radial-gradient(circle at 80% 60%,rgba(100,120,90,.05),transparent 50%);
+}
+[data-theme="dark"] body::before,[data-theme="dark"]body::before{
+  background:
+    radial-gradient(circle at 20% 10%,rgba(168,192,149,.04),transparent 55%),
+    radial-gradient(circle at 85% 70%,rgba(214,173,92,.03),transparent 55%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  transition:opacity .3s ease;
+}
+
+/* =========== LAYOUT SHELL =========== */
+.shell{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  max-width:1440px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+@media(max-width:960px){.shell{grid-template-columns:1fr}}
+
+/* =========== SIDEBAR =========== */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  padding:36px 28px 28px;
+  border-right:1px solid var(--rule);
+  background:var(--paper);
+  overflow-y:auto;
+  font-size:13px;
+}
+@media(max-width:960px){.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule)}}
+.brand{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.brand .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:-0.02em;color:var(--ink);
+}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand .sub{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--ink-3);text-transform:uppercase}
+.sidebar .meta-block{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-3);
+  letter-spacing:0.05em;
+}
+.sidebar .meta-block .k{color:var(--ink-4);display:inline-block;min-width:56px}
+.sidebar .meta-block .v{color:var(--ink-2)}
+.sidebar h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-4);margin:28px 0 10px;font-weight:600;
+}
+.toc-list{list-style:none;counter-reset:toc}
+.toc-list li{counter-increment:toc;margin:0}
+.toc-list a{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:baseline;
+  padding:7px 0;color:var(--ink-2);text-decoration:none;
+  border-bottom:1px dotted transparent;
+  font-size:12.5px;line-height:1.4;
+  transition:color .15s;
+}
+.toc-list a::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:var(--mono);font-size:10px;color:var(--ink-4);letter-spacing:0.05em;
+}
+.toc-list a:hover{color:var(--accent)}
+.toc-list a.active{color:var(--accent);font-weight:600}
+.toc-list a.active::before{color:var(--accent)}
+
+.side-verdict{
+  margin-top:22px;padding:14px;background:var(--accent-wash);
+  border-left:2px solid var(--accent);
+  font-size:12px;line-height:1.55;color:var(--ink-2);
+}
+.side-verdict .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px;font-weight:600;
+}
+.side-verdict strong{font-family:var(--serif);color:var(--ink);font-weight:700}
+
+/* =========== MAIN =========== */
+.main{padding:56px 72px 80px;max-width:920px}
+@media(max-width:960px){.main{padding:32px 24px 60px}}
+
+/* =========== MASTHEAD =========== */
+.masthead{
+  border-top:4px double var(--ink);
+  border-bottom:1px solid var(--rule);
+  padding:24px 0 28px;margin-bottom:40px;
+}
+.masthead .eyebrow{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.masthead .eyebrow .issue{color:var(--accent);font-weight:600}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:64px;line-height:0.96;letter-spacing:-0.035em;
+  color:var(--ink);text-wrap:balance;
+  font-variation-settings:"opsz" 144;
+}
+.masthead h1 .ticker{
+  font-family:var(--mono);font-size:28px;font-weight:500;
+  color:var(--ink-3);letter-spacing:-0.02em;margin-left:10px;
+  vertical-align:middle;
+}
+.masthead .deck{
+  font-family:var(--serif);font-size:19px;line-height:1.5;
+  color:var(--ink-2);margin-top:16px;max-width:680px;
+  font-variation-settings:"opsz" 18;
+  font-style:italic;
+}
+.masthead .byline{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:0.05em;
+}
+.masthead .byline span b{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* =========== HERO NUMBERS =========== */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  margin-bottom:36px;
+}
+@media(max-width:720px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hero-stat{
+  padding:18px 18px 18px 0;
+  border-right:1px solid var(--rule-2);
+  position:relative;
+}
+.hero-stat:last-child{border-right:0}
+.hero-stat .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-stat .v{
+  font-family:var(--serif);font-weight:700;font-size:36px;line-height:1;
+  letter-spacing:-0.025em;color:var(--ink);
+  font-variation-settings:"opsz" 48;
+}
+.hero-stat .v.up{color:var(--bull)}
+.hero-stat .v.gold{color:var(--gold)}
+.hero-stat .v.neut{color:var(--neutral)}
+.hero-stat .d{
+  font-size:12px;color:var(--ink-3);margin-top:6px;
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.hero-stat .d .up{color:var(--bull);font-weight:600}
+
+/* =========== TAG CHIPS =========== */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 32px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;
+  padding:4px 10px;border:1px solid var(--rule);
+  color:var(--ink-2);background:var(--paper-2);
+  border-radius:2px;text-transform:uppercase;
+}
+[data-theme="dark"] .chip{background:var(--paper-2)}
+.chip.hot{border-color:var(--accent);color:var(--accent)}
+.chip.warn{border-color:var(--warn);color:var(--warn)}
+.chip.bull{border-color:var(--bull);color:var(--bull)}
+.chip.bear{border-color:var(--bear);color:var(--bear)}
+
+/* =========== SECTION =========== */
+.section{margin:64px 0 0;scroll-margin-top:24px}
+.section-head{
+  display:grid;grid-template-columns:80px 1fr;gap:24px;
+  padding-bottom:14px;margin-bottom:22px;
+  border-bottom:2px solid var(--ink);
+  align-items:end;
+}
+.section-head .no{
+  font-family:var(--serif);font-weight:700;font-size:68px;line-height:0.8;
+  letter-spacing:-0.04em;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+.section-head .tit h2{
+  font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.1;
+  letter-spacing:-0.02em;color:var(--ink);
+}
+.section-head .tit .sub{
+  margin-top:6px;font-size:13px;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+
+/* =========== PROSE =========== */
+.prose p{margin:0 0 12px;color:var(--ink-2);font-size:15px;line-height:1.7}
+.prose .drop::first-letter{
+  font-family:var(--serif);font-weight:700;font-size:56px;
+  float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);
+  font-variation-settings:"opsz" 144;
+}
+
+/* =========== DATA ROW (facts) =========== */
+.data-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-top:1px solid var(--rule);
+  margin:16px 0;
+}
+@media(max-width:720px){.data-grid{grid-template-columns:1fr}}
+.data-row{
+  display:grid;grid-template-columns:120px 1fr auto;gap:14px;
+  padding:11px 18px 11px 0;
+  border-bottom:1px solid var(--rule-2);
+  align-items:baseline;font-size:13.5px;
+}
+.data-row:nth-child(odd){border-right:1px solid var(--rule-2);padding-right:18px}
+@media(max-width:720px){.data-row:nth-child(odd){border-right:0;padding-right:0}}
+.data-row .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-3);line-height:1.4;
+}
+.data-row .v{color:var(--ink-2);line-height:1.55}
+.data-row .v b{color:var(--ink);font-weight:600}
+
+/* =========== FIAS tags =========== */
+.fias{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;
+  padding:2px 5px;border-radius:2px;vertical-align:middle;
+  display:inline-block;margin-left:2px;
+}
+.fias.f{background:rgba(134,181,141,.14);color:var(--bull)}
+.fias.i{background:rgba(143,179,196,.14);color:var(--neutral)}
+.fias.a{background:rgba(214,173,92,.16);color:var(--warn)}
+.fias.s{background:rgba(212,138,122,.14);color:var(--bear)}
+.fias.ip{background:rgba(143,179,196,.1);color:var(--neutral);border-left:2px solid var(--gold)}
+[data-theme="dark"] .fias.f{background:rgba(134,181,141,.14)}
+[data-theme="dark"] .fias.i{background:rgba(143,179,196,.14)}
+[data-theme="dark"] .fias.a{background:rgba(214,173,92,.16)}
+[data-theme="dark"] .fias.s{background:rgba(212,138,122,.14)}
+
+/* =========== TABLE =========== */
+table.tbl{
+  width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;
+  font-variant-numeric:tabular-nums;
+}
+table.tbl caption{
+  caption-side:top;text-align:left;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 0 8px;
+}
+table.tbl thead th{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+  padding:8px 10px;text-align:left;
+  border-top:1.5px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  background:transparent;
+}
+table.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink-2);vertical-align:top;
+}
+table.tbl tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
+table.tbl td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.tbl td.num.hi{color:var(--ink);font-weight:600}
+table.tbl td.pos{color:var(--bull);font-weight:600}
+table.tbl td.neg{color:var(--bear);font-weight:600}
+table.tbl td.gold{color:var(--gold);font-weight:700}
+table.tbl td.bold{color:var(--ink);font-weight:600}
+table.tbl tr.highlight td{background:var(--table-hl)}
+
+/* =========== CALLOUT =========== */
+.callout{
+  margin:18px 0;padding:18px 20px;
+  background:var(--paper-2);
+  border-left:3px solid var(--ink-3);
+  font-size:14px;line-height:1.65;color:var(--ink-2);
+}
+.callout.good{background:rgba(168,192,149,.08);border-left-color:var(--accent)}
+.callout.warn{background:rgba(214,173,92,.08);border-left-color:var(--warn)}
+.callout.bad{background:rgba(212,138,122,.08);border-left-color:var(--bear)}
+.callout.info{background:rgba(143,179,196,.08);border-left-color:var(--neutral)}
+[data-theme="dark"] .callout.good{background:rgba(168,192,149,.08)}
+[data-theme="dark"] .callout.warn{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .callout.bad{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .callout.info{background:rgba(143,179,196,.08)}
+.callout .label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;display:block;
+}
+.callout.good .label{color:var(--accent)}
+.callout.warn .label{color:var(--warn)}
+.callout.bad .label{color:var(--bear)}
+.callout.info .label{color:var(--neutral)}
+.callout strong{color:var(--ink);font-weight:600}
+.callout p{margin:6px 0}
+
+/* Integrated conclusion — more distinctive */
+.conclusion{
+  margin:28px 0;padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  position:relative;
+}
+.conclusion::before{
+  content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;
+  background:var(--ink);
+}
+[data-theme="dark"] .conclusion{background:var(--paper-2)}
+[data-theme="dark"] .conclusion::before{background:var(--accent);height:3px}
+.conclusion .mark{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:10px;
+}
+.conclusion h4{
+  font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2;
+  color:var(--ink);margin-bottom:14px;letter-spacing:-0.01em;
+}
+.conclusion .rows{display:grid;gap:10px;font-size:14px;line-height:1.6}
+.conclusion .rows .row{display:grid;grid-template-columns:64px 1fr;gap:14px}
+.conclusion .rows .row .k{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-4);padding-top:4px;font-weight:600;
+}
+.conclusion .rows .row .v{color:var(--ink-2)}
+
+/* =========== RISK CARD =========== */
+.risk{
+  display:grid;grid-template-columns:1fr auto;gap:16px;
+  border:1px solid var(--rule);padding:16px 18px;margin:12px 0;
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.risk:hover{border-color:var(--accent)}
+[data-theme="dark"] .risk{background:var(--paper-2)}
+[data-theme="dark"] .risk:hover{border-color:var(--accent)}
+.risk .body{min-width:0}
+.risk .hd{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap;
+}
+.risk .hd .num{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink-4);font-weight:600;
+}
+.risk .hd h4{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.25;
+  color:var(--ink);
+}
+.risk .rows{display:grid;gap:6px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.risk .rows .r{display:grid;grid-template-columns:68px 1fr;gap:12px}
+.risk .rows .r .k{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);padding-top:3px;
+}
+.risk .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  font-weight:600;padding:4px 9px;border:1px solid;height:fit-content;white-space:nowrap;
+}
+.tag.fatal{color:var(--bear);border-color:var(--bear);background:rgba(212,138,122,.08)}
+.tag.high{color:var(--warn);border-color:var(--warn);background:rgba(214,173,92,.08)}
+.tag.medium{color:var(--neutral);border-color:var(--neutral);background:rgba(143,179,196,.08)}
+.tag.low{color:var(--bull);border-color:var(--bull);background:rgba(134,181,141,.08)}
+[data-theme="dark"] .tag.fatal{background:rgba(212,138,122,.08)}
+[data-theme="dark"] .tag.high{background:rgba(214,173,92,.08)}
+[data-theme="dark"] .tag.medium{background:rgba(143,179,196,.08)}
+[data-theme="dark"] .tag.low{background:rgba(134,181,141,.08)}
+
+/* =========== TIMELINE =========== */
+.timeline{
+  position:relative;margin:18px 0;padding-left:0;
+  border-left:1px solid var(--rule);
+}
+.timeline .item{
+  position:relative;padding:0 0 18px 28px;
+}
+.timeline .item::before{
+  content:'';position:absolute;left:-5px;top:6px;
+  width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);
+}
+.timeline .item.key::before{background:var(--accent)}
+.timeline .item .date{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;
+  color:var(--accent);font-weight:600;
+}
+.timeline .item .t{
+  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);
+  margin-top:2px;
+}
+.timeline .item .d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.55}
+
+/* =========== MINI CARD =========== */
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.minis.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.minis,.minis.c4{grid-template-columns:1fr 1fr}}
+.mini{
+  padding:16px 14px;border:1px solid var(--rule);background:var(--paper-2);
+}
+[data-theme="dark"] .mini{background:var(--paper-2)}
+.mini .t{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.mini .n{
+  font-family:var(--serif);font-weight:700;font-size:26px;line-height:1;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.mini .n.bull{color:var(--bull)} .mini .n.bear{color:var(--bear)} .mini .n.gold{color:var(--gold)} .mini .n.neut{color:var(--neutral)}
+.mini .d{font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mini.accent{border-top:3px solid var(--accent)}
+.mini.bull{border-top:3px solid var(--bull)}
+.mini.bear{border-top:3px solid var(--bear)}
+.mini.gold{border-top:3px solid var(--gold)}
+.mini.neut{border-top:3px solid var(--neutral)}
+
+/* =========== QUOTE / BIG CALLOUT =========== */
+.pull{
+  margin:28px 0;padding:22px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.pull p{
+  font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.35;
+  color:var(--ink);letter-spacing:-0.01em;
+  font-variation-settings:"opsz" 36;
+  text-wrap:balance;
+}
+.pull .attr{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* =========== PROGRESS BAR =========== */
+.bars{display:grid;gap:8px;margin:12px 0}
+.bar-row{display:grid;grid-template-columns:160px 1fr 56px;gap:12px;align-items:center;font-size:12.5px}
+.bar-row .k{color:var(--ink-2);font-family:var(--sans)}
+.bar-row .bar{height:8px;background:var(--paper-3);border-radius:0;overflow:hidden}
+.bar-row .bar > span{display:block;height:100%;background:var(--accent)}
+.bar-row .v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink)}
+
+/* =========== LIGHTS =========== */
+.light{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  vertical-align:middle;margin-right:6px;
+}
+.light.g{background:var(--bull)} .light.y{background:var(--warn)} .light.r{background:var(--bear)} .light.x{background:var(--ink-4)}
+
+/* =========== PLAIN TALK =========== */
+.plain{
+  margin:16px 0;padding:14px 16px 14px 42px;
+  background:var(--plain-bg);
+  border:1px dashed var(--accent);
+  font-size:13.5px;line-height:1.65;color:var(--ink-2);
+  position:relative;
+}
+.plain::before{
+  content:'「';position:absolute;left:10px;top:8px;
+  font-family:var(--serif);font-weight:700;font-size:38px;color:var(--accent);
+  line-height:1;
+}
+.plain strong{color:var(--ink);font-weight:600}
+
+/* =========== SCENARIO DUO =========== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.scenario{padding:14px 16px;border:1px solid var(--rule);background:var(--paper-2);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+[data-theme="dark"] .scenario{background:var(--paper-2)}
+.scenario .hd{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  font-weight:600;margin-bottom:8px;
+}
+.scenario.bull{border-top:3px solid var(--bull)}.scenario.bull .hd{color:var(--bull)}
+.scenario.bear{border-top:3px solid var(--bear)}.scenario.bear .hd{color:var(--bear)}
+
+/* =========== FOOTER =========== */
+.footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--ink);
+  font-size:11.5px;line-height:1.7;color:var(--ink-3);
+  font-family:var(--mono);letter-spacing:0.02em;
+}
+.disclaimer{
+  margin:32px 0 12px;padding:16px 18px;
+  background:var(--paper-2);border:1px dashed var(--rule);
+  font-size:11.5px;line-height:1.65;color:var(--ink-3);
+}
+[data-theme="dark"] .disclaimer{border-color:var(--ink-4)}
+.disclaimer b{color:var(--ink-2)}
+
+/* Final verdict (ch-last) — inverted cream on dark, dark ink on light */
+.verdict-head{
+  margin:24px 0 16px;padding:28px 24px;
+  position:relative;overflow:hidden;
+  background:var(--ink);color:var(--paper);
+  border:0;
+}
+[data-theme="dark"] .verdict-head{
+  background:linear-gradient(180deg,#ebe3cd 0%,#ddd2b4 100%);color:#1a1811;
+  border:1px solid #c8bb95;
+}
+.verdict-head::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 20%,rgba(106,141,95,.25),transparent 50%);
+  pointer-events:none;
+}
+[data-theme="dark"] .verdict-head::before{
+  background:radial-gradient(circle at 90% 20%,rgba(47,90,61,.18),transparent 55%);
+}
+.verdict-head .mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent-2);font-weight:600;margin-bottom:10px;
+}
+[data-theme="dark"] .verdict-head .mark{color:#3a5e40;font-weight:700}
+.verdict-head h3{
+  font-family:var(--serif);font-weight:700;font-size:32px;line-height:1.15;
+  letter-spacing:-0.02em;text-wrap:balance;
+  font-variation-settings:"opsz" 72;
+  position:relative;color:inherit;
+}
+.verdict-head .coda{
+  margin-top:14px;font-size:14px;line-height:1.55;
+  color:rgba(245,241,232,.8);
+  font-family:var(--sans);position:relative;max-width:640px;
+}
+[data-theme="dark"] .verdict-head .coda{color:rgba(26,24,17,.7)}
+
+.confidence-line{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:16px 0;
+}
+.conf{padding:14px 16px;background:var(--paper-2)}
+[data-theme="dark"] .conf{background:var(--paper-2)}
+.conf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3)}
+.conf .v{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);margin-top:4px;line-height:1}
+.conf .v.a{color:var(--warn)}
+.conf .v.n{color:var(--neutral)}
+.conf .d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+
+/* Step progress */
+.steps{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  margin:22px 0 4px;align-items:center;
+}
+.steps .step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--ink-4);
+}
+.steps .step .dot{width:100%;height:3px;background:var(--rule)}
+.steps .step.done .dot{background:var(--ink-3)}
+.steps .step.active .dot{background:var(--accent)}
+.steps .step.active{color:var(--accent);font-weight:600}
+.steps .step.done{color:var(--ink-3)}
+
+/* hover reveal micro interactions */
+.card h3{cursor:pointer}
+
+/* =========== CHARTS =========== */
+.chart{
+  margin:18px 0 22px;padding:18px 20px;
+  border:1px solid var(--rule);background:var(--paper);
+}
+[data-theme="dark"] .chart{background:var(--paper-2)}
+.chart .ct{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;font-weight:600;
+}
+.chart .cs{
+  font-family:var(--serif);font-size:17px;color:var(--ink);font-weight:700;
+  letter-spacing:-0.01em;margin-bottom:14px;line-height:1.25;
+}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .legend{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);
+}
+.chart .legend .sw{
+  display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle;
+}
+.chart .legend .sw.line{height:2px;vertical-align:2px}
+/* SVG axis styles via classes */
+.ax-line{stroke:var(--rule);stroke-width:1}
+.ax-tick{fill:var(--ink-3);font-family:var(--mono);font-size:10px;letter-spacing:0.05em}
+.ax-label{fill:var(--ink-3);font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase}
+.v-label{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:600}
+.grid-line{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:2 3}
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:50;
+  display:inline-flex;align-items:center;
+  background:var(--paper-2);border:1px solid var(--rule);
+  border-radius:999px;padding:3px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.theme-toggle button{
+  appearance:none;background:transparent;border:0;
+  padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--ink-3);border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background-color .2s,color .2s;
+}
+.theme-toggle button:hover{color:var(--ink-2)}
+.theme-toggle button.on{
+  background:var(--accent);color:var(--paper);font-weight:600;
+}
+[data-theme="light"] .theme-toggle button.on{color:var(--paper)}
+.theme-toggle button svg{width:12px;height:12px;flex-shrink:0}
+@media print{.theme-toggle{display:none}}
+</style>
+<!-- Chart.js：預載於模板，報告若用 canvas 圖表可直接用；未使用不影響渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script id="chartjs-font-config">
+// Chart.js 全域字型設定（在所有 chart 創建前執行）
+if(typeof Chart !== 'undefined'){
+  Chart.defaults.font.family = "'Inter','Noto Sans TC','Fraunces',system-ui,sans-serif";
+  Chart.defaults.font.size = 12;
+}
+// 主題感知字色（亮/暗自動切換）
+function getChartColors(){
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    tick:  isDark ? '#a09981' : '#3d3830',
+    label: isDark ? '#f5efdd' : '#1c1a16',
+    grid:  isDark ? 'rgba(245,239,221,0.18)' : 'rgba(28,26,22,0.15)'
+  };
+}
+// 套用主題色到所有 chart（含主題切換）
+function applyChartTheme(){
+  if(typeof Chart === 'undefined') return;
+  var c = getChartColors();
+  Chart.defaults.color = c.tick;
+  document.querySelectorAll('canvas').forEach(function(canvas){
+    var chart = Chart.getChart(canvas);
+    if(!chart || !chart.options) return;
+    var scales = chart.options.scales || {};
+    Object.keys(scales).forEach(function(k){
+      var s = scales[k]; if(!s) return;
+      if(s.ticks){ s.ticks.color = c.tick; if('backdropColor' in s.ticks) s.ticks.backdropColor='rgba(0,0,0,0)'; }
+      if(s.pointLabels){ s.pointLabels.color = c.label; }
+      if(s.grid){ s.grid.color = c.grid; }
+      if(s.angleLines){ s.angleLines.color = c.grid; }
+    });
+    if(chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels){
+      chart.options.plugins.legend.labels.color = c.label;
+    }
+    chart.update('none');
+  });
+}
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(function(){ setTimeout(applyChartTheme, 50); });
+}
+window.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyChartTheme, 100);
+  new MutationObserver(applyChartTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+});
+</script>
+
+
+<style>
+/* Step 8 推演版 — 繼承通用模板外，補 fias 顏色（雙主題）*/
+.fias-f,.fias-i,.fias-a,.fias-s{display:inline-block;padding:1px 7px;border-radius:3px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.08em;margin:0 2px;vertical-align:middle}
+.fias-f{background:rgba(95,125,105,0.20);color:var(--bull);border:1px solid var(--bull)}
+.fias-i{background:rgba(45,90,111,0.18);color:var(--accent);border:1px solid var(--accent)}
+.fias-a{background:rgba(138,111,30,0.18);color:var(--gold);border:1px solid var(--gold)}
+.fias-s{background:rgba(160,95,86,0.18);color:var(--bear);border:1px solid var(--bear)}
+[data-theme="dark"] .fias-f{background:rgba(138,178,152,0.18)}
+[data-theme="dark"] .fias-i{background:rgba(122,176,192,0.18)}
+[data-theme="dark"] .fias-a{background:rgba(212,176,48,0.18)}
+[data-theme="dark"] .fias-s{background:rgba(214,130,120,0.18)}
+/* 概率路徑樹（8d）*/
+.prob-tree{margin:14px 0;padding:14px 0 14px 20px;border-left:2px solid var(--rule)}
+.prob-path{margin:12px 0;padding:10px 14px;background:var(--paper-3);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px}
+.prob-path.bull{border-left-color:var(--bull)}
+.prob-path.bear{border-left-color:var(--bear)}
+.prob-path.neut{border-left-color:var(--gold)}
+.prob-path .t{font-family:var(--serif);color:var(--ink);font-size:15.5px;margin-bottom:4px;font-weight:500}
+.prob-path .prob{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-right:8px}
+.prob-path.bull .prob{color:var(--bull)}
+.prob-path.bear .prob{color:var(--bear)}
+.prob-path.neut .prob{color:var(--gold)}
+/* 信號卡（8g）*/
+.signal-card{margin:10px 0;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;display:grid;grid-template-columns:80px 1fr;gap:12px}
+.signal-card .sig-type{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;padding-top:3px}
+.signal-card .sig-body{color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.signal-card .sig-body b{color:var(--ink)}
+/* 推演鏈（8g/8c）*/
+.chain{margin:14px 0;padding:14px;background:var(--paper-3);border:1px solid var(--rule);border-radius:3px;font-size:13.5px;line-height:1.85;color:var(--ink-2)}
+.chain b{color:var(--ink)}
+.chain .arrow{color:var(--accent);font-family:var(--mono);font-weight:700;margin:0 6px}
+</style>
+
+</head>
+
+<body>
+
+<div class="theme-toggle" role="tablist" aria-label="Theme">
+  <button type="button" data-theme-btn="light" class="on" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>Light
+  </button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark
+  </button>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">天機閣</span>
+      <span class="dot"></span>
+      <span class="sub">Step 8 · 推演版</span>
+    </div>
+    <div class="meta-block">
+      <div><span class="k">DATE</span><span class="v">2026·05·03</span></div>
+      <div><span class="k">CODE</span><span class="v">6781 AES-KY</span></div>
+      <div><span class="k">BASIS</span><span class="v">NT$ 979 元</span></div>
+      <div><span class="k">VALID</span><span class="v">2 週（至 Q1 季報前）</span></div>
+    </div>
+    <h4>Contents</h4>
+    <ol class="toc-list">
+      <li><a href="#s8a">8a 推演基礎</a></li>
+      <li><a href="#s8b">8b 情報更新</a></li>
+      <li><a href="#s8c">8c 影響鏈</a></li>
+      <li><a href="#s8d">8d 情境模擬</a></li>
+      <li><a href="#s8e">8e 個人化推衍</a></li>
+      <li><a href="#s8f">8f 催化劑時間表</a></li>
+      <li><a href="#s8g">8g 蝴蝶效應</a></li>
+      <li><a href="#s8h">8h 貓膩推演</a></li>
+      <li><a href="#s8i">8i 結論 &amp; 行動</a></li>
+    </ol>
+    <div class="side-verdict">
+      <div class="label">Verdict · H2 45%</div>
+      <strong>合理進場區、分階段建倉</strong><br>
+      加權目標 NT$ 940 vs 現價 NT$ 979 = -4% 略低。2026/05/15 Q1 季報為核心驗證點。
+    </div>
+  </aside>
+
+
+  <main class="main">
+
+    <header class="masthead">
+      <div class="eyebrow">
+        <span class="issue">天機錄 · ISSUE 2026-05-03 · Step 8 推演版</span>
+        <span>投資分析 · 台股 KY · 未來 3 個月路徑推衍</span>
+      </div>
+      <h1>AES-KY · 推演<span class="ticker">6781 · STEP 8</span></h1>
+      <p class="deck">從 2026/05/03 出發推衍未來三個月路徑。2026/05/15 Q1 季報是第一個關鍵分岔點；若 H2 規格紅利期主導（45%）成立 → 區間整理 900-1,050；若 H1 樂觀（20%）觸發 → HVDC 量產加權目標 1,500；若 H3+H4 悲觀（20%）任一兌現 → 切減碼至 700-800。</p>
+      <div class="byline">
+        <span><b>Basis</b>現價 NT$ 979 元</span>
+        <span><b>Anchor</b>加權目標 NT$ 940（-4% 略低）</span>
+        <span><b>Valid</b>~2 週（至 2026/05/15 Q1 季報）</span>
+        <span><b>Confidence</b>H2 45% · H1 20% · H3+H4 20% · H5 15%</span>
+      </div>
+      <div class="steps">
+        <div class="step done"><span class="dot"></span>S1</div>
+        <div class="step done"><span class="dot"></span>S2</div>
+        <div class="step done"><span class="dot"></span>S3</div>
+        <div class="step done"><span class="dot"></span>S4</div>
+        <div class="step done"><span class="dot"></span>S5</div>
+        <div class="step done"><span class="dot"></span>S6</div>
+        <div class="step done"><span class="dot"></span>S7 完整版</div>
+        <div class="step active"><span class="dot"></span>S8 ● 推演版</div>
+        <div class="step"><span class="dot"></span>S9</div>
+      </div>
+    </header>
+
+    <section class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">現價 / 基準</div>
+        <div class="v gold">NT$ 979</div>
+        <div class="d">vs 加權目標 940 <span class="up">-4%</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H2 規格紅利主導</div>
+        <div class="v up">45%</div>
+        <div class="d">區間 900-1,050</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H1 純 BBU 樂觀</div>
+        <div class="v up">20%</div>
+        <div class="d">HVDC 量產 → 1,500</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">H3+H4 悲觀</div>
+        <div class="v neut">20%</div>
+        <div class="d">A 客戶崩盤 → 252-360</div>
+      </div>
+    </section>
+
+    <div class="chips">
+      <span class="chip hot">Q1 季報 2026/05/15</span>
+      <span class="chip warn">毛利率連 4 季 -5.23pp</span>
+      <span class="chip bear">A 客戶 29% 紅旗復發</span>
+      <span class="chip bull">內部人 +12.7 萬股加碼</span>
+      <span class="chip">HVDC 5.5→20KW</span>
+      <span class="chip">越南 Hoa Phu 投產 2026 Q4</span>
+      <span class="chip warn">中國 -20% 價格戰 2027</span>
+      <span class="chip">5 年無 CB / 增資</span>
+    </div>
+
+
+    <section class="section" id="s8a">
+      <div class="section-head">
+        <div class="no">8a</div>
+        <div class="tit">
+          <h2>推演基礎確認</h2>
+          <div class="sub">回溯原始資料 — 公司核心事實 / ACH 假說 / 燈號 / 估值錨定</div>
+        </div>
+      </div>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">核心事業</div><div class="v"><b>BBU 規格升級紅利期主導股</b>，2025 BBU 占營收 70%（目標 2026 升至 80%）、HVDC 5.5KW → 8/12KW（Q4 2026 出貨）→ 20KW+（開發驗證中）。2025 EPS 38.20 YoY +50.5% 創歷史新高<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">領導層</div><div class="v">宋家父子（宋福祥董事長 + 宋維哲總經理）+ 母公司新普 6121 持股 73.39%；2024-03 莊世昌辭任獨董、2024-05 吳惠瑜（前 Intel 台灣總經理）新任<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">ACH 主導假說</div><div class="v"><b>H2 規格紅利期主導 45%</b>（淨支持 +17、反證 0、罕見高度一致性）；H1 樂觀 20%（HVDC 量產順利 + 中國延後）、H3+H4 悲觀 20%（A 客戶崩盤 / e-bike 拖累）、H5 估值已反映 15%<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">當前燈號</div><div class="v">17 項燈號 = 8 綠 4 黃 3 紅 2 灰；紅燈集中「存貨週轉 0.34（同業 5.2 倍差距）+ 投信賣超 -23 萬股 + 法說會 forward 缺位」三軸<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">估值錨定</div><div class="v">機率加權目標 NT$ 940 = 5 假說 EPS×PE 加權（H1 1500×0.20 + H2 957×0.45 + H3 360×0.10 + H4 252×0.10 + H5 985×0.15）；現價 NT$ 979 略低 -4% 屬「合理反映」象限<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">關鍵催化劑</div><div class="v">2026/05/15 Q1 季報（核心驗證點）→ 2026/8/14 Q2 法說會（forward guidance 觀察）→ 2026 Q4 HVDC 8/12KW 量產 → 2027 上半中國 -20% 價格戰啟動點<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">護城河與紅旗</div><div class="v">窄護城河 B+（轉換成本 5/5 為核心、雙弱網絡效應 1 + 成本優勢 2）；3 紅旗：毛利率連 4 季 -5.23pp / 存貨週轉同業 5.2 倍差距 / A 客戶集中 29% 紅旗復發<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">跨章一致性</div><div class="v">29 項錨點全綠（加權目標 940 出現 75 次、H2 主導 45% 出現 110 次、毛利率 -5.23pp 出現 62 次）= Step 7 完整版四次校準收斂<span class="fias-i">I</span></div></div>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8a　推演基礎結論</div>
+        <h4>好公司、合理價格、規格紅利期主導；Q1 季報是近期第一個決勝負分岔點。</h4>
+        <div class="rows">
+          <div class="row"><div class="k">結論</div><div class="v">基本面（成長 +50.5% + 護城河窄 B+ + 5 年無 CB / 增資）+ 治理品質（誠信度 85 A- + 內部人加碼 +12.7 萬股）支撐 H2 主導；估值（PE 25.6x vs 順達 26x 折讓 -2x、加權目標 940 -4%）合理。<b>Q1 季報毛利率將決定接下來三個月是「H2 主導加權」還是「H3+H4 悲觀觸發」</b>。在未出訊號前、45% 主導假說為核心路徑。</div></div>
+          <div class="row"><div class="k">vs 衛司特</div><div class="v">衛司特推演版「好公司、好題材、壞價格三位一體」需大幅回檔；AES-KY「好公司、合理價格、分階段建倉」可立即試單 5%。<em>核心差異是估值層面 PE 25.6 vs 35.4</em></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="s8b">
+      <div class="section-head">
+        <div class="no">8b</div>
+        <div class="tit">
+          <h2>情報更新差異表</h2>
+          <div class="sub">分析日（2026/05/02）vs 推演日（2026/05/03）</div>
+        </div>
+      </div>
+
+      <table class="tbl">
+        <caption>情報差異表 — 最新 24 小時變化</caption>
+        <thead><tr><th>指標</th><th>分析日 · 05/02</th><th>推演日 · 05/03</th><th>變化</th><th>含義</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">收盤價</td><td class="num">NT$ 979</td><td class="num">NT$ 979（持平）</td><td class="num">—</td><td>橫向整理、Q1 季報前 12 日</td></tr>
+          <tr><td class="bold">PE（Trailing 2025 EPS 38.20）</td><td class="num">25.63x</td><td class="num">25.6x（持平）</td><td class="num">—</td><td>合理區間中段、未到歷史上緣</td></tr>
+          <tr><td class="bold">PEG（2025 EPS +50.5%）</td><td class="num">0.51</td><td class="num">0.51</td><td class="num">—</td><td>低估、但 forward 機率分歧</td></tr>
+          <tr><td class="bold">投信近 5 日累積</td><td class="num neg">-23 萬股</td><td class="num neg">-23 萬股</td><td class="num">—</td><td>賣超延續中、需 Q1 季報後驗證</td></tr>
+          <tr><td class="bold">外資近 5 日累積</td><td class="num pos">+41.7 萬股</td><td class="num pos">+41.7 萬股</td><td class="num">—</td><td>短期支持、但 20 日仍 -18 萬</td></tr>
+          <tr><td class="bold">內部人加碼累計（2025）</td><td class="num pos">+12.7 萬股</td><td class="num pos">+12.7 萬股</td><td class="num">—</td><td>長線信心訊號、與法人對沖</td></tr>
+          <tr><td class="bold">股價 vs 加權目標</td><td class="num neg">+4.1%</td><td class="num neg">+4.1%</td><td class="num">—</td><td>略高於加權目標 940、屬合理反映</td></tr>
+          <tr class="highlight"><td class="bold">關鍵事件倒數</td><td class="num">Q1 季報 T-13</td><td class="num">Q1 季報 T-12</td><td class="num">-1 日</td><td>前置驗證窗口開啟</td></tr>
+          <tr><td class="bold">月營收年增連續</td><td class="num pos">21 月</td><td class="num pos">21 月（持續）</td><td class="num">—</td><td>未中斷、4 月月營收 5/10 揭示</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="label">推演日訊息整合</span>
+        <p><b>1. 距 Q1 季報倒數 T-12 日</b>：市場開始為「季報業績」定價。任何關於毛利率、HVDC 客戶端認證進度、4 月月營收（5/10 揭示）的訊號都會放大股價波動。</p>
+        <p><b>2. 「內部信心 vs 法人疑慮」對沖延續</b>：內部人 +12.7 萬股 vs 投信 5 日 -23 萬股 + 外資 20 日 -18 萬股。Q1 季報是雙方哪邊先轉向的分岔點。</p>
+        <p><b>3. 4 月月營收（2026/05/10 揭示）為 Q1 季報領先指標</b>：YoY ≥ +25% = 動能保留、強化 H2 主導；&lt; +20% = 動能減弱、Q1 季報跳票機率上升。</p>
+        <p><b>4. PEG 0.51 與 H2 主導 45% 機率對應</b>：以 2025 高基期計算 PEG 低估、但 2026 forward 系統加權負成長 PEG N/A，這個雙面性正反映「H2 主導 45% = 合理反映」的核心邏輯。</p>
+      </div>
+    </section>
+
+    <section class="section" id="s8c">
+      <div class="section-head">
+        <div class="no">8c</div>
+        <div class="tit">
+          <h2>影響鏈分析</h2>
+          <div class="sub">天機閣推衍方法一 — 事件 → 一階 → 二階 → 三階</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:12px 0 6px">鏈 1 · Q1 季報毛利率路徑分岔（核心鏈 ★★★）</h4>
+      <div class="chain">
+        <b>Q1 2026 季報毛利率（5/15 公告）</b>
+        <span class="arrow">→</span> 若 ≥ 36%（H1 樂觀路徑）
+        <span class="arrow">→</span> 市場認證「2024-2025 連 4 季 -5.23pp 是匯率因素、非結構性下行」
+        <span class="arrow">→</span> ACH H2 主導從 45% 降至 35%、H1 樂觀從 20% 升至 30%
+        <span class="arrow">→</span> 投信由賣超轉為淨買超（2-4 週內）
+        <span class="arrow">→</span> PE 25.6x 維持 / 擴張至 28x
+        <span class="arrow">→</span> <b style="color:var(--bull)">股價測試 1,150-1,300（+17 ~ +33%）</b>
+        <br><br>
+        <span class="arrow">→</span> 若 33-36%（H2 主導路徑 · 最可能）
+        <span class="arrow">→</span> 維持 H2 規格紅利期主導 45% / 區間整理
+        <span class="arrow">→</span> PE 25.6x 維持
+        <span class="arrow">→</span> <b style="color:var(--neutral)">股價測試 900-1,050（±5%）</b>
+        <br><br>
+        <span class="arrow">→</span> 若 ≤ 33%（H3+H4 悲觀路徑）
+        <span class="arrow">→</span> 結構性下行假說證實、H3 e-bike 拖累 + H4 客戶崩盤機率上修至各 15-20%
+        <span class="arrow">→</span> 投信賣超延續、外資 20 日轉大幅賣超
+        <span class="arrow">→</span> PE 修正 22-23x → R1 估值正常化觸發
+        <span class="arrow">→</span> <b style="color:var(--bear)">股價跌至 700-820（-16 ~ -29%）</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:24px 0 6px">鏈 2 · HVDC 8/12KW 量產時程</h4>
+      <div class="chain">
+        <b>HVDC 8/12KW 量產（公司主動揭示 Q4 2026 出貨）</b>
+        <span class="arrow">→</span> 若準時量產
+        <span class="arrow">→</span> HVDC 段毛利率 37-39% 拉升整體均值
+        <span class="arrow">→</span> Q4 季報毛利率回升 1-2pp
+        <span class="arrow">→</span> H1 樂觀情境啟動信號
+        <span class="arrow">→</span> <b style="color:var(--bull)">2027 EPS 法人預估從 45 升至 50+</b>
+        <br><br>
+        <span class="arrow">→</span> 若延遲 6 個月（2027 H1 才出貨）
+        <span class="arrow">→</span> 規格紅利窗口縮短 + 中國同業低瓦數段先擠壓
+        <span class="arrow">→</span> 2027 EPS 從 45 降至 37（-8 元）
+        <span class="arrow">→</span> PE 修正 25.6 → 22x
+        <span class="arrow">→</span> <b style="color:var(--warn)">股價 -15 ~ -20%</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:24px 0 6px">鏈 3 · 中國 -20% 價格戰啟動點</h4>
+      <div class="chain">
+        <b>中國比亞迪 / 寧德時代 / 力神 BBU 模組擴產</b>
+        <span class="arrow">→</span> 若 2027 上半啟動全面價格戰（基準預期）
+        <span class="arrow">→</span> Hyperscaler 招標均價跌破 USD 380（vs 5.5KW 350-500 區間）
+        <span class="arrow">→</span> AES-KY 5.5KW 主流毛利率 -3-5pp、整體 30-32%
+        <span class="arrow">→</span> Forward 部分 BBU 改 OEM 路線出貨應對
+        <span class="arrow">→</span> <b style="color:var(--warn)">2027 EPS -8 元、目標股價收斂至 H2 主導 957</b>
+        <br><br>
+        <span class="arrow">→</span> 若提前 2026 啟動（黑天鵝、機率 25%）
+        <span class="arrow">→</span> AES-KY 整體毛利率即時 -3-5pp
+        <span class="arrow">→</span> 2026 EPS 從 H2 主導 34.2 降至 28-30
+        <span class="arrow">→</span> PE 修正 22x、股價 -25 ~ -32%
+        <span class="arrow">→</span> <b style="color:var(--bear)">骨牌情境 B 觸發、整體 -30 ~ -36%</b>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:24px 0 6px">鏈 4 · A 客戶占比演進</h4>
+      <div class="chain">
+        <b>A 客戶占比（FY2024 14% → 29% +15pp 跳升、紅旗復發）</b>
+        <span class="arrow">→</span> 若 2026 維持 ≤ 30%（基準）
+        <span class="arrow">→</span> Hyperscaler 二供地位穩固
+        <span class="arrow">→</span> 維持 H2 主導 45%
+        <br><br>
+        <span class="arrow">→</span> 若 ≥ 35%（觀察線）
+        <span class="arrow">→</span> H4 客戶崩盤機率從 10% 升至 20%+
+        <span class="arrow">→</span> <b style="color:var(--warn)">立即減倉 50%+ 不等確認</b>
+        <br><br>
+        <span class="arrow">→</span> 若 AWS / Microsoft / Meta 公告自製 BBU 試水溫
+        <span class="arrow">→</span> R2 客戶崩盤觸發
+        <span class="arrow">→</span> <b style="color:var(--bear)">立即全出 100%、不可逆</b>
+      </div>
+    </section>
+
+    <section class="section" id="s8d">
+      <div class="section-head">
+        <div class="no">8d</div>
+        <div class="tit">
+          <h2>情境模擬 · 概率路徑樹</h2>
+          <div class="sub">5 假說從 Step 4 → Step 8 演進軌跡 + 推演引擎第四次校準</div>
+        </div>
+      </div>
+
+      <div class="prob-tree">
+
+        <div class="prob-path bull">
+          <div class="t"><span class="prob">H1 純 BBU 樂觀</span>機率 22% → 21% → 20% → <b>20%</b>（穩定）</div>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.7;margin:6px 0">HVDC 量產順利 + NVIDIA GB300 大規模放量 + 中國 -20% 價格戰延後到 2028+ 才啟動 + Hyperscaler 二供地位穩固。2026E EPS 50 + PE 30x = <b>目標股價 1,500（+53%）</b>。<em>從 Step 4 22% 略下修至 20%、反映「中國擠壓時點壓力」加重</em>。</p>
+        </div>
+
+        <div class="prob-path neut">
+          <div class="t"><span class="prob">H2 規格紅利期主導 ★</span>機率 40% → 42% → 45% → <b>45%</b>（穩定上升）</div>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.7;margin:6px 0">2026 紅利期享受 + 2027+ 中國擠壓 + HVDC 量產接力但商品化壓力 + Forward OEM 路線稀釋部分毛利。2026E EPS 34.2 + PE 28x = <b>目標股價 957（-2%）</b>。<em>三次校準連續上升（40 → 42 → 45）= 規格紅利期主導敘事日趨確定、淨支持 +17 反證 0 為極罕見高度一致性</em>。</p>
+        </div>
+
+        <div class="prob-path bear">
+          <div class="t"><span class="prob">H3 e-bike 拖累</span>機率 13% → 12% → 10% → <b>10%</b>（穩定下降）</div>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.7;margin:6px 0">Trek 寒冬延長至 2027 + 歐盟補貼遲未重啟 + e-bike 業務結構性衰退無法替代。2026E EPS 16.4 + PE 22x = <b>目標股價 360（-63%、PB 底 650-800 支撐）</b>。<em>從 Step 4 13% 下修至 10%、反映「Bosch 大裁員 + Trek 持續未達標 = 對手變弱」抗衡部分</em>。</p>
+        </div>
+
+        <div class="prob-path bear">
+          <div class="t"><span class="prob">H4 客戶集中崩盤</span>機率 10% → 10% → 10% → <b>10%</b>（穩定）</div>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.7;margin:6px 0">A 客戶 ≥ 35% + Hyperscaler 自製 BBU 試水溫 + 二供地位被替換。2026E EPS 14.8 + PE 17x = <b>目標股價 252（-74%、PB 底 600-700）</b>。<em>機率穩定 10% 反映「結構性脆弱但短期 3 年內機率低、長期屬最致命威脅」雙面性、不可逆風險獨立計算</em>。</p>
+        </div>
+
+        <div class="prob-path">
+          <div class="t"><span class="prob">H5 估值已反映</span>機率 15% → 15% → 15% → <b>15%</b>（穩定）</div>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.7;margin:6px 0">投信賣超 + 外資 20 日小幅賣超 + PE 收斂 22-24x 中性區間 + 「不便宜也不貴」中性。2026E EPS 39.4 + PE 25x = <b>目標股價 985（+0.6% 持平）</b>。<em>15% 機率穩定反映 H5 為「中性區間」結構而非「方向性假說」、合計 H1+H2+H5 = 80% 看多 + 中性</em>。</p>
+        </div>
+
+      </div>
+
+      <div class="callout info">
+        <span class="label">機率收斂的方法論意義</span>
+        <p><b>三次校準收斂到同一結論</b>—Step 4 ACH 矩陣 → Step 5 壓力測試 → Step 6 評審團、三個獨立方法論連續收斂、軌跡方向高度一致。<b>H2 主導從 40% 穩定上升至 45%、H1 樂觀從 22% 緩慢下修至 20%、H3+H4 雙弱從 23% 降至 20%</b>—這在 ACH 矩陣中是極罕見的高度一致性。</p>
+        <p><b>第四次校準（推演引擎、本檔 Step 8）為穩定不變</b>—因 Step 7 完整版四次校準後、推演引擎僅補蝴蝶效應 + 貓膩推演兩項視角、機率本身不再大幅調整。<em>四次校準收斂結論的可信度接近「已確認」而非「尚待驗證」</em>—與 Step 7 「機率加權目標 NT$ 940、推衍有效期 2026-05-15」對齊。</p>
+      </div>
+
+      <div class="conclusion">
+        <div class="mark">§ 8d　情境模擬結論</div>
+        <h4>H2 主導 45% 是「規格紅利末期 + 中國擠壓啟動」雙力對沖的合理表達</h4>
+        <div class="rows">
+          <div class="row"><div class="k">結論</div><div class="v">5 假說機率分布反映「2026 紅利期可享受、2027+ 中國擠壓緩慢啟動、HVDC 商品化壓力延後到 2028+」三段時間敏感結構。<b>H2 主導 45% = 合理反映、加權目標 NT$ 940 vs 現價 -4% 略低</b>—這是「不便宜也不貴」中性區間的具體機率表達。</div></div>
+          <div class="row"><div class="k">行動含義</div><div class="v">分階段建倉（試單 5% → 加碼 8% → 滿倉 10%）= 接受 H2 主導 45% 機率分布、用驗證觸發加碼降低成本基礎。<em>不是「一次重押 H1 樂觀」也不是「完全迴避擔心 H4」、是「H2 中性 + H1 上行 option + H3+H4 下行保險」三層整合策略</em>。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="s8e">
+      <div class="section-head">
+        <div class="no">8e</div>
+        <div class="tit">
+          <h2>個人化推衍 · 分情境行動建議</h2>
+          <div class="sub">四種持倉狀態 × 五種情境的行動矩陣</div>
+        </div>
+      </div>
+
+      <table class="tbl">
+        <caption>持倉狀態 × 情境反應矩陣</caption>
+        <thead>
+          <tr>
+            <th>持倉狀態</th>
+            <th>H1 樂觀（20%）</th>
+            <th>H2 主導（45%）★</th>
+            <th>H3 e-bike 拖累（10%）</th>
+            <th>H4 客戶崩盤（10%）</th>
+            <th>H5 估值已反映（15%）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold">未持有</td>
+            <td>等回檔加碼 950-1,000</td>
+            <td class="pos">試單 5%、Q1 後加碼 8%</td>
+            <td class="neg">不進場、等 700-800 安全邊際</td>
+            <td class="neg">不進場、永久觀察</td>
+            <td>試單 5% 區間操作</td>
+          </tr>
+          <tr>
+            <td class="bold">已持有（獲利中）</td>
+            <td class="pos">加碼至 8-10%</td>
+            <td>持有觀察、不加不減</td>
+            <td class="neg">減碼 30%（跌破 850）</td>
+            <td class="neg">全出 100%（跌破 800）</td>
+            <td>持有區間操作</td>
+          </tr>
+          <tr>
+            <td class="bold">已持有（套牢中）</td>
+            <td class="pos">加碼攤平至 8%</td>
+            <td>持有觀望、Q1 後決策</td>
+            <td class="neg">減碼 50%（跌破 800）</td>
+            <td class="neg">全出（跌破 600 永久迴避）</td>
+            <td>持有等回升</td>
+          </tr>
+          <tr>
+            <td class="bold">長期觀察者</td>
+            <td>進場 950-1,000 試單</td>
+            <td>進場 900-1,000 分階段</td>
+            <td>等 700-800 安全邊際區進場</td>
+            <td>不納入投資池</td>
+            <td>區間操作 900-1,050</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="duo">
+        <div class="scenario bull">
+          <div class="hd">▲ 試單者建倉節奏</div>
+          <ul style="margin:6px 0 0 18px;line-height:1.85;font-size:13px">
+            <li>第一階段：現價 ≤ 1,000 試單 <b>5%</b>（核心倉）</li>
+            <li>第二階段：Q1 毛利率 ≥ 36% + Q1 EPS ≥ 9 + 投信轉買 → 加碼 <b>8%</b></li>
+            <li>第三階段：Q4 HVDC 量產順利 + Q3 毛利率 ≥ 36% → 滿倉 <b>10%</b></li>
+            <li>第四階段（選用）：美中關稅戰啟動 + 越南規模化 → 機會性加碼 <b>0-5%</b></li>
+            <li>嚴格門檻：每階段條件需同時成立、不漸進不重押</li>
+          </ul>
+        </div>
+        <div class="scenario bear">
+          <div class="hd">▼ 三道停損紀律</div>
+          <ul style="margin:6px 0 0 18px;line-height:1.85;font-size:13px">
+            <li>第一道：跌破 NT$ 850 連 2 日 / PE &lt; 22x → 減碼 <b>30%</b></li>
+            <li>第二道：Q1 毛利率 ≤ 33% / A 客戶 ≥ 35% → 減碼 <b>50%</b></li>
+            <li>第三道：跌破 NT$ 800 / Hyperscaler 自製 BBU → 全出 <b>100%</b></li>
+            <li>永久迴避：跌破 NT$ 600 / 會計師非無保留 / 法說誠信事件</li>
+            <li>觸發即動作、不等確認、不情緒化</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="plain">
+        <strong>「分階段建倉、嚴格紀律」</strong>的核心：用「時間分散風險」+「驗證觸發加碼」雙軌降低期望值近零情境下的決策難度。AES-KY 屬「淨期望值 -3 ~ -5% 近零點」標的、不適合「一次重押」也不該「完全迴避」、最優策略是「先進場低部位、用驗證提升期望值」。<br><br>
+        <strong>vs 衛司特「等大幅回檔再進場」對比</strong>：衛司特「淨期望值 -10%」必須等 PE 修正至 28-30x（股價 330-360）才進場；AES-KY「淨期望值 -3-5% 近零」可在現價試單 5% 起步—<em>兩者執行紀律完全不同、源於估值合理性差距 7 vs 3 分</em>。
+      </div>
+    </section>
+
+    <section class="section" id="s8f">
+      <div class="section-head">
+        <div class="no">8f</div>
+        <div class="tit">
+          <h2>催化劑時間表 · 未來 3 個月</h2>
+          <div class="sub">2026 Q2-Q3 密集監控期</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="item">
+          <div class="date">每週五 · 持續</div>
+          <div class="t">投信 / 外資週度買賣超 + 內部人月度持股</div>
+          <div class="d">投信賣超 ≥ 15 日 = 警訊；轉淨買超 = 主力確認；內部人轉賣 ≥ 5 萬股 = 觀望訊號</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 05 · 10</div>
+          <div class="t">2026 / 04 月營收公告</div>
+          <div class="d">YoY ≥ +25% = 動能保留 / &lt; +20% = Q1 季報跳票機率上升、是 Q1 季報的領先指標</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · 05 · 15 ★★★</div>
+          <div class="t">Q1 2026 季報公告（核心驗證點）</div>
+          <div class="d"><b>毛利率 ≥ 36% = 切 H1 樂觀加權、進場加碼至 8% / 33-36% = 維持 H2 主導 / ≤ 33% = 切 H3+H4 機率上修、減碼 50%</b>。同時觀察 Q1 EPS（vs 法人預估 9.5+）+ A 客戶占比是否續升</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 06 · 10</div>
+          <div class="t">2026 / 05 月營收公告</div>
+          <div class="d">Q1 季報後首個月度數據、YoY ≥ +25% = 規格紅利期確認、月年增中斷 = 觀望</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 06-07</div>
+          <div class="t">DynaPack 三倍擴產動向 + 中國 BBU 出貨市占</div>
+          <div class="d">DynaPack 2026 三倍擴產實際啟動 + 中國比亞迪/寧德 出口轉戰歐美 → R4 中國價格戰提前 2026 機率上升</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 07 · 10</div>
+          <div class="t">2026 / 06 月營收公告</div>
+          <div class="d">上半年累計營收完整呈現、YoY 走勢決定 H2 主導 vs H3 拖累的中期趨勢</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · 08 · 14 ★★</div>
+          <div class="t">Q2 法說會（forward guidance 觀察點）</div>
+          <div class="d"><b>若管理層首次提供官方 forward EPS = 透明度紅利、PE +1-2x、估值溢價可期；仍維持「無 forward」模式 = 透明度信任繼續打折</b>。同時 Q2 季報毛利率連續性驗證 + HVDC 8/12KW 客戶端認證進度公告</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 09 持續</div>
+          <div class="t">投信轉買確認窗口</div>
+          <div class="d">若 Q1 毛利率兌現、投信通常會在財報後 2-4 週內開始佈局；2026/09-10 是確認機構態度的關鍵觀察窗口</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2026 · 10-11</div>
+          <div class="t">Q3 季報 + 越南投產進度</div>
+          <div class="d">Q3 毛利率 ≥ 36% 連續性確認 = 滿倉 10% 條件成立；越南 Hoa Phu CN-08 投產進度未延遲 = 三地產能架構完成</div>
+        </div>
+
+        <div class="item key">
+          <div class="date">2026 · Q4 ★</div>
+          <div class="t">HVDC 8/12KW 量產出貨</div>
+          <div class="d">公司主動揭示時程、準時量產 = H1 樂觀加權、毛利率拉升、滿倉 10%；延遲 6 月 = R5 觸發、2027 EPS -8 元</div>
+        </div>
+
+        <div class="item">
+          <div class="date">2027 · 上半（遠端）</div>
+          <div class="t">中國 -20% 價格戰啟動點 + 美中 BBU 關稅戰</div>
+          <div class="d">中國比亞迪 / 寧德 / 力神出口轉戰歐美 BBU + Hyperscaler 招標均價跌破 USD 380 = 切 H3 拖累；美中關稅戰若觸發 = 越南受惠 + EPS +5-10%</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" id="s8g">
+      <div class="section-head">
+        <div class="no">8g</div>
+        <div class="tit">
+          <h2>蝴蝶效應推衍 ★★★</h2>
+          <div class="sub">弱訊號雷達 + Top 3 推演鏈 + 盲點洞察 + 歷史模式比對</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 12px;font-weight:600">弱訊號雷達（五類）</h4>
+
+      <div class="signal-card">
+        <div class="sig-type">A · 產業</div>
+        <div class="sig-body"><b>DynaPack 三倍擴產（台灣 + 泰國 +200%）+ 中國 -20% 價格戰</b>。市場普遍知悉、但少有人推演「若 DynaPack 2026 實際啟動 + 中國 比亞迪/寧德/力神同步出口歐美 → AES-KY 5.5KW 主流毛利率即時 -3-5pp、整體 30-32%」雙力疊加。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">B · 財務</div>
+        <div class="sig-body"><b>毛利率連 4 季 -5.23pp（39.21 → 33.98%）</b>+ 存貨週轉 0.34（同業順達 1.77、5.2 倍差距）。市場假設是匯率因素、但若結構性（中國擠壓 + 規格商品化）則 H3+H4 雙弱觸發。Q1 季報除匯率因素數據是分歧點。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">C · 治理</div>
+        <div class="sig-body"><b>2024-03-04 莊世昌辭任獨董</b>（任期未滿、原因未公告）+ 2024-05 吳惠瑜（前 Intel 台灣總經理）新任。辭任時點與 2024 BBU 軸線轉移加速期間吻合；新獨董背景與 BBU 戰略相關。<em>單一事件 vs 結構性調整訊號的雙面性</em>。<span class="fias-i">I</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">D · 法人</div>
+        <div class="sig-body"><b>「內部信心 vs 法人疑慮」對沖</b>—內部人 +12.7 萬股加碼（宋家父子 + 財務長）vs 投信 5 日 -23 萬股 + 外資 20 日 -18 萬股。前 10 大集中度 91%（含母公司 73.39% + 集團關係人 17.6%）流通比例極低、波動易放大。<span class="fias-f">F</span></div>
+      </div>
+
+      <div class="signal-card">
+        <div class="sig-type">E · 供應鏈</div>
+        <div class="sig-body"><b>主動分散供應商實證</b>（甲公司 FY2024 上半 66.8% → FY2025 Q1 0.4%）+ <b>SDI/LG Chem 雙寡占</b>（B1 + B4 護城河 0/2 = 結構性議價權弱）。雙面性結構：執行面緩衝 vs 結構性脆弱。若中國新供應商品質危機 → 整體毛利率 -3pp（Step 2.5 情境 C 破局）。<span class="fias-f">F</span></div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">Top 3 蝴蝶效應推演鏈</h4>
+
+      <div class="chain">
+        <b style="color:var(--bear)">推演 1 · Q1 季報跳票 → PE 收斂連鎖</b><br>
+        2026/05/15 Q1 季報毛利率 ≤ 33%（公司解釋匯率假說失敗）
+        <span class="arrow">→</span> ACH H2 主導從 45% 降至 30%、H3+H4 各上修至 15%
+        <span class="arrow">→</span> 投信賣超延續 → 外資 20 日轉大幅賣超 ≥ 50 萬股
+        <span class="arrow">→</span> PE 25.6x 收斂至 20-22x → R1 估值正常化觸發
+        <span class="arrow">→</span> 失去 PE 乘數支撐、急跌放大
+        <span class="arrow">→</span> <b>股價 979 → 700-820（-16 ~ -28%、機率 30%、期望損失 -6.6 ~ -8.4%）</b>
+      </div>
+
+      <div class="chain">
+        <b style="color:var(--bear)">推演 2 · Hyperscaler 自製 BBU + A 客戶崩盤</b><br>
+        2026 年報揭示 A 客戶 ≥ 35% + AWS Annapurna / Microsoft Maia / Meta MTIA 任一公告自製 BBU 試水溫
+        <span class="arrow">→</span> H4 客戶崩盤機率從 10% 上修至 25%、H1 樂觀崩解至 5%
+        <span class="arrow">→</span> A 客戶訂單抽走 → 整體營收 -20-30% → EPS 14-16
+        <span class="arrow">→</span> 護城河說法（轉換成本 5/5）部分破滅 → PE 17-20x
+        <span class="arrow">→</span> <b>股價 252-450（-54 ~ -74%、機率 8%、期望損失 -4.3 ~ -5.9%、不可逆）</b>
+      </div>
+
+      <div class="chain">
+        <b style="color:var(--bull)">推演 3 · 美中關稅戰啟動 → 越南爆發（少見但可能）</b><br>
+        美國 2026 H2 對中國電子產品提高關稅至 ≥ 25% + BBU 列入敏感品項
+        <span class="arrow">→</span> 中國 -20% 價格優勢消失 → AES-KY 越南 Hoa Phu CN-08 規模化受惠
+        <span class="arrow">→</span> Hyperscaler 客戶端要求東南亞替代產能 → AES-KY 為核心優勢
+        <span class="arrow">→</span> 2026 EPS 從 H2 主導 34.2 升至 38-40 → PE 維持 25-28x
+        <span class="arrow">→</span> <b>股價測試 1,150-1,300（+17 ~ +33%、機率 5-8%、期望收益 +1.0 ~ +2.6%）</b>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">Top 3 盲點洞察</span>
+        <p><b>洞察 1</b>：<b>「KY 開曼註冊 + 父子兼任 + 母公司獨董重疊」三重結構透明度疑慮被市場低估</b>。報告公告強調「家族控股 + 集團 backstop」、但少有人推演「<em>母公司利益優先 vs 少數股東保護不足</em>」的潛在衝突結構。AES-KY 治理品質的隱性風險源、需 2026 年報關係人交易揭露驗證。</p>
+        <p><b>洞察 2</b>：<b>法說會 PDF 11 頁無 forward guidance 是 H1 樂觀預估的根本可信度問題</b>。所有 2026 EPS 50 預估皆媒體二手整理（cmoney / vocus / ttv）、屬「推論」而非「事實」。<em>市場在「H1 樂觀 EPS 50」上付出的溢價、實質上是付出在「未驗證的二手 forward」上</em>。Step 2 誠信度扣分主因即此。</p>
+        <p><b>洞察 3</b>：<b>HVDC 量產窗口短於市場預期</b>。HVDC 商品化（規格成熟）+ Panasonic 80% 上限封頂 + 中國 -20% 價格戰啟動 = 三項時間敏感變數同期重疊（2027-2028）。<em>規格紅利溢價有「自動侵蝕」性質、不是無限延伸—2027 後 PE 自然從 28x 收斂至 22-24x 是結構性必然</em>。</p>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">歷史劇本對照</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">最相似案例 1</div><div class="v"><b>大立光 3008（2018）</b>：iPhone 規格升級紅利期 + 毛利率高峰 70%+。iPhone XR 銷售不如預期 + 規格紅利末期 → PE 30x → 14x、股價 -50%。<em>規格紅利期主導股的最大風險不是基本面、是規格紅利窗口時間</em>。相似度 75%。</div></div>
+        <div class="data-row"><div class="k">最相似案例 2</div><div class="v"><b>台達電 2308（2021）</b>：電源系統規格升級紅利期 + AI 資料中心題材。2022 PE 25x → 18x 修正、股價 -30%；但 2023-2024 後復甦至高點。<em>BBU + 電源規格紅利週期類似、AES-KY 為更純的 BBU 標的</em>。相似度 65%。</div></div>
+        <div class="data-row"><div class="k">同題材對手</div><div class="v"><b>順達 3211（2024-2025）</b>：BBU 同題材聯動 + 多元電池模組。2025 EPS YoY +25%、PE 26x、與 AES-KY 同步上漲（強訊號 0.52 正向）。同題材聯動實證—兩檔分歧（順達漲 / AES-KY 跌）= AES-KY 個別風險訊號。相似度 90%。</div></div>
+        <div class="data-row"><div class="k">差異點</div><div class="v">AES-KY 為純 BBU 標的（vs 順達多元）、規格升級空間更大（HVDC 5.5→20KW vs 順達標準規格）、母公司新普 73.39% backstop（vs 順達獨立）。波動率較高、但護城河時間較長（HVDC 商品化前 2-3 年）。</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="s8h">
+      <div class="section-head">
+        <div class="no">8h</div>
+        <div class="tit">
+          <h2>貓膩推衍 ★★★</h2>
+          <div class="sub">承接第七步 Ch14 結論 — 誠信度拆解 + 歷史劇本推演</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 12px;font-weight:600">8h-1 · 承接 Ch14 貓膩結論</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">貓膩燈號</div><div class="v"><b>黃燈（留意但非警報）</b> · 6 項全黃 / 0 紅 / 0 綠 · 誠信度 85（A- 中高）<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">核心假說</div><div class="v">KY 開曼註冊 + 父子兼任 + 薛彬彬獨董重疊 + 莊世昌 2024-03 辭任 + 法說 PDF 11 頁無 forward + Panasonic 80% 自宣稱 + FY2024 年報 OCR 受損 = 治理結構需持續檢視<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">成立機率</div><div class="v">核心結論成立（治理需關注）~70%；放大為會計舞弊級別的嚴重程度 &lt; 5%<span class="fias-a">A</span></div></div>
+        <div class="data-row"><div class="k">緩衝實證</div><div class="v">5 年無 CB / 無增資（FY2020-2024 股本完全不變）+ 配發率穩定 49.2% + 內部人加碼 +12.7 萬股 + 勤業眾信連 5 年無保留 = 4 項治理實證緩衝結構性疑慮<span class="fias-f">F</span></div></div>
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-2 · 歷史劇本推演（若貓膩成立）</h4>
+
+      <div class="chain">
+        <b>情境 A · 溫和貓膩（機率 50%）</b> — 僅為透明度可改進、無實質揭露違規<br>
+        時間軸：<b>2026/8/14 Q2 法說會</b>仍維持「無 forward」模式
+        <span class="arrow">→</span> 透明度信任打折
+        <span class="arrow">→</span> PE 折讓 1-2x（從 25.6x 降至 23-24x）
+        <span class="arrow">→</span> 股價 -5 ~ -8%<br>
+        歷史相似度：70%（KY 股 + 家族企業常態）<br>
+        應對：等 2026 年報關係人交易揭露 + 2027 法說會 forward 是否首次提供
+      </div>
+
+      <div class="chain">
+        <b>情境 B · 中度貓膩（機率 5-8%）</b> — 關聯交易疑慮浮現 + 海外子公司揭露不完整<br>
+        時間軸：<b>2026 年報（2027/03 公告）</b>關係人交易條件揭露不完整
+        <span class="arrow">→</span> 媒體質疑「父子兼任 + 母公司利益優先」
+        <span class="arrow">→</span> 投信加速賣超、外資跟進
+        <span class="arrow">→</span> PE 修正 22-23x、股價 -10 ~ -15%<br>
+        歷史相似度：30%（參考 KY 股治理事件案例）<br>
+        應對：A 客戶占比 ≥ 35% / 內部人異常賣超 ≥ 30 萬股 → 立即減倉 50%
+      </div>
+
+      <div class="chain">
+        <b>情境 C · 嚴重貓膩（機率 &lt; 2%）</b> — 財報虛增 / 下市風險<br>
+        目前無任何實證訊號支持此情境；此情境需「會計師撤回意見 + 主管機關立案 + 3 個月內連續重大訊息」三件齊發才可能。<br>
+        歷史相似度：&lt; 5%（5 年無 CB / 無增資 + 內部人加碼 + 勤業眾信連 5 年無保留 = 反向證據強）<br>
+        應對：永久迴避觸發條件（會計師非無保留 / 法說誠信事件）
+      </div>
+
+      <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 12px;font-weight:600">8h-3 · 反轉路徑決策樹</h4>
+      <div class="data-grid">
+        <div class="data-row"><div class="k">最早逃生信號</div><div class="v">會計師事務所更換、或負責會計師（勤業眾信簽證合夥人）離職 / 變更<span class="fias-f">F</span></div></div>
+        <div class="data-row"><div class="k">次要信號</div><div class="v">A 客戶占比續升至 ≥ 35%（2026 年報揭示）+ Hyperscaler 自製 BBU 試水溫公告<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">第三信號</div><div class="v">內部人由加碼轉為異常賣超 ≥ 30 萬股、董監質押比上升 ≥ 5%<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">第四信號</div><div class="v">2026/8/14 Q2 法說會仍維持「無 forward」模式 + Q1 EPS 不及法人預估<span class="fias-i">I</span></div></div>
+        <div class="data-row"><div class="k">第五信號</div><div class="v">FY2025 年報海外子公司獨立審計意見揭露完整度未改善 / 關係人交易揭露未量化<span class="fias-a">A</span></div></div>
+      </div>
+
+      <div class="callout info">
+        <span class="label">Ch14 雙檢核點翻燈時程</span>
+        <p><b>2026/8/14 Q2 法說會</b>—1 項灰區（forward guidance）一次翻燈最大機會。若提供 → 透明度紅利 PE +1-2x、估值溢價可期。</p>
+        <p><b>2026 年報（2027/03 公告）</b>—5 項灰區一次翻燈雙檢核點：關係人交易揭露 + 海外子公司獨立審計 + 父子兼任治理結構 + A 客戶占比演進 + OCR 受損改善。<em>若全部過關 → 黃燈轉綠、估值可提升 PE +2-3x；反之升紅、投資論述要重估</em>。</p>
+        <p><b>監控紀律</b>：兩個檢核點之前不過度恐慌減碼、之後立即按結果調整部位。<em>貓膩探索的真正功能是建立早期預警系統、不是等事發後才反應</em>。</p>
+      </div>
+    </section>
+
+    <section class="section" id="s8i">
+      <div class="section-head">
+        <div class="no">8i</div>
+        <div class="tit">
+          <h2>推衍結論 &amp; 行動清單</h2>
+          <div class="sub">第四次信心校準收斂結果 + 終局判定</div>
+        </div>
+      </div>
+
+      <div class="verdict-head">
+        <div class="mark">§ 8i　推衍引擎終局判定（第四次校準）</div>
+        <h3>最可能路徑：H2 規格紅利期主導 45%、區間整理 900-1,050。<br>2026/05/15 Q1 季報為決勝分岔點。</h3>
+        <div class="coda">
+          <p>四次獨立方法論（ACH 矩陣 → 壓力測試 → 評審團 → 推演引擎）連續收斂於 H2 主導 45%（淨支持 +17、反證 0、罕見高度一致性）。AES-KY 屬「好公司合理價格」結構、加權目標 NT$ 940 vs 現價 NT$ 979 = -4% 略低。<b>分階段建倉（試單 5% → Q1 驗證後加碼 8% → Q4 量產滿倉 10%）</b>是「淨期望值近零、規格紅利期主導」標的的最優策略。</p>
+        </div>
+      </div>
+
+      <div class="confidence-line">
+        <div class="conf">
+          <div class="k">Step 4 ACH 初判</div>
+          <div class="v a">40%</div>
+          <div class="d">H2 主導機率（首次校準）</div>
+        </div>
+        <div class="conf">
+          <div class="k">Step 5 壓力測試</div>
+          <div class="v a">42%</div>
+          <div class="d">H2 機率（二次校準）</div>
+        </div>
+        <div class="conf">
+          <div class="k">Step 6 評審團</div>
+          <div class="v a">45%</div>
+          <div class="d">H2 機率（三次校準）</div>
+        </div>
+        <div class="conf">
+          <div class="k">Step 8 推演（本檔）</div>
+          <div class="v n">45%</div>
+          <div class="d">H2 機率（第四次穩定）</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:24px 0 12px">行動清單（Action Items）</h4>
+
+      <div class="minis c4">
+        <div class="mini accent">
+          <div class="t">★ 立即動作</div>
+          <div class="n">試單 5%</div>
+          <div class="d">現價 ≤ NT$ 1,000 + 5 進場條件 4/5 達標</div>
+        </div>
+        <div class="mini bull">
+          <div class="t">★★ 短期觸發</div>
+          <div class="n">2026/05/15</div>
+          <div class="d">Q1 毛利率 ≥ 36% → 加碼 8%</div>
+        </div>
+        <div class="mini gold">
+          <div class="t">★★ 中期觸發</div>
+          <div class="n">2026 Q4</div>
+          <div class="d">HVDC 量產順利 → 滿倉 10%</div>
+        </div>
+        <div class="mini bear">
+          <div class="t">★★★ 全出觸發</div>
+          <div class="n">A ≥ 40%</div>
+          <div class="d">客戶崩盤訊號 / 跌破 800 / Hyperscaler 自製</div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:24px 0 12px">關鍵追蹤節點（未來 3 個月）</h4>
+      <ul style="margin:6px 0 0 22px;line-height:1.85;font-size:14px;color:var(--ink-2)">
+        <li><b>2026/05/10</b> · 4 月月營收公告（YoY ≥ +25% = 動能保留）</li>
+        <li><b>2026/05/15 ★★★</b> · Q1 季報公告（毛利率 ≥ 36% / 33-36% / ≤ 33% 三路徑分岔）</li>
+        <li><b>2026/06/10</b> · 5 月月營收公告（Q1 季報後首個月度數據）</li>
+        <li><b>2026/06-07</b> · DynaPack 三倍擴產動向 + 中國 BBU 出貨市占</li>
+        <li><b>2026/07/10</b> · 6 月月營收公告（上半年累計）</li>
+        <li><b>2026/08/14 ★★</b> · Q2 法說會（forward guidance 觀察、1 項灰區翻燈最大機會）</li>
+        <li><b>2026 Q3</b> · 投信轉買確認窗口（Q1 兌現後 2-4 週）</li>
+        <li><b>2026 Q4 ★</b> · HVDC 8/12KW 量產出貨（核心催化劑）</li>
+        <li><b>2027 上半</b> · 中國 -20% 價格戰啟動點（H2 主導假說的時間敏感變數）</li>
+      </ul>
+
+      <div class="conclusion">
+        <div class="mark">§ 8i　推衍引擎最終結論</div>
+        <h4>分階段建倉、用驗證換倉位、嚴格紀律比判斷重要</h4>
+        <div class="rows">
+          <div class="row"><div class="k">核心結論</div><div class="v">AES-KY 是「<b>好公司合理價格</b>」標的、屬「<em>淨期望值近零、規格紅利期主導</em>」結構。最優策略是分階段建倉（試單 5% → Q1 後 8% → Q4 後 10%）、用驗證觸發加碼降低成本基礎。<b>不是「一次重押」也不是「完全迴避」、是「先進場低部位、用驗證提升期望值」</b>。</div></div>
+          <div class="row"><div class="k">vs 衛司特</div><div class="v">衛司特推演版終局「H2 中性 44% + 估值上緣 + 等大幅回檔」；AES-KY 終局「H2 主導 45% + 估值合理 + 分階段建倉」。<em>同樣 H2 中性主導機率、不同的執行紀律—源於估值合理性差距 7 vs 3 分</em>。</div></div>
+          <div class="row"><div class="k">推衍有效期</div><div class="v"><b>2026-05-15 Q1 季報前</b>—Q1 季報後機率分布需重大重評估、本推演版結論需要更新。後續每月持續追蹤月營收 + 投信籌碼 + 內部人加碼三項即時指標。</div></div>
+        </div>
+      </div>
+
+      <div class="pull">
+        <p>「好公司值得追蹤、好時點值得等待、合理價格值得分階段建倉。<br>耐心等驗證、紀律按條件加碼、嚴格按觸發減碼—這是 AES-KY 「好公司合理價格」標的最優執行框架。」</p>
+        <div class="attr">— 天機閣推衍系統 · 第八步推演版 · 2026-05-03</div>
+      </div>
+    </section>
+
+    <section class="section" id="related">
+      <div class="section-head">
+        <div class="no">★</div>
+        <div class="tit">
+          <h2>相關報告連結</h2>
+          <div class="sub">六步分析 + 完整版 + 推演版三檔配套閱讀</div>
+        </div>
+      </div>
+
+      <ul style="margin:18px 0 0 22px;line-height:2.2;font-size:14px;color:var(--ink-2);list-style:none;padding:0">
+        <li>📄 <b>第一步：資料收集</b> · <a href="../../投資分析資料/6781_AES-KY/第一步_資料收集.html" style="color:var(--accent);text-decoration:underline">第一步_資料收集.html</a> — 7 管道資料蒐集 + 12 章節 + 12 整合結論</li>
+        <li>📄 <b>第二步：FIAS 資料分級</b> · <a href="../../投資分析資料/6781_AES-KY/第二步_FIAS資料分級與深度分析.html" style="color:var(--accent);text-decoration:underline">第二步_FIAS資料分級與深度分析.html</a> — 88 FIAS 項目 + 7 紅旗 + 誠信度 85（A-）</li>
+        <li>📄 <b>第三步：競爭力分析</b> · <a href="../../投資分析資料/6781_AES-KY/第三步_競爭力分析.html" style="color:var(--accent);text-decoration:underline">第三步_競爭力分析.html</a> — 競爭力地圖 23/35 + 護城河窄 B+ + Porter 五力 22/50</li>
+        <li>📄 <b>第四步：ACH 競爭假說分析</b> · <a href="../../投資分析資料/6781_AES-KY/第四步_ACH競爭假說分析.html" style="color:var(--accent);text-decoration:underline">第四步_ACH競爭假說分析.html</a> — 5 假說 × 22 證據 + H2 主導 45% 淨支持 +17</li>
+        <li>📄 <b>第五步：壓力測試</b> · <a href="../../投資分析資料/6781_AES-KY/第五步_假設壓力測試.html" style="color:var(--accent);text-decoration:underline">第五步_假設壓力測試.html</a> — A-F 敏感度 + 10 情報驗證卡 + 二次信心校準 75.5</li>
+        <li>📄 <b>第七步：完整版（15 章）★</b> · <a href="第七步_完整版.html" style="color:var(--accent);text-decoration:underline;font-weight:700">第七步_完整版.html</a> — 502 KB / 5,979 行 / 8 張 Chart.js / 跨章一致性 29 項全綠</li>
+        <li>📄 <b>第八步：推演版（本檔）</b> · 9 個 section + 蝴蝶效應 + 貓膩推演 + 第四次信心校準</li>
+        <li>📊 <b>核心數據表</b> · <code>c:/tmp/6781_核心數據表.md</code> — 跨章一致性錨點單一真相來源（教訓十二）</li>
+      </ul>
+
+      <h4 style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:32px 0 12px">產出資料夾結構</h4>
+      <pre style="font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--ink-3);background:var(--paper-2);padding:14px 18px;border:1px solid var(--rule);border-radius:3px;overflow-x:auto">投資分析資料/6781_AES-KY/
+├── 第一步_資料收集.html (45.7 KB)
+├── 第二步_FIAS資料分級與深度分析.html (23.5 KB)
+├── 第三步_競爭力分析.html (18.5 KB)
+├── 第四步_ACH競爭假說分析.html (17.9 KB)
+├── 第五步_假設壓力測試.html (18.8 KB)
+├── 第七步_完整版.html (502 KB)  ★ 主檔
+├── 第八步_推演版.html (本檔)    ★ 推演版
+├── Step1_完整資料集.json
+├── 年度差異比對.json
+└── 法說會 / 年報 / 公開說明書 / 文字檔（pdf_to_text.py 文字化）
+
+天機錄/6781_AES-KY/
+└── 20260503_6781_AES-KY_完整版.html (副本)
+
+github-pages/天機錄/6781_AES-KY/
+└── 20260503_6781_AES-KY_完整版.html (推送候選)</pre>
+    </section>
+
+
+
+    <div class="footer">
+      天機閣推衍系統 · 第八步推演版 v2.0 · 2026-05-03 產出<br>
+      標的：6781 AES-KY · 母公司新普 6121（73.39%）· 開曼 KY 結構<br>
+      撰寫紀律：Phase 0 核心數據表單一真相錨點 · 第七步完整版四次校準收斂 · 蝴蝶效應 + 貓膩推演雙軸<br>
+      四次信心校準：Step 4 ACH H2 40% → Step 5 壓力 42% → Step 6 評審團 45% → Step 8 推演引擎（本檔、第四次校準）
+    </div>
+
+    <div class="disclaimer">
+      <b>免責聲明</b>：本報告為天機閣推衍系統基於公開資料製作的投資分析參考、不構成投資建議或買賣要約。所有數據均標註 FIAS 信心分級（事實 / 推論 / 假設 / 推測）、分析結論受分級影響。<b>推衍有效期 2026-05-15 Q1 季報前</b>。股票投資有風險、過去績效不代表未來、投資人應自行判斷並承擔風險。
+    </div>
+
+  </main>
+</div>
+
+
+<script>
+// Theme toggle
+(function(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sh-theme-step8');
+  if(saved === 'dark') root.setAttribute('data-theme','dark');
+  else root.removeAttribute('data-theme');
+  function sync(){
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    document.querySelectorAll('[data-theme-btn]').forEach(function(b){
+      const on = b.dataset.themeBtn === cur;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true':'false');
+    });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(function(b){
+    b.addEventListener('click',function(){
+      const t = b.dataset.themeBtn;
+      if(t==='dark') root.setAttribute('data-theme','dark');
+      else root.removeAttribute('data-theme');
+      localStorage.setItem('sh-theme-step8', t);
+      sync();
+    });
+  });
+  sync();
+})();
+
+// TOC active highlight on scroll
+(function(){
+  const sections = document.querySelectorAll('section.section');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  function onScroll(){
+    let cur = '';
+    sections.forEach(function(s){
+      if(window.scrollY >= s.offsetTop - 100) cur = s.id;
+    });
+    tocLinks.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+
+</body>
+</html>
