@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健康飲食三餐推薦清單（卡片版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS Variables（暖棕慢活風） ===== */
+:root {
+  --bg: #d6d0c8;
+  --panel: #e6e1da;
+  --hover: #cfc9c0;
+  --border: #b8b0a5;
+  --txt: #2c2a26;
+  --txt2: #4a453e;
+  --txt3: #7a7268;
+  --accent: #5a7d60;
+  --food: #c27c6e;
+  --play: #6b8f71;
+  --base: #3d3a36;
+  --link: #5a7d8c;
+  --table-header: #5c564e;
+  /* 健康分類色 */
+  --cat-inflam: #c27c6e;
+  --cat-antioxid: #8b6f9e;
+  --cat-med: #5a7d8c;
+  --cat-cardio: #c2636e;
+  /* 等級色 */
+  --rank-s: linear-gradient(135deg, #d4a853, #e8c97a, #d4a853);
+  --rank-a: #5a7d60;
+  --rank-b: #5a7d8c;
+  --rank-c: #7a7268;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ===== Hero 區塊 ===== */
+.hero {
+  text-align: center;
+  padding: 40px 24px 32px;
+  margin-bottom: 28px;
+  background: var(--panel);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.hero-icon { font-size: 3em; margin-bottom: 8px; }
+.hero h1 {
+  font-size: 1.9em;
+  font-weight: 900;
+  color: var(--base);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.hero .subtitle {
+  font-size: .95em;
+  color: var(--txt3);
+  margin-bottom: 20px;
+}
+
+/* 每日目標摘要 */
+.daily-summary {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.summary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(90,125,96,.1);
+  border: 1px solid rgba(90,125,96,.25);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: .82em;
+  font-weight: 600;
+  color: var(--accent);
+}
+.summary-pill .num { font-weight: 700; font-size: 1.1em; }
+
+/* ===== 等級說明 ===== */
+.rank-legend {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.rank-item {
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: transform .2s;
+}
+.rank-item:hover { transform: translateY(-2px); }
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1em;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.rank-badge.s { background: var(--rank-s); color: #3d3a36; box-shadow: 0 0 12px rgba(212,168,83,.4); }
+.rank-badge.a { background: var(--rank-a); }
+.rank-badge.b { background: var(--rank-b); }
+.rank-badge.c { background: var(--rank-c); }
+.rank-item .rank-title { font-size: .78em; font-weight: 700; color: var(--txt2); }
+.rank-item .rank-desc { font-size: .7em; color: var(--txt3); margin-top: 2px; }
+
+/* 等級說明補充（指南功能性食材） */
+.legend-note {
+  font-size: .76em;
+  color: var(--txt3);
+  background: rgba(122,114,104,.1);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.legend-note b { color: var(--txt2); }
+
+/* ===== 分類篩選列 ===== */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.filter-bar .label-text { font-size: .82em; font-weight: 600; color: var(--txt3); margin-right: 4px; }
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 14px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  font-size: .78em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  background: rgba(0,0,0,.05);
+  color: var(--txt2);
+}
+.filter-btn:hover { transform: scale(1.05); }
+.filter-btn.active { color: #fff; }
+.filter-btn[data-cat="inflam"].active { background: var(--cat-inflam); border-color: var(--cat-inflam); }
+.filter-btn[data-cat="antioxid"].active { background: var(--cat-antioxid); border-color: var(--cat-antioxid); }
+.filter-btn[data-cat="med"].active { background: var(--cat-med); border-color: var(--cat-med); }
+.filter-btn[data-cat="cardio"].active { background: var(--cat-cardio); border-color: var(--cat-cardio); }
+.filter-btn.reset-btn { background: none; border: 1px solid var(--border); font-weight: 500; font-size: .75em; }
+.filter-btn.reset-btn:hover { background: var(--hover); }
+
+/* ===== Tab 切換 ===== */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  font-family: inherit;
+  font-size: .92em;
+  font-weight: 600;
+  color: var(--txt3);
+  cursor: pointer;
+  transition: all .25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab-btn:hover { background: var(--hover); color: var(--txt2); }
+.tab-btn.active {
+  background: var(--base);
+  color: #faf9f7;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.tab-btn .tab-icon { font-size: 1.2em; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn .3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 分類卡片（可收合區塊） ===== */
+.category-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+  transition: transform .2s, box-shadow .2s;
+}
+.category-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+}
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: rgba(0,0,0,.03);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.category-header:hover { background: rgba(0,0,0,.05); }
+.cat-icon { font-size: 1.4em; }
+.cat-title { font-size: 1em; font-weight: 700; color: var(--base); flex: 1; }
+.cat-count {
+  font-size: .72em;
+  background: rgba(0,0,0,.08);
+  padding: 2px 10px;
+  border-radius: 10px;
+  color: var(--txt3);
+  font-weight: 600;
+}
+.cat-toggle {
+  font-size: .8em;
+  color: var(--txt3);
+  transition: transform .3s;
+}
+.category-card.collapsed .cat-toggle { transform: rotate(-90deg); }
+.category-card.collapsed .category-body { display: none; }
+
+.category-body { padding: 0; }
+
+/* ===== 食材卡片格狀 ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+.food-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  transition: transform .2s, box-shadow .2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.food-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+.food-card.hidden { display: none; }
+.fc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.fc-emoji { font-size: 1.3em; line-height: 1; }
+.fc-name { font-weight: 700; color: var(--txt); font-size: .92em; line-height: 1.35; flex: 1; }
+.fc-amount { font-size: .76em; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+.fc-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.fc-tip { font-size: .78em; color: var(--txt3); line-height: 1.55; margin-top: auto; }
+
+/* 等級徽章（卡片內，沿用 rank-tag） */
+.rank-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-size: .72em;
+  font-weight: 900;
+  color: #fff;
+}
+.rank-tag.s { background: var(--rank-s); color: #3d3a36; box-shadow: 0 0 8px rgba(212,168,83,.35); }
+.rank-tag.a { background: var(--rank-a); }
+.rank-tag.b { background: var(--rank-b); }
+.rank-tag.c { background: var(--rank-c); }
+.rank-tag.guide { background: var(--txt3); font-size: .6em; }
+
+/* 中式徽章 */
+.cn-badge {
+  font-size: .62em; font-weight: 700;
+  background: rgba(194,124,110,.15); color: var(--food);
+  padding: 2px 7px; border-radius: 6px; white-space: nowrap;
+}
+
+/* 分類標籤 */
+.cat-tag {
+  display: inline-block;
+  font-size: .66em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .3px;
+}
+.cat-tag.inflam { background: var(--cat-inflam); }
+.cat-tag.antioxid { background: var(--cat-antioxid); }
+.cat-tag.med { background: var(--cat-med); }
+.cat-tag.cardio { background: var(--cat-cardio); }
+.cat-tag.func { background: rgba(122,114,104,.2); color: var(--txt2); }
+
+/* ===== 推薦組合區 ===== */
+.combo-section { margin: 34px 0 28px; }
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+.combo-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  transition: transform .2s, box-shadow .2s;
+}
+.combo-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+.combo-label { font-size: .72em; font-weight: 700; letter-spacing: .05em; color: var(--accent); margin-bottom: 6px; }
+.combo-name { font-size: .98em; font-weight: 700; color: var(--base); margin-bottom: 8px; line-height: 1.4; }
+.combo-items { font-size: .8em; color: var(--txt2); line-height: 1.9; }
+.combo-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: middle; }
+
+/* ===== 地雷警示區 ===== */
+.warn-section { margin: 28px 0; }
+.warn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 10px;
+}
+.warn-card {
+  background: rgba(194,99,110,.08);
+  border: 1px solid rgba(194,99,110,.25);
+  border-radius: 12px;
+  padding: 14px;
+}
+.warn-name { font-size: .85em; font-weight: 700; color: var(--cat-cardio); margin-bottom: 4px; }
+.warn-desc { font-size: .74em; color: var(--txt2); line-height: 1.5; }
+
+/* ===== 整合結論區塊 ===== */
+.conclusion {
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 8px 0 26px;
+  font-size: .86em;
+  line-height: 1.8;
+  color: var(--txt2);
+  border-left: 4px solid var(--accent);
+  background: rgba(90,125,96,.08);
+}
+.conclusion b { color: var(--base); display: block; margin-bottom: 6px; font-size: 1.02em; }
+
+/* ===== 黃金食材區 ===== */
+.golden-section { margin-top: 36px; margin-bottom: 28px; }
+.golden-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15em;
+  font-weight: 800;
+  color: var(--base);
+  margin-bottom: 16px;
+}
+.golden-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.golden-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform .2s, box-shadow .2s;
+}
+.golden-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+.golden-card.super {
+  border: 2px solid rgba(212,168,83,.5);
+  background: linear-gradient(135deg, rgba(212,168,83,.08), rgba(232,201,122,.05));
+}
+.golden-emoji { font-size: 2em; }
+.golden-info { flex: 1; }
+.golden-name { font-weight: 700; font-size: .95em; color: var(--base); }
+.golden-desc { font-size: .78em; color: var(--txt3); margin-top: 2px; }
+
+/* ===== 一週主題速查 ===== */
+.theme-section { margin-bottom: 28px; }
+.theme-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82em;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,.06);
+}
+.theme-table th {
+  background: var(--table-header);
+  color: #faf9f7;
+  padding: 12px 14px;
+  font-weight: 600;
+  text-align: left;
+}
+.theme-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(184,176,165,.4);
+  color: var(--txt2);
+  background: var(--panel);
+  vertical-align: top;
+}
+.theme-table tr:last-child td { border-bottom: none; }
+.theme-table tr:hover td { background: var(--hover); }
+.theme-name { font-weight: 700; color: var(--base); white-space: nowrap; }
+.cat-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* ===== 飲食原則 ===== */
+.principles-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+}
+.principles-card h3 {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--base);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.principle-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  list-style: none;
+}
+.principle-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: .86em;
+  color: var(--txt2);
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.03);
+}
+.principle-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: .7em;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ===== 區段標題 ===== */
+.section-head {
+  font-size: 1.15em;
+  font-weight: 800;
+  color: var(--base);
+  margin: 28px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 24px;
+  margin-top: 20px;
+  font-size: .78em;
+  color: var(--txt3);
+  border-top: 1px solid var(--border);
+}
+
+/* ===== RWD ===== */
+@media (max-width: 640px) {
+  .container { padding: 16px 12px 40px; }
+  .hero { padding: 28px 16px 24px; }
+  .hero h1 { font-size: 1.4em; }
+  .rank-legend { grid-template-columns: repeat(2, 1fr); }
+  .daily-summary { gap: 8px; }
+  .summary-pill { font-size: .75em; padding: 5px 12px; }
+  .tab-btn { font-size: .82em; padding: 10px 8px; }
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 12px; }
+  .golden-grid { grid-template-columns: 1fr; }
+  .principle-list { grid-template-columns: 1fr; }
+  .filter-bar { padding: 10px 12px; gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ===== Hero ===== -->
+<div class="hero">
+  <div class="hero-icon">🥗</div>
+  <h1>健康飲食三餐推薦清單</h1>
+  <p class="subtitle">卡片版 ｜ 依健康推薦等級排序，整合四大保健主題 × 低糖護心顧胃早餐</p>
+  <div class="daily-summary">
+    <span class="summary-pill">🔥 每日 <span class="num">1,500~1,600</span> 大卡</span>
+    <span class="summary-pill">🥩 蛋白質 <span class="num">25~30%</span></span>
+    <span class="summary-pill">🍚 碳水 <span class="num">40~45%</span></span>
+    <span class="summary-pill">🫒 脂肪 <span class="num">25~30%</span></span>
+  </div>
+</div>
+
+<!-- ===== 六大飲食原則 ===== -->
+<div class="principles-card">
+  <h3>📋 六大飲食原則</h3>
+  <ul class="principle-list">
+    <li class="principle-item"><span class="principle-num">1</span>蛋白質優先 — 每餐至少一掌心份量</li>
+    <li class="principle-item"><span class="principle-num">2</span>碳水減半 — 主食減為平常一半，優先全穀類</li>
+    <li class="principle-item"><span class="principle-num">3</span>戒含糖飲料 — 改喝水、無糖茶，每日 2,000ml+</li>
+    <li class="principle-item"><span class="principle-num">4</span>晚餐提早吃 — 19:00 前完成，睡前 3 小時不進食</li>
+    <li class="principle-item"><span class="principle-num">5</span>每週量體重 — 固定同一時間量測記錄</li>
+    <li class="principle-item"><span class="principle-num">6</span>睡滿 7 小時 — 充足睡眠降低食慾</li>
+  </ul>
+</div>
+
+<!-- ===== 等級說明 ===== -->
+<div class="rank-legend">
+  <div class="rank-item">
+    <div class="rank-badge s">S</div>
+    <div class="rank-title">超級食材</div>
+    <div class="rank-desc">覆蓋 4 大分類</div>
+  </div>
+  <div class="rank-item">
+    <div class="rank-badge a">A</div>
+    <div class="rank-title">高度推薦</div>
+    <div class="rank-desc">覆蓋 3 大分類</div>
+  </div>
+  <div class="rank-item">
+    <div class="rank-badge b">B</div>
+    <div class="rank-title">推薦食材</div>
+    <div class="rank-desc">覆蓋 2 大分類</div>
+  </div>
+  <div class="rank-item">
+    <div class="rank-badge c">C</div>
+    <div class="rank-title">基礎食材</div>
+    <div class="rank-desc">覆蓋 1 大分類</div>
+  </div>
+</div>
+<div class="legend-note">
+  <b>關於「<span style="background:var(--txt3);color:#fff;padding:0 5px;border-radius:6px;font-size:.85em;">指</span>」標記：</b>
+  部分早餐指南食材（白粥、無糖豆花、菊花茶等）以「顧胃／低糖」為主，未列入抗發炎／抗氧化／地中海／心血管四大分類，故不標 S/A/B/C 等級，僅保留功能性標籤（如顧胃、低GI）。等級資料來源為 health_nutrition.db（108 種食材），未編造。
+</div>
+
+<!-- ===== 分類篩選列 ===== -->
+<div class="filter-bar">
+  <span class="label-text">篩選分類：</span>
+  <button class="filter-btn" data-cat="inflam" onclick="toggleFilter(this)">🔥 抗發炎</button>
+  <button class="filter-btn" data-cat="antioxid" onclick="toggleFilter(this)">🫐 抗氧化</button>
+  <button class="filter-btn" data-cat="med" onclick="toggleFilter(this)">🫒 地中海</button>
+  <button class="filter-btn" data-cat="cardio" onclick="toggleFilter(this)">❤️ 心血管</button>
+  <button class="filter-btn reset-btn" onclick="resetFilter()">全部顯示</button>
+</div>
+
+<!-- ===== Tab 切換 ===== -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('breakfast', this)">
+    <span class="tab-icon">🌅</span> 早餐
+  </button>
+  <button class="tab-btn" onclick="switchTab('lunch', this)">
+    <span class="tab-icon">☀️</span> 午餐
+  </button>
+  <button class="tab-btn" onclick="switchTab('dinner', this)">
+    <span class="tab-icon">🌙</span> 晚餐
+  </button>
+</div>
+
+<!-- ==================== 早餐 ==================== -->
+<div id="breakfast" class="tab-content active">
+
+  <!-- 主食 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍚</span>
+      <span class="cat-title">主食選擇</span>
+      <span class="cat-count">12 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌾</span><span class="fc-name">燕麥</span></div>
+          <div class="fc-amount">40-60g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">加肉桂、核桃、藍莓，做成地中海式燕麥粥；β-葡聚醣助降膽固醇</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍚</span><span class="fc-name">糙米</span></div>
+          <div class="fc-amount">半碗（熟重 100g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">可做糙米粥或前晚煮好隔天加熱</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌾</span><span class="fc-name">藜麥粥</span></div>
+          <div class="fc-amount">40-50g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">完整胺基酸來源，富含鎂和鐵，蛋白質含量比燕麥更高</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥣</span><span class="fc-name">隔夜燕麥（冷泡）</span></div>
+          <div class="fc-amount">40-60g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">前一晚冷泡後產生抗性澱粉，GI 值更低，早起直接吃</div>
+        </div>
+        <div class="food-card" data-cats="inflam cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍚</span><span class="fc-name">紅薏仁粥</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">薏仁有助降低血脂，加少量紅豆補鐵，注意不要加糖</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍜</span><span class="fc-name">蕎麥麵（少量）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">60g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">低 GI 主食，清湯底加嫩豆腐或川燙蔬菜，避免重鹹湯底</div>
+        </div>
+        <div class="food-card" data-cats="med">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍞</span><span class="fc-name">全麥麵包</span></div>
+          <div class="fc-amount">1 片（40g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">搭配酪梨泥或水煮蛋，避免果醬、奶油、煉乳等甜抹醬</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍠</span><span class="fc-name">地瓜（蒸）</span></div>
+          <div class="fc-amount">1 小條（130-200g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">飽足感高、GI 值比白飯低，富含膳食纖維，好消化護胃</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🎃</span><span class="fc-name">南瓜粥</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">南瓜天然甜味取代糖，β-胡蘿蔔素豐富，色澤金黃護胃暖身</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🌾</span><span class="fc-name">小米粥</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">40-50g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">養胃護黏膜，加少量枸杞或南瓜丁增加營養，質地溫和</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥟</span><span class="fc-name">全麥饅頭（½個）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">½ 個</div>
+          <div class="fc-tags"><span class="cat-tag func">低GI</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">比白饅頭 GI 值低，搭配無糖豆漿，是台式經典組合</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍚</span><span class="fc-name">白粥（清粥）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag func">顧腸胃</span></div>
+          <div class="fc-tip">搭配清炒蔬菜或蒸魚片，避免醃漬小菜、油條等高鈉配料</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 蛋白質 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🥚</span>
+      <span class="cat-title">蛋白質選擇</span>
+      <span class="cat-count">12 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫘</span><span class="fc-name">豆腐</span></div>
+          <div class="fc-amount">半盒（150g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">做成豆腐沙拉或入粥</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥛</span><span class="fc-name">豆漿（無糖）</span></div>
+          <div class="fc-amount">250-300ml</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">植物蛋白，大豆異黃酮有助心血管健康，可加黑芝麻粉</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫕</span><span class="fc-name">嫩豆腐</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">半盒（150g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">質地軟嫩不刺激胃壁，富含鈣質，單獨或搭配粥品均佳</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥚</span><span class="fc-name">雞蛋（水煮蛋）</span></div>
+          <div class="fc-amount">1-2 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">避免油煎，水煮蛋最能保留營養，蛋黃含膽鹼有益腦部</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥚</span><span class="fc-name">溫泉蛋</span></div>
+          <div class="fc-amount">1 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">半熟蛋黃消化最佳，對腸胃刺激最小，蛋白質吸收率高</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍮</span><span class="fc-name">蒸蛋（茶碗蒸）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">質地滑嫩易消化，少鹽清蒸，是胃不好者最友善的蛋料理</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥚</span><span class="fc-name">茶葉蛋（去滷汁）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">剝殼後用清水沖去多餘鹽分，降低鈉攝取，外食方便</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🐟</span><span class="fc-name">蒸魚片</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">搭配白粥食用，Omega-3 豐富，清蒸無油煙，選白肉魚更好消化</div>
+        </div>
+        <div class="food-card" data-cats="med">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍶</span><span class="fc-name">無糖優格</span></div>
+          <div class="fc-amount">100-150g</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag func">益生菌</span></div>
+          <div class="fc-tip">含益生菌，拌堅果與水果，腸道友善，選乳脂較低版本</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥣</span><span class="fc-name">無糖豆花</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag func">顧胃</span><span class="cat-tag func">低糖</span></div>
+          <div class="fc-tip">加薑汁最佳，豆腐腦質地，幾乎零刺激，是養胃好選擇</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🧀</span><span class="fc-name">茅屋起司（Cottage）</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag func">高蛋白</span><span class="cat-tag func">低脂</span></div>
+          <div class="fc-tip">低脂高蛋白，搭配番茄或草莓，鈉含量較一般起司低</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍗</span><span class="fc-name">水煮雞胸肉片</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag func">高蛋白</span><span class="cat-tag func">低脂</span></div>
+          <div class="fc-tip">前一晚備料，薄切搭配吐司或粥品，高蛋白低脂肪最佳選擇</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 蔬菜（新增分類） -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🥦</span>
+      <span class="cat-title">蔬菜選擇</span>
+      <span class="cat-count">10 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🥬</span><span class="fc-name">清炒菠菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">少油快炒，補鎂和鉀有助血壓調節，葉酸豐富</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍅</span><span class="fc-name">水炒番茄</span></div>
+          <div class="fc-amount">1 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">番茄紅素加熱後吸收率更高，護心血管，少油烹調即可</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid med">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🌿</span><span class="fc-name">烤蘆筍</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">低卡高纖，含天門冬氨酸有助腎臟代謝，少油烤或燙均可</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥬</span><span class="fc-name">燙地瓜葉</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">台灣最易取得的健康蔬菜，花青素豐富，川燙後淋少許香油</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥦</span><span class="fc-name">燙青花椰菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">維生素 K 和抗氧化物豐富，熱燙後淋少許醬油或橄欖油</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌿</span><span class="fc-name">燙秋葵</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">5-10 根</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">黏液素保護胃黏膜，富含膳食纖維，川燙後沾少許醬油</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥒</span><span class="fc-name">涼拌小黃瓜</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 條（150g）</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span><span class="cat-tag func">顧腸胃</span></div>
+          <div class="fc-tip">少鹽少醋，清爽開胃，搭配白粥是絕配，富含水分</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🎃</span><span class="fc-name">蒸南瓜</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">β-胡蘿蔔素豐富，天然甜味不需加糖，也可加入粥中一起煮</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥬</span><span class="fc-name">清炒莧菜</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag func">高鈣</span><span class="cat-tag func">護心</span></div>
+          <div class="fc-tip">鈣含量是菠菜的 3 倍，台灣夏季盛產，少油清炒最佳</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥗</span><span class="fc-name">嫩葉生菜沙拉</span></div>
+          <div class="fc-amount">1 份</div>
+          <div class="fc-tags"><span class="cat-tag func">低GI</span><span class="cat-tag func">護心</span></div>
+          <div class="fc-tip">混合菠菜、蘿蔓、芝麻菜，搭配橄欖油檸檬汁淋醬</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 水果 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍎</span>
+      <span class="cat-title">水果選擇</span>
+      <span class="cat-count">13 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam antioxid cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🫐</span><span class="fc-name">藍莓</span></div>
+          <div class="fc-amount">80g（約半杯）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">花青素之王，低 GI 漿果，加入燕麥粥最搭；冷凍版營養幾乎等同新鮮</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🥑</span><span class="fc-name">酪梨（¼顆）</span></div>
+          <div class="fc-amount">¼ 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">不飽和脂肪酸豐富，護心血管，可抹吐司或單吃，飽足感高</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍅</span><span class="fc-name">番茄（小番茄）</span></div>
+          <div class="fc-amount">1 份</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">GI 值低，茄紅素豐富，空腹可少量食用，搭配橄欖油吸收更好</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍓</span><span class="fc-name">草莓</span></div>
+          <div class="fc-amount">8 顆（150g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">維生素 C 高，天然甜味，GI 值低，搭配優格或燕麥都很適合</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥭</span><span class="fc-name">木瓜</span></div>
+          <div class="fc-amount">半顆（150g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">飯後助消化，木瓜酵素有益腸胃</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍋</span><span class="fc-name">檸檬</span></div>
+          <div class="fc-amount">半顆擠汁</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">溫水 40-50°C 沖泡飲用</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍊</span><span class="fc-name">葡萄柚（半顆）</span></div>
+          <div class="fc-amount">半顆</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">富含類黃酮，有助降低壞膽固醇，注意若服用特定藥物需避免</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍎</span><span class="fc-name">蘋果（半顆）</span></div>
+          <div class="fc-amount">半顆～1 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">果膠助消化，建議帶皮吃，飯後食用比空腹更不刺激胃，含槲皮素</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍈</span><span class="fc-name">芭樂（泰國種）</span></div>
+          <div class="fc-amount">半顆（100g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">GI 值極低、維生素 C 是橘子 4 倍，台灣最易取得的低糖水果</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥝</span><span class="fc-name">奇異果（1顆）</span></div>
+          <div class="fc-amount">1 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">含血清素前驅物，促進腸胃蠕動，維生素 C 含量高，低 GI 水果</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍌</span><span class="fc-name">香蕉</span></div>
+          <div class="fc-amount">1 根（120g）</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">富含鉀，穩定血壓</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🫐</span><span class="fc-name">覆盆莓（Raspberry）</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag func">低GI</span><span class="cat-tag func">護心</span></div>
+          <div class="fc-tip">纖維含量是水果中最高之一，花青素護心，GI 值僅 25</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍐</span><span class="fc-name">蓮霧（2顆）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">2 顆</div>
+          <div class="fc-tags"><span class="cat-tag func">低GI</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">台灣特色水果，水分高 GI 值低，性質涼不刺激胃，夏季最佳</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 堅果 & 配料 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🥜</span>
+      <span class="cat-title">堅果 / 種子 / 配料（每日必加）</span>
+      <span class="cat-count">14 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag s">S</span><span class="fc-emoji">🌰</span><span class="fc-name">核桃</span></div>
+          <div class="fc-amount">5-10 顆（15-30g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">Omega-3 含量最高的堅果，掰碎加入燕麥粥或優格，全方位超級食材</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag s">S</span><span class="fc-emoji">🫒</span><span class="fc-name">橄欖油（淋醬）</span></div>
+          <div class="fc-amount">少量（1 茶匙）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">地中海飲食核心，油酸豐富護心，淋在蔬菜或燕麥上均可</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🌰</span><span class="fc-name">杏仁</span></div>
+          <div class="fc-amount">10-15 顆（15-20g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">維生素 E 豐富，有助降低壞膽固醇，原味烘烤帶皮更佳</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🟢</span><span class="fc-name">開心果</span></div>
+          <div class="fc-amount">15 顆（15g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">帶殼食用控制份量</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🫚</span><span class="fc-name">肉桂</span></div>
+          <div class="fc-amount">1/4 茶匙</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">撒在燕麥粥或咖啡上，錫蘭肉桂更優</div>
+        </div>
+        <div class="food-card" data-cats="inflam cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫘</span><span class="fc-name">亞麻籽</span></div>
+          <div class="fc-amount">1 湯匙（10g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">Omega-3 植物來源，<strong>必須磨碎</strong>才能吸收，加入粥中</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">⚫</span><span class="fc-name">奇亞籽</span></div>
+          <div class="fc-amount">1 湯匙（12-15g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">泡水 10 分鐘後拌入優格，Omega-3 和纖維豐富，遇水膨脹護胃</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">⚫</span><span class="fc-name">黑芝麻</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 湯匙（10g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">鈣質和鐵質豐富，磨粉加入粥品或豆漿，中式護心聖品</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🎃</span><span class="fc-name">南瓜籽</span></div>
+          <div class="fc-amount">1 湯匙（15g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">撒在粥或沙拉上</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥜</span><span class="fc-name">腰果</span></div>
+          <div class="fc-amount">10 顆（15g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">原味直接食用</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍯</span><span class="fc-name">蜂蜜</span></div>
+          <div class="fc-amount">1 茶匙（7g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">最後淋上，不可高溫加熱（超過 60°C）</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🔴</span><span class="fc-name">紅棗</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">3 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">去籽加入粥或泡茶</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🟠</span><span class="fc-name">枸杞</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">10g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">泡茶或撒在粥上</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥜</span><span class="fc-name">無糖花生醬</span></div>
+          <div class="fc-amount">少量</div>
+          <div class="fc-tags"><span class="cat-tag func">護心</span><span class="cat-tag func">好脂肪</span></div>
+          <div class="fc-tip">單元不飽和脂肪酸豐富，搭配全麥吐司，選擇無添加糖版本</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 飲品 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍵</span>
+      <span class="cat-title">飲品選擇</span>
+      <span class="cat-count">12 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam antioxid cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍵</span><span class="fc-name">綠茶</span></div>
+          <div class="fc-amount">1 杯（240ml）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">70-80°C 沖泡保留兒茶素；空腹避免，飯後飲用佳</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🥛</span><span class="fc-name">無加糖杏仁奶</span></div>
+          <div class="fc-amount">1 杯</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">植物奶中卡路里最低，維生素 E 豐富，乳糖不耐者最佳替代品</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio med">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥛</span><span class="fc-name">黑芝麻豆漿</span></div>
+          <div class="fc-amount">300ml</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">豆漿 + 黑芝麻粉 1 湯匙</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍋</span><span class="fc-name">溫檸檬水</span></div>
+          <div class="fc-amount">300ml</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">半顆檸檬 + 溫水（40-50°C）</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫖</span><span class="fc-name">枸杞紅棗茶</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">300ml</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">紅棗去籽 + 枸杞悶泡 15 分鐘；溫性補氣養血，無咖啡因不刺激胃</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥛</span><span class="fc-name">無糖燕麥奶</span></div>
+          <div class="fc-amount">1 杯</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">β-葡聚醣有助降低壞膽固醇，質地溫和，可代替牛奶</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥣</span><span class="fc-name">黑芝麻糊（無糖）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 碗</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">濃稠質地護胃，鈣鐵豐富，自製可控制糖量，傳統滋補飲品</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">☕</span><span class="fc-name">黑咖啡</span></div>
+          <div class="fc-amount">1 杯（240ml）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">不加糖，淺烘焙綠原酸較高；勿空腹飲用以免刺激胃酸</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">💧</span><span class="fc-name">溫開水（第一杯）</span></div>
+          <div class="fc-amount">300ml 以上</div>
+          <div class="fc-tags"><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">早起第一杯，溫水對胃壁最友善，促進腸胃蠕動</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🥛</span><span class="fc-name">低脂牛奶（200ml）</span></div>
+          <div class="fc-amount">200ml</div>
+          <div class="fc-tags"><span class="cat-tag func">高鈣</span><span class="cat-tag func">顧胃</span></div>
+          <div class="fc-tip">鈣質豐富，搭配燕麥食用，避免空腹單獨喝，以免胃不適</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍵</span><span class="fc-name">菊花茶（無糖）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">1 杯</div>
+          <div class="fc-tags"><span class="cat-tag func">護胃</span></div>
+          <div class="fc-tip">清熱降火，不含咖啡因，對胃壁溫和，夏季清爽首選</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍵</span><span class="fc-name">山楂茶（少量）</span><span class="cn-badge">中式</span></div>
+          <div class="fc-amount">少量</div>
+          <div class="fc-tags"><span class="cat-tag func">助消化</span><span class="cat-tag func">護心</span></div>
+          <div class="fc-tip">助消化，有助降低血脂，但空腹少喝，胃酸過多者需注意用量</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 推薦早餐組合 -->
+  <div class="combo-section">
+    <div class="golden-title">⭐ 推薦早餐組合</div>
+    <div class="combo-grid">
+      <div class="combo-card">
+        <p class="combo-label">台式中式 · 最推薦</p>
+        <p class="combo-name">無糖豆漿 + 小米粥 + 涼拌小黃瓜</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>三樣全包：低糖・護胃・護心<br>
+          <span class="combo-dot"></span>準備簡單，外食族也能執行<br>
+          <span class="combo-dot"></span>熱量適中，不會有血糖飆升
+        </p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-label">西式 · 飽足版</p>
+        <p class="combo-name">全麥吐司 + 酪梨泥 + 水煮蛋 + 草莓</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>好脂肪＋優質蛋白質完美組合<br>
+          <span class="combo-dot"></span>飽足感持久到午餐不會餓<br>
+          <span class="combo-dot"></span>準備約 10 分鐘，簡單上手
+        </p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-label">養生護胃 · 腸胃敏感者</p>
+        <p class="combo-name">白粥 + 蒸魚片 + 燙秋葵 + 溫開水</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>所有食材對胃壁刺激最小<br>
+          <span class="combo-dot"></span>秋葵黏液素額外保護胃黏膜<br>
+          <span class="combo-dot"></span>適合腸胃不適期間食用
+        </p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-label">運動族 · 高蛋白版</p>
+        <p class="combo-name">燕麥粥 + 溫泉蛋×2 + 原味優格 + 藍莓</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>蛋白質含量可達 25g 以上<br>
+          <span class="combo-dot"></span>益生菌幫助訓練後恢復<br>
+          <span class="combo-dot"></span>花青素抗氧化，減少運動發炎
+        </p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-label">極簡快速 · 5 分鐘備餐</p>
+        <p class="combo-name">隔夜燕麥 + 核桃 + 芭樂</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>前一晚冷泡，早起直接吃<br>
+          <span class="combo-dot"></span>抗性澱粉 GI 值更低<br>
+          <span class="combo-dot"></span>芭樂是台灣最便宜的低糖水果
+        </p>
+      </div>
+      <div class="combo-card">
+        <p class="combo-label">冬季暖胃 · 中式補養</p>
+        <p class="combo-name">南瓜粥 + 嫩豆腐 + 黑芝麻 + 紅棗茶</p>
+        <p class="combo-items">
+          <span class="combo-dot"></span>全程溫熱食材，暖身護胃<br>
+          <span class="combo-dot"></span>鈣鐵豐富，女性特別推薦<br>
+          <span class="combo-dot"></span>無咖啡因，整個早晨不焦慮
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 早餐地雷 -->
+  <div class="warn-section">
+    <div class="golden-title">⚠ 早餐地雷，這些要避開</div>
+    <div class="warn-grid">
+      <div class="warn-card"><p class="warn-name">空腹咖啡</p><p class="warn-desc">強烈刺激胃酸分泌，長期空腹飲用傷胃壁</p></div>
+      <div class="warn-card"><p class="warn-name">柳橙汁／果汁</p><p class="warn-desc">高糖分且去除了纖維，血糖飆升速度快</p></div>
+      <div class="warn-card"><p class="warn-name">高糖麥片</p><p class="warn-desc">含糖量可達每份 20g 以上，等於喝糖水</p></div>
+      <div class="warn-card"><p class="warn-name">奶油麵包／可頌</p><p class="warn-desc">高飽和脂肪＋高精緻澱粉，對心血管不利</p></div>
+      <div class="warn-card"><p class="warn-name">油條</p><p class="warn-desc">高溫油炸產生反式脂肪，傷心血管</p></div>
+      <div class="warn-card"><p class="warn-name">燒餅</p><p class="warn-desc">高油高鈉，搭配油條更是早餐中的地雷王</p></div>
+      <div class="warn-card"><p class="warn-name">糯米飯糰／湯圓</p><p class="warn-desc">糯米 GI 值高，黏性大，消化慢且刺激胃酸</p></div>
+      <div class="warn-card"><p class="warn-name">鹹豆漿（加醋）</p><p class="warn-desc">醋酸刺激胃黏膜，胃酸分泌過多者需謹慎</p></div>
+      <div class="warn-card"><p class="warn-name">豬血糕</p><p class="warn-desc">高 GI 食物，加上重鹹醬料，鈉含量超標</p></div>
+      <div class="warn-card"><p class="warn-name">皮蛋</p><p class="warn-desc">鉛含量需注意，高鈉，心血管疾病者宜避免</p></div>
+      <div class="warn-card"><p class="warn-name">含糖優格飲料</p><p class="warn-desc">看似健康但糖分極高，仔細看成分標示</p></div>
+      <div class="warn-card"><p class="warn-name">早餐店薯餅</p><p class="warn-desc">高油炸加工澱粉，幾乎沒有營養價值</p></div>
+    </div>
+  </div>
+
+  <!-- 早餐整合結論 -->
+  <div class="conclusion">
+    <b>早餐整合結論</b>
+    早餐主軸是「低糖・護心・顧胃」三原則並行：穩血糖靠低 GI 主食（燕麥、藜麥、隔夜燕麥）＋優質蛋白（豆腐、雞蛋、無糖豆漿），護心血管靠核桃、橄欖油兩大 S 級超級食材與藍莓、酪梨，顧胃則靠溫熱質地的中式粥品與溫開水打底。執行上中式組（豆漿＋小米粥＋小黃瓜）最適合外食族與腸胃敏感者，西式飽足組（吐司＋酪梨＋蛋）適合需撐到午餐者。關鍵是避開油條、燒餅、含糖果汁與空腹咖啡這些同時踩中高糖、高鈉、刺激胃酸的地雷。
+  </div>
+
+</div><!-- /breakfast -->
+
+<!-- ==================== 午餐 ==================== -->
+<div id="lunch" class="tab-content">
+
+  <!-- 主食 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍚</span>
+      <span class="cat-title">主食選擇</span>
+      <span class="cat-count">4 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍚</span><span class="fc-name">糙米飯</span></div>
+          <div class="fc-amount">半碗（熟重 100g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">可混白米，預泡 30 分鐘</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌾</span><span class="fc-name">藜麥飯</span></div>
+          <div class="fc-amount">藜麥 30g + 白米 20g</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">洗淨去皂苷，混煮</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍜</span><span class="fc-name">蕎麥麵</span></div>
+          <div class="fc-amount">60g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">含蘆丁強化血管彈性</div>
+        </div>
+        <div class="food-card" data-cats="med">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍞</span><span class="fc-name">全麥麵包</span></div>
+          <div class="fc-amount">1 片（40g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">搭配橄欖油沾食</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主菜蛋白質 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🐟</span>
+      <span class="cat-title">主菜蛋白質</span>
+      <span class="cat-count">7 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🐟</span><span class="fc-name">鮭魚</span></div>
+          <div class="fc-amount">1 片（100g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">清蒸、乾煎，避免油炸破壞 Omega-3</div>
+        </div>
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🐟</span><span class="fc-name">鯖魚</span></div>
+          <div class="fc-amount">1 片（100g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">鹽烤，擠檸檬汁增加維生素 C 吸收</div>
+        </div>
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🐟</span><span class="fc-name">鮪魚</span></div>
+          <div class="fc-amount">1 片（100g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">乾煎或水煮罐頭（選水煮款）</div>
+        </div>
+        <div class="food-card" data-cats="inflam cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🐟</span><span class="fc-name">鱸魚</span></div>
+          <div class="fc-amount">1 片（120g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">清蒸最佳，鋪薑絲蔥段</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🦐</span><span class="fc-name">蝦</span></div>
+          <div class="fc-amount">80-100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">快炒或清蒸，保留蝦紅素</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫘</span><span class="fc-name">豆腐</span></div>
+          <div class="fc-amount">半盒（150g）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">嫩豆腐涼拌，板豆腐煎炒</div>
+        </div>
+        <div class="food-card" data-cats="">
+          <div class="fc-head"><span class="rank-tag guide">指</span><span class="fc-emoji">🍗</span><span class="fc-name">雞胸肉</span></div>
+          <div class="fc-amount">120g</div>
+          <div class="fc-tags"><span class="cat-tag func">高蛋白</span></div>
+          <div class="fc-tip">薑黃黑胡椒醃後煎（提升薑黃素吸收 20 倍）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 蔬菜配菜 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🥬</span>
+      <span class="cat-title">蔬菜配菜（午餐至少選 2 種）</span>
+      <span class="cat-count">14 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🥬</span><span class="fc-name">菠菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">快燙 30 秒冰鎮，搭配芝麻或核桃</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍅</span><span class="fc-name">番茄</span></div>
+          <div class="fc-amount">1 顆（150-200g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">加橄欖油烹煮，茄紅素吸收率升 2-3 倍</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid med">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🌿</span><span class="fc-name">蘆筍</span></div>
+          <div class="fc-amount">5-8 根（100g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">快燙 2 分鐘淋橄欖油</div>
+        </div>
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🧄</span><span class="fc-name">大蒜</span></div>
+          <div class="fc-amount">2-3 瓣</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">切碎靜置 10 分鐘再烹調</div>
+        </div>
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🧅</span><span class="fc-name">洋蔥</span></div>
+          <div class="fc-amount">1/4 顆（80g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">紫洋蔥抗氧化物含量更高</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥦</span><span class="fc-name">青花菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">蒸煮 3-5 分鐘，保留蘿蔔硫素</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥦</span><span class="fc-name">白花椰菜</span></div>
+          <div class="fc-amount">80-100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">可打成花椰菜米替代白飯</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥬</span><span class="fc-name">高麗菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">快炒保留維生素 C</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌿</span><span class="fc-name">秋葵</span></div>
+          <div class="fc-amount">5-10 根（60-100g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">汆燙涼拌，黏液為有效成分</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍆</span><span class="fc-name">茄子</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">蒸煮或快炒，避免油炸（極吸油）</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍄</span><span class="fc-name">香菇</span></div>
+          <div class="fc-amount">3-5 朵（50g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">日曬 30 分鐘可提升維生素 D</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥒</span><span class="fc-name">小黃瓜</span></div>
+          <div class="fc-amount">1 條（150g）</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼拌，連皮食用</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🥕</span><span class="fc-name">紅蘿蔔</span></div>
+          <div class="fc-amount">60-80g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">煮熟搭油脂，胡蘿蔔素吸收率升 6 倍</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🎃</span><span class="fc-name">南瓜</span></div>
+          <div class="fc-amount">80-150g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">蒸煮或煮湯</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 湯品 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍲</span>
+      <span class="cat-title">湯品選擇</span>
+      <span class="cat-count">5 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍲</span><span class="fc-name">番茄洋蔥湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span><span class="cat-tag inflam">抗發炎</span></div>
+          <div class="fc-tip">洋蔥炒軟加番茄煮 10 分鐘</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍲</span><span class="fc-name">菠菜味噌湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">菠菜燙 30 秒，熄火後拌味噌</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍲</span><span class="fc-name">番茄蛋花湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">經典家常湯，簡單又營養</div>
+        </div>
+        <div class="food-card" data-cats="inflam cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍲</span><span class="fc-name">蛤蜊薑絲湯</span></div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span><span class="cat-tag inflam">抗發炎</span></div>
+          <div class="fc-tip">蛤蜊開口即關火，不可久煮</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍲</span><span class="fc-name">金針菇味噌湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">不可大滾以保留益生菌</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 午餐整合結論 -->
+  <div class="conclusion">
+    <b>午餐整合結論</b>
+    午餐是一天攝取量最高的一餐，配置邏輯為「優質全穀 + 深海魚蛋白 + 雙色蔬菜 + 清淡湯品」。主菜首選 A 級深海魚（鮭魚、鯖魚、鮪魚）一次補足抗發炎、地中海、心血管三大效益；蔬菜以菠菜、番茄、蘆筍、大蒜、洋蔥五項 A 級為核心，記得番茄加橄欖油、大蒜切碎靜置以提升活性成分吸收。素食者可用豆腐取代魚，但需注意它不屬抗發炎類，建議搭配 A 級蔬菜補足。
+  </div>
+
+</div><!-- /lunch -->
+
+<!-- ==================== 晚餐 ==================== -->
+<div id="dinner" class="tab-content">
+
+  <!-- 主食 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍚</span>
+      <span class="cat-title">主食選擇（減量）</span>
+      <span class="cat-count">4 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍚</span><span class="fc-name">糙米飯</span></div>
+          <div class="fc-amount">半碗（100g 熟重）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">碳水主要來源</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌾</span><span class="fc-name">藜麥飯</span></div>
+          <div class="fc-amount">藜麥 30g + 白米 20g</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">蛋白質含量比糙米更高</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍜</span><span class="fc-name">蕎麥麵</span></div>
+          <div class="fc-amount">60g（乾重）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼麵清爽低負擔</div>
+        </div>
+        <div class="food-card" data-cats="antioxid">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍠</span><span class="fc-name">地瓜</span></div>
+          <div class="fc-amount">半條（100g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">蒸熟即食，膳食纖維豐富</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主菜蛋白質 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🐟</span>
+      <span class="cat-title">主菜蛋白質</span>
+      <span class="cat-count">7 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🐟</span><span class="fc-name">鮭魚</span></div>
+          <div class="fc-amount">1 片（100g）</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">清蒸鋪薑絲蔥段，清淡好消化</div>
+        </div>
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🐟</span><span class="fc-name">鮪魚</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">做成鮪魚沙拉（涼拌少油）</div>
+        </div>
+        <div class="food-card" data-cats="inflam cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🐟</span><span class="fc-name">鱸魚</span></div>
+          <div class="fc-amount">120g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">鱸魚豆腐湯，溫暖養生</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🦐</span><span class="fc-name">蝦</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">蘆筍炒蝦仁</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫘</span><span class="fc-name">豆腐</span></div>
+          <div class="fc-amount">半盒~1 盒</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼拌豆腐或豆腐蔬菜鍋</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫛</span><span class="fc-name">毛豆</span></div>
+          <div class="fc-amount">60-80g</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼拌毛豆，植物性蛋白</div>
+        </div>
+        <div class="food-card" data-cats="med cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🫘</span><span class="fc-name">鷹嘴豆</span></div>
+          <div class="fc-amount">100g（煮熟）</div>
+          <div class="fc-tags"><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">鷹嘴豆沙拉，地中海經典</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 蔬菜配菜 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🥬</span>
+      <span class="cat-title">蔬菜配菜（晚餐至少選 2-3 種）</span>
+      <span class="cat-count">8 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🥬</span><span class="fc-name">菠菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">燙菠菜拌核桃碎 + 芝麻醬</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid med">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🌿</span><span class="fc-name">蘆筍</span></div>
+          <div class="fc-amount">80-100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span></div>
+          <div class="fc-tip">涼拌蘆筍淋橄欖油 + 檸檬汁</div>
+        </div>
+        <div class="food-card" data-cats="inflam antioxid">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥬</span><span class="fc-name">高麗菜</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag antioxid">抗氧化</span></div>
+          <div class="fc-tip">燙高麗菜佐柴魚片</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌿</span><span class="fc-name">秋葵</span></div>
+          <div class="fc-amount">5 根（60g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼拌秋葵佐柴魚醬油</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍄</span><span class="fc-name">金針菇</span></div>
+          <div class="fc-amount">50-100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">煮湯或涼拌</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🌊</span><span class="fc-name">海帶芽</span></div>
+          <div class="fc-amount">5g（乾）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">味噌湯配料</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🥬</span><span class="fc-name">地瓜葉</span></div>
+          <div class="fc-amount">100g</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">蒜炒，快炒保留營養</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag c">C</span><span class="fc-emoji">🍄</span><span class="fc-name">木耳</span></div>
+          <div class="fc-amount">30-50g（泡發）</div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">涼拌木耳絲</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 晚餐湯品 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍲</span>
+      <span class="cat-title">晚餐湯品</span>
+      <span class="cat-count">4 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="inflam med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍲</span><span class="fc-name">鱸魚豆腐湯</span></div>
+          <div class="fc-tags"><span class="cat-tag inflam">抗發炎</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">薑片、枸杞、鱸魚、豆腐，清甜養生</div>
+        </div>
+        <div class="food-card" data-cats="antioxid med cardio">
+          <div class="fc-head"><span class="rank-tag a">A</span><span class="fc-emoji">🍲</span><span class="fc-name">味噌海帶豆腐湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag med">地中海</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">熄火後拌味噌，保留益生菌</div>
+        </div>
+        <div class="food-card" data-cats="cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍲</span><span class="fc-name">蛤蜊絲瓜湯</span></div>
+          <div class="fc-tags"><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">清甜鮮美，低熱量</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍲</span><span class="fc-name">金針菇蛋花湯</span></div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">簡單快速</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 晚餐甜點 -->
+  <div class="category-card">
+    <div class="category-header" onclick="toggleCard(this)">
+      <span class="cat-icon">🍫</span>
+      <span class="cat-title">甜點 / 宵夜替代（偶爾獎勵）</span>
+      <span class="cat-count">2 種</span>
+      <span class="cat-toggle">▼</span>
+    </div>
+    <div class="category-body">
+      <div class="card-grid">
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🍫</span><span class="fc-name">黑巧克力 70%+</span></div>
+          <div class="fc-amount">1 小塊（20g）</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">搭配草莓更佳</div>
+        </div>
+        <div class="food-card" data-cats="antioxid cardio">
+          <div class="fc-head"><span class="rank-tag b">B</span><span class="fc-emoji">🔴</span><span class="fc-name">紅棗</span></div>
+          <div class="fc-amount">3 顆</div>
+          <div class="fc-tags"><span class="cat-tag antioxid">抗氧化</span><span class="cat-tag cardio">心血管</span></div>
+          <div class="fc-tip">天然甜味替代糖果</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 晚餐整合結論 -->
+  <div class="conclusion">
+    <b>晚餐整合結論</b>
+    晚餐遵循「主食減量、蛋白質充足、烹調清淡」原則，避免睡前消化負擔。主食較午餐減半，蛋白質可改用毛豆、鷹嘴豆等植物來源減輕腸胃負擔；蔬菜以菠菜、蘆筍兩項 A 級打底，搭配菇藻類（金針菇、海帶芽）增加礦物質。湯品首選鱸魚豆腐湯、味噌海帶豆腐湯，溫熱好消化。甜點僅作偶爾獎勵，70% 以上黑巧克力或紅棗即可滿足甜味又不破壞血糖。
+  </div>
+
+</div><!-- /dinner -->
+
+<!-- ===== 每日必備黃金食材 ===== -->
+<div class="golden-section">
+  <div class="golden-title">⭐ 每日必備「黃金食材」速查</div>
+  <div class="golden-grid">
+    <div class="golden-card super">
+      <div class="golden-emoji">🌰</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag s" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">S</span> 核桃</div>
+        <div class="golden-desc">早餐撒在燕麥粥上・覆蓋 4 大分類</div>
+      </div>
+    </div>
+    <div class="golden-card super">
+      <div class="golden-emoji">🫒</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag s" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">S</span> 橄欖油</div>
+        <div class="golden-desc">涼拌蔬菜淋 1 茶匙・覆蓋 4 大分類</div>
+      </div>
+    </div>
+    <div class="golden-card">
+      <div class="golden-emoji">🍵</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag a" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">A</span> 綠茶</div>
+        <div class="golden-desc">早餐或下午泡 1 杯</div>
+      </div>
+    </div>
+    <div class="golden-card">
+      <div class="golden-emoji">🍅</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag a" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">A</span> 番茄</div>
+        <div class="golden-desc">午餐煮湯，搭配橄欖油吸收更佳</div>
+      </div>
+    </div>
+    <div class="golden-card">
+      <div class="golden-emoji">🥬</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag a" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">A</span> 菠菜</div>
+        <div class="golden-desc">午 / 晚餐燙菠菜，搭配維生素 C</div>
+      </div>
+    </div>
+    <div class="golden-card">
+      <div class="golden-emoji">🧄</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag a" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">A</span> 大蒜</div>
+        <div class="golden-desc">炒菜必加，切碎靜置 10 分鐘</div>
+      </div>
+    </div>
+    <div class="golden-card">
+      <div class="golden-emoji">🫐</div>
+      <div class="golden-info">
+        <div class="golden-name"><span class="rank-tag a" style="width:22px;height:22px;font-size:.65em;margin-right:4px;">A</span> 藍莓</div>
+        <div class="golden-desc">早餐加入粥或優格</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 一週主題速查 ===== -->
+<div class="theme-section">
+  <div class="golden-title">📅 一週主題 × 食材搭配速查</div>
+  <table class="theme-table">
+    <thead>
+      <tr><th>主題</th><th>核心食材（優先選）</th><th>早餐推薦組合</th><th>午 / 晚餐推薦組合</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="theme-name">🫒 地中海風味</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag med">地中海</span></div></td>
+        <td>橄欖油、鮭魚、核桃、番茄</td>
+        <td>燕麥 + 核桃 + 藍莓 + 豆漿</td>
+        <td>橄欖油煎鮭魚 + 菠菜 + 番茄湯</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">🫐 抗氧化活力</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag antioxid">抗氧化</span></div></td>
+        <td>藍莓、菠菜、番茄、綠茶</td>
+        <td>全麥吐司 + 蛋 + 芭樂 + 綠茶</td>
+        <td>蕎麥麵 + 蒜炒蝦仁 + 秋葵</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">❤️ 心血管保養</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag cardio">心血管</span></div></td>
+        <td>核桃、橄欖油、燕麥、鮭魚</td>
+        <td>地瓜 + 蛋 + 開心果 + 黑芝麻豆漿</td>
+        <td>清蒸鱸魚 + 青花菜 + 番茄洋蔥湯</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">🔥 抗發炎修復</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag inflam">抗發炎</span></div></td>
+        <td>薑黃 + 黑胡椒、橄欖油、核桃</td>
+        <td>燕麥 + 核桃 + 亞麻籽 + 木瓜 + 檸檬水</td>
+        <td>薑黃雞胸 + 蘆筍 + 白花椰菜</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">⭐ 超級食材</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag inflam">炎</span><span class="cat-tag antioxid">氧</span><span class="cat-tag med">地</span><span class="cat-tag cardio">心</span></div></td>
+        <td>核桃、橄欖油（4 分類全覆蓋）</td>
+        <td>小米粥 + 紅棗 + 核桃 + 枸杞</td>
+        <td>鷹嘴豆沙拉 + 鮭魚 + 黑巧克力</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">🍃 輕食恢復</div></td>
+        <td>豆腐、蔬菜鍋、蒸魚</td>
+        <td>燕麥 + 南瓜籽 + 優格 + 芭樂</td>
+        <td>豆腐蔬菜鍋 + 鱸魚豆腐湯</td>
+      </tr>
+      <tr>
+        <td><div class="theme-name">🌿 低糖護胃</div><div class="cat-tags" style="margin-top:4px"><span class="cat-tag func">顧胃</span></div></td>
+        <td>白粥、小米粥、嫩豆腐、溫開水</td>
+        <td>白粥 + 蒸魚片 + 燙秋葵 + 溫開水</td>
+        <td>南瓜粥 + 嫩豆腐 + 菊花茶</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="footer">
+  建立日期：2026-03-08 ｜ 卡片版更新：2026-05-28 ｜ 資料來源：health_nutrition.db（108 種食材）＋ 低糖健康早餐指南<br>
+  每日目標 1,500~1,600 大卡 ｜ 目標體重 64 kg ｜ 預估 5~7 個月達標<br>
+  本清單僅供參考，若有特殊疾病或用藥，請諮詢營養師或醫師。
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ===== Tab 切換 =====
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== 卡片收合 =====
+function toggleCard(header) {
+  header.closest('.category-card').classList.toggle('collapsed');
+}
+
+// ===== 分類篩選 =====
+let activeFilters = new Set();
+
+function toggleFilter(btn) {
+  const cat = btn.dataset.cat;
+  if (activeFilters.has(cat)) {
+    activeFilters.delete(cat);
+    btn.classList.remove('active');
+  } else {
+    activeFilters.add(cat);
+    btn.classList.add('active');
+  }
+  applyFilter();
+}
+
+function resetFilter() {
+  activeFilters.clear();
+  document.querySelectorAll('.filter-btn[data-cat]').forEach(b => b.classList.remove('active'));
+  applyFilter();
+}
+
+function applyFilter() {
+  document.querySelectorAll('.food-card').forEach(card => {
+    if (activeFilters.size === 0) {
+      card.classList.remove('hidden');
+      return;
+    }
+    const cardCats = (card.dataset.cats || '').split(' ').filter(Boolean);
+    const match = [...activeFilters].some(f => cardCats.includes(f));
+    card.classList.toggle('hidden', !match);
+  });
+}
+</script>
+
+</body>
+</html>
